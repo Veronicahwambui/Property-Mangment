@@ -56,6 +56,7 @@ function SideBar() {
                                 <li><NavLink  to="/housetypes">House types</NavLink></li>
                                 <li><NavLink  to="/zones">Zones</NavLink></li>
                                 <li><NavLink  to="/attachabledocs">Attachable Documents</NavLink></li>
+                                <li><NavLink  to="/createuser">Create User </NavLink></li>
                             </ul>
                         </li>
               

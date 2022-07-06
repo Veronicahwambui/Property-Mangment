@@ -18,6 +18,7 @@ import Receipts from './pages/Receipts';
 import Transactions from './pages/Transactions';
 import AdminList from './pages/admins/AdminList';
 import AddAdmin from './pages/admins/AddAdmin';
+import CreateUser from './pages/setups/CreateUser';
 
 function Main() {
   return (
@@ -53,6 +54,8 @@ function Main() {
            {/* stystem users */}
            <Route path='/adminlist' element={<AdminList/>} />
            <Route path='/addadmin' element={<AddAdmin/>} />
+           <Route path='/createuser' element={<CreateUser/>} />
+
          </Routes>
       </div>
       </div>
