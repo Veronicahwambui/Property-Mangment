@@ -1,9 +1,8 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 
-function AddAdmin() {
+function UpdateUser() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [otherName, setOtherName] = useState("");
@@ -19,14 +18,42 @@ function AddAdmin() {
   const [privileges, setPrivileges] = useState([]);
   const [priveledgeNames, setPrivilegeNames] = useState([]);
 
-  const addUser = (ev) => {
+  let { id } = useParams();
+  let userId = id;
+  useEffect(() => {
+    // feth use details
+
+    requestsServiceService
+      .getUser(userId)
+      .then((res) => {
+        setFirstName(res.data.data.firstName);
+        setLastName(res.data.data.lastName);
+        setOtherName(res.data.data.otherName);
+        setEmail(res.data.data.email);
+        setIdNo(res.data.data.idNumber);
+        setPhoneNo(res.data.data.phoneNumber);
+        setUserName(res.data.data.userName);
+        setStaffNo(res.data.data.staffId);
+        setRole(res.data.data.role.id);
+        // setPrivilegeNames(res.data.data.userPermissions) come back
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    getUserRoles();
+    getAllPreviledges();
+  }, []);
+
+  const editUserDetails = (ev) => {
     ev.preventDefault();
     const data = JSON.stringify({
       clientKey: "4798a842c8984e078540bc6ba75c2994",
       email: email,
       enabled: true,
       firstName: firstName,
-      id: null,
+      id: userId,
       idNumber: idNo,
       lastName: lastName,
       otherName: otherName,
@@ -38,7 +65,7 @@ function AddAdmin() {
     });
 
     requestsServiceService
-      .addUser(data)
+      .editUserDetails(data)
       .then((res) => {
         console.log(res.data);
       })
@@ -59,36 +86,6 @@ function AddAdmin() {
     });
   };
 
-  useEffect(() => {
-    // addUser()
-    getUserRoles();
-    getAllPreviledges();
-  }, []);
-
-  // let userData = JSON.stringify({
-  //   user_id: res.data.data.id,
-  //   role_ids: roleIds,
-  // });
-
-  // let config = {
-  //   method: "post",
-  //   url: baseUrl + "",
-  //   headers: token,
-  //   data: userData,
-  // };
-
-  //   const handlePermissionChange = (index, event) => {
-  //     const { checked, value } = event.target;
-
-  //     if (checked) {
-  //       SetUserPermissionsIds([...userPermissions, UserPermissionsId[index].roleId]);
-  //     } else {
-  //       SetUserPermissionsIds(
-  //         userPermissionsIds.filter((roleId) => roleId !== userPermissions[index].roleId)
-  //       );
-  //     }
-  //   };
-
   const handleRoleChange = (index, event) => {
     const { checked, value } = event.target;
 
@@ -103,8 +100,6 @@ function AddAdmin() {
     }
   };
 
-  // console.log(UserPermissionsIds);
-
   return (
     <div className="">
       <div className="page-content">
@@ -113,14 +108,14 @@ function AddAdmin() {
           <div className="row">
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 className="mb-sm-0 font-size-18">Create User</h4>
+                <h4 className="mb-sm-0 font-size-18">Add an Admin</h4>
 
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
                       <a href="index.html">Dashboards</a>
                     </li>
-                    <li className="breadcrumb-item active">Create User</li>
+                    <li className="breadcrumb-item active">Add an admin</li>
                   </ol>
                 </div>
               </div>
@@ -139,7 +134,7 @@ function AddAdmin() {
                   </h4>
 
                   <hr className="mb-5" />
-                  <form onSubmit={addUser}>
+                  <form onSubmit={editUserDetails}>
                     {/* <!-- the names --> */}
                     <div className="row  mb-4 pb-2 align-items-center">
                       <label htmlFor="" className="col-form-label col-lg-2">
@@ -197,7 +192,7 @@ function AddAdmin() {
                           required
                         />
                       </div>
-                      </div>
+                   </div>
 
                     {/* <!-- Identification --> */}
                     <div className="row  mb-4 pb-2 align-items-center">
@@ -277,7 +272,7 @@ function AddAdmin() {
                           </strong>
                         </label>
                         <select
-                          className="form-select"
+                          className="form-control"
                           onChange={(e) => {
                             setRole(e.target.value);
                           }}
@@ -291,16 +286,12 @@ function AddAdmin() {
                             return (
                               <option key={role.id} value={role.id}>
                                 {role.name}
-                                <option value="">Super Admin</option>
-                                <option>Finance</option>
-                                <option>Estate Agent</option>
                               </option>
                             );
                           })}
                         </select>
                       </div>
                     </div>
-                    
                     <div>
                       <h5 className="font-weight-bold">
                         User privilages and permissions
@@ -324,9 +315,9 @@ function AddAdmin() {
 
                     <div className="row justify-content-end">
                       <div className="col-lg-10">
-                        <button type="submit" className="btn btn-primary w-100">
+                        <button  onClick={editUserDetails} type="submit" className="btn btn-primary w-100">
                           <i className="mdi mdi-account-plus-outline me-1"></i>
-                          Register Admin
+                          Edit Admin
                         </button>
                       </div>
                     </div>
@@ -341,11 +332,7 @@ function AddAdmin() {
         </div>
         {/* <!-- container-fluid --> */}
       </div>
-      {/* <!-- End Page-content --> */}
-      {/* 
-<!-- Transaction Modal --> */}
- 
-
+     
       <footer className="footer">
         <div className="container-fluid">
           <div className="row">
@@ -365,4 +352,4 @@ function AddAdmin() {
   );
 }
 
-export default AddAdmin;
+export default UpdateUser;

@@ -19,7 +19,8 @@ import Transactions from './pages/Transactions';
 import AdminList from './pages/admins/AdminList';
 import AddAdmin from './pages/admins/AddAdmin';
 import CreateUser from './pages/setups/CreateUser';
-
+import UpdateUser from './pages/admins/UpdateUser';
+import UserTypes from'./pages/admins/UserTypes';
 function Main() {
   return (
     <BrowserRouter>
@@ -55,7 +56,8 @@ function Main() {
            <Route path='/adminlist' element={<AdminList/>} />
            <Route path='/addadmin' element={<AddAdmin/>} />
            <Route path='/createuser' element={<CreateUser/>} />
-
+           <Route path='/adminlist/edit/:id' element={<UpdateUser/>} />
+           <Route path='/usertypes' element={<UserTypes/>} />
          </Routes>
       </div>
       </div>
