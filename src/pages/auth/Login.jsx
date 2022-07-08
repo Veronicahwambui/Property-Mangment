@@ -153,7 +153,7 @@ function Login() {
                             <div className="mb-3 ">
                               <label className="form-label ">Password</label>
                               <div className="input-group auth-pass-inputgroup ">
-                                <input type="password " className="form-control " placeholder="Enter password " aria-label="Password " name={"password"} onChange={handleChange} />
+                                <input type="password" className="form-control " placeholder="Enter password " aria-label="Password " name={"password"} onChange={handleChange} />
                                   <button className="btn btn-light " type={"button"} id="password-addon "><i className="mdi mdi-eye-outline "/></button>
                               </div>
                               <div className="float-end">
