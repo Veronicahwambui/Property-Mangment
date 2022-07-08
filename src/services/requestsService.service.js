@@ -1,4 +1,4 @@
-import { axiosInstance, baseUrl } from "../API";
+import { axiosInstance, baseUrl } from "../services/API";
 
 class RequestsService {
 

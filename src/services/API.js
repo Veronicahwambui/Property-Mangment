@@ -1,13 +1,12 @@
 import axios from 'axios';
-
-import authService from './services/auth.service';
+import authService from './auth.service';
 
 var headers;
 if (authService.getCurrentUserAccessToken()) {
   headers = {
-
-    'Authorization': authService.getCurrentUserAccessToken(),
-    'Content-Type': 'application/json'
+    'Authorization': 'Bearer ' + authService.getCurrentUserAccessToken(),
+    'Content-Type': 'application/json',
+    'App-Key': authService.getAppKey(),
   };
 } else {
 headers = {
