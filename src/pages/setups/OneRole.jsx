@@ -42,8 +42,9 @@ const getAllPreviledges = ()=>{
     <div className='page-content'>
 
      <h3>{role.name}</h3>
-
+    <div className="row mt-5">
      {privileges.map((priv, index) => (
+                      <div className="col-4">
                           <div className="checkbox" key={priv.id}>
                             <input
                             checked={rolePriveledges.includes(priv.name)}
@@ -51,11 +52,12 @@ const getAllPreviledges = ()=>{
                               id={index}
                             />
                             <label className="checkbox__label" htmlFor={index}>
-                              {priv.name}
+                              {priv.name.toLowerCase().replace(/_/g , "  ")}
                             </label>
                           </div>
+                      </div>
          ))}
-
+</div>
     </div>
   )
 }

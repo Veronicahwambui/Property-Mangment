@@ -21,6 +21,7 @@ import AddAdmin from './pages/admins/AddAdmin';
 import CreateUser from './pages/setups/CreateUser';
 import AllRoles from './pages/setups/AllRoles';
 import OneRole from './pages/setups/OneRole';
+import ClientCounties from './pages/setups/ClientCounties';
 
 function Main() {
   return (
@@ -59,6 +60,11 @@ function Main() {
            <Route path='/createuser' element={<CreateUser/>} />
            <Route path='/allroles' element={<AllRoles/>} />
            <Route path='/allroles/:id' element={<OneRole/>} />
+
+           {/* setup */}
+           <Route path='/clientcounties' element={<ClientCounties/>} />
+          
+
 
          </Routes>
       </div>

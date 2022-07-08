@@ -34,6 +34,22 @@ class RequestsService {
         return axiosInstance.post(baseUrl + "/users/create", data);      
    }
 
+   getAllCounties(){
+    return axiosInstance.get(baseUrl + "/setup/counties")
+   }
+
+   getClientCounties(){
+    return axiosInstance.get(baseUrl + "/setup/clientCounties")
+   }
+   deactivateCounty(id){
+    return axiosInstance.get(baseUrl + "/setup/clientCounties/toogleStatus/" + id)
+   }
+
+   createCounty(data){
+     return axiosInstance.post(baseUrl + "/setup/clientCounties", data)
+   }
+
+
 }
 
 export default new RequestsService();
