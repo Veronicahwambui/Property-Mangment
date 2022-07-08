@@ -26,6 +26,9 @@ class AuthService {
     recoverPassword(data) {
         return axiosInstance.post(baseUrl + "/accounts/forgotpassword", data);
     }
+    resetPassword(data) {
+        return axiosInstance.post(baseUrl + "/accounts/resetpassword", data)
+    }
 }
 
 export default new AuthService();
