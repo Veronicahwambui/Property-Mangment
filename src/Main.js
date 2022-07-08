@@ -19,6 +19,8 @@ import Transactions from './pages/Transactions';
 import AdminList from './pages/admins/AdminList';
 import AddAdmin from './pages/admins/AddAdmin';
 import CreateUser from './pages/setups/CreateUser';
+import AllRoles from './pages/setups/AllRoles';
+import OneRole from './pages/setups/OneRole';
 
 function Main() {
   return (
@@ -55,6 +57,8 @@ function Main() {
            <Route path='/adminlist' element={<AdminList/>} />
            <Route path='/addadmin' element={<AddAdmin/>} />
            <Route path='/createuser' element={<CreateUser/>} />
+           <Route path='/allroles' element={<AllRoles/>} />
+           <Route path='/allroles/:id' element={<OneRole/>} />
 
          </Routes>
       </div>
