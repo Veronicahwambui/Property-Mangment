@@ -3,7 +3,6 @@ import {Link, useNavigate} from "react-router-dom";
 import AuthService from '../../services/authLogin.service';
 
 export default function  ResetPassword() {
-  const [otp, setOtp] = useState([]);
   const [d1, setD1] = useState("")
   const [d2, setD2] = useState("")
   const [d3, setD3] = useState("")
@@ -39,14 +38,28 @@ export default function  ResetPassword() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    let userId = "92f89925-72d2-4d76-bf6b-4aef1b95bbb3";
+    let det = ({
+      password: password,
+      userId: userId,
+      verifyEmail: true
+    });
+
+    AuthService.resetPassword(det).then((res) => {
       setError({
         ...error,
-        message: "Changed password",
+        message: res.data.message,
         color: "success"
       });
-      setTimeout(() => {
-        navigate('/login', {replace: true});
-      }, 1500)
+      console.log(res)
+    }).catch((err) => {
+      console.log(err)
+      setError({
+        ...error,
+        message: error.response.data.message,
+        color: "danger"
+      });
+    });
     }
 
   return (
