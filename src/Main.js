@@ -23,6 +23,8 @@ import AllRoles from './pages/setups/AllRoles';
 import OneRole from './pages/setups/OneRole';
 import ClientCounties from './pages/setups/ClientCounties';
 
+import UpdateUser from './pages/admins/UpdateUser';
+import UserTypes from'./pages/admins/UserTypes';
 function Main() {
   return (
     <BrowserRouter>
@@ -66,6 +68,8 @@ function Main() {
           
 
 
+           <Route path='/adminlist/edit/:id' element={<UpdateUser/>} />
+           <Route path='/usertypes' element={<UserTypes/>} />
          </Routes>
       </div>
       </div>

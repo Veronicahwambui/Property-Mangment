@@ -95,6 +95,8 @@ function SideBar() {
                             <ul class="sub-menu" aria-expanded="false">
                                 <li><NavLink to="/adminlist">Admins list</NavLink></li>
                                 <li><NavLink to="/addadmin">Add an admin</NavLink></li>
+                                {/* <li><NavLink to="/updateuser">Update User</NavLink></li> */}
+                                <li><NavLink to="/usertypes"> UserTypes</NavLink></li>
                             </ul>
                         </li>
                     </ul>
