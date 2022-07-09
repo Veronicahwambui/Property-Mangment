@@ -95,6 +95,15 @@ function SideBar() {
                                 <li><NavLink to="/addadmin">Add an admin</NavLink></li>
                             </ul>
                         </li>
+                        <li>
+                            <a href="javascript: void(0);" className="waves-effect has-arrow">
+                                <i className="mdi mdi-shield-account-outline"></i>
+                                <span>Clients</span>
+                            </a>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li><NavLink to="/clienttype">New client type</NavLink></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
                 {/* <!-- Sidebar --> */}

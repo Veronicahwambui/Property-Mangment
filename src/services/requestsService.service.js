@@ -1,4 +1,4 @@
-import { axiosInstance, baseUrl } from "../services/API";
+import { axiosInstance, baseUrl } from "./API";
 
 class RequestsService {
 
@@ -22,7 +22,15 @@ class RequestsService {
         return axiosInstance.post(baseUrl + "/roles/addrole", data);
     }
 
-
+    updateClientType(data) {
+        return axiosInstance.post(baseUrl + "/client-types/update", data)
+    }
+    createClientType(data) {
+        return axiosInstance.post(baseUrl + "/client-types", data);
+    }
+    getClientTypes() {
+        return axiosInstance.get(baseUrl + "/client-types");
+    }
 }
 
 export default new RequestsService();
