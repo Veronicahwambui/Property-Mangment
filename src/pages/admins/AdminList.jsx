@@ -5,6 +5,7 @@ import requestsServiceService from "../../services/requestsService.service";
 
 function AdminList() {
   const [userList, setUserList] = useState([]);
+  
 
   const getData = () => {
     // e.preventDefault()
@@ -29,13 +30,53 @@ function AdminList() {
         {
           label: "OK",
           onClick: requestsServiceService
-            .deactivateUser(id)
+            . confirmDeactivateUser(id)
             .then((res) => {})
             .catch((err) => {}),
         },
       ],
     });
   };
+  const confirmActivateUser = (e, id) => {
+    e.preventDefault();
+
+    confirmAlert({
+      message: "Are you sure you want to deactivate user id " + id,
+      buttons: [
+        {
+          label: "Cancel",
+        },
+        {
+          label: "OK",
+          onClick: requestsServiceService
+            .confirmActivateUser(id)
+            .then((res) => {})
+            .catch((err) => {}),
+        },
+      ],
+    });
+  };
+  const confirmUnlockUserAccount = (e, id) => {
+    e.preventDefault();
+
+    confirmAlert({
+      message: "Are you sure you want to deactivate user id " + id,
+      buttons: [
+        {
+          label: "Cancel",
+        },
+        {
+          label: "OK",
+          onClick: requestsServiceService
+            .confirmUnlockUserAccount(id)
+            .then((res) => {})
+            .catch((err) => {}),
+        },
+      ],
+    });
+  };
+  
+
 
   return (
     <div className="">
@@ -45,15 +86,18 @@ function AdminList() {
           <div className="row">
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 className="mb-sm-0 font-size-18">System administrators</h4>
+                <h4 className="mb-sm-0 font-size-18">User List</h4>
 
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
                       <a href="index.html">Dashboards</a>
                     </li>
+                    <li class="breadcrumb-item">
+                      <a href="#">System user</a>
+                    </li>
                     <li className="breadcrumb-item active">
-                      System administrators
+                      User List
                     </li>
                   </ol>
                 </div>
@@ -72,12 +116,11 @@ function AdminList() {
               <thead className="table-dark">
                 <tr>
                   <th>Admin</th>
-                  <th>FirstName</th>
-                  <th>LastName</th>
-                  <th>UserName</th>
-                  <th>OtherNames</th>
+                 <th>Names</th>
+                 <th>UserName</th>
                   <th>Email</th>
                   <th>PhoneNumber</th>
+                  <th>StaffID</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -98,24 +141,14 @@ function AdminList() {
                                 </div>
                               </div>
 
-                              <div className="flex-grow-1">
-                                <h5 className="font-size-14 mb-0">
-                                  {list.firstName}
-                                </h5>
-                              </div>
+                             
                             </div>
                           </td>
+                      
                           <td>
-                            <td>
-                              <p className="mb-0">
-                                <a href="mailto:martinokesh40@email.com">
-                                  {list.firstName}
-                                </a>
-                              </p>
-                            </td>
                             <p className="mb-0">
                               <a href="mailto:martinokesh40@email.com">
-                                {list.lastName}
+                              {list.firstName + "  " + list.lastName}
                               </a>
                             </p>
                           </td>
@@ -123,13 +156,6 @@ function AdminList() {
                             <p className="mb-0">
                               <a href="mailto:martinokesh40@email.com">
                                 {list.userName}
-                              </a>
-                            </p>
-                          </td>
-                          <td>
-                            <p className="mb-0">
-                              <a href="mailto:martinokesh40@email.com">
-                                {list.otherName}
                               </a>
                             </p>
                           </td>
@@ -167,8 +193,26 @@ function AdminList() {
                                     <i class="font-size-15 mdi mdi-account-cash me-3"></i>
                                     edit user
                                   </a>
-                                </Link>
 
+                                </Link>
+                            
+                                     {list.accountLocked === "true" && (
+                                  <button
+                                    className="dropdown-item"
+                                    onClick={(e) =>
+                                      confirmUnlockUserAccount(e, list.id)
+                                    }
+                                  >
+                                  </button>
+
+                                )
+                          
+                                  }
+
+                                <i class="font-size-15 mdi mdi-account-cancel me-3"></i>
+                                    Unblock user
+                              
+                                {/* <a class="dropdown-item" href="tenant-deactivate-process.html">              
                                 {list.accountLocked === "true" && (
                                   <button
                                     className="dropdown-item"
@@ -176,11 +220,14 @@ function AdminList() {
                                       confirmUnlockUserAccount(e, list.id)
                                     }
                                   >
-                                    <i class="font-size-15 mdi mdi-account-cash me-3"></i>
-                                    Unlock User
                                   </button>
+
                                 )
+                          
                                   }
+                                  </a> */}
+
+                               
                                 {list.enabled === "true" ? (
                                   <button
                                     className="dropdown-item"
@@ -188,56 +235,28 @@ function AdminList() {
                                       confirmDeactivateUser(e, list.id)
                                     }
                                   >
-                                    <i class="font-size-15 mdi mdi-account-cash me-3"></i>
+                                 <i class="font-size-15 mdi mdi-account-cancel me-3"></i>
                                     Deactivate User
                                   </button>
                                 ) : (
+                                  
                                   <button
                                     className="dropdown-item"
                                     onClick={(e) =>
                                       confirmActivateUser(e, list.id)
                                     }
                                   >
-                                    <i class="font-size-15 mdi mdi-account-cash me-3"></i>
+                                    <i class="font-size-15 mdi mdi-account me-3"></i>
                                     Activate User
                                   </button>
                                 )}
+                            
+                             
+                               
                                 
-                                {/* <a class="dropdown-item" href="tenant-new.html">
-                                  <i class="font-size-15 mdi mdi-account-cash me-3"></i>
-                                  Deactive User
-                                </a> */}
-                                <a
-                                  class="dropdown-item"
-                                  data-bs-toggle="modal"
-                                  data-bs-target=".notice-modal"
-                                  href="#"
-                                >
-                                  <i class="font-size-15 mdi mdi-file-cancel me-3"></i>
-                                  View User
-                                </a>
-                                <a
-                                  class="dropdown-item"
-                                  href="#"
-                                  data-bs-toggle="modal"
-                                  data-bs-target=".statements-modal"
-                                >
-                                  <i class="font-size-15  mdi mdi-cash-multiple me-3"></i>
-                                  Get Statements
-                                </a>
-                                <a
-                                  class="dropdown-item"
-                                  href="#"
-                                  data-bs-toggle="modal"
-                                  data-bs-target=".distress-modal"
-                                >
-                                  <i class="font-size-15 mdi mdi-chevron-double-right me-3"></i>
-                                  Move to distress Letter stage
-                                </a>
-                                <a class="dropdown-item write-msg-btn" href="#">
-                                  <i class="font-size-15  mdi mdi-chat me-3 "></i>
-                                  Message Tenant
-                                </a>
+                              
+
+
                               </div>
                             </div>
                           </td>

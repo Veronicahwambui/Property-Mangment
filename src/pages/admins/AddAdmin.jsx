@@ -120,6 +120,9 @@ function AddAdmin() {
                     <li className="breadcrumb-item">
                       <a href="index.html">Dashboards</a>
                     </li>
+                    <li class="breadcrumb-item">
+                      <a href="#">System user</a>
+                    </li>
                     <li className="breadcrumb-item active">Create User</li>
                   </ol>
                 </div>
@@ -301,14 +304,15 @@ function AddAdmin() {
                       </div>
                     </div>
                     
-                    <div>
+                    <div className=""> 
                       <h5 className="font-weight-bold">
                         User privilages and permissions
                       </h5>
                     </div>
 
-                    <div className="colums-2">
+                    <div className="row mt-5">
                       {privileges.map((priv, index) => (
+                        <div className="col-4">
                         <div className="checkbox" key={priv.id}>
                           <input
                             type="checkbox"
@@ -316,8 +320,9 @@ function AddAdmin() {
                             onChange={(event) => handleRoleChange(index, event)}
                           />
                           <label className="checkbox__label" htmlFor={index}>
-                            {priv.name}
+                            {priv.name.toLowerCase().replace(/_/g , "  ")}
                           </label>
+                        </div>
                         </div>
                       ))}
                     </div>

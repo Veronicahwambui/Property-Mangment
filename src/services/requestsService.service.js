@@ -13,7 +13,7 @@ class RequestsService {
     }
 
     EditRole(data) {
-        return axiosInstance.put(baseUrl + "/roles/editrole", data);
+        return axiosInstance.post(baseUrl + "/roles/editrole", data);
     }
 
     AddRole(data) {
@@ -49,7 +49,21 @@ getUser(id){
 
     return axiosInstance.get(baseUrl + "/users/view/" + id);   
 }
-
+confirmDeactivateUser(userId){
+    return axiosInstance.get(baseUrl +"/users/deactivateUser/"+userId)
+}
+confirmActivateUser(userId){
+    return axiosInstance.get(baseUrl + "/users/deactivateUser/" +userId) 
+}
+confirmUnlockUserAccount(userId) {
+    return axiosInstance.get(baseUrl + "/users/deactivateUser/" +userId)
+}
+// addRole(){
+//     return axiosInstance.put(baseUrl +"/user-types");
+// }
+deactiveUser(userId){
+    return axiosInstance.get(baseUrl +"/users/deactivateUser/"+ userId)
+}
   
 }
 
