@@ -1,4 +1,4 @@
-import { axiosInstance, baseUrl } from "../services/API";
+import { axiosInstance, baseUrl } from "./API";
 
 class RequestsService {
   getAllRoles() {
@@ -95,7 +95,6 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/setup/zones/toogleStatus/" + id)
   }
 
-
   //    estates
   createEstate(data) {
     return axiosInstance.post(baseUrl + "/setup/estates", data)
@@ -137,6 +136,15 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/users/deactivateUser/" + userId)
   }
 
+    updateClientType(data) {
+        return axiosInstance.post(baseUrl + "/client-types/update", data)
+    }
+    createClientType(data) {
+        return axiosInstance.post(baseUrl + "/client-types", data);
+    }
+    getClientTypes() {
+        return axiosInstance.get(baseUrl + "/client-types");
+    }
 }
 
 export default new RequestsService();

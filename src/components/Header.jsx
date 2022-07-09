@@ -1,6 +1,11 @@
-import React from 'react'
+import React, {useEffect} from 'react'
+import AuthService from "../services/authLogin.service"
 
 function Header() {
+    const Logout = () => {
+        localStorage.clear();
+        window.location.reload();
+    }
   return (
     <header id="page-topbar">
             <div class="navbar-header">
@@ -149,7 +154,7 @@ function Header() {
                         <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-1.jpg"
                                     alt="Header Avatar" />
-                                <span class="d-none d-xl-inline-block ms-1" key="t-henry">Adroa Balinda</span>
+                                <span class="d-none d-xl-inline-block ms-1" key="t-henry">{AuthService.getCurrentUserName()}</span>
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                         <div class="dropdown-menu dropdown-menu-end">
@@ -158,7 +163,7 @@ function Header() {
                             <a class="dropdown-item" href="my-logs.html"><i class="bx bx-time font-size-16 align-middle me-1"></i> <span key="t-profile">My Logs</span></a>
                             <a class="dropdown-item" href="auth-lock-screen.html"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock screen</span></a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="auth-login.html"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
+                            <a class="dropdown-item text-danger" style={{cursor: "pointer"}} onClick={Logout}><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,8 @@
-import {BrowserRouter, Route, Routes } from 'react-router-dom'
+import React, { useEffect } from "react";
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import Header from './components/Header';
 import SideBar from './components/SideBar';
-import {Helmet} from 'react-helmet'
+import { Helmet } from 'react-helmet'
 import Dashboard from './pages/Dashboard';
 import Landlords from './pages/Landlords';
 import PremisesRegister from './pages/premises/PremisesRegister';
@@ -22,63 +23,91 @@ import CreateUser from './pages/setups/CreateUser';
 import AllRoles from './pages/setups/AllRoles';
 import OneRole from './pages/setups/OneRole';
 import ClientCounties from './pages/setups/ClientCounties';
+import Login from './pages/auth/Login';
+import RecoverPassword from './pages/auth/RecoverPassword';
+import ResetPassword from './pages/auth/ResetPassword';
+import AuthService from './services/auth.service';
+import ClientType from './pages/clients/ClientType'
 
 import UpdateUser from './pages/admins/UpdateUser';
-import UserTypes from'./pages/admins/UserTypes';
+import UserTypes from './pages/admins/UserTypes';
 function Main() {
+
+  // useEffect(() => {
+  //   setTimeout(function () {
+  //     localStorage.clear();
+  //     window.location.reload();
+
+  //   }, new Date(AuthService.getUserLoggedInAt()) - Math.floor(Date.now()));
+
+  // }, []);
+
   return (
     <BrowserRouter>
+      <div className="container-fluid p-0">
+        {AuthService.getCurrentUserAccessToken() === null
+          ?
+            <Routes>
+              <Route exact path="/login" element={<Login />} />
+              <Route exact path="/recoverpassword" element={<RecoverPassword />} />
+              <Route exact path="/resetpassword" element={<ResetPassword />} />
+              <Route path="*" element={<Navigate to="/login" />}></Route>
 
-      <div id="layout-wrapper" >
-       <Header />
-       <SideBar /> 
-      <div className="main-content">
-         <Routes>
-           {/* dashboard */}
-           <Route path='/' element={<Dashboard/>} />
-            {/* landlords */}
-           <Route path='/landlords' element={<Landlords/>} />
-           {/* premises */}
-           <Route path='/premisesregister' element={<PremisesRegister/>} />
-           <Route path='/addpremises' element={<AddPremises/>} />
-           {/* tenants  */}
-           <Route path='/alltenants' element={<AllTenants/>} />
-           <Route path='/addtenant' element={<AddTenant/>} />
-           {/* set ups  */}
-           <Route path='/applicablecharges' element={<ApplicableCharges/>} />
-           <Route path='/estates' element={<Estate/>} />
-           <Route path='/housetypes' element={<HouseTypes/>} />
-           <Route path='/zones' element={<Zones/>} />
-           <Route path='/attachabledocs' element={<AttachableDocs/>} />
-           {/* invoices */}
-           <Route path='/createinvoice' element={<CreateInvoice/>} />
-           {/* receipts */}
-           <Route path='/receipts' element={<Receipts/>} />
-           {/* transactions  */}
-           <Route path='/trasactions' element={<Transactions/>} />
-           {/* stystem users */}
-           <Route path='/adminlist' element={<AdminList/>} />
-           <Route path='/addadmin' element={<AddAdmin/>} />
-           <Route path='/createuser' element={<CreateUser/>} />
-           <Route path='/allroles' element={<AllRoles/>} />
-           <Route path='/allroles/:id' element={<OneRole/>} />
+            </Routes>
+          :
+          <>
+              <SideBar />
+              <Header />
+              <div className="main-content">
+                <Routes>
+                  {/* dashboard */}
+                  <Route path='/' element={<Dashboard />} />
+                  {/* landlords */}
+                  <Route path='/landlords' element={<Landlords />} />
+                  {/* premises */}
+                  <Route path='/premisesregister' element={<PremisesRegister />} />
+                  <Route path='/addpremises' element={<AddPremises />} />
+                  {/* tenants  */}
+                  <Route path='/alltenants' element={<AllTenants />} />
+                  <Route path='/addtenant' element={<AddTenant />} />
+                  {/* set ups  */}
+                  <Route path='/applicablecharges' element={<ApplicableCharges />} />
+                  <Route path='/estates' element={<Estate />} />
+                  <Route path='/housetypes' element={<HouseTypes />} />
+                  <Route path='/zones' element={<Zones />} />
+                  <Route path='/attachabledocs' element={<AttachableDocs />} />
+                  {/* invoices */}
+                  <Route path='/createinvoice' element={<CreateInvoice />} />
+                  {/* receipts */}
+                  <Route path='/receipts' element={<Receipts />} />
+                  {/* transactions  */}
+                  <Route path='/trasactions' element={<Transactions />} />
 
-           {/* setup */}
-           <Route path='/clientcounties' element={<ClientCounties/>} />
-          
+                  {/* stystem users */}
+                  <Route path='/adminlist' element={<AdminList />} />
+                  <Route path='/addadmin' element={<AddAdmin />} />
+                  <Route path='/createuser' element={<CreateUser />} />
+                  <Route path='/allroles' element={<AllRoles />} />
+                  <Route path='/allroles/:id' element={<OneRole />} />
 
+                  {/* setup */}
+                  <Route path='/clientcounties' element={<ClientCounties />} />
 
-           <Route path='/adminlist/edit/:id' element={<UpdateUser/>} />
-           <Route path='/usertypes' element={<UserTypes/>} />
-         </Routes>
-      </div>
-      </div>
+                  <Route path='/adminlist/edit/:id' element={<UpdateUser />} />
+                  <Route path='/usertypes' element={<UserTypes />} />
+
+                  <Route path="*" element={<Navigate to="/" />}></Route>
+                </Routes>
+              </div>
+          </>       
+        }
+      </div >
       <Helmet>
-    {/* <!-- App js --> */}
-      <script src="./assets/js/app.js "></script>
-      <script src="./assets/js/custom.js "></script>
+        {/* <!-- App js --> */}
+        <script src="./assets/js/app.js "></script>
+        <script src="./assets/js/custom.js "></script>
       </Helmet>
-    </BrowserRouter>
+    </BrowserRouter >
   );
 }
 
