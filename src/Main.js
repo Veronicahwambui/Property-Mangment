@@ -95,6 +95,7 @@ function Main() {
 
                   <Route path='/adminlist/edit/:id' element={<UpdateUser />} />
                   <Route path='/usertypes' element={<UserTypes />} />
+                  <Route path='/clienttype' element={<ClientType/>} />
 
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
