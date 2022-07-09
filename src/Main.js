@@ -24,6 +24,7 @@ import Login from './pages/auth/Login';
 import RecoverPassword from './pages/auth/RecoverPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import AuthService from './services/auth.service';
+import ClientType from './pages/clients/ClientType'
 
 function Main() {
   // useEffect(() => {
@@ -82,6 +83,7 @@ function Main() {
                   <Route path='/adminlist' element={<AdminList/>} />
                   <Route path='/addadmin' element={<AddAdmin/>} />
                   <Route path='/createuser' element={<CreateUser/>} />
+                  <Route path='/clienttype' element={<ClientType/>} />
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
               </div>
