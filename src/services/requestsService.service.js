@@ -15,7 +15,7 @@ class RequestsService {
     }
 
     EditRole(data) {
-        return axiosInstance.put(baseUrl + "/roles/editrole", data);
+        return axiosInstance.post(baseUrl + "/roles/editrole", data);
     }
 
     AddRole(data) {
@@ -48,7 +48,53 @@ class RequestsService {
    createCounty(data){
      return axiosInstance.post(baseUrl + "/setup/clientCounties", data)
    }
+  
+   
+//    zones 
+   createZone(data){
+     return axiosInstance.post(baseUrl + "/setup/zones", data)
+   }
 
+   getAllZones(){
+     return axiosInstance.get(baseUrl + "/setup/zones")
+   }
+  
+   getOneZone(id){
+     return axiosInstance.get(baseUrl + "/setup/zones/" + id)
+   }
+  
+   editZone(data){
+     return axiosInstance.post(baseUrl + "/setup/zones", data)
+   }
+
+   deactivateZone(id){
+    return axiosInstance.get(baseUrl + "/setup/zones/toogleStatus/" + id)
+   }
+
+
+//    estates
+   createEstate(data){
+     return axiosInstance.post(baseUrl + "/setup/estates", data)
+   }
+
+   getAllEstates(){
+     return axiosInstance.get(baseUrl + "/setup/estates")
+   }
+  
+   getOneEstate(id){
+     return axiosInstance.get(baseUrl + "/setup/estates/" + id)
+   }
+  
+   editEstate(data){
+     return axiosInstance.post(baseUrl + "/setup/estates", data)
+   }
+   
+   deactivateEstate(id){
+    return axiosInstance.get(baseUrl + "/setup/estates/toogleStatus/" + id)
+   }
+
+   
+   
 
 }
 

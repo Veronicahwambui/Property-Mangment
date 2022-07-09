@@ -5,18 +5,23 @@ function ClientCounties() {
   const [allCounties, setAllCounties] = useState([]);
   const [clientCounties, setClientCounties] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState("");
+  const [activeId , setActiveId] = useState('')
 
   useEffect(() => {
     getClientCounties();
   }, []);
+
+
 
 //   const deactivate 
 
 const deactivate = (id)=> {
     requestsServiceService.deactivateCounty(id).then((res)=>{
         console.log(res);
+        getClientCounties()
     })
 }
+
 
   // create client county
   const createCounty = () => {
@@ -27,8 +32,7 @@ const deactivate = (id)=> {
       id: 0,
     });
 
-    requestsServiceService.createCounty(data).then((res) => {
-      console.log(res);
+    requestsServiceService.createCounty(data).then(() => {
       getClientCounties()
     });
   };
@@ -45,6 +49,10 @@ const deactivate = (id)=> {
     });
   };
   //  console.log(selectedCounty);
+  
+//   create my own counties array 
+
+
   return (
     <>
       <div class="page-content">
@@ -63,7 +71,7 @@ const deactivate = (id)=> {
                     <li class="breadcrumb-item">
                       <a href="#">Set Ups</a>
                     </li>
-                    <li class="breadcrumb-item active">Registered Zones</li>
+                    <li class="breadcrumb-item active">Registered Counties</li>
                   </ol>
                 </div>
               </div>
@@ -109,23 +117,38 @@ const deactivate = (id)=> {
                       </thead>
                       <tbody>
                     
-                        { clientCounties.length > 0  &&  clientCounties.map((index ) => (
-                            <tr data-id="1">
-                              <td style={{ width: "80px" }}>{index + 1}</td>
-                              <td data-field="unit-num ">{ clientCounties[index].county.name}</td>
-                              <td data-field="unit-num ">{}</td>
+                          
+                        { clientCounties.length > 0  &&  clientCounties.map((cou, index)=>{
+                            let county = cou.county
+                            return (
+                                <tr data-id="1" key={county.id}>
+                              <td style={{ width: "80px" }}>{index+ 1}</td>
+                              <td data-field="unit-num ">{county.name}</td>
+                              <td data-field="unit-num ">{cou.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                               <td class="text-right cell-change text-nowrap ">
-                                <button
-                                  class="btn btn-danger btn-sm text-uppercase px-3 mx-3"
-                                  title="deactivate "
-                                  onClick={()=> deactivate("")}
+                              {cou.active ?  <button
+                                  class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"
+                                  title="deactivate"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#confirm-deactivate"
+                                  onClick={()=> setActiveId(county.id)}
                                 >
-                                  Deactivate
-                                </button>
+                                 Deactivate
+                                </button>:  <button
+                                  class="btn btn-success btn-sm w-5 text-uppercase px-3 mx-3"
+                                  title="deactivate"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#confirm-activate"
+                                  onClick={()=> setActiveId(county.id)}
+                                >
+                                 Activate
+                                </button> }
+
+                               
                               </td>
                             </tr>
-
-                          ))}
+                            )
+                        })}
 
                         <tr class="cloneCharges d-none">
                           <td style={{ width: "80px" }} class="categoryIndex ">
@@ -158,7 +181,7 @@ const deactivate = (id)=> {
                               class="btn btn-primary btn-sm text-uppercase px-3 save-new-btn mx-3 "
                               title="save "
                             >
-                              Save
+                              Add
                             </button>
                             <a
                               class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent cancel-new-category "
@@ -235,8 +258,83 @@ const deactivate = (id)=> {
                 onClick={createCounty}
                 type="button"
                 class="btn btn-primary"
+                data-bs-dismiss="modal"
               >
                 Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* confirm deactivate  */}
+      <div
+        class="modal fade"
+        id="confirm-deactivate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+             <center>
+                <h5>Deactivate this county?</h5>
+             </center>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={()=>deactivate(activeId)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* confirm dactivate  */}
+      <div
+        class="modal fade"
+        id="confirm-activate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+             <center>
+                <h5>Activate this county?</h5>
+             </center>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={()=>deactivate(activeId)}
+              >
+                Yes
               </button>
             </div>
           </div>

@@ -103,6 +103,7 @@ const editARole = ()=>{
     )
     requestsServiceService.EditRole(data).then((res)=>{
       console.log(res.data);
+      getAllRoles()
    }).catch((err)=>{
      console.log(err);
    })
