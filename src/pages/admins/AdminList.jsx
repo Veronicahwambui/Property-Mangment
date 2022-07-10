@@ -139,7 +139,6 @@ function AdminList() {
   $("body").on("click", ".unlockUser", confirmUnlockUserAccount);
 
 
-
   return (
     <div className="">
       <div className="page-content">

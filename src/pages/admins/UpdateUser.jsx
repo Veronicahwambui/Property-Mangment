@@ -21,39 +21,40 @@ function UpdateUser() {
   let { id } = useParams();
   let userId = id;
   useEffect(() => {
-    // feth use details
 
+    getUserRoles();
+    getAllPreviledges();
+
+    // feth use details
     requestsServiceService
       .getUser(userId)
       .then((res) => {
-        setFirstName(res.data.data.firstName);
-        setLastName(res.data.data.lastName);
-        setOtherName(res.data.data.otherName);
-        setEmail(res.data.data.email);
-        setIdNo(res.data.data.idNumber);
-        setPhoneNo(res.data.data.phoneNumber);
-        setUserName(res.data.data.userName);
-        setStaffNo(res.data.data.staffId);
-        setRole(res.data.data.role.id);
-        // setPrivilegeNames(res.data.data.userPermissions) come back
-        
+        setFirstName(res.data.data.user.firstName);
+        setLastName(res.data.data.user.lastName);
+        setOtherName(res.data.data.user.otherName);
+        setEmail(res.data.data.user.email);
+        setIdNo(res.data.data.user.idNumber);
+        setPhoneNo(res.data.data.user.phoneNumber);
+        setUserName(res.data.data.user.userName);
+        setStaffNo(res.data.data.user.staffId);
+        setRole(res.data.data.user.role.id);
+        setPrivilegeNames(res.data.data.permissions)
+
       })
       .catch((err) => {
         console.log(err);
       });
 
-    getUserRoles();
-    getAllPreviledges();
   }, []);
 
   const editUserDetails = (ev) => {
     ev.preventDefault();
     const data = JSON.stringify({
-      clientKey: "4798a842c8984e078540bc6ba75c2994",
+      clientKey: "a45a47e208544dfd8f33383fc6fa066d",
       email: email,
       enabled: true,
       firstName: firstName,
-      id: userId,
+      id: parseInt(userId),
       idNumber: idNo,
       lastName: lastName,
       otherName: otherName,
@@ -85,6 +86,15 @@ function UpdateUser() {
       setPrivileges(res.data.data);
     });
   };
+
+  const handleRoleChange1 = (val) => {
+    setRole(val);
+
+    if (val!=undefined)
+    requestsServiceService.ViewOneRole(val).then((res) => {
+      setPrivilegeNames(res.data.data.permissions.map(pem => pem.name));
+    });
+  }
 
   const handleRoleChange = (index, event) => {
     const { checked, value } = event.target;
@@ -167,8 +177,8 @@ function UpdateUser() {
                           required
                         />
                       </div>
-                      </div>
-                      <div className="row  mb-4 pb-2 align-items-center">
+                    </div>
+                    <div className="row  mb-4 pb-2 align-items-center">
                       <label htmlFor="" className="col-form-label col-lg-2">
                         Other Name(s) <strong className="text-danger">*</strong>
                       </label>
@@ -195,7 +205,7 @@ function UpdateUser() {
                           required
                         />
                       </div>
-                   </div>
+                    </div>
 
                     {/* <!-- Identification --> */}
                     <div className="row  mb-4 pb-2 align-items-center">
@@ -277,11 +287,12 @@ function UpdateUser() {
                         <select
                           className="form-control"
                           onChange={(e) => {
-                            setRole(e.target.value);
+                            handleRoleChange1(e.target.value);
                           }}
+                          value={role}
                           title="System role"
                         >
-                          <option className="text-black font-semibold ">
+                          <option value={undefined}>
                             Roles
                           </option>
 
@@ -303,24 +314,25 @@ function UpdateUser() {
 
                     <div className="row mt-5">
                       {privileges.map((priv, index) => (
-                         <div className="col-4">
-                        <div className="checkbox" key={priv.id}>
-                          <input
-                            type="checkbox"
-                            id={index}
-                            onChange={(event) => handleRoleChange(index, event)}
-                          />
-                          <label className="checkbox__label" htmlFor={index}>
-                            {priv.name.toLowerCase().replace(/_/g , "  ")}
-                          </label>
-                        </div>
+                        <div className="col-4">
+                          <div className="checkbox" key={priv.id}>
+                            <input
+                              type="checkbox"
+                              checked={priveledgeNames.includes(priv.name)}
+                              id={index}
+                              onChange={(event) => handleRoleChange(index, event)}
+                            />
+                            <label className="checkbox__label" htmlFor={index}>
+                              {priv.name.toLowerCase().replace(/_/g, "  ")}
+                            </label>
+                          </div>
                         </div>
                       ))}
                     </div>
 
                     <div className="row justify-content-end">
                       <div className="col-lg-10">
-                        <button  onClick={editUserDetails} type="submit" className="btn btn-primary w-100">
+                        <button onClick={editUserDetails} type="submit" className="btn btn-primary w-100">
                           <i className="mdi mdi-account-plus-outline me-1"></i>
                           Edit Admin
                         </button>
@@ -337,7 +349,7 @@ function UpdateUser() {
         </div>
         {/* <!-- container-fluid --> */}
       </div>
-     
+
       <footer className="footer">
         <div className="container-fluid">
           <div className="row">

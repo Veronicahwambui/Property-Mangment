@@ -9,7 +9,7 @@ class RequestsService {
     }
 
     ViewOneRole(roleId) {
-        return axiosInstance.get(baseUrl + "/roles/view?roleId=" + roleId);
+        return axiosInstance.get(baseUrl + "/roles/view/" + roleId);
     }
 
     EditRole(data) {

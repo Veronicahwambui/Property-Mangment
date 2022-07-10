@@ -53,10 +53,10 @@ function Main() {
            {/* transactions  */}
            <Route path='/trasactions' element={<Transactions/>} />
            {/* stystem users */}
-           <Route path='/adminlist' element={<AdminList/>} />
+           <Route exact path='/adminlist' element={<AdminList/>} />
            <Route path='/addadmin' element={<AddAdmin/>} />
            <Route path='/createuser' element={<CreateUser/>} />
-           <Route path='/adminlist/edit/:id' element={<UpdateUser/>} />
+           <Route exact path='/adminlist/edit/:id' element={<UpdateUser/>} />
            <Route path='/usertypes' element={<UserTypes/>} />
          </Routes>
       </div>

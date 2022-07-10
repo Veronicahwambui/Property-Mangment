@@ -60,34 +60,9 @@ function AddAdmin() {
   };
 
   useEffect(() => {
-    // addUser()
     getUserRoles();
     getAllPreviledges();
   }, []);
-
-  // let userData = JSON.stringify({
-  //   user_id: res.data.data.id,
-  //   role_ids: roleIds,
-  // });
-
-  // let config = {
-  //   method: "post",
-  //   url: baseUrl + "",
-  //   headers: token,
-  //   data: userData,
-  // };
-
-  //   const handlePermissionChange = (index, event) => {
-  //     const { checked, value } = event.target;
-
-  //     if (checked) {
-  //       SetUserPermissionsIds([...userPermissions, UserPermissionsId[index].roleId]);
-  //     } else {
-  //       SetUserPermissionsIds(
-  //         userPermissionsIds.filter((roleId) => roleId !== userPermissions[index].roleId)
-  //       );
-  //     }
-  //   };
 
   const handleRoleChange = (index, event) => {
     const { checked, value } = event.target;
@@ -102,6 +77,14 @@ function AddAdmin() {
       );
     }
   };
+
+  const onRoleChange = (val) => {
+    setRole(val);
+
+    requestsServiceService.ViewOneRole(val).then((res) => {
+      setPrivilegeNames(res.data.data.permissions.map(pem => pem.name));
+    });
+  }
 
   // console.log(UserPermissionsIds);
 
@@ -172,8 +155,8 @@ function AddAdmin() {
                           required
                         />
                       </div>
-                      </div>
-                      <div className="row  mb-4 pb-2 align-items-center">
+                    </div>
+                    <div className="row  mb-4 pb-2 align-items-center">
                       <label htmlFor="" className="col-form-label col-lg-2">
                         Other Name(s) <strong className="text-danger">*</strong>
                       </label>
@@ -200,7 +183,7 @@ function AddAdmin() {
                           required
                         />
                       </div>
-                      </div>
+                    </div>
 
                     {/* <!-- Identification --> */}
                     <div className="row  mb-4 pb-2 align-items-center">
@@ -282,29 +265,25 @@ function AddAdmin() {
                         <select
                           className="form-select"
                           onChange={(e) => {
-                            setRole(e.target.value);
+                            onRoleChange(e.target.value);
                           }}
                           title="System role"
                         >
-                          <option className="text-black font-semibold ">
-                            Roles
+                          <option className="text-black font-semibold " disabled>--Select Role--
                           </option>
 
                           {userRoles.map((role) => {
                             return (
                               <option key={role.id} value={role.id}>
                                 {role.name}
-                                <option value="">Super Admin</option>
-                                <option>Finance</option>
-                                <option>Estate Agent</option>
                               </option>
                             );
                           })}
                         </select>
                       </div>
                     </div>
-                    
-                    <div className=""> 
+
+                    <div className="">
                       <h5 className="font-weight-bold">
                         User privilages and permissions
                       </h5>
@@ -313,16 +292,17 @@ function AddAdmin() {
                     <div className="row mt-5">
                       {privileges.map((priv, index) => (
                         <div className="col-4">
-                        <div className="checkbox" key={priv.id}>
-                          <input
-                            type="checkbox"
-                            id={index}
-                            onChange={(event) => handleRoleChange(index, event)}
-                          />
-                          <label className="checkbox__label" htmlFor={index}>
-                            {priv.name.toLowerCase().replace(/_/g , "  ")}
-                          </label>
-                        </div>
+                          <div className="checkbox" key={priv.id}>
+                            <input
+                              checked={priveledgeNames.includes(priv.name)}
+                              type="checkbox"
+                              id={index}
+                              onChange={(event) => handleRoleChange(index, event)}
+                            />
+                            <label className="checkbox__label" htmlFor={index}>
+                              {priv.name.toLowerCase().replace(/_/g, "  ")}
+                            </label>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -349,7 +329,7 @@ function AddAdmin() {
       {/* <!-- End Page-content --> */}
       {/* 
 <!-- Transaction Modal --> */}
- 
+
 
       <footer className="footer">
         <div className="container-fluid">
