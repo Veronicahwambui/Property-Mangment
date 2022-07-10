@@ -17,8 +17,8 @@ function UnitTypes() {
   const [updateArr, setUpdateArr] = useState([])
 
   useEffect(() => {
-    fetchTypes()
-    fetchAll()
+    fetchTypes();
+    fetchAll();
   }, [])
 
 
@@ -31,7 +31,7 @@ function UnitTypes() {
   }
 
   const fetchTypes = () => {
-    requestsServiceService.allApplicableChargeTypes().then((res) => {
+    requestsServiceService.allApplicableCharges().then((res) => {
       setChargeTypes(res.data.data)
     })
   }
@@ -85,7 +85,7 @@ function UnitTypes() {
 
       if (options[i].selected) {
         console.log( "option ++ " +options[i].value)
-        userGroups.push(options[i].value);
+        userGroups.push(parseInt(options[i].value));
       }
 
     }
@@ -259,10 +259,10 @@ function UnitTypes() {
                       return (
                         <option
                           key={index}
-                          value={charge}
-                          selected={selectedChargeTypes.includes(charge)}
+                          value={charge.id}
+                          selected={selectedChargeTypes.includes(charge.name)}
                         >
-                          {charge}</option>
+                          {charge.name}</option>
                       )
                     })}
                   </select>
@@ -335,8 +335,10 @@ function UnitTypes() {
                       return (
                         <option key={index} 
 
-                    selected={selectedChargeTypes.includes(charge)}
-                        value={charge.id} className="text-capitalize">{charge}</option>
+                        value={charge.id}
+                        selected={selectedChargeTypes.includes(charge.id)}
+                         className="text-capitalize">
+                          {charge.name}</option>
                       )
                     })}
                   </select>

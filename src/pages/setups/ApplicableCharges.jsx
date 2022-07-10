@@ -140,7 +140,7 @@ function ApplicableCharges() {
                             <tr data-id="1" key={val}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
                             <td data-field="unit-num " className='text-capitalize'>{val.name}</td>
-                            <td data-field="unit-num " className='text-capitalize'>{val.applicableChargeType.toLowerCase().replace(/_/g," ")}</td>
+                            <td data-field="unit-num " className='text-capitalize'>{val.applicableChargeType != null && val.applicableChargeType.toLowerCase().replace(/_/g," ")}</td>
                             <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-center cell-change text-nowrap ">
                             <div class="d-flex justify-content-between">
