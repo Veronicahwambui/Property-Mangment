@@ -183,7 +183,6 @@ const editARole = ()=>{
                                                 <tr class="text-uppercase table-dark">
                                                     <th>#</th>
                                                     <th>Role Name</th>
-                                                    <th>Permissions</th>
                                                     <th>Status</th>
                                                     <th class="text-right"></th>
                                                 </tr>
@@ -193,7 +192,6 @@ const editARole = ()=>{
                                                 <tr data-id={index} key={index}>
                                                     <td style={{width: "80px"}}>{index + 1}</td>
                                                     <td data-field="estate">{role.name}</td>
-                                                    <td data-field="unit-num ">5</td>
                                                     <td data-field="unit-num ">
                                                         <span class="badge-soft-success badge">Active</span>
                                                     </td>
