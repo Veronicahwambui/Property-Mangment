@@ -3,8 +3,8 @@ import { useEffect, useId, useState } from "react";
 
 function UserTypes() {
   const [userType, setUserType] = useState([]);
-  const [addUserType, setAddUserType] = useState([]);
-  const[roleName, setRoleName]=useState("")
+  // const [addUserType, setAddUserType] = useState([]);
+  const[userTypeName, setuserTypeName]=useState("")
   const[editName, setEditName]=useState("")
   const[id, setId]=useState("")
 
@@ -23,14 +23,14 @@ function UserTypes() {
     });
   };
 
-  const getUserType = () => {
-    requestsServiceService.getUserType().then((res) => {
-      setAddUserType(res.data.data);
-    });
-  };
-  const addRoles =()=>{
+  // const getUserType = () => {
+  //   requestsServiceService.getUserType().then((res) => {
+  //     setAddUserType(res.data.data);
+  //   });
+  // };
+  const addUserType =()=>{
     requestsServiceService.createUserType().then((res) => {
-        setRoleName(res.data.data);
+        setuserTypeName(res.data.data);
       });
     
 }
@@ -240,14 +240,14 @@ const deactivateUser =(userId)=>{
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">Role Name</label>
+                    <label for="">UserType Name</label>
                     <input
 
                       type="text"
                       class="form-control"
-                      placeholder="Enter zone name"
-                      onChange={(event) => setRoleName(event.target.value)}
-                      value={roleName}
+                      placeholder="Enter UserTypeName"
+                      onChange={(event) =>setuserTypeName(event.target.value)}
+                      value={userTypeName}
                     />
                   </div>
                 </div>
@@ -264,7 +264,7 @@ const deactivateUser =(userId)=>{
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary" onClick={addRoles}>
+              <button type="button" class="btn btn-primary" onClick={addUserType }>
                 Save
               </button>
             </div>
@@ -301,7 +301,7 @@ const deactivateUser =(userId)=>{
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">User Name</label>
+                    <label for="">UserTypeName</label>
                     <input
 
                       type="text"
