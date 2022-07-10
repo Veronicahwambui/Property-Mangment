@@ -65,15 +65,16 @@ function UnitTypes() {
     let data = JSON.stringify({
       active: true,
       clientId: authService.getClientId(),
-      id: 0,
+      id: activeId,
       name: updateName,
       unitTypeApplicableCharges: selectedChargeTypes
     })
     requestsServiceService.updateApplicableCharges(data).then((res) => {
+
       fetchAll()
     })
   }
-  console.log(createArr);
+  console.log(selectedChargeTypes);
 
 
   const setChargeTypes1 = (el) => {
@@ -102,7 +103,7 @@ function UnitTypes() {
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Applicable Charges</h4>
+                <h4 class="mb-sm-0 font-size-18">Registered unit types </h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
@@ -112,7 +113,7 @@ function UnitTypes() {
                     <li class="breadcrumb-item">
                       <a href="#">Set Ups</a>
                     </li>
-                    <li class="breadcrumb-item active">Applicable Charges</li>
+                    <li class="breadcrumb-item active">Unit types</li>
                   </ol>
                 </div>
               </div>
@@ -129,7 +130,7 @@ function UnitTypes() {
                   >
                     <div class="d-flex align-items-center flex-grow-1">
                       <h4 class="mb-0  bg-transparent  p-0 m-0">
-                        Applicable Charges
+                       Unit Types
                       </h4>
                     </div>
                     <div class="d-flex">
@@ -139,7 +140,7 @@ function UnitTypes() {
                         data-bs-toggle="modal"
                         data-bs-target="#add-new-zone"
                       >
-                        <i class="mdi mdi-plus label-icon"></i> Add Applicable Charge
+                        <i class="mdi mdi-plus label-icon"></i> Add Unit Type
                       </button>
                     </div>
                   </div>
@@ -150,7 +151,7 @@ function UnitTypes() {
                       <thead class="table-light">
                         <tr class="text-uppercase table-dark">
                           <th>#</th>
-                          <th>Premise Type</th>
+                          <th>Unit Type</th>
                           <th>Status</th>
                           <th class="text-center">Actions</th>
                         </tr>
@@ -158,8 +159,9 @@ function UnitTypes() {
                       <tbody>
 
                         {list.map((val, index) => {
+
                           return (
-                            <tr data-id="1" key={val}>
+                            <tr data-id="1" key={index}>
                               <td style={{ width: "80px" }}>{index + 1}</td>
                               <td data-field="unit-num " className='text-capitalize'>{val.name}</td>
                               <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
@@ -227,7 +229,7 @@ function UnitTypes() {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
-                New Applicable Charge
+                New Unit Type
               </h5>
               <button
                 type="button"
@@ -240,8 +242,8 @@ function UnitTypes() {
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">Applicable Charge Name </label>
-                    <input value={createName} onChange={(e) => setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter applicable charge name" />
+                    <label for="">Unit Type Name </label>
+                    <input value={createName} onChange={(e) => setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter unit type name" />
                   </div>
                 </div>
                 <div class="col-12">
@@ -249,15 +251,14 @@ function UnitTypes() {
                   <label for="">Charge Type </label>
                   <select
                     class=" form-control"
-                    data-mdb-placeholder="Example placeholder"
                     multiple
                     size="1"
                     onChange={(e) => setChargeTypes1(e)}
                   >
-                    {chargeTypes.map((charge) => {
+                    {chargeTypes.map((charge , index) => {
                       return (
                         <option
-                          key={'ki'+charge}
+                          key={index}
                           value={charge}
                           selected={selectedChargeTypes.includes(charge)}
                         >
@@ -303,7 +304,7 @@ function UnitTypes() {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
-                Update Applicable Charges
+                Update Unit Type
               </h5>
               <button
                 type="button"
@@ -316,8 +317,8 @@ function UnitTypes() {
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for=""> Applicable Charge Name </label>
-                    <input value={updateName} onChange={(e) => setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
+                    <label for=""> Unit Type Name </label>
+                    <input value={updateName} onChange={(e) => setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                   </div>
                 </div>
                 <div class="col-12">
@@ -330,9 +331,9 @@ function UnitTypes() {
                     multiple
                     onChange={(e) => setChargeTypes1(e)}
                   >
-                    {chargeTypes.map((charge) => {
+                    {chargeTypes.map((charge , index) => {
                       return (
-                        <option key={charge.id} 
+                        <option key={index} 
 
                     selected={selectedChargeTypes.includes(charge)}
                         value={charge.id} className="text-capitalize">{charge}</option>
@@ -378,7 +379,7 @@ function UnitTypes() {
           <div class="modal-content">
             <div class="modal-body">
               <center>
-                <h5>Deactivate this  premise type?</h5>
+                <h5>Deactivate this Unit type?</h5>
               </center>
             </div>
             <div class="modal-footer">
@@ -416,7 +417,7 @@ function UnitTypes() {
           <div class="modal-content">
             <div class="modal-body">
               <center>
-                <h5>Activate this  premise type?</h5>
+                <h5>Activate this  Unit type?</h5>
               </center>
             </div>
             <div class="modal-footer">
