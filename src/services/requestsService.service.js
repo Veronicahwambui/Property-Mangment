@@ -216,26 +216,26 @@ class RequestsService {
   //  premise types
 
   allPremiseTypes() {
-    return axiosInstance.get(baseUrl + "/setup/propertyTypes");
+    return axiosInstance.get(baseUrl + "/setup/premiseTypes");
   }
 
   createPremiseTypes(data) {
-    return axiosInstance.post(baseUrl + "/setup/propertyTypes", data);
+    return axiosInstance.post(baseUrl + "/setup/premiseTypes", data);
   }
 
   viewPremiseType(id) {
-    return axiosInstance.get(baseUrl + "/setup/propertyTypes" + id);
+    return axiosInstance.get(baseUrl + "/setup/premiseTypes" + id);
   }
 
   tooglePremiseType(id) {
     return axiosInstance.get(
-      baseUrl + "/setup/propertyTypes/toogleStatus/" + id
+      baseUrl + "/setup/premiseTypes/toogleStatus/" + id
     );
   }
 
   updatePremiseType(data) {
     return axiosInstance.post(
-      baseUrl + "/setup/propertyTypes/update",
+      baseUrl + "/setup/premiseTypes/update",
       data
     );
   }

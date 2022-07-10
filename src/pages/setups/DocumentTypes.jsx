@@ -15,7 +15,7 @@ function DocumentTypes() {
   // fetch list function 
   const fetchAll = ()=>{
     requestsServiceService.allDocumentTypes().then((res)=>{
-       setList(res.data.data)
+       setList(res.data.data!=null ? res.data.data:[])
       // setList([])
     })
   }
