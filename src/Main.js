@@ -24,7 +24,8 @@ import Login from './pages/auth/Login';
 import RecoverPassword from './pages/auth/RecoverPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import AuthService from './services/auth.service';
-import ClientType from './pages/clients/ClientType'
+import ClientType from './pages/clients/ClientType';
+import ClientManagement from './pages/clients/ClientManagement';
 
 function Main() {
   // useEffect(() => {
@@ -45,7 +46,6 @@ function Main() {
               <Route exact path="/login" element={<Login />} />
               <Route exact path="/recoverpassword" element={<RecoverPassword />} />
               <Route exact path="/resetpassword" element={<ResetPassword />} />
-
               <Route path="*" element={<Navigate to="/login" />}></Route>
 
             </Routes>
@@ -83,7 +83,8 @@ function Main() {
                   <Route path='/adminlist' element={<AdminList/>} />
                   <Route path='/addadmin' element={<AddAdmin/>} />
                   <Route path='/createuser' element={<CreateUser/>} />
-                  <Route path='/clienttype' element={<ClientType/>} />
+                  <Route path='/clienttypes' element={<ClientType/>} />
+                  <Route path='/clients' element={<ClientManagement/>} />
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
               </div>
