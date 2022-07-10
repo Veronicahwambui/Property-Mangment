@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
 
 function PremiseUseTypes() {
@@ -23,7 +24,7 @@ function PremiseUseTypes() {
   const create = ()=>{
    let data = JSON.stringify({
     active: true,
-    clientId: 1,
+    clientId: authService.getClientId(),
     id: 0,
     name: createName
   })
@@ -45,7 +46,7 @@ function PremiseUseTypes() {
   const Update = ()=>{
      let data = JSON.stringify({
       active: true,
-      clientId: 1,
+      clientId: authService.getClientId(),
       id: activeId,
       name: updateName
     })
@@ -127,7 +128,7 @@ function PremiseUseTypes() {
                             <td class="text-right cell-change text-nowrap ">
                             <div class="d-flex">
                            
-                            <a    onClick={()=> setActiveId(val.id)}   data-bs-toggle="modal"
+                            <a    onClick={()=>{setActiveId(val.id); setUpdateName(val.name)}}   data-bs-toggle="modal"
                                              data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                             
                             {val.active ?  <button
@@ -200,7 +201,7 @@ function PremiseUseTypes() {
                                         <label for=""> Premise Use Type </label>
                                         <input value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
                                     </div>
-                                </div>
+            </div>
            
             </div>
           </div>
@@ -254,7 +255,7 @@ function PremiseUseTypes() {
                                         <label for="">Premise Use Type</label>
                                         <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                                     </div>
-                                </div>
+            </div>
            
             </div>
           </div>

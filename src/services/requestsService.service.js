@@ -193,6 +193,10 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/setup/applicableCharges");
   }
 
+  allApplicableChargeTypes() {
+    return axiosInstance.get(baseUrl + "/setup/applicableChargeTypes");
+  }
+
   createApplicableCharges(data) {
     return axiosInstance.post(baseUrl + "/setup/applicableCharges", data);
   }
