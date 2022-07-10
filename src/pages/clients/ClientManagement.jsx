@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import requestsServiceService from '../../services/requestsService.service'
+import moment from 'moment';
 
 function ClientManagement() {
   const [clientTypes, setClientTypes] = useState([])
@@ -11,14 +12,11 @@ function ClientManagement() {
   const [phone, setPhone] = useState("")
   const [username, setUsername] = useState("")
   const [clientUrl, setClientUrl] = useState("")
-  const [clientTypeId, setClientTypeId] = useState(0)
-  const [clientTypeName, setClientTypeName] = useState('')
+  const [clientTypeId, setClientTypeId] = useState(null)
   const [clientAdd, setClientAdd] = useState(true)
-  const [edited, setEdited] = useState(true)
-  const [editedClient, setEditedClient] = useState({})
-  const [clientId, setClientId] = useState(null)
   const [clientType, setClientType] = useState({
     name: "",
+    id: ""
   })
   const [client, setClient] = useState({})
   // edits
@@ -33,6 +31,7 @@ function ClientManagement() {
   const [editOtherName, setEditOtherName] = useState('')
   const [ID, setId] = useState(0)
   const [name, setName] = useState("")
+
   const [error, setError] = useState({
     message: "",
     color: ""
@@ -41,7 +40,8 @@ function ClientManagement() {
   useEffect(() => {
     getClientTypes()
     getAllClients()
-  }, [clientAdd, edited])
+    console.log(isChecked)
+  }, [clientAdd])
 
   const getClientTypes = () => {
     requestsServiceService.getClientTypes().then((res) => {
@@ -59,7 +59,6 @@ function ClientManagement() {
       console.log(err)
     })
   }
-
   const addClient = () => {
     const data = JSON.stringify(
       {
@@ -71,37 +70,46 @@ function ClientManagement() {
         adminUserName: username,
         clientBaseUrl: clientUrl,
         clientTypeId: clientTypeId,
-        createAdminUser: true,
+        createAdminUser: isChecked,
         name: name,
         id: null,
         status: true
       }
-    )
-    console.log(data);
-    let x = true
-    requestsServiceService.createClient(data, x).then((res) => {
+    );
+    requestsServiceService.createClient(data, isChecked).then((res) => {
+      console.log("requesting ", isChecked)
       if (res) {
         setError({
           ...error,
-          message: res.data,
-          color: "danger"
+          message: res.data.message,
+          color: "success"
         })
         setTimeout(() => {
           clear()
-        }, 1000)
+        }, 3000)
         console.log(res.data)
         getAllClients();
+        setIsChecked(!isChecked);
       }
     }).catch((err) => {
       console.log(err)
-      setError({
-        ...error,
-        message: err.message,
-        color: "danger"
-      })
+      // setError({
+      //   ...error,
+      //   message: err.message,
+      //   color: "danger"
+      // })
+      getAllClients();
       setTimeout(() => {
         clear()
-      }, 1000)
+      }, 3000)
+    }).finally(() => {
+      setClientType({
+        clientType,
+        name: '',
+        id: ''
+      })
+      setIsChecked(true)
+
     })
     setClientAdd(!clientAdd);
   }
@@ -109,27 +117,35 @@ function ClientManagement() {
   const getOneClient = (id) => {
     if (clients.length > 0) {
       let cl = clients.find((item) => item.id === id)
-      console.log(cl)
-      setClient(cl)
-      setClientType({
-        ...clientType,
-        name: cl.clientType.name
-      })
-      setEditClientTypeId(cl.clientType.id)
-      setEditName(cl.name)
-      setEditUrl(cl.clientBaseUrl)
-      setId(cl.id)
+      if(cl) {
+        setClient(cl)
+        setClientType({
+          ...clientType,
+          name: cl.clientType.name,
+          id: cl.clientType.id
+        })
+        setEditClientTypeId(cl.clientType.id);
+        setEditName(cl.name)
+        setEditUrl(cl.clientBaseUrl)
+        setId(cl.id)
+      }
     }
   }
 
   const updateClient = () => {
     const data = JSON.stringify({
-      name: editName,
-      status: true,
+      adminEmail: "",
+      adminFirstName: "",
+      adminLastName: "",
+      adminOtherName: "",
+      adminPhoneNumber: "",
+      adminUserName: "",
       clientBaseUrl: editUrl,
       clientTypeId: editClientTypeId,
-      createAdminUser: true,
-      id: ID
+      createAdminUser: false,
+      name: editName,
+      id: ID,
+      status: true
     })
     requestsServiceService.updateClient(data).then((res) => {
       setError({
@@ -138,12 +154,21 @@ function ClientManagement() {
         color: "success"
       })
       getAllClients();
+      setTimeout(() => {
+        clear()
+      }, 3000)
     }).catch((err) => {
       console.log(err)
       setError({
         ...error,
         message: err.message,
         color: "danger"
+      })
+    }).finally(() => {
+      setClientType({
+        clientType,
+        name: '',
+        id: ''
       })
     })
     setClientAdd(!clientAdd);
@@ -165,6 +190,11 @@ function ClientManagement() {
     });
     setClientUrl("")
   }
+
+  const [isChecked, setIsChecked] = useState(true);
+  const handleOnChange = () => {
+    setIsChecked(!isChecked);
+  };
 
   return (
     <>
@@ -198,16 +228,18 @@ function ClientManagement() {
                     </div>
                     <div class="d-flex">
 
-                      <button type="button" class="btn btn-primary waves-effect btn-label waves-light me-3" data-bs-toggle="modal" data-bs-target="#add-new-client">
+                      <button type="button" class="btn btn-primary waves-effect btn-label waves-light me-3" data-bs-toggle="modal" data-bs-target="#add-new-client" onClick={isChecked}>
                         <i class="mdi mdi-plus label-icon"></i> Add A Client
                       </button>
-
                     </div>
-
                   </div>
-
                 </div>
                 <div class="card-body">
+                  {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
@@ -216,7 +248,7 @@ function ClientManagement() {
                           <th>Name</th>
                           <th>Client Type</th>
                           <th>URL</th>
-                          <th>Created at</th>
+                          <th>Created on</th>
                           <th class="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -227,7 +259,7 @@ function ClientManagement() {
                             <td data-field="estate">{client.name}</td>
                             <td data-field="unit-num ">{client.clientType.name.toUpperCase()}</td>
                             <td data-field="unit-num ">{client.clientBaseUrl}</td>
-                            <td data-field="unit-num ">{client.dateTimeCreated}</td>
+                            <td data-field="unit-num ">{moment(client.dateTimeCreated).format('MMMM Do YYYY, h:mm a')}</td>
                             <td className="text-right cell-change ">
 
                               <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
@@ -274,23 +306,17 @@ function ClientManagement() {
               </div>
               <div className="modal-body">
                 <div className="row">
-                  {error.color !== "" &&
-                    <div className={"alert alert-" + error.color} role="alert">
-                      {error.message}
-                    </div>
-                  }
                   <div className="col-12">
                     <div className="form-group mb-4">
-                      <label htmlFor="">Select client type</label>
+                      <label htmlFor=""></label>
                       <select
                         className="form-control"
                         onChange={(e) => {
                           setClientTypeId(parseInt(e.target.value));
                         }}
-                        name="incomeType"
                       >
                         <option className="text-black font-semibold ">
-                          Select Client Type
+                          Select client type
                         </option>
                         {clientTypes.map((client) => {
                           return (
@@ -317,44 +343,64 @@ function ClientManagement() {
                         className="form-control"
                         placeholder="Enter client url" required />
                     </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="form-group mb-4">
-                      <label htmlFor="">Email</label>
-                      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                        className="form-control"
-                        placeholder="Enter admin email" required />
+                    <div className="result">
                     </div>
-                    <div className="form-group mb-4">
-                      <label htmlFor="">Username</label>
-                      <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
-                        className="form-control"
-                        placeholder="Enter admin username" required />
-                    </div>
-                    <div className="form-group mb-4">
-                      <label htmlFor="">First Name</label>
-                      <input type="text" value={firstname} onChange={(e) => setFirstName(e.target.value)}
-                        className="form-control"
-                        placeholder="Enter admin first name" required />
-                    </div>
-                    <div className="form-group mb-4">
-                      <label htmlFor="">Last Name</label>
-                      <input type="text" value={lastname} onChange={(e) => setLastName(e.target.value)}
-                        className="form-control"
-                        placeholder="Enter admin lastname" required />
-                    </div>
-                    <div className="form-group mb-4">
-                      <label htmlFor="">Phone Number</label>
-                      <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)}
-                        className="form-control"
-                        placeholder="Enter admin phone number" required />
+                    <div>
+                      <input type="checkbox" checked={isChecked} onChange={handleOnChange}/> Create admin
                     </div>
                   </div>
+                  {isChecked &&
+                  <div className="row">
+                    <div className="modal-header">
+                      <h1 className="modal-title" id="staticBackdropLabel"></h1>
+                    </div>
+                    <div className="col-6">
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Email</label>
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                               className="form-control"
+                               placeholder="Enter admin email" required />
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Username</label>
+                        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
+                               className="form-control"
+                               placeholder="Enter admin username" required />
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Other Name</label>
+                        <input type="text" value={othername} onChange={(e) => setOtherName(e.target.value)}
+                               className="form-control"
+                               placeholder="Enter admin username" required />
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Phone Number</label>
+                        <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)}
+                               className="form-control"
+                               placeholder="Enter admin phone number" required />
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">First Name</label>
+                        <input type="text" value={firstname} onChange={(e) => setFirstName(e.target.value)}
+                               className="form-control"
+                               placeholder="Enter admin first name" required />
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Last Name</label>
+                        <input type="text" value={lastname} onChange={(e) => setLastName(e.target.value)}
+                               className="form-control"
+                               placeholder="Enter admin lastname" required />
+                      </div>
+                    </div>
+                  </div>
+                  }
                 </div>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-light" data-bs-dismiss="modal">Close</button>
-                <button type="submit" className="btn btn-primary" onClick={addClient}>Save
+                <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={addClient}>Save
                 </button>
               </div>
             </form>
@@ -431,101 +477,116 @@ function ClientManagement() {
       </div>
 
       {/*edit client modal */}
-      <div class="modal fade" id="edit-client" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Edit Client {client.name}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                {error.color !== "" &&
-                  <div className={"alert alert-" + error.color} role="alert">
-                    {error.message}
-                  </div>
-                }
-                <div className="col-12">
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Select client type</label>
-                    <select
-                      className="form-control"
-                      onChange={(e) => {
-                        setEditClientTypeId(parseInt(e.target.value));
-                      }}
-                      name="clientType"
-                      value={clientType.name}
-                    >
-                      <option className="text-black font-semibold ">
-                        {clientType.name}
-                      </option>
-                      {clientTypes.map((c) => {
-                        return (
-                          <option
-                            key={c.id}
-                            value={
-                              parseInt(c.id)
-                            }
-                          >
-                            {c.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Name</label>
-                    <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="form-control"
-                      placeholder={editName} required />
-                  </div>
-                  {/*<div className="form-group mb-4">*/}
-                  {/*  <label htmlFor="">Email</label>*/}
-                  {/*  <input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} className="form-control"*/}
-                  {/*         className="form-control"*/}
-                  {/*         placeholder="" required/>*/}
-                  {/*</div>*/}
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Base URL</label>
-                    <input type="url" value={editUrl} onChange={(e) => setEditUrl(e.target.value)}
-                      className="form-control"
-                      placeholder="" required />
-                  </div>
-                </div>
-                {/*<div className="col-6">*/}
-                {/*  <div className="form-group mb-4">*/}
-                {/*    <label htmlFor="">Username</label>*/}
-                {/*    <input type="text" value={editUsername} onChange={(e) => setEditUsername(e.target.value)}*/}
-                {/*           className="form-control"*/}
-                {/*           placeholder="" required/>*/}
-                {/*  </div>*/}
-                {/*  <div className="form-group mb-4">*/}
-                {/*    <label htmlFor="">First Name</label>*/}
-                {/*    <input type="text" value={editFirstName} onChange={(e) => setEditFirstName(e.target.value)}*/}
-                {/*           className="form-control"*/}
-                {/*           placeholder="" required/>*/}
-                {/*  </div>*/}
-                {/*  <div className="form-group mb-4">*/}
-                {/*    <label htmlFor="">Last Name</label>*/}
-                {/*    <input type="text" value={editLastName} onChange={(e) => setEditLastName(e.target.value)}*/}
-                {/*           className="form-control"*/}
-                {/*           placeholder="" required/>*/}
-                {/*  </div>*/}
-                {/*  <div className="form-group mb-4">*/}
-                {/*    <label htmlFor="">Phone Number</label>*/}
-                {/*    <input type="text" value={editPhone} onChange={(e) => setEditPhone(e.target.value)}*/}
-                {/*           className="form-control"*/}
-                {/*           placeholder="" required/>*/}
-                {/*  </div>*/}
-                {/*</div>*/}
+      <div className="modal fade" id="edit-client" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
+           role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div className="modal-content">
+            <form>
+              <div className="modal-header">
+                <h5 className="modal-title" id="staticBackdropLabel">Update Client {client.name}</h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
               </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-light" data-bs-dismiss="modal" onClick={clear}>Close</button>
-              <button type="submit" class="btn btn-primary" onClick={updateClient} >Save</button>
-            </div>
+              <div className="modal-body">
+                <div className="row">
+                  <div className="col-12">
+                    <div className="form-group mb-4">
+                      <label htmlFor=""></label>
+                      <select
+                        className="form-control"
+                        onChange={(e) => {
+                          setEditClientTypeId(parseInt(e.target.value));
+                        }}
+                        name="clientType"
+                      >
+                        <option className="text-black font-semibold ">
+                          {clientType.name}
+                        </option>
+                        {clientTypes.map((c) => {
+                          return (
+                            <option
+                              value={
+                                parseInt(c.id)
+                              }
+                            >
+                              {c.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Name</label>
+                      <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="form-control"
+                             placeholder="Enter client name" required/>
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">URL</label>
+                      <input type="url" value={editUrl} onChange={(e) => setEditUrl(e.target.value)}
+                             className="form-control"
+                             placeholder="Enter client url" required/>
+                    </div>
+                    <div className="result">
+                    </div>
+                    {/*<div>*/}
+                    {/*  <input type="checkbox" checked={isChecked} onChange={handleOnChange}/> Create admin*/}
+                    {/*</div>*/}
+                  </div>
+                  {isChecked &&
+                  <div className="row">
+                    {/*<div className="col-6">*/}
+                    {/*  <div className="form-group mb-4">*/}
+                    {/*    <label htmlFor="">Email</label>*/}
+                    {/*    <input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)}*/}
+                    {/*           className="form-control"*/}
+                    {/*           placeholder="Enter admin email" required/>*/}
+                    {/*  </div>*/}
+                    {/*  <div className="form-group mb-4">*/}
+                    {/*    <label htmlFor="">Username</label>*/}
+                    {/*    <input type="text" value={editUsername} onChange={(e) => setEditUsername(e.target.value)}*/}
+                    {/*           className="form-control"*/}
+                    {/*           placeholder="Enter admin username" required/>*/}
+                    {/*  </div>*/}
+                    {/*  <div className="form-group mb-4">*/}
+                    {/*    <label htmlFor="">Other Name</label>*/}
+                    {/*    <input type="text" value={editOtherName} onChange={(e) => setEditOtherName(e.target.value)}*/}
+                    {/*           className="form-control"*/}
+                    {/*           placeholder="Enter admin othername" required/>*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
+                    {/*<div className="col-6">*/}
+                    {/*  <div className="form-group mb-4">*/}
+                    {/*    <label htmlFor="">Phone Number</label>*/}
+                    {/*    <input type="text" value={editPhone} onChange={(e) => setEditPhone(e.target.value)}*/}
+                    {/*           className="form-control"*/}
+                    {/*           placeholder="Enter admin phone number" required/>*/}
+                    {/*  </div>*/}
+                    {/*  <div className="form-group mb-4">*/}
+                    {/*    <label htmlFor="">First Name</label>*/}
+                    {/*    <input type="text" value={editFirstName} onChange={(e) => setEditFirstName(e.target.value)}*/}
+                    {/*           className="form-control"*/}
+                    {/*           placeholder="Enter admin first name" required/>*/}
+                    {/*  </div>*/}
+                    {/*  <div className="form-group mb-4">*/}
+                    {/*    <label htmlFor="">Last Name</label>*/}
+                    {/*    <input type="text" value={editLastName} onChange={(e) => setEditLastName(e.target.value)}*/}
+                    {/*           className="form-control"*/}
+                    {/*           placeholder="Enter admin lastname" required/>*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
+                  </div>
+                  }
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-light" data-bs-dismiss="modal" onClick={clear}>Close</button>
+                <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={updateClient}>Save
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
+
     </>
   )
 }
