@@ -5,7 +5,7 @@ class RequestsService {
     getAllRoles() {
         return axiosInstance.get(baseUrl + "/roles");
     }
-
+       
     getOneRole(roleId) {
         return axiosInstance.get(baseUrl + "/roles/" + roleId);
     }
@@ -223,8 +223,13 @@ class RequestsService {
     // }
 
     // applicable charges
+    
     allApplicableCharges() {
         return axiosInstance.get(baseUrl + "/setup/applicableCharges");
+    }  
+    
+    applicableChargeTypes() {
+        return axiosInstance.get(baseUrl + "/setup/applicableChargeTypes");
     }
 
     createApplicableCharges(data) {
