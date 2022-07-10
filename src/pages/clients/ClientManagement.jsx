@@ -84,7 +84,7 @@ function ClientManagement() {
         setError({
           ...error,
           message: res.data,
-          color:"danger"
+          color: "danger"
         })
         setTimeout(() => {
           clear()
@@ -97,7 +97,7 @@ function ClientManagement() {
       setError({
         ...error,
         message: err.message,
-        color:"danger"
+        color: "danger"
       })
       setTimeout(() => {
         clear()
@@ -110,19 +110,19 @@ function ClientManagement() {
     if (clients.length > 0) {
       let cl = clients.find((item) => item.id === id)
       console.log(cl)
-          setClient(cl)
-          setClientType({
-            ...clientType,
-            name: cl.clientType.name
-          })
-          setEditClientTypeId(cl.clientType.id)
-          setEditName(cl.name)
-          setEditUrl(cl.clientBaseUrl)
-          setId(cl.id)
+      setClient(cl)
+      setClientType({
+        ...clientType,
+        name: cl.clientType.name
+      })
+      setEditClientTypeId(cl.clientType.id)
+      setEditName(cl.name)
+      setEditUrl(cl.clientBaseUrl)
+      setId(cl.id)
     }
   }
 
-  const updateClient = () =>  {
+  const updateClient = () => {
     const data = JSON.stringify({
       name: editName,
       status: true,
@@ -153,11 +153,11 @@ function ClientManagement() {
     setEditName("")
     setEditUrl("")
     setEditUrl("")
-      setError({
-        ...error,
-        message: "",
-        color: ""
-      });
+    setError({
+      ...error,
+      message: "",
+      color: ""
+    });
     setName("")
     setClientType({
       ...clientType,
@@ -211,47 +211,47 @@ function ClientManagement() {
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
-                      <tr class="text-uppercase table-dark">
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Client Type</th>
-                        <th>URL</th>
-                        <th>Created at</th>
-                        <th class="text-right">Actions</th>
-                      </tr>
+                        <tr class="text-uppercase table-dark">
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Client Type</th>
+                          <th>URL</th>
+                          <th>Created at</th>
+                          <th class="text-right">Actions</th>
+                        </tr>
                       </thead>
                       <tbody>
-                      {clients.map((client, index) => (
-                        <tr data-id={index} key={index}>
-                          <td style={{ width: "80px" }}>{index + 1}</td>
-                          <td data-field="estate">{client.name}</td>
-                          <td data-field="unit-num ">{client.clientType.name.toUpperCase()}</td>
-                          <td data-field="unit-num ">{client.clientBaseUrl}</td>
-                          <td data-field="unit-num ">{client.dateTimeCreated}</td>
-                          <td className="text-right cell-change ">
+                        {clients.map((client, index) => (
+                          <tr data-id={index} key={index}>
+                            <td style={{ width: "80px" }}>{index + 1}</td>
+                            <td data-field="estate">{client.name}</td>
+                            <td data-field="unit-num ">{client.clientType.name.toUpperCase()}</td>
+                            <td data-field="unit-num ">{client.clientBaseUrl}</td>
+                            <td data-field="unit-num ">{client.dateTimeCreated}</td>
+                            <td className="text-right cell-change ">
 
-                            <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
-                               title="Edit" onClick={()=> getOneClient(client.id)}><i className="bx bx-edit-alt "/></a>
-                            <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
-                                    title="save ">Save
-                            </button>
-                            <a
-                              className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
-                              title="Cancel "><i className="bx bx-x "></i></a>
-                            <button type="button"
-                                    className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                    data-bs-toggle="modal" data-bs-target="#edit"
-                                    onClick={()=> getOneClient(client.id)}
-                                    style={{marginLeft:"8px"}}
-                            >
-                              View Details
-                            </button>
-                          </td>
-                          <td>
+                              <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
+                                title="Edit" onClick={() => getOneClient(client.id)}><i className="bx bx-edit-alt " /></a>
+                              <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
+                                title="save ">Save
+                              </button>
+                              <a
+                                className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
+                                title="Cancel "><i className="bx bx-x "></i></a>
+                              <button type="button"
+                                className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                data-bs-toggle="modal" data-bs-target="#edit"
+                                onClick={() => getOneClient(client.id)}
+                                style={{ marginLeft: "8px" }}
+                              >
+                                View Details
+                              </button>
+                            </td>
+                            <td>
 
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
@@ -270,14 +270,14 @@ function ClientManagement() {
             <form>
               <div className="modal-header">
                 <h5 className="modal-title" id="staticBackdropLabel">New Client</h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
               </div>
               <div className="modal-body">
                 <div className="row">
                   {error.color !== "" &&
-                  <div className={"alert alert-" + error.color} role="alert">
-                    {error.message}
-                  </div>
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
+                    </div>
                   }
                   <div className="col-12">
                     <div className="form-group mb-4">
@@ -309,47 +309,47 @@ function ClientManagement() {
                     <div className="form-group mb-4">
                       <label htmlFor="">Name</label>
                       <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="form-control"
-                             placeholder="Enter client name" required/>
+                        placeholder="Enter client name" required />
                     </div>
                     <div className="form-group mb-4">
                       <label htmlFor="">URL</label>
                       <input type="url" value={clientUrl} onChange={(e) => setClientUrl(e.target.value)}
-                             className="form-control"
-                             placeholder="Enter client url" required/>
+                        className="form-control"
+                        placeholder="Enter client url" required />
                     </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Email</label>
+                      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                        className="form-control"
+                        placeholder="Enter admin email" required />
                     </div>
-                  {/*  <div className="col-6">*/}
-                  {/*    <div className="form-group mb-4">*/}
-                  {/*      <label htmlFor="">Email</label>*/}
-                  {/*      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}*/}
-                  {/*             className="form-control"*/}
-                  {/*             placeholder="Enter admin email" required />*/}
-                  {/*    </div>*/}
-                  {/*    <div className="form-group mb-4">*/}
-                  {/*      <label htmlFor="">Username</label>*/}
-                  {/*      <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}*/}
-                  {/*             className="form-control"*/}
-                  {/*             placeholder="Enter admin username" required />*/}
-                  {/*    </div>*/}
-                  {/*    <div className="form-group mb-4">*/}
-                  {/*      <label htmlFor="">First Name</label>*/}
-                  {/*      <input type="text" value={firstname} onChange={(e) => setFirstName(e.target.value)}*/}
-                  {/*             className="form-control"*/}
-                  {/*             placeholder="Enter admin first name" required/>*/}
-                  {/*    </div>*/}
-                  {/*    <div className="form-group mb-4">*/}
-                  {/*      <label htmlFor="">Last Name</label>*/}
-                  {/*      <input type="text" value={lastname} onChange={(e) => setLastName(e.target.value)}*/}
-                  {/*             className="form-control"*/}
-                  {/*             placeholder="Enter admin lastname" required/>*/}
-                  {/*    </div>*/}
-                  {/*    <div className="form-group mb-4">*/}
-                  {/*      <label htmlFor="">Phone Number</label>*/}
-                  {/*      <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)}*/}
-                  {/*             className="form-control"*/}
-                  {/*             placeholder="Enter admin phone number" required/>*/}
-                  {/*    </div>*/}
-                  {/*</div>*/}
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Username</label>
+                      <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
+                        className="form-control"
+                        placeholder="Enter admin username" required />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">First Name</label>
+                      <input type="text" value={firstname} onChange={(e) => setFirstName(e.target.value)}
+                        className="form-control"
+                        placeholder="Enter admin first name" required />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Last Name</label>
+                      <input type="text" value={lastname} onChange={(e) => setLastName(e.target.value)}
+                        className="form-control"
+                        placeholder="Enter admin lastname" required />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Phone Number</label>
+                      <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)}
+                        className="form-control"
+                        placeholder="Enter admin phone number" required />
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="modal-footer">
@@ -364,67 +364,67 @@ function ClientManagement() {
 
       {/* <!-- view one client modal --> */}
       <div className="modal fade transaction-detailModal" id={"edit"} tabIndex="-1" role="dialog"
-           aria-labelledby="transaction-detailModalLabel" aria-hidden="true">
+        aria-labelledby="transaction-detailModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" role="document">
           {client &&
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="transaction-detailModalLabel"><b>{client.name}</b></h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              <div className="table-responsive mt-4">
-                <table className="table align-middle table-nowrap">
-                  <tbody>
-                  <tr>
-                    <td style={{width: "30%"}}>
-                      <p className="mb-0">Name</p>
-                    </td>
-                    <td style={{width: "25%"}}>
-                      <h5 className="mb-0 text-uppercase">{client.name}</h5>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{width: "30%"}}>
-                      <p className="mb-0">Created At</p>
-                    </td>
-                    <td style={{width: "25%"}}>
-                      <h5 className="mb-0 text-uppercase">{client.dateTimeCreated}</h5>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p className="mb-0">Client Type</p>
-                    </td>
-                    <td>
-                      <h5 className="mb-0">{clientType.name}</h5>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p className="mb-0">URL</p>
-                    </td>
-                    <td>
-                      <h5 className="mb-0"><a href={client.clientBaseUrl}>{client.clientBaseUrl}</a></h5>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p className="mb-0">App Key</p>
-                    </td>
-                    <td>
-                      <p className="mb-0">{client.appKey}</p>
-                    </td>
-                  </tr>
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="transaction-detailModalLabel"><b>{client.name}</b></h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div className="modal-body">
+                <div className="table-responsive mt-4">
+                  <table className="table align-middle table-nowrap">
+                    <tbody>
+                      <tr>
+                        <td style={{ width: "30%" }}>
+                          <p className="mb-0">Name</p>
+                        </td>
+                        <td style={{ width: "25%" }}>
+                          <h5 className="mb-0 text-uppercase">{client.name}</h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={{ width: "30%" }}>
+                          <p className="mb-0">Created At</p>
+                        </td>
+                        <td style={{ width: "25%" }}>
+                          <h5 className="mb-0 text-uppercase">{client.dateTimeCreated}</h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p className="mb-0">Client Type</p>
+                        </td>
+                        <td>
+                          <h5 className="mb-0">{clientType.name}</h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p className="mb-0">URL</p>
+                        </td>
+                        <td>
+                          <h5 className="mb-0"><a href={client.clientBaseUrl}>{client.clientBaseUrl}</a></h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p className="mb-0">App Key</p>
+                        </td>
+                        <td>
+                          <p className="mb-0">{client.appKey}</p>
+                        </td>
+                      </tr>
 
-                  </tbody>
-                </table>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-          </div>
 
           }
         </div>
@@ -436,14 +436,14 @@ function ClientManagement() {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">Edit Client {client.name}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
             </div>
             <div class="modal-body">
               <div class="row">
                 {error.color !== "" &&
-                <div className={"alert alert-" + error.color} role="alert">
-                  {error.message}
-                </div>
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
                 }
                 <div className="col-12">
                   <div className="form-group mb-4">
@@ -456,9 +456,9 @@ function ClientManagement() {
                       name="clientType"
                       value={clientType.name}
                     >
-                        <option className="text-black font-semibold ">
-                          {clientType.name}
-                        </option>
+                      <option className="text-black font-semibold ">
+                        {clientType.name}
+                      </option>
                       {clientTypes.map((c) => {
                         return (
                           <option
@@ -476,7 +476,7 @@ function ClientManagement() {
                   <div className="form-group mb-4">
                     <label htmlFor="">Name</label>
                     <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="form-control"
-                           placeholder={editName} required/>
+                      placeholder={editName} required />
                   </div>
                   {/*<div className="form-group mb-4">*/}
                   {/*  <label htmlFor="">Email</label>*/}
@@ -487,8 +487,8 @@ function ClientManagement() {
                   <div className="form-group mb-4">
                     <label htmlFor="">Base URL</label>
                     <input type="url" value={editUrl} onChange={(e) => setEditUrl(e.target.value)}
-                           className="form-control"
-                           placeholder="" required/>
+                      className="form-control"
+                      placeholder="" required />
                   </div>
                 </div>
                 {/*<div className="col-6">*/}

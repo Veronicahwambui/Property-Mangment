@@ -15,8 +15,7 @@ export default function ClientType() {
 
   useEffect(() => {
     getClientTypes();
-    getClientTypes()
-  }, [created, updated]);
+  }, []);
 
   const getClientTypes = () => {
     requestsServiceService.getClientTypes().then((res) => {
@@ -25,6 +24,7 @@ export default function ClientType() {
       console.log(err)
     })
   }
+
   const handleChange = (event) => {
     event.preventDefault();
     setName(event.target.value.toUpperCase());
@@ -42,7 +42,8 @@ export default function ClientType() {
         message: res.data.message,
         color: "success"
       });
-      getClientTypes()
+      getClientTypes();
+
       setTimeout(() => {
         setError({
           message: '',
@@ -102,10 +103,7 @@ export default function ClientType() {
     });
     setName("")
     setEditName("")
-    getClientTypes()
     clear()
-    setCreated(!created);
-    setUpdated(!updated);
   }
 
   return (
