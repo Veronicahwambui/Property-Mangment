@@ -57,13 +57,13 @@ getUser(id){
 
     return axiosInstance.get(baseUrl + "/users/view/" + id);   
 }
-confirmDeactivateUser(){
-    return axiosInstance.get(baseUrl +"/users/enable")
+activateUser(userName){
+    return axiosInstance.get(baseUrl +"/users/enable?userName="+userName)
 }
-confirmActivateUser(userId){
+deactivateUser(userId){
     return axiosInstance.get(baseUrl + "/users/deactivateUser/" +userId) 
 }
-confirmUnlockUserAccount(userId) {
+unlockUserAccount(userId) {
     return axiosInstance.get(baseUrl +"/accounts/unlockUserAccount/"+ userId) 
 }
 // addRole(){

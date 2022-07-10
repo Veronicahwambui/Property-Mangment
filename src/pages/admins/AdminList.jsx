@@ -1,14 +1,17 @@
+/* global $ */
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { confirmAlert } from "react-confirm-alert";
+
+
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 import requestsServiceService from "../../services/requestsService.service";
+import StatusBadge from "../../components/StatusBadge";
 
 function AdminList() {
   const [userList, setUserList] = useState([]);
-  const [enabled, SetEnabled]=useState("");
- 
-  
-  
 
   const getData = () => {
     // e.preventDefault()
@@ -21,8 +24,9 @@ function AdminList() {
     getData();
   }, []);
 
-  const confirmDeactivateUser = (e, id) => {
-    e.preventDefault();
+  const confirmDeactivateUser = ( el) => {
+    el.preventDefault();
+    let id= el.target.dataset.id;
 
     confirmAlert({
       message: "Are you sure you want to deactivate user id " + id,
@@ -32,53 +36,108 @@ function AdminList() {
         },
         {
           label: "OK",
-          onClick: requestsServiceService
-            . confirmDeactivateUser(id)
-            .then((res) => {})
-            .catch((err) => {}),
+          onClick: () => requestsServiceService
+            .deactivateUser(id)
+            .then((res) => { 
+              confirmAlert({
+                message: res.data.message,
+                buttons: [
+                  {
+                    label: "Cancel",
+                  },
+                ]
+                })
+            })
+            .catch((err) => { confirmAlert({
+              message: err.data.message,
+              buttons: [
+                {
+                  label: "Cancel",
+                },
+              ]
+              })}),
         },
       ],
     });
   };
-  const confirmActivateUser = (e, id) => {
-    e.preventDefault();
-
+  const confirmActivateUser = (  el) => {
+    el.preventDefault();
+    let id= el.target.dataset.id;
     confirmAlert({
-      message: "Are you sure you want to deactivate user id " + id,
+      message: "Are you sure you want to activate user id " + id,
       buttons: [
         {
           label: "Cancel",
         },
         {
           label: "OK",
-          onClick: requestsServiceService
-            .confirmActivateUser(id)
-            .then((res) => {})
-            .catch((err) => {}),
+          onClick: () => requestsServiceService
+            .activateUser(id)
+            .then((res) => { 
+              confirmAlert({
+                message: res.data.message,
+                buttons: [
+                  {
+                    label: "Cancel",
+                  },
+                ]
+                })
+            })
+            .catch((err) => { confirmAlert({
+              message: err.data.message,
+              buttons: [
+                {
+                  label: "Cancel",
+                },
+              ]
+              })}),
         },
       ],
     });
   };
-  const confirmUnlockUserAccount = (e, id) => {
-    e.preventDefault();
+  const confirmUnlockUserAccount = (  el) => {
+    el.preventDefault();
+    let id= el.target.dataset.id;
 
     confirmAlert({
-      message: "Are you sure you want to deactivate user id " + id,
+      message: "Are you sure you want to unblock user id " + id,
       buttons: [
         {
           label: "Cancel",
         },
         {
           label: "OK",
-          onClick: requestsServiceService
-            .confirmUnlockUserAccount(id)
-            .then((res) => {})
-            .catch((err) => {}),
+          onClick: () => requestsServiceService
+            .unlockUserAccount(id)
+            .then((res) => { 
+              confirmAlert({
+                message: res.data.message,
+                buttons: [
+                  {
+                    label: "Cancel",
+                  },
+                ]
+                })
+            })
+            .catch((err) => { confirmAlert({
+              message: err.data.message,
+              buttons: [
+                {
+                  label: "Cancel",
+                },
+              ]
+              })}),
         },
       ],
     });
   };
-  
+
+
+
+  $("body").on("click", ".disableUser", confirmDeactivateUser);
+  $("body").on("click", ".enableUser", confirmActivateUser);
+  $("body").on("click", ".unlockUser", confirmUnlockUserAccount);
+
 
 
   return (
@@ -96,7 +155,7 @@ function AdminList() {
                     <li className="breadcrumb-item">
                       <a href="index.html">Dashboards</a>
                     </li>
-                    <li class="breadcrumb-item">
+                    <li className="breadcrumb-item">
                       <a href="#">System user</a>
                     </li>
                     <li className="breadcrumb-item active">
@@ -119,14 +178,14 @@ function AdminList() {
               <thead className="table-dark">
                 <tr>
                   <th></th>
-                 <th>Names</th>
-                 <th>UserName</th>
+                  <th>Names</th>
+                  <th>UserName</th>
                   <th>Email</th>
                   <th>PhoneNumber</th>
-                   <th>RoleName</th>
-                   <th>Enabled</th>
-                   <th>AccountLocked</th>
-                   <th>Actions</th>
+                  <th>RoleName</th>
+                  <th>Enabled</th>
+                  <th>Account Blocked</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
 
@@ -138,16 +197,16 @@ function AdminList() {
                         <tr>
                           <td className="">
                             <div className="d-flex align-items-center">
-                              
 
-                             
+
+
                             </div>
                           </td>
-                      
+
                           <td>
                             <p className="mb-0">
                               <a href="mailto:martinokesh40@email.com">
-                              {list.firstName + "  " + list.lastName}
+                                {list.firstName + "  " + list.lastName}
                               </a>
                             </p>
                           </td>
@@ -165,109 +224,70 @@ function AdminList() {
                             <p className="mb-0">{list.phoneNumber}</p>
                           </td>
                           <td>
-                          <p className="mb-0">{list.role.name}</p>
-                      </td>
-
-                      <td>
-                     
-                        {list.enabled === "true" ? (
-                                  <button
-                                    className="dropdown-item"
-                                    onClick={(e) =>
-                                      confirmDeactivateUser(e, list.id)
-                                    }
-                                  >
-                                 <i class="font-size-15 mdi mdi-account-cancel me-3"></i>
-                                    Deactivate User
-                                  </button>
-                                ) : (
-                                  
-                                  <button
-                                    className="dropdown-item"
-                                    onClick={(e) =>
-                                      confirmActivateUser(e, list.id)
-                                    }
-                                  >
-                                    {/* <i class="font-size-15 mdi mdi-account me-3"></i> */}
-                                    Activate User
-                                  </button>
-                                )}
-                            
-                             
-                               
-
-                      </td>
-
-
-
+                            <p className="mb-0">{list.role.name}</p>
+                          </td>
 
                           <td>
-                            <p className="mb-0">
-                            {list.accountLocked === "true" && (
-                                  <button
-                                    className="dropdown-item"
-                                    onClick={(e) =>
-                                      confirmUnlockUserAccount(e, list.id)
-                                    }
-                                  >
-                                     <i class="font-size-15 mdi mdi-account"></i>
-                                    accountLocked
-                                  </button>
+                            {list.enabled ? <StatusBadge type="True" /> : <StatusBadge type="False" />}
 
-                                )
-                          
-                                  }
-
-                            </p>
                           </td>
-                          
+
+                          <td>
+                            {list.blocked ? <StatusBadge type="True" /> : <StatusBadge type="False" />}
+                          </td>
+
 
                           <td>
                             {/* <!-- Button trigger modal --> */}
-                            <div class="dropdown">
+                            <div className="dropdown">
                               <a
-                                class="text-muted font-size-16"
+                                className="text-muted font-size-16"
                                 role="button"
                                 data-bs-toggle="dropdown"
                                 aria-haspopup="true"
                               >
-                                <i class="bx bx-dots-vertical-rounded"></i>
+                                <i className="bx bx-dots-vertical-rounded"></i>
                               </a>
 
-                              <div class="dropdown-menu dropdown-menu-end text-capitalize">
+                              <div className="dropdown-menu dropdown-menu-end text-capitalize">
                                 <Link to={"/adminlist/edit/" + list.id}>
                                   <a
-                                    class="dropdown-item"
+                                    className="dropdown-item"
                                     href="tenant-new.html"
                                   >
-                                    <i class="font-size-15 mdi mdi-account-cash me-3"></i>
                                     edit user
                                   </a>
 
                                 </Link>
-                        
-                               
-                              
-                                {/* <a class="dropdown-item" href="tenant-deactivate-process.html">              
-                                {list.accountLocked === "true" && (
-                                  <button
-                                    className="dropdown-item"
-                                    onClick={(e) =>
-                                      confirmUnlockUserAccount(e, list.id)
-                                    }
+
+                                {list.enabled ? (
+                                  <button data-id = {list.id}
+                                    className="dropdown-item disableUser"
+                                    
                                   >
+                                    Deactivate User
+                                  </button>
+                                ) : (
+
+                                  <button data-id = {list.userName}
+                                    className="dropdown-item enableUser"
+                                   
+                                  >
+                                    Activate User
+                                  </button>
+                                )}
+
+                                {list.blocked && (
+                                  <button data-id = {list.id}
+                                    className="dropdown-item unlockUser"
+                                    
+                                  >
+                                    UnBlock User Account
                                   </button>
 
                                 )
-                          
-                                  }
-                                  </a> */}
 
-                               
-                                
-                                
-                              
-
+                                }
 
                               </div>
                             </div>
@@ -282,102 +302,7 @@ function AdminList() {
 
           {/* <!-- end row --> */}
         </div>
-        {/* <!-- container-fluid -->
-</div> */}
-        {/* <!-- End Page-content --> */}
-
-        {/* <!-- Transaction Modal --> */}
-        <div
-          className="modal fade transaction-detailModa1-1"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="transaction-detailModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="transaction-detailModalLabel">
-                  Transactions Details
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="table-responsive mt-4">
-                  <table className="table align-middle table-nowrap">
-                    <tbody>
-                      <tr>
-                        <td style={{ width: "30%" }}>
-                          <p className="mb-0">Car Plate Number</p>
-                        </td>
-                        <td style={{ width: "25%" }}>
-                          <h5 className="mb-0 text-uppercase">UAG 1235p</h5>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <p className="mb-0">Vehicle Category</p>
-                        </td>
-                        <td>
-                          <h5 className="mb-0">Salon Car</h5>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <p className="mb-0">Payment Date</p>
-                        </td>
-                        <td>
-                          <h5 className="mb-0">22 Apr 2022 06:54PM</h5>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <p className="mb-0">San Diego</p>
-                        </td>
-                        <td>
-                          <h5 className="mb-0">1,026</h5>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="2">
-                          <p className="mb-0 pb-0">Amount Paid</p>
-                          <h3>UGX 2,000</h3>
-                        </td>
-                      </tr>
-
-                      <td col-span="2">
-                        <p className="mb-2">
-                          Attended By
-                          <span className="text-primary"> Alex Sebeye</span>
-                        </p>
-                        <p className="mb-4">
-                          Toll taker's No.{" "}
-                          <span className="text-primary">0704549859</span>
-                        </p>
-                      </td>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* <!-- end modal --> */}
-
+        
         <footer className="footer">
           <div className="container-fluid">
             <div className="row">
