@@ -108,7 +108,10 @@ function SideBar() {
                                 <span>Clients</span>
                             </a>
                             <ul className="sub-menu" aria-expanded="false">
-                                <li><NavLink to="/clienttype">New client type</NavLink></li>
+                                <li><NavLink to="/clienttypes">Client types</NavLink></li>
+                            </ul>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li><NavLink to="/clients">Client management</NavLink></li>
                             </ul>
                         </li>
                     </ul>

@@ -25,7 +25,8 @@ import Login from './pages/auth/Login';
 import RecoverPassword from './pages/auth/RecoverPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import AuthService from './services/auth.service';
-import ClientType from './pages/clients/ClientType'
+import ClientType from './pages/clients/ClientType';
+import ClientManagement from './pages/clients/ClientManagement';
 
 import UpdateUser from './pages/admins/UpdateUser';
 import UserTypes from './pages/admins/UserTypes';
@@ -101,6 +102,10 @@ function Main() {
                   <Route path='/usertypes' element={<UserTypes />} />
                   <Route path='/clienttype' element={<ClientType/>} />
 
+                  <Route path='/adminlist' element={<AdminList/>} />
+                  <Route path='/addadmin' element={<AddAdmin/>} />
+                  <Route path='/clienttypes' element={<ClientType/>} />
+                  <Route path='/clients' element={<ClientManagement/>} />
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
               </div>
