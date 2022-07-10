@@ -25,7 +25,7 @@ function SideBar() {
                         </li>
 
                         <li>
-                            <a href="javascript: void(0);" class="waves-effect has-arrow">
+                            <a href="javascript: void(0)" class="waves-effect has-arrow">
                                 <i class="mdi mdi-office-building-outline"></i>
                                 <span>Premises</span>
                             </a>
@@ -35,7 +35,7 @@ function SideBar() {
                             </ul>
                         </li>
                         <li>
-                            <a href="javascript: void(0);" class="waves-effect has-arrow">
+                            <a href="javascript: void(0)" class="waves-effect has-arrow">
                                 <i class="mdi mdi-account-key"></i>
                                 <span>Tenants</span>
                             </a>
@@ -46,26 +46,29 @@ function SideBar() {
                         </li>
                     
                         <li>
-                            <a href="javascript: void(0);" class="waves-effect has-arrow">
+                            <a href="javascript: void(0)" class="waves-effect has-arrow">
                                 <i class="mdi mdi-cog-outline"></i>
                                 <span>Set ups</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
                                 <li><NavLink  to="/applicablecharges">Applicable Charges</NavLink></li>
-                                <li><NavLink  to="/estates">Estate</NavLink></li>
+                                <li><NavLink  to="/premisetypes">Premise Types</NavLink></li>
+                                <li><NavLink  to="/premiseusetypes">Premise Use Types</NavLink></li>
+                                <li><NavLink  to="/unit-types">Unit Types</NavLink></li>
+                                <li><NavLink  to="/document-types">Document Types</NavLink></li>
                                 <li><NavLink  to="/housetypes">House types</NavLink></li>
+                                <li><NavLink  to="/allroles">All roles </NavLink></li>
                                 <li><NavLink  to="/clientcounties">client Counties</NavLink></li>
                                 <li><NavLink  to="/zones">Zones</NavLink></li>
+                                <li><NavLink  to="/estates">Estate</NavLink></li>
                                 <li><NavLink  to="/attachabledocs">Attachable Documents</NavLink></li>
-                                <li><NavLink  to="/createuser">Create User </NavLink></li>
-                                <li><NavLink  to="/allroles">All roles </NavLink></li>
                             </ul>
                         </li>
               
                   
 
                           <li>
-                            <a href="javascript: void(0);" class="waves-effect has-arrow">
+                            <a href="javascript: void(0)" class="waves-effect has-arrow">
                                 <i class="bx bx-receipt"></i>
                                 <span>Invoices</span>
                             </a>
@@ -88,7 +91,7 @@ function SideBar() {
                             </NavLink>
                         </li>
                         <li>
-                            <a href="javascript: void(0);" class="waves-effect has-arrow">
+                            <a href="javascript: void(0)" class="waves-effect has-arrow">
                                 <i class="mdi mdi-shield-account-outline"></i>
                                 <span>System Users</span>
                             </a>
@@ -100,7 +103,7 @@ function SideBar() {
                             </ul>
                         </li>
                         <li>
-                            <a href="javascript: void(0);" className="waves-effect has-arrow">
+                            <a href="javascript: void(0)" className="waves-effect has-arrow">
                                 <i className="mdi mdi-shield-account-outline"></i>
                                 <span>Clients</span>
                             </a>

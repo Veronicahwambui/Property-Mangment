@@ -18,6 +18,10 @@ class AuthService {
     getAppKey() {
         return localStorage.getItem("App-Key")
     }
+    
+    getClientId() {
+        return localStorage.getItem("clientId")
+    }
 }
 
 export default new AuthService();

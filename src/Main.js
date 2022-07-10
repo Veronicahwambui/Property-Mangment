@@ -19,9 +19,7 @@ import Receipts from './pages/Receipts';
 import Transactions from './pages/Transactions';
 import AdminList from './pages/admins/AdminList';
 import AddAdmin from './pages/admins/AddAdmin';
-import CreateUser from './pages/setups/CreateUser';
 import AllRoles from './pages/setups/AllRoles';
-import OneRole from './pages/setups/OneRole';
 import ClientCounties from './pages/setups/ClientCounties';
 import Login from './pages/auth/Login';
 import RecoverPassword from './pages/auth/RecoverPassword';
@@ -31,6 +29,10 @@ import ClientType from './pages/clients/ClientType'
 
 import UpdateUser from './pages/admins/UpdateUser';
 import UserTypes from './pages/admins/UserTypes';
+import PremiseTypes from "./pages/setups/PremiseTypes";
+import PremiseUseTypes from "./pages/setups/PremiseUseTypes";
+import UnitTypes from "./pages/setups/UnitTypes";
+import DocumentTypes from "./pages/setups/DocumentTypes";
 function Main() {
 
   // useEffect(() => {
@@ -76,6 +78,10 @@ function Main() {
                   <Route path='/housetypes' element={<HouseTypes />} />
                   <Route path='/zones' element={<Zones />} />
                   <Route path='/attachabledocs' element={<AttachableDocs />} />
+                  <Route path='/premisetypes' element={<PremiseTypes />} />
+                  <Route path='/premiseusetypes' element={<PremiseUseTypes />} />
+                  <Route path='/unit-types' element={<UnitTypes />} />
+                  <Route path='/document-types' element={<DocumentTypes />} />
                   {/* invoices */}
                   <Route path='/createinvoice' element={<CreateInvoice />} />
                   {/* receipts */}
@@ -86,9 +92,7 @@ function Main() {
                   {/* stystem users */}
                   <Route path='/adminlist' element={<AdminList />} />
                   <Route path='/addadmin' element={<AddAdmin />} />
-                  <Route path='/createuser' element={<CreateUser />} />
                   <Route path='/allroles' element={<AllRoles />} />
-                  <Route path='/allroles/:id' element={<OneRole />} />
 
                   {/* setup */}
                   <Route path='/clientcounties' element={<ClientCounties />} />

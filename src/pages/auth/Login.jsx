@@ -57,6 +57,7 @@ function Login() {
         console.log(decoded.user)
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(decoded.user));
+        localStorage.setItem('clientId', JSON.stringify(decoded.user.client.id));
         localStorage.setItem('expiry', decoded.exp);
         localStorage.setItem('App-Key', decoded.user.client.appKey);
         let permissions = [];
