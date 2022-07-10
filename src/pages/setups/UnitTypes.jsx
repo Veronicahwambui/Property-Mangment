@@ -90,8 +90,10 @@ function UnitTypes() {
 
     }
 
-    setChargeType(userGroups);
+    setSelectedChargeTypes(userGroups);
   }
+
+  
 
   return (
     <>
@@ -166,7 +168,8 @@ function UnitTypes() {
                               <td class="text-center cell-change text-nowrap ">
                                 <div class="d-flex justify-content-between">
 
-                                  <a onClick={() => { setActiveId(val.id); 
+                                  <a onClick={() => { 
+                                    setActiveId(val.id); 
                                   setUpdateName(val.name); 
                                   Zones(val.applicableChargeType) }} data-bs-toggle="modal"
                                     data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
