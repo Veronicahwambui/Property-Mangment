@@ -294,9 +294,7 @@ function AddAdmin() {
                             return (
                               <option key={role.id} value={role.id}>
                                 {role.name}
-                                <option value="">Super Admin</option>
-                                <option>Finance</option>
-                                <option>Estate Agent</option>
+                               
                               </option>
                             );
                           })}
