@@ -82,9 +82,9 @@ function UnitTypes() {
 
     for (var i = 0, l = options.length; i < l; i++) {
 
-
       if (options[i].selected) {
-        userGroups.push(parseInt(options[i].value));
+        console.log( "option ++ " +options[i].value)
+        userGroups.push(options[i].value);
       }
 
     }
