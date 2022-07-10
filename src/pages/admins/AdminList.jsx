@@ -5,6 +5,9 @@ import requestsServiceService from "../../services/requestsService.service";
 
 function AdminList() {
   const [userList, setUserList] = useState([]);
+  const [enabled, SetEnabled]=useState("");
+ 
+  
   
 
   const getData = () => {
@@ -115,13 +118,15 @@ function AdminList() {
             >
               <thead className="table-dark">
                 <tr>
-                  <th>Admin</th>
+                  <th></th>
                  <th>Names</th>
                  <th>UserName</th>
                   <th>Email</th>
                   <th>PhoneNumber</th>
-                  <th>StaffID</th>
-                  <th>Actions</th>
+                   <th>RoleName</th>
+                   <th>Enabled</th>
+                   <th>AccountLocked</th>
+                   <th>Actions</th>
                 </tr>
               </thead>
 
@@ -133,13 +138,7 @@ function AdminList() {
                         <tr>
                           <td className="">
                             <div className="d-flex align-items-center">
-                              <div className="flex-shrink-0 me-3">
-                                <div className="avatar-xs">
-                                  <span className="avatar-title rounded-circle bg-primary bg-soft text-primary">
-                                    <strong></strong>
-                                  </span>
-                                </div>
-                              </div>
+                              
 
                              
                             </div>
@@ -166,11 +165,62 @@ function AdminList() {
                             <p className="mb-0">{list.phoneNumber}</p>
                           </td>
                           <td>
+                          <p className="mb-0">{list.role.name}</p>
+                      </td>
+
+                      <td>
+                     
+                        {list.enabled === "true" ? (
+                                  <button
+                                    className="dropdown-item"
+                                    onClick={(e) =>
+                                      confirmDeactivateUser(e, list.id)
+                                    }
+                                  >
+                                 <i class="font-size-15 mdi mdi-account-cancel me-3"></i>
+                                    Deactivate User
+                                  </button>
+                                ) : (
+                                  
+                                  <button
+                                    className="dropdown-item"
+                                    onClick={(e) =>
+                                      confirmActivateUser(e, list.id)
+                                    }
+                                  >
+                                    {/* <i class="font-size-15 mdi mdi-account me-3"></i> */}
+                                    Activate User
+                                  </button>
+                                )}
+                            
+                             
+                               
+
+                      </td>
+
+
+
+
+                          <td>
                             <p className="mb-0">
-                              <a href="tel:0704003859"></a>
-                              {list.staffId}
+                            {list.accountLocked === "true" && (
+                                  <button
+                                    className="dropdown-item"
+                                    onClick={(e) =>
+                                      confirmUnlockUserAccount(e, list.id)
+                                    }
+                                  >
+                                     <i class="font-size-15 mdi mdi-account"></i>
+                                    accountLocked
+                                  </button>
+
+                                )
+                          
+                                  }
+
                             </p>
                           </td>
+                          
 
                           <td>
                             {/* <!-- Button trigger modal --> */}
@@ -195,22 +245,8 @@ function AdminList() {
                                   </a>
 
                                 </Link>
-                            
-                                     {list.accountLocked === "true" && (
-                                  <button
-                                    className="dropdown-item"
-                                    onClick={(e) =>
-                                      confirmUnlockUserAccount(e, list.id)
-                                    }
-                                  >
-                                  </button>
-
-                                )
-                          
-                                  }
-
-                                <i class="font-size-15 mdi mdi-account-cancel me-3"></i>
-                                    Unblock user
+                        
+                               
                               
                                 {/* <a class="dropdown-item" href="tenant-deactivate-process.html">              
                                 {list.accountLocked === "true" && (
@@ -228,31 +264,7 @@ function AdminList() {
                                   </a> */}
 
                                
-                                {list.enabled === "true" ? (
-                                  <button
-                                    className="dropdown-item"
-                                    onClick={(e) =>
-                                      confirmDeactivateUser(e, list.id)
-                                    }
-                                  >
-                                 <i class="font-size-15 mdi mdi-account-cancel me-3"></i>
-                                    Deactivate User
-                                  </button>
-                                ) : (
-                                  
-                                  <button
-                                    className="dropdown-item"
-                                    onClick={(e) =>
-                                      confirmActivateUser(e, list.id)
-                                    }
-                                  >
-                                    <i class="font-size-15 mdi mdi-account me-3"></i>
-                                    Activate User
-                                  </button>
-                                )}
-                            
-                             
-                               
+                                
                                 
                               
 
