@@ -56,12 +56,11 @@ function SideBar() {
                                 <li><NavLink  to="/premiseusetypes">Premise Use Types</NavLink></li>
                                 <li><NavLink  to="/unit-types">Unit Types</NavLink></li>
                                 <li><NavLink  to="/document-types">Document Types</NavLink></li>
-                                <li><NavLink  to="/housetypes">House types</NavLink></li>
                                 <li><NavLink  to="/allroles">All roles </NavLink></li>
                                 <li><NavLink  to="/clientcounties">client Counties</NavLink></li>
                                 <li><NavLink  to="/zones">Zones</NavLink></li>
                                 <li><NavLink  to="/estates">Estate</NavLink></li>
-                                <li><NavLink  to="/attachabledocs">Attachable Documents</NavLink></li>
+                                {/* <li><NavLink  to="/attachabledocs">Attachable Documents</NavLink></li> */}
                             </ul>
                         </li>
               
