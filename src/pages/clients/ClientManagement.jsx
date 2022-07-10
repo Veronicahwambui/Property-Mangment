@@ -108,10 +108,11 @@ function ClientManagement() {
         name: '',
         id: ''
       })
+      getAllClients();
       setIsChecked(true)
-
     })
     setClientAdd(!clientAdd);
+    getAllClients();
   }
 
   const getOneClient = (id) => {
