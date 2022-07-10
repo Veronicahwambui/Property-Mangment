@@ -34,7 +34,7 @@ function ApplicableCharges() {
   const create = ()=>{
    let data = JSON.stringify({
     active: true,
-    unitTypeApplicableCharges: chargeType,
+    applicableChargeType: chargeType,
     clientId: authService.getClientId(),
     expectManualValues: true,
     id: 0,
@@ -58,13 +58,13 @@ function ApplicableCharges() {
   const Update = ()=>{
      let data = JSON.stringify({
       active: true,
-      unitTypeApplicableCharges: updateChargeType,
+      applicableChargeType: updateChargeType,
       clientId: authService.getClientId(),
       expectManualValues: true,
       id: activeId,
       name: updateName
     })
-    requestsServiceService.updateUnitType(data).then((res)=>{
+    requestsServiceService.updateApplicableCharges(data).then((res)=>{
      fetchAll()
     })
   }
