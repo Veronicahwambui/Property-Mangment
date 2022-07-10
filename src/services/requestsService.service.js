@@ -41,22 +41,30 @@ editUserDetails(data){
 userTypeData(){
     return axiosInstance.get(baseUrl +"/user-types");
 }
-getUserType(data){
-    return axiosInstance.get(baseUrl +"/user-types" ,data);
+// getUserType(data){
+//     return axiosInstance.get(baseUrl +"/user-types" ,data);
 
+// }
+
+createUserType(data){
+    return axiosInstance.post(baseUrl +"/user-types",data);
 }
+updateUser(data){
+    return axiosInstance.post(baseUrl +"/user-types/update", data);
+}
+
 getUser(id){
 
     return axiosInstance.get(baseUrl + "/users/view/" + id);   
 }
-confirmDeactivateUser(userId){
-    return axiosInstance.get(baseUrl +"/users/deactivateUser/"+userId)
+confirmDeactivateUser(){
+    return axiosInstance.get(baseUrl +"/users/enable")
 }
 confirmActivateUser(userId){
     return axiosInstance.get(baseUrl + "/users/deactivateUser/" +userId) 
 }
 confirmUnlockUserAccount(userId) {
-    return axiosInstance.get(baseUrl + "/users/deactivateUser/" +userId)
+    return axiosInstance.get(baseUrl +"/accounts/unlockUserAccount/"+ userId) 
 }
 // addRole(){
 //     return axiosInstance.put(baseUrl +"/user-types");
@@ -81,25 +89,4 @@ deactiveUser(userId){
 
  
 export default new RequestsService();
-   
-// getAllRoles() {
-//     return axiosInstance.get(baseUrl + "/roles");
-// }
-// getOneRole(roleId) {
-//     return axiosInstance.get(baseUrl + "/roles?roleId=" + roleId);
-// }
 
-// ViewOneRole(roleId) {
-//     return axiosInstance.get(baseUrl + "/roles/view?roleId=" + roleId);
-// }
-
-// EditRole(data) {
-//     return axiosInstance.put(baseUrl + "/roles/editrole", data);
-// }
-
-// AddRole(data) {
-//     return axiosInstance.post(baseUrl + "/roles/addrole", data);
-// }
-
-
-// }
