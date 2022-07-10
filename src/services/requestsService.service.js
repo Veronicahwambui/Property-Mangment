@@ -31,6 +31,18 @@ class RequestsService {
     getClientTypes() {
         return axiosInstance.get(baseUrl + "/client-types");
     }
+    getClients() {
+        return axiosInstance.get(baseUrl + "/clients");
+    }
+    createClient(data, x) {
+        return axiosInstance.post(baseUrl + `/clients?createUSer=${x}`, data)
+    }
+    updateClient(data) {
+        return axiosInstance.post(baseUrl + "/clients/update", data)
+    }
+    getClient(id) {
+        return axiosInstance.get(baseUrl + `/clients/${id}`)
+    }
 }
 
 export default new RequestsService();
