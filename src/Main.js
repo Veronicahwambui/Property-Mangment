@@ -90,14 +90,14 @@ function Main() {
                   <Route path='/trasactions' element={<Transactions />} />
 
                   {/* stystem users */}
-                  <Route path='/adminlist' element={<AdminList />} />
+                  <Route exact path='/adminlist' element={<AdminList />} />
                   <Route path='/addadmin' element={<AddAdmin />} />
                   <Route path='/allroles' element={<AllRoles />} />
 
                   {/* setup */}
                   <Route path='/clientcounties' element={<ClientCounties />} />
 
-                  <Route path='/adminlist/edit/:id' element={<UpdateUser />} />
+                  <Route exact path='/adminlist/edit/:id' element={<UpdateUser />} />
                   <Route path='/usertypes' element={<UserTypes />} />
                   <Route path='/clienttype' element={<ClientType/>} />
 

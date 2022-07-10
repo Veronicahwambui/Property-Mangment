@@ -3,14 +3,12 @@ import { useEffect, useId, useState } from "react";
 
 function UserTypes() {
   const [userType, setUserType] = useState([]);
-  const [addUserType, setAddUserType] = useState([]);
-  const[roleName, setRoleName]=useState("")
+  const[userTypeName, setuserTypeName]=useState("")
   const[editName, setEditName]=useState("")
   const[id, setId]=useState("")
 
  
-  // const[ name ,setName]=useState("")
-  console.log(userType);
+  
   const userTypeData = () => {
     const data = JSON.stringify({
       clientId: 2,
@@ -23,30 +21,30 @@ function UserTypes() {
     });
   };
 
-  const getUserType = () => {
-    requestsServiceService.getUserType().then((res) => {
-      setAddUserType(res.data.data);
-    });
-  };
-  const addRoles =()=>{
-    requestsServiceService.AddRole().then((res) => {
-        setRoleName(res.data.data);
+  // const getUserType = () => {
+  //   requestsServiceService.getUserType().then((res) => {
+  //     setAddUserType(res.data.data);
+  //   });
+  // };
+  const addUserType =()=>{
+    requestsServiceService.createUserType().then((res) => {
+        // setuserTypeName(res.data.data);
+
+        console.log(res.data)
+
       });
     
 }
-const editRole =()=>{
-  let data=JSON.stringify(
-  {
+
+const updateUser=()=>{
+  let data=JSON.stringify({
     id: id,
-    name: editName,
-    permissions: [
-      "string"
-    ]
-  }
-  )
-  requestsServiceService.EditRole(data).then((res)=>{
+    name: editName
+  })
 
-
+  requestsServiceService.updateUserType(data).then((res)=>{
+    console.log(res)
+   
   }
   ) 
 
@@ -108,11 +106,10 @@ const deactivateUser =(userId)=>{
                     class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
                     role="toolbar"
                   >
-                    <div class="d-flex align-items-center flex-grow-1">
-                      <h4 class="mb-0  bg-transparent  p-0 m-0">
-                        Permissions Register
-                      </h4>
-                    </div>
+                     <div class="d-flex align-items-center flex-grow-1">
+                                           
+                      </div>
+                    
                     <div class="d-flex">
                       <button
                         type="button"
@@ -120,7 +117,7 @@ const deactivateUser =(userId)=>{
                         data-bs-toggle="modal"
                         data-bs-target="#add-new-zone"
                       >
-                        <i class="mdi mdi-plus label-icon"></i> Add A role
+                        <i class="mdi mdi-plus label-icon"></i> Add A UserType
                       </button>
                     </div>
                   </div>
@@ -131,7 +128,7 @@ const deactivateUser =(userId)=>{
                       <thead class="table-light">
                         <tr class="text-uppercase table-dark">
                           <th>#</th>
-                          <th>Role Name</th>
+                          <th>UserTypeName</th>
                           <th>Edit</th>
 
                           <th class="text-right"></th>
@@ -147,14 +144,9 @@ const deactivateUser =(userId)=>{
                                 <td data-field="estate">{list.name}</td>
 
                                 <td class="text-right cell-change ">
-                                  <a
-                                    class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
-                                    title="Edit "
-                                  >
-                                    <i class="bx bx-edit-alt "></i>
-                                  </a>
+                            
 
-                                  <button
+                    <button
                                     class="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
                                     title="save "
                                   >
@@ -229,7 +221,7 @@ const deactivateUser =(userId)=>{
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
-                New Zone
+                User Type
               </h5>
               <button
                 type="button"
@@ -242,14 +234,14 @@ const deactivateUser =(userId)=>{
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">Role Name</label>
+                    <label for="">UserType Name</label>
                     <input
 
                       type="text"
                       class="form-control"
-                      placeholder="Enter zone name"
-                      onChange={(event) => setRoleName(event.target.value)}
-                      value={roleName}
+                      placeholder="Enter UserTypeName"
+                      onChange={(event) =>setuserTypeName(event.target.value)}
+                      value={userTypeName}
                     />
                   </div>
                 </div>
@@ -266,7 +258,7 @@ const deactivateUser =(userId)=>{
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary" onClick={addRoles}>
+              <button type="button" class="btn btn-primary" onClick={addUserType }>
                 Save
               </button>
             </div>
@@ -290,7 +282,7 @@ const deactivateUser =(userId)=>{
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
-                Edit Role
+                Edit UserType
               </h5>
               <button
                 type="button"
@@ -303,7 +295,7 @@ const deactivateUser =(userId)=>{
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">Role Name</label>
+                    <label for="">UserTypeName</label>
                     <input
 
                       type="text"
@@ -328,7 +320,7 @@ const deactivateUser =(userId)=>{
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary"  onClick={editRole}>
+              <button type="button" class="btn btn-primary"  onClick={updateUser} >
                 Save
               </button>
             </div>

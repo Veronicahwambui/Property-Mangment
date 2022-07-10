@@ -49,7 +49,41 @@ class RequestsService {
   createPreviledge(data) {
     return axiosInstance.post(baseUrl + "/privileges", data);
   }
+  
+editUserDetails(data){
+    return axiosInstance.post(baseUrl +"/users/update", data);
+}
+userTypeData(){
+    return axiosInstance.get(baseUrl +"/user-types");
+}
 
+createUserType(data){
+    return axiosInstance.post(baseUrl +"/user-types",data);
+}
+
+updateUserType(data){
+    return axiosInstance.post(baseUrl +"/user-types/update", data);
+}
+
+getUser(id){
+
+    return axiosInstance.get(baseUrl + "/users/view/" + id);   
+}
+activateUser(userName){
+    return axiosInstance.get(baseUrl +"/users/enable?userName="+userName)
+}
+deactivateUser(userId){
+    return axiosInstance.get(baseUrl + "/users/deactivateUser/" +userId) 
+}
+unlockUserAccount(userId) {
+    return axiosInstance.get(baseUrl +"/accounts/unlockUserAccount/"+ userId) 
+}
+// addRole(){
+//     return axiosInstance.put(baseUrl +"/user-types");
+// }
+deactiveUser(userId) {
+    return axiosInstance.get(baseUrl +"/users/deactivateUser/"+ userId)
+}
 
 
   // counties
