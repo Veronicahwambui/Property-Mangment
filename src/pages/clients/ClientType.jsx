@@ -32,10 +32,10 @@ export default function ClientType() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    let data = {
+    let data = JSON.stringify({
       name: name,
       id: null
-    }
+    })
     requestsServiceService.createClientType(data).then((res) => {
       setError({
         ...error,
@@ -49,7 +49,7 @@ export default function ClientType() {
           message: '',
           color: ''
         });
-      }, 2000);
+      }, 3000);
       setName("");
     }).catch((err) => {
       setError({
@@ -90,6 +90,12 @@ export default function ClientType() {
         color: "success"
       });
       getClientTypes()
+      setTimeout(() => {
+        setError({
+          message: '',
+          color: ''
+        });
+      }, 3000);
     }).catch((err) => {
       setError({
         ...error,
@@ -128,7 +134,6 @@ export default function ClientType() {
         <div className="row">
           <div className="col-12">
             <div className="card">
-
               <div
                 className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
 
@@ -150,6 +155,11 @@ export default function ClientType() {
 
               </div>
               <div className="card-body">
+                {error.color !== "" &&
+                <div className={"alert alert-" + error.color} role="alert">
+                  {error.message}
+                </div>
+                }
                 <div className="table-responsive table-responsive-md">
                   <table className="table table-editable align-middle table-edits">
                     <thead className="table-light">
@@ -199,11 +209,6 @@ export default function ClientType() {
                 <div className="modal-body">
                   <div className="row">
                     <div className="col-12">
-                      {error.color !== "" &&
-                      <div className={"alert alert-" + error.color} role="alert">
-                        {error.message}
-                      </div>
-                      }
                       <div className="form-group mb-4">
                           <label htmlFor="">Name</label>
                           <input type="text" className="form-control" onChange={handleChange} value={name} placeholder="Enter client type" required />
@@ -213,7 +218,7 @@ export default function ClientType() {
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-light" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" className="btn btn-primary">Save</button>
+                  <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Save</button>
                 </div>
               </form>
             </div>
@@ -248,7 +253,7 @@ export default function ClientType() {
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-light" data-bs-dismiss="modal" onClick={clear}>Close</button>
-                <button type="submit" className="btn btn-primary" onClick={editClientType}>Save</button>
+                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={editClientType}>Save</button>
               </div>
             </div>
           </div>
