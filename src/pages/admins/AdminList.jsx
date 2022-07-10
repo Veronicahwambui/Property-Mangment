@@ -43,7 +43,7 @@ function AdminList() {
                 message: res.data.message,
                 buttons: [
                   {
-                    label: "Cancel",
+                    label: "OK",
                   },
                 ]
                 })
@@ -52,7 +52,7 @@ function AdminList() {
               message: err.data.message,
               buttons: [
                 {
-                  label: "Cancel",
+                  label: "OK",
                 },
               ]
               })}),
@@ -78,7 +78,7 @@ function AdminList() {
                 message: res.data.message,
                 buttons: [
                   {
-                    label: "Cancel",
+                    label: "OK",
                   },
                 ]
                 })
@@ -87,7 +87,7 @@ function AdminList() {
               message: err.data.message,
               buttons: [
                 {
-                  label: "Cancel",
+                  label: "OK",
                 },
               ]
               })}),
@@ -114,7 +114,7 @@ function AdminList() {
                 message: res.data.message,
                 buttons: [
                   {
-                    label: "Cancel",
+                    label: "OK",
                   },
                 ]
                 })
@@ -123,7 +123,7 @@ function AdminList() {
               message: err.data.message,
               buttons: [
                 {
-                  label: "Cancel",
+                  label: "OK",
                 },
               ]
               })}),
@@ -205,16 +205,12 @@ function AdminList() {
 
                           <td>
                             <p className="mb-0">
-                              <a href="mailto:martinokesh40@email.com">
-                                {list.firstName + "  " + list.lastName}
-                              </a>
+                            {list.firstName + "  " + list.lastName}
                             </p>
                           </td>
                           <td>
                             <p className="mb-0">
-                              <a href="mailto:martinokesh40@email.com">
-                                {list.userName}
-                              </a>
+                            {list.userName}
                             </p>
                           </td>
                           <td>
