@@ -41,17 +41,21 @@ export default function  ResetPassword() {
     let userId = "92f89925-72d2-4d76-bf6b-4aef1b95bbb3";
     let det = ({
       password: password,
-      userId: userId,
+      userID: userId,
       verifyEmail: true
     });
 
     AuthService.resetPassword(det).then((res) => {
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "success"
-      });
-      console.log(res)
+      if (res) {
+        setError({
+          ...error,
+          message: res.data.message + ". Redirecting...",
+          color: "success"
+        });
+        setTimeout(() => {
+          navigate('/login', {replace: true})
+        }, 2000)
+      }
     }).catch((err) => {
       console.log(err)
       setError({
