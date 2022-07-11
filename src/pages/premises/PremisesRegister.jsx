@@ -1,4 +1,6 @@
 import React from 'react'
+import  {Helmet} from 'react-helmet'
+
 
 function PremisesRegister() {
   return (
@@ -22,113 +24,7 @@ function PremisesRegister() {
             </div>
         </div>
         {/* <!-- end page title --> */}
-
-        {/* <!-- quick property statitistics --> */}
-        <div class="row">
-            <div class="col-lg-12 px-sm-30px">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-lg-2 col-md-3 col-md-3">
-                                <div class="d-flex">
-
-                                    <div class="flex-grow-1 align-self-center">
-                                        <div class="text-muted">
-                                            <p class="mb-2 d-none">Property<br />Stats.</p>
-                                            <h5 class="mb-1">All Premises Stats</h5>
-                                            <br />
-                                            <p class="mb-0">Quick stats on the registered Premises.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-10 col-md-9 align-self-center">
-                                <div class="text-lg-left mt-4 mt-lg-0">
-                                    <div class="row">
-                                        <div class="col-sm-3 col-md-2">
-                                            <div>
-                                                <div class="avatar-xs-2 mb-3">
-                                                    <span class="avatar-title rounded-circle bg-info font-size-24">
-                                                            <i class="mdi mdi-home-city-outline text-white"></i>
-                                                        </span>
-                                                </div>
-                                                <p class="text-muted text-truncate mb-2">Premises</p>
-                                                <h5 class="mb-0">48</h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3 col-md-2">
-                                            <div>
-                                                <div class="avatar-xs-2 mb-3">
-                                                    <span class="avatar-title bg-info rounded-circle font-size-24">
-                                                            <i class="mdi mdi-home-outline text-white"></i>
-                                                        </span>
-                                                </div>
-                                                <p class="text-muted text-truncate mb-2">No. Of Units</p>
-                                                <h5 class="mb-0">6,503</h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3 col-md-2">
-                                            <div>
-                                                <div class="avatar-xs-2 mb-3">
-                                                    <span class="avatar-title rounded-circle bg-danger font-size-24">
-                                                            <i class="mdi mdi-home-export-outline text-white"></i>
-                                                        </span>
-                                                </div>
-                                                <p class="text-muted text-truncate mb-2">Vacant Units</p>
-                                                <h5 class="mb-0">180</h5>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3 col-md-2 ">
-                                            <div>
-                                                <div class="avatar-xs-2 mb-3">
-                                                    <span class="avatar-title rounded-circle bg-success font-size-24">
-                                                            <i class="mdi mdi-home-import-outline text-white"></i>
-                                                        </span>
-                                                </div>
-                                                <p class="text-muted text-truncate mb-2">Occupied Units</p>
-                                                <h5 class="mb-0">23,203</h5>
-
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-3 col-md-2 d-md-flex">
-                                            <div>
-                                                <div class="avatar-xs-2 mb-3">
-                                                    <span class="avatar-title rounded-circle bg-info font-size-24">
-                                                            <i class="mdi  mdi-home-currency-usd text-white"></i>
-                                                        </span>
-                                                </div>
-                                                <p class="text-muted text-truncate mb-2">Commercial units</p>
-                                                <h5 class="mb-0">103.2</h5>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3 col-md-2 d-md-flex">
-                                            <div>
-                                                <div class="avatar-xs-2  mb-3">
-                                                    <span class="avatar-title rounded-circle bg-info font-size-24">
-                                                            <i class="mdi mdi-home-account text-white"></i>
-                                                        </span>
-                                                </div>
-                                                <p class="text-muted text-truncate mb-2">Residential units</p>
-                                                <h5 class="mb-0">103.2</h5>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
-                        {/* <!-- end row --> */}
-                    </div>
-                </div>
-            </div>
-        </div>
+\
         {/* <!-- quick stast end --> */}
 
 
@@ -587,6 +483,50 @@ function PremisesRegister() {
         {/* <!-- end row --> */}
     </div>
     {/* <!-- container-fluid --> */}
+
+    <Helmet>
+  
+    {/* <!-- JAVASCRIPT --> */}
+    <script src="assets/libs/jquery/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="./assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="./assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="./assets/libs/node-waves/waves.min.js"></script>
+
+
+    {/* <!-- Required datatable js --> */}
+    <script src="assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    {/* <!-- Buttons examples --> */}
+    <script src="assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+    <script src="assets/libs/jszip/jszip.min.js"></script>
+    <script src="assets/libs/pdfmake/build/pdfmake.min.js"></script>
+    <script src="assets/libs/pdfmake/build/vfs_fonts.js"></script>
+    <script src="assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    {/* <!-- numerals number formater --> */}
+    <script src="assets/libs/numeral/numeral.js "></script>
+
+    {/* <!-- Responsive examples --> */}
+    <script src="assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+
+    {/* <!-- Bootstrap select --> */}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    {/* <!-- Plugins js --> */}
+    <script src="assets/libs/dropzone/min/dropzone.min.js"></script>
+    {/* <!-- Datatable init js --> */}
+    <script src="assets/js/pages/datatables.init.js"></script>
+
+    {/* <!-- App js --> */}
+    <script src="./assets/js/app.js"></script>
+    <script src="./assets/js/custom.js"></script>
+    </Helmet>
 </div>
   )
 }
