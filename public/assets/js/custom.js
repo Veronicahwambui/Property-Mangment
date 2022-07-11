@@ -1,7 +1,7 @@
 $(window).on('load', function() {
     setTimeout(function() {
         $("#subscribeModal").modal("show")
-    }, 0);
+    }, 10);
 
     $('body').on('click', '.upload-the-contacts', function() {
         $('.selected-contacts-message').removeClass('d-none')

@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import  {Helmet} from 'react-helmet'
 
 function AddPremises() {
+    const [landlordFileNo , setLandlordFileNo] = useState('')
 
   return (
     <>
@@ -1118,7 +1119,60 @@ function AddPremises() {
 
        </div>
     </div>
+    {/* <!-- enter landlord's id modal --> */}
+            <div class="modal fade" id="subscribeModal" data-bs-backdrop="static" data-bs-keyboard="false"  role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom-0">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body ">
+                            <div class="text-center mb-4 ">
+                                <div class="avatar-md mx-auto mb-4 ">
+                                    <div class="avatar-title bg-light rounded-circle text-primary h1 ">
+                                        <i class="mdi mdi-card-account-details-outline "></i>
+                                    </div>
+                                </div>
 
+                                <div class="row justify-content-center ">
+                                    <div class="col-xl-10 ">
+                                        <h4 class="text-primary ">Landlord's File No.</h4>
+                                        <p class="text-muted font-size-14 mb-4 ">
+                                            Enter the landlords file number if the landlord is already registered in the system. If this is a new landlord, click cancel.
+                                        </p>
+
+                                        <form onSubmit={(e)=> e.preventDefault()}>
+                                            <div class="row ">
+                                                <div class="col-9">
+                                                    <div class="mb-3 ">
+                                                        <label for="digit1-input " class="visually-hidden ">File No.</label>
+                                                        <input type="text " class="form-control form-control-lg text-center two-step " placeholder="Enter file No." value={landlordFileNo} onChange={(e)=>setLandlordFileNo(e.target.value)}/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3 ">
+                                                    <button data-bs-dismiss="modal" class="btn btn-primary btn-block w-100 btn-lg">
+                                                        <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
+                                                    <div class="d-none">Search</div>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <button data-bs-dismiss="modal" class="btn btn-secondary btn-block mt-3 text-center w-100">
+                                                <i class="mdi mdi-account-multiple-plus font-size-16 align-middle me-2 "></i>
+                                                Its a new landlord
+                                            </button>
+
+
+                                        </form>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* <!-- end of ID modal --> */}
 
     <Helmet>
     {/* <!-- JAVASCRIPT --> */}
