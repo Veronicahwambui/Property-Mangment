@@ -11,9 +11,7 @@ import AllTenants from './pages/tenants/AllTenants';
 import AddTenant from './pages/tenants/AddTenant';
 import ApplicableCharges from './pages/setups/ApplicableCharges';
 import Estate from './pages/setups/Estate';
-import HouseTypes from './pages/setups/HouseTypes';
 import Zones from './pages/setups/Zones';
-import AttachableDocs from './pages/setups/AttachableDocs';
 import CreateInvoice from './pages/invoices/CreateInvoice';
 import Receipts from './pages/Receipts';
 import Transactions from './pages/Transactions';
@@ -76,9 +74,7 @@ function Main() {
                   {/* set ups  */}
                   <Route path='/applicablecharges' element={<ApplicableCharges />} />
                   <Route path='/estates' element={<Estate />} />
-                  <Route path='/housetypes' element={<HouseTypes />} />
                   <Route path='/zones' element={<Zones />} />
-                  <Route path='/attachabledocs' element={<AttachableDocs />} />
                   <Route path='/premisetypes' element={<PremiseTypes />} />
                   <Route path='/premiseusetypes' element={<PremiseUseTypes />} />
                   <Route path='/unit-types' element={<UnitTypes />} />
