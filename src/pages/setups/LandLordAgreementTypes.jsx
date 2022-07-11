@@ -302,7 +302,7 @@ function LandLordAgreementTypes() {
           <div class="modal-content">
             <div class="modal-body">
               <center>
-                <h5>Deactivate this agreementType ?</h5>
+                <h5>Deactivate this Agreement Type ?</h5>
               </center>
             </div>
             <div class="modal-footer">
