@@ -379,6 +379,29 @@ class RequestsService {
         return axiosInstance.get(baseUrl + `/clients/${id}`)
     }
 
+    //landlord agreement types
+
+    createAgreementType(data) {
+        return axiosInstance.post(baseUrl + "/setup/landLordAgreementTypes", data);
+    }
+
+    getAllAgreementTypes() {
+        return axiosInstance.get(baseUrl + "/setup/landLordAgreementTypes");
+    }
+
+    getOneAgreementType(id) {
+        return axiosInstance.get(baseUrl + "/setup/landLordAgreementTypes/" + id);
+    }
+
+    editAgreementType(data) {
+        return axiosInstance.post(baseUrl + "/setup/landLordAgreementTypes/update", data);
+    }
+
+    deactivateAgreementType(id) {
+        return axiosInstance.get(baseUrl + "/setup/landLordAgreementTypes/toogleStatus/" + id);
+    }
+
+
 }
 
 export default new RequestsService();
