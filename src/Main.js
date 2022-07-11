@@ -34,6 +34,7 @@ import PremiseTypes from "./pages/setups/PremiseTypes";
 import PremiseUseTypes from "./pages/setups/PremiseUseTypes";
 import UnitTypes from "./pages/setups/UnitTypes";
 import DocumentTypes from "./pages/setups/DocumentTypes";
+import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
 function Main() {
 
   // useEffect(() => {
@@ -106,6 +107,8 @@ function Main() {
                   <Route path='/addadmin' element={<AddAdmin/>} />
                   <Route path='/clienttypes' element={<ClientType/>} />
                   <Route path='/clients' element={<ClientManagement/>} />
+                  <Route path='/agreementtypes' element={<LandLordAgreementTypes/>} />
+
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
               </div>
