@@ -34,14 +34,14 @@ import UnitTypes from "./pages/setups/UnitTypes";
 import DocumentTypes from "./pages/setups/DocumentTypes";
 function Main() {
 
-  // useEffect(() => {
-  //   setTimeout(function () {
-  //     localStorage.clear();
-  //     window.location.reload();
+  useEffect(() => {
+    setTimeout(function () {
+      localStorage.clear();
+      window.location.reload();
 
-  //   }, new Date(AuthService.getUserLoggedInAt()) - Math.floor(Date.now()));
+    }, AuthService.getUserLoggedInAt() - Math.floor(Date.now()));
 
-  // }, []);
+  }, []);
 
   return (
     <BrowserRouter>

@@ -1,9 +1,9 @@
 import React from 'react'
-import {  NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 function SideBar() {
-  return (
-    <div class="vertical-menu">
+    return (
+        <div class="vertical-menu">
 
             <div data-simplebar class="h-100">
 
@@ -44,41 +44,39 @@ function SideBar() {
                                 <li><NavLink to="/addtenant">Add a tenant</NavLink></li>
                             </ul>
                         </li>
-                    
+
                         <li>
                             <a href="javascript: void(0)" class="waves-effect has-arrow">
                                 <i class="mdi mdi-cog-outline"></i>
                                 <span>Set ups</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <li><NavLink  to="/applicablecharges">Applicable Charges</NavLink></li>
-                                <li><NavLink  to="/premisetypes">Premise Types</NavLink></li>
-                                <li><NavLink  to="/premiseusetypes">Premise Use Types</NavLink></li>
-                                <li><NavLink  to="/unit-types">Unit Types</NavLink></li>
-                                <li><NavLink  to="/document-types">Attachable Documents</NavLink></li>
-                                <li><NavLink  to="/allroles">All roles </NavLink></li>
-                                <li><NavLink  to="/clientcounties">client Counties</NavLink></li>
-                                <li><NavLink  to="/zones">Zones</NavLink></li>
-                                <li><NavLink  to="/estates">Estate</NavLink></li>
+                                <li><NavLink to="/applicablecharges">Applicable Charges</NavLink></li>
+                                <li><NavLink to="/premisetypes">Premise Types</NavLink></li>
+                                <li><NavLink to="/premiseusetypes">Premise Use Types</NavLink></li>
+                                <li><NavLink to="/unit-types">Unit Types</NavLink></li>
+                                <li><NavLink to="/document-types">Attachable Documents</NavLink></li>
+                                <li><NavLink to="/allroles">All roles </NavLink></li>
+                                <li><NavLink to="/clientcounties">client Counties</NavLink></li>
+                                <li><NavLink to="/zones">Zones</NavLink></li>
+                                <li><NavLink to="/estates">Estate</NavLink></li>
                                 {/* <li><NavLink  to="/attachabledocs">Attachable Documents</NavLink></li> */}
                             </ul>
                         </li>
-              
-                  
 
-                          <li>
+                        <li>
                             <a href="javascript: void(0)" class="waves-effect has-arrow">
                                 <i class="bx bx-receipt"></i>
                                 <span>Invoices</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <li><NavLink  to="/createinvoice">Create an Invoice</NavLink></li>
+                                <li><NavLink to="/createinvoice">Create an Invoice</NavLink></li>
                             </ul>
                         </li>
-                 
+
 
                         <li>
-                            <NavLink  to="/receipts" class="waves-effect">
+                            <NavLink to="/receipts" class="waves-effect">
                                 <i class="mdi mdi-receipt"></i><span>Receipts</span>
                             </NavLink>
                         </li>
@@ -118,7 +116,7 @@ function SideBar() {
                 {/* <!-- Sidebar --> */}
             </div>
         </div>
-  )
+    )
 }
 
 export default SideBar
