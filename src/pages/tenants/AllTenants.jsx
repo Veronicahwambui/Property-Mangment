@@ -60,7 +60,7 @@ function AllTenants() {
 
                 <div className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
                   <div className="d-flex align-items-center flex-grow-1">
-                   
+
 
 
                   </div>
@@ -100,9 +100,9 @@ function AllTenants() {
 
                           <td className="text-capitalize">{index + 1}</td>
                           <td className="text-capitalize">
-                            <a href="property-details.html" title="View Details">
+                            <Link to={"/tenant/" + premise.id}>
                               {premise.tenantType === "COMPANY" ? premise.companyName : (premise.firstName + " " + premise.otherName)}
-                            </a>
+                            </Link>
                           </td>
                           <td>
                             <h5 className="font-size-14 mb-1">{premise.tenantType === "COMPANY" ? <span className="badge-soft-success badge">{premise.tenantType}</span> : <span className="badge-soft-primary badge">{premise.tenantType}</span>}</h5>
@@ -124,8 +124,8 @@ function AllTenants() {
                             <h5 className="font-size-14 mb-1">{premise.dateTimeCreated}</h5>
 
                           </td>
-                          
-                          
+
+
                           <td >{premise.active ? <span className="badge-soft-success badge">Active</span> : <span className="badge-soft-danger badge">Inactive</span>}</td>
 
                           <td>
@@ -135,7 +135,12 @@ function AllTenants() {
                               </a>
 
                               <div className="dropdown-menu dropdown-menu-end">
-                                <a className="dropdown-item" href="property-details.html"><i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
+
+                                <Link className="dropdown-item" to={"/tenant/" + premise.id}>
+                                  <i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed View
+                                </Link>
+
+                                {/* <a className="dropdown-item" href="property-details.html"><i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a> */}
                                 {/* <a className="dropdown-item" href="property-units.html"><i className="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
                                 <a className="dropdown-item" href="#"><i className="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
                                 <a className="dropdown-item" href="#"> <i className="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Change ownership</a> */}

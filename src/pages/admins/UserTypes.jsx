@@ -1,5 +1,6 @@
 import requestsServiceService from "../../services/requestsService.service";
 import { useEffect, useId, useState } from "react";
+import authService from "../../services/auth.service";
 
 function UserTypes() {
   const [userType, setUserType] = useState([]);
@@ -11,7 +12,7 @@ function UserTypes() {
   
   const userTypeData = () => {
     const data = JSON.stringify({
-      clientId: 2,
+      clientId: parseInt(authService.getClientId()),
       id: null,
       name: "string",
     });
@@ -32,6 +33,7 @@ function UserTypes() {
 
         console.log(res.data)
 
+        userTypeData();
       });
     
 }
@@ -39,12 +41,14 @@ function UserTypes() {
 const updateUser=()=>{
   let data=JSON.stringify({
     id: id,
+    clientId: parseInt(authService.getClientId()),
     name: editName
   })
 
   requestsServiceService.updateUserType(data).then((res)=>{
     console.log(res)
    
+    userTypeData();
   }
   ) 
 
@@ -57,16 +61,11 @@ const deactivateUser =(userId)=>{
     requestsServiceService.deactiveUser(userId).then((res) => {
       console.log(res);
     
+      userTypeData();
         
       });
     
 }
-
-
-
-
-
-
 
 
   useEffect(() => {
@@ -258,7 +257,8 @@ const deactivateUser =(userId)=>{
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary" onClick={addUserType }>
+              <button type="button" class="btn btn-primary" 
+                data-bs-dismiss="modal" onClick={addUserType }>
                 Save
               </button>
             </div>
@@ -300,7 +300,7 @@ const deactivateUser =(userId)=>{
 
                       type="text"
                       class="form-control"
-                      placeholder="Enter zone name"
+                      placeholder="Enter name"
                       onChange={(event) => setEditName(event.target.value)}
                       value={editName}
                     
@@ -320,7 +320,8 @@ const deactivateUser =(userId)=>{
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary"  onClick={updateUser} >
+              <button type="button" class="btn btn-primary" 
+                data-bs-dismiss="modal" onClick={updateUser} >
                 Save
               </button>
             </div>
