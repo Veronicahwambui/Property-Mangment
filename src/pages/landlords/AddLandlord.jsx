@@ -11,6 +11,8 @@ export default function AddLandlord() {
   const [bankName, setBankName] = useState("")
   const [landlordtypes, setlandlordtypes] = useState([])
   const [documentTypes, setdocumentTypes] = useState([])
+  const [landlordDocuments, setLandlordDocuments] = useState([]);
+
 
   useEffect(()=>{
     requestsServiceService.getAllAgreementTypes().then((res) => {
@@ -64,28 +66,54 @@ export default function AddLandlord() {
   // document details
   const [docName, setdocName] = useState("")
   const [document, setdocument] = useState("")
-  // const [documentOwnerTypeName, setDocumentOwnerTypeName] = useState("")
   const [documentTypeId, setdocumentTypeId] = useState(null)
-  // const [ownerEntityId, setownerEntityId] = useState(0)
 
-  const [landlordDocuments, setLandlordDocuments] = useState([]);
 
-  // const [landlordAccounts, setLandlordAccounts] =useState({
-  //   active: true,
-  //   bankAccountNumber: "",
-  //   bankId: 0,
-  //   id: 0,
-  //   landLordId: 0,
-  //   percentageRemuneration: 0
-  // })
   const [bankAccountNumber, setbankAccountNumber] = useState("");
   const [bankId, setbankId] = useState(null);
-  const [percentageRemuneration, setPercentageRemuneration] = useState(0);
+  const [percentageRemuneration, setPercentageRemuneration] = useState(null);
 
   const setbankAccountDetails = (value) => {
     setbankId(value.split(":")[0]);
     setBankName(value.split(":")[1]);
   };
+  const editBankAccountDetails = (value) => {
+    setEditBankId(value.split(":")[0]);
+    setEditBankName(value.split(":")[1]);
+  }
+
+  //bank edits
+  const [editBankId, setEditBankId] = useState(null)
+  const [editBankName, setEditBankName] = useState("")
+  const [editBankAccount, setEditBankAccount] = useState("")
+  const [editpercentageRemuneration, setEditPercentageRemuneration] = useState(null)
+  const [selectedAccount, setSelectedAccount] = useState({
+
+  })
+  const [arr_index, setArr_Index] = useState(0)
+
+  const getOneAccount = (id) => {
+    console.log(id)
+    let find = accounts[id]
+    accounts.forEach((account, index) => {
+      // console.log(account, index)
+    })
+    setArr_Index(id)
+    setEditBankName(selectedAccount.bankName)
+    handleEditAccountShow()
+      // if(account) {
+      //   seteditBankAccountDetails(account)
+      //   setClientType({
+      //     ...clientType,
+      //     name: cl.clientType.name,
+      //     id: cl.clientType.id
+      //   })
+      //   setEditClientTypeId(cl.clientType.id);
+      //   setEditName(cl.name)
+      //   setEditUrl(cl.clientBaseUrl)
+      //   setId(cl.id)
+      // }
+    }
 
   const handleDocumentSubmit = (event) => {
     event.preventDefault();
@@ -101,6 +129,16 @@ export default function AddLandlord() {
     handleDocClose();
   }
 
+  const getDoc = (id)  => {
+    console.log(accounts[id])
+  }
+
+  const handleEditDocument = (event) => {
+    event.preventDefault()
+    console.log(accounts)
+  }
+
+//accounts edit
   const handleAccountSubmit = (event) => {
     event.preventDefault()
     let data = {
@@ -117,15 +155,25 @@ export default function AddLandlord() {
     setBankName("");
     setbankId(null);
     setPercentageRemuneration(0);
-    console.log(accounts)
-    setTimeout(() => {
-      setShow(false)
-    }, 1000)
+    setShow(false)
+
   }
-  //
-  // const findBankName = (id) => {
-  //   banks.find(item => item.id === id)
-  // }
+  const handleEditAccount = (event) => {
+    event.preventDefault()
+    let data = {
+      bankName: editBankName,
+      active: true,
+      bankAccountNumber: editBankAccount,
+      bankId: editBankId,
+      id: null,
+      landLordId: null,
+      percentageRemuneration: editpercentageRemuneration
+    }
+    let d = accounts;
+     d[arr_index] = data;
+     setAccounts(d);
+    handleEditAccountClose();
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -158,10 +206,18 @@ export default function AddLandlord() {
     console.log(new_t)
     console.log(data)
   }
+  const removeDoc = (id) => {
+    console.log(landlordDocuments)
+    let docs = landlordDocuments
+    docs.splice(id, 1)
+    setLandlordDocuments(docs);
+  }
   const handleFileRead = async (event) => {
     const file = event.target.files[0]
     const base64 = await convertBase64(file)
-    setdocument(base64);
+    let result = base64.substr(28);
+    setdocument(result);
+    console.log(result);
   }
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -379,6 +435,7 @@ export default function AddLandlord() {
                                       <td className="text-right cell-change text-nowrap ">
                                         <div className="d-flex">
                                           <a data-bs-toggle="modal"
+                                             onClick={() => getOneAccount(index)}
                                              data-bs-target="#update-modal"
                                              className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                              title="Edit "><i className="bx bx-edit-alt "></i></a>
@@ -463,6 +520,67 @@ export default function AddLandlord() {
                         </Modal.Footer>
                       </form>
                     </Modal>
+                    </div>
+                    {/*edit bank details modal*/}
+                    <div>
+                      <Modal show={editAccountShow} onHide={handleEditAccountClose} className={"modal fade"}>
+                        <form onSubmit={handleEditAccount}>
+                          <Modal.Header closeButton>
+                            <Modal.Title>Edit Account</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <div className="row">
+                              <div className="col-12">
+                                <div className="form-group mb-4">
+                                  <label htmlFor="">Select Bank</label>
+                                  <select
+                                    className="form-control"
+                                    onChange={(e) => {
+                                      editBankAccountDetails(e.target.value);
+                                    }}
+                                    name="bank account"
+                                    required={true}
+                                  >
+                                    <option className="text-black font-semibold ">
+                                      {editBankName}
+                                    </option>
+                                    {banks.map((bank) => {
+                                      return (
+                                        <option
+                                          key={bank.id}
+                                          value={
+                                            bank.id +
+                                            ":" +
+                                            bank.bankName
+                                          }
+                                        >
+                                          {bank.bankName}
+                                        </option>
+                                      );
+                                    })}
+                                  </select>
+                                </div>
+                                <div className="form-group mb-4">
+                                  <label htmlFor="">Bank account number</label>
+                                  <input type="text" className="form-control" value={editBankAccount} onChange={(e) => setEditBankAccount(e.target.value)} placeholder="Enter account number" required={true}/>
+                                </div>
+                                <div className="form-group mb-4">
+                                  <label htmlFor="">Percentage renumeration</label>
+                                  <input type="text" className="form-control" value={editpercentageRemuneration} onChange={(e) => setEditPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
+                                </div>
+                              </div>
+                            </div>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="secondary" className={"btn btn-grey"} onClick={handleEditAccountClose}>
+                              Close
+                            </Button>
+                            <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                              Save Changes
+                            </Button>
+                          </Modal.Footer>
+                        </form>
+                      </Modal>
                     </div>
 
                     {/*document attachment modal*/}
@@ -549,9 +667,9 @@ export default function AddLandlord() {
                             </tr>
                             </thead>
                             <tbody>
-                            { landlordDocuments.length > 0 && landlordDocuments.map((doc, index) => {
+                            { landlordDocuments!="" && landlordDocuments.length > 0 && landlordDocuments.map((doc, index) => {
                               return (
-                                <tr data-id="1">
+                                <tr data-id="1" key={index}>
                                   <td style={{ width: "80px" }}>{index+1}</td>
                                   <td>{doc.documentOwnerTypeName}</td>
                                   <td>{doc.docName}</td>
@@ -559,12 +677,12 @@ export default function AddLandlord() {
                                     <div className="d-flex">
                                       <a data-bs-toggle="modal"
                                          data-bs-target="#update-modal"
+                                         onClick={() => removeDoc(index)}
                                          className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
-                                         title="Edit "><i className="bx bx-edit-alt "></i></a>
+                                         title="Delete"><i className='bx bxs-trash'></i></a>
                                     </div>
                                   </td>
                                 </tr>
-
                               )
                             })}
                             </tbody>
