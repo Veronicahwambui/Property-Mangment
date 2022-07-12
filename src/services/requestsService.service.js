@@ -406,7 +406,33 @@ class RequestsService {
         return uc
     }
 
+    //landlords
+    getDocumentOwnerTypes() {
+        return axiosInstance.get(baseUrl + "/setup/documentOwnerTypes")
+    }
 
+    createLandLord(data) {
+        return axiosInstance.post(baseUrl + "/landlord/create", data)
+    }
+
+    createLandLordAccounts(data) {
+        return axiosInstance.post(baseUrl+ "/landlord/accounts/create", data)
+    }
+    updateLandLordAccounts(data) {
+        return axiosInstance.post(baseUrl+ "/landlord/accounts/update", data)
+    }
+    getLandLords() {
+        return axiosInstance.get(baseUrl + "/landlord");
+    }
+    getDocumentTypes() {
+        return axiosInstance.get(baseUrl + "/setup/documentTypes");
+    }
+    getBanks() {
+        return axiosInstance.get(baseUrl + "/setup/banks");
+    }
+    getLandlordTypes() {
+        return axiosInstance.get(baseUrl + "/setup/landLordTypes")
+    }
 }
 
 export default new RequestsService();
