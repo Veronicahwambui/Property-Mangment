@@ -384,6 +384,15 @@ class RequestsService {
         return axiosInstance.get(baseUrl + `/clients/${id}`)
     }
 
+
+    download(name){
+        return axiosInstance.get(baseUrl + '​/documents​/download?' + name )
+    }
+
+    viewLandlord(id) {
+        return axiosInstance.get(baseUrl + "/landlord/" + id)
+       }
+  
 }
 
 export default new RequestsService();

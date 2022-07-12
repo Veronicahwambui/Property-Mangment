@@ -10,6 +10,7 @@ function PremisesRegister() {
     const [premises , setPremises] = useState([])
     const [activeId , setActiveId] = useState('')
 
+
     useEffect(()=>{
        fetchAll()
     },[])
@@ -175,18 +176,18 @@ function PremisesRegister() {
                                             </a>
 
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="property-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
-                                                <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
-                                                <a class="dropdown-item" href="#"> <i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Change ownership</a>
-                                                <a onClick={()=>{setActiveId(premise.id); deactivate()}} class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>Deactivate property</a>
+                                                <Link class="dropdown-item" to={`/premise/${premise.id}`} ><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</Link>
+                                                {/* <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a> */}
+                                                {/* <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a> */}
+                                                {/* <a class="dropdown-item" href="#"> <i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Change ownership</a> */}
+                                                <a onClick={()=>{setActiveId(premise.id); deactivate()}} class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>{premise.active ? "Deactivate": "Activate"  }</a>
                                             </div>
                                         </div>
                                     </td>
                                         </tr>
                                     )
                                 })}
-                              <tr></tr>
+                              {/* <tr></tr> */}
                             </tbody>
                         </table>
                     </div>
@@ -199,49 +200,7 @@ function PremisesRegister() {
     </div>
     {/* <!-- container-fluid --> */}
 
-    <Helmet>
-  
-    {/* <!-- JAVASCRIPT --> */}
-    <script src="assets/libs/jquery/jquery.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="./assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/libs/metismenu/metisMenu.min.js"></script>
-    <script src="./assets/libs/simplebar/simplebar.min.js"></script>
-    <script src="./assets/libs/node-waves/waves.min.js"></script>
-
-
-    {/* <!-- Required datatable js --> */}
-    <script src="assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-    {/* <!-- Buttons examples --> */}
-    <script src="assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
-    <script src="assets/libs/jszip/jszip.min.js"></script>
-    <script src="assets/libs/pdfmake/build/pdfmake.min.js"></script>
-    <script src="assets/libs/pdfmake/build/vfs_fonts.js"></script>
-    <script src="assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
-    {/* <!-- numerals number formater --> */}
-    <script src="assets/libs/numeral/numeral.js "></script>
-
-    {/* <!-- Responsive examples --> */}
-    <script src="assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
-
-    {/* <!-- Bootstrap select --> */}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-    {/* <!-- Plugins js --> */}
-    <script src="assets/libs/dropzone/min/dropzone.min.js"></script>
-    {/* <!-- Datatable init js --> */}
-    <script src="assets/js/pages/datatables.init.js"></script>
-
-    {/* <!-- App js --> */}
-    <script src="./assets/js/app.js"></script>
-    <script src="./assets/js/custom.js"></script>
-    </Helmet>
+   
 </div>
   )
 }

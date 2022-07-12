@@ -32,6 +32,8 @@ import PremiseTypes from "./pages/setups/PremiseTypes";
 import PremiseUseTypes from "./pages/setups/PremiseUseTypes";
 import UnitTypes from "./pages/setups/UnitTypes";
 import DocumentTypes from "./pages/setups/DocumentTypes";
+import OnePremise from "./pages/premises/OnePremise";
+import LandLordView from "./pages/LandLordView";
 function Main() {
 
   // useEffect(() => {
@@ -68,6 +70,7 @@ function Main() {
                   {/* premises */}
                   <Route path='/premisesregister' element={<PremisesRegister />} />
                   <Route path='/addpremises' element={<AddPremises />} />
+                  <Route path='/premise/:id' element={<OnePremise/>} />
                   {/* tenants  */}
                   <Route path='/alltenants' element={<AllTenants />} />
                   <Route path='/addtenant' element={<AddTenant />} />
@@ -103,6 +106,8 @@ function Main() {
                   <Route path='/clienttypes' element={<ClientType/>} />
                   <Route path='/clients' element={<ClientManagement/>} />
                   <Route path="*" element={<Navigate to="/" />}></Route>
+
+                  <Route path='/lands' element={<LandLordView />} />
                 </Routes>
               </div>
           </>       
