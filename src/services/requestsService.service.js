@@ -400,6 +400,11 @@ class RequestsService {
     deactivateAgreementType(id) {
         return axiosInstance.get(baseUrl + "/setup/landLordAgreementTypes/toogleStatus/" + id);
     }
+    getCurrentUserClient() {
+        let temp = JSON.parse(localStorage.getItem("user"));
+        let uc = temp.client
+        return uc
+    }
 
 
 }
