@@ -19,9 +19,14 @@ function SideBar() {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to="landlords" class="waves-effect">
-                                <i class="mdi mdi-shield-home"></i><span>Landlord</span>
-                            </NavLink>
+                            <a href="javascript: void(0)" className="waves-effect has-arrow">
+                                <i className="mdi mdi mdi-shield-home"></i>
+                                <span>Landlord</span>
+                            </a>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li><NavLink to="/landlords">All landlords</NavLink></li>
+                                <li><NavLink to="/addlandlord">Add a landlord</NavLink></li>
+                            </ul>
                         </li>
 
                         <li>
