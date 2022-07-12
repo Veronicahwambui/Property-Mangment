@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import  {Helmet} from 'react-helmet'
 import { Link } from 'react-router-dom'
 import requestsServiceService from '../../services/requestsService.service'
 
@@ -147,9 +146,9 @@ function PremisesRegister() {
                                     </td>
                                     <td class="text-capitalize">{index + 1}</td>
                                     <td class="text-capitalize">
-                                        <a href="property-details.html" title="View Details">
+                                        <Link  to={`/premise/${premise.id}`} title="View Details">
                                             {premise.premiseName}
-                                        </a>
+                                        </Link>
                                     </td>
                                     <td>
                                         <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">{premiseType.name}</a></h5>

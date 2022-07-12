@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import Header from './components/Header';
 import SideBar from './components/SideBar';
-import { Helmet } from 'react-helmet'
 import Dashboard from './pages/Dashboard';
 import Landlords from './pages/Landlords';
 import PremisesRegister from './pages/premises/PremisesRegister';
@@ -36,15 +35,6 @@ import OnePremise from "./pages/premises/OnePremise";
 import LandLordView from "./pages/LandLordView";
 import OneTenant from "./pages/tenants/OneTenant";
 function Main() {
-
-  // useEffect(() => {
-  //   setTimeout(function () {
-  //     localStorage.clear();
-  //     window.location.reload();
-
-  //   }, new Date(AuthService.getUserLoggedInAt()) - Math.floor(Date.now()));
-
-  // }, []);
 
   return (
     <BrowserRouter>
@@ -115,11 +105,7 @@ function Main() {
           </>       
         }
       </div >
-      <Helmet>
-        {/* <!-- App js --> */}
-        <script src="./js/app.js "></script>
-        <script src="./js/custom.js "></script>
-      </Helmet>
+      
     </BrowserRouter >
   );
 }
