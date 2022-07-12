@@ -5,7 +5,7 @@ class RequestsService {
     getAllRoles() {
         return axiosInstance.get(baseUrl + "/roles");
     }
-       
+
     getOneRole(roleId) {
         return axiosInstance.get(baseUrl + "/roles/" + roleId);
     }
@@ -223,11 +223,11 @@ class RequestsService {
     // }
 
     // applicable charges
-    
+
     allApplicableCharges() {
         return axiosInstance.get(baseUrl + "/setup/applicableCharges");
-    }  
-    
+    }
+
     applicableChargeTypes() {
         return axiosInstance.get(baseUrl + "/setup/applicableChargeTypes");
     }
@@ -382,6 +382,26 @@ class RequestsService {
     }
     getClient(id) {
         return axiosInstance.get(baseUrl + `/clients/${id}`)
+    }
+
+    getAllTenants() {
+        return axiosInstance.get(baseUrl + "/tenants");
+    }
+
+    toggleTenantStatus() {
+        // return axiosInstance.get(baseUrl + "/client-types");
+    }
+
+
+    allPremises() {
+        return axiosInstance.get(baseUrl + "/premises");
+    }
+    getPremise(id) {
+        return axiosInstance.get(baseUrl + "/premises/"+id);
+    }
+
+    createTenant(data){
+        return axiosInstance.post(baseUrl+"/tenants", data);
     }
 
 }
