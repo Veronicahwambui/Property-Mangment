@@ -35,16 +35,18 @@ import PremiseUseTypes from "./pages/setups/PremiseUseTypes";
 import UnitTypes from "./pages/setups/UnitTypes";
 import DocumentTypes from "./pages/setups/DocumentTypes";
 import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
+import AddLandlord from "./pages/landlords/AddLandlord";
+
 function Main() {
 
-  // useEffect(() => {
-  //   setTimeout(function () {
-  //     localStorage.clear();
-  //     window.location.reload();
+  useEffect(() => {
+    setTimeout(function () {
+      localStorage.clear();
+      window.location.reload();
 
-  //   }, new Date(AuthService.getUserLoggedInAt()) - Math.floor(Date.now()));
+    }, AuthService.getUserLoggedInAt() - Math.floor(Date.now()));
 
-  // }, []);
+  }, []);
 
   return (
     <BrowserRouter>
@@ -108,6 +110,7 @@ function Main() {
                   <Route path='/clienttypes' element={<ClientType/>} />
                   <Route path='/clients' element={<ClientManagement/>} />
                   <Route path='/agreementtypes' element={<LandLordAgreementTypes/>} />
+                  <Route path='/addlandlord' element={<AddLandlord/>} />
 
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
