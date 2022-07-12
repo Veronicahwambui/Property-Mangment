@@ -392,6 +392,10 @@ class RequestsService {
     viewLandlord(id) {
         return axiosInstance.get(baseUrl + "/landlord/" + id)
        }
+
+    viewTenant(id) {
+        return axiosInstance.get(baseUrl + "/tenants/" + id)
+       }
   
 }
 

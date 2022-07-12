@@ -1,19 +1,19 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import requestsServiceService from "../services/requestsService.service";
+import requestsServiceService from "../../services/requestsService.service";
 
-function LandLordView() {
+function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
-  const [premiseData, setPremiseData] = useState({});
+  const [tenantData, setTenantData] = useState({});
   const [docName, setDocName] = useState("");
 
   const { id } = useParams();
   const userId = id;
 
   const fetchAll = () => {
-    requestsServiceService.viewLandlord(userId).then((res) => {
-      setPremiseData(res.data.data);
+    requestsServiceService.viewTenant(userId).then((res) => {
+      setTenantData(res.data.data);
     });
   };
 
@@ -35,7 +35,7 @@ function LandLordView() {
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
               <h4 class="mb-sm-0 font-size-18">
-              {premiseData.landLord && premiseData.landLord.firstName}
+              {tenantData.tenant && tenantData.tenant.firstName}
               </h4>
 
               <div class="page-title-right">
@@ -47,7 +47,7 @@ function LandLordView() {
                     <a href="property-list.html">All Properties</a>
                   </li>
                   <li class="breadcrumb-item active">
-                    {premiseData.landLord && premiseData.landLord.firstName}
+                    {tenantData.tenant && tenantData.tenant.firstName}
                   </li>
                 </ol>
               </div>
@@ -86,17 +86,17 @@ function LandLordView() {
                             : "nav-item cursor-pointer nav-link"
                         }
                       >
-                        Premises Details<span class="sr-only"></span>
+                        Tenant Details<span class="sr-only"></span>
                       </a>
                       <a
                         onClick={() => setActiveLink(2)}
                         class={
-                          activeLink === 5
+                          activeLink === 2
                             ? "nav-item nav-link active cursor-pointer"
                             : "nav-item cursor-pointer nav-link"
                         }
                       >
-                        Accounts
+                        Tenancies
                       </a>
                       <a
                         onClick={() => setActiveLink(3)}
@@ -106,7 +106,7 @@ function LandLordView() {
                             : "nav-item cursor-pointer nav-link"
                         }
                       >
-                        Documents
+                      Contact persons
                       </a>
                     
                     </div>
@@ -131,8 +131,8 @@ function LandLordView() {
                       <div class="d-flex align-items-center flex-grow-1">
                         <h4 class="mb-0 m-0 bg-transparent">
                           Quick Stats on{" "}
-                          {premiseData.landLord &&
-                            premiseData.landLord.firstName}
+                          {tenantData.tenant &&
+                            tenantData.tenant.firstName}
                         </h4>
                       </div>
                     </div>
@@ -144,8 +144,8 @@ function LandLordView() {
                           <label htmlFor="">Type</label>
                           <div>
                             <span>
-                              {premiseData.landLord &&
-                                premiseData.landLord.landLordType}
+                              {tenantData.tenant &&
+                                tenantData.tenant.tenantType}
                             </span>
                           </div>
                         </div>
@@ -153,8 +153,8 @@ function LandLordView() {
                           <label htmlFor="">First Name</label>
                           <div>
                             <span>
-                              {premiseData.landLord &&
-                                premiseData.landLord.firstName}
+                              {tenantData.tenant &&
+                                tenantData.tenant.firstName}
                             </span>
                           </div>
                         </div>
@@ -162,8 +162,8 @@ function LandLordView() {
                           <label htmlFor="">Last Name</label>
                           <div>
                             <span>
-                              {premiseData.landLord &&
-                               premiseData.landLord.lastName}
+                              {tenantData.tenant &&
+                               tenantData.tenant.lastName}
                             </span>
                           </div>
                         </div>
@@ -171,44 +171,47 @@ function LandLordView() {
                           <label htmlFor="">Email</label>
                           <div>
                             <span>
-                              {premiseData.landLord &&
-                                premiseData.landLord.email}
+                              {tenantData.tenant &&
+                                tenantData.tenant.email}
                             </span>
                           </div>
                         </div>
                       </div>
                       <div className="row mt-5">
                         <div className="col-3">
-                          <label htmlFor="">File Number</label>
+                          <label htmlFor="">Id Number</label>
                           <div>
                             <span>
-                              {premiseData.landLord &&
-                                premiseData.landLord.fileNumber}
+                            {tenantData.tenant &&
+                                tenantData.tenant.idNumber}
                             </span>
                           </div>
                         </div>
                         <div className="col-3">
-                          <label htmlFor="">Remuneration Percentage </label>
+                          <label htmlFor="">Company Name</label>
                           <div>
                             <span>
-                              {premiseData.landLord &&
-                                premiseData.landLord.remunerationPercentage}
+                            {tenantData.tenant &&
+                                tenantData.tenant.companyName}
                             </span>
                           </div>
                         </div>
                         <div className="col-3">
-                          <label htmlFor="">Agreement Period</label>
+                          <label htmlFor="">Company Incorporation Number</label>
                           <div>
                             <span>
-                              {premiseData.landLord &&
-                                premiseData.landLord.agreementPeriod}
+                            {tenantData.tenant &&
+                                tenantData.tenant.companyIncorporationNumber}
                             </span>
                           </div>
                         </div>
                         <div className="col-3">
-                          <label htmlFor="">Status</label>
+                          <label htmlFor="">Nationality</label>
                           <div>
-                            <span>Active</span>
+                            <span>
+                            {tenantData.tenant &&
+                                tenantData.tenant.nationality}  
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -220,130 +223,137 @@ function LandLordView() {
           </div>
         )}
 
-  
-
         {activeLink === 2 && (
           <div>
-            <div className="row">
-              <div className="col-xl-12">
-                <div className="card calc-h-3px">
-                  <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <div class="d-flex align-items-center flex-grow-1">
-                        <h4 class="mb-0 m-0 bg-transparent">Accounts</h4>
-                      </div>
+          <div className="row">
+            <div className="col-xl-12">
+              <div className="card calc-h-3px">
+                <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                  <div
+                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                    role="toolbar"
+                  >
+                    <div class="d-flex align-items-center flex-grow-1">
+                      <h4 class="mb-0 m-0 bg-transparent">Tenancies</h4>
                     </div>
                   </div>
-                  <div className="card-body">
-                    <div className="col-12">
-                      <div className="table-responsive">
-                        <table
-                          class="table align-middle table-edits rent-invoicing dt-responsive"
-                          id="data-table"
-                        >
-                          <thead>
-                            <tr class="text-uppercase table-dark">
-                              <th>#</th>
-                              <th>Bank Name</th>
-                              <th>Account No</th>
-                              <th>% Remuneration</th>
-                             
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {premiseData.accounts &&
-                              premiseData.accounts.map((unit, index) => (
-                                <tr data-id="1">
-                                  <td>{index + 1}</td>
-                                  <td>
-                                    {unit.bank.bankName}
-                                  </td>
-                                  <td className="text-capitalize">
-                                    {unit.bankAccountNumber}
-                                  </td>
-                                  <td>
-                                    {unit.percentageRemuneration} {"%"}
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      </div>
+                </div>
+                <div className="card-body">
+                  <div className="col-12">
+                    <div className="table-responsive">
+                      <table
+                        class="table align-middle table-edits rent-invoicing dt-responsive"
+                        id="data-table"
+                      >
+                        <thead>
+                          <tr class="text-uppercase table-dark">
+                            <th>#</th>
+                            <th>Unit Name</th>
+                            <th>Unit Type</th>
+                            <th>Start Date</th>
+                            <th>Unit Condition</th>
+                            <th>Tenancy Status</th>
+                            <th>Months to renewal</th>
+                            <th>Status</th>
+                           
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {tenantData.tenancies &&
+                            tenantData.tenancies.map((unit, index) => (
+                              <tr data-id="1">
+                                <td>{index + 1}</td>
+                                <td>
+                                  {unit.premiseUnit.unitName}
+                                </td>
+                                <td className="text-capitalize">
+                                {unit.premiseUnit.unitType.name}
+                                  
+                                </td>
+                                <td>
+                                  {unit.startDate.replace(/[TZ]/g , " ")}
+                                </td>
+                                <td>{unit.unitCondition}</td>
+                                <td>{unit.tenancyStatus.toLowerCase()}</td>
+                                <td>{unit.monthsToTenancyRenewal}</td>
+                                <td> { unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
         )}
 
         {activeLink === 3 && (
           <div>
-            <div className="row">
-              <div className="col-xl-12">
-                <div className="card calc-h-3px">
-                  <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <div class="d-flex align-items-center flex-grow-1">
-                        <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
-                      </div>
+          <div className="row">
+            <div className="col-xl-12">
+              <div className="card calc-h-3px">
+                <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                  <div
+                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                    role="toolbar"
+                  >
+                    <div class="d-flex align-items-center flex-grow-1">
+                      <h4 class="mb-0 m-0 bg-transparent">Tenancies</h4>
                     </div>
                   </div>
-                  <div className="card-body">
-                    <div className="col-12">
-                      <div className="table-responsive">
-                        <table
-                          class="table align-middle table-edits rent-invoicing dt-responsive"
-                          id="data-table"
-                        >
-                          <thead>
-                            <tr class="text-uppercase table-dark">
-                              <th>#</th>
-                              <th>Name</th>
-                              <th>Type</th>
-                              <th>Owner type</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {premiseData.documents &&
-                              premiseData.documents.map(
-                                (unit, index) => (
-                                  <tr data-id="1">
-                                    <td>{index + 1}</td>
-                                    <td
-                                      onClick={download}
-                                      className="active nav-link cursor-pointer"
-                                    >
-                                      <a> {unit.docName}</a>
-                                    </td>
-                                    <td>{unit.documentType.name}</td>
-                                    <td className="text-capitalize">
-                                      {unit.documentOwnerType.toLowerCase()}
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                          </tbody>
-                        </table>
-                      </div>
+                </div>
+                <div className="card-body">
+                  <div className="col-12">
+                    <div className="table-responsive">
+                      <table
+                        class="table align-middle table-edits rent-invoicing dt-responsive"
+                        id="data-table"
+                      >
+                        <thead>
+                          <tr class="text-uppercase table-dark">
+                            <th>#</th>
+                            <th>Name (s) </th>
+                            <th>Type</th>
+                            <th>Relationship</th>
+                            <th>phone No</th>
+                            <th>Status</th>
+                           
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {tenantData.contactPeople &&
+                            tenantData.contactPeople.map((unit, index) => (
+                              <tr data-id="1">
+                                <td>{index + 1}</td>
+                                <td>
+                                  {unit.firstName}   {unit.lastName}   {unit.otherName}
+                                </td>
+                                <td className="text-capitalize">
+                                  {unit.contactPersonType.toLowerCase().replace(/_/g," ")}
+                                </td>
+                               <td>{unit.relationship}</td>
+                               <td>{unit.phoneNumber1}</td>
+                                <td> { unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
         )}
 
-      
+  
       </div>
     </div>
   );
 }
 
-export default LandLordView;
+export default OneTenant;

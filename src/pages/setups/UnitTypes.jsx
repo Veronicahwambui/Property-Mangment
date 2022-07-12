@@ -15,6 +15,10 @@ function UnitTypes() {
   const [chargeType, setChargeType] = useState('')
   const [createArr, setCreateArr] = useState()
   const [updateArr, setUpdateArr] = useState([])
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
   useEffect(() => {
     fetchTypes();
@@ -49,9 +53,49 @@ function UnitTypes() {
 
     requestsServiceService.createUnitTypes(data).then((res) => {
       fetchAll()
-    })
-  }
-
+      if(res.data.status){
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        }) } else {
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+        
+        
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+     }).catch((res)=>{
+  
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+  
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+  
+      })
+    }
+    
+    const clear = ()=> {
+      setError({
+        ...error,
+        message: "",
+        color: ""
+      });
+    }
+  
   // toggle function 
   const toggleStatus = () => {
 
@@ -72,9 +116,41 @@ function UnitTypes() {
     requestsServiceService.updateUnitType(data).then((res) => {
 
       fetchAll()
-    })
-  }
-  console.log(selectedChargeTypes);
+      if(res.data.status){
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        }) } else {
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+        
+        
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+      }).catch((res)=>{
+  
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+  
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+  
+      })
+    }
+    
 
 
   const setChargeTypes1 = (el) => {
@@ -146,6 +222,11 @@ function UnitTypes() {
                   </div>
                 </div>
                 <div class="card-body">
+                {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">

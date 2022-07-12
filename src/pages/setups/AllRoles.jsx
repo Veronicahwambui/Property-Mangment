@@ -12,6 +12,10 @@ function AllRoles() {
     const  [rolePriveledges ,setRolePriveledges]  = useState([])
     const  [editPriveledges ,setEditPriveledges]  = useState([])
     const [roleID ,setRoleID] = useState('')
+    const [error, setError] = useState({
+        message: "",
+        color: ""
+      });
     
 
 
@@ -58,15 +62,53 @@ const getAllPreviledges = ()=>{
       console.log(res.data);
       setPrivilegeNames([])
       getAllRoles()
+   
 
-   }).catch((err)=>{
-     console.log(err);
-   })
+      if(res.data.status){
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        }) } else {
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+        
+        
+        setTimeout(() => {
+          clear()
+        }, 3000)
 
+    }).catch((res)=>{
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+  
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+  
+      })
 
    setRoleAdd(!roleAdd)
    setPrivilegeNames([])
    setRoleName('')
+  }
+
+  const clear = ()=> {
+    setError({
+      ...error,
+      message: "",
+      color: ""
+    });
   }
 
   // fetch one role 
@@ -102,12 +144,41 @@ const editARole = ()=>{
           }
     )
     requestsServiceService.EditRole(data).then((res)=>{
-      console.log(res.data);
       getAllRoles()
-   }).catch((err)=>{
-     console.log(err);
-   })
-  }
+      if(res.data.status){
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        }) } else {
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+        
+        
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+      }).catch((res)=>{
+  
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+  
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+  
+      })
+    }
              const handleRoleChange = (index, event) => {
                const { checked, value } = event.target;
            
@@ -177,6 +248,11 @@ const editARole = ()=>{
 
                                 </div>
                                 <div class="card-body">
+                                {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                                     <div class="table-responsive table-responsive-md">
                                         <table class="table table-editable align-middle table-edits">
                                             <thead class="table-light">

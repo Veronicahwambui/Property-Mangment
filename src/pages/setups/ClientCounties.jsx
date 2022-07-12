@@ -6,6 +6,10 @@ function ClientCounties() {
   const [clientCounties, setClientCounties] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState("");
   const [activeId , setActiveId] = useState('')
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
   useEffect(() => {
     getClientCounties();
@@ -32,10 +36,51 @@ const deactivate = (id)=> {
       id: 0,
     });
 
-    requestsServiceService.createCounty(data).then(() => {
+    requestsServiceService.createCounty(data).then((res) => {
       getClientCounties()
-    });
-  };
+      if(res.data.status){
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        }) } else {
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+        
+        
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+     }).catch((res)=>{
+  
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+  
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+  
+      })
+    }
+    
+    const clear = ()=> {
+      setError({
+        ...error,
+        message: "",
+        color: ""
+      });
+    }
+  
   // get client counties
   const getClientCounties = () => {
     requestsServiceService.getClientCounties().then((res) => {
@@ -105,6 +150,11 @@ const deactivate = (id)=> {
                   </div>
                 </div>
                 <div class="card-body">
+                {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
