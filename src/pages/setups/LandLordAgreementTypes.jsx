@@ -5,7 +5,7 @@ function LandLordAgreementTypes() {
   const [agreementTypes , setAgreementTypes ]= useState([])
   const [agreementTypeName , setagreementTypeName ]= useState('')
   const [clients, setClients] = useState([]);
-  const [selectedClient, setselectedClient] = useState("");
+  const [selectedClient, setselectedClient] = useState({});
   const [activeId , setActiveId] = useState('')
   const [editAgreementTypeName, setEditAgreementTypeName] = useState('')
   const [editSelectedClient, setEditSelectedClient] = useState('')
@@ -22,13 +22,17 @@ function LandLordAgreementTypes() {
     getClients()
   },[])
 
-
-  // get client counties
   const getClients = () => {
+    const client  = {
+      name: requestsServiceService.getCurrentUserClient().name,
+      id: requestsServiceService.getCurrentUserClient().id
+    }
+
+    setselectedClient(client);
+
     requestsServiceService.getClients().then((res) => {
       setClients(res.data.data);
     });
-    console.log(clients)
   };
   // console.log(agreementTypes);
   // create agreementType
@@ -36,17 +40,14 @@ function LandLordAgreementTypes() {
   const createAgreementType = ()=>{
     let data = JSON.stringify({
       active: true,
-      clientId: selectedClient,
+      clientId: selectedClient.id,
       id: null,
       name: agreementTypeName,
     })
-    console.log(data)
     requestsServiceService.createAgreementType(data).then((res)=>{
       if (res) {
-        console.log(res)
         getAgreementTypes()
       }
-      console.log(res.data);
     }).catch((err) => {
       console.log(err)
       getAgreementTypes()
@@ -57,7 +58,6 @@ function LandLordAgreementTypes() {
 
   const getAgreementTypes =()=>{
     requestsServiceService.getAllAgreementTypes().then((res)=>{
-      console.log("Agreement Types", res)
       setAgreementTypes(res.data.data)
     })
   }
@@ -68,9 +68,7 @@ function LandLordAgreementTypes() {
   const getOneAgreementType = (id) => {
     if (agreementTypes.length > 0) {
       let cl = agreementTypes.find((item) => item.id === id)
-      console.log(cl)
       if(cl) {
-        console.log(cl)
         setEditType({
           ...editType,
           name: cl.client.clientType.name,
@@ -209,7 +207,6 @@ function LandLordAgreementTypes() {
                               </div>
                             </td>
                           </tr>
-
                         )
                       })}
                       </tbody>
@@ -250,21 +247,6 @@ function LandLordAgreementTypes() {
                     <label for="">Name</label>
                     <input value={agreementTypeName} onChange={ (e)=> setagreementTypeName(e.target.value)} type="text" class="form-control" placeholder="Enter agreement type name" />
                   </div>
-                </div>
-                <div class="col-12">
-                  <label for="">Client</label>
-                  <select
-                    class="form-control"
-                    data-live-search="true"
-                    title="Select client"
-                    onChange={(e) => setselectedClient(e.target.value)}
-                  >
-                    { clients.map((c , index) =>{
-                      return (
-                        <option  key={index} value={c.id}>{c.name}</option>
-                      )})}
-                  </select>
-
                 </div>
               </div>
             </div>
@@ -398,7 +380,7 @@ function LandLordAgreementTypes() {
                     onChange={(e) => setEditSelectedClient(e.target.value)}
                   >
                     <option className="text-black font-semibold ">
-                      {editType.name}
+                      {selectedClient.name}
                     </option>
                     {clients.map((c, index) => {
                       return (

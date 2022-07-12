@@ -251,24 +251,18 @@ export default function AddLandlord() {
               </div>
             </div>
           </div>
-          {/* <!-- end page title --> */}
-
-          {/* <!-- eTransactions table --> */}
-
           <div className="row">
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
                   <p>Fill in the form correctly. Fields with an Asterisk <strong className="text-danger">*</strong> are mandatory fields.</p>
                   <div className="create-property" id="basic-example">
-                    {/* <!-- Landlord details --> */}
                     <div className="bg-primary border-2 bg-soft p-3 mb-4">
                       <p className="fw-semibold mb-0 pb-0 text-uppercase">Landlord details</p>
 
                     </div>
                     <section>
                       <form id="my-form" onSubmit={handleSubmit}>
-                        {/* <!-- landolord type selection --> */}
                         <div className="col-lg-4">
                           <div className="mb-3">
                             <label htmlFor="landlord-type" className="form-label">Landlord type</label>
@@ -288,12 +282,10 @@ export default function AddLandlord() {
                             }
                           </div>
                         </div>
-                        {/* <!-- personal details --> */}
                         <div className="row personal-landlord ">
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-4">
                               <p className="fw-semibold mb-0 pb-0 text-uppercase">Personal details</p>
-
                             </div>
                           </div>
                           <div className="col-lg-3 col-md-6 ">
@@ -321,47 +313,47 @@ export default function AddLandlord() {
                             </div>
                           </div>
                           <div className="col-12">
-                            <div className="row ">
-                              <div className="col-lg-4 ">
-                                <div className="row ">
-                                  <div className="col-12 ">
-                                    <div className="row ">
-                                      <label htmlFor=" " className=" ">Gender: <strong className="text-danger ">*</strong></label>
-                                      <div className="d-flex ">
-                                        <div className="form-check me-3">
-                                          <input className="form-check-input" type="radio" name="gender" value={"male"} onChange={(e) => setGender(e.target.value)} id="gender-male" />
-                                          <label className="form-check-label" htmlFor="gender-male">
-                                            Male
-                                          </label>
-                                        </div>
-                                        <div className="form-check me-3">
-                                          <input className="form-check-input" type="radio" name="gender" value={"female"} onChange={(e) => setGender(e.target.value)} id="gender-female" />
-                                          <label className="form-check-label" htmlFor="gender-female">
-                                            Female
-                                          </label>
-                                        </div>
-                                      </div>
-                                      <div className="mb-4 ">
-                                        <label htmlFor="basicpill-phoneno-input ">Phone <strong
-                                          className="text-danger ">*</strong></label>
-                                        <input type="text " className="form-control " id="basicpill-phoneno-input "
-                                               value={phoneNumber} onChange={(e) => setphoneNumber(e.target.value)} placeholder="Enter Your Phone No. "  required={true}/>
-                                      </div>
-                                      <div className="mb-4 ">
-                                        <label htmlFor="basicpill-email-input ">Email <strong
-                                          className="text-danger ">*</strong></label>
-                                        <input type="email " className="form-control " id="basicpill-email-input "
-                                              value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter Your Email ID "  required={true}/>
-                                      </div>
-                                      <div className="mb-4 ">
-                                        <label htmlFor="basicpill-email-input ">File Number <strong
-                                          className="text-danger ">*</strong></label>
-                                        <input type="text" className="form-control " id="basicpill-email-input "
-                                               value={fileNumber} onChange={(e) => setFileNumber(e.target.value)} placeholder="Enter File Number "  required={true}/>
-                                      </div>
-                                    </div>
-                                  </div>
+                            <div className="mb-4">
+                              <label htmlFor=" " className=" ">Gender: <strong className="text-danger ">*</strong></label>
+                              <div className="d-flex ">
+                                <div className="form-check me-3">
+                                  <input className="form-check-input" type="radio" name="gender" value={"male"} onChange={(e) => setGender(e.target.value)} id="gender-male" />
+                                  <label className="form-check-label" htmlFor="gender-male">
+                                    Male
+                                  </label>
                                 </div>
+                                <div className="form-check me-3">
+                                  <input className="form-check-input" type="radio" name="gender" value={"female"} onChange={(e) => setGender(e.target.value)} id="gender-female" />
+                                  <label className="form-check-label" htmlFor="gender-female">
+                                    Female
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-12">
+                            <div className="col-lg-3 col-md-6 ">
+                              <div className="mb-4 ">
+                                <label htmlFor="basicpill-phoneno-input ">Phone <strong
+                                  className="text-danger ">*</strong></label>
+                                <input type="text " className="form-control " id="basicpill-phoneno-input "
+                                       value={phoneNumber} onChange={(e) => setphoneNumber(e.target.value)} placeholder="Enter Your Phone No. "  required={true}/>
+                              </div>
+                            </div>
+                            <div className="col-lg-3 col-md-6 ">
+                              <div className="mb-4 ">
+                                <label htmlFor="basicpill-email-input ">Email <strong
+                                  className="text-danger ">*</strong></label>
+                                <input type="email " className="form-control " id="basicpill-email-input "
+                                       value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter Your Email ID "  required={true}/>
+                              </div>
+                            </div>
+                            <div className="col-lg-3 col-md-6 ">
+                              <div className="mb-4 ">
+                                <label htmlFor="basicpill-email-input ">File Number <strong
+                                  className="text-danger ">*</strong></label>
+                                <input type="text" className="form-control " id="basicpill-email-input "
+                                       value={fileNumber} onChange={(e) => setFileNumber(e.target.value)} placeholder="Enter File Number "  required={true}/>
                               </div>
                             </div>
                           </div>
@@ -410,7 +402,11 @@ export default function AddLandlord() {
 
                           <div className="col-12">
                             <div className="table-responsive table-responsive-md">
-                              <div></div>
+                                <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                                  <p className="fw-semibold mb-0 pb-0 text-uppercase">BANKING DETAILS AND LANDLORD MCA PROPERTY AGREEMENT
+
+                                  </p>
+                                </div>
                               <table className="table table-editable-1 align-middle table-edits">
                                 <thead className="table-light">
                                 <tr className="text-uppercase table-dark">
@@ -696,8 +692,8 @@ export default function AddLandlord() {
                           </table>
                         </div>
                         <div className="row">
-                          <div className="col-12">
-                            {/*<button type={"submit"}>Submit</button>*/}
+                          <div className="col-12 float-end">
+                            <button type={"submit"} className={"btn btn-primary float-end"} form={"my-form"}>Add Landlord</button>
                           </div>
                         </div>
                       </form>
@@ -708,7 +704,6 @@ export default function AddLandlord() {
             </div>
           </div>
         </div>
-        <button type={"submit"} form={"my-form"}>GOOOOOOOOOOOOOOOOOOOOOOOOOOOOO</button>
       </div>
     </>
   )
