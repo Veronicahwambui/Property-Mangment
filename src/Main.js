@@ -110,8 +110,8 @@ function Main() {
       </div >
       <Helmet>
         {/* <!-- App js --> */}
-        <script src="./assets/js/app.js "></script>
-        <script src="./assets/js/custom.js "></script>
+        <script src="./js/app.js "></script>
+        <script src="./js/custom.js "></script>
       </Helmet>
     </BrowserRouter >
   );
