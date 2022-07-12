@@ -404,6 +404,19 @@ class RequestsService {
         return axiosInstance.post(baseUrl+"/tenants", data);
     }
 
+
+    download(name){
+        return axiosInstance.get(baseUrl + '​/documents​/download?docName=' + name )
+    }
+
+    viewLandlord(id) {
+        return axiosInstance.get(baseUrl + "/landlord/" + id)
+       }
+
+    viewTenant(id) {
+        return axiosInstance.get(baseUrl + "/tenants/" + id)
+       }
+  
 }
 
 export default new RequestsService();

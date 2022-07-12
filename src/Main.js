@@ -32,6 +32,9 @@ import PremiseTypes from "./pages/setups/PremiseTypes";
 import PremiseUseTypes from "./pages/setups/PremiseUseTypes";
 import UnitTypes from "./pages/setups/UnitTypes";
 import DocumentTypes from "./pages/setups/DocumentTypes";
+import OnePremise from "./pages/premises/OnePremise";
+import LandLordView from "./pages/LandLordView";
+import OneTenant from "./pages/tenants/OneTenant";
 function Main() {
 
   useEffect(() => {
@@ -65,12 +68,16 @@ function Main() {
                   <Route path='/' element={<Dashboard />} />
                   {/* landlords */}
                   <Route path='/landlords' element={<Landlords />} />
+                  <Route path='/landlord/:id' element={<LandLordView />} />
                   {/* premises */}
                   <Route path='/premisesregister' element={<PremisesRegister />} />
                   <Route path='/addpremises' element={<AddPremises />} />
+                  <Route path='/premise/:id' element={<OnePremise/>} />
                   {/* tenants  */}
                   <Route path='/alltenants' element={<AllTenants />} />
                   <Route path='/addtenant' element={<AddTenant />} />
+                  <Route path='/tenant/:id' element={<OneTenant />} />
+
                   {/* set ups  */}
                   <Route path='/applicablecharges' element={<ApplicableCharges />} />
                   <Route path='/estates' element={<Estate />} />
@@ -108,11 +115,7 @@ function Main() {
           </>       
         }
       </div >
-      <Helmet>
-        {/* <!-- App js --> */}
-        <script src="./js/app.js "></script>
-        <script src="./js/custom.js "></script>
-      </Helmet>
+      
     </BrowserRouter >
   );
 }

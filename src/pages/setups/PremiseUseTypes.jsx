@@ -7,6 +7,11 @@ function PremiseUseTypes() {
   const [activeId, setActiveId] = useState('')
   const [createName, setCreateName]= useState('')
   const [updateName, setUpdateName]= useState('')
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
+
 
   useEffect(()=>{
 
@@ -39,8 +44,49 @@ function PremiseUseTypes() {
     
     requestsServiceService.tooglePremiseUse(activeId).then((res)=>{
       fetchAll()
-    })
-  }
+      if(res.data.status){
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        }) } else {
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+        
+        
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+     }).catch((res)=>{
+  
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+  
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+  
+      })
+    }
+    
+    const clear = ()=> {
+      setError({
+        ...error,
+        message: "",
+        color: ""
+      });
+    }
+  
  
   // update function 
   const Update = ()=>{
@@ -52,6 +98,38 @@ function PremiseUseTypes() {
     })
     requestsServiceService.updatePremiseUseType(data).then((res)=>{
      fetchAll()
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+      
+      
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+    }).catch((res)=>{
+
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+
     })
   }
   
@@ -107,6 +185,11 @@ function PremiseUseTypes() {
                 </div>
               </div>
               <div class="card-body">
+              {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                 <div class="table-responsive table-responsive-md">
                   <table class="table table-editable align-middle table-edits">
                     <thead class="table-light">
