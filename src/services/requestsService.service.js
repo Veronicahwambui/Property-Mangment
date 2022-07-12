@@ -177,25 +177,25 @@ class RequestsService {
     }
 
     // premise
-    // getAllpremises() {
-    //   return axiosInstance.get(baseUrl + "/premises")
-    // }
+    getAllpremises() {
+      return axiosInstance.get(baseUrl + "/premises")
+    }
 
-    // createPremise(data) {
-    //   return axiosInstance.post(baseUrl + "/premises", data)
-    // }
+    createPremise(data) {
+      return axiosInstance.post(baseUrl + "/premises", data)
+    }
 
-    // updatePremise(data) {
-    //   return axiosInstance.post(baseUrl + "/premises/update", data)
-    // }
+    updatePremise(data) {
+      return axiosInstance.post(baseUrl + "/premises/update", data)
+    }
 
-    // viewPremise(id) {
-    //   return axiosInstance.get(baseUrl + "/premises/" + id)
-    // }
+    viewPremise(id) {
+      return axiosInstance.get(baseUrl + "/premises/" + id)
+     }
 
-    // togglePremiseStatus(id) {
-    //   return axiosInstance.get(baseUrl + "/premises/toogleStatus/" + id)
-    // }
+    togglePremiseStatus(id) {
+      return axiosInstance.get(baseUrl + "/premises/toogleStatus/" + id)
+    }
 
     // premise  units
     // allpremisesUnits() {

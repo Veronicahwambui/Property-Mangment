@@ -1,8 +1,30 @@
 import React from 'react'
+import { useState } from 'react'
+import { useEffect } from 'react'
 import  {Helmet} from 'react-helmet'
+import { Link } from 'react-router-dom'
+import requestsServiceService from '../../services/requestsService.service'
 
 
 function PremisesRegister() {
+    const [premises , setPremises] = useState([])
+    const [activeId , setActiveId] = useState('')
+
+    useEffect(()=>{
+       fetchAll()
+    },[])
+
+    const fetchAll = ()=>{
+        requestsServiceService.getAllpremises().then((res)=>{
+            setPremises(res.data.data)
+        })
+    }
+
+    const deactivate = ()=>{
+        requestsServiceService.togglePremiseStatus(activeId).then(()=>{
+            fetchAll()
+        })
+    }
   return (
     <div class="page-content">
     <div class="container-fluid">
@@ -24,7 +46,7 @@ function PremisesRegister() {
             </div>
         </div>
         {/* <!-- end page title --> */}
-\
+
         {/* <!-- quick stast end --> */}
 
 
@@ -38,7 +60,7 @@ function PremisesRegister() {
 
                         <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
                             <div class="d-flex align-items-center flex-grow-1">
-                                <div class="btn-group pr-3" role="group" aria-label="Basic radio toggle button group">
+                                <div class="btn-group pr-3 d-none" role="group" aria-label="Basic radio toggle button group">
                                     <input type="radio" class="btn-check" name="msg-type-filter" value="" id="btn-allmsgs" autocomplete="off" checked=""/>
                                     <label class="btn btn-primary mb-0 waves-light waves-effect" for="btn-allmsgs"><span class="d-inline">All</span></label>
 
@@ -53,7 +75,7 @@ function PremisesRegister() {
 
                                 </div>
 
-                                <div class="btn-group mr-15px option-selector-cont">
+                                <div class="btn-group mr-15px option-selector-cont d-none">
                                     <button type="button" class="btn btn-secondary dropdown-toggle option-selector" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="mdi mdi-file-document-outline font-size-16"></i> <span class="pl-1 d-none d-sm-inline">Agreement Type</span>  <i class="mdi mdi-chevron-down"></i>
                                     </button>
@@ -69,19 +91,14 @@ function PremisesRegister() {
                             </div>
                             <div class="d-flex">
 
-                                <a href="property-new.html" type="button" class="btn btn-primary dropdown-toggle option-selector">
+                                <Link to="/addpremises" type="button" class="btn btn-primary dropdown-toggle option-selector">
                                     <i class="dripicons-plus font-size-16"></i> <span class="pl-1 d-md-inline">Add A Premises</span>
-                                </a>
-
+                                </Link>
                             </div>
 
 
                         </div>
-                        <div class="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar" role="toolbar">
-
-                            <button type="button" class="btn btn-primary waves-effect btn-label waves-light me-3"><i class="bx  bx-trash label-icon"></i> Delete Premises</button>
-                            <button type="button" class="btn btn-primary waves-effect btn-label waves-light me-3"><i class="mdi mdi-plus label-icon"></i> Message property Tenants</button>
-                        </div>
+                      
                     </div>
                     <div class="card-body">
                         <table class="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
@@ -97,18 +114,27 @@ function PremisesRegister() {
                                     </th>
                                     <th scope="col">#</th>
                                     <th scope="col">Premises</th>
-                                    <th scope="col">Owner</th>
-                                    <th scope="col">Agreement type</th>
                                     <th scope="col">Premises type</th>
-                                    <th>tenants</th>
-                                    <th scope="col">Units</th>
-                                    <th scope="col">Vacant</th>
-                                    <th scope="col">Occupied</th>
+                                    <th scope="col">Premises use type</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Estate</th>
+                                    <th scope="col">Zone</th>
+                                    <th scope='col'>County</th>
+                                    <th scope="col">File No</th>
+                                    <th scope="col">Status</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                {premises.map((premise , index)=>{
+                                    let premiseType = premise.premiseType
+                                    let premiseUseType = premise.premiseUseType
+                                    let estate = premise.estate
+                                    let zone = premise.estate.zone
+                                    let county = premise.estate.zone.clientCounty.county
+                                    
+                                    return (
+                                        <tr key={index}>
 
                                     <td>
                                         <div class="d-flex  align-items-center">
@@ -118,29 +144,30 @@ function PremisesRegister() {
 
                                         </div>
                                     </td>
-                                    <td class="text-capitalize">1</td>
+                                    <td class="text-capitalize">{index + 1}</td>
                                     <td class="text-capitalize">
-                                        <a href="property-details.html" title="View Details">Savannah lands</a>
+                                        <a href="property-details.html" title="View Details">
+                                            {premise.premiseName}
+                                        </a>
                                     </td>
                                     <td>
-                                        <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">Mark Ellison</a></h5>
+                                        <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">{premiseType.name}</a></h5>
 
                                     </td>
-                                    <td>
-                                        Management
+                                    <td className="text-capitalize">
+                                        <span class="badge badge-soft-warning font-size-11 m-1 text-capitalize">{premiseUseType.name}</span>
                                     </td>
-                                    <td>
-                                        <span class="badge badge-soft-warning font-size-11 m-1">Commercial/Residential</span>
+                                    <td className='text-capitalize'>{premise.address}</td>
+                                    <td className="text-capitalize">
+                                        {estate.name}
                                     </td>
-                                    <td>15</td>
-                                    <td>50</td>
+                                    <td className="text-capitalize">{zone.name}</td>
+                                    <td className="text-capitalize">{county.name.toLowerCase()}</td>
                                     <td class="text-danger">
-                                        32
+                                        {premise.fileNumber}
                                     </td>
-                                    <td class="text-success">
-                                        19
-                                    </td>
-
+                                    <td >{premise.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
+                                    
                                     <td>
                                         <div class="dropdown">
                                             <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
@@ -151,327 +178,15 @@ function PremisesRegister() {
                                                 <a class="dropdown-item" href="property-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
                                                 <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
                                                 <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-chat-plus me-3"></i>Message All Tenants</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>Deactivate property</a>
-                                                <a class="dropdown-item" href="#"> <i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Rent Statements</a>
-                                                <a class="dropdown-item" href="property-tenant-schedule.html"><i class="font-size-15  mdi-file-clock mdi me-3 text-info"></i>Rent Schedule</a>
+                                                <a class="dropdown-item" href="#"> <i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Change ownership</a>
+                                                <a onClick={()=>{setActiveId(premise.id); deactivate()}} class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>Deactivate property</a>
                                             </div>
                                         </div>
                                     </td>
-                                </tr>
-                                <tr>
-
-                                    <td>
-                                        <div class="d-flex  align-items-center">
-                                            <div class="the-mail-checkbox pr-4">
-                                                <input class="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1" />
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-capitalize">2</td>
-                                    <td class="text-capitalize">
-                                        <a href="property-details.html" title="View Details">Commercial House</a>
-                                    </td>
-                                    <td>
-                                        <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">Jane Muthoni</a></h5>
-
-                                    </td>
-                                    <td>
-                                        Management
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-soft-info font-size-11 m-1">Residential</span>
-                                    </td>
-                                    <td>13</td>
-                                    <td>40</td>
-                                    <td class="text-danger">
-                                        36
-                                    </td>
-                                    <td class="text-success">
-                                        20
-                                    </td>
-
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="property-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
-                                                <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-chat-plus me-3"></i>Message All Tenants</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>Deactivate property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"></i>Rent Statements</a>
-                                                <a class="dropdown-item" href="property-tenant-schedule.html"><i class="font-size-15  mdi-file-clock mdi me-3 text-info"></i>Rent Schedule</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-
-                                    <td>
-                                        <div class="d-flex  align-items-center">
-                                            <div class="the-mail-checkbox pr-4">
-                                                <input class="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-capitalize">3</td>
-                                    <td class="text-capitalize">
-                                        <a href="property-details.html" title="View Details">BrookHouse</a>
-                                    </td>
-                                    <td>
-                                        <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">Dancan Kamau</a></h5>
-
-                                    </td>
-                                    <td>
-                                        lease
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-soft-warning font-size-11 m-1">Commercial/Residential</span>
-                                    </td>
-                                    <td>10</td>
-                                    <td>22</td>
-                                    <td class="text-danger">
-                                        32
-                                    </td>
-                                    <td class="text-success">
-                                        14
-                                    </td>
-
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="property-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
-                                                <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-chat-plus me-3"></i>Message All Tenants</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>Deactivate property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"></i>Rent Statements</a>
-                                                <a class="dropdown-item" href="property-tenant-schedule.html"><i class="font-size-15  mdi-file-clock mdi me-3 text-info"></i>Rent Schedule</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-
-                                    <td>
-                                        <div class="d-flex  align-items-center">
-                                            <div class="the-mail-checkbox pr-4">
-                                                <input class="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1" />
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-capitalize">4</td>
-                                    <td class="text-capitalize">
-                                        <a href="property-details.html" title="View Details">Airtel</a>
-                                    </td>
-                                    <td>
-                                        <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">James Mwangi</a></h5>
-
-                                    </td>
-                                    <td>
-                                        Lease
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-soft-success font-size-11 m-1">Commercial</span>
-                                    </td>
-                                    <td>16</td>
-                                    <td>56</td>
-                                    <td class="text-danger">
-                                        19
-                                    </td>
-                                    <td class="text-success">
-                                        22
-                                    </td>
-
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="property-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
-                                                <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-chat-plus me-3"></i>Message All Tenants</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>Deactivate property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"></i>Rent Statements</a>
-                                                <a class="dropdown-item" href="property-tenant-schedule.html"><i class="font-size-15  mdi-file-clock mdi me-3 text-info"></i>Rent Schedule</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-
-                                    <td>
-                                        <div class="d-flex  align-items-center">
-                                            <div class="the-mail-checkbox pr-4">
-                                                <input class="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-capitalize">5</td>
-                                    <td class="text-capitalize">
-                                        <a href="property-details.html" title="View Details">Union towers</a>
-                                    </td>
-                                    <td>
-                                        <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">Angela Wanjiru</a></h5>
-
-                                    </td>
-                                    <td>
-                                        Management
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-soft-info font-size-11 m-1">Residential</span>
-                                    </td>
-                                    <td>19</td>
-                                    <td>44</td>
-                                    <td class="text-danger">
-                                        30
-                                    </td>
-                                    <td class="text-success">
-                                        16
-                                    </td>
-
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="property-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
-                                                <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-chat-plus me-3"></i>Message All Tenants</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>Deactivate property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"></i>Rent Statements</a>
-                                                <a class="dropdown-item" href="property-tenant-schedule.html"><i class="font-size-15  mdi-file-clock mdi me-3 text-info"></i>Rent Schedule</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-
-                                    <td>
-                                        <div class="d-flex  align-items-center">
-                                            <div class="the-mail-checkbox pr-4">
-                                                <input class="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-capitalize">6</td>
-                                    <td class="text-capitalize">
-                                        <a href="property-details.html" title="View Details">Generam Motors</a>
-                                    </td>
-                                    <td>
-                                        <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">Elias Karanja</a></h5>
-
-                                    </td>
-                                    <td>
-                                        Management
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-soft-warning font-size-11 m-1">Commercial/Residential</span>
-                                    </td>
-                                    <td>11</td>
-                                    <td>16</td>
-                                    <td class="text-danger">
-                                        33
-                                    </td>
-                                    <td class="text-success">
-                                        15
-                                    </td>
-
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="property-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
-                                                <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-chat-plus me-3"></i>Message All Tenants</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>Deactivate property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"></i>Rent Statements</a>
-                                                <a class="dropdown-item" href="property-tenant-schedule.html"><i class="font-size-15  mdi-file-clock mdi me-3 text-info"></i>Rent Schedule</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-
-                                    <td>
-                                        <div class="d-flex  align-items-center">
-                                            <div class="the-mail-checkbox pr-4">
-                                                <input class="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1" />
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-capitalize">7</td>
-                                    <td class="text-capitalize">
-                                        <a href="property-details.html" title="View Details">The Standard</a>
-                                    </td>
-                                    <td>
-                                        <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">Mary Wangare</a></h5>
-
-                                    </td>
-                                    <td>
-                                        Management
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-soft-info font-size-11 m-1">Residential</span>
-                                    </td>
-                                    <td>18</td>
-                                    <td>27</td>
-                                    <td class="text-danger">
-                                        14
-                                    </td>
-                                    <td class="text-success">
-                                        22
-                                    </td>
-
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="property-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
-                                                <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-chat-plus me-3"></i>Message All Tenants</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>Deactivate property</a>
-                                                <a class="dropdown-item" href="#"><i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"></i>Rent Statements</a>
-                                                <a class="dropdown-item" href="property-tenant-schedule.html"><i class="font-size-15  mdi-file-clock mdi me-3 text-info"></i>Rent Schedule</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-
-
-
-
-
-
-
+                                        </tr>
+                                    )
+                                })}
+                              <tr></tr>
                             </tbody>
                         </table>
                     </div>
