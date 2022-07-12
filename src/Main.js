@@ -4,7 +4,7 @@ import Header from './components/Header';
 import SideBar from './components/SideBar';
 import { Helmet } from 'react-helmet'
 import Dashboard from './pages/Dashboard';
-import Landlords from './pages/Landlords';
+import Landlords from './pages/landlords/Landlords';
 import PremisesRegister from './pages/premises/PremisesRegister';
 import AddPremises from './pages/premises/AddPremises';
 import AllTenants from './pages/tenants/AllTenants';
