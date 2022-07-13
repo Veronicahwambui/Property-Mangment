@@ -285,9 +285,11 @@ function AddAdmin() {
                     </div>
 
                     <div className="">
-                      <h5 className="font-weight-bold">
-                        User privilages and permissions
-                      </h5>
+                      <div className="col-form-label col-lg-3">
+                    
+                        <strong> User Privilages and Permissions</strong>
+                     
+                      </div>
                     </div>
 
                     <div className="row mt-5">

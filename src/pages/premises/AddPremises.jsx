@@ -1,68 +1,304 @@
 /* global $ */
 
 import React, { useState } from "react";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'react-bootstrap';
 import { useEffect } from "react";
 import requestsServiceService from "../../services/requestsService.service";
+import { confirmAlert } from "react-confirm-alert";
 
 function AddPremises() {
-  const [landlordFileNo, setLandlordFileNo] = useState("");
+  const [landlordfileNumber, setLandlordfileNumber] = useState("");
+  const [documentTypes, setDocumentTypes] = useState([]);
+  const [applicableCharges, setApplicableCharges] = useState([]);
+  const [unitTypes, setUnitTypes] = useState([]);
+  const [unitCharges, setUnitCharges] = useState([]);
+  const [showDocumentModal, setShowDocumentModal] = useState(false)
+  const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
+  const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
+
+  const toogleShowUnitTypeChargesModal = () => {
+    setShowUnitTypeChargesModal(!showUnitTypeChargesModal);
+  }
+
+  const saveLandLordFileNumber = () => {
+    if (landlordfileNumber != "") {
+      let d = []; d.push(landlordfileNumber);
+      setGeneral({ ...general, ["landlordFileNumber"]: d });
+    }
+  }
+
 
   const [general, setGeneral] = useState({
-    fileNo: "",
-    plotNo: "",
-    premiseName: "",
-    estate: "",
-    premiseType: "",
-    premiseUseType: "",
-    registrationDate: "",
+    "active": true,
+    "address": undefined,
+    "estateId": undefined,
+    "fileNumber": undefined,
+    "id": undefined,
+    "landLordId": [],
+    "landlordFileNumber": [],
+    "plotNumber": undefined,
+    "premiseName": undefined,
+    "premiseTypeId": undefined,
+    "premiseUseTypeId": undefined
   });
- 
+
   const handleGeneral = (event) => {
     setGeneral({ ...general, [event.target.name]: event.target.value });
   };
 
 
   const [caretaker, setCaretaker] = useState({
-    idNo: "",
+    idNumber: "",
     firstName: "",
     lastName: "",
     otherName: "",
-    caretakerType: "",
+    caretakerTypeName: "",
     gender: "",
     phone: "",
     email: "",
+    active: true
   });
+
+
+  const [premiseUnits, setPremiseUnits] = useState([])
+
+  const [unit, setUnit] = useState({
+    "active": true,
+    "id": undefined,
+    "premiseId": undefined,
+    "unitName": undefined,
+    "unitTypeId": undefined
+  })
+
+  const [selectedApplicableCharges, setSelectedApplicableCharges] = useState([]);
+
+  const [selectedunitTypes, setSelectedUnitTypes] = useState([])
+
+  const [unitType, setUnitType] = useState({
+    "unitTypeName": undefined,
+    "squarage": undefined,
+    "unitTypeId": undefined,
+    "monthCountForTenancyRenewal": undefined,
+    "numberOfRooms": undefined,
+    "purpose": undefined,
+  })
+
+
+  const [premiseUnitTypeCharges, setPremiseUnitTypeCharges] = useState([])
+
+  const handleChargechange = (event, index) => {
+    if (event.target.name === "charge") {
+      let unitAppCharge = [];
+      for (var i = 0; i < selectedunitTypes.length; i++) {
+        let chargeBody = {
+          "active": true,
+          "applicableChargeId": event.target.value,
+          "chargeConstraint": undefined,
+          "constraintChargeId": undefined,
+          "id": undefined,
+          "invoiceDay": undefined,
+          "unitTypeName": selectedunitTypes[i].unitTypeName,
+          "landlordCollectionAccountId": undefined,
+          "monthCountForTenancyRenewal": selectedunitTypes[i].monthCountForTenancyRenewal,
+          "numberOfRooms": selectedunitTypes[i].numberOfRooms,
+          "premiseId": undefined,
+          "purpose": selectedunitTypes[i].purpose,
+          "rateCharge": undefined,
+          "squarage": selectedunitTypes[i].squarage,
+          "unitTypeId": selectedunitTypes[i].unitTypeId,
+          "value": undefined
+        }
+        unitAppCharge.push(chargeBody);
+      }
+
+      setUnitCharges(unitAppCharge);
+    } else {
+      let unitAppCharge = unitCharges;
+      unitAppCharge[index][event.target.name] = event.target.value;
+
+      setUnitCharges(unitAppCharge);
+    }
+    console.log(unitCharges)
+  };
+
+  const handleUnitChange = (event) => {
+    setUnit({ ...unit, [event.target.name]: event.target.value });
+  };
+
+  const handleUnitTypeChange = (event) => {
+    if (event.target.name === "unitTypeId") {
+      let d = event.target.value.split(':');
+      let type = unitType;
+      type.unitTypeId = d[0];
+      type.unitTypeName = d[1];
+      setUnitType({ ...unitType, type });
+    } else
+      setUnitType({ ...unitType, [event.target.name]: event.target.value });
+  };
 
   const handleCaretaker = (event) => {
     setCaretaker({ ...caretaker, [event.target.name]: event.target.value });
   };
 
-  console.log(caretaker);
- 
-  const [estates , setEstates] = useState([])
-  const getEstates = ()=>{
-    requestsServiceService.getAllEstates().then((res)=>{
-        setEstates(res.data.data)
+  const selectedApplicableChargeChange = (event) => {
+
+    console.log(event.target.value);
+    let chargess = selectedApplicableCharges;
+
+    let value = applicableCharges.find(x => x.id == event.target.value);
+
+    console.log(value)
+    if (value != undefined) {
+
+      if (event.target.checked)
+        chargess.push(value);
+      else
+        chargess.splice(chargess.indexOf(value), 1);
+
+      setSelectedApplicableCharges(chargess);
+
+    }
+  };
+
+
+  const [estates, setEstates] = useState([])
+  const getEstates = () => {
+    requestsServiceService.getAllEstates().then((res) => {
+      setEstates(res.data.data)
     })
   }
-  const [premiseTypes ,setPremiseTypes]= useState([])
-  const getPremiseTypes = ()=>{
-    requestsServiceService.allPremiseTypes().then((res)=>{
-        setPremiseTypes(res.data.data)
+
+  const [premiseTypes, setPremiseTypes] = useState([])
+  const getPremiseTypes = () => {
+    requestsServiceService.allPremiseTypes().then((res) => {
+      setPremiseTypes(res.data.data)
     })
   }
-  const [premiseUseTypes ,setPremiseUseTypes]= useState([])
-  const getPremiseUseTypes = ()=>{
-    requestsServiceService.allPremiseUseTypes().then((res)=>{
-        setPremiseTypes(res.data.data)
+
+  const [premiseUseTypes, setPremiseUseTypes] = useState([])
+  const getPremiseUseTypes = () => {
+    requestsServiceService.allPremiseUseTypes().then((res) => {
+      setPremiseUseTypes(res.data.data)
     })
   }
-  useEffect(()=>{
-     getEstates()
-     getPremiseTypes()
-     getPremiseUseTypes()
-  },[])
-  
+
+  const getAllDocumentTypes = () => {
+    requestsServiceService.allDocumentTypes().then((res) =>
+      setDocumentTypes(res.data.data)
+    )
+  }
+
+  const getAllApplicableCharges = () => {
+    requestsServiceService.allApplicableCharges().then((res) =>
+      setApplicableCharges(res.data.data)
+    )
+  }
+
+  const getAllUnitTypes = () => {
+    requestsServiceService.allUnitTypes().then((res) =>
+      setUnitTypes(res.data.data)
+    )
+  }
+
+  const [premiseDocuments, setPremiseDocuments] = useState([])
+  const [docBody, setDocBody] = useState({
+    "docName": undefined,
+    "document": undefined,
+    "documentOwnerTypeName": undefined,
+    "documentTypeId": undefined,
+    "id": undefined,
+    "ownerEntityId": undefined
+  })
+
+  useEffect(() => {
+    getEstates()
+    getPremiseTypes()
+    getPremiseUseTypes()
+    getAllDocumentTypes()
+    getAllApplicableCharges()
+    getAllUnitTypes()
+  }, [])
+
+  const toogleShowNewDocumentModal = (event) => {
+    setShowDocumentModal(!showDocumentModal);
+  }
+
+  const toogleNewUnitTypeModal = (event) => {
+    setNewUnitTypeModal(!newUnitTypeModal);
+  }
+
+
+  const addAppCharge = () => {
+    let unicahgsg = unitCharges;
+    let premiseUnitType = premiseUnitTypeCharges;
+
+    for (var i = 0; i < unicahgsg.length; i++)
+      premiseUnitType.push(unicahgsg[i]);
+
+    setPremiseUnitTypeCharges(premiseUnitType);
+
+    setUnitCharges([]);
+    toogleShowUnitTypeChargesModal();
+  }
+
+
+  const addDocument = () => {
+    let data = docBody;
+    if (data.documentOwnerTypeName === "PREMISE") {
+
+      let kins = premiseDocuments;
+      kins.push(data);
+      setPremiseDocuments(kins);
+
+    }
+
+    toogleShowNewDocumentModal();
+    setDocBody({
+      "docName": undefined,
+      "document": undefined,
+      "documentOwnerTypeName": undefined,
+      "documentTypeId": undefined,
+      "id": undefined,
+      "ownerEntityId": undefined
+    });
+
+  }
+
+  const addUnitType = () => {
+    let data = unitType;
+
+    let kins = selectedunitTypes;
+    kins.push(data);
+    setSelectedUnitTypes(kins);
+
+    toogleNewUnitTypeModal();
+    setUnitType({
+      "unitTypeName": undefined,
+      "unitTypeId": undefined
+    });
+
+  }
+
+
+  const handleDocumentChange = (event) => {
+
+    if (event.target.name === "file") {
+      let filereader = new FileReader();
+
+      filereader.readAsDataURL(event.target.files[0]);
+
+      filereader.onload = function () {
+        setDocBody({ ...docBody, document: filereader.result });
+      };
+      filereader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+
+    }
+    else
+      setDocBody({ ...docBody, [event.target.name]: event.target.value });
+
+  }
 
 
   $("#landlord-type").on("change", function () {
@@ -73,6 +309,55 @@ function AddPremises() {
       $(".individual-landlord").addClass("d-none").next().removeClass("d-none");
     }
   });
+
+  const submit = () => {
+    let gen = general;
+    gen.landlordFileNumber.push(landlordfileNumber)
+    let data = {
+      "premise": gen,
+      "premiseCaretakerDTO": caretaker,
+      "premiseDocuments": premiseDocuments,
+      "premiseUnitTypeCharges": premiseUnitTypeCharges,
+      "premiseUnits": premiseUnits
+    }
+    console.log(data)
+    requestsServiceService.createPremise(data).then((res) => {
+
+      if (res.data.status == true) {
+        confirmAlert({
+          message: res.data.message,
+          buttons: [{
+            label: "OK",
+            onClick: (e) => window.reload()
+          }
+          ]
+        })
+      } else {
+        confirmAlert({
+          message: res.data.message,
+          buttons: [{ label: "OK" }]
+        })
+      }
+    }).catch((err) => {
+      confirmAlert({
+        message: err.message,
+        buttons: [{ label: "OK" }]
+      })
+    })
+  }
+
+  const newUnitType = (event) => {
+    toogleNewUnitTypeModal();
+  }
+
+
+  const newDocument = (event) => {
+
+    setDocBody({ ...docBody, "documentOwnerTypeName": event.target.dataset.id });
+
+    toogleShowNewDocumentModal();
+  }
+
 
   return (
     <>
@@ -115,7 +400,7 @@ function AddPremises() {
                     <strong class="text-danger">*</strong> are mandatory fields.
                   </p>
                   <div className="create-property" id="basic-example">
-                 
+
                     {/* <!-- Premises details --> */}
                     <h3>Premises details</h3>
                     <section>
@@ -135,9 +420,9 @@ function AddPremises() {
                               </label>
                               <input
                                 type="text "
-                                value={general.fileNo}
+                                value={general.fileNumber}
                                 onChange={handleGeneral}
-                                name="fileNo"
+                                name="fileNumber"
                                 class="form-control "
                                 id="basicpill-firstname-input "
                                 placeholder="Enter file No."
@@ -151,8 +436,8 @@ function AddPremises() {
                               </label>
                               <input
                                 type="text "
-                                value={general.plotNo}
-                                name='plotNo'
+                                value={general.plotNumber}
+                                name='plotNumber'
                                 onChange={handleGeneral}
                                 class="form-control "
                                 id="basicpill-firstname-input "
@@ -184,17 +469,17 @@ function AddPremises() {
                                 Estate <strong class="text-danger ">*</strong>
                               </label>
                               <select
-                                class=" selectpicker form-control "
-                                data-live-search="true "
+                                class="form-control "
                                 title="Select estate "
+                                name="estateId"
                                 onChange={handleGeneral}
                               >
-                                {estates.map((estate)=>{
-                                    return (
-                                        <option value={estate.id} name='estate' > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
-                                    )
+                                {estates.map((estate) => {
+                                  return (
+                                    <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
+                                  )
                                 })}
-                              
+
                               </select>
                             </div>
                           </div>
@@ -206,16 +491,16 @@ function AddPremises() {
                                 <strong class="text-danger ">*</strong>
                               </label>
                               <select
-                                class="form-control selectpicker "
+                                class="form-control "
                                 title="Select Building type "
-                                data-live-search="true "
+                                name='premiseType'
                                 onChange={handleGeneral}
-                                
+
                               >
-                                {premiseTypes.map((type)=>(
-                                <option value={type.id} name='premiseType'> {type.name}</option>
+                                {premiseTypes.map((type) => (
+                                  <option value={type.id}> {type.name}</option>
                                 ))}
-                              
+
                               </select>
                             </div>
                           </div>
@@ -227,44 +512,19 @@ function AddPremises() {
                                 <strong class="text-danger ">*</strong>
                               </label>
                               <select
-                                class="form-control selectpicker "
+                                class="form-control "
                                 title="Select Property use type "
-                                data-live-search="true "
+                                name='premiseUseType'
+                                onChange={handleGeneral}
 
                               >
-                               {premiseUseTypes.map((type)=>(
-                                <option value={type.id} name='premiseUseType'> {type.name}</option>
+                                {premiseUseTypes.map((type) => (
+                                  <option value={type.id}> {type.name}</option>
                                 ))}
                               </select>
                             </div>
                           </div>
 
-                          <div class="col-md-6 col-lg-4 col-sm-12 ">
-                            <div class="mb-4 ">
-                              <label for=" " class=" ">
-                                Registration Date
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <div class="input-group" id="datepicker2">
-                                <input
-                                  type="text"
-                                  class="form-control"
-                                  name="registrationDate"
-                                  onChange={handleGeneral}
-                                  value={general.registrationDate}
-                                  placeholder="Select date"
-                                  data-date-format="dd M, yyyy"
-                                  data-date-container="#datepicker2"
-                                  data-provide="datepicker"
-                                  data-date-autoclose="true"
-                                />
-
-                                <span class="input-group-text">
-                                  <i class="mdi mdi-calendar"></i>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
                         </div>
 
                         <div class="col-12">
@@ -284,9 +544,9 @@ function AddPremises() {
                                 type="text "
                                 class="form-control "
                                 id=""
-                                value={caretaker.idNo}
+                                value={caretaker.idNumber}
                                 onChange={handleCaretaker}
-                                name="idNo"
+                                name="idNumber"
                                 placeholder="Enter ID or PP Num. "
                               />
                             </div>
@@ -302,7 +562,7 @@ function AddPremises() {
                                 class="form-control "
                                 value={caretaker.firstName}
                                 onChange={handleCaretaker}
-                                name= "firstName"
+                                name="firstName"
                                 id="basicpill-firstname-input "
                                 placeholder="Enter Your First Name "
                               />
@@ -350,14 +610,15 @@ function AddPremises() {
                                         <strong class="text-danger ">*</strong>
                                       </label>
                                       <select
-                                        class="form-control selectpicker"
-                                        data-live-search="true"
+                                        onChange={handleCaretaker}
+                                        class="form-control "
+                                        name="caretakerTypeName"
                                         title="Select caretaker type"
                                       >
-                                        <option value="Commissioned by MCA">
+                                        <option value="SELF_COMMISSIONED">
                                           Commissioned by MCA
                                         </option>
-                                        <option value="Brought by the landlord">
+                                        <option value="LANDLORD_COMMISSIONED">
                                           Brought by the landlord
                                         </option>
                                       </select>
@@ -374,8 +635,9 @@ function AddPremises() {
                                           <input
                                             class="form-check-input"
                                             type="radio"
-                                            name="caretaker-gender"
-                                            id="caretaker-male"
+                                            onChange={handleCaretaker}
+                                            name="gender"
+                                            value="Male"
                                           />
                                           <label
                                             class="form-check-label"
@@ -387,10 +649,11 @@ function AddPremises() {
 
                                         <div class="form-check me-3">
                                           <input
+                                            onChange={handleCaretaker}
                                             class="form-check-input"
                                             type="radio"
-                                            name="caretaker-gender"
-                                            id="caretaker-female"
+                                            name="gender"
+                                            value="Female"
                                           />
                                           <label
                                             class="form-check-label"
@@ -487,145 +750,26 @@ function AddPremises() {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr data-id="1">
-                                <td style={{ width: "80px" }}>1.</td>
-                                <td>
-                                  <select
-                                    class="form-control selectpicker"
-                                    data-live-search="true"
-                                    title="Select hse/unit type"
-                                  >
-                                    <option value="">Bed sitter</option>
-                                    <option value="">Two bedroom</option>
-                                    <option value="">three bedroom</option>
-                                    <option value="">Four bedroom</option>
-                                  </select>
-                                </td>
-                                <td class="">
-                                  <input
-                                    type="number"
-                                    class="form-control "
-                                    placeholder="Rooms"
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <input
-                                    type="number"
-                                    class="form-control "
-                                    placeholder="Size (MSQ)"
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
 
-                                <td>
-                                  <select
-                                    class="form-control selectpicker"
-                                    data-live-search="true"
-                                    title="Select unit purpose"
-                                  >
-                                    <option value="">Residential</option>
-                                    <option value="">Commercial</option>
-                                  </select>
-                                </td>
-                                <td class="">
-                                  <input
-                                    type="number"
-                                    class="form-control "
-                                    placeholder="No. of months for agreement Renewal"
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
-                                <td></td>
-                              </tr>
-                              <tr class="cloneCharges d-none">
-                                <td
-                                  style={{ width: "80px" }}
-                                  class="categoryIndex "
-                                >
-                                  #
-                                </td>
+                              {selectedunitTypes.length > 0 && selectedunitTypes.map((dependent, index) => (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td>{dependent.unitTypeName}</td>
+                                  <td>{dependent.numberOfRooms}</td>
+                                  <td>{dependent.squarage}</td>
+                                  <td>{dependent.purpose}</td>
+                                  <td>{dependent.monthCountForTenancyRenewal}</td>
+                                  <td></td>
+                                </tr>
+                              ))
 
-                                <td>
-                                  <select
-                                    class="form-control selectpicker"
-                                    data-live-search="true"
-                                    title="Select hse/unit type"
-                                  >
-                                    <option value="">Bed sitter</option>
-                                    <option value="">Two bedroom</option>
-                                    <option value="">three bedroom</option>
-                                    <option value="">Four bedroom</option>
-                                  </select>
-                                </td>
-                                <td class="">
-                                  <input
-                                    type="number"
-                                    class="form-control "
-                                    placeholder="No. of Rooms"
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <input
-                                    type="number"
-                                    class="form-control "
-                                    placeholder="Size (MSQ)"
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
+                              }
 
-                                <td>
-                                  <select
-                                    class="form-control selectpicker"
-                                    data-live-search="true"
-                                    title="Select unit purpose"
-                                  >
-                                    <option value="">Residential</option>
-                                    <option value="">Commercial</option>
-                                  </select>
-                                </td>
-                                <td class="">
-                                  <input
-                                    type="number"
-                                    class="form-control "
-                                    placeholder="No. of months for agreement Renewal"
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
-
-                                <td class="text-right d-flex align-items-center justify-content-end">
-                                  <a
-                                    class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent cancel-new-category-2 "
-                                    title="Cancel "
-                                  >
-                                    <i class="bx bx-x "></i>
-                                  </a>
-                                </td>
-                              </tr>
                             </tbody>
                             <tfoot>
                               <tr>
-                                <td
-                                  colspan="7"
-                                  class="bg-light add-field-2 cursor-pointer"
-                                >
-                                  <span class="d-flex align-items-center ">
-                                    <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
-                                    <span class="pl-5 ">Add A Unit</span>
-                                  </span>
+                                <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
+                                  <button type="button" data-id="PREMISE" onClick={newUnitType}>Add A Unit Type</button>
                                 </td>
                               </tr>
                             </tfoot>
@@ -652,86 +796,30 @@ function AddPremises() {
                                 <i>Applicable Charges</i>
                               </p>
                               <div class="row border-right-1">
-                                <div class="col-6">
-                                  <div class="form-check form-check-primary mb-3">
-                                    <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      id="monthlyRent"
-                                      checked=""
-                                    />
-                                    <label
-                                      class="form-check-label"
-                                      for="monthlyRent"
-                                    >
-                                      Monthly Rent
-                                    </label>
-                                  </div>
-                                </div>
-                                <div class="col-6">
-                                  <div class="form-check form-check-primary mb-3">
-                                    <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      id="rentTax"
-                                      checked=""
-                                    />
-                                    <label
-                                      class="form-check-label"
-                                      for="rentTax"
-                                    >
-                                      18% Rent Tax
-                                    </label>
-                                  </div>
-                                </div>
-                                <div class="col-6">
-                                  <div class="form-check form-check-primary mb-3">
-                                    <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      id="waterBill"
-                                      checked=""
-                                    />
-                                    <label
-                                      class="form-check-label"
-                                      for="waterBill"
-                                    >
-                                      Water Bills
-                                    </label>
-                                  </div>
-                                </div>
-                                <div class="col-6">
-                                  <div class="form-check form-check-primary mb-3">
-                                    <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      id="electricityBill"
-                                      checked=""
-                                    />
-                                    <label
-                                      class="form-check-label"
-                                      for="electricityBill"
-                                    >
-                                      Electricity Bills
-                                    </label>
-                                  </div>
-                                </div>
-                                <div class="col-6">
-                                  <div class="form-check form-check-primary mb-3">
-                                    <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      id="garbageCollection"
-                                      checked=""
-                                    />
-                                    <label
-                                      class="form-check-label"
-                                      for="garbageCollection"
-                                    >
-                                      Garbage collection
-                                    </label>
-                                  </div>
-                                </div>
+                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                  <>
+                                    {charge.applicableChargeType === "MONTHLY_CHARGE" &&
+                                      <div class="col-6">
+                                        <div class="form-check form-check-primary mb-3">
+                                          <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="monthlyCharges"
+                                            value={charge.id}
+                                            onChange={selectedApplicableChargeChange}
+                                          />
+                                          <label
+                                            class="form-check-label"
+                                            for="monthlyRent"
+                                          >
+                                            {charge.name}
+                                          </label>
+                                        </div>
+                                      </div>
+                                    }
+                                  </>
+                                ))
+                                }
                               </div>
                             </div>
                             <div class="col-4 col-md-4 col-sm-12 h-100">
@@ -739,37 +827,28 @@ function AddPremises() {
                                 <i>Deposits</i>
                               </p>
                               <div class="row border-right-1">
-                                <div class="col-6">
-                                  <div class="form-check form-check-secondary mb-3">
-                                    <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      id="rentDeposit"
-                                      checked=""
-                                    />
-                                    <label
-                                      class="form-check-label"
-                                      for="rentDeposit"
-                                    >
-                                      Rent deposit
-                                    </label>
-                                  </div>
-                                </div>
-                                <div class="col-6">
-                                  <div class="form-check form-check-secondary mb-3">
-                                    <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      id="agencyDeposit"
-                                    />
-                                    <label
-                                      class="form-check-label"
-                                      for="agencyDeposit"
-                                    >
-                                      Utility deposit
-                                    </label>
-                                  </div>
-                                </div>
+                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                  <>
+                                    {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
+                                      <div class="form-check form-check-primary mb-3">
+                                        <input
+                                          class="form-check-input"
+                                          type="checkbox"
+                                          name="monthlyRent"
+                                          value={charge.id}
+                                          onChange={selectedApplicableChargeChange}
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="monthlyRent"
+                                        >
+                                          {charge.name}
+                                        </label>
+                                      </div>
+                                    </div>}
+                                  </>
+                                ))
+                                }
                               </div>
                             </div>
                           </div>
@@ -792,165 +871,52 @@ function AddPremises() {
                                   <th>#</th>
                                   <th>Item type</th>
                                   <th>When to Charge</th>
-                                  <th>Bed sitter</th>
-                                  <th>one Bedroom</th>
-                                  <th>Two Bedroom</th>
+                                  {selectedunitTypes.map((charge, indeex) => (<th>{charge.unitTypeName}</th>))}
                                 </tr>
                               </thead>
 
                               <tfoot class="table-light">
                                 <tr class="text-capitalize deposit-fee boarder-bottom">
-                                  <th></th>
-                                  <th>Total security Deposit</th>
 
-                                  <th>First Month only</th>
-                                  <th class="deposit-fee">-</th>
-                                  <th class="deposit-fee">-</th>
-                                  <th class="deposit-fee">-</th>
-                                </tr>
-                                <tr class="text-capitalize monthly-fee">
-                                  <th></th>
-                                  <th>Least Monthly Invoice Amount</th>
-
-                                  <th>Monthly</th>
-                                  <th class="monthly-fee">-</th>
-                                  <th class="monthly-fee">-</th>
-                                  <th class="monthly-fee">-</th>
+                                  <button type="button" onClick={toogleShowUnitTypeChargesModal}>Add Charges</button>
                                 </tr>
                               </tfoot>
                               <tbody>
-                                <tr data-id="1">
-                                  <td>1.</td>
-                                  <td>Monthly Rent</td>
-                                  <td>Monthly</td>
-                                  <td
-                                    invoice-permonth="true"
-                                    deposit-amount="true"
-                                    invoice-item-name="rent"
-                                  >
-                                    <input
-                                      type="text "
-                                      class="form-control "
-                                      placeholder="Enter Amount"
-                                      spellcheck="false"
-                                      data-ms-editor="true"
-                                    />
-                                  </td>
-                                  <td
-                                    invoice-permonth="true"
-                                    deposit-amount="true"
-                                    invoice-item-name="rent"
-                                  >
-                                    <input
-                                      type="text "
-                                      class="form-control "
-                                      placeholder="Enter Amount"
-                                      spellcheck="false"
-                                      data-ms-editor="true"
-                                    />
-                                  </td>
-                                  <td
-                                    invoice-permonth="true"
-                                    deposit-amount="true"
-                                    invoice-item-name="rent"
-                                  >
-                                    <input
-                                      type="text "
-                                      class="form-control "
-                                      placeholder="Enter Amount"
-                                      spellcheck="false"
-                                      data-ms-editor="true"
-                                    />
-                                  </td>
-                                </tr>
-                                <tr data-id="1">
-                                  <td style={{ width: "80px" }}>2</td>
-                                  <td>Rent VAT</td>
-                                  <td>Monthly</td>
-                                  <td
-                                    invoice-permonth="true"
-                                    invoice-item-name="rent VAT"
-                                    deposit-amount="false"
-                                    per-of="rent"
-                                    the-val="18>18% of rent"
-                                  >
-                                    {" "}
-                                  </td>
-                                  <td
-                                    invoice-permonth="true"
-                                    invoice-item-name="rent VAT"
-                                    deposit-amount="false"
-                                    per-of="rent"
-                                    the-val="18>18% of rent"
-                                  >
-                                    {" "}
-                                  </td>
-                                  <td
-                                    invoice-permonth="true"
-                                    invoice-item-name="rent VAT"
-                                    deposit-amount="false"
-                                    per-of="rent"
-                                    the-val="18>18% of rent"
-                                  >
-                                    {" "}
-                                  </td>
-                                </tr>
-                                <tr data-id=" 1 ">
-                                  <td style={{ width: "80px" }}>3</td>
-                                  <td>Rent Deposit</td>
-                                  <td>First Month only</td>
-                                  <td
-                                    invoice-permonth="false"
-                                    deposit-amount="true"
-                                  >
-                                    <input
-                                      type="text "
-                                      class="form-control "
-                                      placeholder="Enter Amount "
-                                      spellcheck="false "
-                                      data-ms-editor="true "
-                                    />
-                                  </td>
-                                  <td
-                                    invoice-permonth="false"
-                                    deposit-amount="true"
-                                  >
-                                    <input
-                                      type="text "
-                                      class="form-control "
-                                      placeholder="Enter Amount "
-                                      spellcheck="false "
-                                      data-ms-editor="true "
-                                    />
-                                  </td>
-                                  <td
-                                    invoice-permonth="false"
-                                    deposit-amount="true"
-                                  >
-                                    <input
-                                      type="text "
-                                      class="form-control "
-                                      placeholder="Enter Amount "
-                                      spellcheck="false "
-                                      data-ms-editor="true "
-                                    />
-                                  </td>
-                                </tr>
-                                <tr data-id="1 ">
-                                  <td style={{ width: "80px" }}>4</td>
-                                  <td>Surcharge</td>
-                                  <td>Day 10 of each month</td>
-                                </tr>
-                                <tr data-id="1 ">
-                                  <td style={{ width: "80px" }}>5</td>
-                                  <td>Utility Deposit</td>
-                                  <td>First month only</td>
-                                </tr>
-                                <tr data-id="1 ">
-                                  <td style={{ width: "80px" }}>6</td>
-                                  <td>Auctioneer Fees</td>
-                                  <td>Random date</td>
-                                </tr>
+                                {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indeex) => (
+                                  <>{
+                                    <tr>
+                                      <td>{indeex + 1}</td>
+
+                                      <td>
+                                        {charge.name}
+                                      </td>
+
+                                      <td>
+                                        {charge.applicableChargeType}
+                                      </td>
+
+                                      {selectedunitTypes.map((selectedUnitType, indeex) => (
+                                        <>
+
+                                          {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeex) => (
+                                            <>
+                                              {selectedUnitType.unitTypeName === premiseUnitTypeCharge.unitTypeName &&
+                                                <td>
+                                                  {premiseUnitTypeCharge.value}
+                                                </td>
+                                              }
+                                            </>
+                                          ))}
+
+                                        </>
+                                      ))}
+
+                                    </tr>
+                                  }
+                                  </>
+                                ))
+
+                                }
                               </tbody>
                             </table>
                           </div>
@@ -963,379 +929,255 @@ function AddPremises() {
                     <section>
                       <form>
                         <h6>
-                          Upload document and don't forget to specify whose the
-                          document is for. ie{" "}
-                          <strong>Landlord or Premises</strong>
+                          Upload documents
                         </h6>
                         <div class="table-responsive table-responsive-md">
-                          <table class="table table-editable-file align-middle table-edits">
-                            <thead class="table-light">
-                              <tr class="text-uppercase table-dark">
-                                <th class="vertical-align-middle">#</th>
-                                <th class="vertical-align-middle">
-                                  Document Name
-                                </th>
-                                <th class="vertical-align-middle">
-                                  Document For
-                                </th>
-                                <th class="vertical-align-middle">
-                                  Document Number
-                                </th>
-                                <th class="vertical-align-middle">
-                                  Attach the file
-                                </th>
-                                <th class="text-right"></th>
+                          <table className="table table-editable-file align-middle table-edits ">
+                            <thead className="table-light ">
+                              <tr className="text-uppercase table-dark ">
+                                <th className="vertical-align-middle ">#</th>
+                                <th className="vertical-align-middle ">Document Type</th>
+                                <th className="vertical-align-middle ">Document Name</th>
+                                <th className="vertical-align-middle ">Actions</th>
+                                <th className="text-right "></th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr data-id="1">
-                                <td style={{ width: "80px" }}>1.</td>
 
-                                <td class="">Certificate of incorporation</td>
-                                <td class="">The premises</td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <input
-                                    type="text"
-                                    class="form-control "
-                                    placeholder="Document's Unique No."
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <div class="input-group mb-0">
-                                    <label
-                                      class="input-group-text bg-info text-white cursor-pointer"
-                                      for="document1-1"
-                                    >
-                                      <i class="font-14px mdi mdi-paperclip"></i>{" "}
-                                      Attach File
-                                    </label>
-                                    <input
-                                      type="file"
-                                      class="form-control"
-                                      id="document1-1"
-                                    />
-                                  </div>
-                                </td>
-                                <td></td>
-                              </tr>
-                              <tr data-id="2">
-                                <td style={{ width: "80px" }}>2.</td>
+                              {premiseDocuments.length > 0 && premiseDocuments.map((dependent, index) => (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td>{dependent.documentOwnerTypeName}</td>
+                                  <td>{dependent.docName}</td>
+                                  <td></td>
+                                </tr>
+                              ))
 
-                                <td class="">KRA Pin</td>
-                                <td class="">The Landlord</td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <input
-                                    type="text"
-                                    class="form-control "
-                                    placeholder="Document's Unique No."
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <div class="input-group mb-0">
-                                    <label
-                                      class="input-group-text bg-info text-white cursor-pointer"
-                                      for="document1-1"
-                                    >
-                                      <i class="font-14px mdi mdi-paperclip"></i>{" "}
-                                      Attach File
-                                    </label>
-                                    <input
-                                      type="file"
-                                      class="form-control"
-                                      id="document1-1"
-                                    />
-                                  </div>
-                                </td>
-                                <td></td>
-                              </tr>
-                              <tr data-id="3">
-                                <td style={{ width: "80px" }}>3.</td>
+                              }
 
-                                <td class="">Landlord & MCA agreement</td>
-                                <td class="">The Premises</td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <input
-                                    type="text"
-                                    class="form-control "
-                                    placeholder="Document's Unique No."
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <div class="input-group mb-0">
-                                    <label
-                                      class="input-group-text bg-info text-white cursor-pointer"
-                                      for="document1-1"
-                                    >
-                                      <i class="font-14px mdi mdi-paperclip"></i>{" "}
-                                      Attach File
-                                    </label>
-                                    <input
-                                      type="file"
-                                      class="form-control"
-                                      id="document1-1"
-                                    />
-                                  </div>
-                                </td>
-                                <td></td>
-                              </tr>
-                              <tr data-id="3">
-                                <td style={{ width: "80px" }}>4.</td>
-
-                                <td class="">
-                                  <select
-                                    class="form-control selectpicker"
-                                    data-live-search="true"
-                                    title="Select the Document"
-                                  >
-                                    <option value="">ID Card</option>
-                                    <option value="">
-                                      Certificate of incorporation
-                                    </option>
-                                    <option value="">KRA Pin</option>
-                                  </select>
-                                </td>
-                                <td class="">
-                                  <select
-                                    class="form-control selectpicker"
-                                    data-live-search="true"
-                                    title="The document is for?"
-                                  >
-                                    <option value="">The premises</option>
-                                    <option value="">The landlord</option>
-                                  </select>
-                                </td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <input
-                                    type="text"
-                                    class="form-control "
-                                    placeholder="Document's Unique No."
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <div class="input-group mb-0">
-                                    <label
-                                      class="input-group-text bg-info text-white cursor-pointer"
-                                      for="document1-1"
-                                    >
-                                      <i class="font-14px mdi mdi-paperclip"></i>{" "}
-                                      Attach File
-                                    </label>
-                                    <input
-                                      type="file"
-                                      class="form-control"
-                                      id="document1-1"
-                                    />
-                                  </div>
-                                </td>
-                                <td></td>
-                              </tr>
-
-                              <tr class="cloneCharges d-none">
-                                <td
-                                  style={{ width: "80px" }}
-                                  class="categoryIndex "
-                                >
-                                  #
-                                </td>
-
-                                <td>
-                                  <select
-                                    class="form-control selectpicker"
-                                    data-live-search="true"
-                                    title="Select the Document"
-                                  >
-                                    <option value="">ID Card</option>
-                                    <option value="">
-                                      Certificate of incorporation
-                                    </option>
-                                    <option value="">KRA Pin</option>
-                                  </select>
-                                </td>
-                                <td class="">
-                                  <select
-                                    class="form-control selectpicker"
-                                    data-live-search="true"
-                                    title="The document is for?"
-                                  >
-                                    <option value="">The premises</option>
-                                    <option value="">The landlord</option>
-                                  </select>
-                                </td>
-                                <td class="">
-                                  <input
-                                    type="text"
-                                    class="form-control "
-                                    placeholder="Document's Unique No."
-                                    spellcheck="false"
-                                    data-ms-editor="true"
-                                  />
-                                </td>
-                                <td
-                                  class=""
-                                  title="Select number of months after which the tenancy agreement should be renewed"
-                                >
-                                  <div class="input-group mb-0">
-                                    <label
-                                      class="input-group-text bg-info text-white cursor-pointer"
-                                      for="document"
-                                    >
-                                      <i class="font-14px mdi mdi-paperclip"></i>{" "}
-                                      Attach File
-                                    </label>
-                                    <input
-                                      type="file"
-                                      class="form-control the-document"
-                                      id="document"
-                                    />
-                                  </div>
-                                </td>
-
-                                <td class="text-right d-flex align-items-center justify-content-end">
-                                  <a
-                                    class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent cancel-new-category-file "
-                                    title="Cancel "
-                                  >
-                                    <i class="bx bx-x "></i>
-                                  </a>
-                                </td>
-                              </tr>
                             </tbody>
                             <tfoot>
                               <tr>
-                                <td
-                                  colspan="7"
-                                  class="bg-light add-field-file cursor-pointer"
-                                >
-                                  <span class="d-flex align-items-center ">
-                                    <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
-                                    <span class="pl-5 ">Add A Unit</span>
-                                  </span>
+                                <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
+                                  <button type="button" data-id="PREMISE" onClick={newDocument}>Add Premise Documents</button>
                                 </td>
                               </tr>
                             </tfoot>
                           </table>
+
                         </div>
                       </form>
                     </section>
                   </div>
                 </div>
+
+                <button type='button' className='btn btn-success' onClick={submit}>SUBMIT</button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+
+      <Modal show={newUnitTypeModal}>
+        <ModalHeader className='justify-content'>
+          <h3>New Unit Type</h3>
+          <span onClick={toogleNewUnitTypeModal}>X</span>
+        </ModalHeader>
+        <ModalBody>
+          <form>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-4">
+                  <label htmlFor="basicpill-firstname-input">Unit Type<strong className="text-danger">*</strong></label>
+
+                  <select
+                    className='form-control'
+                    onChange={handleUnitTypeChange}
+                    name="unitTypeId">
+                    <option></option>
+                    {unitTypes.length > 0 && unitTypes.map((prem, index) =>
+                      <option value={prem.id + ':' + prem.name}>{prem.name}</option>
+                    )}
+                  </select>
+                </div>
+              </div>
+
+              <div className="col-md-6">
+                <div className="mb-4">
+                  <label htmlFor="">No. Of Rooms</label>
+                  <input type="text" className="form-control"
+                    onChange={handleUnitTypeChange} name="numberOfRooms" />
+                </div>
+              </div>
+
+              <div className="col-md-6">
+                <div className="mb-4">
+                  <label htmlFor="">UNIT SIZE M<sup>2</sup></label>
+                  <input type="text" className="form-control"
+                    onChange={handleUnitTypeChange} name="squarage" />
+                </div>
+              </div>
+
+              <div className="col-md-6">
+                <div className="mb-4">
+                  <label htmlFor="">Purpose</label>
+                  <input type="text" className="form-control"
+                    onChange={handleUnitTypeChange} name="purpose" />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-4">
+                  <label htmlFor="">TENANCY RENEWAL</label>
+                  <input type="text" className="form-control"
+                    onChange={handleUnitTypeChange} name="monthCountForTenancyRenewal" />
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </ModalBody>
+        <ModalFooter>
+          <button className='btn btn-basic' type="button" onClick={toogleNewUnitTypeModal}>Close</button>
+          <button className='btn btn-success' type="button" onClick={addUnitType}>Add</button>
+        </ModalFooter>
+      </Modal>
+
+
+      <Modal show={showDocumentModal}>
+        <ModalHeader className='justify-content'>
+          <h3>New {docBody.documentOwnerTypeName} Document</h3>
+          <span onClick={toogleShowNewDocumentModal}>X</span>
+        </ModalHeader>
+        <ModalBody>
+          <form id="newContactPersonForm" className='row'>
+            <div className="col-md-6">
+              <div className="mb-4">
+                <label htmlFor="basicpill-firstname-input">Document Type<strong className="text-danger">*</strong></label>
+
+                <select className='form-control' onChange={handleDocumentChange} name="documentTypeId">
+                  <option></option>
+                  {documentTypes.length > 0 && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="mb-4">
+                <label htmlFor="">Doc Name</label>
+                <input type="text" className="form-control" id="" placeholder=""
+                  onChange={(e) => handleDocumentChange(e)} name="docName" />
+              </div>
+            </div>
+
+            <div className="col-md-12">
+              <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
+                <i className="font-14px mdi mdi-paperclip"></i> Document
+              </label>
+              <input type="file" className="form-control" name="file"
+                onChange={(e) => handleDocumentChange(e)} />
+
+            </div>
+          </form>
+        </ModalBody>
+        <ModalFooter>
+          <button className='btn btn-basic' type="button" onClick={toogleShowNewDocumentModal}>Close</button>
+          <button className='btn btn-success' type="button" onClick={addDocument}>Add</button>
+        </ModalFooter>
+      </Modal>
+
+
+
+      <Modal show={showUnitTypeChargesModal}>
+        <ModalHeader className='justify-content'>
+          <h3>Invoice Breakdown</h3>
+          <span onClick={toogleShowUnitTypeChargesModal}>X</span>
+        </ModalHeader>
+        <ModalBody>
+          <form id="newContactPersonForm" className='row'>
+            <div className="col-md-6">
+              <div className="mb-4">
+                <label htmlFor="basicpill-firstname-input">Applicable Charge Type<strong className="text-danger">*</strong></label>
+
+                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="charge">
+                  <option></option>
+                  {selectedApplicableCharges.length > 0 && selectedApplicableCharges.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+                </select>
+              </div>
+            </div>
+            <hr></hr>
+            <h3>Charge Values</h3>
+
+            {unitCharges.length > 0 && unitCharges.map((unitCharge, index) => (<>
+              <div className="col-md-6">
+                <label htmlFor="">Unit Type</label>
+                <input type="text" className="form-control" id="" placeholder=""
+                  disabled value={unitCharge.unitTypeName} name="docName" />
+              </div>
+
+              <div className="col-md-6">
+                <label> Charge Value </label>
+                <input type="number" className="form-control" name="value"
+                  onChange={(e) => handleChargechange(e, index)} />
+              </div>
+            </>
+            ))
+            }
+          </form>
+        </ModalBody>
+        <ModalFooter>
+          <button className='btn btn-basic' type="button" onClick={toogleShowUnitTypeChargesModal}>Close</button>
+          <button className='btn btn-success' type="button" onClick={addAppCharge}>Add</button>
+        </ModalFooter>
+      </Modal>
+
       {/* <!-- enter landlord's id modal --> */}
-      <div
-        class="modal fade"
-        id="subscribeModal"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header border-bottom-0">
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body ">
-              <div class="text-center mb-4 ">
-                <div class="avatar-md mx-auto mb-4 ">
-                  <div class="avatar-title bg-light rounded-circle text-primary h1 ">
-                    <i class="mdi mdi-card-account-details-outline "></i>
+
+      <Modal show={general.landlordFileNumber.length < 1}>
+        <ModalBody>
+          <div class="row justify-content-center ">
+            <div class="col-xl-10 ">
+              <h4 class="text-primary ">Landlord's File No.</h4>
+              <p class="text-muted font-size-14 mb-4 ">
+                Enter the landlords file number if the landlord is already
+                registered in the system. If this is a new landlord, click
+                cancel.
+              </p>
+
+              <form onSubmit={(e) => e.preventDefault()}>
+                <div class="row ">
+                  <div class="col-9">
+                    <div class="mb-3 ">
+                      <label for="digit1-input " class="visually-hidden ">
+                        File No.
+                      </label>
+                      <input
+                        type="text "
+                        class="form-control form-control-lg text-center two-step "
+                        placeholder="Enter file No."
+                        value={landlordfileNumber}
+                        onChange={(e) =>
+                          setLandlordfileNumber(e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div class="col-3 ">
+                    <button
+                      data-bs-dismiss="modal"
+                      class="btn btn-primary btn-block w-100 btn-lg"
+                      onClick={saveLandLordFileNumber}
+                    >
+                      <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
+                      <div class="d-none">Search</div>
+                    </button>
                   </div>
                 </div>
-
-                <div class="row justify-content-center ">
-                  <div class="col-xl-10 ">
-                    <h4 class="text-primary ">Landlord's File No.</h4>
-                    <p class="text-muted font-size-14 mb-4 ">
-                      Enter the landlords file number if the landlord is already
-                      registered in the system. If this is a new landlord, click
-                      cancel.
-                    </p>
-
-                    <form onSubmit={(e) => e.preventDefault()}>
-                      <div class="row ">
-                        <div class="col-9">
-                          <div class="mb-3 ">
-                            <label for="digit1-input " class="visually-hidden ">
-                              File No.
-                            </label>
-                            <input
-                              type="text "
-                              class="form-control form-control-lg text-center two-step "
-                              placeholder="Enter file No."
-                              value={landlordFileNo}
-                              onChange={(e) =>
-                                setLandlordFileNo(e.target.value)
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div class="col-3 ">
-                          <button
-                            data-bs-dismiss="modal"
-                            class="btn btn-primary btn-block w-100 btn-lg"
-                          >
-                            <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
-                            <div class="d-none">Search</div>
-                          </button>
-                        </div>
-                      </div>
-                      <button
-                        data-bs-dismiss="modal"
-                        class="btn btn-secondary btn-block mt-3 text-center w-100"
-                      >
-                        <i class="mdi mdi-account-multiple-plus font-size-16 align-middle me-2 "></i>
-                        Its a new landlord
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
+              </form>
             </div>
           </div>
-        </div>
-      </div>
+        </ModalBody>
+      </Modal>
       {/* <!-- end of ID modal --> */}
     </>
   );
