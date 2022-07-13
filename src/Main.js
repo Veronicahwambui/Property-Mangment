@@ -4,7 +4,7 @@ import Header from './components/Header';
 import SideBar from './components/SideBar';
 import { Helmet } from 'react-helmet'
 import Dashboard from './pages/Dashboard';
-import Landlords from './pages/Landlords';
+import Landlords from './pages/landlords/Landlords';
 import PremisesRegister from './pages/premises/PremisesRegister';
 import AddPremises from './pages/premises/AddPremises';
 import AllTenants from './pages/tenants/AllTenants';
@@ -35,6 +35,9 @@ import DocumentTypes from "./pages/setups/DocumentTypes";
 import OnePremise from "./pages/premises/OnePremise";
 import LandLordView from "./pages/LandLordView";
 import OneTenant from "./pages/tenants/OneTenant";
+import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
+import AddLandlord from "./pages/landlords/AddLandlord";
+
 function Main() {
 
   useEffect(() => {
@@ -109,6 +112,9 @@ function Main() {
                   <Route path='/addadmin' element={<AddAdmin/>} />
                   <Route path='/clienttypes' element={<ClientType/>} />
                   <Route path='/clients' element={<ClientManagement/>} />
+                  <Route path='/agreementtypes' element={<LandLordAgreementTypes/>} />
+                  <Route path='/addlandlord' element={<AddLandlord/>} />
+
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
               </div>

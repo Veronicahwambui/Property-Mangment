@@ -417,6 +417,60 @@ class RequestsService {
         return axiosInstance.get(baseUrl + "/tenants/" + id)
        }
   
+    //landlord agreement types
+
+    createAgreementType(data) {
+        return axiosInstance.post(baseUrl + "/setup/landLordAgreementTypes", data);
+    }
+
+    getAllAgreementTypes() {
+        return axiosInstance.get(baseUrl + "/setup/landLordAgreementTypes");
+    }
+
+    getOneAgreementType(id) {
+        return axiosInstance.get(baseUrl + "/setup/landLordAgreementTypes/" + id);
+    }
+
+    editAgreementType(data) {
+        return axiosInstance.post(baseUrl + "/setup/landLordAgreementTypes/update", data);
+    }
+
+    deactivateAgreementType(id) {
+        return axiosInstance.get(baseUrl + "/setup/landLordAgreementTypes/toogleStatus/" + id);
+    }
+    getCurrentUserClient() {
+        let temp = JSON.parse(localStorage.getItem("user"));
+        let uc = temp.client
+        return uc
+    }
+
+    //landlords
+    getDocumentOwnerTypes() {
+        return axiosInstance.get(baseUrl + "/setup/documentOwnerTypes")
+    }
+
+    createLandLord(data) {
+        return axiosInstance.post(baseUrl + "/landlord/create", data)
+    }
+
+    createLandLordAccounts(data) {
+        return axiosInstance.post(baseUrl+ "/landlord/accounts/create", data)
+    }
+    updateLandLordAccounts(data) {
+        return axiosInstance.post(baseUrl+ "/landlord/accounts/update", data)
+    }
+    getLandLords() {
+        return axiosInstance.get(baseUrl + "/landlord");
+    }
+    getDocumentTypes() {
+        return axiosInstance.get(baseUrl + "/setup/documentTypes");
+    }
+    getBanks() {
+        return axiosInstance.get(baseUrl + "/setup/banks");
+    }
+    getLandlordTypes() {
+        return axiosInstance.get(baseUrl + "/setup/landLordTypes")
+    }
 }
 
 export default new RequestsService();

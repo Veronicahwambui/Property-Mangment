@@ -21,9 +21,14 @@ function SideBar() {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to="landlords" className="waves-effect">
-                                <i className="mdi mdi-shield-home"></i><span>Landlord</span>
-                            </NavLink>
+                            <a href="javascript: void(0)" className="waves-effect has-arrow">
+                                <i className="mdi mdi mdi-shield-home"></i>
+                                <span>Landlord</span>
+                            </a>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li><NavLink to="/landlords">All landlords</NavLink></li>
+                                <li><NavLink to="/addlandlord">Add a landlord</NavLink></li>
+                            </ul>
                         </li>
 
                         <li>
@@ -62,7 +67,7 @@ function SideBar() {
                                 <li><NavLink to="/clientcounties">client Counties</NavLink></li>
                                 <li><NavLink to="/zones">Zones</NavLink></li>
                                 <li><NavLink to="/estates">Estate</NavLink></li>
-                                {/* <li><NavLink  to="/attachabledocs">Attachable Documents</NavLink></li> */}
+                                <li><NavLink  to="/agreementtypes">Agreement Types</NavLink></li>
                             </ul>
                         </li>
 
