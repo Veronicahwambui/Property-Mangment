@@ -142,8 +142,7 @@ function LandLordAgreementTypes() {
                 <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                   <div
                     class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
+                    role="toolbar">
                     <div class="d-flex align-items-center flex-grow-1">
                       <h4 class="mb-0  bg-transparent  p-0 m-0">
                         Agreement Type Register
