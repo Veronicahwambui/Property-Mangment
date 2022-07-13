@@ -414,6 +414,9 @@ class RequestsService {
     createLandLord(data) {
         return axiosInstance.post(baseUrl + "/landlord/create", data)
     }
+    updateLandLord(data) {
+        return axiosInstance.post(baseUrl + "/landlord/update", data)
+    }
 
     createLandLordAccounts(data) {
         return axiosInstance.post(baseUrl+ "/landlord/accounts/create", data)
@@ -424,6 +427,9 @@ class RequestsService {
     getLandLords() {
         return axiosInstance.get(baseUrl + "/landlord");
     }
+    getLandlord(id){
+        return axiosInstance.get(baseUrl + "/landlord/" + id);
+    }
     getDocumentTypes() {
         return axiosInstance.get(baseUrl + "/setup/documentTypes");
     }
@@ -433,6 +439,13 @@ class RequestsService {
     getLandlordTypes() {
         return axiosInstance.get(baseUrl + "/setup/landLordTypes")
     }
+    createDocuments(data) {
+        return axiosInstance.post(baseUrl + "/documents", data)
+    }
+    downloadDocuments(data) {
+        return axiosInstance.get(baseUrl + "/documents/download?docName=" + data)
+    }
+
 }
 
 export default new RequestsService();
