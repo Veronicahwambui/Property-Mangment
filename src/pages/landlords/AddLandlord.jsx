@@ -88,7 +88,6 @@ export default function AddLandlord() {
   const [editBankAccount, setEditBankAccount] = useState("")
   const [editpercentageRemuneration, setEditPercentageRemuneration] = useState(null)
   const [selectedAccount, setSelectedAccount] = useState({
-
   })
   const [arr_index, setArr_Index] = useState(0)
 
