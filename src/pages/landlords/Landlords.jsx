@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import requestsServiceService from '../../services/requestsService.service'
 
 function Landlords() {
@@ -88,14 +89,14 @@ function Landlords() {
                             <a
                               className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
                               title="Cancel "><i className="bx bx-x "></i></a>
-                            <button type="button"
+                           <Link to={"/landlord/"+l.id}> <button type="button"
                                     className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                     data-bs-toggle="modal" data-bs-target="#edit"
                                     onClick={() => {}}
                                     style={{ marginLeft: "8px" }}
                             >
                               View Details
-                            </button>
+                            </button></Link>
                           </td>
                           <td>
 
