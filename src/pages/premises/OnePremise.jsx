@@ -256,7 +256,8 @@ function OnePremise() {
                                   <td>{index + 1}</td>
                                   <td>{unit.unitName}</td>
                                   <td>{unit.unitType.name}</td>
-                                  <td>active</td>
+                                  <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
+                                  
                         </tr>
                             ))}
                         
@@ -424,7 +425,8 @@ function OnePremise() {
                                    <td className="text-capitalize">{unit.landLordType}</td>
                                    <td>{unit.phoneNumber}</td>
                                    <td>{unit.email}</td>
-                                   <td>{'Active'}</td>
+                                   <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
+
                                   
                          </tr>
                              ))}
