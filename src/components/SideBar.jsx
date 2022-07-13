@@ -110,7 +110,7 @@ function SideBar() {
                         </li>
                         <li>
                             <a href="javascript: void(0)" className="waves-effect has-arrow">
-                                <i className="mdi mdi-shield-account-outline"></i>
+                                <i className="bx bx-buildings"></i>
                                 <span>Clients</span>
                             </a>
                             <ul className="sub-menu" aria-expanded="false">
@@ -127,5 +127,4 @@ function SideBar() {
         </div>
   )
 }
-
 export default SideBar
