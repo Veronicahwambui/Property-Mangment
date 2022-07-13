@@ -38,6 +38,7 @@ import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
 import AddLandlord from "./pages/landlords/AddLandlord";
 import { Helmet } from "react-helmet";
 
+
 function Main() {
 
   useEffect(() => {
@@ -123,6 +124,23 @@ function Main() {
       </div >
       
       <Helmet>
+     
+
+      {/* <!-- Table Editable plugin --> */}
+      <script src="./assets/libs/table-edits/build/table-edits.min.js "></script>
+      <script src="./assets/js/pages/table-editable.int.js "></script>
+
+      <script
+      src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
+      crossorigin></script>
+      {/* data table plugin */}     
+      <script src="./assets/js/pages/datatables.init.js"></script>
+
+      {/* <!-- jquery step --> */}
+       <script src="./assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+       <script src="./assets/js/pages/form-wizard.init.js"></script>
+       
+
         {/* <!-- App js --> */}
         <script src="./assets/js/app.js "></script>
         <script src="./assets/js/custom.js "></script>

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import requestsServiceService from '../../services/requestsService.service'
 
 
+
 function AllTenants() {
   const [premises, setPremises] = useState([])
   const [activeId, setActiveId] = useState('')
@@ -76,7 +77,7 @@ function AllTenants() {
 
               </div>
               <div className="card-body">
-                <table className="table  table-hover">
+                <table className="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
                   <thead className="table-light">
                     <tr>
 
@@ -96,8 +97,6 @@ function AllTenants() {
 
                       return (
                         <tr key={index}>
-
-
                           <td className="text-capitalize">{index + 1}</td>
                           <td className="text-capitalize">
                             <Link to={"/tenant/" + premise.id}>
@@ -124,7 +123,6 @@ function AllTenants() {
                             <h5 className="font-size-14 mb-1">{premise.dateTimeCreated}</h5>
 
                           </td>
-
 
                           <td >{premise.active ? <span className="badge-soft-success badge">Active</span> : <span className="badge-soft-danger badge">Inactive</span>}</td>
 
