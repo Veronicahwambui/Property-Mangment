@@ -36,6 +36,7 @@ import UnitTypes from "./pages/setups/UnitTypes";
 import DocumentTypes from "./pages/setups/DocumentTypes";
 import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
 import AddLandlord from "./pages/landlords/AddLandlord";
+import ViewLandlord from "./pages/landlords/ViewLandlord";
 
 function Main() {
 
@@ -111,6 +112,7 @@ function Main() {
                   <Route path='/clients' element={<ClientManagement/>} />
                   <Route path='/agreementtypes' element={<LandLordAgreementTypes/>} />
                   <Route path='/addlandlord' element={<AddLandlord/>} />
+                  <Route path='/landlord/:id' element={<ViewLandlord/>} />
 
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
