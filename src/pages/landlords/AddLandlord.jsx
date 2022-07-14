@@ -237,9 +237,7 @@ export default function AddLandlord() {
   const handleFileRead = async (event) => {
     const file = event.target.files[0]
     const base64 = await convertBase64(file)
-    let result = base64.substr(28);
-    setdocument(result);
-    console.log(result);
+    setdocument(base64);
   }
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -283,7 +281,31 @@ export default function AddLandlord() {
               <div className="card">
                 <div className="card-body">
                   <p>Fill in the form correctly. Fields with an Asterisk <strong className="text-danger">*</strong> are mandatory fields.</p>
-                  <div className="create-property" id="basic-example">
+                  <div className="create-property" id="kev-step-form">
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+
+                      <button className="navbar-toggler" type="button" data-toggle="collapse"
+                              data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                              aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                      </button>
+
+                      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav mr-auto">
+                          <li className="nav-item active">
+                            <a className="nav-link active" href="#">1. Landlord details <span
+                              className="sr-only">(current)</span></a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">2. Account details</a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">3. Document attachments</a>
+                          </li>
+                        </ul>
+
+                      </div>
+                    </nav>
                     <div className="bg-primary border-2 bg-soft p-3 mb-4">
                       <p className="fw-semibold mb-0 pb-0 text-uppercase">Landlord details</p>
 

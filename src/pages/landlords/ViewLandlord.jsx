@@ -234,11 +234,7 @@ function ViewLandlord() {
   const handleFileRead = async (event) => {
     const file = event.target.files[0]
     const base64 = await convertBase64(file)
-    console.log(base64);
-    let result = base64.substr(28);
-    console.log(result)
-    setdocument(result);
-    console.log(result);
+    setdocument(base64);
   }
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
