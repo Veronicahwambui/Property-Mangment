@@ -11,6 +11,7 @@ class RequestsService {
     }
 
     ViewOneRole(roleId) {
+        
         return axiosInstance.get(baseUrl + "/roles/view/" + roleId);
     }
 
@@ -77,6 +78,10 @@ class RequestsService {
     }
     unlockUserAccount(userId) {
         return axiosInstance.get(baseUrl + "/accounts/unlockUserAccount/" + userId)
+    }
+    viewOneUser(userId){
+        return axiosInstance.get(baseUrl+"/users/view/" + userId)
+
     }
     // addRole(){
     //     return axiosInstance.put(baseUrl +"/user-types");
@@ -146,6 +151,7 @@ class RequestsService {
     deactivateEstate(id) {
         return axiosInstance.get(baseUrl + "/setup/estates/toogleStatus/" + id);
     }
+    //user
 
     getUser(id) {
         return axiosInstance.get(baseUrl + "/users/view/" + id);
@@ -453,6 +459,9 @@ class RequestsService {
     createLandLord(data) {
         return axiosInstance.post(baseUrl + "/landlord/create", data)
     }
+    updateLandLord(data) {
+        return axiosInstance.post(baseUrl + "/landlord/update", data)
+    }
 
     createLandLordAccounts(data) {
         return axiosInstance.post(baseUrl+ "/landlord/accounts/create", data)
@@ -463,6 +472,9 @@ class RequestsService {
     getLandLords() {
         return axiosInstance.get(baseUrl + "/landlord");
     }
+    getLandlord(id){
+        return axiosInstance.get(baseUrl + "/landlord/" + id);
+    }
     getDocumentTypes() {
         return axiosInstance.get(baseUrl + "/setup/documentTypes");
     }
@@ -472,6 +484,13 @@ class RequestsService {
     getLandlordTypes() {
         return axiosInstance.get(baseUrl + "/setup/landLordTypes")
     }
+    createDocuments(data) {
+        return axiosInstance.post(baseUrl + "/documents", data)
+    }
+    downloadDocuments(data) {
+        return axiosInstance.get(baseUrl + "/documents/download?docName=" + data)
+    }
+
 }
 
 export default new RequestsService();
