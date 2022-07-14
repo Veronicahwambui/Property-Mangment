@@ -1,4 +1,5 @@
 $(document).ready(function() {
+ 
 
     var theTable
     theTable = $("#datatable").DataTable(), $("#datatable-buttons").DataTable({
@@ -239,5 +240,8 @@ $(document).ready(function() {
     });
     $('.dt-buttons').removeClass('flex-wrap');
     $('#datatable-buttons_wrapper .dt-buttons');
+
+    
+    
 
 });

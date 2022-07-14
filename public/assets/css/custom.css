@@ -1186,3 +1186,17 @@ padding: 0px;
     .no-list-style li {
         list-style: none;
     }
+
+    #kev-step-form nav{
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 13px;
+    }
+
+    #kev-step-form nav li a.active{
+        font-weight: 600;
+    }
+    .button-navigators{
+        display:flex;
+        justify-content: flex-end;
+    }

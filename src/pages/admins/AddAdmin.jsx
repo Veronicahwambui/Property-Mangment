@@ -285,11 +285,13 @@ function AddAdmin() {
                     </div>
 
                     <div className="">
-                      <h5 className="font-weight-bold">
-                        User privilages and permissions
-                      </h5>
+                      <div className="col-form-label col-lg-3">
+                    
+                        <strong> User Privilages and Permissions</strong>
+                     
+                      </div>
                     </div>
-
+                    <div class="plan-features">
                     <div className="row mt-5">
                       {privileges.map((priv, index) => (
                         <div className="col-4">
@@ -306,6 +308,7 @@ function AddAdmin() {
                           </div>
                         </div>
                       ))}
+                    </div>
                     </div>
 
                     <div className="row justify-content-end">
