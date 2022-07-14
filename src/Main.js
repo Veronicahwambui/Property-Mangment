@@ -124,6 +124,16 @@ function Main() {
       </div >
       
       <Helmet>
+      
+
+      {/* the popper makes sure the bootstrap select works with bootstrap 5 */}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js " integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49 " crossorigin="anonymous "></script>
+
+      {/* date picker plugin */}
+      <script src="assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js "></script>
+
+      {/* <!-- Bootstrap select --> */}
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js "></script>
      
 
       {/* <!-- Table Editable plugin --> */}
