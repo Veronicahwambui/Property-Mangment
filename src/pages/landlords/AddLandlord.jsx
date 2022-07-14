@@ -136,6 +136,10 @@ export default function AddLandlord() {
     event.preventDefault()
     console.log(accounts)
   }
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
 //accounts edit
   const handleAccountSubmit = (event) => {
@@ -199,8 +203,27 @@ export default function AddLandlord() {
     }
     requestsServiceService.createLandLord(new_t).then((res) => {
       console.log(res);
+      setError({
+        ...error,
+        message: res.data.message + "! Landlord created",
+        color: "success"
+      })
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        })
+      }, 3000);
     }).catch((err) => {
       console.log(err)
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        })
+      }, 3000);
     })
     console.log(new_t)
     console.log(data)
@@ -251,6 +274,11 @@ export default function AddLandlord() {
             </div>
           </div>
           <div className="row">
+            {error.color !== "" &&
+            <div className={"alert alert-" + error.color} role="alert">
+              {error.message}
+            </div>
+            }
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
