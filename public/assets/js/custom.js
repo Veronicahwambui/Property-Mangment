@@ -645,9 +645,6 @@ $(document).ready(function() {
 
       
     });
-    $('.kev-nxt').on('click', function(){
-        alert("kinuthia made me do this");
-    })
-
+   
     
 });
