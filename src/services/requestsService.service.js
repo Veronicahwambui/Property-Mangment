@@ -406,7 +406,7 @@ class RequestsService {
 
 
     download(name){
-        return axiosInstance.get(baseUrl + '​/documents​/download?docName=' + name )
+        return axiosInstance.get(baseUrl + "​/documents​/download?docName=" + name )
     }
 
     viewLandlord(id) {

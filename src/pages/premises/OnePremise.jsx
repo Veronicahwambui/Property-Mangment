@@ -361,16 +361,17 @@ function OnePremise() {
                                                      <th>Name</th>
                                                      <th>Type</th>
                                                      <th>Owner type</th>
+                                                     <th></th>
                                                  </tr>
                                  </thead>
                            <tbody>
                              {premiseData.premiseDocuments && premiseData.premiseDocuments.map(( unit , index)=>(
                                    <tr data-id="1">
                                    <td>{index + 1}</td>
-                                   <td onClick={download} className="active nav-link cursor-pointer"><a> {unit.docName}</a></td>
+                                   <td  className="active nav-link cursor-pointer"><a onClick={()=>download}> {unit.docName}</a></td>
                                    <td >{unit.documentType.name}</td>
                                    <td className="text-capitalize">{unit.documentOwnerType.toLowerCase()}</td>
-                                   
+                                
                          </tr>
                              ))}
                          
