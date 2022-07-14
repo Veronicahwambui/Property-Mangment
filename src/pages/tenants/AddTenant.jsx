@@ -5,7 +5,6 @@ import { confirmAlert } from 'react-confirm-alert';
 import moment from 'moment';
 import authService from '../../services/auth.service';
 import requestsServiceService from '../../services/requestsService.service';
-import $ from 'jquery';
 import {Helmet} from "react-helmet";
 
 
