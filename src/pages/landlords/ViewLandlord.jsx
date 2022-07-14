@@ -173,6 +173,7 @@ function ViewLandlord() {
     })
 
   }
+
   const handleaccountsubmit = (event) => {
     event.preventDefault()
     let data = JSON.stringify({
@@ -184,7 +185,6 @@ function ViewLandlord() {
       percentageRemuneration: editpercentageRemuneration,
       bankName: editBankName,
     });
-    console.log(data);
     requestsServiceService.updateLandLordAccounts(data).then((res) => {
       setError({
         ...error,
@@ -214,7 +214,7 @@ function ViewLandlord() {
       percentageRemuneration: percentageRemuneration
     }
     requestsServiceService.createLandLordAccounts(data).then((res) => {
-      console.log(res)
+      accclose();
       setError({
         ...error,
         message: res.data.message,
@@ -234,7 +234,9 @@ function ViewLandlord() {
   const handleFileRead = async (event) => {
     const file = event.target.files[0]
     const base64 = await convertBase64(file)
+    console.log(base64);
     let result = base64.substr(28);
+    console.log(result)
     setdocument(result);
     console.log(result);
   }
@@ -281,6 +283,19 @@ function ViewLandlord() {
       getlandlords();
     }).catch((err) => {
       console.log(err)
+      setError({
+        ...error,
+        message: err.message,
+        color: "danger"
+      })
+      handleDocClose()
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        })
+      }, 3000);
     })
   }
   return (
@@ -314,11 +329,6 @@ function ViewLandlord() {
           <div className="col-12">
             <div className="card">
               <div className="card-body pt-2 pb-3">
-                {error.color !== "" &&
-                <div className={"alert alert-" + error.color} role="alert">
-                  {error.message}
-                </div>
-                }
                 <nav className="navbar navbar-expand-md navbar-white bg-white py-2">
                   <button
                     className="navbar-toggler btn btn-sm px-3 font-size-16 header-item waves-effect h-auto text-primary"
@@ -368,9 +378,13 @@ function ViewLandlord() {
           {/*LANDLORD DETAILS*/}
         </div>
         {activeLink === 1 &&
-
         <div className="row">
           <div className="col-12">
+            {error.color !== "" &&
+            <div className={"alert alert-" + error.color} role="alert">
+              {error.message}
+            </div>
+            }
             <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
               <div className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
                    role="toolbar">
@@ -400,7 +414,6 @@ function ViewLandlord() {
                   <div>
                     <h5 className="text-capitalize">{landlord.firstName + " " + landlord.lastName} <span
                       className="badge badge-pill badge-soft-success font-size-11">Active</span></h5>
-
                   </div>
                 </div>
               </div>
@@ -491,6 +504,11 @@ function ViewLandlord() {
                         </div>
                         <div className="p-4">
                           <div className="row">
+                            {error.color !== "" &&
+                            <div className={"alert alert-" + error.color} role="alert">
+                              {error.message}
+                            </div>
+                            }
                             <div className="col-12">
                               <div className="table-responsive">
                                 <table
@@ -571,6 +589,11 @@ function ViewLandlord() {
                           </div>
                           <div className="p-4">
                             <div className="row">
+                              {error.color !== "" &&
+                              <div className={"alert alert-" + error.color} role="alert">
+                                {error.message}
+                              </div>
+                              }
                               <div className="col-12">
                                 <div className="table-responsive">
                                   <table
@@ -799,7 +822,7 @@ function ViewLandlord() {
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" className={"btn btn-grey"} onClick={accclose}>
+              <Button variant="secondary" className={"btn btn-grey"} onClick={() => accclose()}>
                 Close
               </Button>
               <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
@@ -911,7 +934,7 @@ function ViewLandlord() {
                   <div className="input-group mb-0">
                     <label className="input-group-text bg-info text-white cursor-pointer"
                            htmlFor="document1-1">
-                      <i className="font-14px mdi mdi-paperclip"></i> Attach File
+                      <i className="font-14px mdi mdi-paperclip"/> Attach File
                     </label>
                     <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true}/>
                   </div>
