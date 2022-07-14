@@ -12,6 +12,7 @@ function AddPremises() {
   const [applicableCharges, setApplicableCharges] = useState([]);
   const [unitTypes, setUnitTypes] = useState([]);
   const [unitCharges, setUnitCharges] = useState([]);
+  const [uniqueChargeId, setUniqueChargeIds] = useState([]);
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
@@ -43,7 +44,12 @@ function AddPremises() {
   });
 
   const handleGeneral = (event) => {
-    setGeneral({ ...general, [event.target.name]: event.target.value });
+    if (event.target.name === "estateId" ||
+      event.target.name === "premiseTypeId" ||
+      event.target.name === "premiseUseTypeId")
+      setGeneral({ ...general, [event.target.name]: parseInt(event.target.value) });
+    else
+      setGeneral({ ...general, [event.target.name]: event.target.value });
   };
 
 
@@ -89,14 +95,19 @@ function AddPremises() {
   const handleChargechange = (event, index) => {
     if (event.target.name === "charge") {
       let unitAppCharge = [];
+      let chargee = selectedApplicableCharges.find(charge => charge.id === parseInt(event.target.value));
       for (var i = 0; i < selectedunitTypes.length; i++) {
         let chargeBody = {
           "active": true,
-          "applicableChargeId": event.target.value,
+          "applicableChargeId": chargee.id,
           "chargeConstraint": undefined,
           "constraintChargeId": undefined,
           "id": undefined,
           "invoiceDay": undefined,
+
+          "applicableChargeName": chargee.name,
+          "applicableChargeType": chargee.applicableChargeType,
+
           "unitTypeName": selectedunitTypes[i].unitTypeName,
           "landlordCollectionAccountId": undefined,
           "monthCountForTenancyRenewal": selectedunitTypes[i].monthCountForTenancyRenewal,
@@ -235,6 +246,12 @@ function AddPremises() {
     for (var i = 0; i < unicahgsg.length; i++)
       premiseUnitType.push(unicahgsg[i]);
 
+
+
+    let vals = premiseUnitType.map(cha => cha.applicableChargeId)
+
+    setUniqueChargeIds(vals);
+
     setPremiseUnitTypeCharges(premiseUnitType);
 
     setUnitCharges([]);
@@ -328,7 +345,7 @@ function AddPremises() {
           message: res.data.message,
           buttons: [{
             label: "OK",
-            onClick: (e) => window.reload()
+            onClick: (e) => window.location.href="/premisesregister"
           }
           ]
         })
@@ -399,7 +416,7 @@ function AddPremises() {
                     Fill in the form correctly. Fields with an Asterisk{" "}
                     <strong class="text-danger">*</strong> are mandatory fields.
                   </p>
-                  <div className="create-property" id="basic-example">
+                  <div className="create-property" id="basic">
 
                     {/* <!-- Premises details --> */}
                     <h3>Premises details</h3>
@@ -493,7 +510,7 @@ function AddPremises() {
                               <select
                                 class="form-control "
                                 title="Select Building type "
-                                name='premiseType'
+                                name='premiseTypeId'
                                 onChange={handleGeneral}
 
                               >
@@ -514,7 +531,7 @@ function AddPremises() {
                               <select
                                 class="form-control "
                                 title="Select Property use type "
-                                name='premiseUseType'
+                                name='premiseUseTypeId'
                                 onChange={handleGeneral}
 
                               >
@@ -871,7 +888,8 @@ function AddPremises() {
                                   <th>#</th>
                                   <th>Item type</th>
                                   <th>When to Charge</th>
-                                  {selectedunitTypes.map((charge, indeex) => (<th>{charge.unitTypeName}</th>))}
+                                  <th>Unit Type</th>
+                                  <th>Charge Value</th>
                                 </tr>
                               </thead>
 
@@ -882,41 +900,67 @@ function AddPremises() {
                                 </tr>
                               </tfoot>
                               <tbody>
-                                {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indeex) => (
-                                  <>{
-                                    <tr>
-                                      <td>{indeex + 1}</td>
+                                {/* {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indweex) => (
+                                  <>{uniqueChargeId.map((id, indeex) => (
+                                    <>
+                                      {charge.id == id &&
+                                        <tr>
+                                          <td>{indeex + 1}</td>
 
-                                      <td>
-                                        {charge.name}
-                                      </td>
+                                          <td>
+                                            {charge.name}
+                                          </td>
 
-                                      <td>
-                                        {charge.applicableChargeType}
-                                      </td>
+                                          <td>
+                                            {charge.applicableChargeType}
+                                          </td>
 
-                                      {selectedunitTypes.map((selectedUnitType, indeex) => (
-                                        <>
-
-                                          {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeex) => (
+                                          {selectedunitTypes.map((selectedUnitType, indeexw) => (
                                             <>
-                                              {selectedUnitType.unitTypeName === premiseUnitTypeCharge.unitTypeName &&
-                                                <td>
-                                                  {premiseUnitTypeCharge.value}
-                                                </td>
-                                              }
+
+                                              {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
+                                                <>
+                                                  {selectedUnitType.unitTypeName === premiseUnitTypeCharge.unitTypeName && premiseUnitTypeCharge.applicableChargeId == id &&
+                                                    <td>
+                                                      {premiseUnitTypeCharge.value}
+                                                    </td>
+                                                  }
+                                                </>
+                                              ))}
+
                                             </>
                                           ))}
 
-                                        </>
-                                      ))}
-
-                                    </tr>
+                                        </tr>
+                                      }
+                                    </>
+                                  ))
                                   }
                                   </>
                                 ))
 
-                                }
+                                } */}
+
+                                {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
+                                  <tr>
+                                    <td>
+                                      {indeewx + 1}
+                                    </td>
+                                    <td>
+                                      {premiseUnitTypeCharge.applicableChargeName}
+                                    </td>
+                                    <td>
+                                      {premiseUnitTypeCharge.applicableChargeType}
+                                    </td>
+                                    <td>
+                                      {premiseUnitTypeCharge.unitTypeName}
+                                    </td>
+                                    <td>
+                                      {premiseUnitTypeCharge.value}
+                                    </td>
+                                  </tr>
+                                ))}
+
                               </tbody>
                             </table>
                           </div>
@@ -1006,7 +1050,7 @@ function AddPremises() {
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">No. Of Rooms</label>
-                  <input type="text" className="form-control"
+                  <input type="number" className="form-control"
                     onChange={handleUnitTypeChange} name="numberOfRooms" />
                 </div>
               </div>
@@ -1014,7 +1058,7 @@ function AddPremises() {
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">UNIT SIZE M<sup>2</sup></label>
-                  <input type="text" className="form-control"
+                  <input type="number" className="form-control"
                     onChange={handleUnitTypeChange} name="squarage" />
                 </div>
               </div>
@@ -1029,7 +1073,7 @@ function AddPremises() {
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">TENANCY RENEWAL</label>
-                  <input type="text" className="form-control"
+                  <input type="number" className="form-control"
                     onChange={handleUnitTypeChange} name="monthCountForTenancyRenewal" />
                 </div>
               </div>
