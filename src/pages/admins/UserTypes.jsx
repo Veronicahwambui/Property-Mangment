@@ -55,8 +55,6 @@ const updateUser=()=>{
 }
 
 
-
-
 const deactivateUser =(userId)=>{
     requestsServiceService.deactiveUser(userId).then((res) => {
       console.log(res);

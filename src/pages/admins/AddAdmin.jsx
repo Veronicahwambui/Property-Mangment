@@ -291,7 +291,7 @@ function AddAdmin() {
                      
                       </div>
                     </div>
-
+                    <div class="plan-features">
                     <div className="row mt-5">
                       {privileges.map((priv, index) => (
                         <div className="col-4">
@@ -308,6 +308,7 @@ function AddAdmin() {
                           </div>
                         </div>
                       ))}
+                    </div>
                     </div>
 
                     <div className="row justify-content-end">
