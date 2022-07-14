@@ -32,7 +32,6 @@ import PremiseUseTypes from "./pages/setups/PremiseUseTypes";
 import UnitTypes from "./pages/setups/UnitTypes";
 import DocumentTypes from "./pages/setups/DocumentTypes";
 import OnePremise from "./pages/premises/OnePremise";
-import LandLordView from "./pages/LandLordView";
 import OneTenant from "./pages/tenants/OneTenant";
 import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
 import AddLandlord from "./pages/landlords/AddLandlord";
