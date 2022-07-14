@@ -9,7 +9,7 @@ function Landlords() {
     requestsServiceService.getLandLords().then((res) => {
       setLandlords(res.data.data)
     });
-  })
+  }, [])
 
   const getOneLandlord = () => {
   }

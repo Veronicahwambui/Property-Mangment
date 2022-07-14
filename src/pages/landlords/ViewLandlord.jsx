@@ -88,7 +88,6 @@ function ViewLandlord() {
 
 
   useEffect(() => {
-    getlandlords();
     requestsServiceService.getAllAgreementTypes().then((res) => {
       setAgreementTypes(res.data.data);
     })
