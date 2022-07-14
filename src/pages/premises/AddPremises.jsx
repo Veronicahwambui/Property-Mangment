@@ -12,6 +12,7 @@ function AddPremises() {
   const [applicableCharges, setApplicableCharges] = useState([]);
   const [unitTypes, setUnitTypes] = useState([]);
   const [unitCharges, setUnitCharges] = useState([]);
+  const [landLordAccounts, setLandLordAccounts] = useState([]);
   const [uniqueChargeId, setUniqueChargeIds] = useState([]);
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
@@ -22,9 +23,18 @@ function AddPremises() {
   }
 
   const saveLandLordFileNumber = () => {
+
     if (landlordfileNumber != "") {
-      let d = []; d.push(landlordfileNumber);
-      setGeneral({ ...general, ["landlordFileNumber"]: d });
+      requestsServiceService.getLandLordByFileNumber(landlordfileNumber).then((res) => {
+
+        setLandLordAccounts(res.data.data.accounts);
+
+      }).catch((err) => {
+
+      })
+
+
+
     }
   }
 
@@ -100,7 +110,7 @@ function AddPremises() {
         let chargeBody = {
           "active": true,
           "applicableChargeId": chargee.id,
-          "chargeConstraint": undefined,
+          "chargeConstraint": "ZERO_BALANCE",
           "constraintChargeId": undefined,
           "id": undefined,
           "invoiceDay": undefined,
@@ -337,7 +347,7 @@ function AddPremises() {
       "premiseUnitTypeCharges": premiseUnitTypeCharges,
       "premiseUnits": premiseUnits
     }
-    console.log(data)
+
     requestsServiceService.createPremise(data).then((res) => {
 
       if (res.data.status == true) {
@@ -345,7 +355,7 @@ function AddPremises() {
           message: res.data.message,
           buttons: [{
             label: "OK",
-            onClick: (e) => window.location.href="/premisesregister"
+            onClick: (e) => window.location.href = "/premisesregister"
           }
           ]
         })
@@ -785,7 +795,7 @@ function AddPremises() {
                             </tbody>
                             <tfoot>
                               <tr>
-                                <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
+                                <td colSpan="7 ">
                                   <button type="button" data-id="PREMISE" onClick={newUnitType}>Add A Unit Type</button>
                                 </td>
                               </tr>
@@ -894,7 +904,7 @@ function AddPremises() {
                               </thead>
 
                               <tfoot class="table-light">
-                                <tr class="text-capitalize deposit-fee boarder-bottom">
+                                <tr >
 
                                   <button type="button" onClick={toogleShowUnitTypeChargesModal}>Add Charges</button>
                                 </tr>
@@ -1002,7 +1012,7 @@ function AddPremises() {
                             </tbody>
                             <tfoot>
                               <tr>
-                                <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
+                                <td colSpan="7">
                                   <button type="button" data-id="PREMISE" onClick={newDocument}>Add Premise Documents</button>
                                 </td>
                               </tr>
@@ -1153,16 +1163,24 @@ function AddPremises() {
             <h3>Charge Values</h3>
 
             {unitCharges.length > 0 && unitCharges.map((unitCharge, index) => (<>
-              <div className="col-md-6">
+              <div className="col-md-4">
                 <label htmlFor="">Unit Type</label>
                 <input type="text" className="form-control" id="" placeholder=""
                   disabled value={unitCharge.unitTypeName} name="docName" />
               </div>
 
-              <div className="col-md-6">
+              <div className="col-md-4">
                 <label> Charge Value </label>
                 <input type="number" className="form-control" name="value"
                   onChange={(e) => handleChargechange(e, index)} />
+              </div>
+
+              <div className="col-md-4">
+                <label> Collection Acc </label>
+                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
+                  <option></option>
+                  {landLordAccounts.length > 0 && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
+                </select>
               </div>
             </>
             ))
@@ -1177,7 +1195,7 @@ function AddPremises() {
 
       {/* <!-- enter landlord's id modal --> */}
 
-      <Modal show={general.landlordFileNumber.length < 1}>
+      <Modal show={landLordAccounts.length < 1}>
         <ModalBody>
           <div class="row justify-content-center ">
             <div class="col-xl-10 ">
