@@ -36,8 +36,8 @@ import LandLordView from "./pages/LandLordView";
 import OneTenant from "./pages/tenants/OneTenant";
 import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
 import AddLandlord from "./pages/landlords/AddLandlord";
+import ViewLandlord from "./pages/landlords/ViewLandlord";
 import { Helmet } from "react-helmet";
-
 
 function Main() {
 
@@ -72,7 +72,7 @@ function Main() {
                   <Route path='/' element={<Dashboard />} />
                   {/* landlords */}
                   <Route path='/landlords' element={<Landlords />} />
-                  <Route path='/landlord/:id' element={<LandLordView />} />
+                  <Route path='/landlord/:id' element={<ViewLandlord />} />
                   {/* premises */}
                   <Route path='/premisesregister' element={<PremisesRegister />} />
                   <Route path='/addpremises' element={<AddPremises />} />
@@ -115,16 +115,17 @@ function Main() {
                   <Route path='/clients' element={<ClientManagement/>} />
                   <Route path='/agreementtypes' element={<LandLordAgreementTypes/>} />
                   <Route path='/addlandlord' element={<AddLandlord/>} />
+                  <Route path='/landlord/:id' element={<ViewLandlord/>} />
 
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
               </div>
-          </>       
+          </>
         }
       </div >
-      
+
       <Helmet>
-     
+
 
       {/* <!-- Table Editable plugin --> */}
       <script src="./assets/libs/table-edits/build/table-edits.min.js "></script>
@@ -133,19 +134,19 @@ function Main() {
       <script
       src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
       crossorigin></script>
-      {/* data table plugin */}     
+      {/* data table plugin */}
       <script src="./assets/js/pages/datatables.init.js"></script>
 
       {/* <!-- jquery step --> */}
        <script src="./assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
        <script src="./assets/js/pages/form-wizard.init.js"></script>
-       
+
 
         {/* <!-- App js --> */}
         <script src="./assets/js/app.js "></script>
         <script src="./assets/js/custom.js "></script>
       </Helmet>
-      
+
     </BrowserRouter >
   );
 }
