@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
 
 function DocumentTypes() {
@@ -6,7 +7,7 @@ function DocumentTypes() {
   const [activeId, setActiveId] = useState('')
   const [createName, setCreateName]= useState('')
   const [updateName, setUpdateName]= useState('')
-
+  
   useEffect(()=>{
 
     fetchAll()
@@ -24,7 +25,7 @@ function DocumentTypes() {
   const create = ()=>{
    let data = JSON.stringify({
     active: true,
-    clientId: 1,
+    clientId: authService.getClientId(),
     id: 0,
     name: createName
   })
@@ -46,7 +47,7 @@ function DocumentTypes() {
   const Update = ()=>{
      let data = JSON.stringify({
       active: true,
-      clientId: 1,
+      clientId: authService.getClientId(),
       id: activeId,
       name: updateName
     })
@@ -128,7 +129,7 @@ function DocumentTypes() {
                             <td class="text-right cell-change text-nowrap ">
                             <div class="d-flex">
                            
-                            <a    onClick={()=> setActiveId(val.id)}   data-bs-toggle="modal"
+                            <a    onClick={()=>{setActiveId(val.id); setUpdateName(val.name)}}   data-bs-toggle="modal"
                                              data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                             
                             {val.active ?  <button
@@ -155,7 +156,6 @@ function DocumentTypes() {
                             </td>
                               </tr>
                         )})}
-
                     </tbody>
                   </table>
                 </div>

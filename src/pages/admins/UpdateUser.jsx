@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { confirmAlert } from "react-confirm-alert";
 import { useParams } from "react-router-dom";
+import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 
 function UpdateUser() {
@@ -50,7 +52,7 @@ function UpdateUser() {
   const editUserDetails = (ev) => {
     ev.preventDefault();
     const data = JSON.stringify({
-      clientKey: "a45a47e208544dfd8f33383fc6fa066d",
+      clientKey: authService.getAppKey(),
       email: email,
       enabled: true,
       firstName: firstName,
@@ -68,7 +70,10 @@ function UpdateUser() {
     requestsServiceService
       .editUserDetails(data)
       .then((res) => {
-        console.log(res.data);
+        confirmAlert({
+          message: res.data.message,
+          buttons: [{ label: "OK", onClick:(e)=> window.location.href='/adminlist' }]
+        })
       })
       .catch((err) => {
         console.log(err);
@@ -90,10 +95,10 @@ function UpdateUser() {
   const handleRoleChange1 = (val) => {
     setRole(val);
 
-    if (val!=undefined)
-    requestsServiceService.ViewOneRole(val).then((res) => {
-      setPrivilegeNames(res.data.data.permissions.map(pem => pem.name));
-    });
+    if (val != undefined)
+      requestsServiceService.ViewOneRole(val).then((res) => {
+        setPrivilegeNames(res.data.data.permissions.map(pem => pem.name));
+      });
   }
 
   const handleRoleChange = (index, event) => {
@@ -307,9 +312,11 @@ function UpdateUser() {
                       </div>
                     </div>
                     <div className="">
-                      <h5 className="font-weight-bold">
-                        User privilages and permissions
-                      </h5>
+                    <div className="col-form-label col-lg-3">
+                    
+                    <strong> User Privilages and Permissions</strong>
+                 
+                  </div>
                     </div>
 
                     <div className="row mt-5">

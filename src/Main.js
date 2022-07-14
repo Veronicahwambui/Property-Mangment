@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import Header from './components/Header';
 import SideBar from './components/SideBar';
-import { Helmet } from 'react-helmet'
 import Dashboard from './pages/Dashboard';
 import Landlords from './pages/landlords/Landlords';
 import PremisesRegister from './pages/premises/PremisesRegister';
@@ -11,9 +10,7 @@ import AllTenants from './pages/tenants/AllTenants';
 import AddTenant from './pages/tenants/AddTenant';
 import ApplicableCharges from './pages/setups/ApplicableCharges';
 import Estate from './pages/setups/Estate';
-import HouseTypes from './pages/setups/HouseTypes';
 import Zones from './pages/setups/Zones';
-import AttachableDocs from './pages/setups/AttachableDocs';
 import CreateInvoice from './pages/invoices/CreateInvoice';
 import Receipts from './pages/Receipts';
 import Transactions from './pages/Transactions';
@@ -34,9 +31,13 @@ import PremiseTypes from "./pages/setups/PremiseTypes";
 import PremiseUseTypes from "./pages/setups/PremiseUseTypes";
 import UnitTypes from "./pages/setups/UnitTypes";
 import DocumentTypes from "./pages/setups/DocumentTypes";
+import OnePremise from "./pages/premises/OnePremise";
+import LandLordView from "./pages/LandLordView";
+import OneTenant from "./pages/tenants/OneTenant";
 import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
 import AddLandlord from "./pages/landlords/AddLandlord";
 import ViewLandlord from "./pages/landlords/ViewLandlord";
+import { Helmet } from "react-helmet";
 
 function Main() {
 
@@ -71,18 +72,20 @@ function Main() {
                   <Route path='/' element={<Dashboard />} />
                   {/* landlords */}
                   <Route path='/landlords' element={<Landlords />} />
+                  <Route path='/landlord/:id' element={<ViewLandlord />} />
                   {/* premises */}
                   <Route path='/premisesregister' element={<PremisesRegister />} />
                   <Route path='/addpremises' element={<AddPremises />} />
+                  <Route path='/premise/:id' element={<OnePremise/>} />
                   {/* tenants  */}
                   <Route path='/alltenants' element={<AllTenants />} />
                   <Route path='/addtenant' element={<AddTenant />} />
+                  <Route path='/tenant/:id' element={<OneTenant />} />
+
                   {/* set ups  */}
                   <Route path='/applicablecharges' element={<ApplicableCharges />} />
                   <Route path='/estates' element={<Estate />} />
-                  <Route path='/housetypes' element={<HouseTypes />} />
                   <Route path='/zones' element={<Zones />} />
-                  <Route path='/attachabledocs' element={<AttachableDocs />} />
                   <Route path='/premisetypes' element={<PremiseTypes />} />
                   <Route path='/premiseusetypes' element={<PremiseUseTypes />} />
                   <Route path='/unit-types' element={<UnitTypes />} />
@@ -117,14 +120,33 @@ function Main() {
                   <Route path="*" element={<Navigate to="/" />}></Route>
                 </Routes>
               </div>
-          </>       
+          </>
         }
       </div >
+
       <Helmet>
+
+
+      {/* <!-- Table Editable plugin --> */}
+      <script src="./assets/libs/table-edits/build/table-edits.min.js "></script>
+      <script src="./assets/js/pages/table-editable.int.js "></script>
+
+      <script
+      src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
+      crossorigin></script>
+      {/* data table plugin */}
+      <script src="./assets/js/pages/datatables.init.js"></script>
+
+      {/* <!-- jquery step --> */}
+       <script src="./assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+       <script src="./assets/js/pages/form-wizard.init.js"></script>
+
+
         {/* <!-- App js --> */}
         <script src="./assets/js/app.js "></script>
         <script src="./assets/js/custom.js "></script>
       </Helmet>
+
     </BrowserRouter >
   );
 }

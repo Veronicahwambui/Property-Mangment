@@ -1,7 +1,7 @@
 $(window).on('load', function() {
     setTimeout(function() {
         $("#subscribeModal").modal("show")
-    }, 0);
+    }, 10);
 
     $('body').on('click', '.upload-the-contacts', function() {
         $('.selected-contacts-message').removeClass('d-none')
@@ -582,4 +582,67 @@ $(document).ready(function() {
     let huuMwaka = mwaka.getFullYear()
 
     $(".this-month").text(name + " " + huuMwaka);
+
+    // the next button
+    $('.kev-nxt').on('click', function(){
+
+        var countTheSteps = parseFloat($("nav ul li").length);
+
+        var countSteps=$('#kev-step-form .step-cont').length;
+
+        
+
+        var theActiveOne=$('#kev-step-form nav').find('.active');
+        var activeStep=$('#kev-step-form .active-step');
+
+        let activeStepIndex=theActiveOne.parent().index()
+        activeStepIndex=parseFloat(activeStepIndex)+2;
+        //alert("the active step is "+activeStepIndex)
+
+        // alert("the total links are :"+countTheSteps);
+        // alert("The current step is :"+activeStepIndex)
+
+
+
+        if(countTheSteps==activeStepIndex){
+            $(this).addClass('d-none');
+            $('.kev-submit').removeClass('d-none');
+        }
+        else{
+            // alert("we are not there yet")
+        }
+
+        activeStep.addClass('d-none').removeClass('active-step').next().addClass('active-step').removeClass('d-none');      
+        theActiveOne.parent().next().children('a').addClass('active');
+        theActiveOne.removeClass('active');
+        $('.kev-prev').prop('disabled', false)
+
+        
+    })
+
+    // the previouse button
+    $('.kev-prev').on('click', function(){
+        $('.kev-nxt').removeClass("d-none");
+        $('.kev-submit').addClass('d-none');
+
+        var countTheSteps = parseFloat($("nav ul li").length);
+        var countSteps=$('#kev-step-form .step-cont').length;
+
+        var theActiveOne=$('#kev-step-form nav').find('.active');
+        var activeStep=$('#kev-step-form .active-step');
+        activeStep.addClass('d-none').removeClass('active-step').prev().addClass('active-step').removeClass('d-none');
+
+        theActiveOne.parent().prev().children('a').addClass('active');
+        theActiveOne.removeClass('active');
+
+        let activeStepIndex=theActiveOne.parent().index()
+        activeStepIndex=parseFloat(activeStepIndex);
+       
+
+        if(activeStepIndex==1){
+            $(this).prop('disabled', true)
+        }
+
+      
+    })
 });

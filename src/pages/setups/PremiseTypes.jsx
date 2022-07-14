@@ -7,6 +7,10 @@ function PremiseTypes() {
   const [activeId, setActiveId] = useState('')
   const [createName, setCreateName]= useState('')
   const [updateName, setUpdateName]= useState('')
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
   let key = authService.getAppKey()
   console.log(key);
@@ -28,17 +32,57 @@ function PremiseTypes() {
   const create = ()=>{
    let data = JSON.stringify({
     active: true,
-    clientId: 1,
+    clientId: authService.getClientId(),
     id: 0,
     name: createName
   })
    
    requestsServiceService.createPremiseTypes(data).then((res)=>{
-     console.log(res.data)
      fetchAll()
-   })
+
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+      
+      
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+   }).catch((res)=>{
+
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+
+    })
   }
   
+  const clear = ()=> {
+    setError({
+      ...error,
+      message: "",
+      color: ""
+    });
+  }
+
   // toggle function 
   const toggleStatus = ()=>{
     
@@ -52,12 +96,45 @@ function PremiseTypes() {
   const Update = ()=>{
      let data = JSON.stringify({
       active: true,
-      clientId: 1,
+      clientId: authService.getClientId(),
       id: activeId,
       name: updateName
     })
     requestsServiceService.updatePremiseType(data).then((res)=>{
      fetchAll()
+     
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+      
+      
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+    }).catch((res)=>{
+
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+
     })
   }
   
@@ -113,6 +190,11 @@ function PremiseTypes() {
                 </div>
               </div>
               <div class="card-body">
+              {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                 <div class="table-responsive table-responsive-md">
                   <table class="table table-editable align-middle table-edits">
                     <thead class="table-light">
@@ -134,7 +216,7 @@ function PremiseTypes() {
                             <td class="text-right cell-change text-nowrap ">
                             <div class="d-flex">
                            
-                            <a    onClick={()=> setActiveId(val.id)}   data-bs-toggle="modal"
+                            <a  onClick={()=> {setActiveId(val.id); setUpdateName(val.name)}}   data-bs-toggle="modal"
                                              data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                             
                             {val.active ?  <button

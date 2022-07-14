@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
 
 function PremiseUseTypes() {
@@ -6,6 +7,11 @@ function PremiseUseTypes() {
   const [activeId, setActiveId] = useState('')
   const [createName, setCreateName]= useState('')
   const [updateName, setUpdateName]= useState('')
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
+
 
   useEffect(()=>{
 
@@ -23,7 +29,7 @@ function PremiseUseTypes() {
   const create = ()=>{
    let data = JSON.stringify({
     active: true,
-    clientId: 1,
+    clientId: authService.getClientId(),
     id: 0,
     name: createName
   })
@@ -38,19 +44,92 @@ function PremiseUseTypes() {
     
     requestsServiceService.tooglePremiseUse(activeId).then((res)=>{
       fetchAll()
-    })
-  }
+      if(res.data.status){
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        }) } else {
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+        
+        
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+     }).catch((res)=>{
+  
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+  
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+  
+      })
+    }
+    
+    const clear = ()=> {
+      setError({
+        ...error,
+        message: "",
+        color: ""
+      });
+    }
+  
  
   // update function 
   const Update = ()=>{
      let data = JSON.stringify({
       active: true,
-      clientId: 1,
+      clientId: authService.getClientId(),
       id: activeId,
       name: updateName
     })
     requestsServiceService.updatePremiseUseType(data).then((res)=>{
      fetchAll()
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+      
+      
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+    }).catch((res)=>{
+
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+
     })
   }
   
@@ -106,6 +185,11 @@ function PremiseUseTypes() {
                 </div>
               </div>
               <div class="card-body">
+              {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                 <div class="table-responsive table-responsive-md">
                   <table class="table table-editable align-middle table-edits">
                     <thead class="table-light">
@@ -127,7 +211,7 @@ function PremiseUseTypes() {
                             <td class="text-right cell-change text-nowrap ">
                             <div class="d-flex">
                            
-                            <a    onClick={()=> setActiveId(val.id)}   data-bs-toggle="modal"
+                            <a    onClick={()=>{setActiveId(val.id); setUpdateName(val.name)}}   data-bs-toggle="modal"
                                              data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                             
                             {val.active ?  <button
@@ -200,7 +284,7 @@ function PremiseUseTypes() {
                                         <label for=""> Premise Use Type </label>
                                         <input value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
                                     </div>
-                                </div>
+            </div>
            
             </div>
           </div>
@@ -254,7 +338,7 @@ function PremiseUseTypes() {
                                         <label for="">Premise Use Type</label>
                                         <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                                     </div>
-                                </div>
+            </div>
            
             </div>
           </div>

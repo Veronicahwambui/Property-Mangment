@@ -177,25 +177,25 @@ class RequestsService {
     }
 
     // premise
-    // getAllpremises() {
-    //   return axiosInstance.get(baseUrl + "/premises")
-    // }
+    getAllpremises() {
+      return axiosInstance.get(baseUrl + "/premises")
+    }
 
-    // createPremise(data) {
-    //   return axiosInstance.post(baseUrl + "/premises", data)
-    // }
+    createPremise(data) {
+      return axiosInstance.post(baseUrl + "/premises", data)
+    }
 
-    // updatePremise(data) {
-    //   return axiosInstance.post(baseUrl + "/premises/update", data)
-    // }
+    updatePremise(data) {
+      return axiosInstance.post(baseUrl + "/premises/update", data)
+    }
 
-    // viewPremise(id) {
-    //   return axiosInstance.get(baseUrl + "/premises/" + id)
-    // }
+    viewPremise(id) {
+      return axiosInstance.get(baseUrl + "/premises/" + id)
+     }
 
-    // togglePremiseStatus(id) {
-    //   return axiosInstance.get(baseUrl + "/premises/toogleStatus/" + id)
-    // }
+    togglePremiseStatus(id) {
+      return axiosInstance.get(baseUrl + "/premises/toogleStatus/" + id)
+    }
 
     // premise  units
     // allpremisesUnits() {
@@ -223,8 +223,13 @@ class RequestsService {
     // }
 
     // applicable charges
+
     allApplicableCharges() {
         return axiosInstance.get(baseUrl + "/setup/applicableCharges");
+    }
+
+    applicableChargeTypes() {
+        return axiosInstance.get(baseUrl + "/setup/applicableChargeTypes");
     }
 
     createApplicableCharges(data) {
@@ -379,6 +384,40 @@ class RequestsService {
         return axiosInstance.get(baseUrl + `/clients/${id}`)
     }
 
+    getAllTenants() {
+        return axiosInstance.get(baseUrl + "/tenants");
+    }
+
+    toggleTenantStatus() {
+        // return axiosInstance.get(baseUrl + "/client-types");
+    }
+
+
+    allPremises() {
+        return axiosInstance.get(baseUrl + "/premises");
+    }
+    getPremise(id) {
+        return axiosInstance.get(baseUrl + "/premises/"+id);
+    }
+
+    createTenant(data){
+        return axiosInstance.post(baseUrl+"/tenants", data);
+    }
+
+
+
+    download(name){
+        return axiosInstance.get(baseUrl + '​/documents​/download?docName=' + name )
+    }
+
+    viewLandlord(id) {
+        return axiosInstance.get(baseUrl + "/landlord/" + id)
+       }
+
+    viewTenant(id) {
+        return axiosInstance.get(baseUrl + "/tenants/" + id)
+       }
+  
     //landlord agreement types
 
     createAgreementType(data) {

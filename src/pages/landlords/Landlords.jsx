@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import requestsServiceService from '../../services/requestsService.service';
-
-import {Link} from "react-router-dom";
+import { Link } from 'react-router-dom';
+import requestsServiceService from '../../services/requestsService.service'
 
 function Landlords() {
   const [landlords, setLandlords] = useState([])
@@ -82,24 +81,22 @@ function Landlords() {
                           <td data-field="unit-num ">{l.agreementPeriod + " months"}</td>
                           <td className="text-right cell-change ">
 
-                            {/*<a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"*/}
-                            {/*   title="Edit" onClick={() => getOneLandlord(l.id)}><i className="bx bx-edit-alt " /></a>*/}
-                            {/*<button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "*/}
-                            {/*        title="save ">Save*/}
-                            {/*</button>*/}
-                            {/*<a*/}
-                            {/*  className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "*/}
-                            {/*  title="Cancel "><i className="bx bx-x "></i></a>*/}
-                            <Link to={`/landlord/${l.id}`} >
-                              <button type="button"
-                                      className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                      data-bs-toggle="modal" data-bs-target="#edit"
-                                      onClick={() => {}}
-                                      style={{ marginLeft: "8px" }}
-                              >
-                                View Details
-                              </button>
-                            </Link>
+                            <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
+                               title="Edit" onClick={() => getOneLandlord(l.id)}><i className="bx bx-edit-alt " /></a>
+                            <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
+                                    title="save ">Save
+                            </button>
+                            <a
+                              className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
+                              title="Cancel "><i className="bx bx-x "></i></a>
+                           <Link to={"/landlord/"+l.id}> <button type="button"
+                                    className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                    data-bs-toggle="modal" data-bs-target="#edit"
+                                    onClick={() => {}}
+                                    style={{ marginLeft: "8px" }}
+                            >
+                              View Details
+                            </button></Link>
                           </td>
                           <td>
 
