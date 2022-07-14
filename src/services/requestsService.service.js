@@ -11,6 +11,7 @@ class RequestsService {
     }
 
     ViewOneRole(roleId) {
+        
         return axiosInstance.get(baseUrl + "/roles/view/" + roleId);
     }
 
@@ -77,6 +78,10 @@ class RequestsService {
     }
     unlockUserAccount(userId) {
         return axiosInstance.get(baseUrl + "/accounts/unlockUserAccount/" + userId)
+    }
+    viewOneUser(userId){
+        return axiosInstance.get(baseUrl+"/users/view/" + userId)
+
     }
     // addRole(){
     //     return axiosInstance.put(baseUrl +"/user-types");
@@ -146,6 +151,7 @@ class RequestsService {
     deactivateEstate(id) {
         return axiosInstance.get(baseUrl + "/setup/estates/toogleStatus/" + id);
     }
+    //user
 
     getUser(id) {
         return axiosInstance.get(baseUrl + "/users/view/" + id);
