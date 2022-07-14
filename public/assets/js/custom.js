@@ -584,7 +584,7 @@ $(document).ready(function() {
     $(".this-month").text(name + " " + huuMwaka);
 
     // the next button
-    $('.kev-nxt').on('click', function(){
+    $('body').on('click','.kev-nxt', function(){
 
         var countTheSteps = parseFloat($("nav ul li").length);
 
@@ -621,7 +621,7 @@ $(document).ready(function() {
     })
 
     // the previouse button
-    $('.kev-prev').on('click', function(){
+    $('body').on('click','.kev-prev', function(){
         $('.kev-nxt').removeClass("d-none");
         $('.kev-submit').addClass('d-none');
 
@@ -644,5 +644,10 @@ $(document).ready(function() {
         }
 
       
+    });
+    $('.kev-nxt').on('click', function(){
+        alert("kinuthia made me do this");
     })
+
+    
 });
