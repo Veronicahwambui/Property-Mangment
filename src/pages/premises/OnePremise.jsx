@@ -59,6 +59,7 @@ function OnePremise() {
     fileNo: '',
     plotNo: '',
     address: '',
+    premiseName: "",
   })
 
   console.log(update);
@@ -85,7 +86,7 @@ function OnePremise() {
         
       ],
       plotNumber: update.plotNo,
-      premiseName: premiseData.premise.premiseName,
+      premiseName: update.premiseName,
       premiseTypeId: update.premType,
       premiseUseTypeId: update.premUseType
     
@@ -306,7 +307,7 @@ function OnePremise() {
            <div className="row">
            <div className="form-group">
                 <label htmlFor="">Premise Name</label>
-                <input type="text" className="form-control" onChange={handleChange}  name="fileNo"  />
+                <input type="text" className="form-control" onChange={handleChange}  name="premiseName"  />
               </div>
             <div className="col-6">
             <div className="form-group">

@@ -15,6 +15,7 @@ function ApplicableCharges() {
     message: "",
     color: ""
   });
+  const [manualVal ,setManualVal] = useState('')
 
 
   useEffect(()=>{
@@ -41,7 +42,7 @@ function ApplicableCharges() {
     active: true,
     applicableChargeTypeName: chargeType,
     clientId: authService.getClientId(),
-    expectManualValues: true,
+    expectManualValues: manualVal,
     id: null,
     name: createName
   })
@@ -306,6 +307,20 @@ function ApplicableCharges() {
                     <input value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter applicable charge name" />
                   </div>
             </div>
+                <div class="col-12">
+               
+                    <label for="">Charge Type </label>
+                    <select
+                      class="form-control"
+                      data-live-search="true"
+                      title="Select Applicable Charge Type"
+                      onChange={(e) => setManualVal(e.target.value)}
+                    >
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                    </select>
+                  
+                </div>
                 <div class="col-12">
                
                     <label for="">Charge Type </label>
