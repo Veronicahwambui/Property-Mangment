@@ -263,7 +263,7 @@ const editARole = ()=>{
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {allRoles.map((role ,index )=>(
+                                                {allRoles && allRoles.map((role ,index )=>(
                                                 <tr data-id={index} key={index}>
                                                     <td style={{width: "80px"}}>{index + 1}</td>
                                                     <td data-field="estate">{role.name}</td>
@@ -319,7 +319,7 @@ const editARole = ()=>{
                             <div class="plan-features">
                                <div className="row">
                                  
-                                {  rolePriveledges.map((prive)=>(
+                                { rolePriveledges &&  rolePriveledges.map((prive)=>(
                                          <div className="col-4">
 
                                              <p key={prive}><i class="bx bx-check text-primary"></i>  {prive.toLowerCase().replace(/_/g , "  ")} </p>
@@ -361,7 +361,7 @@ const editARole = ()=>{
                                     <div class="row">
                                         
 
-                                        {privileges.map((priv, index) => (
+                                        { privileges && privileges.map((priv, index) => (
                                         <div class="col-4" key={priv.id}>
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input"    onChange={(event) =>
@@ -413,7 +413,7 @@ const editARole = ()=>{
                                 <div class="col-12 text-capitalize">
                                     <div class="row">
                                         
-                                    {privileges.map((priv, index) => (
+                                    {privileges && privileges.map((priv, index) => (
                                         <div className="col-4">
                           <div className="checkbox" key={priv.id}>
                             <input

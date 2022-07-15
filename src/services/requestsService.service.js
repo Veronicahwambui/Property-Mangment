@@ -191,8 +191,8 @@ class RequestsService {
       return axiosInstance.post(baseUrl + "/premises", data)
     }
 
-    updatePremise(data) {
-      return axiosInstance.post(baseUrl + "/premises/update", data)
+    updatePremise(id ,data) {
+      return axiosInstance.post(baseUrl + "/premises/update/" + id , data)
     }
 
     viewPremise(id) {
@@ -413,7 +413,7 @@ class RequestsService {
 
 
     download(name){
-        return axiosInstance.get(baseUrl + '​/documents​/download?docName=' + name )
+        return axiosInstance.get(baseUrl + "​/documents​/download?docName=" + name )
     }
 
     viewLandlord(id) {

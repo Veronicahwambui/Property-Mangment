@@ -134,7 +134,7 @@ requestsServiceService.editEstate(data).then((res)=>{
                     </thead>
                     <tbody>
                   
-                        { estates.map((estate , index)=>{
+                        {estates && estates.map((estate , index)=>{
                           return(
                             <tr data-id="1" key={estate}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
@@ -259,7 +259,7 @@ requestsServiceService.editEstate(data).then((res)=>{
                     title="Select county where the zone is"
                     onChange={(e) => setSelectedZone(e.target.value)}
                   >
-                    { zones.map((zon , index) =>{ 
+                    { zones &&  zones.map((zon , index) =>{ 
                        let zone = zon
 
                       return (
