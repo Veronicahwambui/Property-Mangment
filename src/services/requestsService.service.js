@@ -484,7 +484,9 @@ class RequestsService {
     downloadDocuments(data) {
         return axiosInstance.get(baseUrl + "/documents/download?docName=" + data)
     }
-
+    findByFile(data) {
+        return axiosInstance.get(baseUrl + "/landlord/findByFileNumber?landLordFileNumber=" + data)
+    }
 }
 
 export default new RequestsService();
