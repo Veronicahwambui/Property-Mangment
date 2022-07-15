@@ -487,6 +487,9 @@ class RequestsService {
     findByFile(data) {
         return axiosInstance.get(baseUrl + "/landlord/findByFileNumber?landLordFileNumber=" + data)
     }
+    deactivateLandlord(data) {
+        return axiosInstance.get(baseUrl + "/landlord/toogleStatus/" + data)
+    }
 }
 
 export default new RequestsService();
