@@ -25,6 +25,7 @@ const[otherName,setOtherName]=useState("")
 const[phoneNumber1,setPhoneNumber1]=useState("")
 const[phoneNumber2,setPhoneNumber2]=useState("")
 const[ relationship,setRelationship]=useState("")
+const[contactPersonId, setContactPersonId]=useState("")
 
   const { id } = useParams();
   const userId = id;
@@ -43,7 +44,7 @@ const[ relationship,setRelationship]=useState("")
     // monthsToTenancyRenewal: monthsToTenancyRenewal,
 
     
-      "active": true,
+      active: true,
       id: id,
       monthsToTenancyRenewal: monthsToTenancyRenewal,
       "premiseUnitId": 0,
@@ -77,6 +78,7 @@ const[ relationship,setRelationship]=useState("")
    })
   requestsServiceService. updateTenant(data).then((res)=>{
     console.log(res)
+  
     
     
   }
@@ -89,21 +91,21 @@ const[ relationship,setRelationship]=useState("")
     setMonthsToTenancyRenewal(monthsToTenancyRenewal)
 
   }
-
+// console.log(tenantData)
   const editContactPersons=()=>{
-    let data =JSON.stringify({
 
-  active: true,
-  firstName: firstName,
-  id: userId,
-  lastName: lastName,
-  otherName: otherName,
-  phoneNumber1: phoneNumber1,
-  phoneNumber2: "",
-  relationship: relationship,
- 
+    let data = tenantData.contactPeople.find(x=>x.id == contactPersonId);
 
-    });
+
+    data["active"]=true;
+    data.firstName=firstName;
+    data.lastName=lastName;
+    data.otherName=otherName;
+  
+    data.phoneNumber1=phoneNumber1;
+    data.relationship=relationship;
+
+  console.log(data)
 
     requestsServiceService. updateContactPersons(data).then((res)=>{
       console.log(res)
@@ -112,7 +114,8 @@ const[ relationship,setRelationship]=useState("")
     }
     )
   }
-  const handleChangeContacts=( {firstName,lastName,otherName},phoneNumber1,relationship)=>{
+  const handleChangeContacts=( contactPersonId,firstName,lastName,otherName,phoneNumber1,relationship)=>{
+    setContactPersonId(contactPersonId)
     setFirstName(firstName)
     setLastName(lastName)
     setOtherName(otherName)
@@ -122,7 +125,6 @@ const[ relationship,setRelationship]=useState("")
   }
 
 
-
   const download = () => {
     requestsServiceService.download(docName).then((res) => {
       console.log(res);
@@ -130,7 +132,9 @@ const[ relationship,setRelationship]=useState("")
   };
 
   useEffect(() => {
+
     fetchAll();
+   
   }, []);
 
   return (
@@ -537,16 +541,11 @@ const[ relationship,setRelationship]=useState("")
                                               <a
                                                 className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
                                                 data-bs-toggle="modal" data-bs-target="#Edit-contact"
-                                                onClick={()=>handleChangeContacts( ( (unit.firstName),(unit.lastName ),(unit.otherName)),unit.phoneNumber1,unit.relationship)}
+                                                onClick={()=>handleChangeContacts( unit.contactPersonId,unit.firstName,unit.lastName ,unit.otherName,unit.phoneNumber1,unit.relationship)}
                                               >
                                                 <i className="bx bx-edit-alt " />
                                               </a>
-                                              <button
-                                                className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
-                                                title="save "
-                                              >
-                                                Save
-                                              </button>
+                                            
                                             </td>
                                           </tr>
                                         )
