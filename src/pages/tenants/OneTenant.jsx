@@ -112,7 +112,14 @@ const[ relationship,setRelationship]=useState("")
     }
     )
   }
-  
+  const handleChangeContacts=( firstName,lastName,otherName,phoneNumber1,relationship)=>{
+    setFirstName(firstName)
+    setLastName(lastName)
+    setOtherName(otherName)
+    setPhoneNumber1(phoneNumber1)
+    setRelationship(relationship)
+
+  }
 
 
 
@@ -530,6 +537,7 @@ const[ relationship,setRelationship]=useState("")
                                               <a
                                                 className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
                                                 data-bs-toggle="modal" data-bs-target="#Edit-contact"
+                                                onClick={()=>handleChangeContacts( (unit.firstName ,unit.lastName  ,unit.otherName),unit.relationship,unit.phoneNumber1)}
                                               >
                                                 <i className="bx bx-edit-alt " />
                                               </a>

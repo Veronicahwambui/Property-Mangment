@@ -37,6 +37,7 @@ import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
 import AddLandlord from "./pages/landlords/AddLandlord";
 import ViewLandlord from "./pages/landlords/ViewLandlord";
 import { Helmet } from "react-helmet";
+import UserDetails from "./pages/admins/UserDetails";
 
 function Main() {
 
@@ -99,15 +100,18 @@ function Main() {
                 <Route path='/trasactions' element={<Transactions />} />
 
                 {/* stystem users */}
+
                 <Route exact path='/adminlist' element={<AdminList />} />
+                <Route exact path='/adminlist/edit/:id' element={<UpdateUser />} />
+                <Route exact path='/adminlist/:id' element={<UserDetails />} />
                 <Route path='/addadmin' element={<AddAdmin />} />
+                <Route path='/usertypes' element={<UserTypes />} />
+
                 <Route path='/allroles' element={<AllRoles />} />
 
                 {/* setup */}
                 <Route path='/clientcounties' element={<ClientCounties />} />
 
-                <Route exact path='/adminlist/edit/:id' element={<UpdateUser />} />
-                <Route path='/usertypes' element={<UserTypes />} />
                 <Route path='/clienttype' element={<ClientType />} />
 
                 <Route path='/adminlist' element={<AdminList />} />

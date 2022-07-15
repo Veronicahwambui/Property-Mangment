@@ -27,7 +27,7 @@ function UpdateUser() {
     getUserRoles();
     getAllPreviledges();
 
-    // feth use details
+    // fetch use details
     requestsServiceService
       .getUser(userId)
       .then((res) => {
