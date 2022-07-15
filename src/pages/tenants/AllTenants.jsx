@@ -99,7 +99,7 @@ function AllTenants() {
                     </tr>
                   </thead>
                   <tbody>
-                    {premises.map((premise, index) => {
+                    {premises.map && ((premise, index) => {
 
                       return (
                         <tr key={index}>
