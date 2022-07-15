@@ -11,6 +11,7 @@ class RequestsService {
     }
 
     ViewOneRole(roleId) {
+        
         return axiosInstance.get(baseUrl + "/roles/view/" + roleId);
     }
 
@@ -77,6 +78,10 @@ class RequestsService {
     }
     unlockUserAccount(userId) {
         return axiosInstance.get(baseUrl + "/accounts/unlockUserAccount/" + userId)
+    }
+    viewOneUser(userId){
+        return axiosInstance.get(baseUrl+"/users/view/" + userId)
+
     }
     // addRole(){
     //     return axiosInstance.put(baseUrl +"/user-types");
@@ -146,6 +151,7 @@ class RequestsService {
     deactivateEstate(id) {
         return axiosInstance.get(baseUrl + "/setup/estates/toogleStatus/" + id);
     }
+    //user
 
     getUser(id) {
         return axiosInstance.get(baseUrl + "/users/view/" + id);
@@ -185,8 +191,8 @@ class RequestsService {
       return axiosInstance.post(baseUrl + "/premises", data)
     }
 
-    updatePremise(data) {
-      return axiosInstance.post(baseUrl + "/premises/update", data)
+    updatePremise(id ,data) {
+      return axiosInstance.post(baseUrl + "/premises/update/" + id , data)
     }
 
     viewPremise(id) {
@@ -407,7 +413,7 @@ class RequestsService {
 
 
     download(name){
-        return axiosInstance.get(baseUrl + '​/documents​/download?docName=' + name )
+        return axiosInstance.get(baseUrl + "​/documents​/download?docName=" + name )
     }
 
     viewLandlord(id) {
@@ -453,6 +459,9 @@ class RequestsService {
     createLandLord(data) {
         return axiosInstance.post(baseUrl + "/landlord/create", data)
     }
+    updateLandLord(data) {
+        return axiosInstance.post(baseUrl + "/landlord/update", data)
+    }
 
     createLandLordAccounts(data) {
         return axiosInstance.post(baseUrl+ "/landlord/accounts/create", data)
@@ -463,6 +472,12 @@ class RequestsService {
     getLandLords() {
         return axiosInstance.get(baseUrl + "/landlord");
     }
+    getLandlord(id){
+        return axiosInstance.get(baseUrl + "/landlord/" + id);
+    }
+    getLandLordByFileNumber(id){
+        return axiosInstance.get(baseUrl + "/landlord/findByFileNumber?landLordFileNumber=" + id);
+    }
     getDocumentTypes() {
         return axiosInstance.get(baseUrl + "/setup/documentTypes");
     }
@@ -472,6 +487,13 @@ class RequestsService {
     getLandlordTypes() {
         return axiosInstance.get(baseUrl + "/setup/landLordTypes")
     }
+    createDocuments(data) {
+        return axiosInstance.post(baseUrl + "/documents", data)
+    }
+    downloadDocuments(data) {
+        return axiosInstance.get(baseUrl + "/documents/download?docName=" + data)
+    }
+
 }
 
 export default new RequestsService();

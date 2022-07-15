@@ -27,7 +27,6 @@ export default function AddLandlord() {
     requestsServiceService.getDocumentTypes().then((res) => {
       setdocumentTypes(res.data.data);
     })
-    setTimeout(()=>console.log(),0);        // Logs  "COMPONENT TITLE"
   }, [])
 
   //landlord details
@@ -88,32 +87,15 @@ export default function AddLandlord() {
   const [editBankAccount, setEditBankAccount] = useState("")
   const [editpercentageRemuneration, setEditPercentageRemuneration] = useState(null)
   const [selectedAccount, setSelectedAccount] = useState({
-
   })
   const [arr_index, setArr_Index] = useState(0)
 
   const getOneAccount = (id) => {
-    console.log(id)
-    let find = accounts[id]
-    accounts.forEach((account, index) => {
-      // console.log(account, index)
-    })
     setArr_Index(id)
     setEditBankName(selectedAccount.bankName)
     handleEditAccountShow()
-      // if(account) {
-      //   seteditBankAccountDetails(account)
-      //   setClientType({
-      //     ...clientType,
-      //     name: cl.clientType.name,
-      //     id: cl.clientType.id
-      //   })
-      //   setEditClientTypeId(cl.clientType.id);
-      //   setEditName(cl.name)
-      //   setEditUrl(cl.clientBaseUrl)
-      //   setId(cl.id)
-      // }
     }
+  const areAllFieldsFilled = (phoneNumber != "")
 
   const handleDocumentSubmit = (event) => {
     event.preventDefault();
@@ -137,6 +119,10 @@ export default function AddLandlord() {
     event.preventDefault()
     console.log(accounts)
   }
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
 //accounts edit
   const handleAccountSubmit = (event) => {
@@ -200,8 +186,27 @@ export default function AddLandlord() {
     }
     requestsServiceService.createLandLord(new_t).then((res) => {
       console.log(res);
+      setError({
+        ...error,
+        message: res.data.message + "! Landlord created",
+        color: "success"
+      })
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        })
+      }, 3000);
     }).catch((err) => {
       console.log(err)
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        })
+      }, 3000);
     })
     console.log(new_t)
     console.log(data)
@@ -215,9 +220,7 @@ export default function AddLandlord() {
   const handleFileRead = async (event) => {
     const file = event.target.files[0]
     const base64 = await convertBase64(file)
-    let result = base64.substr(28);
-    setdocument(result);
-    console.log(result);
+    setdocument(base64);
   }
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -252,22 +255,50 @@ export default function AddLandlord() {
             </div>
           </div>
           <div className="row">
+            {error.color !== "" &&
+            <div className={"alert alert-" + error.color} role="alert">
+              {error.message}
+            </div>
+            }
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                  <p>Fill in the form correctly. Fields with an Asterisk <strong className="text-danger">*</strong> are mandatory fields.</p>
-                  <div className="create-property" id="basic-example">
-                    <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                      <p className="fw-semibold mb-0 pb-0 text-uppercase">Landlord details</p>
-
-                    </div>
-                    <section>
-                      <form id="my-form" onSubmit={handleSubmit}>
-                        <div className="col-lg-4">
+                  <div className="create-property" id="kev-step-form">
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                      <button className="navbar-toggler" type="button" data-toggle="collapse"
+                              data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                              aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                      </button>
+                      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav mr-auto">
+                          <li className="nav-item active">
+                            <a className="nav-link active" href="#">1. Landlord details <span
+                              className="sr-only">(current)</span></a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">2. Account details</a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">3. Document attachments</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </nav>
+                    {/*section add landlord details*/}
+                    <form id="my-form" onSubmit={handleSubmit}>
+                    <section className={"step-cont active-step"}>
+                      <p>Fill in the form correctly. Fields with an Asterisk <strong className="text-danger">*</strong> are mandatory fields.</p>
+                      <div className="col-12">
+                        <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                          <p className="fw-semibold mb-0 pb-0 text-uppercase">Landlord details</p>
+                        </div>
+                      </div>
+                      <div className="col-lg-4">
                           <div className="mb-3">
                             <label htmlFor="landlord-type" className="form-label">Landlord type</label>
                             {landlordtypes &&
-                            <div className="input-group" id="">
+                            <div className="form-group mb-4">
                               <select className="form-control" value={landLordTypeName} onChange={(e) => setLandLordTypeName(e.target.value)}  required={true}>
                                 <option className="text-black font-semibold ">
                                   select landlord type
@@ -312,54 +343,53 @@ export default function AddLandlord() {
                               <input type="text " className="form-control " value={otherName} onChange={(e) => setOtherName(e.target.value)} id=" " placeholder="Enter Your Other Name "  required={true}/>
                             </div>
                           </div>
-                          <div className="col-12">
-                            <div className="mb-4">
-                              <label htmlFor=" " className=" ">Gender: <strong className="text-danger ">*</strong></label>
-                              <div className="d-flex ">
-                                <div className="form-check me-3">
-                                  <input className="form-check-input" type="radio" name="gender" value={"male"} onChange={(e) => setGender(e.target.value)} id="gender-male" />
-                                  <label className="form-check-label" htmlFor="gender-male">
-                                    Male
-                                  </label>
-                                </div>
-                                <div className="form-check me-3">
-                                  <input className="form-check-input" type="radio" name="gender" value={"female"} onChange={(e) => setGender(e.target.value)} id="gender-female" />
-                                  <label className="form-check-label" htmlFor="gender-female">
-                                    Female
-                                  </label>
-                                </div>
+                          <div className="col-lg-3 col-md-6">
+                            <label htmlFor=" " className=" ">Gender: <strong className="text-danger ">*</strong></label>
+                            <div className="d-flex ">
+                              <div className="form-check me-3">
+                                <input className="form-check-input" type="radio" name="gender" value={"male"} onChange={(e) => setGender(e.target.value)} id="gender-male" />
+                                <label className="form-check-label" htmlFor="gender-male">
+                                  Male
+                                </label>
+                              </div>
+                              <div className="form-check me-3">
+                                <input className="form-check-input" type="radio" name="gender" value={"female"} onChange={(e) => setGender(e.target.value)} id="gender-female" />
+                                <label className="form-check-label" htmlFor="gender-female">
+                                  Female
+                                </label>
                               </div>
                             </div>
                           </div>
-                          <div className="col-12">
-                            <div className="col-lg-3 col-md-6 ">
-                              <div className="mb-4 ">
-                                <label htmlFor="basicpill-phoneno-input ">Phone <strong
-                                  className="text-danger ">*</strong></label>
-                                <input type="text " className="form-control " id="basicpill-phoneno-input "
-                                       value={phoneNumber} onChange={(e) => setphoneNumber(e.target.value)} placeholder="Enter Your Phone No. "  required={true}/>
-                              </div>
+                          <div className="col-lg-3 col-md-6 ">
+                            <div className="mb-4 ">
+                              <label htmlFor="basicpill-phoneno-input ">Phone <strong
+                                className="text-danger ">*</strong></label>
+                              <input type="text " className="form-control " id="basicpill-phoneno-input "
+                                     value={phoneNumber} onChange={(e) => setphoneNumber(e.target.value)} placeholder="Enter Your Phone No. "  required={true}/>
                             </div>
-                            <div className="col-lg-3 col-md-6 ">
-                              <div className="mb-4 ">
-                                <label htmlFor="basicpill-email-input ">Email <strong
-                                  className="text-danger ">*</strong></label>
-                                <input type="email " className="form-control " id="basicpill-email-input "
-                                       value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter Your Email ID "  required={true}/>
-                              </div>
+                          </div>
+                          <div className="col-lg-3 col-md-6 ">
+                            <div className="mb-4 ">
+                              <label htmlFor="basicpill-email-input ">Email <strong
+                                className="text-danger ">*</strong></label>
+                              <input type="email " className="form-control " id="basicpill-email-input "
+                                     value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter Your Email ID "  required={true}/>
                             </div>
-                            <div className="col-lg-3 col-md-6 ">
-                              <div className="mb-4 ">
-                                <label htmlFor="basicpill-email-input ">File Number <strong
-                                  className="text-danger ">*</strong></label>
-                                <input type="text" className="form-control " id="basicpill-email-input "
-                                       value={fileNumber} onChange={(e) => setFileNumber(e.target.value)} placeholder="Enter File Number "  required={true}/>
-                              </div>
+                          </div>
+                          <div className="col-lg-3 col-md-6 ">
+                            <div className="mb-4 ">
+                              <label htmlFor="basicpill-email-input ">File Number <strong
+                                className="text-danger ">*</strong></label>
+                              <input type="text" className="form-control " id="basicpill-email-input "
+                                     value={fileNumber} onChange={(e) => setFileNumber(e.target.value)} placeholder="Enter File Number "  required={true}/>
                             </div>
                           </div>
                         </div>
-
                         <div className="row">
+                          <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p className="fw-semibold mb-0 pb-0 text-uppercase">PROPERTY AGREEMENT DETAILS
+                            </p>
+                          </div>
                           <div className="col-lg-4">
                             <div className="mb-4 ">
                               <label htmlFor=" " className=" ">Agreement Type<strong
@@ -371,7 +401,7 @@ export default function AddLandlord() {
                                           setlandLordAgreementTypeId(e.target.value);
                                         }}
                                 >
-                                  <option className="text-black font-semibold ">
+                                  <option className="text-black font-semibold">
                                     select agreement type
                                   </option>
                                   {agreementTypes.map((aT) => {
@@ -399,257 +429,75 @@ export default function AddLandlord() {
                               <input type="number" value={agreementPeriod} onChange={(e) => setagreementPeriod(e.target.value)} className="form-control "placeholder="Agreement period (months)"/>
                             </div>
                           </div>
-
-                          <div className="col-12">
-                            <div className="table-responsive table-responsive-md">
-                                <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                                  <p className="fw-semibold mb-0 pb-0 text-uppercase">BANKING DETAILS AND LANDLORD MCA PROPERTY AGREEMENT
-
-                                  </p>
-                                </div>
-                              <table className="table table-editable-1 align-middle table-edits">
-                                <thead className="table-light">
-                                <tr className="text-uppercase table-dark">
-                                  <th>#</th>
-                                  <th>Bank</th>
-                                  <th class="">Bank Acc</th>
-                                  <th class="">% Remuneration</th>
-                                  <th>Status</th>
-                                  <th>Actions</th>
-                                  <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                { accounts.length > 0 && accounts.map((account, index) => {
-                                  return (
-                                    <tr data-id="1">
-                                      <td style={{ width: "80px" }}>{index+1}</td>
-                                      <td>{account.bankName}</td>
-                                      <td>{account.bankAccountNumber}</td>
-                                      <td>{account.percentageRemuneration}</td>
-                                      <td data-field="unit-num ">{account.active ? <span className="badge-soft-success badge">Active</span> : <span className="badge-soft-danger badge">Inactive</span> }</td>
-                                      <td className="text-right cell-change text-nowrap ">
-                                        <div className="d-flex">
-                                          <a data-bs-toggle="modal"
-                                             onClick={() => getOneAccount(index)}
-                                             data-bs-target="#update-modal"
-                                             className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
-                                             title="Edit "><i className="bx bx-edit-alt "></i></a>
-                                        </div>
-                                      </td>
-                                    </tr>
-
-                                  )
-                                })}
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                  <td colSpan="7" className="bg-light add-field-1 cursor-pointer" onClick={handleShow}>
-                                    <span className="d-flex align-items-center "><i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span className="pl-5 ">Add A Bank</span></span>
-                                  </td>
-                                </tr>
-                                </tfoot>
-                              </table>
-                            </div>
-                          </div>
                         </div>
-                      </form>
                     </section>
 
-                    {/* <!-- Add Bank details Modal --> */}
-                    <div>
-                      <Modal show={show} onHide={handleClose} className={"modal fade"}>
-                        <form onSubmit={handleAccountSubmit}>
-                        <Modal.Header closeButton>
-                          <Modal.Title>Add account details</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <div className="row">
-                              <div className="col-12">
-                                <div className="form-group mb-4">
-                                  <label htmlFor="">Select Bank</label>
-                                  <select
-                                    className="form-control"
-                                    onChange={(e) => {
-                                      setbankAccountDetails(e.target.value);
-                                    }}
-                                    name="bank account"
-                                    required={true}
-                                  >
-                                    <option className="text-black font-semibold ">
-                                      select..
-                                    </option>
-                                    {banks.map((bank) => {
-                                      return (
-                                        <option
-                                          key={bank.id}
-                                          value={
-                                            bank.id +
-                                            ":" +
-                                            bank.bankName
-                                          }
-                                        >
-                                          {bank.bankName}
-                                        </option>
-                                      );
-                                    })}
-                                  </select>
-                                </div>
-                                <div className="form-group mb-4">
-                                  <label htmlFor="">Bank account number</label>
-                                  <input type="text" className="form-control" value={bankAccountNumber} onChange={(e) => setbankAccountNumber(e.target.value)} placeholder="Enter account number" required={true}/>
-                                </div>
-                                <div className="form-group mb-4">
-                                  <label htmlFor="">Percentage renumeration</label>
-                                  <input type="text" className="form-control" value={percentageRemuneration} onChange={(e) => setPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
-                                </div>
-                              </div>
-                            </div>
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <Button variant="secondary" className={"btn btn-grey"} onClick={handleClose}>
-                            Close
-                          </Button>
-                          <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
-                            Save Changes
-                          </Button>
-                        </Modal.Footer>
-                      </form>
-                    </Modal>
-                    </div>
-                    {/*edit bank details modal*/}
-                    <div>
-                      <Modal show={editAccountShow} onHide={handleEditAccountClose} className={"modal fade"}>
-                        <form onSubmit={handleEditAccount}>
-                          <Modal.Header closeButton>
-                            <Modal.Title>Edit Account</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            <div className="row">
-                              <div className="col-12">
-                                <div className="form-group mb-4">
-                                  <label htmlFor="">Select Bank</label>
-                                  <select
-                                    className="form-control"
-                                    onChange={(e) => {
-                                      editBankAccountDetails(e.target.value);
-                                    }}
-                                    name="bank account"
-                                    required={true}
-                                  >
-                                    <option className="text-black font-semibold ">
-                                      {editBankName}
-                                    </option>
-                                    {banks.map((bank) => {
-                                      return (
-                                        <option
-                                          key={bank.id}
-                                          value={
-                                            bank.id +
-                                            ":" +
-                                            bank.bankName
-                                          }
-                                        >
-                                          {bank.bankName}
-                                        </option>
-                                      );
-                                    })}
-                                  </select>
-                                </div>
-                                <div className="form-group mb-4">
-                                  <label htmlFor="">Bank account number</label>
-                                  <input type="text" className="form-control" value={editBankAccount} onChange={(e) => setEditBankAccount(e.target.value)} placeholder="Enter account number" required={true}/>
-                                </div>
-                                <div className="form-group mb-4">
-                                  <label htmlFor="">Percentage renumeration</label>
-                                  <input type="text" className="form-control" value={editpercentageRemuneration} onChange={(e) => setEditPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
-                                </div>
-                              </div>
-                            </div>
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button variant="secondary" className={"btn btn-grey"} onClick={handleEditAccountClose}>
-                              Close
-                            </Button>
-                            <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
-                              Save Changes
-                            </Button>
-                          </Modal.Footer>
-                        </form>
-                      </Modal>
-                    </div>
+                    {/*add bank accounts*/}
+                    <section className={"step-cont d-none"}>
+                      <div className="col-12">
+                        <div className="table-responsive table-responsive-md">
+                          <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p className="fw-semibold mb-0 pb-0 text-uppercase">BANKING DETAILS
+                            </p>
+                          </div>
+                          <table className="table table-editable-1 align-middle table-edits">
+                            <thead className="table-light">
+                            <tr className="text-uppercase table-dark">
+                              <th>#</th>
+                              <th>Bank</th>
+                              <th className="">Bank Acc</th>
+                              <th className="">% Remuneration</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                              <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {accounts.length > 0 && accounts.map((account, index) => {
+                              return (
+                                <tr data-id="1">
+                                  <td style={{width: "80px"}}>{index + 1}</td>
+                                  <td>{account.bankName}</td>
+                                  <td>{account.bankAccountNumber}</td>
+                                  <td>{account.percentageRemuneration}</td>
+                                  <td data-field="unit-num ">{account.active ?
+                                    <span className="badge-soft-success badge">Active</span> :
+                                    <span className="badge-soft-danger badge">Inactive</span>}</td>
+                                  <td className="text-right cell-change text-nowrap ">
+                                    <div className="d-flex">
+                                      <a data-bs-toggle="modal"
+                                         onClick={() => getOneAccount(index)}
+                                         data-bs-target="#update-modal"
+                                         className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
+                                         title="Edit "><i className="bx bx-edit-alt "></i></a>
+                                    </div>
+                                  </td>
+                                </tr>
 
-                    {/*document attachment modal*/}
-                    <div>
-                      <Modal show={docShow} onHide={handleDocClose} className={"modal fade"}>
-                        <form onSubmit={handleDocumentSubmit}>
-                          <Modal.Header closeButton>
-                            <Modal.Title>Add Documents</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            <div className="row">
-                              <div className="col-12">
-                                <div className="form-group mb-4">
-                                  <label htmlFor="">Select Document Type</label>
-                                  <select
-                                    className="form-control"
-                                    onChange={(e) => {
-                                      setdocumentTypeId(e.target.value);
-                                    }}
-                                    name="document type"
-                                    required={true}
-                                  >
-                                    <option className="text-black font-semibold ">
-                                      select..
-                                    </option>
-                                    {documentTypes.map((dT) => {
-                                      return (
-                                        <option
-                                          key={dT.id}
-                                          value={dT.id}
-                                        >
-                                          {dT.name}
-                                        </option>
-                                      );
-                                    })}
-                                  </select>
-                                </div>
-                                <div className="form-group mb-4">
-                                  <label htmlFor="">Document Name</label>
-                                  <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true}/>
-                                </div>
-                                <div className="form-group mb-4">
-                                  <label htmlFor="">Document Upload</label>
-                                  <div className="input-group mb-0">
-                                    <label className="input-group-text bg-info text-white cursor-pointer"
-                                           htmlFor="document1-1">
-                                      <i className="font-14px mdi mdi-paperclip"></i> Attach File
-                                    </label>
-                                    <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true}/>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button variant="secondary" className={"btn btn-grey"} onClick={handleDocClose}>
-                              Close
-                            </Button>
-                            <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
-                              Save Changes
-                            </Button>
-                          </Modal.Footer>
-                        </form>
-                      </Modal>
-                    </div>
-
-                    <div className="col-12">
-                      <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                        <p className="fw-semibold mb-0 pb-0 text-uppercase">Document Attachments </p>
+                              )
+                            })}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                              <td colSpan="7" className="bg-light add-field-1 cursor-pointer" onClick={handleShow}>
+                                <span className="d-flex align-items-center "><i
+                                  className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span
+                                  className="pl-5 ">Add A Bank</span></span>
+                              </td>
+                            </tr>
+                            </tfoot>
+                          </table>
+                        </div>
                       </div>
-                    </div>
-                    <section>
-                      <form>
+                    </section>
+
+                    {/*add documents */}
+                    <section className={"step-cont d-none"}>
+                      <div className="col-12">
+                        <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                          <p className="fw-semibold mb-0 pb-0 text-uppercase">Document Attachments </p>
+                        </div>
+                      </div>
                         <h6>Upload document and don't forget to specify whose the document is for. ie <strong>Landlord or Premises</strong></h6>
                         <div className="table-responsive table-responsive-md">
                           <table className="table table-editable-file align-middle table-edits">
@@ -691,17 +539,205 @@ export default function AddLandlord() {
                             </tfoot>
                           </table>
                         </div>
-                        <div className="row">
-                          <div className="col-12 float-end">
-                            <button type={"submit"} className={"btn btn-primary float-end"} form={"my-form"}>Add Landlord</button>
-                          </div>
-                        </div>
-                      </form>
                     </section>
+                    </form>
+                    <div className="button-navigators">
+                      <button disabled className="btn btn-primary waves-effect kev-prev me-3"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>
+                      <button className="btn btn-primary waves-effect kev-nxt me-3">Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
+                      <button type='submit' className="btn btn-success kev-submit me-3 d-none" form={"my-form"}>Submit <i className="mdi mdi-check-all me-2 font-16px"></i></button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div>
+          {/* <!-- Add Bank details Modal --> */}
+          <div>
+            <Modal show={show} onHide={handleClose} className={"modal fade"} centered>
+              <form onSubmit={handleAccountSubmit}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Add account details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Select Bank</label>
+                        <select
+                          className="form-control"
+                          onChange={(e) => {
+                            setbankAccountDetails(e.target.value);
+                          }}
+                          name="bank account"
+                          required={true}
+                        >
+                          <option className="text-black font-semibold ">
+                            select..
+                          </option>
+                          {banks.map((bank) => {
+                            return (
+                              <option
+                                key={bank.id}
+                                value={
+                                  bank.id +
+                                  ":" +
+                                  bank.bankName
+                                }
+                              >
+                                {bank.bankName}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Bank account number</label>
+                        <input type="text" className="form-control" value={bankAccountNumber} onChange={(e) => setbankAccountNumber(e.target.value)} placeholder="Enter account number" required={true}/>
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Percentage renumeration</label>
+                        <input type="text" className="form-control" value={percentageRemuneration} onChange={(e) => setPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
+                      </div>
+                    </div>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" className={"btn btn-grey"} onClick={handleClose}>
+                    Close
+                  </Button>
+                  <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </form>
+            </Modal>
+          </div>
+          {/*edit bank details modal*/}
+          <div>
+            <Modal show={editAccountShow} onHide={handleEditAccountClose} className={"modal fade"} centered>
+              <form onSubmit={handleEditAccount}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Edit Account</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Select Bank</label>
+                        <select
+                          className="form-control"
+                          onChange={(e) => {
+                            editBankAccountDetails(e.target.value);
+                          }}
+                          name="bank account"
+                          required={true}
+                        >
+                          <option className="text-black font-semibold ">
+                            {editBankName}
+                          </option>
+                          {banks.map((bank) => {
+                            return (
+                              <option
+                                key={bank.id}
+                                value={
+                                  bank.id +
+                                  ":" +
+                                  bank.bankName
+                                }
+                              >
+                                {bank.bankName}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Bank account number</label>
+                        <input type="text" className="form-control" value={editBankAccount} onChange={(e) => setEditBankAccount(e.target.value)} placeholder="Enter account number" required={true}/>
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Percentage renumeration</label>
+                        <input type="text" className="form-control" value={editpercentageRemuneration} onChange={(e) => setEditPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
+                      </div>
+                    </div>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" className={"btn btn-grey"} onClick={handleEditAccountClose}>
+                    Close
+                  </Button>
+                  <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </form>
+            </Modal>
+          </div>
+
+          {/*document attachment modal*/}
+          <div>
+            <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
+              <form onSubmit={handleDocumentSubmit}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Add Documents</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Select Document Type</label>
+                        <select
+                          className="form-control"
+                          onChange={(e) => {
+                            setdocumentTypeId(e.target.value);
+                          }}
+                          name="document type"
+                          required={true}
+                        >
+                          <option className="text-black font-semibold ">
+                            select..
+                          </option>
+                          {documentTypes.map((dT) => {
+                            return (
+                              <option
+                                key={dT.id}
+                                value={dT.id}
+                              >
+                                {dT.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Document Name</label>
+                        <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true}/>
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Document Upload</label>
+                        <div className="input-group mb-0">
+                          <label className="input-group-text bg-info text-white cursor-pointer"
+                                 htmlFor="document1-1">
+                            <i className="font-14px mdi mdi-paperclip"></i> Attach File
+                          </label>
+                          <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true}/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" className={"btn btn-grey"} onClick={handleDocClose}>
+                    Close
+                  </Button>
+                  <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </form>
+            </Modal>
           </div>
         </div>
       </div>

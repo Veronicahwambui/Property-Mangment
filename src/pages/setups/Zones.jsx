@@ -178,7 +178,7 @@ const deactivate = (id)=> {
                     <tbody>
                   
                         
-                      {  zones.map((zon, index)=>{
+                      {zones &&  zones.map((zon, index)=>{
 
                           return (
                               <tr data-id="1" key={zon}>
@@ -306,7 +306,7 @@ const deactivate = (id)=> {
                     title="Select county where the zone is"
                     onChange={(e) => setSelectedCounty(e.target.value)}
                   >
-                    { clientCounties.map((cou , index) =>{ 
+                    {clientCounties && clientCounties.map((cou , index) =>{ 
                        let county = cou.county
                       return (
                      <option key={index} value={county.id}>{county.name}</option>
