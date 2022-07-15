@@ -42,12 +42,14 @@ function Main() {
 
   useEffect(() => {
     setTimeout(function () {
+
       if (AuthService.getCurrentUserAccessToken() != null) {
         localStorage.clear();
         window.location.reload();
       }
     }, AuthService.getUserLoggedInAt() - Math.floor(Date.now()));
 
+    console.log(Math.floor(Date.now())-AuthService.getUserLoggedInAt());
   }, []);
 
   return (

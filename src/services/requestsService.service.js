@@ -90,7 +90,36 @@ class RequestsService {
         return axiosInstance.get(baseUrl + "/users/deactivateUser/" + userId)
     }
 
+    // applicable charges
 
+    allApplicableCharges() {
+        return axiosInstance.get(baseUrl + "/setup/applicableCharges");
+    }
+
+    applicableChargeTypes() {
+        return axiosInstance.get(baseUrl + "/setup/applicableChargeTypes");
+    }
+
+    createApplicableCharges(data) {
+        return axiosInstance.post(baseUrl + "/setup/applicableCharges", data);
+    }
+
+    viewApplicableCharge(id) {
+        return axiosInstance.get(baseUrl + "/setup/applicableCharges/" + id);
+    }
+
+    toogleApplicableCharge(id) {
+        return axiosInstance.get(
+            baseUrl + "/setup/applicableCharges/toogleStatus/" + id
+        );
+    }
+
+    updateApplicableCharges(data) {
+        return axiosInstance.post(
+            baseUrl + "/setup/applicableCharges/update",
+            data
+        );
+    }
     // counties
 
     getAllCounties() {
@@ -203,64 +232,31 @@ class RequestsService {
       return axiosInstance.get(baseUrl + "/premises/toogleStatus/" + id)
     }
 
-    // premise  units
-    // allpremisesUnits() {
-    //   return axiosInstance.get(baseUrl + "/premisesUnits")
-    // }
+//    one premise things  caretaker 
 
-    // createPremise( premiseId ,data) {
-    //   return axiosInstance.post(baseUrl + "/premisesUnits/" + premiseId + "/unit", data)
-    // }
-
-    // updatePremiseUnit(premiseId,data) {
-    //   return axiosInstance.put(baseUrl + "/premisesUnits/" + premiseId + "/unit", data)
-    // }
-
-    // viewPremiseUnit( premiseId ,id) {
-    //   return axiosInstance.get(baseUrl + "/premisesUnits/" + premiseId + "/unit/" + id )
-    // }
-
-    // togglePremiseUnitStatus(id) {
-    //   return axiosInstance.get(baseUrl + "/premisesUnits/" + premiseId + "/unit/" + id + "/toogleStatus" )
-    // }
-
-    // findPremiseUnits(premiseId){
-    //   return axiosInstance.get(baseUrl + "/premiseUnits/" + premiseId + "/units")
-    // }
-
-    // applicable charges
-
-    allApplicableCharges() {
-        return axiosInstance.get(baseUrl + "/setup/applicableCharges");
+    caretakerTypes(){
+        return axiosInstance.get(baseUrl + "/setup/caretakerTypes" )
     }
 
-    applicableChargeTypes() {
-        return axiosInstance.get(baseUrl + "/setup/applicableChargeTypes");
+    toggleCaretaker(premiseId , caretakerId){
+        return axiosInstance.get(baseUrl + "/premises/" + premiseId + "/caretaker/" + caretakerId + "/deactivate")
+    }
+   
+    updateCaretaker(premiseId , caretakerId , data){
+    return axiosInstance.post(baseUrl + "/premises/" + premiseId + "/caretaker/" + caretakerId + "/update" , data )
     }
 
-    createApplicableCharges(data) {
-        return axiosInstance.post(baseUrl + "/setup/applicableCharges", data);
+    createCaretaker( premiseId , data){
+        return axiosInstance.post(baseUrl + "/premises/" + premiseId + "/caretaker/create" , data)
     }
 
-    viewApplicableCharge(id) {
-        return axiosInstance.get(baseUrl + "/setup/applicableCharges/" + id);
+    allCareTakers(premiseId ){
+        return axiosInstance.get(baseUrl +  "/premises/" + premiseId + "/caretakers")
     }
 
-    toogleApplicableCharge(id) {
-        return axiosInstance.get(
-            baseUrl + "/setup/applicableCharges/toogleStatus/" + id
-        );
-    }
+      //  premise types
 
-    updateApplicableCharges(data) {
-        return axiosInstance.post(
-            baseUrl + "/setup/applicableCharges/update",
-            data
-        );
-    }
-    //  premise types
-
-    allPremiseTypes() {
+      allPremiseTypes() {
         return axiosInstance.get(baseUrl + "/setup/premiseTypes");
     }
 
@@ -285,7 +281,7 @@ class RequestsService {
         );
     }
 
-    // premise usetypes 
+    // premise use typres 
 
     allPremiseUseTypes() {
         return axiosInstance.get(baseUrl + "/setup/premiseUses");

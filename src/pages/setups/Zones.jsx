@@ -107,8 +107,34 @@ function Zones() {
 requestsServiceService.editZone(data).then((res)=>{
   // console.log(res.data);
   getZones()
-})
-  }
+  if(res.data.status){
+    setError({
+      ...error,
+      message: res.data.message,
+      color: "success"
+    }) } else {
+
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "warning"
+      }) 
+    }
+
+    setTimeout(() => {
+      clear()
+    }, 3000)
+    
+  }).catch((res)=>{
+
+    setError({
+      ...error,
+      message: res.data.message,
+      color: "danger"
+    })
+
+  })
+}
 
   //   const deactivate 
 
@@ -221,8 +247,6 @@ const deactivate = (id)=> {
 
                         
                               </div>
-
-                             
                             </td>
                               </tr>
                             
