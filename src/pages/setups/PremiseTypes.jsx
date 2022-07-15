@@ -207,7 +207,7 @@ function PremiseTypes() {
                     </thead>
                     <tbody>
                   
-                        { list.map(( val , index)=>{
+                        {list &&  list.map(( val , index)=>{
                           return(
                             <tr data-id="1" key={val}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>

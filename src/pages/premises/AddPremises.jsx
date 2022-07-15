@@ -748,6 +748,176 @@ function AddPremises() {
                         <div class="table-responsive table-responsive-md mb-5">
                           <table class="table table-editable-2 align-middle table-edits ">
                             <thead class="table-light">
+                              <tr class="text-uppercase table-dark">
+                                <th class="vertical-align-middle">#</th>
+                                <th class="vertical-align-middle">
+                                  House type
+                                </th>
+                                <th class="vertical-align-middle">
+                                  No. of rooms
+                                </th>
+                                <th class="vertical-align-middle">
+                                  Unit size M <sup>2</sup>
+                                </th>
+                                <th class="vertical-align-middle">
+                                  Unit purpose
+                                </th>
+                                <th style={{ width: "295px" }}>
+                                  Tenancy Renewal
+                                  <button
+                                    type="button"
+                                    data-toggle="modal"
+                                    data-target=".tenancy-renewal-help"
+                                    class="btn btn-link btn-rounded waves-effect font-16px "
+                                  >
+                                    <span class="mdi mdi-help-circle text-white"></span>
+                                  </button>
+                                </th>
+                                <th class="text-right"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+
+                              {selectedunitTypes.length > 0 && selectedunitTypes.map((dependent, index) => (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td>{dependent.unitTypeName}</td>
+                                  <td>{dependent.numberOfRooms}</td>
+                                  <td>{dependent.squarage}</td>
+                                  <td>{dependent.purpose}</td>
+                                  <td>{dependent.monthCountForTenancyRenewal}</td>
+                                  <td></td>
+                                </tr>
+                              ))
+
+                              }
+
+                            </tbody>
+                            <tfoot>
+                              <tr>
+                                <td colSpan="7 ">
+                                  <button type="button" data-id="PREMISE" onClick={newUnitType}>Add A Unit Type</button>
+                                </td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+
+                        <div class="col-12">
+                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                              Applicable charges for this premises
+                            </p>
+                          </div>
+                          <p class="d-none">
+                            <strong>
+                              Check the correct charges that may be charged from
+                              tenants at this premises
+                            </strong>
+                          </p>
+                        </div>
+                        <div class="col-12 mb-5">
+                          <div class="row">
+                            <div class="col-4 col-md-5 col-sm-12 h-100">
+                              <p class="text-decoration-underline">
+                                <i>Applicable Charges</i>
+                              </p>
+                              <div class="row border-right-1">
+                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                  <>
+                                    {charge.applicableChargeType === "MONTHLY_CHARGE" &&
+                                      <div class="col-6">
+                                        <div class="form-check form-check-primary mb-3">
+                                          <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            onChange={handleCaretaker}
+                                            name="gender"
+                                            value="Male"
+                                          />
+                                          <label
+                                            class="form-check-label"
+                                            for="caretaker-male"
+                                          >
+                                            Male
+                                          </label>
+                                        </div>
+
+                                        <div class="form-check me-3">
+                                          <input
+                                            onChange={handleCaretaker}
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="gender"
+                                            value="Female"
+                                          />
+                                          <label
+                                            class="form-check-label"
+                                            for="caretaker-female"
+                                          >
+                                            Female
+                                          </label>
+                                        </div>
+                                      </div>
+<<<<<<< HEAD
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-lg-8">
+                                <div class="row ">
+                                  <div class="col-lg-6 ">
+                                    <div class="mb-4 ">
+                                      <label for="basicpill-phoneno-input ">
+                                        Phone{" "}
+                                        <strong class="text-danger ">*</strong>
+                                      </label>
+                                      <input
+                                        type="text "
+                                        class="form-control "
+                                        value={caretaker.phone}
+                                        name="phone"
+                                        onChange={handleCaretaker}
+
+                                        id="basicpill-phoneno-input "
+                                        placeholder="Enter Your Phone No. "
+                                      />
+                                    </div>
+                                  </div>
+                                  <div class="col-lg-6 ">
+                                    <div class="mb-4 ">
+                                      <label for="basicpill-email-input ">
+                                        Email{" "}
+                                        <strong class="text-danger ">*</strong>
+                                      </label>
+                                      <input
+                                        type="email "
+                                        class="form-control "
+                                        onChange={handleCaretaker}
+                                        name="email"
+                                        value={caretaker.email}
+                                        id="basicpill-email-input "
+                                        placeholder="Enter Your Email ID "
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {/* <!-- caretaker details end --> */}
+
+                        <div class="col-12">
+                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                              Units/ Hse Types on offer At the premises
+                            </p>
+                          </div>
+                        </div>
+                        <div class="table-responsive table-responsive-md mb-5">
+                          <table class="table table-editable-2 align-middle table-edits ">
+                            <thead class="table-light">
                             <tr class="text-uppercase table-dark">
                               <th class="vertical-align-middle">#</th>
                               <th class="vertical-align-middle">
@@ -843,6 +1013,8 @@ function AddPremises() {
                                         </label>
                                       </div>
                                     </div>
+=======
+>>>>>>> f1ddd078001cf1cb0b032aa9aacd58c4c5ccd684
                                     }
                                   </>
                                 ))
@@ -894,23 +1066,23 @@ function AddPremises() {
                               id="data-table"
                             >
                               <thead>
-                              <tr class="text-uppercase table-light">
-                                <th>#</th>
-                                <th>Item type</th>
-                                <th>When to Charge</th>
-                                <th>Unit Type</th>
-                                <th>Charge Value</th>
-                              </tr>
+                                <tr class="text-uppercase table-light">
+                                  <th>#</th>
+                                  <th>Item type</th>
+                                  <th>When to Charge</th>
+                                  <th>Unit Type</th>
+                                  <th>Charge Value</th>
+                                </tr>
                               </thead>
 
                               <tfoot class="table-light">
-                              <tr >
+                                <tr >
 
-                                <button type="button" onClick={toogleShowUnitTypeChargesModal}>Add Charges</button>
-                              </tr>
+                                  <button type="button" onClick={toogleShowUnitTypeChargesModal}>Add Charges</button>
+                                </tr>
                               </tfoot>
                               <tbody>
-                              {/* {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indweex) => (
+                                {/* {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indweex) => (
                                   <>{uniqueChargeId.map((id, indeex) => (
                                     <>
                                       {charge.id == id &&
@@ -951,6 +1123,53 @@ function AddPremises() {
 
                                 } */}
 
+                                {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
+                                  <tr>
+                                    <td>
+                                      {indeewx + 1}
+                                    </td>
+                                    <td>
+                                      {premiseUnitTypeCharge.applicableChargeName}
+                                    </td>
+                                    <td>
+                                      {premiseUnitTypeCharge.applicableChargeType}
+                                    </td>
+                                    <td>
+                                      {premiseUnitTypeCharge.unitTypeName}
+                                    </td>
+                                    <td>
+                                      {premiseUnitTypeCharge.value}
+                                    </td>
+                                  </tr>
+                                ))}
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* <!-- Document attachments --> */}
+                    <h3>Document Attachments</h3>
+                    <section>
+                      <form>
+                        <h6>
+                          Upload documents
+                        </h6>
+                        <div class="table-responsive table-responsive-md">
+                          <table className="table table-editable-file align-middle table-edits ">
+                            <thead className="table-light ">
+                              <tr className="text-uppercase table-dark ">
+                                <th className="vertical-align-middle ">#</th>
+                                <th className="vertical-align-middle ">Document Type</th>
+                                <th className="vertical-align-middle ">Document Name</th>
+                                <th className="vertical-align-middle ">Actions</th>
+                                <th className="text-right "></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+
                               {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
                                 <tr>
                                   <td>
@@ -971,51 +1190,13 @@ function AddPremises() {
                                 </tr>
                               ))}
 
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </section>
-
-                    {/* <!-- Document attachments --> */}
-                    <h3>Document Attachments</h3>
-                    <section>
-                      <form>
-                        <h6>
-                          Upload documents
-                        </h6>
-                        <div class="table-responsive table-responsive-md">
-                          <table className="table table-editable-file align-middle table-edits ">
-                            <thead className="table-light ">
-                            <tr className="text-uppercase table-dark ">
-                              <th className="vertical-align-middle ">#</th>
-                              <th className="vertical-align-middle ">Document Type</th>
-                              <th className="vertical-align-middle ">Document Name</th>
-                              <th className="vertical-align-middle ">Actions</th>
-                              <th className="text-right "></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            {premiseDocuments.length > 0 && premiseDocuments.map((dependent, index) => (
-                              <tr>
-                                <td>{index + 1}</td>
-                                <td>{dependent.documentOwnerTypeName}</td>
-                                <td>{dependent.docName}</td>
-                                <td></td>
-                              </tr>
-                            ))
-
-                            }
-
                             </tbody>
                             <tfoot>
-                            <tr>
-                              <td colSpan="7">
-                                <button type="button" data-id="PREMISE" onClick={newDocument}>Add Premise Documents</button>
-                              </td>
-                            </tr>
+                              <tr>
+                                <td colSpan="7">
+                                  <button type="button" data-id="PREMISE" onClick={newDocument}>Add Premise Documents</button>
+                                </td>
+                              </tr>
                             </tfoot>
                           </table>
 
@@ -1061,7 +1242,7 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">No. Of Rooms</label>
                   <input type="number" className="form-control"
-                         onChange={handleUnitTypeChange} name="numberOfRooms" />
+                    onChange={handleUnitTypeChange} name="numberOfRooms" />
                 </div>
               </div>
 
@@ -1069,7 +1250,7 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">UNIT SIZE M<sup>2</sup></label>
                   <input type="number" className="form-control"
-                         onChange={handleUnitTypeChange} name="squarage" />
+                    onChange={handleUnitTypeChange} name="squarage" />
                 </div>
               </div>
 
@@ -1084,7 +1265,7 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">TENANCY RENEWAL</label>
                   <input type="number" className="form-control"
-                         onChange={handleUnitTypeChange} name="monthCountForTenancyRenewal" />
+                    onChange={handleUnitTypeChange} name="monthCountForTenancyRenewal" />
                 </div>
               </div>
             </div>
@@ -1169,27 +1350,27 @@ function AddPremises() {
                          disabled value={unitCharge.unitTypeName} name="docName" />
                 </div>
 
-                <div className="col-md-6">
-                  <label> Charge Value </label>
-                  <input type="number" className="form-control" name="value"
-                         onChange={(e) => handleChargechange(e, index)} />
-                </div>
+              <div className="col-md-6">
+                <label> Charge Value </label>
+                <input type="number" className="form-control" name="value"
+                  onChange={(e) => handleChargechange(e, index)} />
+              </div>
 
-                <div className="col-md-6">
-                  <label> Collection Acc </label>
-                  <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
-                    <option></option>
-                    {landLordAccounts.length > 0 && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
-                  </select>
-                </div>
+              <div className="col-md-6">
+                <label> Collection Acc </label>
+                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
+                  <option></option>
+                  {landLordAccounts.length > 0 && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
+                </select>
+              </div>
 
-                <div className="col-md-6">
-                  <label> Invoice Day </label>
-                  <input type="number" className="form-control" name="invoiceDay"
-                         onChange={(e) => handleChargechange(e, index)} />
-                </div>
+              <div className="col-md-6">
+                <label> Invoice Day </label>
+                <input type="number" className="form-control" name="invoiceDay"
+                  onChange={(e) => handleChargechange(e, index)} />
+              </div>
 
-              </>
+            </>
             ))
             }
           </form>

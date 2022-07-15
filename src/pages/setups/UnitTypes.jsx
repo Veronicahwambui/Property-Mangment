@@ -239,7 +239,7 @@ function UnitTypes() {
                       </thead>
                       <tbody>
 
-                        {list.map((val, index) => {
+                        {list && list.map((val, index) => {
 
                           return (
                             <tr data-id="1" key={index}>
@@ -336,7 +336,7 @@ function UnitTypes() {
                     size="1"
                     onChange={(e) => setChargeTypes1(e)}
                   >
-                    {chargeTypes.map((charge , index) => {
+                    {chargeTypes && chargeTypes.map((charge , index) => {
                       return (
                         <option
                           key={index}
@@ -412,7 +412,7 @@ function UnitTypes() {
                     multiple
                     onChange={(e) => setChargeTypes1(e)}
                   >
-                    {chargeTypes.map((charge , index) => {
+                    {chargeTypes && chargeTypes.map((charge , index) => {
                       return (
                         <option key={index} 
 
