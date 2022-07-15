@@ -479,7 +479,7 @@ export default function AddLandlord() {
                             </tbody>
                             <tfoot>
                             <tr>
-                              <td colSpan="7" className="bg-light add-field-1 cursor-pointer" onClick={handleShow}>
+                              <td colSpan="7" onClick={handleShow}>
                                 <span className="d-flex align-items-center "><i
                                   className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span
                                   className="pl-5 ">Add A Bank</span></span>
@@ -532,7 +532,7 @@ export default function AddLandlord() {
                             </tbody>
                             <tfoot>
                             <tr>
-                              <td colSpan="7" className="bg-light add-field-file cursor-pointer"  onClick={handleDocShow}>
+                              <td colSpan="7"  onClick={handleDocShow}>
                                 <span className="d-flex align-items-center "><i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span className="pl-5 ">Add A Document</span></span>
                               </td>
                             </tr>

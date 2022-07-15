@@ -493,6 +493,19 @@ class RequestsService {
     downloadDocuments(data) {
         return axiosInstance.get(baseUrl + "/documents/download?docName=" + data)
     }
+    findByFile(data) {
+        return axiosInstance.get(baseUrl + "/landlord/findByFileNumber?landLordFileNumber=" + data)
+    }
+    deactivateLandlord(data) {
+        return axiosInstance.get(baseUrl + "/landlord/toogleStatus/" + data)
+    }
+    deactivateDocuments(x,y,z) {
+        return axiosInstance.get(baseUrl + `/documents/${x}/entity/${y}/deactivate/${z}`);
+    }
+    deactivateAccounts(data){
+        console.log(data);
+        return axiosInstance.get(baseUrl + "/landlord/accounts/deactivate/" + data);
+    }
 
 }
 
