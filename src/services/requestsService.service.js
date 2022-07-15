@@ -415,7 +415,9 @@ class RequestsService {
         return axiosInstance.post(baseUrl+"/tenants", data);
     }
 
-
+    updateContactPersons(data){
+        return axiosInstance.post(baseUrl+"/tenants/contactpersons/update", data)
+    }
 
     download(name){
         return axiosInstance.get(baseUrl + "​/documents​/download?docName=" + name )

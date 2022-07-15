@@ -946,7 +946,7 @@ function AddTenant() {
                                       </tbody>
                                       <tfoot>
                                         <tr>
-                                          <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
+                                          <td colSpan="7 " >
                                             <button type="button" data-id="TENANCY" onClick={newDocument}>Add Tenancy Documents</button>
 
                                           </td>
@@ -996,7 +996,7 @@ function AddTenant() {
                         </tbody>
                         <tfoot>
                           <tr>
-                            <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
+                            <td colSpan="7 " >
                               <button type="button" data-id="TENANT" onClick={newDocument}>Add Tenant Documents</button>
                             </td>
                           </tr>

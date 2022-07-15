@@ -95,11 +95,11 @@ const[ relationship,setRelationship]=useState("")
 
   active: true,
   firstName: firstName,
-  id: 0,
+  id: userId,
   lastName: lastName,
   otherName: otherName,
   phoneNumber1: phoneNumber1,
-  phoneNumber2: phoneNumber2,
+  phoneNumber2: "",
   relationship: relationship,
  
 
@@ -112,7 +112,7 @@ const[ relationship,setRelationship]=useState("")
     }
     )
   }
-  const handleChangeContacts=( firstName,lastName,otherName,phoneNumber1,relationship)=>{
+  const handleChangeContacts=( {firstName,lastName,otherName},phoneNumber1,relationship)=>{
     setFirstName(firstName)
     setLastName(lastName)
     setOtherName(otherName)
@@ -362,8 +362,8 @@ const[ relationship,setRelationship]=useState("")
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {
-                                    tenantData?.map(
+                                    {tenantData.tenancies &&
+                                    tenantData.tenancies.map(
                                         (unit, index) => (
                                           <tr data-id="1">
                                             <td>{index + 1}</td>
@@ -537,7 +537,7 @@ const[ relationship,setRelationship]=useState("")
                                               <a
                                                 className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
                                                 data-bs-toggle="modal" data-bs-target="#Edit-contact"
-                                                onClick={()=>handleChangeContacts( (unit.firstName ,unit.lastName  ,unit.otherName),unit.relationship,unit.phoneNumber1)}
+                                                onClick={()=>handleChangeContacts( ( (unit.firstName),(unit.lastName ),(unit.otherName)),unit.phoneNumber1,unit.relationship)}
                                               >
                                                 <i className="bx bx-edit-alt " />
                                               </a>
@@ -688,14 +688,12 @@ const[ relationship,setRelationship]=useState("")
                     <label htmlFor="">OtherName</label>
                     <input type="text" className="form-control" value={otherName} onChange={(e) => setOtherName(e.target.value)} placeholder="Enter OtherName" required={true}/>
                   </div>
+               
                   <div className="form-group mb-4">
                     <label htmlFor="">PhoneNumber1</label>
                     <input type="text" className="form-control" value={phoneNumber1} onChange={(e) => setPhoneNumber1(e.target.value)} placeholder="Enter PhoneNumber1" required={true}/>
                   </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">PhoneNumber2</label>
-                    <input type="text" className="form-control" value={phoneNumber2} onChange={(e) => setPhoneNumber2(e.target.value)} placeholder="Enter PhoneNumber2" required={true}/>
-                  </div>
+           
                   <div className="form-group mb-4">
                     <label htmlFor="">Relationship</label>
                     <input type="text" className="form-control" value={relationship} onChange={(e) => setRelationship(e.target.value)} placeholder="Enter Relationship" required={true}/>
