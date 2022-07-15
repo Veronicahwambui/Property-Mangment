@@ -39,10 +39,10 @@ function ApplicableCharges() {
   const create = ()=>{
    let data = JSON.stringify({
     active: true,
-    applicableChargeType: chargeType,
+    applicableChargeTypeName: chargeType,
     clientId: authService.getClientId(),
     expectManualValues: true,
-    id: 0,
+    id: null,
     name: createName
   })
    
@@ -91,6 +91,8 @@ function ApplicableCharges() {
     });
   }
 
+
+ 
   
   // toggle function 
   const toggleStatus = ()=>{
@@ -104,7 +106,7 @@ function ApplicableCharges() {
   const Update = ()=>{
      let data = JSON.stringify({
       active: true,
-      applicableChargeType: updateChargeType,
+      applicableChargeTypeName  : updateChargeType,
       clientId: authService.getClientId(),
       expectManualValues: true,
       id: activeId,
@@ -163,7 +165,7 @@ function ApplicableCharges() {
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <li class="breadcrumb-item">
-                    <a href="index.html">Dashboards</a>
+                    <a  href="index.html">Dashboards</a>
                   </li>
                   <li class="breadcrumb-item">
                     <a href="#">Set Ups</a>
@@ -220,7 +222,7 @@ function ApplicableCharges() {
                     </thead>
                     <tbody>
                   
-                        { list.map(( val , index)=>{
+                        {list &&  list.map(( val , index)=>{
                           return(
                             <tr data-id="1" key={val}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
@@ -313,7 +315,7 @@ function ApplicableCharges() {
                       title="Select Applicable Charge Type"
                       onChange={(e) => setChargeType(e.target.value)}
                     >
-                      { chargeTypes.map((charge) =>{ return (
+                      {chargeTypes &&  chargeTypes.map((charge) =>{ return (
                        <option key={charge}  value={charge}>{charge.toLowerCase().replace(/_/g ," ")}</option>
                       )})}
                     </select>
@@ -381,7 +383,7 @@ function ApplicableCharges() {
                       title="Select Applicable Charge Type"
                       onChange={(e) => setUpdateChargeType(e.target.value)}
                     >
-                      { chargeTypes.map((charge) =>{ return (
+                      {chargeTypes &&  chargeTypes.map((charge) =>{ return (
                        <option key={charge} value={charge} className="text-capitalize">{charge.toLowerCase().replace(/_/g ," ")}</option>
                       )})}
                     </select>

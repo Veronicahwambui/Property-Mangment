@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
@@ -28,6 +29,71 @@ function OnePremise() {
     fetchAll();
   }, []);
 
+  const [PremiseTypes ,setPremiseTypes] = useState([])
+  const [PremiseUseTypes ,setPremiseUseTypes] = useState([])
+  const [Estates ,setEstates] = useState([])
+
+  const fetchUpdateData = () => {
+     
+    requestsServiceService.allPremiseTypes().then((res)=>{
+            setPremiseTypes(res.data.data)
+    })
+    requestsServiceService.allPremiseUseTypes().then((res)=>{
+            setPremiseUseTypes(res.data.data)
+    })
+    requestsServiceService.getAllEstates().then((res)=>{
+            setEstates(res.data.data)
+    })
+  }
+
+  const [update , setUpdate]= useState({
+    // premType: premiseData.premise.premiseType.id,
+    // premUseType: premiseData.premise.premiseUseType.id,
+    // estate: premiseData.premise.estate.id,
+    // fileNo: premiseData.premise.fileNumber,
+    // plotNo: premiseData.premise.plotNumber,
+    // address: premiseData.premise.address,
+    premType: '',
+    premUseType: '',
+    estate: '',
+    fileNo: '',
+    plotNo: '',
+    address: '',
+  })
+
+  console.log(update);
+
+ const  handleChange =(event)=>{
+  setUpdate({
+    ...update , [event.target.name]: event.target.value
+  })
+ }
+
+ console.log(premiseData);
+ const updatePrem = ()=>{
+   let data = JSON.stringify({
+    
+      active: premiseData.premise.active,
+      address: update.address,
+      estateId: update.estate,
+      fileNumber: update.fileNo,
+      id: userId,
+      landLordId: [
+        
+      ],
+      landlordFileNumber: [
+        
+      ],
+      plotNumber: update.plotNo,
+      premiseName: premiseData.premise.premiseName,
+      premiseTypeId: update.premType,
+      premiseUseTypeId: update.premUseType
+    
+   })
+  requestsServiceService.updatePremise( userId ,data).then(()=>{
+    fetchAll()
+  })
+ }
   return (
     <div className="page-content">
       <div className="content-fluid">
@@ -151,9 +217,22 @@ function OnePremise() {
                        <div class="d-flex align-items-center flex-grow-1">
                          <h4 class="mb-0 m-0 bg-transparent">
                          Quick Stats on  {premiseData.premise && premiseData.premise.premiseName}
+                         <span
+                      className="badge badge-pill badge-soft-success font-size-11">Active</span>
                          </h4>
                        </div>
-                     
+                       <div className="d-flex align-items-center flex-grow-1">
+                </div>
+                <div className="d-flex">
+                  <button type="button"
+                       onClick={fetchUpdateData}
+                            data-bs-toggle="modal"
+                            data-bs-target="#edit-premise-detail"
+                          className="btn btn-primary dropdown-toggle option-selector">
+                    <i className="dripicons-plus font-size-16"></i> <span
+                    className="pl-1 d-md-inline">Edit Premise details</span>
+                  </button>
+                </div>
                      </div>
                    </div>
                    <div className="card-body">
@@ -204,12 +283,6 @@ function OnePremise() {
                         <span>{premiseData.premise && premiseData.premise.address}</span>
                         </div>
                        </div>
-                       <div className="col-3">
-                        <label htmlFor="">Status</label>
-                        <div>
-                        <span>Active</span>
-                        </div>
-                       </div>
                      
                       </div>
                      </div>
@@ -217,6 +290,107 @@ function OnePremise() {
                  </div>
                </div>
              </div>
+
+             <div
+      class="modal fade"
+      id="edit-premise-detail"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      role="dialog"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+           <div className="row">
+           <div className="form-group">
+                <label htmlFor="">Premise Name</label>
+                <input type="text" className="form-control" onChange={handleChange}  name="fileNo"  />
+              </div>
+            <div className="col-6">
+            <div className="form-group">
+            <label htmlFor="">Premise Type</label>
+            <select className="form-control" onChange={handleChange}  name="premName" >
+            <option className="text-black font-semibold ">
+               {premiseData.premise && premiseData.premise.premiseType.name}
+            </option>
+            {PremiseTypes.map((prem)=>(
+                <option value={prem.id}  className="text-black font-semibold ">
+                 {prem.name}
+             </option>
+            ))}
+          
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="">Premise  Use Type</label>
+            <select className="form-control" onChange={handleChange}  name="premUseType" >
+            <option className="text-black font-semibold ">
+            { premiseData.premise && premiseData.premise.premiseUseType.name}          
+            </option>
+            {PremiseUseTypes.map((prem)=>(
+                <option value={prem.id} className="text-black font-semibold ">
+                 {prem.name}
+             </option>
+            ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="">Estate</label>
+            <select className="form-control" onChange={handleChange}  name="estate"  >
+            <option className="text-black font-semibold ">
+            { premiseData.premise && premiseData.premise.estate.name}
+               
+            </option>
+            {Estates.map((prem)=>(
+                <option value={prem.id} className="text-black font-semibold ">
+                 {prem.name}
+             </option>
+            ))}
+            </select>
+          </div>
+       
+            </div>
+            <div className="col-6">
+              <div className="form-group">
+                <label htmlFor="">File Number</label>
+                <input type="text" className="form-control" onChange={handleChange}  name="fileNo"  />
+              </div>
+              <div className="form-group">
+                <label htmlFor="">Plot Number</label>
+                <input type="text" className="form-control" onChange={handleChange}  name="plotNo"  />
+              </div>
+              <div className="form-group">
+                <label htmlFor="">Address</label>
+                <input type="text" className="form-control" onChange={handleChange}  name="address"   />
+              </div>
+  
+            </div>
+           </div> 
+      
+       
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-light"
+              data-bs-dismiss="modal"
+            >
+            close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              onClick={()=> updatePrem()}
+            >
+              Update
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
            </div>
         )}
 
@@ -248,6 +422,8 @@ function OnePremise() {
                                                     <th>Name</th>
                                                     <th>Unit Type</th>
                                                     <th>Status</th>
+                                                   <th className="text-right">Actions</th>
+
                                                 </tr>
                                 </thead>
                           <tbody>
@@ -257,7 +433,8 @@ function OnePremise() {
                                   <td>{unit.unitName}</td>
                                   <td>{unit.unitType.name}</td>
                                   <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
-                                  
+                                  <td className="text-right cell-change"> <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-premise-unit"
+                                  title="Edit"><i className="bx bx-edit-alt " /></a></td>
                         </tr>
                             ))}
                         
@@ -443,6 +620,29 @@ function OnePremise() {
            </div>
         )}
       </div>
+      <Helmet>
+
+
+{/* <!-- Table Editable plugin --> */}
+<script src="./assets/libs/table-edits/build/table-edits.min.js "></script>
+<script src="./assets/js/pages/table-editable.int.js "></script>
+
+<script
+src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
+crossorigin></script>
+{/* data table plugin */}
+<script src="./assets/js/pages/datatables.init.js"></script>
+
+{/* <!-- jquery step --> */}
+ <script src="./assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+ <script src="./assets/js/pages/form-wizard.init.js"></script>
+
+
+  {/* <!-- App js --> */}
+  <script src="./assets/js/app.js "></script>
+  <script src="./assets/js/custom.js "></script>
+</Helmet>
+
     </div>
   );
 }

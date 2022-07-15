@@ -173,7 +173,7 @@ function LandLordAgreementTypes() {
                       </tr>
                       </thead>
                       <tbody>
-                      { agreementTypes.map((aT, num)=>{
+                      { agreementTypes && agreementTypes.map((aT, num)=>{
 
                         return (
                           <tr data-id="1">
