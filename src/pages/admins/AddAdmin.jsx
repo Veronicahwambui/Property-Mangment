@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
 import requestsServiceService from "../../services/requestsService.service";
+import authService from "../../services/authService.service";
 
 function AddAdmin() {
   const [firstName, setFirstName] = useState("");
@@ -22,7 +23,7 @@ function AddAdmin() {
   const addUser = (ev) => {
     ev.preventDefault();
     const data = JSON.stringify({
-      clientKey: "4798a842c8984e078540bc6ba75c2994",
+      clientKey: authService.getAppKey(),
       email: email,
       enabled: true,
       firstName: firstName,
