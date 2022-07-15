@@ -475,6 +475,9 @@ class RequestsService {
     getLandlord(id){
         return axiosInstance.get(baseUrl + "/landlord/" + id);
     }
+    getLandLordByFileNumber(id){
+        return axiosInstance.get(baseUrl + "/landlord/findByFileNumber?landLordFileNumber=" + id);
+    }
     getDocumentTypes() {
         return axiosInstance.get(baseUrl + "/setup/documentTypes");
     }
