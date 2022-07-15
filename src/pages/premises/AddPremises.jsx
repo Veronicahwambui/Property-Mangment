@@ -42,12 +42,14 @@ function AddPremises() {
             message: res.data.message,
             color: "success"
           });
-          setFileNoShow(false);
+          setTimeout(() => {
+            setFileNoShow(false);
+          }, 1500)
         }
       }).catch((err) => {
         setError({
           ...error,
-          message: err.message,
+          message: err.data.message,
           color: "danger"
         })
       })
