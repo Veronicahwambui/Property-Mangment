@@ -126,7 +126,7 @@ function PremisesRegister() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {premises.map((premise , index)=>{
+                                { premises && premises.map((premise , index)=>{
                                     let premiseType = premise.premiseType
                                     let premiseUseType = premise.premiseUseType
                                     let estate = premise.estate

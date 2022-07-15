@@ -20,7 +20,6 @@ function Estate() {
 
     const getZones =()=>{
       requestsServiceService.getAllZones().then((res)=>{
-        console.log(res.data);
         setZones(res.data.data)
       })
     }
@@ -35,12 +34,11 @@ function Estate() {
       zoneId: selectedZone
     })
     requestsServiceService.createEstate(data).then((res)=>{
-      console.log(res.data);
       getEstates()
     })
   }
 
-  // get all zones 
+  // get all estates
 
   const getEstates =()=>{
     requestsServiceService.getAllEstates().then((res)=>{
@@ -67,7 +65,7 @@ const deactivate = (id)=> {
 })
 
 requestsServiceService.editEstate(data).then((res)=>{
-  console.log(res.data);
+
 })
   }
   return (
@@ -141,6 +139,8 @@ requestsServiceService.editEstate(data).then((res)=>{
                             <td data-field="unit-num ">{estate.name}</td>
                             <td data-field="unit-num ">{estate.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
+                              <div className="d-flex">
+                            <a class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                             {estate.active ?  <button
                                 class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"
                                 title="deactivate"
@@ -157,9 +157,8 @@ requestsServiceService.editEstate(data).then((res)=>{
                                 onClick={()=> setActiveId(estate.id)}
                               >
                                Activate
-                              </button> }
-
-                             
+                              </button> } 
+                              </div>
                             </td>
                               </tr>
                         )})}
@@ -290,6 +289,7 @@ requestsServiceService.editEstate(data).then((res)=>{
         </div>
       </div>
     </div>
+    
     {/* confirm deactivate  */}
     <div
       class="modal fade"
