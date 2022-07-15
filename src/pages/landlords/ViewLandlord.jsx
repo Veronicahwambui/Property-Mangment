@@ -294,6 +294,22 @@ function ViewLandlord() {
       }, 3000);
     })
   }
+  const [activeId , setActiveId] = useState('')
+
+  const deactivate = (id)=> {
+    let docOwnerType = "LANDLORD"
+    let entity = userId
+    let documentId = id
+    requestsServiceService.deactivateDocuments(docOwnerType, entity, documentId).then((res)=>{
+      getlandlords();
+    })
+  }
+  const deactivateAcc = (id)=> {
+    requestsServiceService.deactivateAccounts(id).then((res)=>{
+      getlandlords();
+    })
+  }
+
   return (
     <>
     <div className="page-content">
@@ -517,6 +533,7 @@ function ViewLandlord() {
                                     <th scope="col">% Remuneration</th>
                                     <th scope="col">Status</th>
                                     <th className="text-right">Actions</th>
+                                    <th></th>
                                   </tr>
                                   </thead>
                                   <tbody>
@@ -532,9 +549,30 @@ function ViewLandlord() {
                                       <td className="text-right cell-change ">
                                         <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
                                            title="Edit" onClick={() => accshow(acc.id)}><i className="bx bx-edit-alt " /></a>
-                                        <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
-                                                title="save ">Save
-                                        </button>
+                                      </td>
+                                      <td>
+                                        <div className="d-flex">
+                                          {acc.active ? <button
+                                            className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
+                                            title="deactivate"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirm-acc-deactivate"
+                                            style={{ marginLeft: "8px" }}
+                                            onClick={() => setActiveId(acc.id)}
+                                          >
+                                            Deactivate
+                                          </button> : <button
+                                            className="btn btn-success btn-sm btn-rounded waves-effect waves-light"
+                                            title="deactivate"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirm-acc-activate"
+                                            style={{ marginLeft: "8px" }}
+                                            onClick={() => setActiveId(acc.id)}
+                                          >
+                                            Activate
+                                          </button>
+                                          }
+                                        </div>
                                       </td>
                                     </tr>
                                   ))}
@@ -599,8 +637,8 @@ function ViewLandlord() {
                                       <th scope="col">#</th>
                                       <th scope="col">Document Name</th>
                                       <th scope="col">Document Type</th>
+                                      <th scope="col">Status</th>
                                       <th className="text-right">Actions</th>
-                                      <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -609,21 +647,39 @@ function ViewLandlord() {
                                           <td style={{ width: "80px" }}>{index + 1}</td>
                                           <td data-field="estate">{doc.docName}</td>
                                           <td data-field="unit-num ">{doc.documentType?.name}</td>
-                                          <td className="text-right cell-change ">
-                                            <a href={`${doc.docName}`} className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
-                                               title="Edit" onClick={() => download(doc.docName)}><i className="bx bx-download" /></a>
-                                            <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
-                                                    title="save ">Download
-                                            </button>
+                                          <td data-field="unit-num ">
+                                            {doc.active ?
+                                            <span className="badge-soft-success badge">Active</span> :
+                                            <span className="badge-soft-danger badge">Inactive</span>
+                                            }
                                           </td>
-                                          {/*<td className="text-right cell-change text-nowrap ">*/}
-                                          {/*  <div className="d-flex">*/}
-                                          {/*    <a data-bs-toggle="modal"*/}
-                                          {/*       data-bs-target="#update-modal"*/}
-                                          {/*       className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "*/}
-                                          {/*       title="Delete"><i className='bx bxs-trash'></i></a>*/}
-                                          {/*  </div>*/}
-                                          {/*</td>*/}
+                                          <td className="text-right cell-change ">
+                                            <div className="d-flex">
+                                              <a href={`${doc.docName}`} className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
+                                                 title="Edit" onClick={() => download(doc.docName)}><i className="bx bx-download" /></a>
+                                              {doc.active ? <button
+                                                className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-deactivate"
+                                                style={{ marginLeft: "8px" }}
+                                                onClick={() => setActiveId(doc.id)}
+                                              >
+                                                Deactivate
+                                              </button> : <button
+                                                className="btn btn-success btn-sm btn-rounded waves-effect waves-light"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-activate"
+                                                style={{ marginLeft: "8px" }}
+                                                onClick={() => setActiveId(doc.id)}
+                                              >
+                                                Activate
+                                              </button>
+                                              }
+                                            </div>
+                                          </td>
+
                                         </tr>
                                       ))}
                                     </tbody>
@@ -948,8 +1004,155 @@ function ViewLandlord() {
           </Modal.Footer>
         </form>
       </Modal>
+      <div
+        className="modal fade"
+        id="confirm-deactivate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Deactivate Document ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivate(activeId)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* confirm dactivate  */}
+      <div
+        className="modal fade"
+        id="confirm-activate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Activate Document ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivate(activeId)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      {/* confirm ACCOUNT  */}
+      <div
+        className="modal fade"
+        id="confirm-acc-activate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Activate Account ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivateAcc(activeId)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      {/* confirm dactivate  */}
+      <div
+        className="modal fade"
+        id="confirm-acc-deactivate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Deactivate Account ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivateAcc(activeId)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
 
   );
