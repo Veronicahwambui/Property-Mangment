@@ -1,4 +1,5 @@
 import React, { useEffect ,useState } from 'react'
+import authService from '../../services/auth.service';
 import requestsServiceService from '../../services/requestsService.service'
 
 function LandLordAgreementTypes() {
@@ -84,8 +85,8 @@ function LandLordAgreementTypes() {
   const updateAgreementType = ()=>{
     let data = JSON.stringify({
       active: true,
-      clientId: editType.id,
-      id: editId,
+      clientId: authService.getClientId() ,
+      id: activeId,
       name: editName,
     })
     requestsServiceService.editAgreementType(data).then((res)=>{
@@ -182,7 +183,7 @@ function LandLordAgreementTypes() {
                             <td data-field="unit-num ">{aT.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
                               <div className="d-flex">
-                                <a onClick={() => getOneAgreementType(aT.id)} data-bs-toggle="modal"
+                                <a onClick={() => { setActiveId(aT.id) }} data-bs-toggle="modal"
                                    data-bs-target="#update-modal"
                                    className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                    title="Edit "><i className="bx bx-edit-alt "></i></a>
@@ -370,7 +371,7 @@ function LandLordAgreementTypes() {
                            className="form-control" placeholder="Enter agreement type name"/>
                   </div>
                 </div>
-                <div className="col-12">
+                <div className="col-12 d-none">
                   <label htmlFor="">Client</label>
                   <select
                     className="form-control"

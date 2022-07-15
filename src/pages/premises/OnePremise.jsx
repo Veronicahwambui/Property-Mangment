@@ -421,6 +421,15 @@ function OnePremise() {
                         </div>
                       </div>
                       <div className="row mt-5">
+                      <div className="col-3">
+                          <label htmlFor="">County</label>
+                          <div>
+                            <span>
+                              {premiseData.premise &&
+                                premiseData.premise.estate.zone.clientCounty.county.name.toLowerCase()}
+                            </span>
+                          </div>
+                        </div>
                         <div className="col-3">
                           <label htmlFor="">File Number</label>
                           <div>

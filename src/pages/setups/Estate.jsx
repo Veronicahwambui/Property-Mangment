@@ -206,6 +206,8 @@ requestsServiceService.editEstate(data).then((res)=>{
                       <tr class="text-uppercase table-dark">
                         <th>#</th>
                         <th>Estate</th>
+                        <th>Zone</th>
+                        <th>County</th>
                         <th>Status</th>
                         <th class="text-right">Actions</th>
                       </tr>
@@ -217,6 +219,8 @@ requestsServiceService.editEstate(data).then((res)=>{
                             <tr data-id="1" key={estate}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
                             <td >{estate.name}</td>
+                            <td >{estate.zone.name}</td>
+                            <td >{estate.zone.clientCounty.county.name.toLowerCase()}</td>
                             <td >{estate.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap">
                             <div className="d-flex">
