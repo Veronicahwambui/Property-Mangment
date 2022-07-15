@@ -48,17 +48,16 @@ function LandLordAgreementTypes() {
       name: agreementTypeName,
     })
     requestsServiceService.createAgreementType(data).then((res)=>{
-      let message = res.data.message;
       if (res.data.status===false) {
         setError({
           ...error,
-          message: message,
+          message: res.data.message,
           color: "danger"
         })
       } else {
         setError({
           ...error,
-          message: message,
+          message: res.data.message,
           color: "success"
         });
       }
@@ -74,7 +73,7 @@ function LandLordAgreementTypes() {
       setError({
         ...error,
         message: err.data.message,
-        color: "success"
+        color: "danger"
       });
     })
   }
@@ -91,34 +90,53 @@ function LandLordAgreementTypes() {
   // update agreementType
 
   const getOneAgreementType = (id) => {
-    if (agreementTypes.length > 0) {
-      let cl = agreementTypes.find((item) => item.id === id)
-      if(cl) {
-        setEditType({
-          ...editType,
-          name: cl.client.clientType.name,
-          id: cl.client.clientType.id
-        })
-        setEditClientId(cl.client.clientType.id);
-        setEditName(cl.name)
-        setEditId(cl.id)
-      }
+    let clientId = requestsServiceService.getCurrentUserClient().id;
+    setEditClientId(clientId);
+    if (agreementTypes?.length > 0) {
+      let cl = agreementTypes?.find((item) => item.id === id)
+      console.log(cl)
+      setEditAgreementTypeName(cl.name);
+      setEditId(cl.id)
     }
   }
 
   const updateAgreementType = ()=>{
     let data = JSON.stringify({
       active: true,
-      clientId: editType.id,
+      clientId: editClientId,
       id: editId,
-      name: editName,
+      name: editAgreementTypeName,
     })
     requestsServiceService.editAgreementType(data).then((res)=>{
+      let message = res.data.message;
+      if (res.data.status===false) {
+        setError({
+          ...error,
+          message: message,
+          color: "danger"
+        })
+      } else {
+        setError({
+          ...error,
+          message: message,
+          color: "success"
+        });
+      }
       getAgreementTypes()
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        });
+      }, 2000)
     }).catch((err)=> {
-      console.log(err)
+      setError({
+        ...error,
+        message: err.data.message,
+        color: "success"
+      });
     })
-    getAgreementTypes()
   }
   let num = 0;
 
@@ -396,29 +414,28 @@ function LandLordAgreementTypes() {
                 <div className="col-12">
                   <div className="form-group mb-4">
                     <label htmlFor="">Name</label>
-                    <input value={editName} onChange={(e) => setEditName(e.target.value)} type="text"
+                    <input value={editAgreementTypeName} onChange={(e) => setEditAgreementTypeName(e.target.value)} type="text"
                            className="form-control" placeholder="Enter agreement type name"/>
                   </div>
                 </div>
-                <div className="col-12">
-                  <label htmlFor="">Client</label>
-                  <select
-                    className="form-control"
-                    data-live-search="true"
-                    title="Select client"
-                    onChange={(e) => setEditSelectedClient(e.target.value)}
-                  >
-                    <option className="text-black font-semibold ">
-                      {selectedClient.name}
-                    </option>
-                    {clients.map((c, index) => {
-                      return (
-                        <option key={index} value={c.id}>{c.name}</option>
-                      )
-                    })}
-                  </select>
-
-                </div>
+                {/*<div className="col-12">*/}
+                {/*  <label htmlFor="">Client</label>*/}
+                {/*  <select*/}
+                {/*    className="form-control"*/}
+                {/*    data-live-search="true"*/}
+                {/*    title="Select client"*/}
+                {/*    onChange={(e) => setEditSelectedClient(e.target.value)}*/}
+                {/*  >*/}
+                {/*    <option className="text-black font-semibold ">*/}
+                {/*      {selectedClient.name}*/}
+                {/*    </option>*/}
+                {/*    {clients.map((c, index) => {*/}
+                {/*      return (*/}
+                {/*        <option key={index} value={c.id}>{c.name}</option>*/}
+                {/*      )*/}
+                {/*    })}*/}
+                {/*  </select>*/}
+                {/*</div>*/}
               </div>
             </div>
             <div className="modal-footer">
@@ -433,6 +450,7 @@ function LandLordAgreementTypes() {
                 onClick={updateAgreementType}
                 type="button"
                 className="btn btn-primary"
+                data-bs-dismiss="modal"
               >
                 Save
               </button>
