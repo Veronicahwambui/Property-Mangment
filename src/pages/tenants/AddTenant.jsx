@@ -5,19 +5,19 @@ import { confirmAlert } from 'react-confirm-alert';
 import moment from 'moment';
 import authService from '../../services/auth.service';
 import requestsServiceService from '../../services/requestsService.service';
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 
 
 
 function AddTenant() {
   // forceupdate()
 
-//  the stepper form jquerry
-// include("./assets/js/pages/table-editable.int.js")
-// $("#basic-example").steps({ 
-//   headerTag: "h3", bodyTag: "section", transitionEffect: "slide" 
-// })
-//  the stepper form jquerry
+  //  the stepper form jquerry
+  // include("./assets/js/pages/table-editable.int.js")
+  // $("#basic-example").steps({ 
+  //   headerTag: "h3", bodyTag: "section", transitionEffect: "slide" 
+  // })
+  //  the stepper form jquerry
 
 
   const [showNewContactPeronModal, setShowNewContactPeronModal] = useState(false)
@@ -228,10 +228,10 @@ function AddTenant() {
     event.preventDefault();
 
     let contacts = [];
-    contacts.push.apply(contacts,tenantReferees);
-    contacts.push.apply(contacts,tenantDependents);
-    contacts.push.apply(contacts,tenantRoommates);
-    contacts.push.apply(contacts,tenantKins);
+    contacts.push.apply(contacts, tenantReferees);
+    contacts.push.apply(contacts, tenantDependents);
+    contacts.push.apply(contacts, tenantRoommates);
+    contacts.push.apply(contacts, tenantKins);
 
     let dara = JSON.stringify({
       "tenancyDTOS": tenancyDTOS,
@@ -377,36 +377,36 @@ function AddTenant() {
               <p>Fill in the form correctly. Fields with an Asterisk <strong className="text-danger">*</strong> are mandatory fields.</p>
               {/* step form starts here */}
               <div id="kev-step-form">
-              {/* step form navigation container */}
-              <nav class="navbar navbar-expand-lg navbar-light bg-light">
-               
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span className="navbar-toggler-icon"></span>
-                </button>
+                {/* step form navigation container */}
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul className="navbar-nav mr-auto">
-                    <li className="nav-item active">
-                      <a className="nav-link active" href="#">1. Tenant Details <span className="sr-only">(current)</span></a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="#">2. Kins, Referees & Dependents</a>
-                    </li>
+                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                  </button>
 
-                    <li className="nav-item">
-                      <a className="nav-link" href="#">3. Unit Assignment</a>
-                    </li>
+                  <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav mr-auto">
+                      <li className="nav-item active">
+                        <a className="nav-link active" href="#">1. Tenant Details <span className="sr-only">(current)</span></a>
+                      </li>
+                      <li className="nav-item">
+                        <a className="nav-link" href="#">2. Kins, Referees & Dependents</a>
+                      </li>
 
-                    <li className="nav-item">
-                      <a className="nav-link" href="#">4. Tenant Document attachments</a>
-                    </li>
-                    
-                  </ul>
-                
-                </div>
-              </nav>
+                      <li className="nav-item">
+                        <a className="nav-link" href="#">3. Unit Assignment</a>
+                      </li>
 
-              {/* navigation bar end */}
+                      <li className="nav-item">
+                        <a className="nav-link" href="#">4. Tenant Document attachments</a>
+                      </li>
+
+                    </ul>
+
+                  </div>
+                </nav>
+
+                {/* navigation bar end */}
 
 
 
@@ -901,8 +901,6 @@ function AddTenant() {
                                     ))
                                   }
 
-
-
                                 </tbody>
                                 <tfoot>
                                   <tr>
@@ -946,7 +944,7 @@ function AddTenant() {
                                       </tbody>
                                       <tfoot>
                                         <tr>
-                                          <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
+                                          <td colSpan="7 " >
                                             <button type="button" data-id="TENANCY" onClick={newDocument}>Add Tenancy Documents</button>
 
                                           </td>
@@ -996,7 +994,7 @@ function AddTenant() {
                         </tbody>
                         <tfoot>
                           <tr>
-                            <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
+                            <td colSpan="7 " >
                               <button type="button" data-id="TENANT" onClick={newDocument}>Add Tenant Documents</button>
                             </td>
                           </tr>
@@ -1005,7 +1003,7 @@ function AddTenant() {
                     </div>
                   </section>
                 </div>
-                
+
 
                 {/* the buttons container */}
                 <div className="button-navigators">
