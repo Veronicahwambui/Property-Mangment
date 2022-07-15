@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
 import requestsServiceService from "../../services/requestsService.service";
-import authService from "../../services/authService.service";
+import authService from "../../services/auth.service";
 
 function AddAdmin() {
   const [firstName, setFirstName] = useState("");
