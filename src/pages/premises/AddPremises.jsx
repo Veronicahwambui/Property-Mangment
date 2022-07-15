@@ -1163,25 +1163,32 @@ function AddPremises() {
             <h3>Charge Values</h3>
 
             {unitCharges.length > 0 && unitCharges.map((unitCharge, index) => (<>
-              <div className="col-md-4">
+              <div className="col-md-6">
                 <label htmlFor="">Unit Type</label>
                 <input type="text" className="form-control" id="" placeholder=""
                   disabled value={unitCharge.unitTypeName} name="docName" />
               </div>
 
-              <div className="col-md-4">
+              <div className="col-md-6">
                 <label> Charge Value </label>
                 <input type="number" className="form-control" name="value"
                   onChange={(e) => handleChargechange(e, index)} />
               </div>
 
-              <div className="col-md-4">
+              <div className="col-md-6">
                 <label> Collection Acc </label>
                 <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
                   <option></option>
                   {landLordAccounts.length > 0 && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
                 </select>
               </div>
+
+              <div className="col-md-6">
+                <label> Invoice Day </label>
+                <input type="number" className="form-control" name="invoiceDay"
+                  onChange={(e) => handleChargechange(e, index)} />
+              </div>
+
             </>
             ))
             }
