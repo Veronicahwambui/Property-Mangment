@@ -184,30 +184,30 @@ export default function AddLandlord() {
       landLord: data,
       landLordAccounts: accounts
     }
-    // requestsServiceService.createLandLord(new_t).then((res) => {
-    //   console.log(res);
-    //   setError({
-    //     ...error,
-    //     message: res.data.message + "! Landlord created",
-    //     color: "success"
-    //   })
-    //   setTimeout(() => {
-    //     setError({
-    //       ...error,
-    //       message: "",
-    //       color: ""
-    //     })
-    //   }, 3000);
-    // }).catch((err) => {
-    //   console.log(err)
-    //   setTimeout(() => {
-    //     setError({
-    //       ...error,
-    //       message: "",
-    //       color: ""
-    //     })
-    //   }, 3000);
-    // })
+    requestsServiceService.createLandLord(new_t).then((res) => {
+      console.log(res);
+      setError({
+        ...error,
+        message: res.data.message + "! Landlord created",
+        color: "success"
+      })
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        })
+      }, 3000);
+    }).catch((err) => {
+      console.log(err)
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        })
+      }, 3000);
+    })
     console.log(new_t)
     console.log(data)
   }

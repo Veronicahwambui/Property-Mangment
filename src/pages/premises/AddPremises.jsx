@@ -15,15 +15,42 @@ function AddPremises() {
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
+  const [fileNoShow, setFileNoShow] = useState(true);
 
   const toogleShowUnitTypeChargesModal = () => {
     setShowUnitTypeChargesModal(!showUnitTypeChargesModal);
   }
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
   const saveLandLordFileNumber = () => {
     if (landlordfileNumber != "") {
-      let d = []; d.push(landlordfileNumber);
-      setGeneral({ ...general, ["landlordFileNumber"]: d });
+      requestsServiceService.findByFile(landlordfileNumber).then((res) => {
+        if (res.data.status===false) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger"
+          })
+        } else {
+          let d = []; d.push(landlordfileNumber);
+          setGeneral({ ...general, ["landlordFileNumber"]: d });
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success"
+          });
+          setFileNoShow(false);
+        }
+      }).catch((err) => {
+        setError({
+          ...error,
+          message: err.message,
+          color: "danger"
+        })
+      })
     }
   }
 
@@ -499,7 +526,7 @@ function AddPremises() {
                                   name="estateId"
                                   onChange={handleGeneral}
                                 >
-                                  {estates.map((estate) => {
+                                  {estates?.map((estate) => {
                                     return (
                                       <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
                                     )
@@ -522,7 +549,7 @@ function AddPremises() {
                                   onChange={handleGeneral}
 
                                 >
-                                  {premiseTypes.map((type) => (
+                                  {premiseTypes?.map((type) => (
                                     <option value={type.id}> {type.name}</option>
                                   ))}
 
@@ -543,7 +570,7 @@ function AddPremises() {
                                   onChange={handleGeneral}
 
                                 >
-                                  {premiseUseTypes.map((type) => (
+                                  {premiseUseTypes?.map((type) => (
                                     <option value={type.id}> {type.name}</option>
                                   ))}
                                 </select>
@@ -776,7 +803,7 @@ function AddPremises() {
                               </thead>
                               <tbody>
 
-                              {selectedunitTypes.length > 0 && selectedunitTypes.map((dependent, index) => (
+                              {selectedunitTypes?.length > 0 && selectedunitTypes?.map((dependent, index) => (
                                 <tr>
                                   <td>{index + 1}</td>
                                   <td>{dependent.unitTypeName}</td>
@@ -821,7 +848,7 @@ function AddPremises() {
                                   <i>Applicable Charges</i>
                                 </p>
                                 <div class="row border-right-1">
-                                  {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                  {applicableCharges?.length > 0 && applicableCharges?.map((charge, index) => (
                                     <>
                                       {charge.applicableChargeType === "MONTHLY_CHARGE" &&
                                       <div class="col-6">
@@ -852,7 +879,7 @@ function AddPremises() {
                                   <i>Deposits</i>
                                 </p>
                                 <div class="row border-right-1">
-                                  {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                  {applicableCharges?.length > 0 && applicableCharges?.map((charge, index) => (
                                     <>
                                       {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
                                         <div class="form-check form-check-primary mb-3">
@@ -897,7 +924,7 @@ function AddPremises() {
                                   <th>#</th>
                                   <th>Item type</th>
                                   <th>When to Charge</th>
-                                  {selectedunitTypes.map((charge, indeex) => (<th>{charge.unitTypeName}</th>))}
+                                  {selectedunitTypes?.map((charge, indeex) => (<th>{charge.unitTypeName}</th>))}
                                 </tr>
                                 </thead>
 
@@ -908,7 +935,7 @@ function AddPremises() {
                                 </tr>
                                 </tfoot>
                                 <tbody>
-                                {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indeex) => (
+                                {premiseUnitTypeCharges?.length > 0 && selectedApplicableCharges?.map((charge, indeex) => (
                                   <>{
                                     <tr>
                                       <td>{indeex + 1}</td>
@@ -1027,7 +1054,7 @@ function AddPremises() {
                     onChange={handleUnitTypeChange}
                     name="unitTypeId">
                     <option></option>
-                    {unitTypes.length > 0 && unitTypes.map((prem, index) =>
+                    {unitTypes?.length > 0 && unitTypes?.map((prem, index) =>
                       <option value={prem.id + ':' + prem.name}>{prem.name}</option>
                     )}
                   </select>
@@ -1164,8 +1191,13 @@ function AddPremises() {
 
       {/* <!-- enter landlord's id modal --> */}
 
-      <Modal show={general.landlordFileNumber.length < 1}>
+      <Modal show={fileNoShow}>
         <ModalBody>
+          {error.color !== "" &&
+          <div className={"alert alert-" + error.color} role="alert">
+            {error.message}
+          </div>
+          }
           <div class="row justify-content-center ">
             <div class="col-xl-10 ">
               <h4 class="text-primary ">Landlord's File No.</h4>

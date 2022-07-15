@@ -88,6 +88,7 @@ function ViewLandlord() {
 
 
   useEffect(() => {
+    getlandlords();
     requestsServiceService.getAllAgreementTypes().then((res) => {
       setAgreementTypes(res.data.data);
     })
@@ -609,7 +610,7 @@ function ViewLandlord() {
                                           <td data-field="estate">{doc.docName}</td>
                                           <td data-field="unit-num ">{doc.documentType?.name}</td>
                                           <td className="text-right cell-change ">
-                                            <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
+                                            <a href={`${doc.docName}`} className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
                                                title="Edit" onClick={() => download(doc.docName)}><i className="bx bx-download" /></a>
                                             <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
                                                     title="save ">Download
