@@ -36,7 +36,10 @@ function LandLordAgreementTypes() {
   };
   // console.log(agreementTypes);
   // create agreementType
-
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
   const createAgreementType = ()=>{
     let data = JSON.stringify({
       active: true,
@@ -45,12 +48,34 @@ function LandLordAgreementTypes() {
       name: agreementTypeName,
     })
     requestsServiceService.createAgreementType(data).then((res)=>{
-      if (res) {
-        getAgreementTypes()
+      let message = res.data.message;
+      if (res.data.status===false) {
+        setError({
+          ...error,
+          message: message,
+          color: "danger"
+        })
+      } else {
+        setError({
+          ...error,
+          message: message,
+          color: "success"
+        });
       }
+      getAgreementTypes();
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        });
+      }, 2000)
     }).catch((err) => {
-      console.log(err)
-      getAgreementTypes()
+      setError({
+        ...error,
+        message: err.data.message,
+        color: "success"
+      });
     })
   }
 
@@ -162,6 +187,11 @@ function LandLordAgreementTypes() {
                   </div>
                 </div>
                 <div class="card-body">
+                  {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
@@ -173,7 +203,7 @@ function LandLordAgreementTypes() {
                       </tr>
                       </thead>
                       <tbody>
-                      { agreementTypes.map((aT, num)=>{
+                      { agreementTypes?.map((aT, num)=>{
 
                         return (
                           <tr data-id="1">
@@ -403,7 +433,6 @@ function LandLordAgreementTypes() {
                 onClick={updateAgreementType}
                 type="button"
                 className="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Save
               </button>
