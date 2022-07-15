@@ -362,8 +362,8 @@ const[ relationship,setRelationship]=useState("")
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {tenantData.tenancies &&
-                                      tenantData.tenancies.map(
+                                    {
+                                    tenantData?.map(
                                         (unit, index) => (
                                           <tr data-id="1">
                                             <td>{index + 1}</td>

@@ -83,7 +83,8 @@ function AllTenants() {
 
               </div>
               <div className="card-body">
-                <table className="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
+               <div class="table-responsive">
+               <table className="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
                   <thead className="table-light">
                     <tr>
 
@@ -95,11 +96,11 @@ function AllTenants() {
                       <th scope="col">Contact Phone</th>
                       <th scope="col">Date Created</th>
                       <th scope="col">Status</th>
-                      <th></th>
+                      <th scope='col'>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {premises.map && ((premise, index) => {
+                    {premises?.map  ((premise, index) => {
 
                       return (
                         <tr key={index}>
@@ -151,12 +152,14 @@ function AllTenants() {
                               </div>
                             </div>
                           </td>
+                          
                         </tr>
                       )
                     })}
                     <tr></tr>
                   </tbody>
                 </table>
+               </div>
               </div>
             </div>
           </div>

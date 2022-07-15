@@ -665,8 +665,8 @@ function AddTenant() {
 
 
 
-                                      {tenantRoommates.length > 0 &&
-                                        tenantRoommates.map((dependent, index) => (
+                                      {
+                                        tenantRoommates?.map((dependent, index) => (
                                           <tr>
                                             <td>{index + 1}</td>
                                             <td>{dependent.firstName}</td>
@@ -1082,7 +1082,7 @@ function AddTenant() {
 
                         <select className='form-control' onChange={onPremiseChange} name="premise">
                           <option></option>
-                          {premises.length > 0 && premises.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
+                          {premises?.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
                         </select>
                       </div>
                     </div>
