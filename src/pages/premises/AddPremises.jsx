@@ -12,47 +12,29 @@ function AddPremises() {
   const [applicableCharges, setApplicableCharges] = useState([]);
   const [unitTypes, setUnitTypes] = useState([]);
   const [unitCharges, setUnitCharges] = useState([]);
+  const [landLordAccounts, setLandLordAccounts] = useState([]);
+  const [uniqueChargeId, setUniqueChargeIds] = useState([]);
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
-  const [fileNoShow, setFileNoShow] = useState(true);
 
   const toogleShowUnitTypeChargesModal = () => {
     setShowUnitTypeChargesModal(!showUnitTypeChargesModal);
   }
-  const [error, setError] = useState({
-    message: "",
-    color: ""
-  });
 
   const saveLandLordFileNumber = () => {
+
     if (landlordfileNumber != "") {
-      requestsServiceService.findByFile(landlordfileNumber).then((res) => {
-        if (res.data.status===false) {
-          setError({
-            ...error,
-            message: res.data.message,
-            color: "danger"
-          })
-        } else {
-          let d = []; d.push(landlordfileNumber);
-          setGeneral({ ...general, ["landlordFileNumber"]: d });
-          setError({
-            ...error,
-            message: res.data.message,
-            color: "success"
-          });
-          setTimeout(() => {
-            setFileNoShow(false);
-          }, 1500)
-        }
+      requestsServiceService.getLandLordByFileNumber(landlordfileNumber).then((res) => {
+
+        setLandLordAccounts(res.data.data.accounts);
+
       }).catch((err) => {
-        setError({
-          ...error,
-          message: err.data.message,
-          color: "danger"
-        })
+
       })
+
+
+
     }
   }
 
@@ -72,7 +54,12 @@ function AddPremises() {
   });
 
   const handleGeneral = (event) => {
-    setGeneral({ ...general, [event.target.name]: event.target.value });
+    if (event.target.name === "estateId" ||
+      event.target.name === "premiseTypeId" ||
+      event.target.name === "premiseUseTypeId")
+      setGeneral({ ...general, [event.target.name]: parseInt(event.target.value) });
+    else
+      setGeneral({ ...general, [event.target.name]: event.target.value });
   };
 
 
@@ -118,14 +105,19 @@ function AddPremises() {
   const handleChargechange = (event, index) => {
     if (event.target.name === "charge") {
       let unitAppCharge = [];
+      let chargee = selectedApplicableCharges.find(charge => charge.id === parseInt(event.target.value));
       for (var i = 0; i < selectedunitTypes.length; i++) {
         let chargeBody = {
           "active": true,
-          "applicableChargeId": event.target.value,
-          "chargeConstraint": undefined,
+          "applicableChargeId": chargee.id,
+          "chargeConstraint": "ZERO_BALANCE",
           "constraintChargeId": undefined,
           "id": undefined,
           "invoiceDay": undefined,
+
+          "applicableChargeName": chargee.name,
+          "applicableChargeType": chargee.applicableChargeType,
+
           "unitTypeName": selectedunitTypes[i].unitTypeName,
           "landlordCollectionAccountId": undefined,
           "monthCountForTenancyRenewal": selectedunitTypes[i].monthCountForTenancyRenewal,
@@ -264,6 +256,12 @@ function AddPremises() {
     for (var i = 0; i < unicahgsg.length; i++)
       premiseUnitType.push(unicahgsg[i]);
 
+
+
+    let vals = premiseUnitType.map(cha => cha.applicableChargeId)
+
+    setUniqueChargeIds(vals);
+
     setPremiseUnitTypeCharges(premiseUnitType);
 
     setUnitCharges([]);
@@ -349,7 +347,7 @@ function AddPremises() {
       "premiseUnitTypeCharges": premiseUnitTypeCharges,
       "premiseUnits": premiseUnits
     }
-    console.log(data)
+
     requestsServiceService.createPremise(data).then((res) => {
 
       if (res.data.status == true) {
@@ -357,7 +355,7 @@ function AddPremises() {
           message: res.data.message,
           buttons: [{
             label: "OK",
-            onClick: (e) => window.reload()
+            onClick: (e) => window.location.href = "/premisesregister"
           }
           ]
         })
@@ -428,610 +426,606 @@ function AddPremises() {
                     Fill in the form correctly. Fields with an Asterisk{" "}
                     <strong class="text-danger">*</strong> are mandatory fields.
                   </p>
-                  <div id="kev-step-form">
-                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                  <div className="create-property" id="basic">
 
-                      <button className="navbar-toggler" type="button" data-toggle="collapse"
-                              data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                              aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                      </button>
-
-                      <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav mr-auto">
-                          <li className="nav-item active">
-                            <a className="nav-link active" href="#">1. Premise Details <span
-                              className="sr-only">(current)</span></a>
-                          </li>
-                          <li className="nav-item">
-                            <a className="nav-link" href="#">2. Invoices Breakdown</a>
-                          </li>
-                          <li className="nav-item">
-                            <a className="nav-link" href="#">3. Document attachments</a>
-                          </li>
-                        </ul>
-
-                      </div>
-                    </nav>
-
-                    <div className="step-cont active-step">
-                      {/* <!-- Premises details --> */}
-                      <h3>Premises details</h3>
-                      <section>
-                        <form>
-                          <div class="col-12">
-                            <div class="bg-primary border-2 bg-soft p-3 mb-4">
-                              <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                                General Information about the Premises
-                              </p>
-                            </div>
-                          </div>
-                          <div class="row mb-4">
-                            <div class="col-2">
-                              <div class="mb-4 ">
-                                <label for="basicpill-firstname-input ">
-                                  File No.<strong class="text-danger ">*</strong>
-                                </label>
-                                <input
-                                  type="text "
-                                  value={general.fileNumber}
-                                  onChange={handleGeneral}
-                                  name="fileNumber"
-                                  class="form-control "
-                                  id="basicpill-firstname-input "
-                                  placeholder="Enter file No."
-                                />
-                              </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2">
-                              <div class="mb-4 ">
-                                <label for="basicpill-firstname-input ">
-                                  Plot No. <strong class="text-danger ">*</strong>
-                                </label>
-                                <input
-                                  type="text "
-                                  value={general.plotNumber}
-                                  name='plotNumber'
-                                  onChange={handleGeneral}
-                                  class="form-control "
-                                  id="basicpill-firstname-input "
-                                  placeholder="Plot No."
-                                />
-                              </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 ">
-                              <div class="mb-4 ">
-                                <label for="basicpill-firstname-input ">
-                                  Premises Name{" "}
-                                  <strong class="text-danger ">*</strong>
-                                </label>
-                                <input
-                                  type="text "
-                                  class="form-control "
-                                  value={general.premiseName}
-                                  onChange={handleGeneral}
-                                  name='premiseName'
-                                  id="basicpill-firstname-input "
-                                  placeholder="Enter Your First Name "
-                                />
-                              </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6 ">
-                              <div class="mb-4 ">
-                                <label for="basicpill-lastname-input ">
-                                  Estate <strong class="text-danger ">*</strong>
-                                </label>
-                                <select
-                                  class="form-control "
-                                  title="Select estate "
-                                  name="estateId"
-                                  onChange={handleGeneral}
-                                >
-                                  {estates?.map((estate) => {
-                                    return (
-                                      <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
-                                    )
-                                  })}
-
-                                </select>
-                              </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6 ">
-                              <div class="mb-4 ">
-                                <label for="basicpill-lastname-input ">
-                                  Premises Type{" "}
-                                  <strong class="text-danger ">*</strong>
-                                </label>
-                                <select
-                                  class="form-control "
-                                  title="Select Building type "
-                                  name='premiseType'
-                                  onChange={handleGeneral}
-
-                                >
-                                  {premiseTypes?.map((type) => (
-                                    <option value={type.id}> {type.name}</option>
-                                  ))}
-
-                                </select>
-                              </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6 ">
-                              <div class="mb-4 ">
-                                <label for="basicpill-lastname-input ">
-                                  Property Use type
-                                  <strong class="text-danger ">*</strong>
-                                </label>
-                                <select
-                                  class="form-control "
-                                  title="Select Property use type "
-                                  name='premiseUseType'
-                                  onChange={handleGeneral}
-
-                                >
-                                  {premiseUseTypes?.map((type) => (
-                                    <option value={type.id}> {type.name}</option>
-                                  ))}
-                                </select>
-                              </div>
-                            </div>
-
-                          </div>
-
-                          <div class="col-12">
-                            <div class="bg-primary border-2 bg-soft p-3 mb-4">
-                              <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                                Caretaker details
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* <!-- caretaker details --> */}
-                          <div class="row">
-                            <div class="col-lg-3 col-md-6 ">
-                              <div class="mb-4 ">
-                                <label for=" ">ID/PP Num.</label>
-                                <input
-                                  type="text "
-                                  class="form-control "
-                                  id=""
-                                  value={caretaker.idNumber}
-                                  onChange={handleCaretaker}
-                                  name="idNumber"
-                                  placeholder="Enter ID or PP Num. "
-                                />
-                              </div>
-                            </div>
-                            <div class="col-lg-3 col-md-6 ">
-                              <div class="mb-4 ">
-                                <label for="basicpill-firstname-input ">
-                                  First name{" "}
-                                  <strong class="text-danger ">*</strong>
-                                </label>
-                                <input
-                                  type="text "
-                                  class="form-control "
-                                  value={caretaker.firstName}
-                                  onChange={handleCaretaker}
-                                  name="firstName"
-                                  id="basicpill-firstname-input "
-                                  placeholder="Enter Your First Name "
-                                />
-                              </div>
-                            </div>
-                            <div class="col-lg-3 col-md-6 ">
-                              <div class="mb-4 ">
-                                <label for="basicpill-lastname-input ">
-                                  Last Name{" "}
-                                  <strong class="text-danger ">*</strong>
-                                </label>
-                                <input
-                                  type="text "
-                                  class="form-control "
-                                  value={caretaker.lastName}
-                                  onChange={handleCaretaker}
-                                  name="lastName"
-                                  id="basicpill-lastname-input "
-                                  placeholder="Enter Your Last Name "
-                                />
-                              </div>
-                            </div>
-                            <div class="col-lg-3 col-md-6 ">
-                              <div class="mb-4 ">
-                                <label for=" ">Other Name(s)</label>
-                                <input
-                                  type="text "
-                                  class="form-control "
-                                  id=" "
-                                  onChange={handleCaretaker}
-                                  value={caretaker.otherName}
-                                  name="otherName"
-                                  placeholder="Enter Your Last Name "
-                                />
-                              </div>
-                            </div>
-                            <div class="col-12">
-                              <div class="row ">
-                                <div class="col-lg-4 ">
-                                  <div class="row ">
-                                    <div class="col-12 ">
-                                      <div class="mb-4 ">
-                                        <label for=" " class=" ">
-                                          Caretaker type
-                                          <strong class="text-danger ">*</strong>
-                                        </label>
-                                        <select
-                                          onChange={handleCaretaker}
-                                          class="form-control "
-                                          name="caretakerTypeName"
-                                          title="Select caretaker type"
-                                        >
-                                          <option value="SELF_COMMISSIONED">
-                                            Commissioned by MCA
-                                          </option>
-                                          <option value="LANDLORD_COMMISSIONED">
-                                            Brought by the landlord
-                                          </option>
-                                        </select>
-                                      </div>
-                                    </div>
-                                    <div class="col-12 ">
-                                      <div class="row mb-3">
-                                        <label for=" " class=" ">
-                                          Gender:{" "}
-                                          <strong class="text-danger ">*</strong>
-                                        </label>
-                                        <div class="d-flex ">
-                                          <div class="form-check me-3">
-                                            <input
-                                              class="form-check-input"
-                                              type="radio"
-                                              onChange={handleCaretaker}
-                                              name="gender"
-                                              value="Male"
-                                            />
-                                            <label
-                                              class="form-check-label"
-                                              for="caretaker-male"
-                                            >
-                                              Male
-                                            </label>
-                                          </div>
-
-                                          <div class="form-check me-3">
-                                            <input
-                                              onChange={handleCaretaker}
-                                              class="form-check-input"
-                                              type="radio"
-                                              name="gender"
-                                              value="Female"
-                                            />
-                                            <label
-                                              class="form-check-label"
-                                              for="caretaker-female"
-                                            >
-                                              Female
-                                            </label>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="col-lg-8">
-                                  <div class="row ">
-                                    <div class="col-lg-6 ">
-                                      <div class="mb-4 ">
-                                        <label for="basicpill-phoneno-input ">
-                                          Phone{" "}
-                                          <strong class="text-danger ">*</strong>
-                                        </label>
-                                        <input
-                                          type="text "
-                                          class="form-control "
-                                          value={caretaker.phone}
-                                          name="phone"
-                                          onChange={handleCaretaker}
-
-                                          id="basicpill-phoneno-input "
-                                          placeholder="Enter Your Phone No. "
-                                        />
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-6 ">
-                                      <div class="mb-4 ">
-                                        <label for="basicpill-email-input ">
-                                          Email{" "}
-                                          <strong class="text-danger ">*</strong>
-                                        </label>
-                                        <input
-                                          type="email "
-                                          class="form-control "
-                                          onChange={handleCaretaker}
-                                          name="email"
-                                          value={caretaker.email}
-                                          id="basicpill-email-input "
-                                          placeholder="Enter Your Email ID "
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          {/* <!-- caretaker details end --> */}
-
-                          <div class="col-12">
-                            <div class="bg-primary border-2 bg-soft p-3 mb-4">
-                              <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                                Units/ Hse Types on offer At the premises
-                              </p>
-                            </div>
-                          </div>
-                          <div class="table-responsive table-responsive-md mb-5">
-                            <table class="table table-editable-2 align-middle table-edits ">
-                              <thead class="table-light">
-                              <tr class="text-uppercase table-dark">
-                                <th class="vertical-align-middle">#</th>
-                                <th class="vertical-align-middle">
-                                  House type
-                                </th>
-                                <th class="vertical-align-middle">
-                                  No. of rooms
-                                </th>
-                                <th class="vertical-align-middle">
-                                  Unit size M <sup>2</sup>
-                                </th>
-                                <th class="vertical-align-middle">
-                                  Unit purpose
-                                </th>
-                                <th style={{ width: "295px" }}>
-                                  Tenancy Renewal
-                                  <button
-                                    type="button"
-                                    data-toggle="modal"
-                                    data-target=".tenancy-renewal-help"
-                                    class="btn btn-link btn-rounded waves-effect font-16px "
-                                  >
-                                    <span class="mdi mdi-help-circle text-white"></span>
-                                  </button>
-                                </th>
-                                <th class="text-right"></th>
-                              </tr>
-                              </thead>
-                              <tbody>
-
-                              {selectedunitTypes?.length > 0 && selectedunitTypes?.map((dependent, index) => (
-                                <tr>
-                                  <td>{index + 1}</td>
-                                  <td>{dependent.unitTypeName}</td>
-                                  <td>{dependent.numberOfRooms}</td>
-                                  <td>{dependent.squarage}</td>
-                                  <td>{dependent.purpose}</td>
-                                  <td>{dependent.monthCountForTenancyRenewal}</td>
-                                  <td></td>
-                                </tr>
-                              ))
-
-                              }
-
-                              </tbody>
-                              <tfoot>
-                              <tr>
-                                <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
-                                  <button type="button" data-id="PREMISE" onClick={newUnitType}>Add A Unit Type</button>
-                                </td>
-                              </tr>
-                              </tfoot>
-                            </table>
-                          </div>
-
-                          <div class="col-12">
-                            <div class="bg-primary border-2 bg-soft p-3 mb-4">
-                              <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                                Applicable charges for this premises
-                              </p>
-                            </div>
-                            <p class="d-none">
-                              <strong>
-                                Check the correct charges that may be charged from
-                                tenants at this premises
-                              </strong>
+                    {/* <!-- Premises details --> */}
+                    <h3>Premises details</h3>
+                    <section>
+                      <form>
+                        <div class="col-12">
+                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                              General Information about the Premises
                             </p>
                           </div>
-                          <div class="col-12 mb-5">
-                            <div class="row">
-                              <div class="col-4 col-md-5 col-sm-12 h-100">
-                                <p class="text-decoration-underline">
-                                  <i>Applicable Charges</i>
-                                </p>
-                                <div class="row border-right-1">
-                                  {applicableCharges?.length > 0 && applicableCharges?.map((charge, index) => (
-                                    <>
-                                      {charge.applicableChargeType === "MONTHLY_CHARGE" &&
-                                      <div class="col-6">
-                                        <div class="form-check form-check-primary mb-3">
+                        </div>
+                        <div class="row mb-4">
+                          <div class="col-2">
+                            <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                                File No.<strong class="text-danger ">*</strong>
+                              </label>
+                              <input
+                                type="text "
+                                value={general.fileNumber}
+                                onChange={handleGeneral}
+                                name="fileNumber"
+                                class="form-control "
+                                id="basicpill-firstname-input "
+                                placeholder="Enter file No."
+                              />
+                            </div>
+                          </div>
+                          <div class="col-lg-2 col-md-2">
+                            <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                                Plot No. <strong class="text-danger ">*</strong>
+                              </label>
+                              <input
+                                type="text "
+                                value={general.plotNumber}
+                                name='plotNumber'
+                                onChange={handleGeneral}
+                                class="form-control "
+                                id="basicpill-firstname-input "
+                                placeholder="Plot No."
+                              />
+                            </div>
+                          </div>
+                          <div class="col-lg-4 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                                Premises Name{" "}
+                                <strong class="text-danger ">*</strong>
+                              </label>
+                              <input
+                                type="text "
+                                class="form-control "
+                                value={general.premiseName}
+                                onChange={handleGeneral}
+                                name='premiseName'
+                                id="basicpill-firstname-input "
+                                placeholder="Enter Your First Name "
+                              />
+                            </div>
+                          </div>
+
+                          <div class="col-lg-4 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-lastname-input ">
+                                Estate <strong class="text-danger ">*</strong>
+                              </label>
+                              <select
+                                class="form-control "
+                                title="Select estate "
+                                name="estateId"
+                                onChange={handleGeneral}
+                              >
+                                {estates.map((estate) => {
+                                  return (
+                                    <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
+                                  )
+                                })}
+
+                              </select>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-4 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-lastname-input ">
+                                Premises Type{" "}
+                                <strong class="text-danger ">*</strong>
+                              </label>
+                              <select
+                                class="form-control "
+                                title="Select Building type "
+                                name='premiseTypeId'
+                                onChange={handleGeneral}
+
+                              >
+                                {premiseTypes.map((type) => (
+                                  <option value={type.id}> {type.name}</option>
+                                ))}
+
+                              </select>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-4 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-lastname-input ">
+                                Property Use type
+                                <strong class="text-danger ">*</strong>
+                              </label>
+                              <select
+                                class="form-control "
+                                title="Select Property use type "
+                                name='premiseUseTypeId'
+                                onChange={handleGeneral}
+
+                              >
+                                {premiseUseTypes.map((type) => (
+                                  <option value={type.id}> {type.name}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+
+                        </div>
+
+                        <div class="col-12">
+                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                              Caretaker details
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* <!-- caretaker details --> */}
+                        <div class="row">
+                          <div class="col-lg-3 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for=" ">ID/PP Num.</label>
+                              <input
+                                type="text "
+                                class="form-control "
+                                id=""
+                                value={caretaker.idNumber}
+                                onChange={handleCaretaker}
+                                name="idNumber"
+                                placeholder="Enter ID or PP Num. "
+                              />
+                            </div>
+                          </div>
+                          <div class="col-lg-3 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                                First name{" "}
+                                <strong class="text-danger ">*</strong>
+                              </label>
+                              <input
+                                type="text "
+                                class="form-control "
+                                value={caretaker.firstName}
+                                onChange={handleCaretaker}
+                                name="firstName"
+                                id="basicpill-firstname-input "
+                                placeholder="Enter Your First Name "
+                              />
+                            </div>
+                          </div>
+                          <div class="col-lg-3 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-lastname-input ">
+                                Last Name{" "}
+                                <strong class="text-danger ">*</strong>
+                              </label>
+                              <input
+                                type="text "
+                                class="form-control "
+                                value={caretaker.lastName}
+                                onChange={handleCaretaker}
+                                name="lastName"
+                                id="basicpill-lastname-input "
+                                placeholder="Enter Your Last Name "
+                              />
+                            </div>
+                          </div>
+                          <div class="col-lg-3 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for=" ">Other Name(s)</label>
+                              <input
+                                type="text "
+                                class="form-control "
+                                id=" "
+                                onChange={handleCaretaker}
+                                value={caretaker.otherName}
+                                name="otherName"
+                                placeholder="Enter Your Last Name "
+                              />
+                            </div>
+                          </div>
+                          <div class="col-12">
+                            <div class="row ">
+                              <div class="col-lg-4 ">
+                                <div class="row ">
+                                  <div class="col-12 ">
+                                    <div class="mb-4 ">
+                                      <label for=" " class=" ">
+                                        Caretaker type
+                                        <strong class="text-danger ">*</strong>
+                                      </label>
+                                      <select
+                                        onChange={handleCaretaker}
+                                        class="form-control "
+                                        name="caretakerTypeName"
+                                        title="Select caretaker type"
+                                      >
+                                        <option value="SELF_COMMISSIONED">
+                                          Commissioned by MCA
+                                        </option>
+                                        <option value="LANDLORD_COMMISSIONED">
+                                          Brought by the landlord
+                                        </option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 ">
+                                    <div class="row mb-3">
+                                      <label for=" " class=" ">
+                                        Gender:{" "}
+                                        <strong class="text-danger ">*</strong>
+                                      </label>
+                                      <div class="d-flex ">
+                                        <div class="form-check me-3">
                                           <input
                                             class="form-check-input"
-                                            type="checkbox"
-                                            name="monthlyCharges"
-                                            value={charge.id}
-                                            onChange={selectedApplicableChargeChange}
+                                            type="radio"
+                                            onChange={handleCaretaker}
+                                            name="gender"
+                                            value="Male"
                                           />
                                           <label
                                             class="form-check-label"
-                                            for="monthlyRent"
+                                            for="caretaker-male"
                                           >
-                                            {charge.name}
+                                            Male
+                                          </label>
+                                        </div>
+
+                                        <div class="form-check me-3">
+                                          <input
+                                            onChange={handleCaretaker}
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="gender"
+                                            value="Female"
+                                          />
+                                          <label
+                                            class="form-check-label"
+                                            for="caretaker-female"
+                                          >
+                                            Female
                                           </label>
                                         </div>
                                       </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-lg-8">
+                                <div class="row ">
+                                  <div class="col-lg-6 ">
+                                    <div class="mb-4 ">
+                                      <label for="basicpill-phoneno-input ">
+                                        Phone{" "}
+                                        <strong class="text-danger ">*</strong>
+                                      </label>
+                                      <input
+                                        type="text "
+                                        class="form-control "
+                                        value={caretaker.phone}
+                                        name="phone"
+                                        onChange={handleCaretaker}
+
+                                        id="basicpill-phoneno-input "
+                                        placeholder="Enter Your Phone No. "
+                                      />
+                                    </div>
+                                  </div>
+                                  <div class="col-lg-6 ">
+                                    <div class="mb-4 ">
+                                      <label for="basicpill-email-input ">
+                                        Email{" "}
+                                        <strong class="text-danger ">*</strong>
+                                      </label>
+                                      <input
+                                        type="email "
+                                        class="form-control "
+                                        onChange={handleCaretaker}
+                                        name="email"
+                                        value={caretaker.email}
+                                        id="basicpill-email-input "
+                                        placeholder="Enter Your Email ID "
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {/* <!-- caretaker details end --> */}
+
+                        <div class="col-12">
+                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                              Units/ Hse Types on offer At the premises
+                            </p>
+                          </div>
+                        </div>
+                        <div class="table-responsive table-responsive-md mb-5">
+                          <table class="table table-editable-2 align-middle table-edits ">
+                            <thead class="table-light">
+                            <tr class="text-uppercase table-dark">
+                              <th class="vertical-align-middle">#</th>
+                              <th class="vertical-align-middle">
+                                House type
+                              </th>
+                              <th class="vertical-align-middle">
+                                No. of rooms
+                              </th>
+                              <th class="vertical-align-middle">
+                                Unit size M <sup>2</sup>
+                              </th>
+                              <th class="vertical-align-middle">
+                                Unit purpose
+                              </th>
+                              <th style={{ width: "295px" }}>
+                                Tenancy Renewal
+                                <button
+                                  type="button"
+                                  data-toggle="modal"
+                                  data-target=".tenancy-renewal-help"
+                                  class="btn btn-link btn-rounded waves-effect font-16px "
+                                >
+                                  <span class="mdi mdi-help-circle text-white"></span>
+                                </button>
+                              </th>
+                              <th class="text-right"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {selectedunitTypes.length > 0 && selectedunitTypes.map((dependent, index) => (
+                              <tr>
+                                <td>{index + 1}</td>
+                                <td>{dependent.unitTypeName}</td>
+                                <td>{dependent.numberOfRooms}</td>
+                                <td>{dependent.squarage}</td>
+                                <td>{dependent.purpose}</td>
+                                <td>{dependent.monthCountForTenancyRenewal}</td>
+                                <td></td>
+                              </tr>
+                            ))
+
+                            }
+
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                              <td colSpan="7 ">
+                                <button type="button" data-id="PREMISE" onClick={newUnitType}>Add A Unit Type</button>
+                              </td>
+                            </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+
+                        <div class="col-12">
+                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                              Applicable charges for this premises
+                            </p>
+                          </div>
+                          <p class="d-none">
+                            <strong>
+                              Check the correct charges that may be charged from
+                              tenants at this premises
+                            </strong>
+                          </p>
+                        </div>
+                        <div class="col-12 mb-5">
+                          <div class="row">
+                            <div class="col-4 col-md-5 col-sm-12 h-100">
+                              <p class="text-decoration-underline">
+                                <i>Applicable Charges</i>
+                              </p>
+                              <div class="row border-right-1">
+                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                  <>
+                                    {charge.applicableChargeType === "MONTHLY_CHARGE" &&
+                                    <div class="col-6">
+                                      <div class="form-check form-check-primary mb-3">
+                                        <input
+                                          class="form-check-input"
+                                          type="checkbox"
+                                          name="monthlyCharges"
+                                          value={charge.id}
+                                          onChange={selectedApplicableChargeChange}
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="monthlyRent"
+                                        >
+                                          {charge.name}
+                                        </label>
+                                      </div>
+                                    </div>
+                                    }
+                                  </>
+                                ))
+                                }
+                              </div>
+                            </div>
+                            <div class="col-4 col-md-4 col-sm-12 h-100">
+                              <p class="text-decoration-underline">
+                                <i>Deposits</i>
+                              </p>
+                              <div class="row border-right-1">
+                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                  <>
+                                    {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
+                                      <div class="form-check form-check-primary mb-3">
+                                        <input
+                                          class="form-check-input"
+                                          type="checkbox"
+                                          name="monthlyRent"
+                                          value={charge.id}
+                                          onChange={selectedApplicableChargeChange}
+                                        />
+                                        <label
+                                          class="form-check-label"
+                                          for="monthlyRent"
+                                        >
+                                          {charge.name}
+                                        </label>
+                                      </div>
+                                    </div>}
+                                  </>
+                                ))
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </section>
+
+                    {/* <!-- premises invoice breakdown --> */}
+                    <h3>Invoices breakdown</h3>
+                    <section>
+                      <div class="row justify-content-center">
+                        <div class="col-12">
+                          <div class="table-responsive">
+                            <table
+                              class="table align-middle table-edits rent-invoicing dt-responsive"
+                              id="data-table"
+                            >
+                              <thead>
+                              <tr class="text-uppercase table-light">
+                                <th>#</th>
+                                <th>Item type</th>
+                                <th>When to Charge</th>
+                                <th>Unit Type</th>
+                                <th>Charge Value</th>
+                              </tr>
+                              </thead>
+
+                              <tfoot class="table-light">
+                              <tr >
+
+                                <button type="button" onClick={toogleShowUnitTypeChargesModal}>Add Charges</button>
+                              </tr>
+                              </tfoot>
+                              <tbody>
+                              {/* {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indweex) => (
+                                  <>{uniqueChargeId.map((id, indeex) => (
+                                    <>
+                                      {charge.id == id &&
+                                        <tr>
+                                          <td>{indeex + 1}</td>
+
+                                          <td>
+                                            {charge.name}
+                                          </td>
+
+                                          <td>
+                                            {charge.applicableChargeType}
+                                          </td>
+
+                                          {selectedunitTypes.map((selectedUnitType, indeexw) => (
+                                            <>
+
+                                              {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
+                                                <>
+                                                  {selectedUnitType.unitTypeName === premiseUnitTypeCharge.unitTypeName && premiseUnitTypeCharge.applicableChargeId == id &&
+                                                    <td>
+                                                      {premiseUnitTypeCharge.value}
+                                                    </td>
+                                                  }
+                                                </>
+                                              ))}
+
+                                            </>
+                                          ))}
+
+                                        </tr>
                                       }
                                     </>
                                   ))
                                   }
-                                </div>
-                              </div>
-                              <div class="col-4 col-md-4 col-sm-12 h-100">
-                                <p class="text-decoration-underline">
-                                  <i>Deposits</i>
-                                </p>
-                                <div class="row border-right-1">
-                                  {applicableCharges?.length > 0 && applicableCharges?.map((charge, index) => (
-                                    <>
-                                      {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
-                                        <div class="form-check form-check-primary mb-3">
-                                          <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            name="monthlyRent"
-                                            value={charge.id}
-                                            onChange={selectedApplicableChargeChange}
-                                          />
-                                          <label
-                                            class="form-check-label"
-                                            for="monthlyRent"
-                                          >
-                                            {charge.name}
-                                          </label>
-                                        </div>
-                                      </div>}
-                                    </>
-                                  ))
-                                  }
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </form>
-                      </section>
-                    </div>
-                    <div className="step-cont d-none">
-                      {/* <!-- premises invoice breakdown --> */}
-                      <h3>Invoices breakdown</h3>
-                      <section>
-                        <div class="row justify-content-center">
-                          <div class="col-12">
-                            <div class="table-responsive">
-                              <table
-                                class="table align-middle table-edits rent-invoicing dt-responsive"
-                                id="data-table"
-                              >
-                                <thead>
-                                <tr class="text-uppercase table-light">
-                                  <th>#</th>
-                                  <th>Item type</th>
-                                  <th>When to Charge</th>
-                                  {selectedunitTypes?.map((charge, indeex) => (<th>{charge.unitTypeName}</th>))}
-                                </tr>
-                                </thead>
-
-                                <tfoot class="table-light">
-                                <tr class="text-capitalize deposit-fee boarder-bottom">
-
-                                  <button type="button" onClick={toogleShowUnitTypeChargesModal}>Add Charges</button>
-                                </tr>
-                                </tfoot>
-                                <tbody>
-                                {premiseUnitTypeCharges?.length > 0 && selectedApplicableCharges?.map((charge, indeex) => (
-                                  <>{
-                                    <tr>
-                                      <td>{indeex + 1}</td>
-
-                                      <td>
-                                        {charge.name}
-                                      </td>
-
-                                      <td>
-                                        {charge.applicableChargeType}
-                                      </td>
-
-                                      {selectedunitTypes.map((selectedUnitType, indeex) => (
-                                        <>
-
-                                          {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeex) => (
-                                            <>
-                                              {selectedUnitType.unitTypeName === premiseUnitTypeCharge.unitTypeName &&
-                                              <td>
-                                                {premiseUnitTypeCharge.value}
-                                              </td>
-                                              }
-                                            </>
-                                          ))}
-
-                                        </>
-                                      ))}
-
-                                    </tr>
-                                  }
                                   </>
                                 ))
 
-                                }
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </section>
-                    </div>
-                    <div className="step-cont d-none">
-                      {/* <!-- Document attachments --> */}
-                      <h3>Tenant Document Attachments</h3>
-                      <section>
-                        <form>
-                          <h6>
-                            Upload documents
-                          </h6>
-                          <div class="table-responsive table-responsive-md">
-                            <table className="table table-editable-file align-middle table-edits ">
-                              <thead className="table-light ">
-                              <tr className="text-uppercase table-dark ">
-                                <th className="vertical-align-middle ">#</th>
-                                <th className="vertical-align-middle ">Document Type</th>
-                                <th className="vertical-align-middle ">Document Name</th>
-                                <th className="vertical-align-middle ">Actions</th>
-                                <th className="text-right "></th>
-                              </tr>
-                              </thead>
-                              <tbody>
+                                } */}
 
-                              {premiseDocuments.length > 0 && premiseDocuments.map((dependent, index) => (
+                              {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
                                 <tr>
-                                  <td>{index + 1}</td>
-                                  <td>{dependent.documentOwnerTypeName}</td>
-                                  <td>{dependent.docName}</td>
-                                  <td></td>
+                                  <td>
+                                    {indeewx + 1}
+                                  </td>
+                                  <td>
+                                    {premiseUnitTypeCharge.applicableChargeName}
+                                  </td>
+                                  <td>
+                                    {premiseUnitTypeCharge.applicableChargeType}
+                                  </td>
+                                  <td>
+                                    {premiseUnitTypeCharge.unitTypeName}
+                                  </td>
+                                  <td>
+                                    {premiseUnitTypeCharge.value}
+                                  </td>
                                 </tr>
-                              ))
-
-                              }
+                              ))}
 
                               </tbody>
-                              <tfoot>
-                              <tr>
-                                <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
-                                  <button type="button" data-id="PREMISE" onClick={newDocument}>Add Premise Documents</button>
-                                </td>
-                              </tr>
-                              </tfoot>
                             </table>
-
                           </div>
-                        </form>
-                      </section>
-                    </div>
-                    <div className="button-navigators">
-                      <button disabled className="btn btn-primary waves-effect kev-prev me-2"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>
-                      <button className="btn btn-primary waves-effect kev-nxt me-2">Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
-                      <button type='button' className="btn btn-success kev-submit me-2 d-none" onClick={submit}>Submit <i className="mdi mdi-check-all me-2 font-16px"></i></button>
-                    </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* <!-- Document attachments --> */}
+                    <h3>Document Attachments</h3>
+                    <section>
+                      <form>
+                        <h6>
+                          Upload documents
+                        </h6>
+                        <div class="table-responsive table-responsive-md">
+                          <table className="table table-editable-file align-middle table-edits ">
+                            <thead className="table-light ">
+                            <tr className="text-uppercase table-dark ">
+                              <th className="vertical-align-middle ">#</th>
+                              <th className="vertical-align-middle ">Document Type</th>
+                              <th className="vertical-align-middle ">Document Name</th>
+                              <th className="vertical-align-middle ">Actions</th>
+                              <th className="text-right "></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {premiseDocuments.length > 0 && premiseDocuments.map((dependent, index) => (
+                              <tr>
+                                <td>{index + 1}</td>
+                                <td>{dependent.documentOwnerTypeName}</td>
+                                <td>{dependent.docName}</td>
+                                <td></td>
+                              </tr>
+                            ))
+
+                            }
+
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                              <td colSpan="7">
+                                <button type="button" data-id="PREMISE" onClick={newDocument}>Add Premise Documents</button>
+                              </td>
+                            </tr>
+                            </tfoot>
+                          </table>
+
+                        </div>
+                      </form>
+                    </section>
                   </div>
                 </div>
+
+                <button type='button' className='btn btn-success' onClick={submit}>SUBMIT</button>
               </div>
             </div>
           </div>
@@ -1056,7 +1050,7 @@ function AddPremises() {
                     onChange={handleUnitTypeChange}
                     name="unitTypeId">
                     <option></option>
-                    {unitTypes?.length > 0 && unitTypes?.map((prem, index) =>
+                    {unitTypes.length > 0 && unitTypes.map((prem, index) =>
                       <option value={prem.id + ':' + prem.name}>{prem.name}</option>
                     )}
                   </select>
@@ -1066,16 +1060,16 @@ function AddPremises() {
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">No. Of Rooms</label>
-                  <input type="text" className="form-control"
-                    onChange={handleUnitTypeChange} name="numberOfRooms" />
+                  <input type="number" className="form-control"
+                         onChange={handleUnitTypeChange} name="numberOfRooms" />
                 </div>
               </div>
 
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">UNIT SIZE M<sup>2</sup></label>
-                  <input type="text" className="form-control"
-                    onChange={handleUnitTypeChange} name="squarage" />
+                  <input type="number" className="form-control"
+                         onChange={handleUnitTypeChange} name="squarage" />
                 </div>
               </div>
 
@@ -1083,14 +1077,14 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">Purpose</label>
                   <input type="text" className="form-control"
-                    onChange={handleUnitTypeChange} name="purpose" />
+                         onChange={handleUnitTypeChange} name="purpose" />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">TENANCY RENEWAL</label>
-                  <input type="text" className="form-control"
-                    onChange={handleUnitTypeChange} name="monthCountForTenancyRenewal" />
+                  <input type="number" className="form-control"
+                         onChange={handleUnitTypeChange} name="monthCountForTenancyRenewal" />
                 </div>
               </div>
             </div>
@@ -1126,7 +1120,7 @@ function AddPremises() {
               <div className="mb-4">
                 <label htmlFor="">Doc Name</label>
                 <input type="text" className="form-control" id="" placeholder=""
-                  onChange={(e) => handleDocumentChange(e)} name="docName" />
+                       onChange={(e) => handleDocumentChange(e)} name="docName" />
               </div>
             </div>
 
@@ -1135,7 +1129,7 @@ function AddPremises() {
                 <i className="font-14px mdi mdi-paperclip"></i> Document
               </label>
               <input type="file" className="form-control" name="file"
-                onChange={(e) => handleDocumentChange(e)} />
+                     onChange={(e) => handleDocumentChange(e)} />
 
             </div>
           </form>
@@ -1169,18 +1163,33 @@ function AddPremises() {
             <h3>Charge Values</h3>
 
             {unitCharges.length > 0 && unitCharges.map((unitCharge, index) => (<>
-              <div className="col-md-6">
-                <label htmlFor="">Unit Type</label>
-                <input type="text" className="form-control" id="" placeholder=""
-                  disabled value={unitCharge.unitTypeName} name="docName" />
-              </div>
+                <div className="col-md-6">
+                  <label htmlFor="">Unit Type</label>
+                  <input type="text" className="form-control" id="" placeholder=""
+                         disabled value={unitCharge.unitTypeName} name="docName" />
+                </div>
 
-              <div className="col-md-6">
-                <label> Charge Value </label>
-                <input type="number" className="form-control" name="value"
-                  onChange={(e) => handleChargechange(e, index)} />
-              </div>
-            </>
+                <div className="col-md-6">
+                  <label> Charge Value </label>
+                  <input type="number" className="form-control" name="value"
+                         onChange={(e) => handleChargechange(e, index)} />
+                </div>
+
+                <div className="col-md-6">
+                  <label> Collection Acc </label>
+                  <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
+                    <option></option>
+                    {landLordAccounts.length > 0 && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
+                  </select>
+                </div>
+
+                <div className="col-md-6">
+                  <label> Invoice Day </label>
+                  <input type="number" className="form-control" name="invoiceDay"
+                         onChange={(e) => handleChargechange(e, index)} />
+                </div>
+
+              </>
             ))
             }
           </form>
@@ -1193,13 +1202,8 @@ function AddPremises() {
 
       {/* <!-- enter landlord's id modal --> */}
 
-      <Modal show={fileNoShow}>
+      <Modal show={landLordAccounts.length < 1}>
         <ModalBody>
-          {error.color !== "" &&
-          <div className={"alert alert-" + error.color} role="alert">
-            {error.message}
-          </div>
-          }
           <div class="row justify-content-center ">
             <div class="col-xl-10 ">
               <h4 class="text-primary ">Landlord's File No.</h4>
