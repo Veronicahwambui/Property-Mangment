@@ -59,7 +59,6 @@ function OnePremise() {
     fileNo: '',
     plotNo: '',
     address: '',
-    premiseName: "",
   })
 
   console.log(update);
@@ -86,7 +85,7 @@ function OnePremise() {
         
       ],
       plotNumber: update.plotNo,
-      premiseName: update.premiseName,
+      premiseName: premiseData.premise.premiseName,
       premiseTypeId: update.premType,
       premiseUseTypeId: update.premUseType
     
@@ -103,7 +102,7 @@ function OnePremise() {
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
               <h4 class="mb-sm-0 font-size-18">
-                {premiseData && premiseData.premise.premiseName}
+                {premiseData.premise && premiseData.premise.premiseName}
               </h4>
 
               <div class="page-title-right">
@@ -115,7 +114,7 @@ function OnePremise() {
                     <a href="property-list.html">All Properties</a>
                   </li>
                   <li class="breadcrumb-item active">
-                    {premiseData && premiseData.premise.premiseName}
+                    {premiseData.premise && premiseData.premise.premiseName}
                   </li>
                 </ol>
               </div>
@@ -217,7 +216,7 @@ function OnePremise() {
                      >
                        <div class="d-flex align-items-center flex-grow-1">
                          <h4 class="mb-0 m-0 bg-transparent">
-                         Quick Stats on  {premiseData && premiseData.premise.premiseName}
+                         Quick Stats on  {premiseData.premise && premiseData.premise.premiseName}
                          <span
                       className="badge badge-pill badge-soft-success font-size-11">Active</span>
                          </h4>
@@ -242,25 +241,25 @@ function OnePremise() {
                        <div className="col-3">
                         <label htmlFor="">Type</label>
                         <div>
-                        <span>{premiseData && premiseData.premise.premiseType.name}</span>
+                        <span>{premiseData.premise && premiseData.premise.premiseType.name}</span>
                         </div>
                        </div>
                        <div className="col-3">
                         <label htmlFor="">Use Type</label>
                         <div>
-                        <span>{premiseData && premiseData.premise.premiseUseType.name}</span>
+                        <span>{premiseData.premise && premiseData.premise.premiseUseType.name}</span>
                         </div>
                        </div>
                        <div className="col-3">
                         <label htmlFor="">Estate</label>
                         <div>
-                        <span>{premiseData && premiseData.premise.estate.name}</span>
+                        <span>{premiseData.premise && premiseData.premise.estate.name}</span>
                         </div>
                        </div>
                        <div className="col-3">
                         <label htmlFor="">Zone</label>
                         <div>
-                        <span>{premiseData && premiseData.premise.estate.zone.name}</span>
+                        <span>{premiseData.premise && premiseData.premise.estate.zone.name}</span>
                         </div>
                        </div>
                      
@@ -269,19 +268,19 @@ function OnePremise() {
                        <div className="col-3">
                         <label htmlFor="">File Number</label>
                         <div>
-                        <span>{premiseData && premiseData.premise.fileNumber}</span>
+                        <span>{premiseData.premise && premiseData.premise.fileNumber}</span>
                         </div>
                        </div>
                        <div className="col-3">
                         <label htmlFor="">Plot Number </label>
                         <div>
-                        <span>{premiseData && premiseData.premise.plotNumber}</span>
+                        <span>{premiseData.premise && premiseData.premise.plotNumber}</span>
                         </div>
                        </div>
                        <div className="col-3">
                         <label htmlFor="">Physical Address</label>
                         <div>
-                        <span>{premiseData && premiseData.premise.address}</span>
+                        <span>{premiseData.premise && premiseData.premise.address}</span>
                         </div>
                        </div>
                      
@@ -307,16 +306,16 @@ function OnePremise() {
            <div className="row">
            <div className="form-group">
                 <label htmlFor="">Premise Name</label>
-                <input type="text" className="form-control" onChange={handleChange}  name="premiseName"  />
+                <input type="text" className="form-control" onChange={handleChange}  name="fileNo"  />
               </div>
             <div className="col-6">
             <div className="form-group">
             <label htmlFor="">Premise Type</label>
             <select className="form-control" onChange={handleChange}  name="premName" >
             <option className="text-black font-semibold ">
-               {premiseData && premiseData.premise.premiseType.name}
+               {premiseData.premise && premiseData.premise.premiseType.name}
             </option>
-            {PremiseTypes && PremiseTypes.map((prem)=>(
+            {PremiseTypes.map((prem)=>(
                 <option value={prem.id}  className="text-black font-semibold ">
                  {prem.name}
              </option>
@@ -328,9 +327,9 @@ function OnePremise() {
             <label htmlFor="">Premise  Use Type</label>
             <select className="form-control" onChange={handleChange}  name="premUseType" >
             <option className="text-black font-semibold ">
-            { premiseData && premiseData.premise.premiseUseType.name}          
+            { premiseData.premise && premiseData.premise.premiseUseType.name}          
             </option>
-            {PremiseUseTypes && PremiseUseTypes.map((prem)=>(
+            {PremiseUseTypes.map((prem)=>(
                 <option value={prem.id} className="text-black font-semibold ">
                  {prem.name}
              </option>
@@ -341,10 +340,10 @@ function OnePremise() {
             <label htmlFor="">Estate</label>
             <select className="form-control" onChange={handleChange}  name="estate"  >
             <option className="text-black font-semibold ">
-            { premiseData && premiseData.premise.estate.name}
+            { premiseData.premise && premiseData.premise.estate.name}
                
             </option>
-            {Estates && Estates.map((prem)=>(
+            {Estates.map((prem)=>(
                 <option value={prem.id} className="text-black font-semibold ">
                  {prem.name}
              </option>
@@ -428,7 +427,7 @@ function OnePremise() {
                                                 </tr>
                                 </thead>
                           <tbody>
-                            {premiseData && premiseData.premiseUnits.map((unit , index)=>(
+                            {premiseData.premiseUnits && premiseData.premiseUnits.map((unit , index)=>(
                                   <tr data-id="1">
                                   <td>{index + 1}</td>
                                   <td>{unit.unitName}</td>
@@ -486,7 +485,7 @@ function OnePremise() {
                                                  </tr>
                                  </thead>
                            <tbody>
-                             {premiseData && premiseData.landLords.map(( unit , index)=>(
+                             {premiseData.landLords && premiseData.landLords.map(( unit , index)=>(
                                    <tr data-id="1">
                                    <td>{index + 1}</td>
                                    <td>{unit.firstName}{" "}{ unit.lastName}</td>
@@ -543,7 +542,7 @@ function OnePremise() {
                                                  </tr>
                                  </thead>
                            <tbody>
-                             {premiseData && premiseData.premiseDocuments.map(( unit , index)=>(
+                             {premiseData.premiseDocuments && premiseData.premiseDocuments.map(( unit , index)=>(
                                    <tr data-id="1">
                                    <td>{index + 1}</td>
                                    <td  className="active nav-link cursor-pointer"><a onClick={()=>download}> {unit.docName}</a></td>

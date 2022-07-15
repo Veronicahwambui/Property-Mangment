@@ -124,7 +124,7 @@ class RequestsService {
     }
 
     editZone(data) {
-        return axiosInstance.post(baseUrl + "/setup/zones", data);
+        return axiosInstance.post(baseUrl + "/setup/zones/update", data);
     }
 
     deactivateZone(id) {
@@ -145,7 +145,7 @@ class RequestsService {
     }
 
     editEstate(data) {
-        return axiosInstance.post(baseUrl + "/setup/estates", data);
+        return axiosInstance.post(baseUrl + "/setup/estates/update", data);
     }
 
     deactivateEstate(id) {
