@@ -1,3 +1,4 @@
+import { data } from "jquery";
 import { axiosInstance, baseUrl } from "./API";
 
 class RequestsService {
@@ -392,6 +393,10 @@ class RequestsService {
 
     getAllTenants() {
         return axiosInstance.get(baseUrl + "/tenants");
+    }
+    updateTenant(data){
+        return axiosInstance.post(baseUrl + "/tenants/tenancy/update", data)
+  
     }
 
     toggleTenantStatus() {

@@ -126,7 +126,7 @@ const deactivateUser =(userId)=>{
                         <tr class="text-uppercase table-dark">
                           <th>#</th>
                           <th>UserTypeName</th>
-                          <th>Edit</th>
+                          <th className="text-right">Edit</th>
 
                           <th class="text-right"></th>
                         </tr>
@@ -140,22 +140,7 @@ const deactivateUser =(userId)=>{
                                
                                 <td data-field="estate">{list.name}</td>
 
-                                <td class="text-right cell-change ">
-                            
-
-                    <button
-                                    class="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
-                                    title="save "
-                                  >
-                                    Save
-                                  </button>
-                                  <a
-                                    class="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
-                                    title="Cancel "
-                                  >
-                                    <i class="bx bx-x "></i>
-                                  </a>
-                                </td>
+                  
 
                                 <td class="text-right">
                                   <div class="dropdown">

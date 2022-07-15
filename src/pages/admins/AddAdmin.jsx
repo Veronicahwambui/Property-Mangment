@@ -315,7 +315,7 @@ function AddAdmin() {
                       <div className="col-lg-10">
                         <button type="submit" className="btn btn-primary w-100">
                           <i className="mdi mdi-account-plus-outline me-1"></i>
-                          Register Admin
+                          Register 
                         </button>
                       </div>
                     </div>

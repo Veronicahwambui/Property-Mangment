@@ -5,15 +5,7 @@ import { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import requestsServiceService from '../../services/requestsService.service'
-const Demo = props => (
-  <div className="application">
-      <Helmet>
-      <script src="./assets/js/pages/refreshPage.js"></script>
-      </Helmet>
-      ...
-  </div>
 
-);
 
 
 

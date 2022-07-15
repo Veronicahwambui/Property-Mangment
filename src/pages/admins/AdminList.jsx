@@ -159,7 +159,7 @@ function AdminList() {
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Admin List</h4>
+                <h4 class="mb-sm-0 font-size-18">User List</h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
@@ -169,7 +169,7 @@ function AdminList() {
                     <li class="breadcrumb-item">
                       <a href="#">System user</a>
                     </li>
-                    <li class="breadcrumb-item active">Admin List</li>
+                    <li class="breadcrumb-item active">User List</li>
                   </ol>
                 </div>
               </div>

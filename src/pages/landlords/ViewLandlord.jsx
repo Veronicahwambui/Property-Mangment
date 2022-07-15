@@ -768,6 +768,7 @@ function ViewLandlord() {
           </Modal.Footer>
         </form>
       </Modal>
+      
       {/*edit accounts modal*/}
         <Modal show={show_acc} onHide={accclose} className={"modal fade"}>
           <form onSubmit={handleaccountsubmit}>
