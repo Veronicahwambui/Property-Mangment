@@ -309,11 +309,11 @@ function ApplicableCharges() {
             </div>
                 <div class="col-12">
                
-                    <label for="">Charge Type </label>
+                    <label for="">Accept Manual charges </label>
                     <select
                       class="form-control"
                       data-live-search="true"
-                      title="Select Applicable Charge Type"
+                      title=""
                       onChange={(e) => setManualVal(e.target.value)}
                     >
                       <option value="true">True</option>

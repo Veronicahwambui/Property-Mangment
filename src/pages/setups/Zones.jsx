@@ -186,6 +186,8 @@ const deactivate = (id)=> {
                             <td data-field="unit-num ">{zon.name}</td>
                             <td data-field="unit-num ">{zon.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
+                              <div className="d-flex">
+                              <a class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                             {zon.active ?  <button
                                 class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"
                                 title="deactivate"
@@ -203,6 +205,9 @@ const deactivate = (id)=> {
                               >
                                Activate
                               </button> }
+
+                        
+                              </div>
 
                              
                             </td>
