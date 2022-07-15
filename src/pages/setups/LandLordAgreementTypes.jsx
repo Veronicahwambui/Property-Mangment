@@ -221,11 +221,7 @@ function LandLordAgreementTypes() {
                       </tr>
                       </thead>
                       <tbody>
-<<<<<<< HEAD
                       { agreementTypes?.map((aT, num)=>{
-=======
-                      { agreementTypes && agreementTypes.map((aT, num)=>{
->>>>>>> f1ddd078001cf1cb0b032aa9aacd58c4c5ccd684
 
                         return (
                           <tr data-id="1">
