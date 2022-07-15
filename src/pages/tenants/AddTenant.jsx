@@ -665,7 +665,7 @@ function AddTenant() {
 
 
 
-                                      {tenantRoommates.length > 0 &&
+                                      {tenantRoommates &&
                                         tenantRoommates.map((dependent, index) => (
                                           <tr>
                                             <td>{index + 1}</td>
@@ -730,7 +730,7 @@ function AddTenant() {
 
 
 
-                              {tenantReferees.length > 0 &&
+                              {tenantReferees &&
                                 tenantReferees.map((dependent, index) => (
                                   <tr>
                                     <td>{index + 1}</td>
@@ -782,7 +782,7 @@ function AddTenant() {
                             <tbody>
 
 
-                              {tenantKins.length > 0 &&
+                              {tenantKins &&
                                 tenantKins.map((dependent, index) => (
                                   <tr>
                                     <td>{index + 1}</td>
@@ -829,7 +829,7 @@ function AddTenant() {
                               </tr>
                             </thead>
                             <tbody>
-                              {tenantDependents.length > 0 &&
+                              {tenantDependents &&
                                 tenantDependents.map((dependent, index) => (
                                   <tr>
                                     <td>{index + 1}</td>
@@ -887,7 +887,7 @@ function AddTenant() {
                                 <tbody>
 
 
-                                  {tenancyDTOS.length > 0 &&
+                                  {tenancyDTOS &&
                                     tenancyDTOS.map((dependent, index) => (
                                       <tr>
                                         <td>{index + 1}</td>
@@ -932,7 +932,7 @@ function AddTenant() {
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {tenancyDTOS[0].tenancyDocuments.length > 0 && tenancyDTOS[0].tenancyDocuments.map((dependent, index) => (
+                                        {tenancyDTOS[0].tenancyDocuments && tenancyDTOS[0].tenancyDocuments.map((dependent, index) => (
                                           <tr>
                                             <td>{index + 1}</td>
                                             <td>{dependent.documentOwnerTypeName}</td>
@@ -982,7 +982,7 @@ function AddTenant() {
                           </tr>
                         </thead>
                         <tbody>
-                          {tenantDocuments.length > 0 && tenantDocuments.map((dependent, index) => (
+                          {tenantDocuments && tenantDocuments.map((dependent, index) => (
                             <tr>
                               <td>{index + 1}</td>
                               <td>{dependent.documentOwnerTypeName}</td>
@@ -1082,7 +1082,7 @@ function AddTenant() {
 
                         <select className='form-control' onChange={onPremiseChange} name="premise">
                           <option></option>
-                          {premises.length > 0 && premises.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
+                          {premises && premises.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
                         </select>
                       </div>
                     </div>
@@ -1091,7 +1091,7 @@ function AddTenant() {
                         <label htmlFor="basicpill-lastname-input">Unit <strong className="text-danger">*</strong></label>
                         <select className='form-control' onChange={handleAssignmentChange} name="premiseUnitId">
                           <option></option>
-                          {units.length > 0 && units.map((prem, index) => <option value={prem.id + ':' + prem.unitName}>{prem.unitName}</option>)}
+                          {units && units.map((prem, index) => <option value={prem.id + ':' + prem.unitName}>{prem.unitName}</option>)}
                         </select>
 
                       </div>
@@ -1139,7 +1139,7 @@ function AddTenant() {
 
                         <select className='form-control' onChange={handleDocumentChange} name="documentTypeId">
                           <option></option>
-                          {documentTypes.length > 0 && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+                          {documentTypes && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
                         </select>
                       </div>
                     </div>

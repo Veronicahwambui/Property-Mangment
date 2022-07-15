@@ -501,7 +501,7 @@ function AddPremises() {
                                 name="estateId"
                                 onChange={handleGeneral}
                               >
-                                {estates.map((estate) => {
+                                { estates && estates.map((estate) => {
                                   return (
                                     <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
                                   )
@@ -524,7 +524,7 @@ function AddPremises() {
                                 onChange={handleGeneral}
 
                               >
-                                {premiseTypes.map((type) => (
+                                { premiseTypes && premiseTypes.map((type) => (
                                   <option value={type.id}> {type.name}</option>
                                 ))}
 
@@ -545,7 +545,7 @@ function AddPremises() {
                                 onChange={handleGeneral}
 
                               >
-                                {premiseUseTypes.map((type) => (
+                                { premiseUseTypes && premiseUseTypes.map((type) => (
                                   <option value={type.id}> {type.name}</option>
                                 ))}
                               </select>
@@ -778,7 +778,7 @@ function AddPremises() {
                             </thead>
                             <tbody>
 
-                              {selectedunitTypes.length > 0 && selectedunitTypes.map((dependent, index) => (
+                              {selectedunitTypes && selectedunitTypes.map((dependent, index) => (
                                 <tr>
                                   <td>{index + 1}</td>
                                   <td>{dependent.unitTypeName}</td>
@@ -823,7 +823,7 @@ function AddPremises() {
                                 <i>Applicable Charges</i>
                               </p>
                               <div class="row border-right-1">
-                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                {applicableCharges && applicableCharges.map((charge, index) => (
                                   <>
                                     {charge.applicableChargeType === "MONTHLY_CHARGE" &&
                                       <div class="col-6">
@@ -854,7 +854,7 @@ function AddPremises() {
                                 <i>Deposits</i>
                               </p>
                               <div class="row border-right-1">
-                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                {applicableCharges && applicableCharges.map((charge, index) => (
                                   <>
                                     {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
                                       <div class="form-check form-check-primary mb-3">
@@ -951,7 +951,7 @@ function AddPremises() {
 
                                 } */}
 
-                                {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
+                                {premiseUnitTypeCharges && premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
                                   <tr>
                                     <td>
                                       {indeewx + 1}
@@ -998,7 +998,7 @@ function AddPremises() {
                             </thead>
                             <tbody>
 
-                              {premiseDocuments.length > 0 && premiseDocuments.map((dependent, index) => (
+                              {premiseDocuments && premiseDocuments.map((dependent, index) => (
                                 <tr>
                                   <td>{index + 1}</td>
                                   <td>{dependent.documentOwnerTypeName}</td>
@@ -1050,7 +1050,7 @@ function AddPremises() {
                     onChange={handleUnitTypeChange}
                     name="unitTypeId">
                     <option></option>
-                    {unitTypes.length > 0 && unitTypes.map((prem, index) =>
+                    {unitTypes && unitTypes.map((prem, index) =>
                       <option value={prem.id + ':' + prem.name}>{prem.name}</option>
                     )}
                   </select>
@@ -1111,7 +1111,7 @@ function AddPremises() {
 
                 <select className='form-control' onChange={handleDocumentChange} name="documentTypeId">
                   <option></option>
-                  {documentTypes.length > 0 && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+                  {documentTypes && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
                 </select>
               </div>
             </div>
@@ -1155,14 +1155,14 @@ function AddPremises() {
 
                 <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="charge">
                   <option></option>
-                  {selectedApplicableCharges.length > 0 && selectedApplicableCharges.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+                  {selectedApplicableCharges && selectedApplicableCharges.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
                 </select>
               </div>
             </div>
             <hr></hr>
             <h3>Charge Values</h3>
 
-            {unitCharges.length > 0 && unitCharges.map((unitCharge, index) => (<>
+            {unitCharges && unitCharges.map((unitCharge, index) => (<>
               <div className="col-md-6">
                 <label htmlFor="">Unit Type</label>
                 <input type="text" className="form-control" id="" placeholder=""
@@ -1179,7 +1179,7 @@ function AddPremises() {
                 <label> Collection Acc </label>
                 <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
                   <option></option>
-                  {landLordAccounts.length > 0 && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
+                  {landLordAccounts && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
                 </select>
               </div>
 

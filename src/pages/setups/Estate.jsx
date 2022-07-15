@@ -7,7 +7,18 @@ function Estate() {
   const [estateName , setEstateName ]= useState('')
   const [activeId , setActiveId] = useState('')
   const [selectedZone, setSelectedZone] = useState("");
-  
+
+  const [editName , setEditName] = useState('')
+  const [newZone , setNewZone] =useState('')
+  const [estateId , setEstateId] = useState('')
+
+
+ const  handleEdit= (name , id, zonId)=>{
+    setEditName(name)
+    setNewZone(id)
+    setEstateId(zonId)
+ }
+
 
 
   useEffect(()=>{
@@ -59,9 +70,9 @@ const deactivate = (id)=> {
   const updateEstate = ()=>{
  let data = JSON.stringify({
   "active": true,
-  "id": 0,
-  "name": "string",
-  "zoneId": 0
+  "id": estateId,
+  "name": editName,
+  "zoneId": newZone
 })
 
 requestsServiceService.editEstate(data).then((res)=>{
@@ -139,8 +150,11 @@ requestsServiceService.editEstate(data).then((res)=>{
                             <td data-field="unit-num ">{estate.name}</td>
                             <td data-field="unit-num ">{estate.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
-                              <div className="d-flex">
-                            <a class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
+                            <div className="d-flex">
+                              <a onClick={()=>{
+                                handleEdit( estate.name , estate.zone.id ,estate.id)
+                              }} class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "  data-bs-toggle="modal"
+                      data-bs-target="#edit-zone" title="Edit "><i class="bx bx-edit-alt "></i></a>
                             {estate.active ?  <button
                                 class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"
                                 title="deactivate"
@@ -157,7 +171,9 @@ requestsServiceService.editEstate(data).then((res)=>{
                                 onClick={()=> setActiveId(estate.id)}
                               >
                                Activate
-                              </button> } 
+                              </button> }
+
+                        
                               </div>
                             </td>
                               </tr>
@@ -256,7 +272,7 @@ requestsServiceService.editEstate(data).then((res)=>{
                     class="form-control"
                     data-live-search="true"
                     title="Select county where the zone is"
-                    onChange={(e) => setSelectedZone(e.target.value)}
+                    onChange={(e) => setNewZone(e.target.value)}
                   >
                     { zones &&  zones.map((zon , index) =>{ 
                        let zone = zon
@@ -290,6 +306,79 @@ requestsServiceService.editEstate(data).then((res)=>{
       </div>
     </div>
     
+
+     {/* edit zone  */}
+ 
+     <div
+      class="modal fade"
+      id="edit-zone"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      role="dialog"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">
+              Edit Estate
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+            <div class="col-12">
+                      <div class="form-group mb-4">
+                                        <label for="">Estate Name</label>
+                                        <input value={editName} onChange={ (e)=> setEditName(e.target.value)} type="text" class="form-control" placeholder="Enter estate name" />
+                                    </div>
+                                </div>
+              <div class="col-12">
+                  <label for=""> Zone </label>
+                  <select
+                    class="form-control"
+                    data-live-search="true"
+                    title="Select county where the zone is"
+                    onChange={(e) => setSelectedZone(e.target.value)}
+                  >
+                    { zones &&  zones.map((zon , index) =>{ 
+                       let zone = zon
+
+                      return (
+                     <option key={index} value={zone.id} selected={ zone.id === newZone ? "selected" : ''}>{zone.name}</option>
+                    )})}
+                  </select>
+                
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-light"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              onClick={updateEstate}
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     {/* confirm deactivate  */}
     <div
       class="modal fade"
