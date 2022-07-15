@@ -11,6 +11,10 @@ function Estate() {
   const [editName , setEditName] = useState('')
   const [newZone , setNewZone] =useState('')
   const [estateId , setEstateId] = useState('')
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
 
  const  handleEdit= (name , id, zonId)=>{
@@ -46,9 +50,42 @@ function Estate() {
     })
     requestsServiceService.createEstate(data).then((res)=>{
       getEstates()
-    })
-  }
-
+      if(res.data.status){
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        }) } else {
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+  
+        setTimeout(() => {
+          clear()
+        }, 3000)
+        
+      }).catch((res)=>{
+  
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+  
+      })
+    }
+  
+    const clear = ()=> {
+      setError({
+        ...error,
+        message: "",
+        color: ""
+      });
+    }
   // get all estates
 
   const getEstates =()=>{
@@ -76,9 +113,36 @@ const deactivate = (id)=> {
 })
 
 requestsServiceService.editEstate(data).then((res)=>{
+   getEstates()
+   if(res.data.status){
+    setError({
+      ...error,
+      message: res.data.message,
+      color: "success"
+    }) } else {
 
-})
-  }
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "warning"
+      }) 
+    }
+
+    setTimeout(() => {
+      clear()
+    }, 3000)
+    
+  }).catch((res)=>{
+
+    setError({
+      ...error,
+      message: res.data.message,
+      color: "danger"
+    })
+
+  })
+}
+
   return (
     <>
     <div class="page-content">
@@ -131,6 +195,11 @@ requestsServiceService.editEstate(data).then((res)=>{
                 </div>
               </div>
               <div class="card-body">
+              {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                 <div class="table-responsive table-responsive-md">
                   <table class="table table-editable align-middle table-edits">
                     <thead class="table-light">
@@ -147,13 +216,13 @@ requestsServiceService.editEstate(data).then((res)=>{
                           return(
                             <tr data-id="1" key={estate}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
-                            <td data-field="unit-num ">{estate.name}</td>
-                            <td data-field="unit-num ">{estate.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
-                            <td class="text-right cell-change text-nowrap ">
+                            <td >{estate.name}</td>
+                            <td >{estate.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
+                            <td class="text-right cell-change text-nowrap">
                             <div className="d-flex">
                               <a onClick={()=>{
                                 handleEdit( estate.name , estate.zone.id ,estate.id)
-                              }} class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "  data-bs-toggle="modal"
+                              }} class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"  data-bs-toggle="modal"
                       data-bs-target="#edit-zone" title="Edit "><i class="bx bx-edit-alt "></i></a>
                             {estate.active ?  <button
                                 class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"
