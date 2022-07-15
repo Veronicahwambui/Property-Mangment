@@ -424,8 +424,12 @@ function ViewLandlord() {
                     <i className="mdi mdi-account-circle text-primary h1"></i>
                   </div>
                   <div>
-                    <h5 className="text-capitalize">{landlord.firstName + " " + landlord.lastName} <span
-                      className="badge badge-pill badge-soft-success font-size-11">Active</span></h5>
+                    <h5 className="text-capitalize">{landlord.firstName + " " + landlord.lastName}
+                      {landlord.active ?
+                        <span className="badge-soft-success badge">Active</span> :
+                        <span className="badge-soft-danger badge">Inactive</span>
+                      }
+                    </h5>
                   </div>
                 </div>
               </div>
