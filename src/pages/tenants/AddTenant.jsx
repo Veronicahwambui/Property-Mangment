@@ -906,7 +906,7 @@ function AddTenant() {
                                 </tbody>
                                 <tfoot>
                                   <tr>
-                                    <td colSpan="9" className="bg-light add-field-date cursor-pinter ">
+                                    <td colSpan="9">
                                       {tenancyDTOS.length < 1 &&
                                         <button type="button" onClick={toogleShowAssignUnits}>Add A Unit</button>
 
