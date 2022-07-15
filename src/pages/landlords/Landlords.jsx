@@ -9,7 +9,7 @@ function Landlords() {
     requestsServiceService.getLandLords().then((res) => {
       setLandlords(res.data.data)
     });
-  },[])
+  }, [landlords])
 
   const getOneLandlord = () => {
   }
@@ -44,10 +44,12 @@ function Landlords() {
                     <div class="d-flex align-items-center flex-grow-1">
                     </div>
                     <div class="d-flex">
-
-                      <button type="button" class="btn btn-primary waves-effect btn-label waves-light me-3" data-bs-toggle="modal" data-bs-target="#add-new-client">
-                        <i class="mdi mdi-plus label-icon"></i> Add a Landlord
-                      </button>
+                      <Link to="/addlandlord" >
+                        <button type="button" className="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal" data-bs-target="#add-new-client">
+                          <i className="mdi mdi-plus label-icon"></i> Add a Landlord
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -71,7 +73,7 @@ function Landlords() {
                       </tr>
                       </thead>
                       <tbody>
-                      {landlords.map((l, index) => (
+                      {landlords?.map((l, index) => (
                         <tr data-id={index} key={index}>
                           <td style={{ width: "80px" }}>{index + 1}</td>
                           <td data-field="estate">{l.firstName + " " + l.lastName}</td>
@@ -81,8 +83,8 @@ function Landlords() {
                           <td data-field="unit-num ">{l.agreementPeriod + " months"}</td>
                           <td className="text-right cell-change ">
 
-                            <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
-                               title="Edit" onClick={() => getOneLandlord(l.id)}><i className="bx bx-edit-alt " /></a>
+                            {/*<a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"*/}
+                            {/*   title="Edit" onClick={() => getOneLandlord(l.id)}><i className="bx bx-edit-alt " /></a>*/}
                             <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
                                     title="save ">Save
                             </button>
