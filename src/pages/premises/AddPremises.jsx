@@ -399,328 +399,353 @@ function AddPremises() {
                     Fill in the form correctly. Fields with an Asterisk{" "}
                     <strong class="text-danger">*</strong> are mandatory fields.
                   </p>
-                  <div className="create-property" id="basic-example">
+                  <div id="kev-step-form">
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
 
-                    {/* <!-- Premises details --> */}
-                    <h3>Premises details</h3>
-                    <section>
-                      <form>
-                        <div class="col-12">
-                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
-                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                              General Information about the Premises
-                            </p>
-                          </div>
-                        </div>
-                        <div class="row mb-4">
-                          <div class="col-2">
-                            <div class="mb-4 ">
-                              <label for="basicpill-firstname-input ">
-                                File No.<strong class="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                value={general.fileNumber}
-                                onChange={handleGeneral}
-                                name="fileNumber"
-                                class="form-control "
-                                id="basicpill-firstname-input "
-                                placeholder="Enter file No."
-                              />
-                            </div>
-                          </div>
-                          <div class="col-lg-2 col-md-2">
-                            <div class="mb-4 ">
-                              <label for="basicpill-firstname-input ">
-                                Plot No. <strong class="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                value={general.plotNumber}
-                                name='plotNumber'
-                                onChange={handleGeneral}
-                                class="form-control "
-                                id="basicpill-firstname-input "
-                                placeholder="Plot No."
-                              />
-                            </div>
-                          </div>
-                          <div class="col-lg-4 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for="basicpill-firstname-input ">
-                                Premises Name{" "}
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                class="form-control "
-                                value={general.premiseName}
-                                onChange={handleGeneral}
-                                name='premiseName'
-                                id="basicpill-firstname-input "
-                                placeholder="Enter Your First Name "
-                              />
-                            </div>
-                          </div>
+                      <button className="navbar-toggler" type="button" data-toggle="collapse"
+                              data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                              aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                      </button>
 
-                          <div class="col-lg-4 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for="basicpill-lastname-input ">
-                                Estate <strong class="text-danger ">*</strong>
-                              </label>
-                              <select
-                                class="form-control "
-                                title="Select estate "
-                                name="estateId"
-                                onChange={handleGeneral}
-                              >
-                                {estates.map((estate) => {
-                                  return (
-                                    <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
-                                  )
-                                })}
+                      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav mr-auto">
+                          <li className="nav-item active">
+                            <a className="nav-link active" href="#">1. Premise Details <span
+                              className="sr-only">(current)</span></a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">2. Invoices Breakdown</a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">3. Document attachments</a>
+                          </li>
+                        </ul>
 
-                              </select>
-                            </div>
-                          </div>
+                      </div>
+                    </nav>
 
-                          <div class="col-lg-4 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for="basicpill-lastname-input ">
-                                Premises Type{" "}
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <select
-                                class="form-control "
-                                title="Select Building type "
-                                name='premiseType'
-                                onChange={handleGeneral}
-
-                              >
-                                {premiseTypes.map((type) => (
-                                  <option value={type.id}> {type.name}</option>
-                                ))}
-
-                              </select>
-                            </div>
-                          </div>
-
-                          <div class="col-lg-4 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for="basicpill-lastname-input ">
-                                Property Use type
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <select
-                                class="form-control "
-                                title="Select Property use type "
-                                name='premiseUseType'
-                                onChange={handleGeneral}
-
-                              >
-                                {premiseUseTypes.map((type) => (
-                                  <option value={type.id}> {type.name}</option>
-                                ))}
-                              </select>
-                            </div>
-                          </div>
-
-                        </div>
-
-                        <div class="col-12">
-                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
-                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                              Caretaker details
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* <!-- caretaker details --> */}
-                        <div class="row">
-                          <div class="col-lg-3 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for=" ">ID/PP Num.</label>
-                              <input
-                                type="text "
-                                class="form-control "
-                                id=""
-                                value={caretaker.idNumber}
-                                onChange={handleCaretaker}
-                                name="idNumber"
-                                placeholder="Enter ID or PP Num. "
-                              />
-                            </div>
-                          </div>
-                          <div class="col-lg-3 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for="basicpill-firstname-input ">
-                                First name{" "}
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                class="form-control "
-                                value={caretaker.firstName}
-                                onChange={handleCaretaker}
-                                name="firstName"
-                                id="basicpill-firstname-input "
-                                placeholder="Enter Your First Name "
-                              />
-                            </div>
-                          </div>
-                          <div class="col-lg-3 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for="basicpill-lastname-input ">
-                                Last Name{" "}
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                class="form-control "
-                                value={caretaker.lastName}
-                                onChange={handleCaretaker}
-                                name="lastName"
-                                id="basicpill-lastname-input "
-                                placeholder="Enter Your Last Name "
-                              />
-                            </div>
-                          </div>
-                          <div class="col-lg-3 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for=" ">Other Name(s)</label>
-                              <input
-                                type="text "
-                                class="form-control "
-                                id=" "
-                                onChange={handleCaretaker}
-                                value={caretaker.otherName}
-                                name="otherName"
-                                placeholder="Enter Your Last Name "
-                              />
-                            </div>
-                          </div>
+                    <div className="step-cont active-step">
+                      {/* <!-- Premises details --> */}
+                      <h3>Premises details</h3>
+                      <section>
+                        <form>
                           <div class="col-12">
-                            <div class="row ">
-                              <div class="col-lg-4 ">
-                                <div class="row ">
-                                  <div class="col-12 ">
-                                    <div class="mb-4 ">
-                                      <label for=" " class=" ">
-                                        Caretaker type
-                                        <strong class="text-danger ">*</strong>
-                                      </label>
-                                      <select
-                                        onChange={handleCaretaker}
-                                        class="form-control "
-                                        name="caretakerTypeName"
-                                        title="Select caretaker type"
-                                      >
-                                        <option value="SELF_COMMISSIONED">
-                                          Commissioned by MCA
-                                        </option>
-                                        <option value="LANDLORD_COMMISSIONED">
-                                          Brought by the landlord
-                                        </option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                  <div class="col-12 ">
-                                    <div class="row mb-3">
-                                      <label for=" " class=" ">
-                                        Gender:{" "}
-                                        <strong class="text-danger ">*</strong>
-                                      </label>
-                                      <div class="d-flex ">
-                                        <div class="form-check me-3">
-                                          <input
-                                            class="form-check-input"
-                                            type="radio"
-                                            onChange={handleCaretaker}
-                                            name="gender"
-                                            value="Male"
-                                          />
-                                          <label
-                                            class="form-check-label"
-                                            for="caretaker-male"
-                                          >
-                                            Male
-                                          </label>
-                                        </div>
+                            <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                              <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                                General Information about the Premises
+                              </p>
+                            </div>
+                          </div>
+                          <div class="row mb-4">
+                            <div class="col-2">
+                              <div class="mb-4 ">
+                                <label for="basicpill-firstname-input ">
+                                  File No.<strong class="text-danger ">*</strong>
+                                </label>
+                                <input
+                                  type="text "
+                                  value={general.fileNumber}
+                                  onChange={handleGeneral}
+                                  name="fileNumber"
+                                  class="form-control "
+                                  id="basicpill-firstname-input "
+                                  placeholder="Enter file No."
+                                />
+                              </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2">
+                              <div class="mb-4 ">
+                                <label for="basicpill-firstname-input ">
+                                  Plot No. <strong class="text-danger ">*</strong>
+                                </label>
+                                <input
+                                  type="text "
+                                  value={general.plotNumber}
+                                  name='plotNumber'
+                                  onChange={handleGeneral}
+                                  class="form-control "
+                                  id="basicpill-firstname-input "
+                                  placeholder="Plot No."
+                                />
+                              </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for="basicpill-firstname-input ">
+                                  Premises Name{" "}
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+                                <input
+                                  type="text "
+                                  class="form-control "
+                                  value={general.premiseName}
+                                  onChange={handleGeneral}
+                                  name='premiseName'
+                                  id="basicpill-firstname-input "
+                                  placeholder="Enter Your First Name "
+                                />
+                              </div>
+                            </div>
 
-                                        <div class="form-check me-3">
-                                          <input
-                                            onChange={handleCaretaker}
-                                            class="form-check-input"
-                                            type="radio"
-                                            name="gender"
-                                            value="Female"
-                                          />
-                                          <label
-                                            class="form-check-label"
-                                            for="caretaker-female"
-                                          >
-                                            Female
-                                          </label>
+                            <div class="col-lg-4 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for="basicpill-lastname-input ">
+                                  Estate <strong class="text-danger ">*</strong>
+                                </label>
+                                <select
+                                  class="form-control "
+                                  title="Select estate "
+                                  name="estateId"
+                                  onChange={handleGeneral}
+                                >
+                                  {estates.map((estate) => {
+                                    return (
+                                      <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
+                                    )
+                                  })}
+
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for="basicpill-lastname-input ">
+                                  Premises Type{" "}
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+                                <select
+                                  class="form-control "
+                                  title="Select Building type "
+                                  name='premiseType'
+                                  onChange={handleGeneral}
+
+                                >
+                                  {premiseTypes.map((type) => (
+                                    <option value={type.id}> {type.name}</option>
+                                  ))}
+
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for="basicpill-lastname-input ">
+                                  Property Use type
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+                                <select
+                                  class="form-control "
+                                  title="Select Property use type "
+                                  name='premiseUseType'
+                                  onChange={handleGeneral}
+
+                                >
+                                  {premiseUseTypes.map((type) => (
+                                    <option value={type.id}> {type.name}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="col-12">
+                            <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                              <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                                Caretaker details
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* <!-- caretaker details --> */}
+                          <div class="row">
+                            <div class="col-lg-3 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for=" ">ID/PP Num.</label>
+                                <input
+                                  type="text "
+                                  class="form-control "
+                                  id=""
+                                  value={caretaker.idNumber}
+                                  onChange={handleCaretaker}
+                                  name="idNumber"
+                                  placeholder="Enter ID or PP Num. "
+                                />
+                              </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for="basicpill-firstname-input ">
+                                  First name{" "}
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+                                <input
+                                  type="text "
+                                  class="form-control "
+                                  value={caretaker.firstName}
+                                  onChange={handleCaretaker}
+                                  name="firstName"
+                                  id="basicpill-firstname-input "
+                                  placeholder="Enter Your First Name "
+                                />
+                              </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for="basicpill-lastname-input ">
+                                  Last Name{" "}
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+                                <input
+                                  type="text "
+                                  class="form-control "
+                                  value={caretaker.lastName}
+                                  onChange={handleCaretaker}
+                                  name="lastName"
+                                  id="basicpill-lastname-input "
+                                  placeholder="Enter Your Last Name "
+                                />
+                              </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for=" ">Other Name(s)</label>
+                                <input
+                                  type="text "
+                                  class="form-control "
+                                  id=" "
+                                  onChange={handleCaretaker}
+                                  value={caretaker.otherName}
+                                  name="otherName"
+                                  placeholder="Enter Your Last Name "
+                                />
+                              </div>
+                            </div>
+                            <div class="col-12">
+                              <div class="row ">
+                                <div class="col-lg-4 ">
+                                  <div class="row ">
+                                    <div class="col-12 ">
+                                      <div class="mb-4 ">
+                                        <label for=" " class=" ">
+                                          Caretaker type
+                                          <strong class="text-danger ">*</strong>
+                                        </label>
+                                        <select
+                                          onChange={handleCaretaker}
+                                          class="form-control "
+                                          name="caretakerTypeName"
+                                          title="Select caretaker type"
+                                        >
+                                          <option value="SELF_COMMISSIONED">
+                                            Commissioned by MCA
+                                          </option>
+                                          <option value="LANDLORD_COMMISSIONED">
+                                            Brought by the landlord
+                                          </option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 ">
+                                      <div class="row mb-3">
+                                        <label for=" " class=" ">
+                                          Gender:{" "}
+                                          <strong class="text-danger ">*</strong>
+                                        </label>
+                                        <div class="d-flex ">
+                                          <div class="form-check me-3">
+                                            <input
+                                              class="form-check-input"
+                                              type="radio"
+                                              onChange={handleCaretaker}
+                                              name="gender"
+                                              value="Male"
+                                            />
+                                            <label
+                                              class="form-check-label"
+                                              for="caretaker-male"
+                                            >
+                                              Male
+                                            </label>
+                                          </div>
+
+                                          <div class="form-check me-3">
+                                            <input
+                                              onChange={handleCaretaker}
+                                              class="form-check-input"
+                                              type="radio"
+                                              name="gender"
+                                              value="Female"
+                                            />
+                                            <label
+                                              class="form-check-label"
+                                              for="caretaker-female"
+                                            >
+                                              Female
+                                            </label>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                              <div class="col-lg-8">
-                                <div class="row ">
-                                  <div class="col-lg-6 ">
-                                    <div class="mb-4 ">
-                                      <label for="basicpill-phoneno-input ">
-                                        Phone{" "}
-                                        <strong class="text-danger ">*</strong>
-                                      </label>
-                                      <input
-                                        type="text "
-                                        class="form-control "
-                                        value={caretaker.phone}
-                                        name="phone"
-                                        onChange={handleCaretaker}
+                                <div class="col-lg-8">
+                                  <div class="row ">
+                                    <div class="col-lg-6 ">
+                                      <div class="mb-4 ">
+                                        <label for="basicpill-phoneno-input ">
+                                          Phone{" "}
+                                          <strong class="text-danger ">*</strong>
+                                        </label>
+                                        <input
+                                          type="text "
+                                          class="form-control "
+                                          value={caretaker.phone}
+                                          name="phone"
+                                          onChange={handleCaretaker}
 
-                                        id="basicpill-phoneno-input "
-                                        placeholder="Enter Your Phone No. "
-                                      />
+                                          id="basicpill-phoneno-input "
+                                          placeholder="Enter Your Phone No. "
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div class="col-lg-6 ">
-                                    <div class="mb-4 ">
-                                      <label for="basicpill-email-input ">
-                                        Email{" "}
-                                        <strong class="text-danger ">*</strong>
-                                      </label>
-                                      <input
-                                        type="email "
-                                        class="form-control "
-                                        onChange={handleCaretaker}
-                                        name="email"
-                                        value={caretaker.email}
-                                        id="basicpill-email-input "
-                                        placeholder="Enter Your Email ID "
-                                      />
+                                    <div class="col-lg-6 ">
+                                      <div class="mb-4 ">
+                                        <label for="basicpill-email-input ">
+                                          Email{" "}
+                                          <strong class="text-danger ">*</strong>
+                                        </label>
+                                        <input
+                                          type="email "
+                                          class="form-control "
+                                          onChange={handleCaretaker}
+                                          name="email"
+                                          value={caretaker.email}
+                                          id="basicpill-email-input "
+                                          placeholder="Enter Your Email ID "
+                                        />
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                        {/* <!-- caretaker details end --> */}
+                          {/* <!-- caretaker details end --> */}
 
-                        <div class="col-12">
-                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
-                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                              Units/ Hse Types on offer At the premises
-                            </p>
+                          <div class="col-12">
+                            <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                              <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                                Units/ Hse Types on offer At the premises
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <div class="table-responsive table-responsive-md mb-5">
-                          <table class="table table-editable-2 align-middle table-edits ">
-                            <thead class="table-light">
+                          <div class="table-responsive table-responsive-md mb-5">
+                            <table class="table table-editable-2 align-middle table-edits ">
+                              <thead class="table-light">
                               <tr class="text-uppercase table-dark">
                                 <th class="vertical-align-middle">#</th>
                                 <th class="vertical-align-middle">
@@ -748,8 +773,8 @@ function AddPremises() {
                                 </th>
                                 <th class="text-right"></th>
                               </tr>
-                            </thead>
-                            <tbody>
+                              </thead>
+                              <tbody>
 
                               {selectedunitTypes.length > 0 && selectedunitTypes.map((dependent, index) => (
                                 <tr>
@@ -765,40 +790,40 @@ function AddPremises() {
 
                               }
 
-                            </tbody>
-                            <tfoot>
+                              </tbody>
+                              <tfoot>
                               <tr>
                                 <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
                                   <button type="button" data-id="PREMISE" onClick={newUnitType}>Add A Unit Type</button>
                                 </td>
                               </tr>
-                            </tfoot>
-                          </table>
-                        </div>
+                              </tfoot>
+                            </table>
+                          </div>
 
-                        <div class="col-12">
-                          <div class="bg-primary border-2 bg-soft p-3 mb-4">
-                            <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                              Applicable charges for this premises
+                          <div class="col-12">
+                            <div class="bg-primary border-2 bg-soft p-3 mb-4">
+                              <p class="fw-semibold mb-0 pb-0 text-uppercase">
+                                Applicable charges for this premises
+                              </p>
+                            </div>
+                            <p class="d-none">
+                              <strong>
+                                Check the correct charges that may be charged from
+                                tenants at this premises
+                              </strong>
                             </p>
                           </div>
-                          <p class="d-none">
-                            <strong>
-                              Check the correct charges that may be charged from
-                              tenants at this premises
-                            </strong>
-                          </p>
-                        </div>
-                        <div class="col-12 mb-5">
-                          <div class="row">
-                            <div class="col-4 col-md-5 col-sm-12 h-100">
-                              <p class="text-decoration-underline">
-                                <i>Applicable Charges</i>
-                              </p>
-                              <div class="row border-right-1">
-                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
-                                  <>
-                                    {charge.applicableChargeType === "MONTHLY_CHARGE" &&
+                          <div class="col-12 mb-5">
+                            <div class="row">
+                              <div class="col-4 col-md-5 col-sm-12 h-100">
+                                <p class="text-decoration-underline">
+                                  <i>Applicable Charges</i>
+                                </p>
+                                <div class="row border-right-1">
+                                  {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                    <>
+                                      {charge.applicableChargeType === "MONTHLY_CHARGE" &&
                                       <div class="col-6">
                                         <div class="form-check form-check-primary mb-3">
                                           <input
@@ -816,72 +841,73 @@ function AddPremises() {
                                           </label>
                                         </div>
                                       </div>
-                                    }
-                                  </>
-                                ))
-                                }
+                                      }
+                                    </>
+                                  ))
+                                  }
+                                </div>
                               </div>
-                            </div>
-                            <div class="col-4 col-md-4 col-sm-12 h-100">
-                              <p class="text-decoration-underline">
-                                <i>Deposits</i>
-                              </p>
-                              <div class="row border-right-1">
-                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
-                                  <>
-                                    {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
-                                      <div class="form-check form-check-primary mb-3">
-                                        <input
-                                          class="form-check-input"
-                                          type="checkbox"
-                                          name="monthlyRent"
-                                          value={charge.id}
-                                          onChange={selectedApplicableChargeChange}
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="monthlyRent"
-                                        >
-                                          {charge.name}
-                                        </label>
-                                      </div>
-                                    </div>}
-                                  </>
-                                ))
-                                }
+                              <div class="col-4 col-md-4 col-sm-12 h-100">
+                                <p class="text-decoration-underline">
+                                  <i>Deposits</i>
+                                </p>
+                                <div class="row border-right-1">
+                                  {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                    <>
+                                      {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
+                                        <div class="form-check form-check-primary mb-3">
+                                          <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="monthlyRent"
+                                            value={charge.id}
+                                            onChange={selectedApplicableChargeChange}
+                                          />
+                                          <label
+                                            class="form-check-label"
+                                            for="monthlyRent"
+                                          >
+                                            {charge.name}
+                                          </label>
+                                        </div>
+                                      </div>}
+                                    </>
+                                  ))
+                                  }
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </form>
-                    </section>
-
-                    {/* <!-- premises invoice breakdown --> */}
-                    <h3>Invoices breakdown</h3>
-                    <section>
-                      <div class="row justify-content-center">
-                        <div class="col-12">
-                          <div class="table-responsive">
-                            <table
-                              class="table align-middle table-edits rent-invoicing dt-responsive"
-                              id="data-table"
-                            >
-                              <thead>
+                        </form>
+                      </section>
+                    </div>
+                    <div className="step-cont d-none">
+                      {/* <!-- premises invoice breakdown --> */}
+                      <h3>Invoices breakdown</h3>
+                      <section>
+                        <div class="row justify-content-center">
+                          <div class="col-12">
+                            <div class="table-responsive">
+                              <table
+                                class="table align-middle table-edits rent-invoicing dt-responsive"
+                                id="data-table"
+                              >
+                                <thead>
                                 <tr class="text-uppercase table-light">
                                   <th>#</th>
                                   <th>Item type</th>
                                   <th>When to Charge</th>
                                   {selectedunitTypes.map((charge, indeex) => (<th>{charge.unitTypeName}</th>))}
                                 </tr>
-                              </thead>
+                                </thead>
 
-                              <tfoot class="table-light">
+                                <tfoot class="table-light">
                                 <tr class="text-capitalize deposit-fee boarder-bottom">
 
                                   <button type="button" onClick={toogleShowUnitTypeChargesModal}>Add Charges</button>
                                 </tr>
-                              </tfoot>
-                              <tbody>
+                                </tfoot>
+                                <tbody>
                                 {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indeex) => (
                                   <>{
                                     <tr>
@@ -901,9 +927,9 @@ function AddPremises() {
                                           {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeex) => (
                                             <>
                                               {selectedUnitType.unitTypeName === premiseUnitTypeCharge.unitTypeName &&
-                                                <td>
-                                                  {premiseUnitTypeCharge.value}
-                                                </td>
+                                              <td>
+                                                {premiseUnitTypeCharge.value}
+                                              </td>
                                               }
                                             </>
                                           ))}
@@ -917,23 +943,24 @@ function AddPremises() {
                                 ))
 
                                 }
-                              </tbody>
-                            </table>
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </section>
-
-                    {/* <!-- Document attachments --> */}
-                    <h3>Document Attachments</h3>
-                    <section>
-                      <form>
-                        <h6>
-                          Upload documents
-                        </h6>
-                        <div class="table-responsive table-responsive-md">
-                          <table className="table table-editable-file align-middle table-edits ">
-                            <thead className="table-light ">
+                      </section>
+                    </div>
+                    <div className="step-cont d-none">
+                      {/* <!-- Document attachments --> */}
+                      <h3>Tenant Document Attachments</h3>
+                      <section>
+                        <form>
+                          <h6>
+                            Upload documents
+                          </h6>
+                          <div class="table-responsive table-responsive-md">
+                            <table className="table table-editable-file align-middle table-edits ">
+                              <thead className="table-light ">
                               <tr className="text-uppercase table-dark ">
                                 <th className="vertical-align-middle ">#</th>
                                 <th className="vertical-align-middle ">Document Type</th>
@@ -941,8 +968,8 @@ function AddPremises() {
                                 <th className="vertical-align-middle ">Actions</th>
                                 <th className="text-right "></th>
                               </tr>
-                            </thead>
-                            <tbody>
+                              </thead>
+                              <tbody>
 
                               {premiseDocuments.length > 0 && premiseDocuments.map((dependent, index) => (
                                 <tr>
@@ -955,23 +982,27 @@ function AddPremises() {
 
                               }
 
-                            </tbody>
-                            <tfoot>
+                              </tbody>
+                              <tfoot>
                               <tr>
                                 <td colSpan="7 " className="bg-light add-field-file cursor-pointer ">
                                   <button type="button" data-id="PREMISE" onClick={newDocument}>Add Premise Documents</button>
                                 </td>
                               </tr>
-                            </tfoot>
-                          </table>
+                              </tfoot>
+                            </table>
 
-                        </div>
-                      </form>
-                    </section>
+                          </div>
+                        </form>
+                      </section>
+                    </div>
+                    <div className="button-navigators">
+                      <button disabled className="btn btn-primary waves-effect kev-prev me-2"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>
+                      <button className="btn btn-primary waves-effect kev-nxt me-2">Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
+                      <button type='button' className="btn btn-success kev-submit me-2 d-none" onClick={submit}>Submit <i className="mdi mdi-check-all me-2 font-16px"></i></button>
+                    </div>
                   </div>
                 </div>
-
-                <button type='button' className='btn btn-success' onClick={submit}>SUBMIT</button>
               </div>
             </div>
           </div>
