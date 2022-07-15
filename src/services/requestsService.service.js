@@ -90,7 +90,36 @@ class RequestsService {
         return axiosInstance.get(baseUrl + "/users/deactivateUser/" + userId)
     }
 
+    // applicable charges
 
+    allApplicableCharges() {
+        return axiosInstance.get(baseUrl + "/setup/applicableCharges");
+    }
+
+    applicableChargeTypes() {
+        return axiosInstance.get(baseUrl + "/setup/applicableChargeTypes");
+    }
+
+    createApplicableCharges(data) {
+        return axiosInstance.post(baseUrl + "/setup/applicableCharges", data);
+    }
+
+    viewApplicableCharge(id) {
+        return axiosInstance.get(baseUrl + "/setup/applicableCharges/" + id);
+    }
+
+    toogleApplicableCharge(id) {
+        return axiosInstance.get(
+            baseUrl + "/setup/applicableCharges/toogleStatus/" + id
+        );
+    }
+
+    updateApplicableCharges(data) {
+        return axiosInstance.post(
+            baseUrl + "/setup/applicableCharges/update",
+            data
+        );
+    }
     // counties
 
     getAllCounties() {
