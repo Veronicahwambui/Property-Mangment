@@ -17,24 +17,46 @@ function AddPremises() {
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
+  const [fileNoShow, setFileNoShow] = useState(true);
 
   const toogleShowUnitTypeChargesModal = () => {
     setShowUnitTypeChargesModal(!showUnitTypeChargesModal);
   }
 
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
+
   const saveLandLordFileNumber = () => {
 
     if (landlordfileNumber != "") {
-      requestsServiceService.getLandLordByFileNumber(landlordfileNumber).then((res) => {
-
-        setLandLordAccounts(res.data.data.accounts);
-
+      requestsServiceService.findByFile(landlordfileNumber).then((res) => {
+        if (res.data.status === false) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger"
+          })
+        } else {
+          let d = []; d.push(landlordfileNumber);
+          setGeneral({ ...general, ["landlordFileNumber"]: d });
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success"
+          });
+          setTimeout(() => {
+            setFileNoShow(false);
+          }, 1500)
+        }
       }).catch((err) => {
-
+        setError({
+          ...error,
+          message: err.message,
+          color: "danger"
+        })
       })
-
-
-
     }
   }
 
@@ -501,7 +523,7 @@ function AddPremises() {
                                 name="estateId"
                                 onChange={handleGeneral}
                               >
-                                { estates && estates.map((estate) => {
+                                {estates && estates.map((estate) => {
                                   return (
                                     <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
                                   )
@@ -524,7 +546,7 @@ function AddPremises() {
                                 onChange={handleGeneral}
 
                               >
-                                { premiseTypes && premiseTypes.map((type) => (
+                                {premiseTypes && premiseTypes.map((type) => (
                                   <option value={type.id}> {type.name}</option>
                                 ))}
 
@@ -545,7 +567,7 @@ function AddPremises() {
                                 onChange={handleGeneral}
 
                               >
-                                { premiseUseTypes && premiseUseTypes.map((type) => (
+                                {premiseUseTypes && premiseUseTypes.map((type) => (
                                   <option value={type.id}> {type.name}</option>
                                 ))}
                               </select>
@@ -1202,25 +1224,35 @@ function AddPremises() {
 
       {/* <!-- enter landlord's id modal --> */}
 
-      <Modal show={landLordAccounts.length < 1}>
+      <Modal show={fileNoShow} centered>
         <ModalBody>
-          <div class="row justify-content-center ">
-            <div class="col-xl-10 ">
-              <h4 class="text-primary ">Landlord's File No.</h4>
-              <p class="text-muted font-size-14 mb-4 ">
-                Enter the landlords file number if the landlord is already
-                registered in the system. If this is a new landlord, click
-                cancel.
-              </p>
+          {error.color !== "" &&
+            <div className={"alert alert-" + error.color} role="alert">
+              {error.message}
+            </div>
+          }
+            <div class="text-center mb-4 ">
+              <div class="avatar-md mx-auto mb-4 ">
+                <div class="avatar-title bg-light rounded-circle text-primary h1 ">
+                  <i class="mdi mdi-card-account-details-outline "></i>
+                </div>
+              </div>
 
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div class="row ">
-                  <div class="col-9">
-                    <div class="mb-3 ">
-                      <label for="digit1-input " class="visually-hidden ">
-                        File No.
-                      </label>
-                      <input
+              <div class="row justify-content-center ">
+                <div class="col-xl-10 ">
+                  <h4 class="text-primary ">Landlord's File No.</h4>
+                  <p class="text-muted font-size-14 mb-4 ">
+                    Enter the landlords file number if the landlord is already registered in the
+                    system. If this is a new landlord, click cancel.
+                  </p>
+
+                  <form  onSubmit={(e) => e.preventDefault()}>
+                    <div class="row ">
+                      <div class="col-9">
+                        <div class="mb-3 ">
+                          <label for="digit1-input " class="visually-hidden ">File
+                            No.</label>
+                            <input
                         type="text "
                         class="form-control form-control-lg text-center two-step "
                         placeholder="Enter file No."
@@ -1229,22 +1261,19 @@ function AddPremises() {
                           setLandlordfileNumber(e.target.value)
                         }
                       />
+                      </div>
+                      </div>
+                      <div class="col-3 ">
+                        <button class="btn btn-primary btn-block w-100 btn-lg" onClick={saveLandLordFileNumber}>
+                          <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
+                          <div class="d-none">Search</div>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-3 ">
-                    <button
-                      data-bs-dismiss="modal"
-                      class="btn btn-primary btn-block w-100 btn-lg"
-                      onClick={saveLandLordFileNumber}
-                    >
-                      <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
-                      <div class="d-none">Search</div>
-                    </button>
-                  </div>
+                  </form>
                 </div>
-              </form>
+              </div>
             </div>
-          </div>
         </ModalBody>
       </Modal>
       {/* <!-- end of ID modal --> */}
