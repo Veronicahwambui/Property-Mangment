@@ -39,8 +39,7 @@ function AddPremises() {
             color: "danger"
           })
         } else {
-          let d = []; d.push(landlordfileNumber);
-          setGeneral({ ...general, ["landlordFileNumber"]: d });
+          setLandLordAccounts(res.data.data.accounts)
           setError({
             ...error,
             message: res.data.message,
@@ -58,6 +57,13 @@ function AddPremises() {
         })
       })
     }
+  }
+
+  const removeUnitType = (el, index) => {
+    let data = selectedunitTypes;
+    data.splice(index, 1);
+    const updatedUnits = data.filter((unit, idx) => idx != index);
+    setSelectedUnitTypes(updatedUnits);
   }
 
 
@@ -271,7 +277,8 @@ function AddPremises() {
   }
 
 
-  const addAppCharge = () => {
+  const addAppCharge = (el) => {
+    el.preventDefault();
     let unicahgsg = unitCharges;
     let premiseUnitType = premiseUnitTypeCharges;
 
@@ -291,7 +298,8 @@ function AddPremises() {
   }
 
 
-  const addDocument = () => {
+  const addDocument = (el) => {
+    el.preventDefault();
     let data = docBody;
     if (data.documentOwnerTypeName === "PREMISE") {
 
@@ -313,7 +321,8 @@ function AddPremises() {
 
   }
 
-  const addUnitType = () => {
+  const addUnitType = (el) => {
+    el.preventDefault();
     let data = unitType;
 
     let kins = selectedunitTypes;
@@ -449,34 +458,34 @@ function AddPremises() {
                     <strong class="text-danger">*</strong> are mandatory fields.
                   </p>
                   <div className="create-property" id="kev-step-form">
-                                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
 
-                  <button className="navbar-toggler" type="button" data-toggle="collapse"
-                          data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                          aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                  </button>
+                      <button className="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                      </button>
 
-                  <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav mr-auto">
-                      <li className="nav-item active">
-                        <a className="nav-link active" href="#">1. Premise Details <span
-                          className="sr-only">(current)</span></a>
-                      </li>
-                      <li className="nav-item">
-                        <a className="nav-link" href="#">2. Invoices Breakdown</a>
-                      </li>
-                      <li className="nav-item">
-                        <a className="nav-link" href="#">3. Document attachments</a>
-                      </li>
-                    </ul>
+                      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav mr-auto">
+                          <li className="nav-item active">
+                            <a className="nav-link active" href="#">1. Premise Details <span
+                              className="sr-only">(current)</span></a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">2. Invoices Breakdown</a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">3. Document attachments</a>
+                          </li>
+                        </ul>
 
-                  </div>
-                  </nav>
+                      </div>
+                    </nav>
 
                     {/* <!-- Premises details --> */}
                     <section className="step-cont active-step">
-                    <h3>Premises details</h3>
+                      <h3>Premises details</h3>
                       <form>
                         <div class="col-12">
                           <div class="bg-primary border-2 bg-soft p-3 mb-4">
@@ -824,15 +833,18 @@ function AddPremises() {
                             </thead>
                             <tbody>
 
-                              {selectedunitTypes && selectedunitTypes.map((dependent, index) => (
-                                <tr>
+                              {selectedunitTypes.length > 0 && selectedunitTypes.map((dependent, index) => (
+                                <tr key={"unit type" + dependent.unitTypeName + index}>
                                   <td>{index + 1}</td>
                                   <td>{dependent.unitTypeName}</td>
                                   <td>{dependent.numberOfRooms}</td>
                                   <td>{dependent.squarage}</td>
                                   <td>{dependent.purpose}</td>
                                   <td>{dependent.monthCountForTenancyRenewal}</td>
-                                  <td></td>
+                                  <td onClick={(e) => removeUnitType(e, index)} >
+
+                                    <a data-id={index} class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent close" title="Delete "><i class="bx bxs-trash "></i></a>
+                                  </td>
                                 </tr>
                               ))
 
@@ -931,7 +943,7 @@ function AddPremises() {
 
                     {/* <!-- premises invoice breakdown --> */}
                     <section className="step-cont d-none">
-                    <h3>Invoices breakdown</h3>
+                      <h3>Invoices breakdown</h3>
                       <div class="row justify-content-center">
                         <div class="col-12">
                           <div class="table-responsive">
@@ -1000,7 +1012,7 @@ function AddPremises() {
                                 {premiseUnitTypeCharges && premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
                                   <tr>
                                     <td>
-                                      {indeewx + 1}
+                                      {/* {indeewx + 1} */}
                                     </td>
                                     <td>
                                       {premiseUnitTypeCharge.applicableChargeName}
@@ -1017,6 +1029,28 @@ function AddPremises() {
                                   </tr>
                                 ))}
 
+                                {selectedApplicableCharges && selectedApplicableCharges.map((premiseUnitTypeCharge, indeewx) => (
+                                  selectedunitTypes.map((unitTypee, indeewx) => (
+                                    <tr>
+                                      <td>
+                                        {/* {indeewx + 1} */}
+                                      </td>
+                                      <td>
+                                        {premiseUnitTypeCharge.name}
+                                      </td>
+                                      <td>
+                                        {premiseUnitTypeCharge.applicableChargeType}
+                                      </td>
+                                      <td>
+                                        {unitTypee.unitTypeName}
+                                      </td>
+                                      <td>
+                                        -
+                                      </td>
+                                    </tr>
+                                  ))
+                                ))}
+
                               </tbody>
                             </table>
                           </div>
@@ -1026,7 +1060,7 @@ function AddPremises() {
 
                     {/* <!-- Document attachments --> */}
                     <section className="step-cont d-none">
-                    <h3>Document Attachments</h3>
+                      <h3>Document Attachments</h3>
                       <form>
                         <h6>
                           Upload documents
@@ -1085,19 +1119,19 @@ function AddPremises() {
 
 
       <Modal show={newUnitTypeModal}>
-        <ModalHeader className='justify-content'>
-          <h3>New Unit Type</h3>
-          <span onClick={toogleNewUnitTypeModal}>X</span>
-        </ModalHeader>
-        <ModalBody>
-          <form>
+        <form onSubmit={addUnitType}>
+          <ModalHeader className='justify-content'>
+            <h3>New Unit Type</h3>
+            <span onClick={toogleNewUnitTypeModal}>X</span>
+          </ModalHeader>
+          <ModalBody>
             <div className="row">
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="basicpill-firstname-input">Unit Type<strong className="text-danger">*</strong></label>
 
                   <select
-                    className='form-control'
+                    className='form-control' required
                     onChange={handleUnitTypeChange}
                     name="unitTypeId">
                     <option></option>
@@ -1112,7 +1146,7 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">No. Of Rooms</label>
                   <input type="number" className="form-control"
-                    onChange={handleUnitTypeChange} name="numberOfRooms" />
+                    onChange={handleUnitTypeChange} name="numberOfRooms" required />
                 </div>
               </div>
 
@@ -1120,7 +1154,7 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">UNIT SIZE M<sup>2</sup></label>
                   <input type="number" className="form-control"
-                    onChange={handleUnitTypeChange} name="squarage" />
+                    onChange={handleUnitTypeChange} name="squarage" required />
                 </div>
               </div>
 
@@ -1128,39 +1162,39 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">Purpose</label>
                   <input type="text" className="form-control"
-                    onChange={handleUnitTypeChange} name="purpose" />
+                    onChange={handleUnitTypeChange} name="purpose" required />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">TENANCY RENEWAL</label>
-                  <input type="number" className="form-control"
+                  <input type="number" className="form-control" required
                     onChange={handleUnitTypeChange} name="monthCountForTenancyRenewal" />
                 </div>
               </div>
             </div>
 
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <button className='btn btn-basic' type="button" onClick={toogleNewUnitTypeModal}>Close</button>
-          <button className='btn btn-success' type="button" onClick={addUnitType}>Add</button>
-        </ModalFooter>
+          </ModalBody>
+          <ModalFooter>
+            <button className='btn btn-basic' type="button" onClick={toogleNewUnitTypeModal}>Close</button>
+            <button className='btn btn-success' type="submit">Add</button>
+          </ModalFooter>
+        </form>
       </Modal>
 
 
       <Modal show={showDocumentModal}>
-        <ModalHeader className='justify-content'>
-          <h3>New {docBody.documentOwnerTypeName} Document</h3>
-          <span onClick={toogleShowNewDocumentModal}>X</span>
-        </ModalHeader>
-        <ModalBody>
-          <form id="newContactPersonForm" className='row'>
+        <form id="newContactPersonForm" className='row' onSubmit={addDocument}>
+          <ModalHeader className='justify-content'>
+            <h3>New {docBody.documentOwnerTypeName} Document</h3>
+            <span onClick={toogleShowNewDocumentModal}>X</span>
+          </ModalHeader>
+          <ModalBody>
             <div className="col-md-6">
               <div className="mb-4">
                 <label htmlFor="basicpill-firstname-input">Document Type<strong className="text-danger">*</strong></label>
 
-                <select className='form-control' onChange={handleDocumentChange} name="documentTypeId">
+                <select className='form-control' onChange={handleDocumentChange} name="documentTypeId" required>
                   <option></option>
                   {documentTypes && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
                 </select>
@@ -1170,7 +1204,7 @@ function AddPremises() {
             <div className="col-md-6">
               <div className="mb-4">
                 <label htmlFor="">Doc Name</label>
-                <input type="text" className="form-control" id="" placeholder=""
+                <input type="text" className="form-control" id="" placeholder="" required
                   onChange={(e) => handleDocumentChange(e)} name="docName" />
               </div>
             </div>
@@ -1179,34 +1213,35 @@ function AddPremises() {
               <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
                 <i className="font-14px mdi mdi-paperclip"></i> Document
               </label>
-              <input type="file" className="form-control" name="file"
+              <input type="file" className="form-control" name="file" required
                 onChange={(e) => handleDocumentChange(e)} />
 
             </div>
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <button className='btn btn-basic' type="button" onClick={toogleShowNewDocumentModal}>Close</button>
-          <button className='btn btn-success' type="button" onClick={addDocument}>Add</button>
-        </ModalFooter>
+          </ModalBody>
+          <ModalFooter>
+            <button className='btn btn-basic' type="button" onClick={toogleShowNewDocumentModal}>Close</button>
+            <button className='btn btn-success' type="submit">Add</button>
+          </ModalFooter>
+        </form>
       </Modal>
 
 
 
       <Modal show={showUnitTypeChargesModal}>
-        <ModalHeader className='justify-content'>
-          <h3>Invoice Breakdown</h3>
-          <span onClick={toogleShowUnitTypeChargesModal}>X</span>
-        </ModalHeader>
-        <ModalBody>
-          <form id="newContactPersonForm" className='row'>
+        <form id="newContactPersonForm" className='row' onSubmit={addAppCharge}>
+          <ModalHeader className='justify-content'>
+            <h3>Invoice Breakdown</h3>
+            <span onClick={toogleShowUnitTypeChargesModal}>X</span>
+          </ModalHeader>
+          <ModalBody>
             <div className="col-md-6">
               <div className="mb-4">
                 <label htmlFor="basicpill-firstname-input">Applicable Charge Type<strong className="text-danger">*</strong></label>
 
-                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="charge">
+                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="charge" required>
                   <option></option>
-                  {selectedApplicableCharges && selectedApplicableCharges.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+                  {selectedApplicableCharges && selectedApplicableCharges.map((prem, index) => { !prem.expectManualValues && <option value={prem.id}>{prem.name}</option> }
+                  )}
                 </select>
               </div>
             </div>
@@ -1216,19 +1251,19 @@ function AddPremises() {
             {unitCharges && unitCharges.map((unitCharge, index) => (<>
               <div className="col-md-6">
                 <label htmlFor="">Unit Type</label>
-                <input type="text" className="form-control" id="" placeholder=""
+                <input type="text" className="form-control" id="" placeholder="" required
                   disabled value={unitCharge.unitTypeName} name="docName" />
               </div>
 
               <div className="col-md-6">
                 <label> Charge Value </label>
-                <input type="number" className="form-control" name="value"
+                <input type="number" className="form-control" name="value" required
                   onChange={(e) => handleChargechange(e, index)} />
               </div>
 
               <div className="col-md-6">
                 <label> Collection Acc </label>
-                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
+                <select className='form-control' required onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
                   <option></option>
                   {landLordAccounts && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
                 </select>
@@ -1236,19 +1271,19 @@ function AddPremises() {
 
               <div className="col-md-6">
                 <label> Invoice Day </label>
-                <input type="number" className="form-control" name="invoiceDay"
+                <input type="number" className="form-control" name="invoiceDay" required
                   onChange={(e) => handleChargechange(e, index)} />
               </div>
 
             </>
             ))
             }
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <button className='btn btn-basic' type="button" onClick={toogleShowUnitTypeChargesModal}>Close</button>
-          <button className='btn btn-success' type="button" onClick={addAppCharge}>Add</button>
-        </ModalFooter>
+          </ModalBody>
+          <ModalFooter>
+            <button className='btn btn-basic' type="button" onClick={toogleShowUnitTypeChargesModal}>Close</button>
+            <button className='btn btn-success' type="submit">Add</button>
+          </ModalFooter>
+        </form>
       </Modal>
 
       {/* <!-- enter landlord's id modal --> */}
@@ -1260,49 +1295,49 @@ function AddPremises() {
               {error.message}
             </div>
           }
-            <div class="text-center mb-4 ">
-              <div class="avatar-md mx-auto mb-4 ">
-                <div class="avatar-title bg-light rounded-circle text-primary h1 ">
-                  <i class="mdi mdi-card-account-details-outline "></i>
-                </div>
-              </div>
-
-              <div class="row justify-content-center ">
-                <div class="col-xl-10 ">
-                  <h4 class="text-primary ">Landlord's File No.</h4>
-                  <p class="text-muted font-size-14 mb-4 ">
-                    Enter the landlords file number if the landlord is already registered in the
-                    system. If this is a new landlord, click cancel.
-                  </p>
-
-                  <form  onSubmit={(e) => e.preventDefault()}>
-                    <div class="row ">
-                      <div class="col-9">
-                        <div class="mb-3 ">
-                          <label for="digit1-input " class="visually-hidden ">File
-                            No.</label>
-                            <input
-                        type="text "
-                        class="form-control form-control-lg text-center two-step "
-                        placeholder="Enter file No."
-                        value={landlordfileNumber}
-                        onChange={(e) =>
-                          setLandlordfileNumber(e.target.value)
-                        }
-                      />
-                      </div>
-                      </div>
-                      <div class="col-3 ">
-                        <button class="btn btn-primary btn-block w-100 btn-lg" onClick={saveLandLordFileNumber}>
-                          <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
-                          <div class="d-none">Search</div>
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
+          <div class="text-center mb-4 ">
+            <div class="avatar-md mx-auto mb-4 ">
+              <div class="avatar-title bg-light rounded-circle text-primary h1 ">
+                <i class="mdi mdi-card-account-details-outline "></i>
               </div>
             </div>
+
+            <div class="row justify-content-center ">
+              <div class="col-xl-10 ">
+                <h4 class="text-primary ">Landlord's File No.</h4>
+                <p class="text-muted font-size-14 mb-4 ">
+                  Enter the landlords file number if the landlord is already registered in the
+                  system. If this is a new landlord, click cancel.
+                </p>
+
+                <form onSubmit={(e) => e.preventDefault()}>
+                  <div class="row ">
+                    <div class="col-9">
+                      <div class="mb-3 ">
+                        <label for="digit1-input " class="visually-hidden ">File
+                          No.</label>
+                        <input
+                          type="text "
+                          class="form-control form-control-lg text-center two-step "
+                          placeholder="Enter file No."
+                          value={landlordfileNumber}
+                          onChange={(e) =>
+                            setLandlordfileNumber(e.target.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div class="col-3 ">
+                      <button class="btn btn-primary btn-block w-100 btn-lg" onClick={saveLandLordFileNumber}>
+                        <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
+                        <div class="d-none">Search</div>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </ModalBody>
       </Modal>
       {/* <!-- end of ID modal --> */}
