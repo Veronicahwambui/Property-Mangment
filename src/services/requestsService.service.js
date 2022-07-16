@@ -490,6 +490,26 @@ class RequestsService {
         return axiosInstance.get(baseUrl + "/documents/download?docName=" + data)
     }
 
+    // premise unit start 
+     findPremiseUnits(premiseId){
+        return axiosInstance.get( baseUrl + "/premiseUnits/"+ premiseId + "/units")
+     }
+
+     tooglePremiseUnitStatus( id ,premiseId){
+        return axiosInstance.get( baseUrl + "/premiseUnits/"+ premiseId + "/unit/" + id + "/toogleStatus")
+     }
+    
+     updatePremiseUnit(premiseId ,data){
+        return axiosInstance.post(baseUrl + "/premiseUnits/"+ premiseId +"/unit/update", data)
+     }
+     
+     createPremiseUnit(premiseId ,data){
+        return axiosInstance.post(baseUrl + "/premiseUnits/"+ premiseId +"/unit", data)
+     }
+     
+
+    // premise unit end 
+
 }
 
 export default new RequestsService();

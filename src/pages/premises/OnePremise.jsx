@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import axios from "axios";
 
@@ -54,6 +54,8 @@ function OnePremise() {
   useEffect(() => {
     fetchAll();
     caretakerTypes()
+    findUnitTypes()
+    findAllPremiseUnits()
   }, []);
 
   const [PremiseTypes ,setPremiseTypes] = useState([])
@@ -82,7 +84,6 @@ function OnePremise() {
   })
  }
 
- console.log(update);
  
  const updatePrem = () => {
    let data = JSON.stringify({
@@ -138,7 +139,7 @@ function OnePremise() {
     phoneNumber: "dgd",
   })
 
-  const updateUpdate = (a ,b, c, d, i ,f ,e , g, h)=>{
+  const updateUpdate = (a ,b, c, d, i ,f , g, h)=>{
     setUpdateCaretaker({
       ...updateCaretaker ,
 
@@ -166,7 +167,6 @@ function OnePremise() {
     })
   }
   
- console.log(newCaretaker);
   const caretakerTypes = ()=>{
     requestsServiceService.caretakerTypes().then((res)=>{
       setCareTypes(res.data.data)
@@ -232,7 +232,54 @@ function OnePremise() {
 
   // premise unit stuff 
 
+ const [activeUnitId , setActiveUnitId] = useState('')
+ const [unittypes , setUnittypes] = useState([])
+ const [unittype , setUnittype] = useState('')
+ const [unitName , setUnitName] = useState('')
 
+ const  findAllPremiseUnits = ()=>{
+  requestsServiceService.findPremiseUnits(userId).then((res)=>{
+     setPremiseUnits(res.data.data)
+  })
+ }
+
+ const togglePremiseUnitStatus = (id) =>{
+   requestsServiceService.tooglePremiseUnitStatus(userId ,id).then(()=>{
+    findAllPremiseUnits()
+  })
+ }
+const findUnitTypes = ()=>{
+  requestsServiceService.allUnitTypes().then((res)=>{
+       setUnittypes(res.data.data)
+  })
+}
+
+ const editPremiseType = ()=>{
+  let data = {
+    active: true,
+    id: activeUnitId,
+    premiseId: userId,
+    unitName: unitName,
+    unitTypeId: unittype
+  }
+  
+  requestsServiceService.updatePremiseUnit(userId,data).then(()=>{
+    findAllPremiseUnits()
+  })
+ }
+
+ const createPremiseType = ()=>{
+  let data = JSON.stringify({
+    active: true,
+    id: null,
+    premiseId: userId,
+    unitName: unitName,
+    unitTypeId: unittype
+  })
+  requestsServiceService.createPremiseUnit(userId ,data).then(()=>{
+    findAllPremiseUnits()
+  })
+ }
   return (
     <div className="page-content">
       <div className="content-fluid">
@@ -618,12 +665,25 @@ function OnePremise() {
                          <div class="col-12">
                              <div class="card">
                                  <div class="card-body">
- 
+                                    <div className="d-flex justify-content-between">
                                      <h4 class="card-title text-capitalize mb-3">Property units</h4>
+                                     <button
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#create-premise-unit"
+                                            className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
+                                            onClick={()=>{setUnitName(''); setUnittype(''); }}
+                                            >                  
+                                            <i className="dripicons-plus font-size-16"></i>{" "}
+                                            <span className="pl-1 d-md-inline">
+                                              New Premise Unit
+                                            </span>
+                                      </button>
+                                    </div>
  
                                      <div class="table-responsive table-responsive-md overflow-visible">
-                                         <table class="table table-editable align-middle table-edits" id="unit-datatable-buttons">
-                                             <thead class="table-light" id="data-table">
+                                         <table class="table table-editable align-middle table-edits" >
+                                             <thead class="table-light" >
                                                  <tr class=" text-uppercase ">
                                                      <th>#</th>
                                                      <th>Num.</th>
@@ -634,7 +694,7 @@ function OnePremise() {
                                              </thead>
                                              <tbody>
  
-                                                   {premiseData.premiseUnits && premiseData.premiseUnits.map((unit , index)=>(
+                                                   {premiseUnits && premiseUnits.map((unit , index)=>(
                                                       <tr data-id="1 ">
                                                      <td style={{width: "80px"}}>{index + 1}</td>
                                                      <td>
@@ -643,15 +703,16 @@ function OnePremise() {
                                                      <td >{unit.unitType.name}</td>
                                                      <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
                                                      <td class="text-right cell-change d-flex align-items-center float-right justify-content-end">
-                                                         <a class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
+                                                         <a onClick={()=>{setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id) }}  data-bs-toggle="modal"
+                                                         data-bs-target="#edit-premise-unit" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                                                          <div class="dropdown">
-                                                             <a class="text-muted font-size-16 ml-7px" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                                                             <a onClick={()=>setActiveUnitId(unit.id)} class="text-muted font-size-16 ml-7px" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
                                                                  <i class="bx bx-dots-vertical-rounded"></i>
                                                              </a>
  
                                                              <div class="dropdown-menu dropdown-menu-end">
-                                                                 <a class="dropdown-item" href="property-unit-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
-                                                                 <a  class="dropdown-item"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
+                                                                 <Link  class="dropdown-item" to={`/premise/${userId}/${activeUnitId}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
+                                                                 <a onClick={()=> togglePremiseUnitStatus(unit.id)}  class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
                                                              </div>
                                                          </div>
                                                      </td>
@@ -668,7 +729,106 @@ function OnePremise() {
                              </div>
                          </div>
                          {/* <!-- end col --> */}
-                     </div>
+             </div>
+             {/* modals edit-premise-unit */}
+             <div
+              class="modal fade"
+              id="edit-premise-unit"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              role="dialog"
+              aria-labelledby="staticBackdropLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  
+                  <div 
+                  className="modal-body">
+                    <div className="form-group">
+                      <label htmlFor="">update Name</label>
+                      <input type="text"  value={ unitName} className="form-control" onChange={ (event)=> setUnitName(event.target.value)} />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="">Select unit type</label>
+                      <select name="" id="" className="form-control" onChange={(event)=> setUnittype(event.target.value)}>
+                        { unittypes && unittypes.map((unit)=>(
+                           <option value={unit.id} selected={unit.id === unittype ? "selected" : ''}> {unit.name}</option>
+                        )) }
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      close
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-dismiss="modal"
+                      onClick={editPremiseType}
+                    >
+                      update
+                    </button>
+                  </div>
+                </div>
+              </div>
+             </div>
+             {/* premise unit create  */}
+             <div
+              class="modal fade"
+              id="create-premise-unit"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              role="dialog"
+              aria-labelledby="staticBackdropLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  
+                  <div 
+                  className="modal-body">
+                    <div className="form-group">
+                      <label htmlFor="">Unit Name</label>
+                      <input type="text" placeholder="Enter Unit Name"  value={ unitName} className="form-control" onChange={ (event)=> setUnitName(event.target.value)} />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="">Select unit type</label>
+                      <select name="" id="" className="form-control" onChange={(event)=> setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        { unittypes && unittypes.map((unit)=>(
+                           <option value={unit.id}> {unit.name}</option>
+                        )) }
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      close
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-dismiss="modal"
+                      onClick={createPremiseType}
+                    >
+                      create
+                    </button>
+                  </div>
+                </div>
+              </div>
+             </div>
            </div>
         )}
 
