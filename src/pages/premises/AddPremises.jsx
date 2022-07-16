@@ -1253,7 +1253,7 @@ function AddPremises() {
 
       {/* <!-- enter landlord's id modal --> */}
 
-      <Modal show={!fileNoShow} centered>
+      <Modal show={fileNoShow} centered>
         <ModalBody>
           {error.color !== "" &&
             <div className={"alert alert-" + error.color} role="alert">
