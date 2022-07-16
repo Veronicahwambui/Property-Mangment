@@ -202,6 +202,7 @@ function AddPremises() {
       if (event.target.checked)
         chargess.push(value);
       else
+      
         chargess.splice(chargess.indexOf(value), 1);
 
       setSelectedApplicableCharges(chargess);
@@ -968,48 +969,8 @@ function AddPremises() {
                                 </tr>
                               </tfoot>
                               <tbody>
-                                {/* {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indweex) => (
-                                  <>{uniqueChargeId.map((id, indeex) => (
-                                    <>
-                                      {charge.id == id &&
-                                        <tr>
-                                          <td>{indeex + 1}</td>
 
-                                          <td>
-                                            {charge.name}
-                                          </td>
-
-                                          <td>
-                                            {charge.applicableChargeType}
-                                          </td>
-
-                                          {selectedunitTypes.map((selectedUnitType, indeexw) => (
-                                            <>
-
-                                              {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
-                                                <>
-                                                  {selectedUnitType.unitTypeName === premiseUnitTypeCharge.unitTypeName && premiseUnitTypeCharge.applicableChargeId == id &&
-                                                    <td>
-                                                      {premiseUnitTypeCharge.value}
-                                                    </td>
-                                                  }
-                                                </>
-                                              ))}
-
-                                            </>
-                                          ))}
-
-                                        </tr>
-                                      }
-                                    </>
-                                  ))
-                                  }
-                                  </>
-                                ))
-
-                                } */}
-
-                                {premiseUnitTypeCharges && premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
+                                {premiseUnitTypeCharges.length > 0 && premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
                                   <tr>
                                     <td>
                                       {/* {indeewx + 1} */}
@@ -1030,7 +991,7 @@ function AddPremises() {
                                 ))}
 
                                 {selectedApplicableCharges && selectedApplicableCharges.map((premiseUnitTypeCharge, indeewx) => (
-                                  selectedunitTypes.map((unitTypee, indeewx) => (
+                                  premiseUnitTypeCharge.expectManualValues && selectedunitTypes.map((unitTypee, indeewx) => (
                                     <tr>
                                       <td>
                                         {/* {indeewx + 1} */}
@@ -1183,13 +1144,14 @@ function AddPremises() {
       </Modal>
 
 
+      {/* docs modal */}
       <Modal show={showDocumentModal}>
-        <form id="newContactPersonForm" className='row' onSubmit={addDocument}>
+        <form id="newContactPersonForm" onSubmit={addDocument}>
           <ModalHeader className='justify-content'>
             <h3>New {docBody.documentOwnerTypeName} Document</h3>
             <span onClick={toogleShowNewDocumentModal}>X</span>
           </ModalHeader>
-          <ModalBody>
+          <ModalBody className='row'>
             <div className="col-md-6">
               <div className="mb-4">
                 <label htmlFor="basicpill-firstname-input">Document Type<strong className="text-danger">*</strong></label>
@@ -1228,20 +1190,21 @@ function AddPremises() {
 
 
       <Modal show={showUnitTypeChargesModal}>
-        <form id="newContactPersonForm" className='row' onSubmit={addAppCharge}>
+        <form id="newContactPersonForm" onSubmit={addAppCharge}>
           <ModalHeader className='justify-content'>
             <h3>Invoice Breakdown</h3>
             <span onClick={toogleShowUnitTypeChargesModal}>X</span>
           </ModalHeader>
-          <ModalBody>
+          <ModalBody className='row'>
             <div className="col-md-6">
               <div className="mb-4">
                 <label htmlFor="basicpill-firstname-input">Applicable Charge Type<strong className="text-danger">*</strong></label>
 
                 <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="charge" required>
                   <option></option>
-                  {selectedApplicableCharges && selectedApplicableCharges.map((prem, index) => { !prem.expectManualValues && <option value={prem.id}>{prem.name}</option> }
-                  )}
+                  {selectedApplicableCharges && selectedApplicableCharges.map((prem, index) => (
+                    !prem.expectManualValues &&
+                    <option value={prem.id}>{prem.name}</option>))}
                 </select>
               </div>
             </div>
