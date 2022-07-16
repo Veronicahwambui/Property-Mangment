@@ -11,8 +11,18 @@ function Zones() {
     message: "",
     color: ""
   });
+  const [editName , setEditName] = useState('')
+  const [newCounty , setNewCounty] =useState('')
+  const [zoneId , setZoneId] = useState('')
 
 
+ const  handleEdit= (name ,id,zonId)=>{
+    setEditName(name)
+    setNewCounty(id)
+    setZoneId(zonId)
+ }
+
+ console.log(newCounty);
   
   useEffect(()=>{
      getZones()
@@ -32,14 +42,13 @@ function Zones() {
   const createZone = ()=>{
      let data = JSON.stringify({
       active: true,
-      clientCountyId: selectedCounty,
+      clientCountyId: parseInt(selectedCounty),
       id: 0,
       name: zoneName,
     })
-
+  
     requestsServiceService.createZone(data).then((res)=>{
-      console.log(res.data);
-    
+        getZones()    
       if(res.data.status){
       setError({
         ...error,
@@ -90,15 +99,42 @@ function Zones() {
   const updateZone = ()=>{
  let data = JSON.stringify({
   "active": true,
-  "clientCountyId": 0,
-  "id": 0,
-  "name": "string"
+  "clientCountyId": newCounty,
+  "id": zoneId,
+  "name": editName
 })
 
 requestsServiceService.editZone(data).then((res)=>{
-  console.log(res.data);
-})
-  }
+  // console.log(res.data);
+  getZones()
+  if(res.data.status){
+    setError({
+      ...error,
+      message: res.data.message,
+      color: "success"
+    }) } else {
+
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "warning"
+      }) 
+    }
+
+    setTimeout(() => {
+      clear()
+    }, 3000)
+    
+  }).catch((res)=>{
+
+    setError({
+      ...error,
+      message: res.data.message,
+      color: "danger"
+    })
+
+  })
+}
 
   //   const deactivate 
 
@@ -187,7 +223,10 @@ const deactivate = (id)=> {
                             <td data-field="unit-num ">{zon.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
                               <div className="d-flex">
-                              <a class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
+                              <a onClick={()=>{
+                                handleEdit(zon.name , zon.clientCounty.id ,zon.id)
+                              }} class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "  data-bs-toggle="modal"
+                      data-bs-target="#edit-zone" title="Edit "><i class="bx bx-edit-alt "></i></a>
                             {zon.active ?  <button
                                 class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"
                                 title="deactivate"
@@ -208,8 +247,6 @@ const deactivate = (id)=> {
 
                         
                               </div>
-
-                             
                             </td>
                               </tr>
                             
@@ -314,7 +351,7 @@ const deactivate = (id)=> {
                     {clientCounties && clientCounties.map((cou , index) =>{ 
                        let county = cou.county
                       return (
-                     <option key={index} value={county.id}>{county.name}</option>
+                     <option key={index} value={cou.id}>{county.name}</option>
                     )})}
                   </select>
                 
@@ -331,6 +368,76 @@ const deactivate = (id)=> {
             </button>
             <button
               onClick={createZone}
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {/* edit zone  */}
+    <div
+      class="modal fade"
+      id="edit-zone"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      role="dialog"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">
+              Edit Zone
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-4">
+                <label for="">Zone Name</label>
+                  <input value={editName} onChange={ (e)=> setEditName(e.target.value)} type="text" class="form-control" placeholder="Enter zone name" />
+                  </div>
+                </div>
+
+              <div class="col-12">
+                  <label for="">County</label>
+                  <select
+                    class="form-control"
+                    data-live-search="true"
+                    title="Select county where the zone is"
+                    onChange={(e) => setNewCounty(e.target.value)}
+                  >
+                    {clientCounties && clientCounties.map((cou , index) =>{ 
+                       let county = cou.county
+                      return (
+                     <option key={index} value={cou.id} selected={ cou.id === newCounty ? "selected" : ''}>{county.name}</option>
+                    )})}
+                  </select>
+                
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-light"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              onClick={updateZone}
               type="button"
               class="btn btn-primary"
               data-bs-dismiss="modal"

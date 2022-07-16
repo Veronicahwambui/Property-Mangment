@@ -1,4 +1,5 @@
 import React, { useEffect ,useState } from 'react'
+import authService from '../../services/auth.service';
 import requestsServiceService from '../../services/requestsService.service'
 
 function LandLordAgreementTypes() {
@@ -103,9 +104,9 @@ function LandLordAgreementTypes() {
   const updateAgreementType = ()=>{
     let data = JSON.stringify({
       active: true,
-      clientId: editClientId,
-      id: editId,
-      name: editAgreementTypeName,
+      clientId: parseInt(authService.getClientId()) ,
+      id: activeId,
+      name: editName,
     })
     requestsServiceService.editAgreementType(data).then((res)=>{
       let message = res.data.message;
@@ -230,7 +231,7 @@ function LandLordAgreementTypes() {
                             <td data-field="unit-num ">{aT.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
                               <div className="d-flex">
-                                <a onClick={() => getOneAgreementType(aT.id)} data-bs-toggle="modal"
+                                <a onClick={() => { setActiveId(aT.id) }} data-bs-toggle="modal"
                                    data-bs-target="#update-modal"
                                    className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                    title="Edit "><i className="bx bx-edit-alt "></i></a>

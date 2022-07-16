@@ -15,7 +15,9 @@ function ApplicableCharges() {
     message: "",
     color: ""
   });
-  const [manualVal ,setManualVal] = useState('')
+  const [manualVal ,setManualVal] = useState(false)
+  const [ newManualVal ,setNewManualVal] = useState(false)
+  
 
 
   useEffect(()=>{
@@ -109,7 +111,7 @@ function ApplicableCharges() {
       active: true,
       applicableChargeTypeName  : updateChargeType,
       clientId: authService.getClientId(),
-      expectManualValues: true,
+      expectManualValues: newManualVal,
       id: activeId,
       name: updateName
     })
@@ -217,6 +219,7 @@ function ApplicableCharges() {
                         <th>#</th>
                         <th>Premise Type</th>
                         <th>Charge type</th>
+                        <th>Accept Manual Values</th>
                         <th>Status</th>
                         <th class="text-center">Actions</th>
                       </tr>
@@ -227,13 +230,14 @@ function ApplicableCharges() {
                           return(
                             <tr data-id="1" key={val}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
-                            <td data-field="unit-num " className='text-capitalize'>{val.name}</td>
-                            <td data-field="unit-num " className='text-capitalize'>{val.applicableChargeType != null && val.applicableChargeType.toLowerCase().replace(/_/g," ")}</td>
+                            <td className='text-capitalize'>{val.name}</td>
+                            <td className='text-capitalize'>{val.applicableChargeType != null && val.applicableChargeType.toLowerCase().replace(/_/g," ")}</td>
+                            <td>{ val.expectManualValues ? "Yes": "No" } </td>
                             <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-center cell-change text-nowrap ">
                             <div class="d-flex justify-content-between">
                            
-                            <a  onClick={()=> {setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType)}}   data-bs-toggle="modal"
+                            <a  onClick={()=> {setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType) ; setNewManualVal(val.expectManualValues)}}   data-bs-toggle="modal"
                                              data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                             
                             {val.active ?  <button
@@ -316,10 +320,9 @@ function ApplicableCharges() {
                       title=""
                       onChange={(e) => setManualVal(e.target.value)}
                     >
-                      <option value="true">True</option>
+                      <option value="true" >True</option>
                       <option value="false">False</option>
-                    </select>
-                  
+                    </select>                 
                 </div>
                 <div class="col-12">
                
@@ -389,6 +392,20 @@ function ApplicableCharges() {
                     <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
                   </div>
             </div>
+            <div class="col-12">
+               
+               <label for="">Accept Manual charges </label>
+               <select
+                 class="form-control"
+                 data-live-search="true"
+                 title=""
+                 onChange={(e)=> setNewManualVal(e.target.value)}
+               >
+                 <option value="true" selected={ newManualVal ? "selected" : '' } >True</option>
+                 <option value="false" selected={ !newManualVal ? "selected" : '' }>False</option>
+               </select>                 
+           </div>
+
                 <div class="col-12">
                
                     <label for="">Charge Type </label>
@@ -399,7 +416,7 @@ function ApplicableCharges() {
                       onChange={(e) => setUpdateChargeType(e.target.value)}
                     >
                       {chargeTypes &&  chargeTypes.map((charge) =>{ return (
-                       <option key={charge} value={charge} className="text-capitalize">{charge.toLowerCase().replace(/_/g ," ")}</option>
+                       <option key={charge} value={charge} selected={ charge === updateChargeType ? "selected" : '' } className="text-capitalize">{charge.toLowerCase().replace(/_/g ," ")}</option>
                       )})}
                     </select>
                   
