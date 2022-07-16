@@ -613,79 +613,63 @@ function OnePremise() {
         )}
 
         {activeLink === 5 && (
-          <div>
-            <div className="row">
-              <div className="col-xl-12">
-                <div className="card calc-h-3px">
-                  <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <div class="d-flex align-items-center flex-grow-1">
-                        <h4 class="mb-0 m-0 bg-transparent">
-                          Charges and Unit types
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="col-12">
-                      <div className="table-responsive">
-                        <table
-                          class="table align-middle table-edits rent-invoicing dt-responsive"
-                          id="data-table"
-                        >
-                          <thead>
-                            <tr class="text-uppercase table-dark">
-                              <th>#</th>
-                              <th>Name</th>
-                              <th>Unit Type</th>
-                              <th>Status</th>
-                              <th className="text-right">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {premiseUnits &&
-                              premiseUnits.map((unit, index) => (
-                                <tr data-id="1">
-                                  <td>{index + 1}</td>
-                                  <td>{unit.unitName}</td>
-                                  <td>{unit.unitType.name}</td>
-                                  <td>
-                                    {" "}
-                                    {unit.active ? (
-                                      <span class="badge-soft-success badge">
-                                        Active
-                                      </span>
-                                    ) : (
-                                      <span class="badge-soft-danger badge">
-                                        Inactive
-                                      </span>
-                                    )}
-                                  </td>
-                                  <td className="text-right cell-change">
-                                    {" "}
-                                    <a
-                                      className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#edit-premise-unit"
-                                      title="Edit"
-                                    >
-                                      <i className="bx bx-edit-alt " />
-                                    </a>
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+             <div>
+             <div class="row">
+                         <div class="col-12">
+                             <div class="card">
+                                 <div class="card-body">
+ 
+                                     <h4 class="card-title text-capitalize mb-3">Property units</h4>
+ 
+                                     <div class="table-responsive table-responsive-md overflow-visible">
+                                         <table class="table table-editable align-middle table-edits" id="unit-datatable-buttons">
+                                             <thead class="table-light" id="data-table">
+                                                 <tr class=" text-uppercase ">
+                                                     <th>#</th>
+                                                     <th>Num.</th>
+                                                     <th class=" ">Hse Type</th>
+                                                     <th class=" ">Status</th>
+                                                     <th class="text-right w-220px">Actions</th>
+                                                 </tr>
+                                             </thead>
+                                             <tbody>
+ 
+                                                   {premiseData.premiseUnits && premiseData.premiseUnits.map((unit , index)=>(
+                                                      <tr data-id="1 ">
+                                                     <td style={{width: "80px"}}>{index + 1}</td>
+                                                     <td>
+                                                         <a href="property-unit-details.html">{unit.unitName}</a>
+                                                     </td>
+                                                     <td >{unit.unitType.name}</td>
+                                                     <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
+                                                     <td class="text-right cell-change d-flex align-items-center float-right justify-content-end">
+                                                         <a class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
+                                                         <div class="dropdown">
+                                                             <a class="text-muted font-size-16 ml-7px" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                                                                 <i class="bx bx-dots-vertical-rounded"></i>
+                                                             </a>
+ 
+                                                             <div class="dropdown-menu dropdown-menu-end">
+                                                                 <a class="dropdown-item" href="property-unit-details.html"><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a>
+                                                                 <a  class="dropdown-item"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
+                                                             </div>
+                                                         </div>
+                                                     </td>
+ 
+                                                     </tr>
+                                                   ))}
+                                                 
+                                             </tbody>
+                                           
+                                         </table>
+                                     </div>
+ 
+                                 </div>
+                             </div>
+                         </div>
+                         {/* <!-- end col --> */}
+                     </div>
+           </div>
         )}
 
         {activeLink === 2 && (
