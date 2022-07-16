@@ -72,9 +72,26 @@ function ViewLandlord() {
   const [show_landlord, setshowlandlord] = useState(false);
   const [show_doc, set_show_doc] = useState(false);
   const [show_acc, set_show_acc] = useState(false);
+  const [edittypename, setedittypename] = useState("");
 
 
-  const landlordshow = () => setshowlandlord(true);
+  const landlordshow = () => {
+    seteditlandlordemail(landlord.email)
+    seteditlandlordgender(landlord.gender)
+    seteditlandlordidnumber(landlord.idNumber)
+    seteditlandlordfilenumber(landlord.fileNumber)
+    seteditlandlordfirstname(landlord.firstName)
+    seteditlandlordlastname(landlord.lastName)
+    seteditlandlordphonenumber(landlord.phoneNumber)
+    setedittypename(landlord.landLordAgreementType?.name)
+    seteditlandlordagreementtype(landlord.landLordAgreementType?.id)
+    seteditlandlordothername(landlord.otherName)
+    seteditlandlordremuneration(landlord.remunerationPercentage)
+    seteditagreementperiod(landlord.agreementPeriod)
+    seteditlandlordtypename(landlord.landLordType)
+    console.log(landlord.landLordAgreementType)
+    setshowlandlord(true)
+  };
   const landlordclose = () => setshowlandlord(false);
   const docshow = () => set_show_doc(true);
   const docclose = () => set_show_doc(false);
@@ -330,7 +347,7 @@ function ViewLandlord() {
                     <a href="">All Properties</a>
                   </li>
                   <li class="breadcrumb-item active">
-                    {landlord.firstName && landlord.lastName}
+                    {landlord.firstName + " " + landlord.lastName}
                   </li>
                 </ol>
               </div>
@@ -716,7 +733,7 @@ function ViewLandlord() {
                   <label htmlFor="">Landlord Type</label>
                   <select className="form-control" value={editlandlordtypename} onChange={(e) => seteditlandlordtypename(e.target.value)}  required={true}>
                     <option className="text-black font-semibold ">
-                      select landlord type
+                      {editlandlordtypename}
                     </option>
                     {
                       landlordtypes.map((item, index) => (
@@ -729,7 +746,7 @@ function ViewLandlord() {
                   <label htmlFor="">Agreement Type</label>
                   <select className="form-control" value={editlandlordagreementtype} onChange={(e) => seteditlandlordagreementtype(e.target.value)}  required={true}>
                     <option className="text-black font-semibold ">
-                      select agreeement type
+                      {edittypename}
                     </option>
                     {
                       agreementtypes?.map((item, index) => (
@@ -790,13 +807,13 @@ function ViewLandlord() {
                     <label htmlFor=" " className=" ">Gender: <strong className="text-danger ">*</strong></label>
                     <div className="d-flex ">
                       <div className="form-check me-3">
-                        <input className="form-check-input" type="radio" name="gender" value={"male"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-male" />
+                        <input className="form-check-input" type="radio" name="gender"checked={editlandlordgender === "male"} value={"male"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-male" />
                         <label className="form-check-label" htmlFor="gender-male">
                           Male
                         </label>
                       </div>
                       <div className="form-check me-3">
-                        <input className="form-check-input" type="radio" name="gender" value={"female"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-female" />
+                        <input className="form-check-input" type="radio" name="gender" checked={editlandlordgender === "female"}  value={"female"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-female" />
                         <label className="form-check-label" htmlFor="gender-female">
                           Female
                         </label>
@@ -805,7 +822,7 @@ function ViewLandlord() {
                   </div>
                   <div className="form-group mb-4">
                     <label htmlFor="">Remuneration %</label>
-                    <input type="number" value={editpercentageRemuneration} onChange={(e) => setEditPercentageRemuneration(e.target.value)}
+                    <input type="number" value={editlandlordremuneration} onChange={(e) => seteditlandlordremuneration(e.target.value)}
                            className="form-control"
                             required={true} />
                   </div>
