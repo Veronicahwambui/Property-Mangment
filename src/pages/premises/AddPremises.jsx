@@ -448,11 +448,35 @@ function AddPremises() {
                     Fill in the form correctly. Fields with an Asterisk{" "}
                     <strong class="text-danger">*</strong> are mandatory fields.
                   </p>
-                  <div className="create-property" id="basic">
+                  <div className="create-property" id="kev-step-form">
+                                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+
+                  <button className="navbar-toggler" type="button" data-toggle="collapse"
+                          data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                          aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                  </button>
+
+                  <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav mr-auto">
+                      <li className="nav-item active">
+                        <a className="nav-link active" href="#">1. Premise Details <span
+                          className="sr-only">(current)</span></a>
+                      </li>
+                      <li className="nav-item">
+                        <a className="nav-link" href="#">2. Invoices Breakdown</a>
+                      </li>
+                      <li className="nav-item">
+                        <a className="nav-link" href="#">3. Document attachments</a>
+                      </li>
+                    </ul>
+
+                  </div>
+                  </nav>
 
                     {/* <!-- Premises details --> */}
+                    <section className="step-cont active-step">
                     <h3>Premises details</h3>
-                    <section>
                       <form>
                         <div class="col-12">
                           <div class="bg-primary border-2 bg-soft p-3 mb-4">
@@ -906,8 +930,8 @@ function AddPremises() {
                     </section>
 
                     {/* <!-- premises invoice breakdown --> */}
+                    <section className="step-cont d-none">
                     <h3>Invoices breakdown</h3>
-                    <section>
                       <div class="row justify-content-center">
                         <div class="col-12">
                           <div class="table-responsive">
@@ -1001,8 +1025,8 @@ function AddPremises() {
                     </section>
 
                     {/* <!-- Document attachments --> */}
+                    <section className="step-cont d-none">
                     <h3>Document Attachments</h3>
-                    <section>
                       <form>
                         <h6>
                           Upload documents
@@ -1044,10 +1068,15 @@ function AddPremises() {
                         </div>
                       </form>
                     </section>
+                    <div className="button-navigators">
+                      <button disabled className="btn btn-primary waves-effect kev-prev me-2"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>
+                      <button className="btn btn-primary waves-effect kev-nxt me-2">Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
+                      <button type='button' className="btn btn-success kev-submit me-2 d-none" onClick={submit}>Submit <i className="mdi mdi-check-all me-2 font-16px"></i></button>
+                    </div>
                   </div>
                 </div>
 
-                <button type='button' className='btn btn-success' onClick={submit}>SUBMIT</button>
+                {/* <button type='button' className='btn btn-success' onClick={submit}>SUBMIT</button> */}
               </div>
             </div>
           </div>
@@ -1224,7 +1253,7 @@ function AddPremises() {
 
       {/* <!-- enter landlord's id modal --> */}
 
-      <Modal show={fileNoShow} centered>
+      <Modal show={!fileNoShow} centered>
         <ModalBody>
           {error.color !== "" &&
             <div className={"alert alert-" + error.color} role="alert">
