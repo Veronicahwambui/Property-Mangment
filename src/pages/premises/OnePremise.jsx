@@ -288,7 +288,7 @@ function OnePremise() {
   const createPremiseType = () => {
     let data = JSON.stringify({
       active: true,
-      id: activeUnitId,
+      id: null,
       numberOfRooms: numberOfRooms,
       premiseId: userId,
       purpose:purpose,
