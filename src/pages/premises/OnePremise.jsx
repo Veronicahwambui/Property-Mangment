@@ -1,18 +1,20 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import axios from "axios";
 
 function OnePremise() {
   const [activeLink, setActiveLink] = useState(1);
   const [premiseData, setPremiseData] = useState({});
-  const [docName , setDocName]= useState('')
-  const [ premiseUnits , setPremiseUnits ]= useState([])
-  const [caretakers ,setCaretakers] = useState([])
-  const [caretakerId ,setCaretakerId] = useState('')
-  const [update , setUpdate]= useState({
+  const [docName, setDocName] = useState('')
+  const [chargeConstraints , setChargeConstraints] = useState([])
+  const [premiseUnits, setPremiseUnits] = useState([])
+  const [premiseCharges, setPremiseCharges] = useState([])
+  const [caretakers, setCaretakers] = useState([])
+  const [caretakerId, setCaretakerId] = useState('')
+  const [update, setUpdate] = useState({
     premType: '',
     premUseType: '',
     estate: '',
@@ -21,7 +23,7 @@ function OnePremise() {
     address: '',
     premNmae: '',
   })
- 
+
 
   const { id } = useParams();
   const userId = id;
@@ -30,9 +32,10 @@ function OnePremise() {
     requestsServiceService.viewPremise(userId).then((res) => {
       setPremiseData(res.data.data);
       setPremiseUnits(res.data.data.premiseUnits)
+      setPremiseCharges(res.data.data.defaultpPremiseUnitTypeCharges)
       setCaretakers(res.data.data.premiseCaretakers)
-      setUpdate({...update , 
-      
+      setUpdate({
+        ...update,
         premType: res.data.data.premise.premiseType.id,
         premUseType: res.data.data.premise.premiseUseType.id,
         estate: res.data.data.premise.estate.id,
@@ -43,79 +46,88 @@ function OnePremise() {
       })
     });
   };
- 
-  const download =()=>{
-       
-     requestsServiceService.download(docName).then((res)=>{
-        console.log(res);
-     })
+
+  const download = () => {
+
+    requestsServiceService.download(docName).then((res) => {
+      console.log(res);
+    })
   }
 
   useEffect(() => {
     fetchAll();
     caretakerTypes()
+    findUnitTypes()
+    findAllCharges()
+    findAllPremiseUnits()
+    chargeConstraint()
   }, []);
 
-  const [PremiseTypes ,setPremiseTypes] = useState([])
-  const [PremiseUseTypes ,setPremiseUseTypes] = useState([])
-  const [Estates ,setEstates] = useState([])
+  const [PremiseTypes, setPremiseTypes] = useState([])
+  const [PremiseUseTypes, setPremiseUseTypes] = useState([])
+  const [Estates, setEstates] = useState([])
 
   const fetchUpdateData = () => {
-     
-    requestsServiceService.allPremiseTypes().then((res)=>{
-            setPremiseTypes(res.data.data)
+
+    requestsServiceService.allPremiseTypes().then((res) => {
+      setPremiseTypes(res.data.data)
     })
-    requestsServiceService.allPremiseUseTypes().then((res)=>{
-            setPremiseUseTypes(res.data.data)
+    requestsServiceService.allPremiseUseTypes().then((res) => {
+      setPremiseUseTypes(res.data.data)
     })
-    requestsServiceService.getAllEstates().then((res)=>{
-            setEstates(res.data.data)
+    requestsServiceService.getAllEstates().then((res) => {
+      setEstates(res.data.data)
+    })
+  }
+
+
+  const togglePrem = () => {
+    requestsServiceService.toggleThePremise(userId).then(() => {
+      fetchAll();
     })
   }
 
 
 
+  const handleChange = (event) => {
+    setUpdate({
+      ...update, [event.target.name]: event.target.value
+    })
+  }
 
- const  handleChange =(event)=>{
-  setUpdate({
-    ...update , [event.target.name]: event.target.value
-  })
- }
 
- console.log(update);
- 
- const updatePrem = () => {
-   let data = JSON.stringify({
-    
+  const updatePrem = () => {
+    let data = JSON.stringify({
+
       active: premiseData.premise.active,
       address: update.address,
       estateId: update.estate,
       fileNumber: update.fileNo,
       id: userId,
       landLordId: [
-        
+
       ],
       landlordFileNumber: [
-        
+
       ],
       plotNumber: update.plotNo,
       premiseName: update.premNmae,
       premiseTypeId: update.premType,
       premiseUseTypeId: update.premUseType
-    
-   })
-  requestsServiceService.updatePremise( userId ,data).then(()=>{
-    fetchAll()
-  })
- }
+
+    })
+    requestsServiceService.updatePremise(userId, data).then(() => {
+      fetchAll()
+    })
+  }
 
 
   // premise caretakers stuff
 
 
-  const [caretypes , setCareTypes]= useState()
-  
-   const [newCaretaker , setNewCaretaker] = useState(  {
+  const [caretypes, setCareTypes] = useState()
+
+  const [newCaretaker, setNewCaretaker] = useState({
     caretakerTypeName: '',
     email: "",
     firstName: "",
@@ -127,7 +139,7 @@ function OnePremise() {
 
   })
 
-   const [updateCaretaker , setUpdateCaretaker] = useState(  {
+  const [updateCaretaker, setUpdateCaretaker] = useState({
     caretakerTypeName: 'SELF_COMMISSIONED',
     email: "q@gmail.com",
     firstName: "res",
@@ -138,9 +150,9 @@ function OnePremise() {
     phoneNumber: "dgd",
   })
 
-  const updateUpdate = (a ,b, c, d, i ,f ,e , g, h)=>{
+  const updateUpdate = (a, b, c, d, i, f, g, h) => {
     setUpdateCaretaker({
-      ...updateCaretaker ,
+      ...updateCaretaker,
 
       caretakerTypeName: a,
       email: b,
@@ -152,34 +164,33 @@ function OnePremise() {
       phoneNumber: h,
     })
   }
- 
-  const hadleUpdateCaretaker = (event)=>{
+
+  const hadleUpdateCaretaker = (event) => {
     setUpdateCaretaker({
-      ...updateCaretaker , [event.target.name] : event.target.value
+      ...updateCaretaker, [event.target.name]: event.target.value
     })
   }
-  
-  
-  const hadleCaretaker = (event)=>{
+
+
+  const hadleCaretaker = (event) => {
     setNewCaretaker({
-      ...newCaretaker , [event.target.name] : event.target.value
+      ...newCaretaker, [event.target.name]: event.target.value
     })
   }
-  
- console.log(newCaretaker);
-  const caretakerTypes = ()=>{
-    requestsServiceService.caretakerTypes().then((res)=>{
+
+  const caretakerTypes = () => {
+    requestsServiceService.caretakerTypes().then((res) => {
       setCareTypes(res.data.data)
     })
   }
 
-  const  getCaretakers = ()=>{
-    requestsServiceService.allCareTakers(userId).then((res)=>{
-       setCaretakers( res.data.data )
+  const getCaretakers = () => {
+    requestsServiceService.allCareTakers(userId).then((res) => {
+      setCaretakers(res.data.data)
     })
   }
 
-  const createCaretaker = ()=>{  
+  const createCaretaker = () => {
 
     let data = JSON.stringify(
       {
@@ -196,18 +207,18 @@ function OnePremise() {
         premiseId: userId
       }
     )
-    requestsServiceService.createCaretaker(userId , data ).then(()=>{
-        getCaretakers()
+    requestsServiceService.createCaretaker(userId, data).then(() => {
+      getCaretakers()
     })
   }
-  
-   const toggleCare = ()=>{
-     requestsServiceService.toggleCaretaker(userId, caretakerId).then(()=>{
-      getCaretakers()   
-     })
-   }
- 
-   const updateCare = ()=>{  
+
+  const toggleCare = () => {
+    requestsServiceService.toggleCaretaker(userId, caretakerId).then(() => {
+      getCaretakers()
+    })
+  }
+
+  const updateCare = () => {
 
     let data = JSON.stringify(
       {
@@ -224,13 +235,116 @@ function OnePremise() {
         premiseId: userId
       }
     )
-    requestsServiceService.updateCaretaker(userId , caretakerId , data ).then(()=>{
-        getCaretakers()
+    requestsServiceService.updateCaretaker(userId, caretakerId, data).then(() => {
+      getCaretakers()
     })
   }
 
 
   // premise unit stuff 
+
+  const [activeUnitId, setActiveUnitId] = useState('')
+  const [unittypes, setUnittypes] = useState([])
+  const [unittype, setUnittype] = useState('')
+  const [unitName, setUnitName] = useState('')
+  const [numberOfRooms ,setNumberOfRooms ] = useState('')
+  const [purpose ,setPurpose] = useState('')
+  const [squarage ,setSquarage] = useState('')
+
+  const findAllPremiseUnits = () => {
+    requestsServiceService.findPremiseUnits(userId).then((res) => {
+      setPremiseUnits(res.data.data)
+    })
+  }
+
+  const togglePremiseUnitStatus = (id) => {
+    requestsServiceService.tooglePremiseUnitStatus(userId, id).then(() => {
+      findAllPremiseUnits()
+    })
+  }
+  const findUnitTypes = () => {
+    requestsServiceService.allUnitTypes().then((res) => {
+      setUnittypes(res.data.data)
+    })
+  }
+
+  const editPremiseType = () => {
+    let data = {
+      active: true,
+      id: activeUnitId,
+      numberOfRooms: numberOfRooms,
+      premiseId: userId,
+      purpose:purpose,
+      squarage: squarage,
+      unitName: unitName,
+      unitTypeId: unittype
+    }
+
+    requestsServiceService.updatePremiseUnit(userId, data).then(() => {
+      findAllPremiseUnits()
+    })
+  }
+
+  const createPremiseType = () => {
+    let data = JSON.stringify({
+      active: true,
+      id: activeUnitId,
+      numberOfRooms: numberOfRooms,
+      premiseId: userId,
+      purpose:purpose,
+      squarage: squarage,
+      unitName: unitName,
+      unitTypeId: unittype
+    })
+    requestsServiceService.createPremiseUnit(userId, data).then(() => {
+      findAllPremiseUnits()
+    })
+  }
+
+  //  premise unit Charges Stuff
+  const [chargeId ,setChargeId] = useState('')
+  const [rateCharge ,setRateCharge] = useState(true)
+
+  const findAllCharges = () =>{
+    requestsServiceService.findPremiseUnitTypeCharges(userId).then((res)=>{
+      setPremiseCharges(res.data.data)
+    })
+  }
+
+ const  toggleChargeStatus = ()=>{
+    requestsServiceService.tooglePremiseUnitTypeChargestatus(chargeId).then(()=>{
+      findAllCharges()
+    })
+  }
+
+  const chargeConstraint = ()=>{
+     requestsServiceService.getChargeConstraints().then((res)=>{
+      setChargeConstraints(res.data.data)
+     })
+  }
+
+  const updateCharges = ()=>{
+     const data = JSON.stringify({    
+        active: true,
+        applicableChargeId: 'chargeId',
+        chargeConstraint: "ZERO_BALANCE",
+        clientCollectionAccountId: 0,
+        collectedToClientAccount: true,
+        constraintChargeId: "string",
+        id: 0,
+        invoiceDay: 0,
+        landlordCollectionAccountId: 0,
+        monthCountForTenancyRenewal: 0,
+        numberOfRooms: 'numberOfRooms',
+        premiseId: 'userId',
+        purpose: '',
+        rateCharge: 0,
+        squarage: 0,
+        unitTypeId: 0,
+        value: 0
+     })
+  }
+
 
 
   return (
@@ -305,6 +419,16 @@ function OnePremise() {
                         Units
                       </a>
                       <a
+                        onClick={() => setActiveLink(6)}
+                        class={
+                          activeLink === 6
+                            ? "nav-item nav-link active cursor-pointer"
+                            : "nav-item cursor-pointer nav-link"
+                        }
+                      >
+                        Charges And Unit Types
+                      </a>
+                      <a
                         onClick={() => setActiveLink(2)}
                         class={
                           activeLink === 2
@@ -335,6 +459,59 @@ function OnePremise() {
                         Caretakers
                       </a>
                     </div>
+                    <div class="navbar-nav">
+                      <a href="#" data-toggle="modal" data-target="#deactivate-modal" type="button" class="btn btn-outline-danger waves-effect waves-light">
+                        <i class="bx dripicons-wrong font-size-16 align-middle me-2"></i> Deactivate Premises
+                      </a>
+
+                      {/* <!-- Modal --> */}
+                      <div class="modal fade" id="deactivate-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content ">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="composemodalTitle">Deactivate the Premise</h5>
+                              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <div>
+                                <ul class="no-list-style p-0 mb-3">
+
+                                  <li class="pb-3">
+                                    <a href="javascript: void(0);">
+                                      <div class="d-flex">
+
+                                        <div class="flex-shrink-0 align-self-center me-3">
+                                          <div class="avatar-xs">
+                                            <span class="avatar-title rounded-circle bg-primary bg-soft text-primary">
+                                              <i class="mdi mdi-office-building-outline font-18px"></i>
+                                            </span>
+                                          </div>
+                                        </div>
+
+                                        <div class="flex-grow-1 overflow-hidden">
+                                          <p class="text-truncate mb-1">Premises Name</p>
+                                          <h5 class="text-truncate font-size-14 mb-0 text-capitalize">  {premiseData.premise && premiseData.premise.premiseName}</h5>
+
+                                        </div>
+
+                                      </div>
+                                    </a>
+                                  </li>
+                                </ul>
+
+                              </div>
+
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <button onClick={() => togglePrem()} type="button" class="btn btn-danger" data-dismiss="modal" id="send-msg-land"><i class="bx dripicons-wrong me-1"></i> Deactivate </button>
+                            </div>
+
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </nav>
               </div>
@@ -358,9 +535,9 @@ function OnePremise() {
                           Quick Stats on{" "}
                           {premiseData.premise &&
                             premiseData.premise.premiseName}
-                          <span className="badge badge-pill badge-soft-success font-size-11">
-                            Active
-                          </span>
+
+                          {premiseData.premise && premiseData.premise.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}
+
                         </h4>
                       </div>
                       <div className="d-flex align-items-center flex-grow-1"></div>
@@ -421,7 +598,7 @@ function OnePremise() {
                         </div>
                       </div>
                       <div className="row mt-5">
-                      <div className="col-3">
+                        <div className="col-3">
                           <label htmlFor="">County</label>
                           <div>
                             <span>
@@ -484,7 +661,7 @@ function OnePremise() {
                         <label htmlFor="">Premise Name</label>
                         <input
                           type="text"
-                          className="form-control" 
+                          className="form-control"
                           value={update.premNmae}
                           onChange={handleChange}
                           name="premName"
@@ -497,14 +674,14 @@ function OnePremise() {
                             className="form-control"
                             onChange={handleChange}
                             name="premType"
-                            
+
                           >
-                          
+
                             {PremiseTypes.map((prem) => (
                               <option
                                 value={prem.id}
                                 className="text-black font-semibold "
-                                selected={ prem.id === update.premType ? "selected" : ''}
+                                selected={prem.id === update.premType ? "selected" : ''}
                               >
                                 {prem.name}
                               </option>
@@ -518,12 +695,12 @@ function OnePremise() {
                             onChange={handleChange}
                             name="premUseType"
                           >
-                          
+
                             {PremiseUseTypes.map((prem) => (
                               <option
                                 value={prem.id}
                                 className="text-black font-semibold "
-                                selected={ prem.id === update.premUseType ? "selected" : ''}
+                                selected={prem.id === update.premUseType ? "selected" : ''}
                               >
                                 {prem.name}
                               </option>
@@ -558,7 +735,7 @@ function OnePremise() {
                           <input
                             type="text"
                             className="form-control"
-                          value={update.fileNo}
+                            value={update.fileNo}
 
                             onChange={handleChange}
                             name="fileNo"
@@ -569,7 +746,7 @@ function OnePremise() {
                           <input
                             type="text"
                             className="form-control"
-                          value={update.plotNo}
+                            value={update.plotNo}
 
                             onChange={handleChange}
                             name="plotNo"
@@ -580,8 +757,8 @@ function OnePremise() {
                           <input
                             type="text"
                             className="form-control"
-                          value={update.address}
-                            
+                            value={update.address}
+
                             onChange={handleChange}
                             name="address"
                           />
@@ -614,73 +791,341 @@ function OnePremise() {
 
         {activeLink === 5 && (
           <div>
-            <div className="row">
-              <div className="col-xl-12">
-                <div className="card calc-h-3px">
-                  <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <div class="d-flex align-items-center flex-grow-1">
-                        <h4 class="mb-0 m-0 bg-transparent">
-                          Charges and Unit types
-                        </h4>
-                      </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div className="d-flex justify-content-between">
+                      <h4 class="card-title text-capitalize mb-3">Property units</h4>
+                      <button
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#create-premise-unit"
+                        className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
+                        onClick={() => { setUnitName(''); setUnittype(''); }}
+                      >
+                        <i className="dripicons-plus font-size-16"></i>{" "}
+                        <span className="pl-1 d-md-inline">
+                          New Premise Unit
+                        </span>
+                      </button>
+                    </div>
+
+                    <div class="table-responsive table-responsive-md overflow-visible">
+                      <table class="table table-editable align-middle table-edits" >
+                        <thead class="table-light" >
+                          <tr class=" text-uppercase ">
+                            <th>#</th>
+                            <th>Num.</th>
+                            <th class=" ">Hse Type</th>
+                            <th class=" ">Status</th>
+                            <th class="text-right w-220px">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                          {premiseUnits && premiseUnits.map((unit, index) => (
+                            <tr data-id="1 ">
+                              <td style={{ width: "80px" }}>{index + 1}</td>
+                              <td>
+                                <Link onMouseOver={() => setActiveUnitId(unit.id)} to={`/premise/${userId}/${activeUnitId}`}>{unit.unitName}</Link>
+                              </td>
+                              <td >{unit.unitType.name}</td>
+                              <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                              <td class="text-right cell-change d-flex align-items-center float-right justify-content-end">
+                                <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id) }} data-bs-toggle="modal"
+                                  data-bs-target="#edit-premise-unit" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
+                                <div class="dropdown">
+                                  <a onClick={() => setActiveUnitId(unit.id)} class="text-muted font-size-16 ml-7px" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                  </a>
+
+                                  <div class="dropdown-menu dropdown-menu-end">
+                                    <Link class="dropdown-item" to={`/premise/${userId}/${activeUnitId}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
+                                    <a onClick={() => togglePremiseUnitStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
+                                  </div>
+                                </div>
+                              </td>
+
+                            </tr>
+                          ))}
+
+                        </tbody>
+
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              {/* <!-- end col --> */}
+            </div>
+            {/* modals edit-premise-unit */}
+            <div
+              class="modal fade"
+              id="edit-premise-unit"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              role="dialog"
+              aria-labelledby="staticBackdropLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                  <div
+                    className="modal-body">
+                    <div className="form-group">
+                      <label htmlFor="">update Name</label>
+                      <input type="text" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="">Select unit type</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id} selected={unit.id === unittype ? "selected" : ''}> {unit.name}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
-                  <div className="card-body">
-                    <div className="col-12">
-                      <div className="table-responsive">
-                        <table
-                          class="table align-middle table-edits rent-invoicing dt-responsive"
-                          id="data-table"
-                        >
-                          <thead>
-                            <tr class="text-uppercase table-dark">
-                              <th>#</th>
-                              <th>Name</th>
-                              <th>Unit Type</th>
-                              <th>Status</th>
-                              <th className="text-right">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {premiseUnits &&
-                              premiseUnits.map((unit, index) => (
-                                <tr data-id="1">
-                                  <td>{index + 1}</td>
-                                  <td>{unit.unitName}</td>
-                                  <td>{unit.unitType.name}</td>
-                                  <td>
-                                    {" "}
-                                    {unit.active ? (
-                                      <span class="badge-soft-success badge">
-                                        Active
-                                      </span>
-                                    ) : (
-                                      <span class="badge-soft-danger badge">
-                                        Inactive
-                                      </span>
-                                    )}
-                                  </td>
-                                  <td className="text-right cell-change">
-                                    {" "}
-                                    <a
-                                      className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#edit-premise-unit"
-                                      title="Edit"
-                                    >
-                                      <i className="bx bx-edit-alt " />
-                                    </a>
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      close
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-dismiss="modal"
+                      onClick={editPremiseType}
+                    >
+                      update
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* premise unit create  */}
+            <div
+              class="modal fade"
+              id="create-premise-unit"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              role="dialog"
+              aria-labelledby="staticBackdropLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                  <div
+                    className="modal-body">
+                    <div className="form-group">
+                      <label htmlFor="">Unit Name</label>
+                      <input type="text" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
                     </div>
+
+                    <div className="form-group">
+                      <label htmlFor="">Select unit type</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      close
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-dismiss="modal"
+                      onClick={createPremiseType}
+                    >
+                      create
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeLink === 6 && (
+          <div>
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div className="d-flex justify-content-between">
+                      <h4 class="card-title text-capitalize mb-3">Charges And Unit Types </h4>
+                      <button
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#create-premise-unit"
+                        className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
+                        onClick={() => { setUnitName(''); setUnittype(''); }}
+                      >
+                        <i className="dripicons-plus font-size-16"></i>{" "}
+                        <span className="pl-1 d-md-inline">
+                          New Charge
+                        </span>
+                      </button>
+                    </div>
+
+                    <div class="table-responsive table-responsive-md overflow-visible">
+                      <table class="table table-editable align-middle table-edits" >
+                        <thead class="table-light" >
+                          <tr class=" text-uppercase ">
+                            <th>#</th>
+                            <th class="">UNIT PURPOSE</th>
+                            <th class=" ">NO of Rooms</th>
+                            <th class=" ">UNIT SIZE M<sup>2</sup></th>
+                            <th>TENANCY RENEWAL</th>
+                            <th>charge constraint</th>
+                            <th>rate charge</th>
+                            <th>applicable charge </th>
+                            <th>applicable charge type </th>
+                            <th>invoice day</th>
+                            <th>amount </th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {premiseCharges && premiseCharges.map((unit, index) => (
+                            <tr data-id="1 ">
+                              <td style={{ width: "80px" }}>{index + 1}</td>
+                              <td >{unit.purpose}</td>
+                              <td>{unit.numberOfRooms} rooms</td>
+                              <td>{unit.squarage} m<sup>2</sup> </td>
+                              <td>{unit.monthCountForTenancyRenewal} months</td>
+                              <td>{unit.chargeConstraint.toLowerCase()}</td>
+                              <td>{unit.rateCharge? "true": "false"}</td>
+                              <td>{unit.applicableCharge.name}</td>
+                              <td>{unit.applicableCharge.applicableChargeType.toLowerCase()}</td>
+                              <td>{unit.invoiceDay}</td>
+                              <td>{unit.value}</td>
+                              <td class="text-right d-flex align-items-center float-right justify-content-end">
+                                <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id) }} data-bs-toggle="modal"
+                                  data-bs-target="#edit-premise-unit" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
+                                <div class="dropdown">
+                                  <a onClick={() => setActiveUnitId(unit.id)} class="text-muted font-size-16 ml-7px" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                  </a>
+
+                                  <div class="dropdown-menu dropdown-menu-end">
+                                    <Link class="dropdown-item" to={`/premise/${userId}/${activeUnitId}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
+                                    <a onClick={() => togglePremiseUnitStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
+                                  </div>
+                                </div>
+                              </td>
+
+                            </tr>
+                          ))}
+                        </tbody>
+
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              {/* <!-- end col --> */}
+            </div>
+         
+            {/* modals edit-premise-unit */}
+            <div
+              class="modal fade"
+              id="edit-premise-unit"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              role="dialog"
+              aria-labelledby="staticBackdropLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                  <div className="modal-body">
+                     
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      close
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-dismiss="modal"
+                      onClick={editPremiseType}
+                    >
+                      update
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* premise unit create  */}
+            <div
+              class="modal fade"
+              id="create-premise-unit"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              role="dialog"
+              aria-labelledby="staticBackdropLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                  <div
+                    className="modal-body">
+                    <div className="form-group">
+                      <label htmlFor="">Unit Name</label>
+                      <input type="text" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="">Select unit type</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      close
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-dismiss="modal"
+                      onClick={createPremiseType}
+                    >
+                      create
+                    </button>
                   </div>
                 </div>
               </div>
@@ -896,8 +1341,9 @@ function OnePremise() {
                                         data-bs-toggle="modal"
                                         data-bs-target="#edit-care"
                                         title="Edit"
-                                        onClick={() =>{
-                                          setCaretakerId(unit.id); updateUpdate(unit.caretakerType, unit.email,unit.firstName ,unit.gender,unit.idNumber ,unit.lastName ,unit.otherName ,unit.phoneNumber )}
+                                        onClick={() => {
+                                          setCaretakerId(unit.id); updateUpdate(unit.caretakerType, unit.email, unit.firstName, unit.gender, unit.idNumber, unit.lastName, unit.otherName, unit.phoneNumber)
+                                        }
                                         }
                                       >
                                         <i class="bx bx-edit-alt "></i>
@@ -908,8 +1354,9 @@ function OnePremise() {
                                           title="deactivate"
                                           data-bs-toggle="modal"
                                           data-bs-target="#confirm-deactivate"
-                                          onClick={() =>{
-                                            setCaretakerId(unit.id); toggleCare()}
+                                          onClick={() => {
+                                            setCaretakerId(unit.id); toggleCare()
+                                          }
                                           }
                                         >
                                           Deactivate
@@ -921,7 +1368,8 @@ function OnePremise() {
                                           data-bs-toggle="modal"
                                           data-bs-target="#confirm-activate"
                                           onClick={() => {
-                                            setCaretakerId(unit.id); toggleCare()}
+                                            setCaretakerId(unit.id); toggleCare()
+                                          }
                                           }
                                         >
                                           Activate
@@ -957,13 +1405,13 @@ function OnePremise() {
                       <div className="col-4">
                         <div className="form-group">
                           <label htmlFor=""> First Name</label>
-                          <input type="text"  className="form-control"  value={newCaretaker.firstName} onChange={hadleCaretaker} name="firstName"/>
+                          <input type="text" className="form-control" value={newCaretaker.firstName} onChange={hadleCaretaker} name="firstName" />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
                           <label htmlFor=""> Last Name</label>
-                          <input type="text" className="form-control"  value={newCaretaker.lastName} onChange={hadleCaretaker} name='lastName' />
+                          <input type="text" className="form-control" value={newCaretaker.lastName} onChange={hadleCaretaker} name='lastName' />
                         </div>
                       </div>
                       <div className="col-4">
@@ -997,10 +1445,10 @@ function OnePremise() {
                       <div className="col-6">
                         <div className="form-group">
                           <label htmlFor="">Caretaker Type</label>
-                          <select name="caretakerTypeName"  className="form-control" onChange={hadleCaretaker }>
+                          <select name="caretakerTypeName" className="form-control" onChange={hadleCaretaker}>
                             <option value=""> Select Type</option>
-                            { caretypes && caretypes.map((type)=>(
-                            <option value={type}> {type} </option>
+                            {caretypes && caretypes.map((type) => (
+                              <option value={type}> {type} </option>
                             ))}
                           </select>
                         </div>
@@ -1017,7 +1465,7 @@ function OnePremise() {
                               value="Male"
                               name="gender"
                               id="formRadios1"
-                              onChange={hadleCaretaker }
+                              onChange={hadleCaretaker}
                             />
                             <label
                               className="form-check-label"
@@ -1033,7 +1481,7 @@ function OnePremise() {
                               value="Female"
                               name="gender"
                               id="formRadios2"
-                              onChange={hadleCaretaker }
+                              onChange={hadleCaretaker}
                             />
                             <label
                               className="form-check-label"
@@ -1086,20 +1534,20 @@ function OnePremise() {
                       <div className="col-4">
                         <div className="form-group">
                           <label htmlFor=""> First Name</label>
-   
-                          <input type="text"  className="form-control"  value={updateCaretaker.firstName} onChange={hadleUpdateCaretaker } name="firstName"/>
+
+                          <input type="text" className="form-control" value={updateCaretaker.firstName} onChange={hadleUpdateCaretaker} name="firstName" />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
                           <label htmlFor=""> Last Name</label>
-                          <input type="text" className="form-control"  value={updateCaretaker.lastName} onChange={hadleUpdateCaretaker } name='lastName' />
+                          <input type="text" className="form-control" value={updateCaretaker.lastName} onChange={hadleUpdateCaretaker} name='lastName' />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
                           <label htmlFor="">Other Name</label>
-                          <input type="text" className="form-control" value={updateCaretaker.otherName} onChange={hadleUpdateCaretaker } name='otherName' />
+                          <input type="text" className="form-control" value={updateCaretaker.otherName} onChange={hadleUpdateCaretaker} name='otherName' />
                         </div>
                       </div>
                     </div>
@@ -1107,19 +1555,19 @@ function OnePremise() {
                       <div className="col-4">
                         <div className="form-group">
                           <label htmlFor=""> Phone No</label>
-                          <input type="text" className="form-control" value={updateCaretaker.phoneNumber} onChange={hadleUpdateCaretaker } name="phoneNumber" />
+                          <input type="text" className="form-control" value={updateCaretaker.phoneNumber} onChange={hadleUpdateCaretaker} name="phoneNumber" />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
                           <label htmlFor=""> ID No</label>
-                          <input type="text" className="form-control" value={updateCaretaker.idNumber} onChange={hadleUpdateCaretaker } name='idNumber' />
+                          <input type="text" className="form-control" value={updateCaretaker.idNumber} onChange={hadleUpdateCaretaker} name='idNumber' />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
                           <label htmlFor="">Email</label>
-                          <input type="text" className="form-control" value={updateCaretaker.email} onChange={hadleUpdateCaretaker } name="email" />
+                          <input type="text" className="form-control" value={updateCaretaker.email} onChange={hadleUpdateCaretaker} name="email" />
                         </div>
                       </div>
                     </div>
@@ -1127,10 +1575,10 @@ function OnePremise() {
                       <div className="col-6">
                         <div className="form-group">
                           <label htmlFor="">Caretaker Type</label>
-                          <select name="caretakerTypeName" id="" className="form-control" onChange={hadleUpdateCaretaker }>
-                            { caretypes && caretypes.map((type)=>(
+                          <select name="caretakerTypeName" id="" className="form-control" onChange={hadleUpdateCaretaker}>
+                            {caretypes && caretypes.map((type) => (
 
-                            <option  selected={ type === updateCaretaker.caretakerTypeName ? "selected" : ''}  value={type} >{type}</option>
+                              <option selected={type === updateCaretaker.caretakerTypeName ? "selected" : ''} value={type} >{type}</option>
                             ))}
                           </select>
                         </div>

@@ -503,6 +503,50 @@ class RequestsService {
         return axiosInstance.get(baseUrl + "/landlord/accounts/deactivate/" + data);
     }
 
+    // premise unit start 
+     findPremiseUnits(premiseId){
+        return axiosInstance.get( baseUrl + "/premiseUnits/"+ premiseId + "/units")
+     }
+
+     tooglePremiseUnitStatus( id ,premiseId){
+        return axiosInstance.get( baseUrl + "/premiseUnits/"+ premiseId + "/unit/" + id + "/toogleStatus")
+     }
+    
+     updatePremiseUnit(premiseId ,data){
+        return axiosInstance.post(baseUrl + "/premiseUnits/"+ premiseId +"/unit/update", data)
+     }
+     
+     createPremiseUnit(premiseId ,data){
+        return axiosInstance.post(baseUrl + "/premiseUnits/"+ premiseId +"/unit", data)
+     }
+     viewOnePremiseUnit( premiseId , id){
+        return axiosInstance.get(baseUrl + "/premiseUnits/" +premiseId+ "/unit/" + id)
+     }
+
+     toggleThePremise(premiseId){
+        return axiosInstance.get(baseUrl + "/premises/toogleStatus/"+ premiseId)
+     }
+
+    // premise unit end 
+
+    // premise charges start 
+    createPremiseUnitTypeCharges(data){
+        return axiosInstance.post(baseUrl + "/premiseUnitTypeCharges" , data)
+    }
+    updatePremiseUnitTypeCharges(data){
+        return axiosInstance.post(baseUrl + "/premiseUnitTypeCharges/update" , data)
+    }
+    tooglePremiseUnitTypeChargestatus(id){
+        return axiosInstance.get(baseUrl + "/premiseUnitTypeCharges" + id + "/toogleStatus")
+    }
+    findPremiseUnitTypeCharges(prem){
+        return axiosInstance.get(baseUrl + "/premiseUnitTypeCharges/premise/" + prem)
+    }
+    getChargeConstraints(){
+        return axiosInstance.get(baseUrl + "/setup/chargeConstraints")
+    }
+    // premise charges end
+
 }
 
 export default new RequestsService();
