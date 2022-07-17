@@ -949,7 +949,6 @@ function ViewLandlord() {
         </form>
       </Modal>
 
-
     </>
 
   );

@@ -802,7 +802,7 @@ function OnePremise() {
                         data-bs-toggle="modal"
                         data-bs-target="#create-premise-unit"
                         className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
-                        onClick={() => { setUnitName(''); setUnittype(''); }}
+                        onClick={() => { setUnitName(''); setUnittype('');setPurpose(''); setNumberOfRooms(''); setSquarage('') }}
                       >
                         <i className="dripicons-plus font-size-16"></i>{" "}
                         <span className="pl-1 d-md-inline">
@@ -816,8 +816,11 @@ function OnePremise() {
                         <thead class="table-light" >
                           <tr class=" text-uppercase ">
                             <th>#</th>
-                            <th>Num.</th>
+                            <th>Name</th>
                             <th class=" ">Hse Type</th>
+                            <th>purpose</th>
+                            <th>no of rooms</th>
+                            <th>unit size</th>
                             <th class=" ">Status</th>
                             <th class="text-right w-220px">Actions</th>
                           </tr>
@@ -831,9 +834,12 @@ function OnePremise() {
                                 <Link onMouseOver={() => setActiveUnitId(unit.id)} to={`/premise/${userId}/${activeUnitId}`}>{unit.unitName}</Link>
                               </td>
                               <td >{unit.unitType.name}</td>
+                              <td>{unit.purpose}</td>
+                              <td>{unit.numberOfRooms} rooms</td>
+                              <td>{unit.squarage} M <sup>2</sup></td>
                               <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
                               <td class="text-right cell-change d-flex align-items-center float-right justify-content-end">
-                                <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id) }} data-bs-toggle="modal"
+                                <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id); setPurpose(unit.purpose); setNumberOfRooms(unit.numberOfRooms); setSquarage(unit.squarage) }} data-bs-toggle="modal"
                                   data-bs-target="#edit-premise-unit" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                                 <div class="dropdown">
                                   <a onClick={() => setActiveUnitId(unit.id)} class="text-muted font-size-16 ml-7px" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
@@ -888,6 +894,18 @@ function OnePremise() {
                         ))}
                       </select>
                     </div>
+                    <div className="form-group">
+                      <label htmlFor="">Purpose</label>
+                      <input type="text" value={purpose} className="form-control" onChange={(event) => setPurpose(event.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Number of Rooms</label>
+                      <input type="text" value={numberOfRooms} className="form-control" onChange={(event) => setNumberOfRooms(event.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">unit size in M<sup>2</sup></label>
+                      <input type="text" value={squarage} className="form-control" onChange={(event) => setSquarage(event.target.value)} />
+                    </div>
                   </div>
                   <div class="modal-footer">
                     <button
@@ -937,6 +955,18 @@ function OnePremise() {
                           <option value={unit.id}> {unit.name}</option>
                         ))}
                       </select>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Purpose</label>
+                      <input type="text" value={purpose} className="form-control" onChange={(event) => setPurpose(event.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Number of Rooms</label>
+                      <input type="text" value={numberOfRooms} className="form-control" onChange={(event) => setNumberOfRooms(event.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">unit size in M<sup>2</sup></label>
+                      <input type="text" value={squarage} className="form-control" onChange={(event) => setSquarage(event.target.value)} />
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -989,16 +1019,17 @@ function OnePremise() {
                         <thead class="table-light" >
                           <tr class=" text-uppercase ">
                             <th>#</th>
+                            <th>unit type </th>
+                            <th>applicable charge </th>
+                            <th>applicable charge type </th>
+                            <th>invoice day</th>
+                            <th>amount </th>
                             <th class="">UNIT PURPOSE</th>
                             <th class=" ">NO of Rooms</th>
                             <th class=" ">UNIT SIZE M<sup>2</sup></th>
                             <th>TENANCY RENEWAL</th>
                             <th>charge constraint</th>
                             <th>rate charge</th>
-                            <th>applicable charge </th>
-                            <th>applicable charge type </th>
-                            <th>invoice day</th>
-                            <th>amount </th>
                             <th></th>
                           </tr>
                         </thead>
