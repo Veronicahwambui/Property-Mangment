@@ -146,16 +146,19 @@ function AddPremises() {
           "applicableChargeName": chargee.name,
           "applicableChargeType": chargee.applicableChargeType,
 
-          "unitTypeName": selectedunitTypes[i].unitTypeName,
-          "landlordCollectionAccountId": undefined,
+          "unitTypeName": selectedunitTypes[i].name,
           "monthCountForTenancyRenewal": selectedunitTypes[i].monthCountForTenancyRenewal,
           "numberOfRooms": selectedunitTypes[i].numberOfRooms,
           "premiseId": undefined,
           "purpose": selectedunitTypes[i].purpose,
           "rateCharge": undefined,
           "squarage": selectedunitTypes[i].squarage,
-          "unitTypeId": selectedunitTypes[i].unitTypeId,
-          "value": undefined
+          "unitTypeId": selectedunitTypes[i].id,
+          "value": undefined,
+
+          "clientCollectionAccountId": undefined,
+          "collectedToClientAccount": undefined,
+          "landlordCollectionAccountId": undefined,
         }
         unitAppCharge.push(chargeBody);
       }
@@ -163,11 +166,14 @@ function AddPremises() {
       setUnitCharges(unitAppCharge);
     } else {
       let unitAppCharge = unitCharges;
-      unitAppCharge[index][event.target.name] = event.target.value;
+
+      if (event.target.name === "collectedToClientAccount")
+        unitAppCharge[index][event.target.name] = event.target.value === "client";
+      else
+        unitAppCharge[index][event.target.name] = event.target.value;
 
       setUnitCharges(unitAppCharge);
     }
-    console.log(unitCharges)
   };
 
   const handleUnitChange = (event) => {
@@ -206,6 +212,27 @@ function AddPremises() {
         chargess.splice(chargess.indexOf(value), 1);
 
       setSelectedApplicableCharges(chargess);
+
+    }
+  };
+
+  const selectedUnitTypesChange = (event) => {
+
+    console.log(event.target.value);
+    let chargess = selectedunitTypes;
+
+    let value = unitTypes.find(x => x.id == event.target.value);
+
+    console.log(value)
+    if (value != undefined) {
+
+      if (event.target.checked)
+        chargess.push(value);
+      else
+
+        chargess.splice(chargess.indexOf(value), 1);
+
+      setSelectedUnitTypes(chargess);
 
     }
   };
@@ -804,6 +831,29 @@ function AddPremises() {
                             </p>
                           </div>
                         </div>
+
+                        <div class="row">
+                          {unitTypes && unitTypes.map((prem, index) =>
+                            <div class="col-4">
+                              <div class="form-check form-check-primary mb-3">
+                                <input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  name="selectedUnitTypes"
+                                  value={prem.id}
+                                  onChange={selectedUnitTypesChange}
+                                />
+                                <label
+                                  class="form-check-label"
+                                  for="monthlyRent"
+                                >
+                                  {prem.name}
+                                </label>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
                         <div class="table-responsive table-responsive-md mb-5">
                           <table class="table table-editable-2 align-middle table-edits ">
                             <thead class="table-light">
@@ -840,7 +890,7 @@ function AddPremises() {
                               {selectedunitTypes.length > 0 && selectedunitTypes.map((dependent, index) => (
                                 <tr key={"unit type" + dependent.unitTypeName + index}>
                                   <td>{index + 1}</td>
-                                  <td>{dependent.unitTypeName}</td>
+                                  <td>{dependent.name}</td>
                                   <td>{dependent.numberOfRooms}</td>
                                   <td>{dependent.squarage}</td>
                                   <td>{dependent.purpose}</td>
@@ -855,13 +905,7 @@ function AddPremises() {
                               }
 
                             </tbody>
-                            <tfoot>
-                              <tr>
-                                <td colSpan="7 ">
-                                  <button type="button" data-id="PREMISE" onClick={newUnitType}>Add A Unit Type</button>
-                                </td>
-                              </tr>
-                            </tfoot>
+
                           </table>
                         </div>
 
@@ -1082,7 +1126,7 @@ function AddPremises() {
       </div>
 
 
-      <Modal show={newUnitTypeModal}>
+      <Modal show={newUnitTypeModal} dialogClassName="my-modal">
         <form onSubmit={addUnitType}>
           <ModalHeader className='justify-content'>
             <h3>New Unit Type</h3>
@@ -1148,7 +1192,7 @@ function AddPremises() {
 
 
       {/* docs modal */}
-      <Modal show={showDocumentModal}>
+      <Modal show={showDocumentModal} dialogClassName="my-modal">
         <form id="newContactPersonForm" onSubmit={addDocument}>
           <ModalHeader className='justify-content'>
             <h3>New {docBody.documentOwnerTypeName} Document</h3>
@@ -1192,14 +1236,14 @@ function AddPremises() {
 
 
 
-      <Modal show={showUnitTypeChargesModal}>
+      <Modal show={showUnitTypeChargesModal} dialogClassName="my-modal">
         <form id="newContactPersonForm" onSubmit={addAppCharge}>
           <ModalHeader className='justify-content'>
             <h3>Invoice Breakdown</h3>
             <span onClick={toogleShowUnitTypeChargesModal}>X</span>
           </ModalHeader>
           <ModalBody className='row'>
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-4">
                 <label htmlFor="basicpill-firstname-input">Applicable Charge Type<strong className="text-danger">*</strong></label>
 
@@ -1214,34 +1258,58 @@ function AddPremises() {
             <hr></hr>
             <h3>Charge Values</h3>
 
-            {unitCharges && unitCharges.map((unitCharge, index) => (<>
-              <div className="col-md-6">
-                <label htmlFor="">Unit Type</label>
-                <input type="text" className="form-control" id="" placeholder="" required
-                  disabled value={unitCharge.unitTypeName} name="docName" />
-              </div>
+            {unitCharges && unitCharges.map((unitCharge, index) => (
+              <div className="card border border-primary">
+                <div className="row card-body">
+                  <div className="col-md-4">
+                    <label htmlFor="">Unit Type</label>
+                    <input type="text" className="form-control" id="" placeholder="" required
+                      disabled value={unitCharge.unitTypeName} name="docName" />
+                  </div>
 
-              <div className="col-md-6">
-                <label> Charge Value </label>
-                <input type="number" className="form-control" name="value" required
-                  onChange={(e) => handleChargechange(e, index)} />
-              </div>
+                  <div className="col-md-4">
+                    <label> Charge Value </label>
+                    <input type="number" className="form-control" name="value" required
+                      onChange={(e) => handleChargechange(e, index)} />
+                  </div>
 
-              <div className="col-md-6">
-                <label> Collection Acc </label>
-                <select className='form-control' required onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
-                  <option></option>
-                  {landLordAccounts && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
-                </select>
-              </div>
+                  <div className="col-md-4">
+                    <label> Collected to: </label>
+                    <select className='form-control' required onChange={(e) => handleChargechange(e, index)}
+                      name="collectedToClientAccount">
+                      <option></option>
+                      <option value="client">Client Account</option>
+                      <option value="landlord">LandLord Account</option>
+                    </select>
+                  </div>
 
-              <div className="col-md-6">
-                <label> Invoice Day </label>
-                <input type="number" className="form-control" name="invoiceDay" required
-                  onChange={(e) => handleChargechange(e, index)} />
-              </div>
+                  {unitCharge["collectedToClientAccount"] == true ?
+                    <div className="col-md-4">
+                      <label> Client Collection Acc </label>
+                      <select className='form-control' required onChange={(e) => handleChargechange(e, index)}
+                        name="clientCollectionAccountId">
+                        <option></option>
+                        {landLordAccounts && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
+                      </select>
+                    </div>
+                    :
+                    <div className="col-md-4">
+                      <label>LandLord Collection Acc </label>
+                      <select className='form-control' required onChange={(e) => handleChargechange(e, index)}
+                        name="landlordCollectionAccountId">
+                        <option></option>
+                        {landLordAccounts && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
+                      </select>
+                    </div>
+                  }
+                  <div className="col-md-4">
+                    <label> Invoice Day </label>
+                    <input type="number" className="form-control" name="invoiceDay" required
+                      onChange={(e) => handleChargechange(e, index)} />
+                  </div>
 
-            </>
+                </div>
+              </div>
             ))
             }
           </ModalBody>
