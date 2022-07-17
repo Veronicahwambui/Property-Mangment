@@ -96,9 +96,13 @@ function ViewLandlord() {
   const docclose = () => set_show_doc(false);
 
   const accshow = (id) => {
-    set_show_acc(true);
+    let acc = accountsData.find(account => account.id === id)
+    setEditBankName(acc.bank.bankName);
+    setEditPercentageRemuneration(acc.percentageRemuneration);
+    setEditBankAccount(acc.bankAccountNumber);
+    setEditBankId(acc.bank.id)
     setacc_id(id);
-    console.log(acc_id)
+    set_show_acc(true);
   }
   const accclose = () => set_show_acc(false);
 
@@ -553,7 +557,6 @@ function ViewLandlord() {
                                     <th scope="col">% Remuneration</th>
                                     <th scope="col">Status</th>
                                     <th className="text-right">Actions</th>
-                                    <th></th>
                                   </tr>
                                   </thead>
                                   <tbody>
@@ -565,13 +568,12 @@ function ViewLandlord() {
                                       <td data-field="unit-num ">{acc.percentageRemuneration}</td>
                                       <td data-field="unit-num ">{acc.active ?
                                         <span className="badge-soft-success badge">Active</span> :
-                                        <span className="badge-soft-danger badge">Inactive</span>}</td>
-                                      <td className="text-right cell-change ">
-                                        <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
-                                           title="Edit" onClick={() => accshow(acc.id)}><i className="bx bx-edit-alt " /></a>
+                                        <span className="badge-soft-danger badge">Inactive</span>}
                                       </td>
-                                      <td>
+                                      <td className="text-right cell-change ">
                                         <div className="d-flex">
+                                          <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
+                                             title="Edit" onClick={() => accshow(acc.id)}><i className="bx bx-edit-alt " /></a>
                                           {acc.active ? <button
                                             className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
                                             title="deactivate"
@@ -594,6 +596,7 @@ function ViewLandlord() {
                                           }
                                         </div>
                                       </td>
+
                                     </tr>
                                   ))}
                                   </tbody>
@@ -864,7 +867,7 @@ function ViewLandlord() {
                       required={true}
                     >
                       <option className="text-black font-semibold ">
-                        select..
+                        {editBankName}
                       </option>
                       {banks.map((bank) => {
                         return (
@@ -983,7 +986,7 @@ function ViewLandlord() {
                     required={true}
                   >
                     <option className="text-black font-semibold ">
-                      select..
+                      {editBankName}
                     </option>
                     {documentTypes.map((dT) => {
                       return (

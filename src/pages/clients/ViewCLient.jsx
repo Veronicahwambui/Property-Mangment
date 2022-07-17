@@ -544,7 +544,7 @@ function ViewClient() {
         </form>
       </Modal>
       {/*CREATE ACCOUNT ACCOUNT*/}
-      <Modal show={show_doc} onHide={docclose} className={"modal fade"}>
+      <Modal show={show_doc} onHide={docclose} className={"modal fade"} centered>
         <form onSubmit={handleAccountSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>Add client account</Modal.Title>
@@ -608,7 +608,7 @@ function ViewClient() {
         </form>
       </Modal>
       {/*EDIT ACCOUNT MODALS*/}
-      <Modal show={editAccountShow} onHide={handleEditAccountClose} className={"modal fade"}>
+      <Modal show={editAccountShow} onHide={handleEditAccountClose} className={"modal fade"} centered>
         <form onSubmit={handleEditAccount}>
           <Modal.Header closeButton>
             <Modal.Title>Edit account details</Modal.Title>
