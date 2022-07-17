@@ -73,9 +73,25 @@ function ViewLandlord() {
   const [show_landlord, setshowlandlord] = useState(false);
   const [show_doc, set_show_doc] = useState(false);
   const [show_acc, set_show_acc] = useState(false);
+  const [edittypename, setedittypename] = useState("");
 
 
-  const landlordshow = () => setshowlandlord(true);
+  const landlordshow = () => {
+    seteditlandlordemail(landlord.email)
+    seteditlandlordgender(landlord.gender)
+    seteditlandlordidnumber(landlord.idNumber)
+    seteditlandlordfilenumber(landlord.fileNumber)
+    seteditlandlordfirstname(landlord.firstName)
+    seteditlandlordlastname(landlord.lastName)
+    seteditlandlordphonenumber(landlord.phoneNumber)
+    setedittypename(landlord.landLordAgreementType?.name)
+    seteditlandlordagreementtype(landlord.landLordAgreementType?.id)
+    seteditlandlordothername(landlord.otherName)
+    seteditlandlordremuneration(landlord.remunerationPercentage)
+    seteditagreementperiod(landlord.agreementPeriod)
+    seteditlandlordtypename(landlord.landLordType)
+    setshowlandlord(true)
+  };
   const landlordclose = () => setshowlandlord(false);
   const docshow = () => set_show_doc(true);
   const docclose = () => set_show_doc(false);
@@ -707,77 +723,75 @@ function ViewLandlord() {
           }
         </div>
 
-        {/*edit landlord modals*/}
-        <Modal show={show_landlord} onHide={landlordclose} className={"modal fade"}>
-          <form onSubmit={handlelandlordsubmit}>
-            <Modal.Header closeButton onClick={() => landlordclose()}>
-              <Modal.Title>Update Landlord</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="row">
+      {/*edit landlord modals*/}
+      <Modal show={show_landlord} onHide={landlordclose} className={"modal fade"}>
+        <form onSubmit={handlelandlordsubmit}>
+          <Modal.Header closeButton onClick={()=> landlordclose()}>
+            <Modal.Title>Update Landlord</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="row">
+              <div className="col-6">
+                <div className="form-group mb-4">
+                  <label htmlFor="">Landlord Type <strong className="text-danger ">*</strong></label>
+                  <select className="form-control" value={editlandlordtypename} onChange={(e) => seteditlandlordtypename(e.target.value)}  required={true}>
+                    <option className="text-black font-semibold ">
+                      {editlandlordtypename}
+                    </option>
+                    {
+                      landlordtypes.map((item, index) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className="form-group mb-4">
+                  <label htmlFor="">Agreement Type. <strong className="text-danger ">*</strong></label>
+                  <select className="form-control" value={editlandlordagreementtype} onChange={(e) => seteditlandlordagreementtype(e.target.value)}  required={true}>
+                    <option className="text-black font-semibold ">
+                      {edittypename}
+                    </option>
+                    {
+                      agreementtypes?.map((item, index) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className="form-group mb-4">
+                  <label htmlFor="">File Num. <strong className="text-danger ">*</strong></label>
+                  <input type="text" value={editlandlordfilenumber} onChange={(e) => seteditlandlordfilenumber(e.target.value)} className="form-control"
+                         required={true} />
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="form-group mb-4">
+                  <label htmlFor="">ID Num. <strong className="text-danger ">*</strong></label>
+                  <input type="text" value={editlandlordidnumber} onChange={(e) => seteditlandlordidnumber(e.target.value)} className="form-control"
+                          required={true} />
+                </div>
+                <div className="form-group mb-4">
+                  <label htmlFor="">First Name. <strong className="text-danger ">*</strong></label>
+                  <input type="text" value={editlandlordfirstname} onChange={(e) => seteditlandlordfirstname(e.target.value)}
+                         className="form-control"
+                         required={true} />
+                </div>
+                <div className="form-group mb-4">
+                  <label htmlFor="">Last Name. <strong className="text-danger ">*</strong></label>
+                  <input type="text" value={editlandlordlastname} onChange={(e) => seteditlandlordlastname(e.target.value)}
+                         className="form-control"
+                         required={true} />
+                </div>
+              </div>
                 <div className="col-6">
                   <div className="form-group mb-4">
-                    <label htmlFor="">Landlord Type</label>
-                    <select className="form-control" value={editlandlordtypename} onChange={(e) => seteditlandlordtypename(e.target.value)} required={true}>
-                      <option className="text-black font-semibold ">
-                        select landlord type
-                      </option>
-                      {
-                        landlordtypes.map((item, index) => (
-                          <option value={item}>{item}</option>
-                        ))
-                      }
-                    </select>
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Agreement Type</label>
-                    <select className="form-control" value={editlandlordagreementtype} onChange={(e) => seteditlandlordagreementtype(e.target.value)} required={true}>
-                      <option className="text-black font-semibold ">
-                        select agreeement type
-                      </option>
-                      {
-                        agreementtypes?.map((item, index) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))
-                      }
-                    </select>
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">File Num.</label>
-                    <input type="text" value={editlandlordfilenumber} onChange={(e) => seteditlandlordfilenumber(e.target.value)} className="form-control"
-                      required={true} />
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div className="form-group mb-4">
-                    <label htmlFor="">ID Num.</label>
-                    <input type="text" value={editlandlordidnumber} onChange={(e) => seteditlandlordidnumber(e.target.value)} className="form-control"
-                      required={true} />
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">First Name</label>
-                    <input type="text" value={editlandlordfirstname} onChange={(e) => seteditlandlordfirstname(e.target.value)}
-                      className="form-control"
-                      required={true} />
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Last Name</label>
-                    <input type="text" value={editlandlordlastname} onChange={(e) => seteditlandlordlastname(e.target.value)}
-                      className="form-control"
-                      required={true} />
-                  </div>
-                </div>
-                <div className="col-12">
-                </div>
-                <div className="col-6">
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Email</label>
+                    <label htmlFor="">Email. <strong className="text-danger ">*</strong></label>
                     <input type="email" value={editlandlordemail} onChange={(e) => seteditlandlordemail(e.target.value)}
                       className="form-control"
                       required={true} />
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="">Other Name</label>
+                    <label htmlFor="">Other Name.</label>
                     <input type="text" value={editlandlordothername} onChange={(e) => seteditlandlordothername(e.target.value)}
                       className="form-control"
                       required={true} />
@@ -785,7 +799,7 @@ function ViewLandlord() {
                 </div>
                 <div className="col-6">
                   <div className="form-group mb-3">
-                    <label htmlFor="">Phone Number</label>
+                    <label htmlFor="">Phone Number. <strong className="text-danger ">*</strong></label>
                     <input type="text" value={editlandlordphonenumber} onChange={(e) => seteditlandlordphonenumber(e.target.value)}
                       className="form-control"
                       required={true} />
@@ -794,45 +808,47 @@ function ViewLandlord() {
                     <label htmlFor=" " className=" ">Gender: <strong className="text-danger ">*</strong></label>
                     <div className="d-flex ">
                       <div className="form-check me-3">
-                        <input className="form-check-input" type="radio" name="gender" value={"male"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-male" />
+                        <input className="form-check-input" type="radio" name="gender"checked={editlandlordgender === "male"} value={"male"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-male" />
                         <label className="form-check-label" htmlFor="gender-male">
                           Male
                         </label>
                       </div>
                       <div className="form-check me-3">
-                        <input className="form-check-input" type="radio" name="gender" value={"female"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-female" />
+                        <input className="form-check-input" type="radio" name="gender" checked={editlandlordgender === "female"}  value={"female"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-female" />
                         <label className="form-check-label" htmlFor="gender-female">
                           Female
                         </label>
                       </div>
                     </div>
                   </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Remuneration %</label>
-                    <input type="number" value={editpercentageRemuneration} onChange={(e) => setEditPercentageRemuneration(e.target.value)}
-                      className="form-control"
-                      required={true} />
+                </div>
+            </div>
+            <div className="col-12">
+              <div className="form-group mb-4">
+                    <label htmlFor="">Remuneration %. <strong className="text-danger ">*</strong></label>
+                    <input type="number" value={editlandlordremuneration} onChange={(e) => seteditlandlordremuneration(e.target.value)}
+                           className="form-control"
+                            required={true} />
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="">Agreement Period</label>
+                    <label htmlFor="">Agreement Period. <strong className="text-danger ">*</strong></label>
                     <input type="number" value={editagreementperiod} onChange={(e) => seteditagreementperiod(e.target.value)}
                       className="form-control"
                       required={true} />
                   </div>
-                </div>
               </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" className={"btn btn-grey"} onClick={landlordclose}>
-                Close
-              </Button>
-              <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
-                Save Changes
-              </Button>
-            </Modal.Footer>
-          </form>
-        </Modal>
-        {/*edit accounts modal*/}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" className={"btn btn-grey"} onClick={landlordclose}>
+              Close
+            </Button>
+            <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </form>
+      </Modal>
+      {/*edit accounts modal*/}
         <Modal show={show_acc} onHide={accclose} className={"modal fade"}>
           <form onSubmit={handleaccountsubmit}>
             <Modal.Header closeButton>
@@ -842,7 +858,7 @@ function ViewLandlord() {
               <div className="row">
                 <div className="col-12">
                   <div className="form-group mb-4">
-                    <label htmlFor="">Select Bank</label>
+                    <label htmlFor="">Select Bank/  <strong className="text-danger ">*</strong></label>
                     <select
                       className="form-control"
                       onChange={(e) => {
@@ -871,11 +887,11 @@ function ViewLandlord() {
                     </select>
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="">Bank account number</label>
-                    <input type="text" className="form-control" value={editBankAccount} onChange={(e) => setEditBankAccount(e.target.value)} placeholder="Enter account number" required={true} />
+                    <label htmlFor="">Bank account number. <strong className="text-danger ">*</strong></label>
+                    <input type="text" className="form-control" value={editBankAccount} onChange={(e) => setEditBankAccount(e.target.value)} placeholder="Enter account number" required={true}/>
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="">Percentage renumeration</label>
+                    <label htmlFor="">Percentage renumeration.  <strong className="text-danger ">*</strong></label>
                     <input type="text" className="form-control" value={editpercentageRemuneration} onChange={(e) => setEditPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
                   </div>
                 </div>
@@ -902,7 +918,7 @@ function ViewLandlord() {
             <div className="row">
               <div className="col-12">
                 <div className="form-group mb-4">
-                  <label htmlFor="">Select Bank</label>
+                  <label htmlFor="">Select Bank.  <strong className="text-danger ">*</strong></label>
                   <select
                     className="form-control"
                     onChange={(e) => {
@@ -931,11 +947,11 @@ function ViewLandlord() {
                   </select>
                 </div>
                 <div className="form-group mb-4">
-                  <label htmlFor="">Bank account number</label>
-                  <input type="text" className="form-control" value={bankAccountNumber} onChange={(e) => setbankAccountNumber(e.target.value)} placeholder="Enter account number" required={true} />
+                  <label htmlFor="">Bank account number.  <strong className="text-danger ">*</strong></label>
+                  <input type="text" className="form-control" value={bankAccountNumber} onChange={(e) => setbankAccountNumber(e.target.value)} placeholder="Enter account number" required={true}/>
                 </div>
                 <div className="form-group mb-4">
-                  <label htmlFor="">Percentage renumeration</label>
+                  <label htmlFor="">Percentage renumeration.  <strong className="text-danger ">*</strong></label>
                   <input type="text" className="form-control" value={percentageRemuneration} onChange={(e) => setPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
                 </div>
               </div>
@@ -961,7 +977,7 @@ function ViewLandlord() {
             <div className="row">
               <div className="col-12">
                 <div className="form-group mb-4">
-                  <label htmlFor="">Select Document Type</label>
+                  <label htmlFor="">Select Document Type.  <strong className="text-danger ">*</strong></label>
                   <select
                     className="form-control"
                     onChange={(e) => {
@@ -986,11 +1002,11 @@ function ViewLandlord() {
                   </select>
                 </div>
                 <div className="form-group mb-4">
-                  <label htmlFor="">Document Name</label>
-                  <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true} />
+                  <label htmlFor="">Document Name.  <strong className="text-danger ">*</strong></label>
+                  <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true}/>
                 </div>
                 <div className="form-group mb-4">
-                  <label htmlFor="">Document Upload</label>
+                  <label htmlFor="">Document Upload.  <strong className="text-danger ">*</strong></label>
                   <div className="input-group mb-0">
                     <label className="input-group-text bg-info text-white cursor-pointer"
                       htmlFor="document1-1">
