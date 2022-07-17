@@ -202,7 +202,7 @@ function AddPremises() {
       if (event.target.checked)
         chargess.push(value);
       else
-      
+
         chargess.splice(chargess.indexOf(value), 1);
 
       setSelectedApplicableCharges(chargess);
@@ -557,6 +557,7 @@ function AddPremises() {
                                 name="estateId"
                                 onChange={handleGeneral}
                               >
+                                <option></option>
                                 {estates && estates.map((estate) => {
                                   return (
                                     <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
@@ -580,6 +581,7 @@ function AddPremises() {
                                 onChange={handleGeneral}
 
                               >
+                                <option></option>
                                 {premiseTypes && premiseTypes.map((type) => (
                                   <option value={type.id}> {type.name}</option>
                                 ))}
@@ -601,6 +603,7 @@ function AddPremises() {
                                 onChange={handleGeneral}
 
                               >
+                                <option></option>
                                 {premiseUseTypes && premiseUseTypes.map((type) => (
                                   <option value={type.id}> {type.name}</option>
                                 ))}
