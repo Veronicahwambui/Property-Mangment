@@ -97,9 +97,13 @@ function ViewLandlord() {
   const docclose = () => set_show_doc(false);
 
   const accshow = (id) => {
-    set_show_acc(true);
+    let acc = accountsData.find(account => account.id === id)
+    setEditBankName(acc.bank.bankName);
+    setEditPercentageRemuneration(acc.percentageRemuneration);
+    setEditBankAccount(acc.bankAccountNumber);
+    setEditBankId(acc.bank.id)
     setacc_id(id);
-    console.log(acc_id)
+    set_show_acc(true);
   }
   const accclose = () => set_show_acc(false);
 
@@ -868,7 +872,7 @@ function ViewLandlord() {
                       required={true}
                     >
                       <option className="text-black font-semibold ">
-                        select..
+                        {editBankName}
                       </option>
                       {banks.map((bank) => {
                         return (
@@ -987,7 +991,7 @@ function ViewLandlord() {
                     required={true}
                   >
                     <option className="text-black font-semibold ">
-                      select..
+                      {editBankName}
                     </option>
                     {documentTypes.map((dT) => {
                       return (

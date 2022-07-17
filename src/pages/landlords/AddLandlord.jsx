@@ -125,25 +125,7 @@ export default function AddLandlord() {
   });
 
 //accounts edit
-  const handleAccountSubmit = (event) => {
-    event.preventDefault()
-    let data = {
-        bankName: bankName,
-        active: true,
-        bankAccountNumber: bankAccountNumber,
-        bankId: bankId,
-        id: null,
-        landLordId: null,
-        percentageRemuneration: percentageRemuneration
-    }
-    setAccounts(accounts => [...accounts, data]);
-    setbankAccountNumber("");
-    setBankName("");
-    setbankId(null);
-    setPercentageRemuneration(0);
-    setShow(false)
 
-  }
   const handleEditAccount = (event) => {
     event.preventDefault()
     let data = {
@@ -229,6 +211,25 @@ export default function AddLandlord() {
         reject(error);
       }
     })
+  }
+  const handleAccountSubmit = (event) => {
+    event.preventDefault()
+    let data = {
+      bankName: bankName,
+      active: true,
+      bankAccountNumber: bankAccountNumber,
+      bankId: bankId,
+      id: null,
+      landLordId: null,
+      percentageRemuneration: percentageRemuneration
+    }
+    setAccounts(accounts => [...accounts, data]);
+    setbankAccountNumber("");
+    setBankName("");
+    setbankId(null);
+    setPercentageRemuneration(0);
+    setShow(false)
+
   }
   return (
     <>

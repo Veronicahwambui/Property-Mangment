@@ -23,7 +23,7 @@ import RecoverPassword from './pages/auth/RecoverPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import AuthService from './services/auth.service';
 import ClientType from './pages/clients/ClientType';
-import ClientManagement from './pages/clients/ClientManagement';
+import Clients from './pages/clients/Clients';
 
 import UpdateUser from './pages/admins/UpdateUser';
 import UserTypes from './pages/admins/UserTypes';
@@ -36,8 +36,10 @@ import OneTenant from "./pages/tenants/OneTenant";
 import LandLordAgreementTypes from "./pages/setups/LandLordAgreementTypes";
 import AddLandlord from "./pages/landlords/AddLandlord";
 import ViewLandlord from "./pages/landlords/ViewLandlord";
+import NewClient from "./pages/clients/NewClient";
 import { Helmet } from "react-helmet";
 import OnePremiseUnit from "./pages/premises/OnePremiseUnit";
+import ViewClient from "./pages/clients/ViewCLient";
 
 function Main() {
 
@@ -117,10 +119,12 @@ function Main() {
                 <Route path='/adminlist' element={<AdminList />} />
                 <Route path='/addadmin' element={<AddAdmin />} />
                 <Route path='/clienttypes' element={<ClientType />} />
-                <Route path='/clients' element={<ClientManagement />} />
+                <Route path='/clients' element={<Clients />} />
                 <Route path='/agreementtypes' element={<LandLordAgreementTypes />} />
                 <Route path='/addlandlord' element={<AddLandlord />} />
                 <Route path='/landlord/:id' element={<ViewLandlord />} />
+                <Route path='/addclient/' element={<NewClient />} />
+                <Route path='/client/:id' element={<ViewClient />} />
 
                 <Route path="*" element={<Navigate to="/" />}></Route>
               </Routes>
