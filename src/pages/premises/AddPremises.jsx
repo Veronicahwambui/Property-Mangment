@@ -854,7 +854,7 @@ function AddPremises() {
                           )}
                         </div>
 
-                        <div class="table-responsive table-responsive-md mb-5">
+                        {/* <div class="table-responsive table-responsive-md mb-5">
                           <table class="table table-editable-2 align-middle table-edits ">
                             <thead class="table-light">
                               <tr class="text-uppercase table-dark">
@@ -907,7 +907,7 @@ function AddPremises() {
                             </tbody>
 
                           </table>
-                        </div>
+                        </div> */}
 
                         <div class="col-12">
                           <div class="bg-primary border-2 bg-soft p-3 mb-4">
