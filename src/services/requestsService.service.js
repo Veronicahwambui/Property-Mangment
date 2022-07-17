@@ -499,10 +499,23 @@ class RequestsService {
         return axiosInstance.get(baseUrl + `/documents/${x}/entity/${y}/deactivate/${z}`);
     }
     deactivateAccounts(data){
-        console.log(data);
         return axiosInstance.get(baseUrl + "/landlord/accounts/deactivate/" + data);
     }
-
+    getTenancyStatuses(){
+        return axiosInstance.get(baseUrl + "/setup/tenancyStatuses");
+    }
+    getClientAccounts(data){
+        return axiosInstance.get(baseUrl + `/clients/${data}/accounts`);
+    }
+    createClientAccount(data) {
+        return axiosInstance.post(baseUrl + "/clients/accounts/create", data);
+    }
+    updateClientAccount(data) {
+        return axiosInstance.post(baseUrl + "/clients/accounts/update", data);
+    }
+    deactivateClientAccount(data) {
+        return axiosInstance.get(baseUrl + "/clients/accounts/deactivate/"+ data)
+    }
 }
 
 export default new RequestsService();
