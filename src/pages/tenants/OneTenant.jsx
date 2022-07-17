@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useState,  } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 
@@ -7,25 +7,25 @@ function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
   const [docName, setDocName] = useState("");
- 
 
 
-// edit tenants
-const[startDate, setStartDate]=useState("")
-const[unitCondition, setUnitCondition]=useState("")
-const[tenancyStatus,setTenancyStatus]=useState("")
-const[monthsToTenancyRenewal, setMonthsToTenancyRenewal]=useState("")
+  // edit tenants
+  const [startDate, setStartDate] = useState("");
+  const [unitCondition, setUnitCondition] = useState("");
+  const [tenancyStatus, setTenancyStatus] = useState("");
+  const [monthsToTenancyRenewal, setMonthsToTenancyRenewal] = useState("");
+  const [premiseUnitId, setPremiseUnitId] = useState("");
+  const [unitId, setUnitId] = useState("");
 
+  //edit ContactPersons
 
-//edit ContactPersons
-
-const[firstName,setFirstName]=useState("")
-const[lastName, setLastName]=useState("")
-const[otherName,setOtherName]=useState("")
-const[phoneNumber1,setPhoneNumber1]=useState("")
-const[phoneNumber2,setPhoneNumber2]=useState("")
-const[ relationship,setRelationship]=useState("")
-const[contactPersonId, setContactPersonId]=useState("")
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [otherName, setOtherName] = useState("");
+  const [phoneNumber1, setPhoneNumber1] = useState("");
+  const [phoneNumber2, setPhoneNumber2] = useState("");
+  const [relationship, setRelationship] = useState("");
+  const [contactPersonId, setContactPersonId] = useState("");
 
   const { id } = useParams();
   const userId = id;
@@ -35,95 +35,81 @@ const[contactPersonId, setContactPersonId]=useState("")
       setTenantData(res.data.data);
     });
   };
-  const editTenant=()=>{
-   let data=JSON.stringify({
-    // id:id,
-    // startDate: startDate,
-    // unitCondition: unitCondition,
-    // tenancyStatus:"Current",
-    // monthsToTenancyRenewal: monthsToTenancyRenewal,
+  const editTenant = () => {
+    let data = JSON.stringify({
+      // id:id,
+      // startDate: startDate,
+      // unitCondition: unitCondition,
+      // tenancyStatus:"Current",
+      // monthsToTenancyRenewal: monthsToTenancyRenewal,
 
-    
       active: true,
-      id: id,
+      id: userId,
       monthsToTenancyRenewal: monthsToTenancyRenewal,
-      "premiseUnitId": 0,
-      startDate: startDate,
-      "tenancyCharges": [
-        {
-          "active": true,
-          "premiseUnitTypeChargeId": 0,
-          "value": 0
-        }
-      ],
-      "tenancyDocuments": [
-        {
-          "docName": "string",
-          "document": "string",
-          "documentOwnerTypeName": "string",
-          "documentTypeId": 0,
-          "id": 0,
-          "ownerEntityId": 0
-        }
-      ],
-      tenancyStatusName: "string",
-      "tenantId": 0,
-      unitCondition: unitCondition
-    
-
-
-
-
-
-   })
-  requestsServiceService. updateTenant(data).then((res)=>{
-    console.log(res)
-  
-    
-    
-  }
-  )
-  }
-  const handleChange =(startDate,unitCondition,tenancyStatus,monthsToTenancyRenewal)=>{
-    setStartDate(startDate)
-    setUnitCondition(unitCondition)
-    setTenancyStatus(tenancyStatus)
-    setMonthsToTenancyRenewal(monthsToTenancyRenewal)
-
-  }
-// console.log(tenantData)
-  const editContactPersons=()=>{
-
-    let data = tenantData.contactPeople.find(x=>x.id == contactPersonId);
-
-
-    data["active"]=true;
-    data.firstName=firstName;
-    data.lastName=lastName;
-    data.otherName=otherName;
-  
-    data.phoneNumber1=phoneNumber1;
-    data.relationship=relationship;
-
-  console.log(data)
-
-    requestsServiceService. updateContactPersons(data).then((res)=>{
-      console.log(res)
+      premiseUnitId: premiseUnitId,
+      startDate: new Date(),
+      tenancyCharges: [{}],
+      tenancyDocuments: [{}],
+      tenancyStatusName: tenancyStatus,
+      tenantId: unitId,
+      unitCondition: unitCondition,
+    });
+    requestsServiceService.updateTenant(data).then((res) => {
+     
       
       
-    }
-    )
-  }
-  const handleChangeContacts=( contactPersonId,firstName,lastName,otherName,phoneNumber1,relationship)=>{
-    setContactPersonId(contactPersonId)
-    setFirstName(firstName)
-    setLastName(lastName)
-    setOtherName(otherName)
-    setPhoneNumber1(phoneNumber1)
-    setRelationship(relationship)
+    });
+  };
+  const handleChange = (
+    permiseUnitId,
+    startDate,
+    unitCondition,
+    tenancyStatus,
+    monthsToTenancyRenewal,unitId
+  ) => {
+    setPremiseUnitId(permiseUnitId);
+    setStartDate(startDate);
+    setUnitCondition(unitCondition);
+    setTenancyStatus(tenancyStatus);
+    setMonthsToTenancyRenewal(monthsToTenancyRenewal);
+    setUnitId(unitId);
+  };
+  // console.log(premiseUnitId)
+  // console.log(tenantData)
+  const editContactPersons = () => {
+    let data = tenantData.contactPeople.find((x) => x.id == contactPersonId);
+    console.log(data)
 
-  }
+    data["active"] = true;
+    data.firstName = firstName;
+    data.lastName = lastName;
+    data.otherName = otherName;
 
+    data.phoneNumber1 = phoneNumber1;
+    data.relationship = relationship;
+
+  
+
+    requestsServiceService.updateContactPersons(data).then((res) => {
+      console.log(res);
+      
+    });
+  };
+  const handleChangeContacts = (
+    contactPersonId,
+    firstName,
+    lastName,
+    otherName,
+    phoneNumber1,
+    relationship
+  ) => {
+    setContactPersonId(contactPersonId);
+    setFirstName(firstName);
+    setLastName(lastName);
+    setOtherName(otherName);
+    setPhoneNumber1(phoneNumber1);
+    setRelationship(relationship);
+  };
 
   const download = () => {
     requestsServiceService.download(docName).then((res) => {
@@ -132,10 +118,17 @@ const[contactPersonId, setContactPersonId]=useState("")
   };
 
   useEffect(() => {
-
     fetchAll();
-   
   }, []);
+
+
+  const deleteDeactivate =(id) =>{
+    requestsServiceService.deactivateTenancies(id).then((res)=>{
+    
+
+    }) 
+
+  }
 
   return (
     <div className="page-content">
@@ -367,7 +360,7 @@ const[contactPersonId, setContactPersonId]=useState("")
                                   </thead>
                                   <tbody>
                                     {tenantData.tenancies &&
-                                    tenantData.tenancies.map(
+                                      tenantData.tenancies.map(
                                         (unit, index) => (
                                           <tr data-id="1">
                                             <td>{index + 1}</td>
@@ -413,25 +406,29 @@ const[contactPersonId, setContactPersonId]=useState("")
                                                 </a>
 
                                                 <div class="dropdown-menu dropdown-menu-end text-capitalize">
-                                                
                                                   <p
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#edit-tenant"
                                                     class="dropdown-item"
-                                                    href="#" onClick={()=> handleChange(unit.startDate.replace(
-                                                      /[TZ]/g,), unit.unitCondition,unit.tenancyStatus.toLowerCase(), unit.monthsToTenancyRenewal)}
+                                                    href="#"
+                                                    onClick={() =>
+                                                      handleChange(
+                                                        unit.premiseUnit.id,
+                                                        unit.startDate,
+                                                        unit.unitCondition,
+                                                        unit.tenancyStatus,
+                                                        unit.monthsToTenancyRenewal,unit.id
+                                                      )
+                                                    }
                                                   >
                                                     <i class="font-size-15 mdi mdi-pencil me-3"></i>
                                                     Edit
                                                   </p>
-                                                
-                                                  <p
-                                            class="dropdown-item text-danger"
-                                           >
-                                        <i class="font-size-15 mdi mdi-close-circle me-3" ></i>
 
-                                        Deactivate
-                                      </p> 
+                                                  <p   class="dropdown-item " onClick={()=>deleteDeactivate(unit.id)}>
+                                                    <i class="font-size-15 mdi mdi-close-circle me-3"></i>
+                                                    Deactivate
+                                                  </p>
                                                 </div>
                                               </div>
                                             </td>
@@ -451,9 +448,6 @@ const[contactPersonId, setContactPersonId]=useState("")
               </div>
             </div>
           </div>
-       
-
-
         )}
 
         {activeLink === 3 && (
@@ -540,12 +534,21 @@ const[contactPersonId, setContactPersonId]=useState("")
                                             <td className="text-right cell-change ">
                                               <a
                                                 className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                                data-bs-toggle="modal" data-bs-target="#Edit-contact"
-                                                onClick={()=>handleChangeContacts( unit.contactPersonId,unit.firstName,unit.lastName ,unit.otherName,unit.phoneNumber1,unit.relationship)}
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#Edit-contact"
+                                                onClick={() =>
+                                                  handleChangeContacts(
+                                                    unit.contactPersonId,
+                                                    unit.firstName,
+                                                    unit.lastName,
+                                                    unit.otherName,
+                                                    unit.phoneNumber1,
+                                                    unit.relationship
+                                                  )
+                                                }
                                               >
                                                 <i className="bx bx-edit-alt " />
                                               </a>
-                                            
                                             </td>
                                           </tr>
                                         )
@@ -565,167 +568,211 @@ const[contactPersonId, setContactPersonId]=useState("")
           </div>
         )}
 
-      
-      <div
-        class="modal fade"
-        id="edit-tenant"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">
-                Tenant
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-12">
-                  <div class="form-group mb-4">
-                    <label for="">StartDate</label>
-                    <input
-
-                      type="text"
-                      class="form-control"
-                      placeholder="Enter StartDate"
-                      onChange={(event) =>setStartDate(event.target.value)}
-                      value={startDate}
-                    />
-                    
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Unit Condition</label>
-                    <input type="text" className="form-control" value={unitCondition} onChange={(e) => setUnitCondition(e.target.value)} placeholder="Enter account number" required={true}/>
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">TenancyStatus</label>
-                    <input type="text" className="form-control" value={tenancyStatus} onChange={(e) => setTenancyStatus(e.target.value)} placeholder="Enter account number" required={true}/>
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">MonthsToTenancyRenewal</label>
-                    <input type="text" className="form-control" value={monthsToTenancyRenewal} onChange={(e) => setMonthsToTenancyRenewal(e.target.value)} placeholder="Enter MonthsToTenancyRenewal" required={true}/>
-                  </div>
-
-                </div>
- 
-       
+        <div
+          class="modal fade"
+          id="edit-tenant"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Tenant
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
               </div>
-            </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">StartDate</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter StartDate"
+                        onChange={(event) => setStartDate(event.target.value)}
+                        value={startDate}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Unit Condition</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={unitCondition}
+                        onChange={(e) => setUnitCondition(e.target.value)}
+                        placeholder="Enter account number"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">TenancyStatus</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={tenancyStatus}
+                        onChange={(e) => setTenancyStatus(e.target.value)}
+                        placeholder="Enter account number"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">MonthsToTenancyRenewal</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={monthsToTenancyRenewal}
+                        onChange={(e) =>
+                          setMonthsToTenancyRenewal(e.target.value)
+                        }
+                        placeholder="Enter MonthsToTenancyRenewal"
+                        required={true}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" class="btn btn-primary" 
-                data-bs-dismiss="modal" onClick={editTenant} >
-                Save
-              </button>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={editTenant}
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* Contact Modal */}
+        {/* Contact Modal */}
 
-      <div
-        class="modal fade"
-        id="Edit-contact"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">
-                Tenant
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-12">
-                  <div class="form-group mb-4">
-                    <label for="">FirstName</label>
-                    <input
-
-                      type="text"
-                      class="form-control"
-                      placeholder="Enter FirstName"
-                      onChange={(event) =>setFirstName(event.target.value)}
-                      value={firstName}
-                    />
-                    
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">LastName</label>
-                    <input type="text" className="form-control" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Enter LastName" required={true}/>
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">OtherName</label>
-                    <input type="text" className="form-control" value={otherName} onChange={(e) => setOtherName(e.target.value)} placeholder="Enter OtherName" required={true}/>
-                  </div>
-               
-                  <div className="form-group mb-4">
-                    <label htmlFor="">PhoneNumber1</label>
-                    <input type="text" className="form-control" value={phoneNumber1} onChange={(e) => setPhoneNumber1(e.target.value)} placeholder="Enter PhoneNumber1" required={true}/>
-                  </div>
-           
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Relationship</label>
-                    <input type="text" className="form-control" value={relationship} onChange={(e) => setRelationship(e.target.value)} placeholder="Enter Relationship" required={true}/>
-                  </div>
-
-                </div>
- 
-       
+        <div
+          class="modal fade"
+          id="Edit-contact"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Tenant
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
               </div>
-            </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">FirstName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter FirstName"
+                        onChange={(event) => setFirstName(event.target.value)}
+                        value={firstName}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">LastName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Enter LastName"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">OtherName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={otherName}
+                        onChange={(e) => setOtherName(e.target.value)}
+                        placeholder="Enter OtherName"
+                        required={true}
+                      />
+                    </div>
 
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" class="btn btn-primary" 
-                data-bs-dismiss="modal" onClick={editContactPersons} >
-                Save
-              </button>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">PhoneNumber1</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={phoneNumber1}
+                        onChange={(e) => setPhoneNumber1(e.target.value)}
+                        placeholder="Enter PhoneNumber1"
+                        required={true}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Relationship</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={relationship}
+                        onChange={(e) => setRelationship(e.target.value)}
+                        placeholder="Enter Relationship"
+                        required={true}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={editContactPersons}
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-     
       </div>
     </div>
-
-
-
   );
 }
 

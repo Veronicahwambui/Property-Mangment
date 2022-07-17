@@ -163,6 +163,11 @@ function AddAdmin() {
             <div className="col-12">
               <div className="card p-4">
                 <div className="card-body">
+                {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                   <h4 className="card-title text-capitalize">
                     Register a new System administrator
                   </h4>

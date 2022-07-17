@@ -398,6 +398,9 @@ class RequestsService {
         return axiosInstance.post(baseUrl + "/tenants/tenancy/update", data)
   
     }
+    deactivateTenancies(tenantId){
+        return axiosInstance.get(baseUrl+ "/tenants/tenancy/" + tenantId + "/deactivate")
+    }
 
     toggleTenantStatus() {
         // return axiosInstance.get(baseUrl + "/client-types");

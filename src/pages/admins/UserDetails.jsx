@@ -1,13 +1,25 @@
 import React from 'react'
+import { useState,useEffect } from 'react';
+import { useParams } from "react-router-dom";
+import requestsServiceService from "../../services/requestsService.service";
+
 
 function UserDetails() {
+     const [adminlistData, setAdminListData] = useState({});
+    
+     const { id } = useParams();
+     const userId = id;
+   
+     const fetchAll = () => {
+       requestsServiceService. viewOneUser(userId).then((res) => {
+         setAdminListData(res.data.data);
+       });
+     };
 
-
-
-
-
-
-
+     useEffect(() => {
+        fetchAll();
+      }, []);
+    
 
   return (
    <div className=''>
@@ -43,7 +55,7 @@ function UserDetails() {
                                         </button>
                                         <div class="collapse navbar-collapse justify-content-between" id="navbarNavAltMarkup">
                                             <div class="navbar-nav">
-                                                <a class="nav-item nav-link" href="user-details.html">User's Profile<span class="sr-only">(current)</span></a>
+                                            <a class="nav-item nav-link" href="user-details.html">User's Profile<span class="sr-only">(current)</span></a>
                                                 <a class="nav-item nav-link" href="user-logs.html">All Logs</a>
 
                                             </div>
@@ -61,7 +73,8 @@ function UserDetails() {
                         </div>
                     </div>
 
-                    <div class="row">
+                  
+            <div class="row">
                         <div class="col-xl-4">
                             <div class="card calc-h-3px">
                                 <div class="card-body pb-5">
@@ -71,21 +84,22 @@ function UserDetails() {
                                             <i class="mdi mdi-account-circle text-primary h1"></i>
                                         </div>
                                         <div>
-                                            <h5>Kelvin Thuku <span class="badge badge-pill badge-soft-success font-size-11">Active</span></h5>
+                                            <h5>                           {adminlistData.user && adminlistData.user.firstName} {adminlistData.user && adminlistData.user.lastName}
+<span class="badge badge-pill badge-soft-success font-size-11">Active</span></h5>
                                             <p class="text-muted mb-0">
-                                                <span>Super Admin</span>
+                                                <span> {adminlistData.user && adminlistData.user.role.name}</span>
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-body border-top">
                                     <p class="text-muted mb-0 d-flex align-items-center">
-                                        <a href="tel:0704549859" class="d-flex align-items-center"><i class="mdi mdi-phone me-2 font-size-18"></i> 0704 549 859</a> <span class="px-3 px-3">|</span>
-                                        <a class="d-flex align-items-center" href="mailto:email@email.com"><i class="mdi mdi-email-outline font-size-18 me-2"></i> email@email.com</a>
+                                        <a href="tel:0704549859" class="d-flex align-items-center"><i class="mdi mdi-phone me-2 font-size-18"></i> {adminlistData.user && adminlistData.user.phoneNumber}</a> <span class="px-3 px-3">|</span>
+                                        <a class="d-flex align-items-center" href="mailto:email@email.com"><i class="mdi mdi-email-outline font-size-18 me-2"></i>  {adminlistData.user && adminlistData.user.email}</a>
                                     </p>
                                 </div>
                                 <div class="card-body border-top">
-                                    <p class="p-0 m-0"><span class="text-muted">Status</span> <span class="text-success">Online</span></p>
+                                    <p class="p-0 m-0"><span class="text-muted"> {adminlistData.user && adminlistData.user.status}</span> <span class="text-success">Online</span></p>
 
                                 </div>
 
@@ -124,7 +138,7 @@ function UserDetails() {
 
                                                         <tr>
                                                             <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Company Role</td>
-                                                            <td class="pb-0"><span class="text-black">Developer</span></td>
+                                                            <td class="pb-0"><span class="text-black">{adminlistData.user && adminlistData.user.role.name}</span></td>
                                                         </tr>
                                                         
                                                         
@@ -143,7 +157,17 @@ function UserDetails() {
                             </div>
                         </div>
 
-                        <div class="col-xl-8">                            
+                 
+               
+                  
+                     
+             
+
+              
+
+                
+
+                <div class="col-xl-8">                            
                             <div class="card">
                                 <div>
                                     <div class="row">
@@ -207,10 +231,13 @@ function UserDetails() {
 
                         </div>
                         {/* <!-- end col --> */}
-                    </div>
-
+                     
+                    
+                   
+                        </div>
         </div>
     </div>
+
     <footer class="footer">
                 <div class="container-fluid">
                     <div class="row">

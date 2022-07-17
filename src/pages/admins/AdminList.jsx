@@ -183,6 +183,7 @@ function AdminList() {
             <div class="col-12">
               <div class="card">
                 <div class="card-body">
+                  
                   <div className= "" >
                     <table
                       className="table no-wrap nowrap w-100 table-striped"
@@ -298,8 +299,7 @@ function AdminList() {
                                         <a
                                           class="dropdown-item"
                                           href="tenant-new.html"
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#add-new"
+                                          
                                          
                                         >
                                           View user

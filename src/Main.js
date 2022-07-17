@@ -103,7 +103,7 @@ function Main() {
 
                 <Route exact path='/adminlist' element={<AdminList />} />
                 <Route exact path='/adminlist/edit/:id' element={<UpdateUser />} />
-                <Route exact path='/adminlist/:id' element={<UserDetails />} />
+                <Route exact path='/adminlist/view/:id' element={<UserDetails />} />
                 <Route path='/addadmin' element={<AddAdmin />} />
                 <Route path='/usertypes' element={<UserTypes />} />
 
