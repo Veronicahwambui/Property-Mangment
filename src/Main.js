@@ -76,7 +76,7 @@ function Main() {
                 <Route path='/' element={<Dashboard />} />
                 {/* landlords */}
                 <Route path='/landlords' element={<Landlords />} />
-                <Route path='/landlord/:id' element={<ViewLandlord />} />
+                <Route exact path='/landlord/:id' element={<ViewLandlord />} />
                 {/* premises */}
                 <Route path='/premisesregister' element={<PremisesRegister />} />
                 <Route path='/addpremises' element={<AddPremises />} />
