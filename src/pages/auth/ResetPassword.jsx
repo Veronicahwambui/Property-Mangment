@@ -42,12 +42,37 @@ export default function  ResetPassword() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    let userId = "96754171-ddfb-4c52-9a83-54a64987d343";
+    let det = ({
+      password: password,
+      userID: userId,
+      verifyEmail: true
+    });
     if (enabled()) {
       setError({
         ...error,
         message: "Success!",
         color:"success"
-      })
+      });
+      AuthService.resetPassword(det).then((res) => {
+        if (res) {
+          setError({
+            ...error,
+            message: res.data.message + ". Redirecting...",
+            color: "success"
+          });
+          setTimeout(() => {
+            navigate('/login', {replace: true})
+          }, 2000)
+        }
+      }).catch((err) => {
+        console.log(err)
+        setError({
+          ...error,
+          message: error.response.data.message,
+          color: "danger"
+        });
+      });
     } else {
       setError({
         ...error,
@@ -62,33 +87,6 @@ export default function  ResetPassword() {
         color:""
       })
     }, 2000);
-    let userId = "96754171-ddfb-4c52-9a83-54a64987d343";
-    let det = ({
-      password: password,
-      passwordconfirm: passwordconfirm,
-      userID: userId,
-      verifyEmail: true
-    });
-
-    AuthService.resetPassword(det).then((res) => {
-      if (res) {
-        setError({
-          ...error,
-          message: res.data.message + ". Redirecting...",
-          color: "success"
-        });
-        setTimeout(() => {
-          navigate('/login', {replace: true})
-        }, 2000)
-      }
-    }).catch((err) => {
-      console.log(err)
-      setError({
-        ...error,
-        message: error.response.data.message,
-        color: "danger"
-      });
-    });
   }
 
   return (
