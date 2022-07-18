@@ -1,5 +1,7 @@
 import React, { useEffect ,useState } from 'react'
+import authService from '../../services/auth.service';
 import requestsServiceService from '../../services/requestsService.service'
+import {Button, Modal} from "react-bootstrap";
 
 function LandLordAgreementTypes() {
   const [agreementTypes , setAgreementTypes ]= useState([])
@@ -36,8 +38,18 @@ function LandLordAgreementTypes() {
   };
   // console.log(agreementTypes);
   // create agreementType
-
-  const createAgreementType = ()=>{
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
+  const [show, setShow] = useState(false);
+  const [editshow, seteditShow] = useState(false);
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
+  const editShow = () => seteditShow(true);
+  const editClose = () => seteditShow(false);
+  const createAgreementType = (event)=>{
+    event.preventDefault();
     let data = JSON.stringify({
       active: true,
       clientId: selectedClient.id,
@@ -45,12 +57,35 @@ function LandLordAgreementTypes() {
       name: agreementTypeName,
     })
     requestsServiceService.createAgreementType(data).then((res)=>{
-      if (res) {
-        getAgreementTypes()
+      console.log(res);
+      if (res.data.status===false) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+      } else {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        });
+        getAgreementTypes();
+        handleClose()
       }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        });
+      }, 2000)
     }).catch((err) => {
-      console.log(err)
-      getAgreementTypes()
+      setError({
+        ...error,
+        message: err.data.message,
+        color: "danger"
+      });
     })
   }
 
@@ -66,34 +101,51 @@ function LandLordAgreementTypes() {
   // update agreementType
 
   const getOneAgreementType = (id) => {
-    if (agreementTypes.length > 0) {
-      let cl = agreementTypes.find((item) => item.id === id)
-      if(cl) {
-        setEditType({
-          ...editType,
-          name: cl.client.clientType.name,
-          id: cl.client.clientType.id
-        })
-        setEditClientId(cl.client.clientType.id);
-        setEditName(cl.name)
-        setEditId(cl.id)
-      }
-    }
+    let agreementType = agreementTypes.find(aT => aT.id === id);
+    setEditAgreementTypeName(agreementType.name)
+    setEditId(id);
+    editShow();
   }
 
-  const updateAgreementType = ()=>{
+  const updateAgreementType = (event)=>{
+    event.preventDefault()
     let data = JSON.stringify({
       active: true,
-      clientId: editType.id,
-      id: editId,
-      name: editName,
+      clientId: parseInt(authService.getClientId()) ,
+      id: activeId,
+      name: editAgreementTypeName,
     })
     requestsServiceService.editAgreementType(data).then((res)=>{
-      getAgreementTypes()
+      let message = res.data.message;
+      if (res.data.status===false) {
+        setError({
+          ...error,
+          message: message,
+          color: "danger"
+        })
+      } else {
+        setError({
+          ...error,
+          message: message,
+          color: "success"
+        });
+        editClose()
+        getAgreementTypes()
+      }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        });
+      }, 2000)
     }).catch((err)=> {
-      console.log(err)
+      setError({
+        ...error,
+        message: err.data.message,
+        color: "success"
+      });
     })
-    getAgreementTypes()
   }
   let num = 0;
 
@@ -110,6 +162,7 @@ function LandLordAgreementTypes() {
     setEditId(id);
     console.log(name, editId)
   }
+
 
   return (
     <>
@@ -150,11 +203,9 @@ function LandLordAgreementTypes() {
                     </div>
                     <div class="d-flex">
                       <button
-                        onClick={getClients}
+                        onClick={handleShow}
                         type="button"
                         class="btn btn-primary waves-effect btn-label waves-light me-3"
-                        data-bs-toggle="modal"
-                        data-bs-target="#add-new-agreementType"
                       >
                         <i class="mdi mdi-plus label-icon"></i> Add Agreement Type
                       </button>
@@ -173,7 +224,7 @@ function LandLordAgreementTypes() {
                       </tr>
                       </thead>
                       <tbody>
-                      { agreementTypes && agreementTypes.map((aT, num)=>{
+                      { agreementTypes?.map((aT, num)=>{
 
                         return (
                           <tr data-id="1">
@@ -182,7 +233,7 @@ function LandLordAgreementTypes() {
                             <td data-field="unit-num ">{aT.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
                               <div className="d-flex">
-                                <a onClick={() => getOneAgreementType(aT.id)} data-bs-toggle="modal"
+                                <a onClick={() => {getOneAgreementType(aT.id); setActiveId(aT.id)}} data-bs-toggle="modal"
                                    data-bs-target="#update-modal"
                                    className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                    title="Edit "><i className="bx bx-edit-alt "></i></a>
@@ -221,54 +272,69 @@ function LandLordAgreementTypes() {
         {/* <!-- container-fluid --> */}
       </div>
 
-      {/* <!-- modals --> */}
-      <div
-        class="modal fade"
-        id="add-new-agreementType"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">
-                New agreementType
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-12">
-                  <div class="form-group mb-4">
-                    <label for="">Name</label>
-                    <input value={agreementTypeName} onChange={ (e)=> setagreementTypeName(e.target.value)} type="text" class="form-control" placeholder="Enter agreement type name" />
-                  </div>
+      {/*ADD MODAL*/}
+      <Modal show={show} onHide={handleClose} className={"modal fade"} centered>
+        <form onSubmit={createAgreementType}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add agreement type</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="row">
+              {error.color !== "" &&
+              <div className={"alert alert-" + error.color} role="alert">
+                {error.message}
+              </div>
+              }
+              <div className="col-12">
+                <div className="form-group mb-4">
+                  <label htmlFor="">Agreement type name. <strong className="text-danger ">*</strong></label>
+                  <input type="text" className="form-control" value={agreementTypeName} onChange={(e) => setagreementTypeName(e.target.value)} placeholder="Enter agreement type name" required={true}/>
                 </div>
               </div>
             </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                onClick={createAgreementType}
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-              >
-                Save
-              </button>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" className={"btn btn-grey"} onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </form>
+      </Modal>
+      {/*EDIT MODAL*/}
+      <Modal show={editshow} onHide={editClose} className={"modal fade"} centered>
+        <form onSubmit={updateAgreementType}>
+          <Modal.Header closeButton>
+            <Modal.Title>Update agreement type</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="row">
+              {error.color !== "" &&
+              <div className={"alert alert-" + error.color} role="alert">
+                {error.message}
+              </div>
+              }
+              <div className="col-12">
+                <div className="form-group mb-4">
+                  <label htmlFor="">Agreement type name. <strong className="text-danger ">*</strong></label>
+                  <input type="text" className="form-control" value={editAgreementTypeName} onChange={(e) => setEditAgreementTypeName(e.target.value)} placeholder="Enter agreement type name" required={true}/>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" className={"btn btn-grey"} onClick={editClose}>
+              Close
+            </Button>
+            <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </form>
+      </Modal>
+
       {/* confirm deactivate  */}
       <div
         class="modal fade"
@@ -338,74 +404,6 @@ function LandLordAgreementTypes() {
                 onClick={()=>deactivate(activeId)}
               >
                 Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="modal fade"
-        id="update-modal"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="staticBackdropLabel">
-                Update Agreement Type
-              </h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
-            </div>
-            <div className="modal-body">
-              <div className="row">
-                <div className="col-12">
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Name</label>
-                    <input value={editName} onChange={(e) => setEditName(e.target.value)} type="text"
-                           className="form-control" placeholder="Enter agreement type name"/>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <label htmlFor="">Client</label>
-                  <select
-                    className="form-control"
-                    data-live-search="true"
-                    title="Select client"
-                    onChange={(e) => setEditSelectedClient(e.target.value)}
-                  >
-                    <option className="text-black font-semibold ">
-                      {selectedClient.name}
-                    </option>
-                    {clients.map((c, index) => {
-                      return (
-                        <option key={index} value={c.id}>{c.name}</option>
-                      )
-                    })}
-                  </select>
-
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                onClick={updateAgreementType}
-                type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-              >
-                Save
               </button>
             </div>
           </div>

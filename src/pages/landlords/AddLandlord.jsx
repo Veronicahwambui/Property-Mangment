@@ -125,25 +125,7 @@ export default function AddLandlord() {
   });
 
 //accounts edit
-  const handleAccountSubmit = (event) => {
-    event.preventDefault()
-    let data = {
-        bankName: bankName,
-        active: true,
-        bankAccountNumber: bankAccountNumber,
-        bankId: bankId,
-        id: null,
-        landLordId: null,
-        percentageRemuneration: percentageRemuneration
-    }
-    setAccounts(accounts => [...accounts, data]);
-    setbankAccountNumber("");
-    setBankName("");
-    setbankId(null);
-    setPercentageRemuneration(0);
-    setShow(false)
 
-  }
   const handleEditAccount = (event) => {
     event.preventDefault()
     let data = {
@@ -208,15 +190,11 @@ export default function AddLandlord() {
         })
       }, 3000);
     })
-    console.log(new_t)
-    console.log(data)
   }
   const removeDoc = (id) => {
-    console.log(landlordDocuments)
-    let docs = landlordDocuments
-    docs.splice(id, 1)
-    setLandlordDocuments(docs);
+    setLandlordDocuments(landlordDocuments.filter(landlorddoc => landlorddoc.docName !== id));
   }
+
   const handleFileRead = async (event) => {
     const file = event.target.files[0]
     const base64 = await convertBase64(file)
@@ -233,6 +211,25 @@ export default function AddLandlord() {
         reject(error);
       }
     })
+  }
+  const handleAccountSubmit = (event) => {
+    event.preventDefault()
+    let data = {
+      bankName: bankName,
+      active: true,
+      bankAccountNumber: bankAccountNumber,
+      bankId: bankId,
+      id: null,
+      landLordId: null,
+      percentageRemuneration: percentageRemuneration
+    }
+    setAccounts(accounts => [...accounts, data]);
+    setbankAccountNumber("");
+    setBankName("");
+    setbankId(null);
+    setPercentageRemuneration(0);
+    setShow(false)
+
   }
   return (
     <>
@@ -296,7 +293,7 @@ export default function AddLandlord() {
                       </div>
                       <div className="col-lg-4">
                           <div className="mb-3">
-                            <label htmlFor="landlord-type" className="form-label">Landlord type</label>
+                            <label htmlFor="landlord-type" className="form-label">Landlord type.  <strong className="text-danger">*</strong></label>
                             {landlordtypes &&
                             <div className="form-group mb-4">
                               <select className="form-control" value={landLordTypeName} onChange={(e) => setLandLordTypeName(e.target.value)}  required={true}>
@@ -321,7 +318,7 @@ export default function AddLandlord() {
                           </div>
                           <div className="col-lg-3 col-md-6 ">
                             <div className="mb-4 ">
-                              <label htmlFor=" ">ID Num.</label>
+                              <label htmlFor=" ">ID Num. <strong className="text-danger">*</strong></label>
                               <input type="text " className="form-control " id=" "value={idNumber} onChange={(e) => setidNumber(e.target.value)} placeholder="Enter ID Num"  required={true}/>
                             </div>
                           </div>
@@ -397,6 +394,7 @@ export default function AddLandlord() {
                               {agreementTypes &&
                               <div className="input-group" id="">
                                 <select className="form-control"
+                                        required={true}
                                         onChange={(e) => {
                                           setlandLordAgreementTypeId(e.target.value);
                                         }}
@@ -419,14 +417,14 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-lastname-input ">Percentage
                                 renumeration<strong className="text-danger ">*</strong></label>
-                              <input type="number" value={remunerationPercentage} onChange={(e) => setremunerationPercentage(e.target.value)} className="form-control "placeholder="Percentage renumeration % "/>
+                              <input type="number" value={remunerationPercentage} onChange={(e) => setremunerationPercentage(e.target.value)} className="form-control "placeholder="Percentage renumeration % " required={true}/>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-lastname-input ">Agreement Period
                                 <strong className="text-danger ">*</strong></label>
-                              <input type="number" value={agreementPeriod} onChange={(e) => setagreementPeriod(e.target.value)} className="form-control "placeholder="Agreement period (months)"/>
+                              <input type="number" value={agreementPeriod} onChange={(e) => setagreementPeriod(e.target.value)} className="form-control "placeholder="Agreement period (months)" required={true}/>
                             </div>
                           </div>
                         </div>
@@ -479,7 +477,7 @@ export default function AddLandlord() {
                             </tbody>
                             <tfoot>
                             <tr>
-                              <td colSpan="7" className="bg-light add-field-1 cursor-pointer" onClick={handleShow}>
+                              <td colSpan="7" onClick={handleShow}>
                                 <span className="d-flex align-items-center "><i
                                   className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span
                                   className="pl-5 ">Add A Bank</span></span>
@@ -521,7 +519,7 @@ export default function AddLandlord() {
                                     <div className="d-flex">
                                       <a data-bs-toggle="modal"
                                          data-bs-target="#update-modal"
-                                         onClick={() => removeDoc(index)}
+                                         onClick={() => removeDoc(doc.docName)}
                                          className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                          title="Delete"><i className='bx bxs-trash'></i></a>
                                     </div>
@@ -532,7 +530,7 @@ export default function AddLandlord() {
                             </tbody>
                             <tfoot>
                             <tr>
-                              <td colSpan="7" className="bg-light add-field-file cursor-pointer"  onClick={handleDocShow}>
+                              <td colSpan="7"  onClick={handleDocShow}>
                                 <span className="d-flex align-items-center "><i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span className="pl-5 ">Add A Document</span></span>
                               </td>
                             </tr>
@@ -564,7 +562,7 @@ export default function AddLandlord() {
                   <div className="row">
                     <div className="col-12">
                       <div className="form-group mb-4">
-                        <label htmlFor="">Select Bank</label>
+                        <label htmlFor="">Select Bank. <strong className="text-danger ">*</strong></label>
                         <select
                           className="form-control"
                           onChange={(e) => {
@@ -593,11 +591,11 @@ export default function AddLandlord() {
                         </select>
                       </div>
                       <div className="form-group mb-4">
-                        <label htmlFor="">Bank account number</label>
+                        <label htmlFor="">Bank account number. <strong className="text-danger ">*</strong></label>
                         <input type="text" className="form-control" value={bankAccountNumber} onChange={(e) => setbankAccountNumber(e.target.value)} placeholder="Enter account number" required={true}/>
                       </div>
                       <div className="form-group mb-4">
-                        <label htmlFor="">Percentage renumeration</label>
+                        <label htmlFor="">Percentage renumeration. <strong className="text-danger ">*</strong></label>
                         <input type="text" className="form-control" value={percentageRemuneration} onChange={(e) => setPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
                       </div>
                     </div>
@@ -625,7 +623,7 @@ export default function AddLandlord() {
                   <div className="row">
                     <div className="col-12">
                       <div className="form-group mb-4">
-                        <label htmlFor="">Select Bank</label>
+                        <label htmlFor="">Select Bank.<strong className="text-danger ">*</strong></label>
                         <select
                           className="form-control"
                           onChange={(e) => {
@@ -654,11 +652,11 @@ export default function AddLandlord() {
                         </select>
                       </div>
                       <div className="form-group mb-4">
-                        <label htmlFor="">Bank account number</label>
+                        <label htmlFor="">Bank account number. <strong className="text-danger ">*</strong></label>
                         <input type="text" className="form-control" value={editBankAccount} onChange={(e) => setEditBankAccount(e.target.value)} placeholder="Enter account number" required={true}/>
                       </div>
                       <div className="form-group mb-4">
-                        <label htmlFor="">Percentage renumeration</label>
+                        <label htmlFor="">Percentage renumeration. <strong className="text-danger ">*</strong></label>
                         <input type="text" className="form-control" value={editpercentageRemuneration} onChange={(e) => setEditPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
                       </div>
                     </div>
@@ -687,7 +685,7 @@ export default function AddLandlord() {
                   <div className="row">
                     <div className="col-12">
                       <div className="form-group mb-4">
-                        <label htmlFor="">Select Document Type</label>
+                        <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
                         <select
                           className="form-control"
                           onChange={(e) => {
@@ -712,11 +710,11 @@ export default function AddLandlord() {
                         </select>
                       </div>
                       <div className="form-group mb-4">
-                        <label htmlFor="">Document Name</label>
+                        <label htmlFor="">Document Name. <strong className="text-danger ">*</strong></label>
                         <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true}/>
                       </div>
                       <div className="form-group mb-4">
-                        <label htmlFor="">Document Upload</label>
+                        <label htmlFor="">Document Upload. <strong className="text-danger ">*</strong></label>
                         <div className="input-group mb-0">
                           <label className="input-group-text bg-info text-white cursor-pointer"
                                  htmlFor="document1-1">

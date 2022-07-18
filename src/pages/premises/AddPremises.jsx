@@ -17,25 +17,53 @@ function AddPremises() {
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
+  const [fileNoShow, setFileNoShow] = useState(true);
 
   const toogleShowUnitTypeChargesModal = () => {
     setShowUnitTypeChargesModal(!showUnitTypeChargesModal);
   }
 
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
+
   const saveLandLordFileNumber = () => {
 
     if (landlordfileNumber != "") {
-      requestsServiceService.getLandLordByFileNumber(landlordfileNumber).then((res) => {
-
-        setLandLordAccounts(res.data.data.accounts);
-
+      requestsServiceService.findByFile(landlordfileNumber).then((res) => {
+        if (res.data.status === false) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger"
+          })
+        } else {
+          setLandLordAccounts(res.data.data.accounts)
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success"
+          });
+          setTimeout(() => {
+            setFileNoShow(false);
+          }, 1500)
+        }
       }).catch((err) => {
-
+        setError({
+          ...error,
+          message: err.message,
+          color: "danger"
+        })
       })
-
-
-
     }
+  }
+
+  const removeUnitType = (el, index) => {
+    let data = selectedunitTypes;
+    data.splice(index, 1);
+    const updatedUnits = data.filter((unit, idx) => idx != index);
+    setSelectedUnitTypes(updatedUnits);
   }
 
 
@@ -118,16 +146,19 @@ function AddPremises() {
           "applicableChargeName": chargee.name,
           "applicableChargeType": chargee.applicableChargeType,
 
-          "unitTypeName": selectedunitTypes[i].unitTypeName,
-          "landlordCollectionAccountId": undefined,
+          "unitTypeName": selectedunitTypes[i].name,
           "monthCountForTenancyRenewal": selectedunitTypes[i].monthCountForTenancyRenewal,
           "numberOfRooms": selectedunitTypes[i].numberOfRooms,
           "premiseId": undefined,
           "purpose": selectedunitTypes[i].purpose,
           "rateCharge": undefined,
           "squarage": selectedunitTypes[i].squarage,
-          "unitTypeId": selectedunitTypes[i].unitTypeId,
-          "value": undefined
+          "unitTypeId": selectedunitTypes[i].id,
+          "value": undefined,
+
+          "clientCollectionAccountId": undefined,
+          "collectedToClientAccount": undefined,
+          "landlordCollectionAccountId": undefined,
         }
         unitAppCharge.push(chargeBody);
       }
@@ -135,11 +166,14 @@ function AddPremises() {
       setUnitCharges(unitAppCharge);
     } else {
       let unitAppCharge = unitCharges;
-      unitAppCharge[index][event.target.name] = event.target.value;
+
+      if (event.target.name === "collectedToClientAccount")
+        unitAppCharge[index][event.target.name] = event.target.value === "client";
+      else
+        unitAppCharge[index][event.target.name] = event.target.value;
 
       setUnitCharges(unitAppCharge);
     }
-    console.log(unitCharges)
   };
 
   const handleUnitChange = (event) => {
@@ -174,9 +208,31 @@ function AddPremises() {
       if (event.target.checked)
         chargess.push(value);
       else
+
         chargess.splice(chargess.indexOf(value), 1);
 
       setSelectedApplicableCharges(chargess);
+
+    }
+  };
+
+  const selectedUnitTypesChange = (event) => {
+
+    console.log(event.target.value);
+    let chargess = selectedunitTypes;
+
+    let value = unitTypes.find(x => x.id == event.target.value);
+
+    console.log(value)
+    if (value != undefined) {
+
+      if (event.target.checked)
+        chargess.push(value);
+      else
+
+        chargess.splice(chargess.indexOf(value), 1);
+
+      setSelectedUnitTypes(chargess);
 
     }
   };
@@ -249,7 +305,8 @@ function AddPremises() {
   }
 
 
-  const addAppCharge = () => {
+  const addAppCharge = (el) => {
+    el.preventDefault();
     let unicahgsg = unitCharges;
     let premiseUnitType = premiseUnitTypeCharges;
 
@@ -269,7 +326,8 @@ function AddPremises() {
   }
 
 
-  const addDocument = () => {
+  const addDocument = (el) => {
+    el.preventDefault();
     let data = docBody;
     if (data.documentOwnerTypeName === "PREMISE") {
 
@@ -291,7 +349,8 @@ function AddPremises() {
 
   }
 
-  const addUnitType = () => {
+  const addUnitType = (el) => {
+    el.preventDefault();
     let data = unitType;
 
     let kins = selectedunitTypes;
@@ -426,11 +485,35 @@ function AddPremises() {
                     Fill in the form correctly. Fields with an Asterisk{" "}
                     <strong class="text-danger">*</strong> are mandatory fields.
                   </p>
-                  <div className="create-property" id="basic">
+                  <div className="create-property" id="kev-step-form">
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+
+                      <button className="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                      </button>
+
+                      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav mr-auto">
+                          <li className="nav-item active">
+                            <a className="nav-link active" href="#">1. Premise Details <span
+                              className="sr-only">(current)</span></a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">2. Invoices Breakdown</a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" href="#">3. Document attachments</a>
+                          </li>
+                        </ul>
+
+                      </div>
+                    </nav>
 
                     {/* <!-- Premises details --> */}
-                    <h3>Premises details</h3>
-                    <section>
+                    <section className="step-cont active-step">
+                      <h3>Premises details</h3>
                       <form>
                         <div class="col-12">
                           <div class="bg-primary border-2 bg-soft p-3 mb-4">
@@ -501,7 +584,8 @@ function AddPremises() {
                                 name="estateId"
                                 onChange={handleGeneral}
                               >
-                                {estates.map((estate) => {
+                                <option></option>
+                                {estates && estates.map((estate) => {
                                   return (
                                     <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
                                   )
@@ -524,7 +608,8 @@ function AddPremises() {
                                 onChange={handleGeneral}
 
                               >
-                                {premiseTypes.map((type) => (
+                                <option></option>
+                                {premiseTypes && premiseTypes.map((type) => (
                                   <option value={type.id}> {type.name}</option>
                                 ))}
 
@@ -545,7 +630,8 @@ function AddPremises() {
                                 onChange={handleGeneral}
 
                               >
-                                {premiseUseTypes.map((type) => (
+                                <option></option>
+                                {premiseUseTypes && premiseUseTypes.map((type) => (
                                   <option value={type.id}> {type.name}</option>
                                 ))}
                               </select>
@@ -745,7 +831,30 @@ function AddPremises() {
                             </p>
                           </div>
                         </div>
-                        <div class="table-responsive table-responsive-md mb-5">
+
+                        <div class="row">
+                          {unitTypes && unitTypes.map((prem, index) =>
+                            <div class="col-4">
+                              <div class="form-check form-check-primary mb-3">
+                                <input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  name="selectedUnitTypes"
+                                  value={prem.id}
+                                  onChange={selectedUnitTypesChange}
+                                />
+                                <label
+                                  class="form-check-label"
+                                  for="monthlyRent"
+                                >
+                                  {prem.name}
+                                </label>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* <div class="table-responsive table-responsive-md mb-5">
                           <table class="table table-editable-2 align-middle table-edits ">
                             <thead class="table-light">
                               <tr class="text-uppercase table-dark">
@@ -779,29 +888,26 @@ function AddPremises() {
                             <tbody>
 
                               {selectedunitTypes.length > 0 && selectedunitTypes.map((dependent, index) => (
-                                <tr>
+                                <tr key={"unit type" + dependent.unitTypeName + index}>
                                   <td>{index + 1}</td>
-                                  <td>{dependent.unitTypeName}</td>
+                                  <td>{dependent.name}</td>
                                   <td>{dependent.numberOfRooms}</td>
                                   <td>{dependent.squarage}</td>
                                   <td>{dependent.purpose}</td>
                                   <td>{dependent.monthCountForTenancyRenewal}</td>
-                                  <td></td>
+                                  <td onClick={(e) => removeUnitType(e, index)} >
+
+                                    <a data-id={index} class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent close" title="Delete "><i class="bx bxs-trash "></i></a>
+                                  </td>
                                 </tr>
                               ))
 
                               }
 
                             </tbody>
-                            <tfoot>
-                              <tr>
-                                <td colSpan="7 ">
-                                  <button type="button" data-id="PREMISE" onClick={newUnitType}>Add A Unit Type</button>
-                                </td>
-                              </tr>
-                            </tfoot>
+
                           </table>
-                        </div>
+                        </div> */}
 
                         <div class="col-12">
                           <div class="bg-primary border-2 bg-soft p-3 mb-4">
@@ -823,7 +929,7 @@ function AddPremises() {
                                 <i>Applicable Charges</i>
                               </p>
                               <div class="row border-right-1">
-                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                {applicableCharges && applicableCharges.map((charge, index) => (
                                   <>
                                     {charge.applicableChargeType === "MONTHLY_CHARGE" &&
                                       <div class="col-6">
@@ -854,7 +960,7 @@ function AddPremises() {
                                 <i>Deposits</i>
                               </p>
                               <div class="row border-right-1">
-                                {applicableCharges.length > 0 && applicableCharges.map((charge, index) => (
+                                {applicableCharges && applicableCharges.map((charge, index) => (
                                   <>
                                     {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
                                       <div class="form-check form-check-primary mb-3">
@@ -884,8 +990,8 @@ function AddPremises() {
                     </section>
 
                     {/* <!-- premises invoice breakdown --> */}
-                    <h3>Invoices breakdown</h3>
-                    <section>
+                    <section className="step-cont d-none">
+                      <h3>Invoices breakdown</h3>
                       <div class="row justify-content-center">
                         <div class="col-12">
                           <div class="table-responsive">
@@ -910,51 +1016,11 @@ function AddPremises() {
                                 </tr>
                               </tfoot>
                               <tbody>
-                                {/* {premiseUnitTypeCharges.length > 0 && selectedApplicableCharges.map((charge, indweex) => (
-                                  <>{uniqueChargeId.map((id, indeex) => (
-                                    <>
-                                      {charge.id == id &&
-                                        <tr>
-                                          <td>{indeex + 1}</td>
 
-                                          <td>
-                                            {charge.name}
-                                          </td>
-
-                                          <td>
-                                            {charge.applicableChargeType}
-                                          </td>
-
-                                          {selectedunitTypes.map((selectedUnitType, indeexw) => (
-                                            <>
-
-                                              {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
-                                                <>
-                                                  {selectedUnitType.unitTypeName === premiseUnitTypeCharge.unitTypeName && premiseUnitTypeCharge.applicableChargeId == id &&
-                                                    <td>
-                                                      {premiseUnitTypeCharge.value}
-                                                    </td>
-                                                  }
-                                                </>
-                                              ))}
-
-                                            </>
-                                          ))}
-
-                                        </tr>
-                                      }
-                                    </>
-                                  ))
-                                  }
-                                  </>
-                                ))
-
-                                } */}
-
-                                {premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
+                                {premiseUnitTypeCharges.length > 0 && premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
                                   <tr>
                                     <td>
-                                      {indeewx + 1}
+                                      {/* {indeewx + 1} */}
                                     </td>
                                     <td>
                                       {premiseUnitTypeCharge.applicableChargeName}
@@ -971,6 +1037,28 @@ function AddPremises() {
                                   </tr>
                                 ))}
 
+                                {selectedApplicableCharges && selectedApplicableCharges.map((premiseUnitTypeCharge, indeewx) => (
+                                  premiseUnitTypeCharge.expectManualValues && selectedunitTypes.map((unitTypee, indeewx) => (
+                                    <tr>
+                                      <td>
+                                        {/* {indeewx + 1} */}
+                                      </td>
+                                      <td>
+                                        {premiseUnitTypeCharge.name}
+                                      </td>
+                                      <td>
+                                        {premiseUnitTypeCharge.applicableChargeType}
+                                      </td>
+                                      <td>
+                                        {unitTypee.unitTypeName}
+                                      </td>
+                                      <td>
+                                        -
+                                      </td>
+                                    </tr>
+                                  ))
+                                ))}
+
                               </tbody>
                             </table>
                           </div>
@@ -979,8 +1067,8 @@ function AddPremises() {
                     </section>
 
                     {/* <!-- Document attachments --> */}
-                    <h3>Document Attachments</h3>
-                    <section>
+                    <section className="step-cont d-none">
+                      <h3>Document Attachments</h3>
                       <form>
                         <h6>
                           Upload documents
@@ -998,7 +1086,7 @@ function AddPremises() {
                             </thead>
                             <tbody>
 
-                              {premiseDocuments.length > 0 && premiseDocuments.map((dependent, index) => (
+                              {premiseDocuments && premiseDocuments.map((dependent, index) => (
                                 <tr>
                                   <td>{index + 1}</td>
                                   <td>{dependent.documentOwnerTypeName}</td>
@@ -1022,10 +1110,15 @@ function AddPremises() {
                         </div>
                       </form>
                     </section>
+                    <div className="button-navigators">
+                      <button disabled className="btn btn-primary waves-effect kev-prev me-2"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>
+                      <button className="btn btn-primary waves-effect kev-nxt me-2">Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
+                      <button type='button' className="btn btn-success kev-submit me-2 d-none" onClick={submit}>Submit <i className="mdi mdi-check-all me-2 font-16px"></i></button>
+                    </div>
                   </div>
                 </div>
 
-                <button type='button' className='btn btn-success' onClick={submit}>SUBMIT</button>
+                {/* <button type='button' className='btn btn-success' onClick={submit}>SUBMIT</button> */}
               </div>
             </div>
           </div>
@@ -1033,24 +1126,24 @@ function AddPremises() {
       </div>
 
 
-      <Modal show={newUnitTypeModal}>
-        <ModalHeader className='justify-content'>
-          <h3>New Unit Type</h3>
-          <span onClick={toogleNewUnitTypeModal}>X</span>
-        </ModalHeader>
-        <ModalBody>
-          <form>
+      <Modal show={newUnitTypeModal} dialogClassName="my-modal">
+        <form onSubmit={addUnitType}>
+          <ModalHeader className='justify-content'>
+            <h3>New Unit Type</h3>
+            <span onClick={toogleNewUnitTypeModal}>X</span>
+          </ModalHeader>
+          <ModalBody>
             <div className="row">
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="basicpill-firstname-input">Unit Type<strong className="text-danger">*</strong></label>
 
                   <select
-                    className='form-control'
+                    className='form-control' required
                     onChange={handleUnitTypeChange}
                     name="unitTypeId">
                     <option></option>
-                    {unitTypes.length > 0 && unitTypes.map((prem, index) =>
+                    {unitTypes && unitTypes.map((prem, index) =>
                       <option value={prem.id + ':' + prem.name}>{prem.name}</option>
                     )}
                   </select>
@@ -1061,7 +1154,7 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">No. Of Rooms</label>
                   <input type="number" className="form-control"
-                    onChange={handleUnitTypeChange} name="numberOfRooms" />
+                    onChange={handleUnitTypeChange} name="numberOfRooms" required />
                 </div>
               </div>
 
@@ -1069,7 +1162,7 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">UNIT SIZE M<sup>2</sup></label>
                   <input type="number" className="form-control"
-                    onChange={handleUnitTypeChange} name="squarage" />
+                    onChange={handleUnitTypeChange} name="squarage" required />
                 </div>
               </div>
 
@@ -1077,41 +1170,42 @@ function AddPremises() {
                 <div className="mb-4">
                   <label htmlFor="">Purpose</label>
                   <input type="text" className="form-control"
-                    onChange={handleUnitTypeChange} name="purpose" />
+                    onChange={handleUnitTypeChange} name="purpose" required />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">TENANCY RENEWAL</label>
-                  <input type="number" className="form-control"
+                  <input type="number" className="form-control" required
                     onChange={handleUnitTypeChange} name="monthCountForTenancyRenewal" />
                 </div>
               </div>
             </div>
 
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <button className='btn btn-basic' type="button" onClick={toogleNewUnitTypeModal}>Close</button>
-          <button className='btn btn-success' type="button" onClick={addUnitType}>Add</button>
-        </ModalFooter>
+          </ModalBody>
+          <ModalFooter>
+            <button className='btn btn-basic' type="button" onClick={toogleNewUnitTypeModal}>Close</button>
+            <button className='btn btn-success' type="submit">Add</button>
+          </ModalFooter>
+        </form>
       </Modal>
 
 
-      <Modal show={showDocumentModal}>
-        <ModalHeader className='justify-content'>
-          <h3>New {docBody.documentOwnerTypeName} Document</h3>
-          <span onClick={toogleShowNewDocumentModal}>X</span>
-        </ModalHeader>
-        <ModalBody>
-          <form id="newContactPersonForm" className='row'>
+      {/* docs modal */}
+      <Modal show={showDocumentModal} dialogClassName="my-modal">
+        <form id="newContactPersonForm" onSubmit={addDocument}>
+          <ModalHeader className='justify-content'>
+            <h3>New {docBody.documentOwnerTypeName} Document</h3>
+            <span onClick={toogleShowNewDocumentModal}>X</span>
+          </ModalHeader>
+          <ModalBody className='row'>
             <div className="col-md-6">
               <div className="mb-4">
                 <label htmlFor="basicpill-firstname-input">Document Type<strong className="text-danger">*</strong></label>
 
-                <select className='form-control' onChange={handleDocumentChange} name="documentTypeId">
+                <select className='form-control' onChange={handleDocumentChange} name="documentTypeId" required>
                   <option></option>
-                  {documentTypes.length > 0 && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+                  {documentTypes && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
                 </select>
               </div>
             </div>
@@ -1119,7 +1213,7 @@ function AddPremises() {
             <div className="col-md-6">
               <div className="mb-4">
                 <label htmlFor="">Doc Name</label>
-                <input type="text" className="form-control" id="" placeholder=""
+                <input type="text" className="form-control" id="" placeholder="" required
                   onChange={(e) => handleDocumentChange(e)} name="docName" />
               </div>
             </div>
@@ -1128,121 +1222,154 @@ function AddPremises() {
               <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
                 <i className="font-14px mdi mdi-paperclip"></i> Document
               </label>
-              <input type="file" className="form-control" name="file"
+              <input type="file" className="form-control" name="file" required
                 onChange={(e) => handleDocumentChange(e)} />
 
             </div>
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <button className='btn btn-basic' type="button" onClick={toogleShowNewDocumentModal}>Close</button>
-          <button className='btn btn-success' type="button" onClick={addDocument}>Add</button>
-        </ModalFooter>
+          </ModalBody>
+          <ModalFooter>
+            <button className='btn btn-basic' type="button" onClick={toogleShowNewDocumentModal}>Close</button>
+            <button className='btn btn-success' type="submit">Add</button>
+          </ModalFooter>
+        </form>
       </Modal>
 
 
 
-      <Modal show={showUnitTypeChargesModal}>
-        <ModalHeader className='justify-content'>
-          <h3>Invoice Breakdown</h3>
-          <span onClick={toogleShowUnitTypeChargesModal}>X</span>
-        </ModalHeader>
-        <ModalBody>
-          <form id="newContactPersonForm" className='row'>
-            <div className="col-md-6">
+      <Modal show={showUnitTypeChargesModal} dialogClassName="my-modal">
+        <form id="newContactPersonForm" onSubmit={addAppCharge}>
+          <ModalHeader className='justify-content'>
+            <h3>Invoice Breakdown</h3>
+            <span onClick={toogleShowUnitTypeChargesModal}>X</span>
+          </ModalHeader>
+          <ModalBody className='row'>
+            <div className="col-md-4">
               <div className="mb-4">
                 <label htmlFor="basicpill-firstname-input">Applicable Charge Type<strong className="text-danger">*</strong></label>
 
-                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="charge">
+                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="charge" required>
                   <option></option>
-                  {selectedApplicableCharges.length > 0 && selectedApplicableCharges.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+                  {selectedApplicableCharges && selectedApplicableCharges.map((prem, index) => (
+                    !prem.expectManualValues &&
+                    <option value={prem.id}>{prem.name}</option>))}
                 </select>
               </div>
             </div>
             <hr></hr>
             <h3>Charge Values</h3>
 
-            {unitCharges.length > 0 && unitCharges.map((unitCharge, index) => (<>
-              <div className="col-md-6">
-                <label htmlFor="">Unit Type</label>
-                <input type="text" className="form-control" id="" placeholder=""
-                  disabled value={unitCharge.unitTypeName} name="docName" />
-              </div>
+            {unitCharges && unitCharges.map((unitCharge, index) => (
+              <div className="card border border-primary">
+                <div className="row card-body">
+                  <div className="col-md-4">
+                    <label htmlFor="">Unit Type</label>
+                    <input type="text" className="form-control" id="" placeholder="" required
+                      disabled value={unitCharge.unitTypeName} name="docName" />
+                  </div>
 
-              <div className="col-md-6">
-                <label> Charge Value </label>
-                <input type="number" className="form-control" name="value"
-                  onChange={(e) => handleChargechange(e, index)} />
-              </div>
+                  <div className="col-md-4">
+                    <label> Charge Value </label>
+                    <input type="number" className="form-control" name="value" required
+                      onChange={(e) => handleChargechange(e, index)} />
+                  </div>
 
-              <div className="col-md-6">
-                <label> Collection Acc </label>
-                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="landlordCollectionAccountId">
-                  <option></option>
-                  {landLordAccounts.length > 0 && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
-                </select>
-              </div>
+                  <div className="col-md-4">
+                    <label> Collected to: </label>
+                    <select className='form-control' required onChange={(e) => handleChargechange(e, index)}
+                      name="collectedToClientAccount">
+                      <option></option>
+                      <option value="client">Client Account</option>
+                      <option value="landlord">LandLord Account</option>
+                    </select>
+                  </div>
 
-              <div className="col-md-6">
-                <label> Invoice Day </label>
-                <input type="number" className="form-control" name="invoiceDay"
-                  onChange={(e) => handleChargechange(e, index)} />
-              </div>
+                  {unitCharge["collectedToClientAccount"] == true ?
+                    <div className="col-md-4">
+                      <label> Client Collection Acc </label>
+                      <select className='form-control' required onChange={(e) => handleChargechange(e, index)}
+                        name="clientCollectionAccountId">
+                        <option></option>
+                        {landLordAccounts && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
+                      </select>
+                    </div>
+                    :
+                    <div className="col-md-4">
+                      <label>LandLord Collection Acc </label>
+                      <select className='form-control' required onChange={(e) => handleChargechange(e, index)}
+                        name="landlordCollectionAccountId">
+                        <option></option>
+                        {landLordAccounts && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
+                      </select>
+                    </div>
+                  }
+                  <div className="col-md-4">
+                    <label> Invoice Day </label>
+                    <input type="number" className="form-control" name="invoiceDay" required
+                      onChange={(e) => handleChargechange(e, index)} />
+                  </div>
 
-            </>
+                </div>
+              </div>
             ))
             }
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <button className='btn btn-basic' type="button" onClick={toogleShowUnitTypeChargesModal}>Close</button>
-          <button className='btn btn-success' type="button" onClick={addAppCharge}>Add</button>
-        </ModalFooter>
+          </ModalBody>
+          <ModalFooter>
+            <button className='btn btn-basic' type="button" onClick={toogleShowUnitTypeChargesModal}>Close</button>
+            <button className='btn btn-success' type="submit">Add</button>
+          </ModalFooter>
+        </form>
       </Modal>
 
       {/* <!-- enter landlord's id modal --> */}
 
-      <Modal show={landLordAccounts.length < 1}>
+      <Modal show={fileNoShow} centered>
         <ModalBody>
-          <div class="row justify-content-center ">
-            <div class="col-xl-10 ">
-              <h4 class="text-primary ">Landlord's File No.</h4>
-              <p class="text-muted font-size-14 mb-4 ">
-                Enter the landlords file number if the landlord is already
-                registered in the system. If this is a new landlord, click
-                cancel.
-              </p>
+          {error.color !== "" &&
+            <div className={"alert alert-" + error.color} role="alert">
+              {error.message}
+            </div>
+          }
+          <div class="text-center mb-4 ">
+            <div class="avatar-md mx-auto mb-4 ">
+              <div class="avatar-title bg-light rounded-circle text-primary h1 ">
+                <i class="mdi mdi-card-account-details-outline "></i>
+              </div>
+            </div>
 
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div class="row ">
-                  <div class="col-9">
-                    <div class="mb-3 ">
-                      <label for="digit1-input " class="visually-hidden ">
-                        File No.
-                      </label>
-                      <input
-                        type="text "
-                        class="form-control form-control-lg text-center two-step "
-                        placeholder="Enter file No."
-                        value={landlordfileNumber}
-                        onChange={(e) =>
-                          setLandlordfileNumber(e.target.value)
-                        }
-                      />
+            <div class="row justify-content-center ">
+              <div class="col-xl-10 ">
+                <h4 class="text-primary ">Landlord's File No.</h4>
+                <p class="text-muted font-size-14 mb-4 ">
+                  Enter the landlords file number if the landlord is already registered in the
+                  system. If this is a new landlord, click cancel.
+                </p>
+
+                <form onSubmit={(e) => e.preventDefault()}>
+                  <div class="row ">
+                    <div class="col-9">
+                      <div class="mb-3 ">
+                        <label for="digit1-input " class="visually-hidden ">File
+                          No.</label>
+                        <input
+                          type="text "
+                          class="form-control form-control-lg text-center two-step "
+                          placeholder="Enter file No."
+                          value={landlordfileNumber}
+                          onChange={(e) =>
+                            setLandlordfileNumber(e.target.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div class="col-3 ">
+                      <button class="btn btn-primary btn-block w-100 btn-lg" onClick={saveLandLordFileNumber}>
+                        <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
+                        <div class="d-none">Search</div>
+                      </button>
                     </div>
                   </div>
-                  <div class="col-3 ">
-                    <button
-                      data-bs-dismiss="modal"
-                      class="btn btn-primary btn-block w-100 btn-lg"
-                      onClick={saveLandLordFileNumber}
-                    >
-                      <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
-                      <div class="d-none">Search</div>
-                    </button>
-                  </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
         </ModalBody>

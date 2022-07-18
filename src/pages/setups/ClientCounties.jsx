@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 
 function ClientCounties() {
@@ -31,7 +32,7 @@ const deactivate = (id)=> {
   const createCounty = () => {
     const data = JSON.stringify({
       active: true,
-      clientId: 1,
+      clientId: authService.getClientId(),
       countyId: selectedCounty,
       id: 0,
     });
