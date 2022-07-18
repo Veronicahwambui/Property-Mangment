@@ -503,7 +503,7 @@ function ViewClient() {
                   </select>
                 </div>
                 <div className="form-group mb-4">
-                  <label htmlFor="landlord-type" className="form-label">Tenancy status.  <strong className="text-danger">*</strong></label>
+                  <label htmlFor="landlord-type" className="form-label">Unit tenancy restriction status.  <strong className="text-danger">*</strong></label>
                   {tenancyStatuses &&
                   <div className="form-group mb-4">
                     <select className="form-control" onChange={(e) => setEditTenancy(e.target.value)}  required={true}>
