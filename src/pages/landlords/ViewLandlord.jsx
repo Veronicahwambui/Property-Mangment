@@ -234,13 +234,13 @@ function ViewLandlord() {
       percentageRemuneration: percentageRemuneration
     }
     requestsServiceService.createLandLordAccounts(data).then((res) => {
-      accclose();
       setError({
         ...error,
         message: res.data.message,
         color: "success"
       })
-      accclose();
+      getlandlords();
+      docclose();
       setTimeout(() => {
         setError({
           ...error,
@@ -248,7 +248,6 @@ function ViewLandlord() {
           color: ""
         })
       }, 3000);
-      getlandlords();
     })
   }
   const handleFileRead = async (event) => {
@@ -723,7 +722,7 @@ function ViewLandlord() {
       </div>
 
       {/*edit landlord modals*/}
-      <Modal show={show_landlord} onHide={landlordclose} className={"modal fade"}>
+      <Modal show={show_landlord} onHide={landlordclose} className={"modal fade"} centered>
         <form onSubmit={handlelandlordsubmit}>
           <Modal.Header closeButton onClick={()=> landlordclose()}>
             <Modal.Title>Update Landlord</Modal.Title>
@@ -848,7 +847,7 @@ function ViewLandlord() {
         </form>
       </Modal>
       {/*edit accounts modal*/}
-        <Modal show={show_acc} onHide={accclose} className={"modal fade"}>
+        <Modal show={show_acc} onHide={accclose} className={"modal fade"} centered>
           <form onSubmit={handleaccountsubmit}>
             <Modal.Header closeButton>
               <Modal.Title>Edit account details</Modal.Title>
@@ -908,7 +907,7 @@ function ViewLandlord() {
         </Modal>
       </div>
       {/*add accounts modal*/}
-      <Modal show={show_doc} onHide={docclose} className={"modal fade"}>
+      <Modal show={show_doc} onHide={docclose} className={"modal fade"} centered>
         <form onSubmit={handleAccountSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>Add account details</Modal.Title>
@@ -967,7 +966,7 @@ function ViewLandlord() {
         </form>
       </Modal>
       {/*add documents*/}
-      <Modal show={docShow} onHide={handleDocClose} className={"modal fade"}>
+      <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
         <form onSubmit={handleDocumentSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>Add Documents</Modal.Title>
@@ -986,7 +985,7 @@ function ViewLandlord() {
                     required={true}
                   >
                     <option className="text-black font-semibold ">
-                      {editBankName}
+                      select document type..
                     </option>
                     {documentTypes.map((dT) => {
                       return (
@@ -1035,6 +1034,7 @@ function ViewLandlord() {
         role="dialog"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
+        centered="true"
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
@@ -1072,6 +1072,7 @@ function ViewLandlord() {
         role="dialog"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
+        centered="false"
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
@@ -1110,6 +1111,7 @@ function ViewLandlord() {
         role="dialog"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
+        centered="true"
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
@@ -1148,6 +1150,7 @@ function ViewLandlord() {
         role="dialog"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
+        centered="true"
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
