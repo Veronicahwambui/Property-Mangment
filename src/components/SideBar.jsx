@@ -78,6 +78,7 @@ function SideBar() {
                             </a>
                             <ul className="sub-menu" aria-expanded="false">
                                 <li><NavLink to="/createinvoice">Create an Invoice</NavLink></li>
+                                <li><NavLink to="/invoices">Invoices</NavLink></li>
                             </ul>
                         </li>
 

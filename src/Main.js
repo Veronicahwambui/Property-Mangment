@@ -40,6 +40,7 @@ import NewClient from "./pages/clients/NewClient";
 import { Helmet } from "react-helmet";
 import OnePremiseUnit from "./pages/premises/OnePremiseUnit";
 import ViewClient from "./pages/clients/ViewCLient";
+import Invoices from "./pages/invoices/Invoices";
 
 function Main() {
 
@@ -99,6 +100,7 @@ function Main() {
                 <Route path='/document-types' element={<DocumentTypes />} />
                 {/* invoices */}
                 <Route path='/createinvoice' element={<CreateInvoice />} />
+                <Route path='/invoices' element={<Invoices />} />
                 {/* receipts */}
                 <Route path='/receipts' element={<Receipts />} />
                 {/* transactions  */}

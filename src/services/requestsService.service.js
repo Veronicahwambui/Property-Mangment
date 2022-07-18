@@ -561,6 +561,16 @@ class RequestsService {
     deactivateClientAccount(data) {
         return axiosInstance.get(baseUrl + "/clients/accounts/deactivate/"+ data)
     }
+    //INVOICING
+    createInvoice(data) {
+        return axiosInstance.post(baseUrl + "/payments", data)
+    }
+    getTenant(data) {
+        return axiosInstance.get(baseUrl + "/tenants/" + data)
+    }
+    getInvoices(data) {
+        return axiosInstance.get(baseUrl + "/payments")
+    }
 }
 
 export default new RequestsService();
