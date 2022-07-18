@@ -419,7 +419,7 @@ function ViewClient() {
                                         <span className="badge-soft-success badge">Active</span> :
                                         <span className="badge-soft-danger badge">Inactive</span>}</td>
                                       <td className="text-right cell-change ">
-                                        <div className="d-flex">
+                                        <div className="d-flex align-items-center">
                                           <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
                                              title="Edit"
                                              onClick={() => accshow(acc.id)}
@@ -503,7 +503,7 @@ function ViewClient() {
                   </select>
                 </div>
                 <div className="form-group mb-4">
-                  <label htmlFor="landlord-type" className="form-label">Tenancy status.  <strong className="text-danger">*</strong></label>
+                  <label htmlFor="landlord-type" className="form-label">Unit tenancy restriction status.  <strong className="text-danger">*</strong></label>
                   {tenancyStatuses &&
                   <div className="form-group mb-4">
                     <select className="form-control" onChange={(e) => setEditTenancy(e.target.value)}  required={true}>

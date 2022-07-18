@@ -121,8 +121,8 @@ export default function  RecoverPassword() {
                       <form onSubmit={handleSubmit}>
 
                         <div className=" mb-3 ">
-                          <label htmlFor="useremail " className="form-label ">Email</label>
-                          <input type="email" className="form-control "  onChange={handleChange} name={"email"} id="useremail " placeholder="Enter email " required/>
+                          <label htmlFor="useremail " className="form-label ">Email. <strong className="text-danger ">*</strong></label>
+                          <input type="email" className="form-control "  onChange={handleChange} name={"email"} id="useremail " placeholder="Enter email " required={true}/>
                         </div>
 
                         <div className="text-end ">
@@ -151,7 +151,6 @@ export default function  RecoverPassword() {
                         </div>
                       </div>
                       <div className="p-2 mt-4">
-                        <p>Success! Reset link sent to sam@sam.com</p>
                         {/*<h4>Verify your Account</h4>*/}
                         <p>We have sent an email with the <strong>OTP</strong> to <span
                           className="fw-semibold">{email}</span>, Please check it and use it to login so as to

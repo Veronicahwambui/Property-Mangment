@@ -236,13 +236,13 @@ function ViewLandlord() {
       percentageRemuneration: percentageRemuneration
     }
     requestsServiceService.createLandLordAccounts(data).then((res) => {
-      accclose();
       setError({
         ...error,
         message: res.data.message,
         color: "success"
       })
-      accclose();
+      getlandlords();
+      docclose();
       setTimeout(() => {
         setError({
           ...error,
@@ -250,7 +250,6 @@ function ViewLandlord() {
           color: ""
         })
       }, 3000);
-      getlandlords();
     })
   }
   const handleFileRead = async (event) => {
@@ -571,10 +570,13 @@ function ViewLandlord() {
                                         <td data-field="unit-num ">{acc.percentageRemuneration}</td>
                                         <td data-field="unit-num ">{acc.active ?
                                           <span className="badge-soft-success badge">Active</span> :
-                                          <span className="badge-soft-danger badge">Inactive</span>}</td>
+                                          <span className="badge-soft-danger badge">Inactive</span>}
+                                        </td>
                                         <td className="text-right cell-change ">
-                                          <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
-                                            title="Edit" onClick={() => accshow(acc.id)}><i className="bx bx-edit-alt " /></a>
+                                          <div className="d-flex align-items-center">
+                                            <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
+                                              title="Edit" onClick={() => accshow(acc.id)}><i className="bx bx-edit-alt " /></a>
+                                          </div>
                                         </td>
                                         <td>
                                           <div className="d-flex">
@@ -615,8 +617,7 @@ function ViewLandlord() {
               </div>
             </div>
           }
-          {
-            activeLink === 3 &&
+          {activeLink === 3 &&
             <div className={"row"}>
               <div className="col-12">
                 <div className="card">
@@ -647,72 +648,73 @@ function ViewLandlord() {
                                 </div>
                               </div>
                             </div>
-                            <div className="p-4">
-                              <div className="row">
-                                {error.color !== "" &&
-                                  <div className={"alert alert-" + error.color} role="alert">
-                                    {error.message}
-                                  </div>
-                                }
-                                <div className="col-12">
-                                  <div className="table-responsive">
-                                    <table
-                                      className="table align-middle table-nowrap table-hover mb-0">
-                                      <thead>
-                                        <tr className="text-uppercase table-dark">
-                                          <th scope="col">#</th>
-                                          <th scope="col">Document Name</th>
-                                          <th scope="col">Document Type</th>
-                                          <th scope="col">Status</th>
-                                          <th className="text-right">Actions</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        {documents?.map((doc, index) => (
-                                          <tr data-id={index} key={index}>
-                                            <td style={{ width: "80px" }}>{index + 1}</td>
-                                            <td data-field="estate">{doc.docName}</td>
-                                            <td data-field="unit-num ">{doc.documentType?.name}</td>
-                                            <td data-field="unit-num ">
-                                              {doc.active ?
-                                                <span className="badge-soft-success badge">Active</span> :
-                                                <span className="badge-soft-danger badge">Inactive</span>
+                          </div>
+                          <div className="p-4">
+                            <div className="row">
+                              {error.color !== "" &&
+                                <div className={"alert alert-" + error.color} role="alert">
+                                  {error.message}
+                                </div>
+                              }
+                              <div className="col-12">
+                                <div className="table-responsive">
+                                  <table
+                                    className="table align-middle table-nowrap table-hover mb-0">
+                                    <thead>
+                                      <tr className="text-uppercase table-dark">
+                                        <th scope="col">#</th>
+                                        <th scope="col">Document Name</th>
+                                        <th scope="col">Document Type</th>
+                                        <th scope="col">Status</th>
+                                        <th className="text-right">Actions</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {documents?.map((doc, index) => (
+                                        <tr data-id={index} key={index}>
+                                          <td style={{ width: "80px" }}>{index + 1}</td>
+                                          <td data-field="estate">{doc.docName}</td>
+                                          <td data-field="unit-num ">{doc.documentType?.name}</td>
+                                          <td data-field="unit-num ">
+                                            {doc.active ?
+                                              <span className="badge-soft-success badge">Active</span> :
+                                              <span className="badge-soft-danger badge">Inactive</span>
+                                            }
+                                          </td>
+                                          
+                                          <td className="text-right cell-change ">
+                                            <div className="d-flex">
+                                              <a href={baseUrl + "/documents/download?docName=" + `${doc.docName}`}
+                                                className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                                target="_blank"><i className="bx bx-download" />
+                                              </a>
+                                              {doc.active ? <button
+                                                className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-deactivate"
+                                                style={{ marginLeft: "8px" }}
+                                                onClick={() => setActiveId(doc.id)}
+                                              >
+                                                Deactivate
+                                              </button> : <button
+                                                className="btn btn-success btn-sm btn-rounded waves-effect waves-light"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-activate"
+                                                style={{ marginLeft: "8px" }}
+                                                onClick={() => setActiveId(doc.id)}
+                                              >
+                                                Activate
+                                              </button>
                                               }
-                                            </td>
-                                            <td className="text-right cell-change ">
-                                              <div className="d-flex">
-                                                <a href={baseUrl + "/documents/download?docName=" + `${doc.docName}`}
-                                                  className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                                  target="_blank"><i className="bx bx-download" />
-                                                </a>
-                                                {doc.active ? <button
-                                                  className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
-                                                  title="deactivate"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#confirm-deactivate"
-                                                  style={{ marginLeft: "8px" }}
-                                                  onClick={() => setActiveId(doc.id)}
-                                                >
-                                                  Deactivate
-                                                </button> : <button
-                                                  className="btn btn-success btn-sm btn-rounded waves-effect waves-light"
-                                                  title="deactivate"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#confirm-activate"
-                                                  style={{ marginLeft: "8px" }}
-                                                  onClick={() => setActiveId(doc.id)}
-                                                >
-                                                  Activate
-                                                </button>
-                                                }
-                                              </div>
-                                            </td>
+                                            </div>
+                                          </td>
 
-                                          </tr>
-                                        ))}
-                                      </tbody>
-                                    </table>
-                                  </div>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
                                 </div>
                               </div>
                             </div>
@@ -727,66 +729,66 @@ function ViewLandlord() {
           }
         </div>
 
-      {/*edit landlord modals*/}
-      <Modal show={show_landlord} onHide={landlordclose} className={"modal fade"}>
-        <form onSubmit={handlelandlordsubmit}>
-          <Modal.Header closeButton onClick={()=> landlordclose()}>
-            <Modal.Title>Update Landlord</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row">
-              <div className="col-6">
-                <div className="form-group mb-4">
-                  <label htmlFor="">Landlord Type <strong className="text-danger ">*</strong></label>
-                  <select className="form-control" value={editlandlordtypename} onChange={(e) => seteditlandlordtypename(e.target.value)}  required={true}>
-                    <option className="text-black font-semibold ">
-                      {editlandlordtypename}
-                    </option>
-                    {
-                      landlordtypes.map((item, index) => (
-                        <option value={item}>{item}</option>
-                      ))
-                    }
-                  </select>
+        {/*edit landlord modals*/}
+        <Modal show={show_landlord} onHide={landlordclose} className={"modal fade"} centered>
+          <form onSubmit={handlelandlordsubmit}>
+            <Modal.Header closeButton onClick={() => landlordclose()}>
+              <Modal.Title>Update Landlord</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-6">
+                  <div className="form-group mb-4">
+                    <label htmlFor="">Landlord Type <strong className="text-danger ">*</strong></label>
+                    <select className="form-control" value={editlandlordtypename} onChange={(e) => seteditlandlordtypename(e.target.value)} required={true}>
+                      <option className="text-black font-semibold ">
+                        {editlandlordtypename}
+                      </option>
+                      {
+                        landlordtypes.map((item, index) => (
+                          <option value={item}>{item}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">Agreement Type. <strong className="text-danger ">*</strong></label>
+                    <select className="form-control" value={editlandlordagreementtype} onChange={(e) => seteditlandlordagreementtype(e.target.value)} required={true}>
+                      <option className="text-black font-semibold ">
+                        {edittypename}
+                      </option>
+                      {
+                        agreementtypes?.map((item, index) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">File Num. <strong className="text-danger ">*</strong></label>
+                    <input type="text" value={editlandlordfilenumber} onChange={(e) => seteditlandlordfilenumber(e.target.value)} className="form-control"
+                      required={true} />
+                  </div>
                 </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Agreement Type. <strong className="text-danger ">*</strong></label>
-                  <select className="form-control" value={editlandlordagreementtype} onChange={(e) => seteditlandlordagreementtype(e.target.value)}  required={true}>
-                    <option className="text-black font-semibold ">
-                      {edittypename}
-                    </option>
-                    {
-                      agreementtypes?.map((item, index) => (
-                        <option value={item.id}>{item.name}</option>
-                      ))
-                    }
-                  </select>
+                <div className="col-6">
+                  <div className="form-group mb-4">
+                    <label htmlFor="">ID Num. <strong className="text-danger ">*</strong></label>
+                    <input type="text" value={editlandlordidnumber} onChange={(e) => seteditlandlordidnumber(e.target.value)} className="form-control"
+                      required={true} />
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">First Name. <strong className="text-danger ">*</strong></label>
+                    <input type="text" value={editlandlordfirstname} onChange={(e) => seteditlandlordfirstname(e.target.value)}
+                      className="form-control"
+                      required={true} />
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">Last Name. <strong className="text-danger ">*</strong></label>
+                    <input type="text" value={editlandlordlastname} onChange={(e) => seteditlandlordlastname(e.target.value)}
+                      className="form-control"
+                      required={true} />
+                  </div>
                 </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">File Num. <strong className="text-danger ">*</strong></label>
-                  <input type="text" value={editlandlordfilenumber} onChange={(e) => seteditlandlordfilenumber(e.target.value)} className="form-control"
-                         required={true} />
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="form-group mb-4">
-                  <label htmlFor="">ID Num. <strong className="text-danger ">*</strong></label>
-                  <input type="text" value={editlandlordidnumber} onChange={(e) => seteditlandlordidnumber(e.target.value)} className="form-control"
-                          required={true} />
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">First Name. <strong className="text-danger ">*</strong></label>
-                  <input type="text" value={editlandlordfirstname} onChange={(e) => seteditlandlordfirstname(e.target.value)}
-                         className="form-control"
-                         required={true} />
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Last Name. <strong className="text-danger ">*</strong></label>
-                  <input type="text" value={editlandlordlastname} onChange={(e) => seteditlandlordlastname(e.target.value)}
-                         className="form-control"
-                         required={true} />
-                </div>
-              </div>
                 <div className="col-6">
                   <div className="form-group mb-4">
                     <label htmlFor="">Email. <strong className="text-danger ">*</strong></label>
@@ -812,13 +814,13 @@ function ViewLandlord() {
                     <label htmlFor=" " className=" ">Gender: <strong className="text-danger ">*</strong></label>
                     <div className="d-flex ">
                       <div className="form-check me-3">
-                        <input className="form-check-input" type="radio" name="gender"checked={editlandlordgender === "male"} value={"male"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-male" />
+                        <input className="form-check-input" type="radio" name="gender" checked={editlandlordgender === "male"} value={"male"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-male" />
                         <label className="form-check-label" htmlFor="gender-male">
                           Male
                         </label>
                       </div>
                       <div className="form-check me-3">
-                        <input className="form-check-input" type="radio" name="gender" checked={editlandlordgender === "female"}  value={"female"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-female" />
+                        <input className="form-check-input" type="radio" name="gender" checked={editlandlordgender === "female"} value={"female"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-female" />
                         <label className="form-check-label" htmlFor="gender-female">
                           Female
                         </label>
@@ -826,34 +828,34 @@ function ViewLandlord() {
                     </div>
                   </div>
                 </div>
-            </div>
-            <div className="col-12">
-              <div className="form-group mb-4">
-                    <label htmlFor="">Remuneration %. <strong className="text-danger ">*</strong></label>
-                    <input type="number" value={editlandlordremuneration} onChange={(e) => seteditlandlordremuneration(e.target.value)}
-                           className="form-control"
-                            required={true} />
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Agreement Period. <strong className="text-danger ">*</strong></label>
-                    <input type="number" value={editagreementperiod} onChange={(e) => seteditagreementperiod(e.target.value)}
-                      className="form-control"
-                      required={true} />
-                  </div>
               </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" className={"btn btn-grey"} onClick={landlordclose}>
-              Close
-            </Button>
-            <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
-      {/*edit accounts modal*/}
-        <Modal show={show_acc} onHide={accclose} className={"modal fade"}>
+              <div className="col-12">
+                <div className="form-group mb-4">
+                  <label htmlFor="">Remuneration %. <strong className="text-danger ">*</strong></label>
+                  <input type="number" value={editlandlordremuneration} onChange={(e) => seteditlandlordremuneration(e.target.value)}
+                    className="form-control"
+                    required={true} />
+                </div>
+                <div className="form-group mb-4">
+                  <label htmlFor="">Agreement Period. <strong className="text-danger ">*</strong></label>
+                  <input type="number" value={editagreementperiod} onChange={(e) => seteditagreementperiod(e.target.value)}
+                    className="form-control"
+                    required={true} />
+                </div>
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" className={"btn btn-grey"} onClick={landlordclose}>
+                Close
+              </Button>
+              <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal>
+        {/*edit accounts modal*/}
+        <Modal show={show_acc} onHide={accclose} className={"modal fade"} centered>
           <form onSubmit={handleaccountsubmit}>
             <Modal.Header closeButton>
               <Modal.Title>Edit account details</Modal.Title>
@@ -892,7 +894,7 @@ function ViewLandlord() {
                   </div>
                   <div className="form-group mb-4">
                     <label htmlFor="">Bank account number. <strong className="text-danger ">*</strong></label>
-                    <input type="text" className="form-control" value={editBankAccount} onChange={(e) => setEditBankAccount(e.target.value)} placeholder="Enter account number" required={true}/>
+                    <input type="text" className="form-control" value={editBankAccount} onChange={(e) => setEditBankAccount(e.target.value)} placeholder="Enter account number" required={true} />
                   </div>
                   <div className="form-group mb-4">
                     <label htmlFor="">Percentage renumeration.  <strong className="text-danger ">*</strong></label>
@@ -913,7 +915,7 @@ function ViewLandlord() {
         </Modal>
       </div>
       {/*add accounts modal*/}
-      <Modal show={show_doc} onHide={docclose} className={"modal fade"}>
+      <Modal show={show_doc} onHide={docclose} className={"modal fade"} centered>
         <form onSubmit={handleAccountSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>Add account details</Modal.Title>
@@ -952,7 +954,7 @@ function ViewLandlord() {
                 </div>
                 <div className="form-group mb-4">
                   <label htmlFor="">Bank account number.  <strong className="text-danger ">*</strong></label>
-                  <input type="text" className="form-control" value={bankAccountNumber} onChange={(e) => setbankAccountNumber(e.target.value)} placeholder="Enter account number" required={true}/>
+                  <input type="text" className="form-control" value={bankAccountNumber} onChange={(e) => setbankAccountNumber(e.target.value)} placeholder="Enter account number" required={true} />
                 </div>
                 <div className="form-group mb-4">
                   <label htmlFor="">Percentage renumeration.  <strong className="text-danger ">*</strong></label>
@@ -972,7 +974,7 @@ function ViewLandlord() {
         </form>
       </Modal>
       {/*add documents*/}
-      <Modal show={docShow} onHide={handleDocClose} className={"modal fade"}>
+      <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
         <form onSubmit={handleDocumentSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>Add Documents</Modal.Title>
@@ -991,7 +993,7 @@ function ViewLandlord() {
                     required={true}
                   >
                     <option className="text-black font-semibold ">
-                      {editBankName}
+                      select document type..
                     </option>
                     {documentTypes.map((dT) => {
                       return (
@@ -1007,7 +1009,7 @@ function ViewLandlord() {
                 </div>
                 <div className="form-group mb-4">
                   <label htmlFor="">Document Name.  <strong className="text-danger ">*</strong></label>
-                  <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true}/>
+                  <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true} />
                 </div>
                 <div className="form-group mb-4">
                   <label htmlFor="">Document Upload.  <strong className="text-danger ">*</strong></label>
@@ -1040,6 +1042,7 @@ function ViewLandlord() {
         role="dialog"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
+        centered="true"
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
@@ -1077,6 +1080,7 @@ function ViewLandlord() {
         role="dialog"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
+        centered="false"
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
@@ -1115,6 +1119,7 @@ function ViewLandlord() {
         role="dialog"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
+        centered="true"
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
@@ -1153,6 +1158,7 @@ function ViewLandlord() {
         role="dialog"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
+        centered="true"
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">

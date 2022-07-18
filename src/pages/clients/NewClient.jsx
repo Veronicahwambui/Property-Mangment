@@ -252,12 +252,12 @@ export default function NewClient() {
                           </div>
                           <div className="col-lg-6">
                             <div className="mb-3">
-                              <label htmlFor="landlord-type" className="form-label">Tenancy status.  <strong className="text-danger">*</strong></label>
+                              <label htmlFor="landlord-type" className="form-label">Unit tenancy restriction status.  <strong className="text-danger">*</strong></label>
                               {tenancyStatuses &&
                               <div className="form-group mb-4">
                                 <select className="form-control" onChange={(e) => setTenancyStatus(e.target.value)}  required={true}>
                                   <option className="text-black font-semibold ">
-                                    Select tenancy status
+                                    Select unit tenancy restriction status
                                   </option>
                                   {
                                     tenancyStatuses?.map((t, index) => (
