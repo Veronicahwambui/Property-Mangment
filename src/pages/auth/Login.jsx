@@ -147,14 +147,14 @@ function Login() {
                           <form onSubmit={handleSubmit}>
 
                             <div className="mb-3 ">
-                              <label for="username " className="form-label ">Username</label>
-                              <input type="text" className="form-control " id="username " placeholder="Enter username " onChange={handleChange} name={"username"} required></input>
+                              <label for="username " className="form-label ">Username. <strong className="text-danger ">*</strong></label>
+                              <input type="text" className="form-control " id="username " placeholder="Enter username " onChange={handleChange} name={"username"} required={true}></input>
                             </div>
 
                             <div className="mb-3 ">
-                              <label className="form-label ">Password</label>
+                              <label className="form-label ">Password. <strong className="text-danger ">*</strong></label>
                               <div className="input-group auth-pass-inputgroup ">
-                                <input type="password" className="form-control " placeholder="Enter password " aria-label="Password " name={"password"} onChange={handleChange} />
+                                <input type="password" className="form-control " placeholder="Enter password " aria-label="Password " name={"password"} onChange={handleChange} required={true}/>
                                   <button className="btn btn-light " type={"button"} id="password-addon "><i className="mdi mdi-eye-outline "/></button>
                               </div>
                               <div className="float-end">
@@ -174,7 +174,7 @@ function Login() {
                             {/*</div>*/}
 
                             <div className="mt-3 d-grid ">
-                              <button className="btn btn-primary waves-effect waves-light " type="submit ">Log In</button>
+                              <button className="btn btn-primary waves-effect waves-light " type="submit">Log In</button>
                             </div>
                           </form>
                         </div>

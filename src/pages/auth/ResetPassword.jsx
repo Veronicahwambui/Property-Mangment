@@ -8,6 +8,8 @@ export default function  ResetPassword() {
   const [d3, setD3] = useState("")
   const [d4, setD4] = useState("")
   const [password, setPassword] = useState("");
+  const [passwordconfirm, setPasswordConfirm] = useState("");
+
 
   const [error, setError] = useState({
     message: "",
@@ -36,11 +38,34 @@ export default function  ResetPassword() {
     setPassword(event.target.value)
   }
 
+  const enabled = () => (password !== "") && (passwordconfirm === password);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    let userId = "92f89925-72d2-4d76-bf6b-4aef1b95bbb3";
+    if (enabled()) {
+      setError({
+        ...error,
+        message: "Success!",
+        color:"success"
+      })
+    } else {
+      setError({
+        ...error,
+        message: "Passwords do not match!",
+        color:"danger"
+      })
+    }
+    setTimeout(() => {
+      setError({
+        ...error,
+        message: "",
+        color:""
+      })
+    }, 2000);
+    let userId = "96754171-ddfb-4c52-9a83-54a64987d343";
     let det = ({
       password: password,
+      passwordconfirm: passwordconfirm,
       userID: userId,
       verifyEmail: true
     });
@@ -64,7 +89,7 @@ export default function  ResetPassword() {
         color: "danger"
       });
     });
-    }
+  }
 
   return (
     <div>
@@ -134,19 +159,13 @@ export default function  ResetPassword() {
                           <i className="bx bxs-envelope h1 mb-0 text-primary"></i>
                         </div>
                       </div>
-                      {error.color !== "" &&
-                      <div className={"alert alert-" + error.color} role="alert">
-                        {error.message}
-                      </div>
-                      }
                       <div className="p-2 mt-4">
-
-                        <h4>Verify your email</h4>
-                        <p className="mb-5">Please enter the 4 digit code sent to <span
+                        <h4>Update your password</h4>
+                        <p className="mb-5">Please enter the 4 digit code<span
                           className="fw-semibold">{}</span></p>
-
                         <form onSubmit={handleSubmit}>
                           <div className="row">
+                            <label htmlFor="digit1-input">Enter OTP</label>
                             <div className="col-3">
                               <div className="mb-3">
                                 <label htmlFor="digit1-input" className="visually-hidden">Dight 1</label>
@@ -154,7 +173,6 @@ export default function  ResetPassword() {
                                        maxLength="1" data-value="1" id="digit1-input" value={d1} required/>
                               </div>
                             </div>
-
                             <div className="col-3">
                               <div className="mb-3">
                                 <label htmlFor="digit2-input" className="visually-hidden">Dight 2</label>
@@ -179,12 +197,21 @@ export default function  ResetPassword() {
                               </div>
                             </div>
                             <div className=" mb-3 ">
-                              <label htmlFor="password"  className="form-label float-start">New Password</label>
-                              <input type="text" className="form-control "  value={password} onChange={handlePassword} name={"password"} id="useremail " placeholder="Enter new password " required/>
+                              {error.color !== "" &&
+                              <div className={"alert alert-" + error.color} role="alert">
+                                {error.message}
+                              </div>
+                              }
+                              <label htmlFor="password"  className="form-label float-start">New Password. <strong className="text-danger ">*</strong></label>
+                              <input type="text" className="form-control "  value={password} onChange={(e) => setPassword(e.target.value)} name={"password"} id="useremail " placeholder="Enter new password " required={true}/>
+                            </div>
+                            <div className=" mb-3 ">
+                              <label htmlFor="password"  className="form-label float-start">Confirm Password. <strong className="text-danger ">*</strong></label>
+                              <input type="text" className="form-control "  value={passwordconfirm} onChange={(e) => setPasswordConfirm(e.target.value)} name={"password"} id="useremail " placeholder="Confirm new password " required={true}/>
                             </div>
                           </div>
                           <div className="mt-4">
-                            <Link to="" onClick={handleSubmit} className="btn btn-success w-md" type="submit">Confirm</Link>
+                            <button className="btn btn-success w-md" type="submit">Confirm</button>
                           </div>
                         </form>
                       </div>
