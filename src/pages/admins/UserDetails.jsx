@@ -1,6 +1,8 @@
 import React from 'react'
 import { useState,useEffect } from 'react';
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 import requestsServiceService from "../../services/requestsService.service";
 
 
@@ -61,7 +63,11 @@ function UserDetails() {
                                             </div>
                                             <div class="navbar-nav">
                                                 <a href="collector-new.html" type="button" class="btn btn-primary waves-effect waves-light text-white">
-                                                    <i class="bx bx bxs-edit-alt font-size-16 align-middle me-2"></i> Edit Account
+                                                    <i class="bx bx bxs-edit-alt font-size-16 align-middle me-2">
+                                                  
+                                                     Edit Account
+                                                   
+                                                     </i>
                                                 </a>
                                             </div>
 

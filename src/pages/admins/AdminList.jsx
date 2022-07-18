@@ -11,7 +11,6 @@ import StatusBadge from "../../components/StatusBadge";
 
 function AdminList() {
   const [userList, setUserList] = useState([]);
-  const [viewUser, setViewUser] = useState([]);
 
   const getData = () => {
     // e.preventDefault()
@@ -20,11 +19,7 @@ function AdminList() {
     });
   };
 
-  const oneUser = () => {
-    requestsServiceService.viewOneUser().then((res) => {
-      setViewUser(res.data.data);
-    });
-  };
+  
 
   useEffect(() => {
     getData();
@@ -183,7 +178,6 @@ function AdminList() {
             <div class="col-12">
               <div class="card">
                 <div class="card-body">
-                  
                   <div className= "" >
                     <table
                       className="table no-wrap nowrap w-100 table-striped"
@@ -294,16 +288,8 @@ function AdminList() {
                                           </button>
                                         )}
                                         
-                                        <Link to={"/adminlist/view/"+ list.id}>
-
-                                        <a
-                                          class="dropdown-item"
-                                          href="tenant-new.html"
-                                          
-                                         
-                                        >
+                                        <Link    class="dropdown-item" to={"/adminlist/view/"+ list.id}>
                                           View user
-                                        </a>
                                         </Link>
                                       </div>
                                     </div>

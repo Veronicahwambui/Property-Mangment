@@ -2,18 +2,24 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
+import UnitTypes from "../setups/UnitTypes";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
   const [docName, setDocName] = useState("");
+ const[tenantId,setTenantId]=useState("");
+ 
+  
 
 
   // edit tenants
+  const [unitTypeName, setUnitTypeName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [unitCondition, setUnitCondition] = useState("");
   const [tenancyStatus, setTenancyStatus] = useState("");
-  const [monthsToTenancyRenewal, setMonthsToTenancyRenewal] = useState("");
+  const [tenancyRenewalDate, setTenancyRenewalDate] = useState("");
+  const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] = useState("");
   const [premiseUnitId, setPremiseUnitId] = useState("");
   const [unitId, setUnitId] = useState("");
 
@@ -26,9 +32,13 @@ function OneTenant() {
   const [phoneNumber2, setPhoneNumber2] = useState("");
   const [relationship, setRelationship] = useState("");
   const [contactPersonId, setContactPersonId] = useState("");
+  const[contactPersonTypeName,setContactPersonTypeName]=useState("")
+  const[ contactId, setContactId]=useState("");
+
 
   const { id } = useParams();
   const userId = id;
+
 
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
@@ -37,15 +47,13 @@ function OneTenant() {
   };
   const editTenant = () => {
     let data = JSON.stringify({
-      // id:id,
-      // startDate: startDate,
-      // unitCondition: unitCondition,
-      // tenancyStatus:"Current",
-      // monthsToTenancyRenewal: monthsToTenancyRenewal,
+    
 
       active: true,
       id: userId,
-      monthsToTenancyRenewal: monthsToTenancyRenewal,
+     tenancyRenewalDate:tenancyRenewalDate,
+     tenancyRenewalNotificationDate:tenancyRenewalNotificationDate,
+     unitTypeName:unitTypeName,
       premiseUnitId: premiseUnitId,
       startDate: new Date(),
       tenancyCharges: [{}],
@@ -62,37 +70,53 @@ function OneTenant() {
   };
   const handleChange = (
     permiseUnitId,
+    unitTypeName,
     startDate,
     unitCondition,
-    tenancyStatus,
-    monthsToTenancyRenewal,unitId
+    tenancyRenewalDate,
+    tenancyRenewalNotificationDate,
+    unitId,
   ) => {
     setPremiseUnitId(permiseUnitId);
+    setUnitTypeName(unitTypeName)
     setStartDate(startDate);
     setUnitCondition(unitCondition);
-    setTenancyStatus(tenancyStatus);
-    setMonthsToTenancyRenewal(monthsToTenancyRenewal);
+    // setTenancyStatus(tenancyStatus);
+    setTenancyRenewalDate(tenancyRenewalDate);
+    setTenancyRenewalNotificationDate(tenancyRenewalNotificationDate);
     setUnitId(unitId);
   };
-  // console.log(premiseUnitId)
-  // console.log(tenantData)
+ 
+ 
   const editContactPersons = () => {
-    let data = tenantData.contactPeople.find((x) => x.id == contactPersonId);
-    console.log(data)
+  
 
-    data["active"] = true;
-    data.firstName = firstName;
-    data.lastName = lastName;
-    data.otherName = otherName;
+    let contacts =JSON.stringify({
 
-    data.phoneNumber1 = phoneNumber1;
-    data.relationship = relationship;
+    active: true,
+  
+  firstName: firstName,
+  id: contactPersonId,
+  lastName: lastName,
+  otherName: otherName,
+  contactPersonTypeName: contactPersonTypeName,
+  phoneNumber1: phoneNumber1,
+  phoneNumber2: phoneNumber2,
+  relationship: relationship,
+  tenantId:tenantData.tenant.id
+  ,
+
+    })
+    // console.log(contacts);
+
+
 
   
 
-    requestsServiceService.updateContactPersons(data).then((res) => {
+    requestsServiceService.updateContactPersons(contacts).then((res) => {
       console.log(res);
-      
+      fetchAll()
+
     });
   };
   const handleChangeContacts = (
@@ -100,13 +124,17 @@ function OneTenant() {
     firstName,
     lastName,
     otherName,
+    contactPersonTypeName,
     phoneNumber1,
     relationship
   ) => {
+    setContactId(contactId)
     setContactPersonId(contactPersonId);
     setFirstName(firstName);
     setLastName(lastName);
     setOtherName(otherName);
+    setContactPersonTypeName
+    (contactPersonTypeName)
     setPhoneNumber1(phoneNumber1);
     setRelationship(relationship);
   };
@@ -322,7 +350,7 @@ function OneTenant() {
 
         {activeLink === 2 && (
           <div>
-            <div className={"row"}>
+            <div className="row">
               <div className="col-12">
                 <div className="card calc-h-3px">
                   <div>
@@ -340,10 +368,12 @@ function OneTenant() {
                             </div>
                           </div>
                         </div>
-                        <div className="p-4">
-                          <div className="row">
-                            <div className="col-12">
+                      
+                        
+                           
                               <div>
+                                <div className="card-body">
+                                <div className="table-responsive">
                                 <table className="table align-middle table-nowrap table-hover mb-0">
                                   <thead>
                                     <tr class="text-uppercase table-dark">
@@ -353,7 +383,8 @@ function OneTenant() {
                                       <th>Start Date</th>
                                       <th>Unit Condition</th>
                                       <th>Tenancy Status</th>
-                                      <th>Months to renewal</th>
+                                      <th>TenancyRenewalDate</th>
+                                      <th>TenancyRenewalNotificationDate</th>
                                       <th>Status</th>
                                       <th>Actions</th>
                                     </tr>
@@ -376,10 +407,24 @@ function OneTenant() {
                                             </td>
                                             <td>{unit.unitCondition}</td>
                                             <td>
-                                              {unit.tenancyStatus.toLowerCase()}
+                               
+
+                                              {unit.tenancyStatus.toLowerCase() ? (
+                                                <span class="badge-soft-success badge">
+                                                  Closed
+                                                </span>
+                                              ) : (
+                                                <span class="badge-soft-danger badge">
+                                                  Activate
+                                                </span>
+                                              )}
                                             </td>
                                             <td>
-                                              {unit.monthsToTenancyRenewal}
+                                              {unit.tenancyRenewalDate}
+                                            </td>
+                                            <td>
+                                              {unit.tenancyRenewalNotificationDate}
+
                                             </td>
                                             <td>
                                               {" "}
@@ -414,10 +459,12 @@ function OneTenant() {
                                                     onClick={() =>
                                                       handleChange(
                                                         unit.premiseUnit.id,
+                                                        unit.premiseUnit.unitName,
                                                         unit.startDate,
                                                         unit.unitCondition,
-                                                        unit.tenancyStatus,
-                                                        unit.monthsToTenancyRenewal,unit.id
+                                                
+                                                       unit.tenancyRenewalDate,
+                                                        unit.tenancyRenewalNotificationDate,unit.id
                                                       )
                                                     }
                                                   >
@@ -425,10 +472,22 @@ function OneTenant() {
                                                     Edit
                                                   </p>
 
-                                                  <p   class="dropdown-item " onClick={()=>deleteDeactivate(unit.id)}>
-                                                    <i class="font-size-15 mdi mdi-close-circle me-3"></i>
-                                                    Deactivate
-                                                  </p>
+                                
+                                        
+                                                <button  class="dropdown-item " onClick={()=>deleteDeactivate(unit.id)}>
+                                                  
+                                               
+                                                    
+                                                <i class="font-size-8 mdi mdi-close-circle me-3"> 
+                                                   Deactivate
+                                                </i>
+                                               
+                                    
+                                   </button>
+                                   
+
+
+
                                                 </div>
                                               </div>
                                             </td>
@@ -438,16 +497,18 @@ function OneTenant() {
                                   </tbody>
                                 </table>
                               </div>
+                              </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
+                      
+                        
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+       
         )}
 
         {activeLink === 3 && (
@@ -469,15 +530,7 @@ function OneTenant() {
                               </h4>
                             </div>
                             <div className="d-flex">
-                              <button
-                                type="button"
-                                className="btn btn-primary waves-effect btn-label waves-light me-3"
-                                data-bs-toggle="modal"
-                                data-bs-target="#add-new-agreementType"
-                              >
-                                <i className="mdi mdi-plus label-icon"></i> Add
-                                Account
-                              </button>
+                        
                             </div>
                           </div>
                         </div>
@@ -532,18 +585,22 @@ function OneTenant() {
                                             </td>
 
                                             <td className="text-right cell-change ">
-                                              <a
+
+                                              <a   data-bs-toggle="modal"
+                                                data-bs-target="#edit-contact"
                                                 className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#Edit-contact"
+                                               
                                                 onClick={() =>
                                                   handleChangeContacts(
-                                                    unit.contactPersonId,
+                                                    unit.id,
+                                                   
+                                                   
                                                     unit.firstName,
                                                     unit.lastName,
                                                     unit.otherName,
+                                                    unit.contactPersonType,
                                                     unit.phoneNumber1,
-                                                    unit.relationship
+                                                    unit.relationship,
                                                   )
                                                 }
                                               >
@@ -594,6 +651,16 @@ function OneTenant() {
               <div class="modal-body">
                 <div class="row">
                   <div class="col-12">
+                  <div class="form-group mb-4">
+                      <label for="">UnitTypeName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter UnitTypeName"
+                        onChange={(event) => setUnitTypeName(event.target.value)}
+                        value={unitTypeName}
+                      />
+                    </div>
                     <div class="form-group mb-4">
                       <label for="">StartDate</label>
                       <input
@@ -611,31 +678,45 @@ function OneTenant() {
                         className="form-control"
                         value={unitCondition}
                         onChange={(e) => setUnitCondition(e.target.value)}
-                        placeholder="Enter account number"
+                        placeholder="Enter UnitCondition"
                         required={true}
                       />
                     </div>
-                    <div className="form-group mb-4">
+                    {/* <div className="form-group mb-4">
                       <label htmlFor="">TenancyStatus</label>
                       <input
                         type="text"
                         className="form-control"
                         value={tenancyStatus}
                         onChange={(e) => setTenancyStatus(e.target.value)}
-                        placeholder="Enter account number"
+                        placeholder="Enter TenancyStatus"
+                        required={true}
+                      />
+                    </div> */}
+                    <div className="form-group mb-4">
+                      <label htmlFor="">TenancyRenewalDate</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={tenancyRenewalDate}
+                        onChange={(e) =>
+                          setTenancyRenewalDate(e.target.value)
+                        }
+                        placeholder="Enter TenancyRenewalDate"
                         required={true}
                       />
                     </div>
+
                     <div className="form-group mb-4">
                       <label htmlFor="">MonthsToTenancyRenewal</label>
                       <input
                         type="text"
                         className="form-control"
-                        value={monthsToTenancyRenewal}
+                        value={tenancyRenewalNotificationDate}
                         onChange={(e) =>
-                          setMonthsToTenancyRenewal(e.target.value)
+                          setTenancyRenewalNotificationDate(e.target.value)
                         }
-                        placeholder="Enter MonthsToTenancyRenewal"
+                        placeholder="TenancyRenewalNotificationDate"
                         required={true}
                       />
                     </div>
@@ -667,7 +748,7 @@ function OneTenant() {
 
         <div
           class="modal fade"
-          id="Edit-contact"
+          id="edit-contact"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
           tabindex="-1"
@@ -701,17 +782,19 @@ function OneTenant() {
                         value={firstName}
                       />
                     </div>
-                    <div className="form-group mb-4">
-                      <label htmlFor="">LastName</label>
+
+                    <div class="form-group mb-4">
+                      <label for="">LastName</label>
                       <input
                         type="text"
-                        className="form-control"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
+                        class="form-control"
                         placeholder="Enter LastName"
-                        required={true}
+                        onChange={(event) => setLastName(event.target.value)}
+                        value={lastName}
                       />
                     </div>
+
+                 
                     <div className="form-group mb-4">
                       <label htmlFor="">OtherName</label>
                       <input
@@ -723,6 +806,18 @@ function OneTenant() {
                         required={true}
                       />
                     </div>
+
+                    <div class="form-group mb-4">
+                      <label for="">Type</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Type"
+                        onChange={(event) => setContactPersonTypeName(event.target.value)}
+                        value={contactPersonTypeName}
+                      />
+                    </div>
+                    
 
                     <div className="form-group mb-4">
                       <label htmlFor="">PhoneNumber1</label>
@@ -763,7 +858,7 @@ function OneTenant() {
                   type="button"
                   class="btn btn-primary"
                   data-bs-dismiss="modal"
-                  onClick={editContactPersons}
+                  onClick={()=>editContactPersons()}
                 >
                   Save
                 </button>
