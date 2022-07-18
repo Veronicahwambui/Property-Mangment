@@ -1,3 +1,5 @@
+/* global $ */
+
 import React, { useEffect, useState } from 'react'
 import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
@@ -7,7 +9,11 @@ function DocumentTypes() {
   const [activeId, setActiveId] = useState('')
   const [createName, setCreateName]= useState('')
   const [updateName, setUpdateName]= useState('')
-  
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
+
   useEffect(()=>{
 
     fetchAll()
@@ -32,8 +38,54 @@ function DocumentTypes() {
    
    requestsServiceService.createDocumentTypes(data).then((res)=>{
      fetchAll()
-   })
+     $("#add-new-zone").modal("hide");
+
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+      
+      
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+   }).catch((res)=>{
+
+    $("#add-new-zone").modal("hide");
+     
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+
+    })
   }
+  
+  const clear = ()=> {
+
+    setError({
+      ...error,
+      message: "",
+      color: ""
+    });
+  }
+
   
   // toggle function 
   const toggleStatus = ()=>{
@@ -53,8 +105,45 @@ function DocumentTypes() {
     })
     requestsServiceService.updateDocumentType(data).then((res)=>{
      fetchAll()
+     $("#update-modal").modal("hide");
+
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+      
+      
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+   }).catch((res)=>{
+
+    $("#update-modal").modal("hide");
+     
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+
     })
   }
+  
   
   return (
     <>
@@ -96,7 +185,7 @@ function DocumentTypes() {
                   </div>
                   <div class="d-flex">
                     <button
-                      onClick={fetchAll}
+                      onClick={()=>{setCreateName('')}}
                       type="button"
                       class="btn btn-primary waves-effect btn-label waves-light me-3"
                       data-bs-toggle="modal"
@@ -108,6 +197,11 @@ function DocumentTypes() {
                 </div>
               </div>
               <div class="card-body">
+              {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                 <div class="table-responsive table-responsive-md">
                   <table class="table table-editable align-middle table-edits">
                     <thead class="table-light">
@@ -120,7 +214,7 @@ function DocumentTypes() {
                     </thead>
                     <tbody>
                   
-                        { list.map(( val , index)=>{
+                        {list &&  list.map(( val , index)=>{
                           return(
                             <tr data-id="1" key={val}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
@@ -183,6 +277,8 @@ function DocumentTypes() {
     >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); create() }}>
+
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">
               New Document Type
@@ -199,7 +295,7 @@ function DocumentTypes() {
             <div class="col-12">
                       <div class="form-group mb-4">
                                         <label for=""> Document Type </label>
-                                        <input value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter document type" />
+                                        <input  required value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter document type" />
                                     </div>
                                 </div>
            
@@ -214,14 +310,13 @@ function DocumentTypes() {
               Close
             </button>
             <button
-              onClick={create}
-              type="button"
+              type="submit"
               class="btn btn-primary"
-              data-bs-dismiss="modal"
             >
               Save
             </button>
           </div>
+          </form>
         </div>
       </div>
     </div>
@@ -237,6 +332,8 @@ function DocumentTypes() {
     >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); Update() }}>
+
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">
             Document Type
@@ -253,7 +350,7 @@ function DocumentTypes() {
             <div class="col-12">
                       <div class="form-group mb-4">
                                         <label for="">Document Type</label>
-                                        <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update type" />
+                                        <input required value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update type" />
                                     </div>
                                 </div>
            
@@ -268,14 +365,15 @@ function DocumentTypes() {
               Close
             </button>
             <button
-              onClick={Update}
-              type="button"
+
+              type="submit"
               class="btn btn-primary"
-              data-bs-dismiss="modal"
+              
             >
               Save
             </button>
           </div>
+          </form>
         </div>
       </div>
     </div>

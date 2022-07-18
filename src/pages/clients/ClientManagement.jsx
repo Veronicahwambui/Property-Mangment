@@ -77,27 +77,35 @@ function ClientManagement() {
       }
     );
     requestsServiceService.createClient(data, isChecked).then((res) => {
-      console.log("requesting ", isChecked)
-      if (res) {
+      if (res.data.status === false) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+      } else {
         setError({
           ...error,
           message: res.data.message,
           color: "success"
-        })
-        setTimeout(() => {
-          clear()
-        }, 3000)
-        console.log(res.data)
+        });
         getAllClients();
         setIsChecked(!isChecked);
       }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        });
+      }, 2000)
     }).catch((err) => {
       console.log(err)
-      // setError({
-      //   ...error,
-      //   message: err.message,
-      //   color: "danger"
-      // })
+      setError({
+        ...error,
+        message: err.message,
+        color: "danger"
+      })
       getAllClients();
       setTimeout(() => {
         clear()
@@ -149,15 +157,28 @@ function ClientManagement() {
       status: true
     })
     requestsServiceService.updateClient(data).then((res) => {
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "success"
-      })
-      getAllClients();
+      if (res.data.status === false) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+      } else {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        });
+        getAllClients();
+        setIsChecked(!isChecked);
+      }
       setTimeout(() => {
-        clear()
-      }, 3000)
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        });
+      }, 2000)
     }).catch((err) => {
       console.log(err)
       setError({
@@ -260,7 +281,7 @@ function ClientManagement() {
                             <td data-field="estate">{client.name}</td>
                             <td data-field="unit-num ">{client.clientType.name.toUpperCase()}</td>
                             <td data-field="unit-num ">{client.clientBaseUrl}</td>
-                            <td data-field="unit-num ">{moment(client.dateTimeCreated).format('MMMM Do YYYY, h:mm a')}</td>
+                            <td data-field="unit-num ">{moment(client.dateTimeCreated).format('MMMM Do YYYY')}</td>
                             <td className="text-right cell-change ">
 
                               <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
@@ -432,14 +453,6 @@ function ClientManagement() {
                         </td>
                       </tr>
                       <tr>
-                        <td style={{ width: "30%" }}>
-                          <p className="mb-0">Created At</p>
-                        </td>
-                        <td style={{ width: "25%" }}>
-                          <h5 className="mb-0 text-uppercase">{client.dateTimeCreated}</h5>
-                        </td>
-                      </tr>
-                      <tr>
                         <td>
                           <p className="mb-0">Client Type</p>
                         </td>
@@ -455,15 +468,6 @@ function ClientManagement() {
                           <h5 className="mb-0"><a href={client.clientBaseUrl}>{client.clientBaseUrl}</a></h5>
                         </td>
                       </tr>
-                      <tr>
-                        <td>
-                          <p className="mb-0">App Key</p>
-                        </td>
-                        <td>
-                          <p className="mb-0">{client.appKey}</p>
-                        </td>
-                      </tr>
-
                     </tbody>
                   </table>
                 </div>

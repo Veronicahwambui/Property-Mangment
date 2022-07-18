@@ -1,4 +1,6 @@
+/* global $ */
 import React, { useEffect ,useState } from 'react'
+import authService from '../../services/auth.service';
 import requestsServiceService from '../../services/requestsService.service'
 
 function LandLordAgreementTypes() {
@@ -36,7 +38,10 @@ function LandLordAgreementTypes() {
   };
   // console.log(agreementTypes);
   // create agreementType
-
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
   const createAgreementType = ()=>{
     let data = JSON.stringify({
       active: true,
@@ -45,12 +50,38 @@ function LandLordAgreementTypes() {
       name: agreementTypeName,
     })
     requestsServiceService.createAgreementType(data).then((res)=>{
-      if (res) {
-        getAgreementTypes()
+     $("#add-new-agreementType").modal("hide");
+       
+      if (res.data.status===false) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+      } else {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        });
       }
+      getAgreementTypes();
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        });
+      }, 2000)
     }).catch((err) => {
-      console.log(err)
-      getAgreementTypes()
+
+     $("#add-new-agreementType").modal("hide");
+
+      setError({
+        ...error,
+        message: err.data.message,
+        color: "danger"
+      });
     })
   }
 
@@ -66,34 +97,57 @@ function LandLordAgreementTypes() {
   // update agreementType
 
   const getOneAgreementType = (id) => {
-    if (agreementTypes.length > 0) {
-      let cl = agreementTypes.find((item) => item.id === id)
-      if(cl) {
-        setEditType({
-          ...editType,
-          name: cl.client.clientType.name,
-          id: cl.client.clientType.id
-        })
-        setEditClientId(cl.client.clientType.id);
-        setEditName(cl.name)
-        setEditId(cl.id)
-      }
+    let clientId = requestsServiceService.getCurrentUserClient().id;
+    setEditClientId(clientId);
+    if (agreementTypes?.length > 0) {
+      let cl = agreementTypes?.find((item) => item.id === id)
+      console.log(cl)
+      setEditAgreementTypeName(cl.name);
+      setEditId(cl.id)
     }
   }
 
   const updateAgreementType = ()=>{
     let data = JSON.stringify({
       active: true,
-      clientId: editType.id,
-      id: editId,
-      name: editName,
+      clientId: parseInt(authService.getClientId()) ,
+      id: activeId,
+      name: editAgreementTypeName,
     })
     requestsServiceService.editAgreementType(data).then((res)=>{
+     $("#update-modal").modal("hide");
+
+      let message = res.data.message;
+      if (res.data.status===false) {
+        setError({
+          ...error,
+          message: message,
+          color: "danger"
+        })
+      } else {
+        setError({
+          ...error,
+          message: message,
+          color: "success"
+        });
+      }
       getAgreementTypes()
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        });
+      }, 2000)
     }).catch((err)=> {
-      console.log(err)
+     $("#update-modal").modal("hide");
+
+      setError({
+        ...error,
+        message: err.data.message,
+        color: "success"
+      });
     })
-    getAgreementTypes()
   }
   let num = 0;
 
@@ -142,8 +196,7 @@ function LandLordAgreementTypes() {
                 <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                   <div
                     class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
+                    role="toolbar">
                     <div class="d-flex align-items-center flex-grow-1">
                       <h4 class="mb-0  bg-transparent  p-0 m-0">
                         Agreement Type Register
@@ -151,7 +204,7 @@ function LandLordAgreementTypes() {
                     </div>
                     <div class="d-flex">
                       <button
-                        onClick={getClients}
+                        onClick={()=>{  setagreementTypeName('');getClients()}}
                         type="button"
                         class="btn btn-primary waves-effect btn-label waves-light me-3"
                         data-bs-toggle="modal"
@@ -163,6 +216,11 @@ function LandLordAgreementTypes() {
                   </div>
                 </div>
                 <div class="card-body">
+                  {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
@@ -174,7 +232,7 @@ function LandLordAgreementTypes() {
                       </tr>
                       </thead>
                       <tbody>
-                      { agreementTypes.map((aT, num)=>{
+                      { agreementTypes?.map((aT, num)=>{
 
                         return (
                           <tr data-id="1">
@@ -182,8 +240,8 @@ function LandLordAgreementTypes() {
                             <td data-field="unit-num ">{aT.name}</td>
                             <td data-field="unit-num ">{aT.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
-                              <div className="d-flex">
-                                <a onClick={() => getOneAgreementType(aT.id)} data-bs-toggle="modal"
+                              <div className=" align-items-center d-flex">
+                                <a onClick={() => { setActiveId(aT.id); setEditAgreementTypeName(aT.name) }} data-bs-toggle="modal"
                                    data-bs-target="#update-modal"
                                    className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                    title="Edit "><i className="bx bx-edit-alt "></i></a>
@@ -234,6 +292,8 @@ function LandLordAgreementTypes() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); createAgreementType() }}>
+
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 New agreementType
@@ -245,7 +305,7 @@ function LandLordAgreementTypes() {
                 <div class="col-12">
                   <div class="form-group mb-4">
                     <label for="">Name</label>
-                    <input value={agreementTypeName} onChange={ (e)=> setagreementTypeName(e.target.value)} type="text" class="form-control" placeholder="Enter agreement type name" />
+                    <input required value={agreementTypeName} onChange={ (e)=> setagreementTypeName(e.target.value)} type="text" class="form-control" placeholder="Enter agreement type name" />
                   </div>
                 </div>
               </div>
@@ -259,14 +319,13 @@ function LandLordAgreementTypes() {
                 Close
               </button>
               <button
-                onClick={createAgreementType}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Save
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>
@@ -282,6 +341,7 @@ function LandLordAgreementTypes() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+            
             <div class="modal-body">
               <center>
                 <h5>Deactivate this Agreement Type ?</h5>
@@ -356,6 +416,8 @@ function LandLordAgreementTypes() {
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); updateAgreementType() }}>
+
             <div className="modal-header">
               <h5 className="modal-title" id="staticBackdropLabel">
                 Update Agreement Type
@@ -367,29 +429,28 @@ function LandLordAgreementTypes() {
                 <div className="col-12">
                   <div className="form-group mb-4">
                     <label htmlFor="">Name</label>
-                    <input value={editName} onChange={(e) => setEditName(e.target.value)} type="text"
+                    <input value={editAgreementTypeName} onChange={(e) => setEditAgreementTypeName(e.target.value)} type="text"
                            className="form-control" placeholder="Enter agreement type name"/>
                   </div>
                 </div>
-                <div className="col-12">
-                  <label htmlFor="">Client</label>
-                  <select
-                    className="form-control"
-                    data-live-search="true"
-                    title="Select client"
-                    onChange={(e) => setEditSelectedClient(e.target.value)}
-                  >
-                    <option className="text-black font-semibold ">
-                      {selectedClient.name}
-                    </option>
-                    {clients.map((c, index) => {
-                      return (
-                        <option key={index} value={c.id}>{c.name}</option>
-                      )
-                    })}
-                  </select>
-
-                </div>
+                {/*<div className="col-12">*/}
+                {/*  <label htmlFor="">Client</label>*/}
+                {/*  <select*/}
+                {/*    className="form-control"*/}
+                {/*    data-live-search="true"*/}
+                {/*    title="Select client"*/}
+                {/*    onChange={(e) => setEditSelectedClient(e.target.value)}*/}
+                {/*  >*/}
+                {/*    <option className="text-black font-semibold ">*/}
+                {/*      {selectedClient.name}*/}
+                {/*    </option>*/}
+                {/*    {clients.map((c, index) => {*/}
+                {/*      return (*/}
+                {/*        <option key={index} value={c.id}>{c.name}</option>*/}
+                {/*      )*/}
+                {/*    })}*/}
+                {/*  </select>*/}
+                {/*</div>*/}
               </div>
             </div>
             <div className="modal-footer">
@@ -401,14 +462,13 @@ function LandLordAgreementTypes() {
                 Close
               </button>
               <button
-                onClick={updateAgreementType}
-                type="button"
+                type="submit"
                 className="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Save
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>

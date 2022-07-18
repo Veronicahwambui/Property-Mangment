@@ -4,14 +4,23 @@ import requestsServiceService from '../../services/requestsService.service'
 
 function Landlords() {
   const [landlords, setLandlords] = useState([])
+  const [activeId , setActiveId] = useState('')
 
   useEffect(() =>{
+    getlandlords();
+  }, [])
+
+  const getOneLandlord = () => {
+  }
+  const getlandlords = () => {
     requestsServiceService.getLandLords().then((res) => {
       setLandlords(res.data.data)
     });
-  })
-
-  const getOneLandlord = () => {
+  }
+  const deactivate = (id)=> {
+    requestsServiceService.deactivateLandlord(id).then((res)=>{
+      getlandlords();
+    })
   }
   return (
     <>
@@ -44,10 +53,12 @@ function Landlords() {
                     <div class="d-flex align-items-center flex-grow-1">
                     </div>
                     <div class="d-flex">
-
-                      <button type="button" class="btn btn-primary waves-effect btn-label waves-light me-3" data-bs-toggle="modal" data-bs-target="#add-new-client">
-                        <i class="mdi mdi-plus label-icon"></i> Add a Landlord
-                      </button>
+                      <Link to="/addlandlord" >
+                        <button type="button" className="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal" data-bs-target="#add-new-client">
+                          <i className="mdi mdi-plus label-icon"></i> Add a Landlord
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -66,37 +77,60 @@ function Landlords() {
                         <th>Phone</th>
                         <th>Agreement Type</th>
                         <th>File Number</th>
+                        <th>Status</th>
                         <th>Agreement Period</th>
                         <th class="text-right">Actions</th>
                       </tr>
                       </thead>
                       <tbody>
-                      {landlords.map((l, index) => (
+                      {landlords?.map((l, index) => (
                         <tr data-id={index} key={index}>
                           <td style={{ width: "80px" }}>{index + 1}</td>
                           <td data-field="estate">{l.firstName + " " + l.lastName}</td>
                           <td data-field="unit-num ">{l.phoneNumber}</td>
                           <td data-field="unit-num ">{l.landLordAgreementType.name}</td>
                           <td data-field="unit-num ">{l.fileNumber}</td>
+                          <td data-field="unit-num ">{l.active ?
+                            <span className="badge-soft-success badge">Active</span> :
+                            <span className="badge-soft-danger badge">Inactive</span>}
+                          </td>
                           <td data-field="unit-num ">{l.agreementPeriod + " months"}</td>
-                          <td className="text-right cell-change ">
-
-                            <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
-                               title="Edit" onClick={() => getOneLandlord(l.id)}><i className="bx bx-edit-alt " /></a>
-                            <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
-                                    title="save ">Save
-                            </button>
-                            <a
-                              className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
-                              title="Cancel "><i className="bx bx-x "></i></a>
-                           <Link to={"/landlord/"+l.id}> <button type="button"
-                                    className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                    data-bs-toggle="modal" data-bs-target="#edit"
-                                    onClick={() => {}}
-                                    style={{ marginLeft: "8px" }}
-                            >
-                              View Details
-                            </button></Link>
+                          <td className="text-right cell-change text-nowrap">
+                            <div className="d-flex">
+                              {l.active ?  <button
+                                class="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
+                                title="deactivate"
+                                data-bs-toggle="modal"
+                                data-bs-target="#confirm-deactivate"
+                                onClick={()=> setActiveId(l.id)}
+                              >
+                                Deactivate
+                              </button>:  <button
+                                class="btn btn-success btn-sm btn-rounded waves-effect waves-light"
+                                title="deactivate"
+                                data-bs-toggle="modal"
+                                data-bs-target="#confirm-activate"
+                                onClick={()=> setActiveId(l.id)}
+                              >
+                                Activate
+                              </button>
+                              }
+                              <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
+                                      title="save ">Save
+                              </button>
+                              <a
+                                className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
+                                title="Cancel "><i className="bx bx-x "></i></a>
+                              <Link to={"/landlord/"+l.id}> <button type="button"
+                                                                    className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                                                    data-bs-toggle="modal" data-bs-target="#edit"
+                                                                    onClick={() => {}}
+                                                                    style={{ marginLeft: "8px" }}
+                              >
+                                View Details
+                              </button>
+                              </Link>
+                            </div>
                           </td>
                           <td>
 
@@ -109,6 +143,79 @@ function Landlords() {
 
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade"
+        id="confirm-deactivate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Deactivate this Landlord ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivate(activeId)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* confirm dactivate  */}
+      <div
+        className="modal fade"
+        id="confirm-activate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Activate this Landlord ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivate(activeId)}
+              >
+                Yes
+              </button>
             </div>
           </div>
         </div>

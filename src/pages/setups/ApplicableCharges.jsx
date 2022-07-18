@@ -1,3 +1,5 @@
+/* global $ */
+
 import React, { useEffect, useState } from 'react'
 import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
@@ -15,6 +17,9 @@ function ApplicableCharges() {
     message: "",
     color: ""
   });
+  const [manualVal ,setManualVal] = useState(false)
+  const [ newManualVal ,setNewManualVal] = useState(false)
+  
 
 
   useEffect(()=>{
@@ -39,15 +44,16 @@ function ApplicableCharges() {
   const create = ()=>{
    let data = JSON.stringify({
     active: true,
-    applicableChargeType: chargeType,
+    applicableChargeTypeName: chargeType,
     clientId: authService.getClientId(),
-    expectManualValues: true,
-    id: 0,
+    expectManualValues: manualVal,
+    id: null,
     name: createName
   })
    
    requestsServiceService.createApplicableCharges(data).then((res)=>{
      fetchAll()
+     $("#add-new-zone").modal("hide");
      if(res.data.status){
       setError({
         ...error,
@@ -68,7 +74,8 @@ function ApplicableCharges() {
       }, 3000)
 
    }).catch((res)=>{
-
+    $("#add-new-zone").modal("hide");
+      
       setError({
         ...error,
         message: res.data.message,
@@ -91,6 +98,8 @@ function ApplicableCharges() {
     });
   }
 
+
+ 
   
   // toggle function 
   const toggleStatus = ()=>{
@@ -104,14 +113,16 @@ function ApplicableCharges() {
   const Update = ()=>{
      let data = JSON.stringify({
       active: true,
-      applicableChargeType: updateChargeType,
+      applicableChargeTypeName  : updateChargeType,
       clientId: authService.getClientId(),
-      expectManualValues: true,
+      expectManualValues: newManualVal,
       id: activeId,
       name: updateName
     })
     requestsServiceService.updateApplicableCharges(data).then((res)=>{
      fetchAll()
+     $("#update-modal").modal("hide");
+
      if(res.data.status){
       setError({
         ...error,
@@ -132,7 +143,8 @@ function ApplicableCharges() {
       }, 3000)
 
    }).catch((res)=>{
-
+      $("#update-modal").modal("hide");
+         
       setError({
         ...error,
         message: res.data.message,
@@ -163,7 +175,7 @@ function ApplicableCharges() {
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <li class="breadcrumb-item">
-                    <a href="index.html">Dashboards</a>
+                    <a  href="index.html">Dashboards</a>
                   </li>
                   <li class="breadcrumb-item">
                     <a href="#">Set Ups</a>
@@ -190,7 +202,7 @@ function ApplicableCharges() {
                   </div>
                   <div class="d-flex">
                     <button
-                      onClick={fetchTypes}
+                      onClick={()=>{setManualVal(true);chargeTypes && setChargeType(chargeTypes[0]); fetchTypes();}}
                       type="button"
                       class="btn btn-primary waves-effect btn-label waves-light me-3"
                       data-bs-toggle="modal"
@@ -214,23 +226,25 @@ function ApplicableCharges() {
                         <th>#</th>
                         <th>Premise Type</th>
                         <th>Charge type</th>
+                        <th>Accept Manual Values</th>
                         <th>Status</th>
                         <th class="text-center">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                   
-                        { list.map(( val , index)=>{
+                        {list &&  list.map(( val , index)=>{
                           return(
                             <tr data-id="1" key={val}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
-                            <td data-field="unit-num " className='text-capitalize'>{val.name}</td>
-                            <td data-field="unit-num " className='text-capitalize'>{val.applicableChargeType != null && val.applicableChargeType.toLowerCase().replace(/_/g," ")}</td>
+                            <td className='text-capitalize'>{val.name}</td>
+                            <td className='text-capitalize'>{val.applicableChargeType != null && val.applicableChargeType.toLowerCase().replace(/_/g," ")}</td>
+                            <td>{ val.expectManualValues ? "Yes": "No" } </td>
                             <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-center cell-change text-nowrap ">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center justify-content-between">
                            
-                            <a  onClick={()=> {setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType)}}   data-bs-toggle="modal"
+                            <a  onClick={()=> {setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType) ; setNewManualVal(val.expectManualValues)}}   data-bs-toggle="modal"
                                              data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                             
                             {val.active ?  <button
@@ -285,6 +299,8 @@ function ApplicableCharges() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+            <form onSubmit={(e) => { e.preventDefault(); create() }}>
+             
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 New Applicable Charge
@@ -301,19 +317,34 @@ function ApplicableCharges() {
               <div class="col-12">
                 <div class="form-group mb-4">
                   <label for="">Applicable Charge Name </label>
-                    <input value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter applicable charge name" />
+                    <input required value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter applicable charge name" />
                   </div>
             </div>
+                <div class="col-12">
+               
+                    <label for="">Accept Manual charges </label>
+                    <select
+                      class="form-control"
+                      data-live-search="true"
+                      title=""
+                      required="required"
+                      onChange={(e) =>{ setManualVal(e.target.value)}}
+                    >
+                      <option value="true" >True</option>
+                      <option value="false">False</option>
+                    </select>                 
+                </div>
                 <div class="col-12">
                
                     <label for="">Charge Type </label>
                     <select
                       class="form-control"
                       data-live-search="true"
+                      required="required"
                       title="Select Applicable Charge Type"
-                      onChange={(e) => setChargeType(e.target.value)}
+                      onChange={(e) =>{  setChargeType(e.target.value);}}
                     >
-                      { chargeTypes.map((charge) =>{ return (
+                      {chargeTypes &&  chargeTypes.map((charge) =>{ return (
                        <option key={charge}  value={charge}>{charge.toLowerCase().replace(/_/g ," ")}</option>
                       )})}
                     </select>
@@ -330,14 +361,13 @@ function ApplicableCharges() {
                 Close
               </button>
               <button
-                onClick={create}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Create
               </button>
             </div>
+         </form>
           </div>
         </div>
       </div>
@@ -353,6 +383,8 @@ function ApplicableCharges() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+          <form onSubmit={(e) => { e.preventDefault(); Update() }}>
+
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 Update Applicable Charges
@@ -369,9 +401,23 @@ function ApplicableCharges() {
               <div class="col-12">
                 <div class="form-group mb-4">
                   <label for=""> Applicable Charge Name </label>
-                    <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
+                    <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" required />
                   </div>
             </div>
+            <div class="col-12">
+               
+               <label for="">Accept Manual charges </label>
+               <select
+                 class="form-control"
+                 data-live-search="true"
+                 title=""
+                 onChange={(e)=> setNewManualVal(e.target.value)}
+               >
+                 <option value="true" selected={ newManualVal ? "selected" : '' } >True</option>
+                 <option value="false" selected={ !newManualVal ? "selected" : '' }>False</option>
+               </select>                 
+           </div>
+
                 <div class="col-12">
                
                     <label for="">Charge Type </label>
@@ -381,8 +427,8 @@ function ApplicableCharges() {
                       title="Select Applicable Charge Type"
                       onChange={(e) => setUpdateChargeType(e.target.value)}
                     >
-                      { chargeTypes.map((charge) =>{ return (
-                       <option key={charge} value={charge} className="text-capitalize">{charge.toLowerCase().replace(/_/g ," ")}</option>
+                      {chargeTypes &&  chargeTypes.map((charge) =>{ return (
+                       <option key={charge} value={charge} selected={ charge === updateChargeType ? "selected" : '' } className="text-capitalize">{charge.toLowerCase().replace(/_/g ," ")}</option>
                       )})}
                     </select>
                   
@@ -398,14 +444,13 @@ function ApplicableCharges() {
                 Close
               </button>
               <button
-                onClick={Update}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Update
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>
