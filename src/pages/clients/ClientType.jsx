@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import requestsServiceService from '../../services/requestsService.service';
+import {Modal} from "react-bootstrap";
 
 export default function ClientType() {
   const [name, setName] = useState("")
@@ -12,6 +13,13 @@ export default function ClientType() {
   const [id, setId] = useState('')
   const [created, setCreated] = useState(false)
   const [updated, setUpdated] = useState(false)
+  const [clientshow, setclientshow] = useState(false)
+  const [editshow, seteditshow] = useState(false)
+
+  const clientShow = () => setclientshow(true)
+  const clientClose = () => setclientshow(false)
+  const editShow = () => seteditshow(true)
+  const editClose = () => seteditshow(false)
 
   useEffect(() => {
     getClientTypes();
@@ -23,11 +31,6 @@ export default function ClientType() {
     }).catch(err => {
       console.log(err)
     })
-  }
-
-  const handleChange = (event) => {
-    event.preventDefault();
-    setName(event.target.value.toUpperCase());
   }
 
   const handleSubmit = (event) => {
@@ -43,13 +46,13 @@ export default function ClientType() {
         color: "success"
       });
       getClientTypes();
-
       setTimeout(() => {
         setError({
           message: '',
           color: ''
         });
-      }, 3000);
+      }, 2000);
+      clientClose()
       setName("");
     }).catch((err) => {
       setError({
@@ -59,7 +62,6 @@ export default function ClientType() {
       });
     })
   }
-
   const clear = () => {
     setError({
       message: '',
@@ -67,16 +69,15 @@ export default function ClientType() {
     });
     setName("")
   }
-  const isOpen = () => {
-    setName("")
-  }
 
   const handleEdit = (id, name) => {
     setId(id);
     setEditName(name);
+    editShow();
   }
 
-  const editClientType = () => {
+  const editClientType = (event) => {
+    event.preventDefault();
     const data = JSON.stringify(
       {
         id: id,
@@ -96,6 +97,7 @@ export default function ClientType() {
           color: ''
         });
       }, 3000);
+      editClose();
     }).catch((err) => {
       setError({
         ...error,
@@ -145,7 +147,7 @@ export default function ClientType() {
                   <div className="d-flex">
 
                     <button type="button" className="btn btn-primary waves-effect btn-label waves-light me-3"
-                      data-bs-toggle="modal" data-bs-target="#add-client-type" onClick={isOpen}>
+                      onClick={clientShow}>
                       <i className="mdi mdi-plus label-icon"></i> Add Client Type
                     </button>
 
@@ -155,11 +157,6 @@ export default function ClientType() {
 
               </div>
               <div className="card-body">
-                {error.color !== "" &&
-                <div className={"alert alert-" + error.color} role="alert">
-                  {error.message}
-                </div>
-                }
                 <div className="table-responsive table-responsive-md">
                   <table className="table table-editable align-middle table-edits">
                     <thead className="table-light">
@@ -196,68 +193,57 @@ export default function ClientType() {
           </div>
         </div>
 
-        {/*NEW CLIENT MODAL*/}
-        <div className="modal fade" id="add-client-type" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
-          role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content">
-              <form onSubmit={handleSubmit}>
-                <div className="modal-header">
-                  <h5 className="modal-title" id="staticBackdropLabel">New Client Type</h5>
-                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                </div>
-                <div className="modal-body">
-                  <div className="row">
-                    <div className="col-12">
-                      <div className="form-group mb-4">
-                          <label htmlFor="">Name</label>
-                          <input type="text" className="form-control" onChange={handleChange} value={name} placeholder="Enter client type" required />
-                      </div>
+        {/*NEW CLIENT TYPE MODAL*/}
+        <Modal show={clientshow} onHide={clientClose} centered>
+          <form onSubmit={handleSubmit}>
+          <Modal.Header><h5>Add client type</h5></Modal.Header>
+          <Modal.Body>
+                <div className="row">
+                  {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
+                  <div className="col-12">
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Name. <strong className="text-danger ">*</strong></label>
+                      <input type="text" className="form-control" onChange={(e) => setName(e.target.value)} value={name} placeholder="Enter client type" required={true} />
                     </div>
                   </div>
                 </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-light" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Save</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <button type="button" className="btn btn-light" onClick={clientClose}>Close</button>
+            <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Save</button>
+          </Modal.Footer>
+        </form>
+      </Modal>
 
         {/*EDIT CLIENT MODAL*/}
-        <div className="modal fade" id="edit-client-type" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
-          role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="staticBackdropLabel">Update Client Type</h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-              </div>
-              <div className="modal-body">
-                <div className="row">
-                  <div className="col-12">
-                    {error.color !== "" &&
-                      <div className={"alert alert-" + error.color} role="alert">
-                        {error.message}
-                      </div>
-                    }
-                    <div className="form-group mb-4">
-                      <form action="submit">
-                        <label htmlFor="">Name</label>
-                        <input type="text" className="form-control" value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Enter client type" required />
-                      </form>
-                    </div>
+        <Modal show={editshow} onHide={editClose} centered>
+          <form onSubmit={editClientType}>
+            <Modal.Header><h5>Update client type</h5></Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                {error.color !== "" &&
+                <div className={"alert alert-" + error.color} role="alert">
+                  {error.message}
+                </div>
+                }
+                <div className="col-12">
+                  <div className="form-group mb-4">
+                    <label htmlFor="">Name. <strong className="text-danger ">*</strong></label>
+                    <input type="text" className="form-control" value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Enter client type" required={true} />
                   </div>
                 </div>
               </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-light" data-bs-dismiss="modal" onClick={clear}>Close</button>
-                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={editClientType}>Save</button>
-              </div>
-            </div>
-          </div>
-        </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <button type="button" className="btn btn-light" onClick={editClose}>Close</button>
+              <button type="submit" className="btn btn-primary">Save</button>
+            </Modal.Footer>
+          </form>
+        </Modal>
       </div>
     </div>
   )
