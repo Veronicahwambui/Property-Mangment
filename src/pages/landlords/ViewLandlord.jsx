@@ -570,7 +570,7 @@ function ViewLandlord() {
                                         <span className="badge-soft-danger badge">Inactive</span>}
                                       </td>
                                       <td className="text-right cell-change ">
-                                        <div className="d-flex">
+                                        <div className="d-flex align-items-center">
                                           <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
                                              title="Edit" onClick={() => accshow(acc.id)}><i className="bx bx-edit-alt " /></a>
                                           {acc.active ? <button
@@ -676,7 +676,7 @@ function ViewLandlord() {
                                             }
                                           </td>
                                           <td className="text-right cell-change ">
-                                            <div className="d-flex">
+                                            <div className="d-flex align-items-center">
                                               <a href={`${doc.docName}`} className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
                                                  title="Edit" onClick={() => download(doc.docName)}><i className="bx bx-download" /></a>
                                               {doc.active ? <button
