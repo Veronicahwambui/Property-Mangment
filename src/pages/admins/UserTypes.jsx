@@ -91,6 +91,7 @@ const updateUser=()=>{
 
   requestsServiceService.updateUserType(data).then((res)=>{
     console.log(res)
+    userTypeData()
    
    
   }
