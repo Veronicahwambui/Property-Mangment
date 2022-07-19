@@ -1,3 +1,5 @@
+/* global $ */
+
 import React, { useEffect, useState } from 'react'
 import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
@@ -36,8 +38,46 @@ function PremiseUseTypes() {
    
    requestsServiceService.createPremiseUseTypes(data).then((res)=>{
      fetchAll()
-   })
+     $("#add-new-zone").modal("hide");
+     
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+      
+      
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+   }).catch((res)=>{
+
+    $("#add-new-zone").modal("hide");
+     
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+
+    })
   }
+
+  
   
   // toggle function 
   const toggleStatus = ()=>{
@@ -98,6 +138,8 @@ function PremiseUseTypes() {
     })
     requestsServiceService.updatePremiseUseType(data).then((res)=>{
      fetchAll()
+    $("#update-modal").modal("hide");
+
      if(res.data.status){
       setError({
         ...error,
@@ -118,7 +160,8 @@ function PremiseUseTypes() {
       }, 3000)
 
     }).catch((res)=>{
-
+    $("#update-modal").modal("hide");
+      
       setError({
         ...error,
         message: res.data.message,
@@ -173,7 +216,7 @@ function PremiseUseTypes() {
                   </div>
                   <div class="d-flex">
                     <button
-                      onClick={fetchAll}
+                      onClick={()=>{ setCreateName('');fetchAll()}}
                       type="button"
                       class="btn btn-primary waves-effect btn-label waves-light me-3"
                       data-bs-toggle="modal"
@@ -209,7 +252,7 @@ function PremiseUseTypes() {
                             <td data-field="unit-num ">{val.name}</td>
                             <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
-                            <div class="d-flex">
+                            <div class="d-flex align-items-center">
                            
                             <a    onClick={()=>{setActiveId(val.id); setUpdateName(val.name)}}   data-bs-toggle="modal"
                                              data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
@@ -320,6 +363,8 @@ function PremiseUseTypes() {
     >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); Update() }}>
+           
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">
           Update  Premise Use Type
@@ -336,7 +381,7 @@ function PremiseUseTypes() {
             <div class="col-12">
                       <div class="form-group mb-4">
                                         <label for="">Premise Use Type</label>
-                                        <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
+                                        <input required value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                                     </div>
             </div>
            
@@ -351,14 +396,13 @@ function PremiseUseTypes() {
               Close
             </button>
             <button
-              onClick={Update}
-              type="button"
+              type="submit"
               class="btn btn-primary"
-              data-bs-dismiss="modal"
             >
               Save
             </button>
           </div>
+          </form>
         </div>
       </div>
     </div>

@@ -1,3 +1,5 @@
+/* global $ */
+
 import React, { useEffect, useState } from 'react'
 import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
@@ -51,6 +53,7 @@ function ApplicableCharges() {
    
    requestsServiceService.createApplicableCharges(data).then((res)=>{
      fetchAll()
+     $("#add-new-zone").modal("hide");
      if(res.data.status){
       setError({
         ...error,
@@ -71,7 +74,8 @@ function ApplicableCharges() {
       }, 3000)
 
    }).catch((res)=>{
-
+    $("#add-new-zone").modal("hide");
+      
       setError({
         ...error,
         message: res.data.message,
@@ -117,6 +121,8 @@ function ApplicableCharges() {
     })
     requestsServiceService.updateApplicableCharges(data).then((res)=>{
      fetchAll()
+     $("#update-modal").modal("hide");
+
      if(res.data.status){
       setError({
         ...error,
@@ -137,7 +143,8 @@ function ApplicableCharges() {
       }, 3000)
 
    }).catch((res)=>{
-
+      $("#update-modal").modal("hide");
+         
       setError({
         ...error,
         message: res.data.message,
@@ -195,7 +202,7 @@ function ApplicableCharges() {
                   </div>
                   <div class="d-flex">
                     <button
-                      onClick={fetchTypes}
+                      onClick={()=>{setManualVal(true);chargeTypes && setChargeType(chargeTypes[0]); fetchTypes();}}
                       type="button"
                       class="btn btn-primary waves-effect btn-label waves-light me-3"
                       data-bs-toggle="modal"
@@ -235,7 +242,7 @@ function ApplicableCharges() {
                             <td>{ val.expectManualValues ? "Yes": "No" } </td>
                             <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-center cell-change text-nowrap ">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center justify-content-between">
                            
                             <a  onClick={()=> {setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType) ; setNewManualVal(val.expectManualValues)}}   data-bs-toggle="modal"
                                              data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
@@ -292,6 +299,8 @@ function ApplicableCharges() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+            <form onSubmit={(e) => { e.preventDefault(); create() }}>
+             
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 New Applicable Charge
@@ -308,7 +317,7 @@ function ApplicableCharges() {
               <div class="col-12">
                 <div class="form-group mb-4">
                   <label for="">Applicable Charge Name </label>
-                    <input value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter applicable charge name" />
+                    <input required value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter applicable charge name" />
                   </div>
             </div>
                 <div class="col-12">
@@ -318,7 +327,8 @@ function ApplicableCharges() {
                       class="form-control"
                       data-live-search="true"
                       title=""
-                      onChange={(e) => setManualVal(e.target.value)}
+                      required="required"
+                      onChange={(e) =>{ setManualVal(e.target.value)}}
                     >
                       <option value="true" >True</option>
                       <option value="false">False</option>
@@ -330,8 +340,9 @@ function ApplicableCharges() {
                     <select
                       class="form-control"
                       data-live-search="true"
+                      required="required"
                       title="Select Applicable Charge Type"
-                      onChange={(e) => setChargeType(e.target.value)}
+                      onChange={(e) =>{  setChargeType(e.target.value);}}
                     >
                       {chargeTypes &&  chargeTypes.map((charge) =>{ return (
                        <option key={charge}  value={charge}>{charge.toLowerCase().replace(/_/g ," ")}</option>
@@ -350,14 +361,13 @@ function ApplicableCharges() {
                 Close
               </button>
               <button
-                onClick={create}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Create
               </button>
             </div>
+         </form>
           </div>
         </div>
       </div>
@@ -373,6 +383,8 @@ function ApplicableCharges() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+          <form onSubmit={(e) => { e.preventDefault(); Update() }}>
+
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 Update Applicable Charges
@@ -389,7 +401,7 @@ function ApplicableCharges() {
               <div class="col-12">
                 <div class="form-group mb-4">
                   <label for=""> Applicable Charge Name </label>
-                    <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
+                    <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" required />
                   </div>
             </div>
             <div class="col-12">
@@ -432,14 +444,13 @@ function ApplicableCharges() {
                 Close
               </button>
               <button
-                onClick={Update}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Update
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>

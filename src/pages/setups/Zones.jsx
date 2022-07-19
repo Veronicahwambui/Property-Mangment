@@ -1,3 +1,5 @@
+/* global $ */
+
 import React, { useEffect ,useState } from 'react'
 import requestsServiceService from '../../services/requestsService.service'
 
@@ -14,7 +16,6 @@ function Zones() {
   const [editName , setEditName] = useState('')
   const [newCounty , setNewCounty] =useState('')
   const [zoneId , setZoneId] = useState('')
-
 
  const  handleEdit= (name ,id,zonId)=>{
     setEditName(name)
@@ -48,7 +49,9 @@ function Zones() {
     })
   
     requestsServiceService.createZone(data).then((res)=>{
-        getZones()    
+        getZones()  
+     $("#add-new-zone").modal("hide");
+
       if(res.data.status){
       setError({
         ...error,
@@ -68,7 +71,8 @@ function Zones() {
       }, 3000)
       
     }).catch((res)=>{
-
+      $("#add-new-zone").modal("hide");
+     
       setError({
         ...error,
         message: res.data.message,
@@ -107,6 +111,8 @@ function Zones() {
 requestsServiceService.editZone(data).then((res)=>{
   // console.log(res.data);
   getZones()
+  $("#edit-zone").modal("hide");
+
   if(res.data.status){
     setError({
       ...error,
@@ -126,7 +132,8 @@ requestsServiceService.editZone(data).then((res)=>{
     }, 3000)
     
   }).catch((res)=>{
-
+    $("#edit-zone").modal("hide");
+    
     setError({
       ...error,
       message: res.data.message,
@@ -184,7 +191,7 @@ const deactivate = (id)=> {
                   </div>
                   <div class="d-flex">
                     <button
-                      onClick={getClientCounties}
+                      onClick={()=>{ setZoneName(''); clientCounties && setSelectedCounty(clientCounties[0].id) ;getClientCounties()}}
                       type="button"
                       class="btn btn-primary waves-effect btn-label waves-light me-3"
                       data-bs-toggle="modal"
@@ -222,7 +229,7 @@ const deactivate = (id)=> {
                             <td data-field="unit-num ">{zon.name}</td>
                             <td data-field="unit-num ">{zon.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
-                              <div className="d-flex">
+                              <div className="d-flex align-items-center">
                               <a onClick={()=>{
                                 handleEdit(zon.name , zon.clientCounty.id ,zon.id)
                               }} class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "  data-bs-toggle="modal"
@@ -321,6 +328,8 @@ const deactivate = (id)=> {
     >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); createZone() }}>
+           
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">
               New Zone
@@ -337,7 +346,7 @@ const deactivate = (id)=> {
             <div class="col-12">
                                     <div class="form-group mb-4">
                                         <label for="">Zone Name</label>
-                                        <input value={zoneName} onChange={ (e)=> setZoneName(e.target.value)} type="text" class="form-control" placeholder="Enter zone name" />
+                                        <input required value={zoneName} onChange={ (e)=> setZoneName(e.target.value)} type="text" class="form-control" placeholder="Enter zone name" />
                                     </div>
                                 </div>
               <div class="col-12">
@@ -367,14 +376,84 @@ const deactivate = (id)=> {
               Close
             </button>
             <button
-              onClick={createZone}
-              type="button"
+              type="submit"
               class="btn btn-primary"
-              data-bs-dismiss="modal"
             >
               Save
             </button>
           </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {/* edit zone  */}
+    <div
+      class="modal fade"
+      id="edit-zone"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      role="dialog"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); updateZone() }}>
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">
+              Edit Zone
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-4">
+                <label for="">Zone Name</label>
+                  <input required value={editName} onChange={ (e)=> setEditName(e.target.value)} type="text" class="form-control" placeholder="Enter zone name" />
+                  </div>
+                </div>
+
+              <div class="col-12">
+                  <label for="">County</label>
+                  <select
+                    class="form-control"
+                    data-live-search="true"
+                    title="Select county where the zone is"
+                    onChange={(e) => setNewCounty(e.target.value)}
+                  >
+                    {clientCounties && clientCounties.map((cou , index) =>{ 
+                       let county = cou.county
+                      return (
+                     <option key={index} value={cou.id} selected={ cou.id === newCounty ? "selected" : ''}>{county.name}</option>
+                    )})}
+                  </select>
+                
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-light"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+            >
+              Save
+            </button>
+          </div>
+          </form>
         </div>
       </div>
     </div>

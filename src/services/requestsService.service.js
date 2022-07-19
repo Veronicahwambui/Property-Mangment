@@ -571,6 +571,20 @@ class RequestsService {
     getInvoices(data) {
         return axiosInstance.get(baseUrl + "/payments")
     }
+    viewTenancy(tenancyId){
+        return axiosInstance.get(baseUrl + "/tenants/tenancy/" + tenancyId)
+    }
+    getClientAccounts(clientId){
+        return axiosInstance.get(baseUrl + "/clients/"+clientId+ "/accounts")
+    }
+    getLandlordAccounts(fileNo){
+        return axiosInstance.get(baseUrl + "/landlord/findByFileNumber?landLordFileNumber=" + fileNo )
+    }
+    toggleChargeunitStatuses(premiseUnitTypeChargeId){
+        return axiosInstance.get(baseUrl + "/premiseUnitTypeCharges/"+premiseUnitTypeChargeId+"/toogleStatus" )
+    }
+    // premise charges end
+
 }
 
 export default new RequestsService();

@@ -1,3 +1,5 @@
+/* global $ */
+
 import React, { useEffect, useState } from "react";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
@@ -14,6 +16,7 @@ function ClientCounties() {
 
   useEffect(() => {
     getClientCounties();
+    getCounties()
   }, []);
 
 
@@ -39,6 +42,9 @@ const deactivate = (id)=> {
 
     requestsServiceService.createCounty(data).then((res) => {
       getClientCounties()
+
+     $("#add-new-zone").modal("hide");
+ 
       if(res.data.status){
         setError({
           ...error,
@@ -59,7 +65,9 @@ const deactivate = (id)=> {
         }, 3000)
   
      }).catch((res)=>{
-  
+
+      $("#add-new-zone").modal("hide");
+       
         setError({
           ...error,
           message: res.data.message,
@@ -75,6 +83,8 @@ const deactivate = (id)=> {
     }
     
     const clear = ()=> {
+
+
       setError({
         ...error,
         message: "",
@@ -139,7 +149,7 @@ const deactivate = (id)=> {
                     </div>
                     <div class="d-flex">
                       <button
-                        onClick={getCounties}
+                        onClick={()=>{allCounties && setSelectedCounty(allCounties[0].id);}}
                         type="button"
                         class="btn btn-primary waves-effect btn-label waves-light me-3"
                         data-bs-toggle="modal"
@@ -176,7 +186,7 @@ const deactivate = (id)=> {
                               <td style={{ width: "80px" }}>{index+ 1}</td>
                               <td data-field="unit-num ">{county.name}</td>
                               <td data-field="unit-num ">{cou.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
-                              <td class="text-right cell-change text-nowrap ">
+                              <td class=" align-items-center text-right cell-change text-nowrap ">
                               {cou.active ?  <button
                                   class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"
                                   title="deactivate"
@@ -267,9 +277,11 @@ const deactivate = (id)=> {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+          <form onSubmit={(e) => { e.preventDefault(); createCounty() }}>
+
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
-                New Zone
+                New County
               </h5>
               <button
                 type="button"
@@ -306,14 +318,13 @@ const deactivate = (id)=> {
                 Close
               </button>
               <button
-                onClick={createCounty}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Save
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>

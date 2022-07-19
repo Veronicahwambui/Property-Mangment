@@ -1,15 +1,16 @@
+/* global $ */
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import axios from "axios";
+import authService from "../../services/auth.service";
 
 function OnePremise() {
   const [activeLink, setActiveLink] = useState(1);
   const [premiseData, setPremiseData] = useState({});
   const [docName, setDocName] = useState('')
-  const [chargeConstraints , setChargeConstraints] = useState([])
   const [premiseUnits, setPremiseUnits] = useState([])
   const [premiseCharges, setPremiseCharges] = useState([])
   const [caretakers, setCaretakers] = useState([])
@@ -60,7 +61,10 @@ function OnePremise() {
     findUnitTypes()
     findAllCharges()
     findAllPremiseUnits()
-    chargeConstraint()
+    getchargeConstraint()
+    fetchApplicableCharges()
+    getClientAccounts()
+
   }, []);
 
   const [PremiseTypes, setPremiseTypes] = useState([])
@@ -118,6 +122,8 @@ function OnePremise() {
     })
     requestsServiceService.updatePremise(userId, data).then(() => {
       fetchAll()
+     $("#edit-premise-detail").modal("hide");
+
     })
   }
 
@@ -272,10 +278,7 @@ function OnePremise() {
     let data = {
       active: true,
       id: activeUnitId,
-      numberOfRooms: numberOfRooms,
       premiseId: userId,
-      purpose:purpose,
-      squarage: squarage,
       unitName: unitName,
       unitTypeId: unittype
     }
@@ -289,10 +292,7 @@ function OnePremise() {
     let data = JSON.stringify({
       active: true,
       id: null,
-      numberOfRooms: numberOfRooms,
       premiseId: userId,
-      purpose:purpose,
-      squarage: squarage,
       unitName: unitName,
       unitTypeId: unittype
     })
@@ -304,44 +304,85 @@ function OnePremise() {
   //  premise unit Charges Stuff
   const [chargeId ,setChargeId] = useState('')
   const [rateCharge ,setRateCharge] = useState(true)
+  const [applicableCharge ,setApplicableCharge] = useState('')
+  const [applicableCharges ,setApplicableCharges] = useState([])
+  const [chargeConstraints , setChargeConstraints] = useState([])
+  const [collectionaccount ,setCollectionaccount] =useState('landlord')
+  const [value , setValue] = useState('')
+  const [clientAccounts ,setClientAccounts ] = useState([])
+  const [landlordAccounts ,setLandlordAccounts ] = useState([])
+  const [clientAccount ,setClientAccount ] = useState('')
+  const [clientAccountState ,setClientAccountState ] = useState('')
+  const [landlordAccount ,setLandlordAccount ] = useState('')
+  const [invoiceDay,setInvoiceDay] = useState('')
+  const [unitCost,setUnitCost] = useState('')
+
+  const fetchApplicableCharges = ()=>{
+    requestsServiceService.allApplicableCharges().then((res)=>{
+      setApplicableCharges(res.data.data)
+    })
+  }
 
   const findAllCharges = () =>{
     requestsServiceService.findPremiseUnitTypeCharges(userId).then((res)=>{
       setPremiseCharges(res.data.data)
     })
   }
-
- const  toggleChargeStatus = ()=>{
-    requestsServiceService.tooglePremiseUnitTypeChargestatus(chargeId).then(()=>{
+  let clientChargeId = authService.getClientId()
+  const getClientAccounts = ()=>{
+    requestsServiceService.getClientAccounts(clientChargeId).then((res)=>{
+       setClientAccounts(res.data.data)
+    })
+  }
+ const  toggleChargeStatus = (id)=>{
+    requestsServiceService.toggleChargeunitStatuses(id).then(()=>{
       findAllCharges()
     })
   }
 
-  const chargeConstraint = ()=>{
+  const getchargeConstraint = ()=>{
      requestsServiceService.getChargeConstraints().then((res)=>{
       setChargeConstraints(res.data.data)
      })
   }
 
+  const createCharges = ()=>{
+let data = JSON.stringify({
+      active: true,
+      applicableChargeId: applicableCharge,
+      chargeConstraint: chargeConstraint,
+      clientCollectionAccountId: clientAccount,
+      collectedToClientAccount: clientAccountState,
+      constraintChargeId: "string",
+      id: null,
+      invoiceDay: invoiceDay,
+      landlordCollectionAccountId: landlordAccount,
+      premiseId: userId,
+      rateCharge: rateCharge,
+      unitCost: unitCost,
+      unitTypeId: unittype,
+      value: value
+    })
+  }
   const updateCharges = ()=>{
      const data = JSON.stringify({    
         active: true,
-        applicableChargeId: 'chargeId',
-        chargeConstraint: "ZERO_BALANCE",
-        clientCollectionAccountId: 0,
+        applicableChargeId: applicableCharge,
+        chargeConstraint: chargeConstraint,
+        clientCollectionAccountId: clientAccount,
         collectedToClientAccount: true,
         constraintChargeId: "string",
         id: 0,
-        invoiceDay: 0,
-        landlordCollectionAccountId: 0,
+        invoiceDay: invoiceDay,
+        landlordCollectionAccountId: landlordAccount,
         monthCountForTenancyRenewal: 0,
         numberOfRooms: 'numberOfRooms',
-        premiseId: 'userId',
+        premiseId: userId,
         purpose: '',
         rateCharge: 0,
         squarage: 0,
-        unitTypeId: 0,
-        value: 0
+        unitTypeId: unittype,
+        value: unitCost
      })
   }
 
@@ -460,9 +501,14 @@ function OnePremise() {
                       </a>
                     </div>
                     <div class="navbar-nav">
+                    {premiseData.premise && premiseData.premise.active ?
                       <a href="#" data-toggle="modal" data-target="#deactivate-modal" type="button" class="btn btn-outline-danger waves-effect waves-light">
-                        <i class="bx dripicons-wrong font-size-16 align-middle me-2"></i> Deactivate Premises
-                      </a>
+                        <i class="bx dripicons-wrong font-size-16 align-middle me-2"></i> Deactivate Premise
+                      </a> :
+                        <a href="#" data-toggle="modal" data-target="#deactivate-modal" type="button" class="btn btn-outline-success waves-effect waves-light">
+                        <i class="bx dripicons-wrong font-size-16 align-middle me-2"></i> Activate Premise
+                      </a> 
+                    }
 
                       {/* <!-- Modal --> */}
                       <div class="modal fade" id="deactivate-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -490,7 +536,7 @@ function OnePremise() {
 
                                         <div class="flex-grow-1 overflow-hidden">
                                           <p class="text-truncate mb-1">Premises Name</p>
-                                          <h5 class="text-truncate font-size-14 mb-0 text-capitalize">  {premiseData.premise && premiseData.premise.premiseName}</h5>
+                                          <h5 class="text-truncate font-size-14 mb-0 text-capitalize"> {premiseData.premise && premiseData.premise.premiseName}</h5>
 
                                         </div>
 
@@ -504,8 +550,10 @@ function OnePremise() {
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                              <button onClick={() => togglePrem()} type="button" class="btn btn-danger" data-dismiss="modal" id="send-msg-land"><i class="bx dripicons-wrong me-1"></i> Deactivate </button>
-                            </div>
+                              {premiseData.premise && premiseData.premise.active ?
+                               ( <button onClick={() => togglePrem()} type="button" class="btn btn-danger" data-dismiss="modal" id="send-msg-land"><i class="bx dripicons-wrong me-1"></i> Deactivate </button>) :
+                               (<button onClick={() => togglePrem()} type="button" class="btn btn-success" data-dismiss="modal" id="send-msg-land"><i class="bx dripicons-wrong me-1"></i> Activate </button>) }
+                             </div>
 
 
                           </div>
@@ -655,12 +703,16 @@ function OnePremise() {
                 role="document"
               >
                 <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); updatePrem() }}>
+
                   <div class="modal-body">
+
                     <div className="row">
                       <div className="form-group">
                         <label htmlFor="">Premise Name</label>
                         <input
                           type="text"
+                          required
                           className="form-control"
                           value={update.premNmae}
                           onChange={handleChange}
@@ -734,6 +786,7 @@ function OnePremise() {
                           <label htmlFor="">File Number</label>
                           <input
                             type="text"
+                            required
                             className="form-control"
                             value={update.fileNo}
 
@@ -745,6 +798,7 @@ function OnePremise() {
                           <label htmlFor="">Plot Number</label>
                           <input
                             type="text"
+                            required
                             className="form-control"
                             value={update.plotNo}
 
@@ -756,6 +810,7 @@ function OnePremise() {
                           <label htmlFor="">Address</label>
                           <input
                             type="text"
+                            required
                             className="form-control"
                             value={update.address}
 
@@ -775,14 +830,13 @@ function OnePremise() {
                       close
                     </button>
                     <button
-                      type="button"
+                      type="submit"
                       class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      onClick={() => updatePrem()}
                     >
                       Update
                     </button>
                   </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -802,7 +856,7 @@ function OnePremise() {
                         data-bs-toggle="modal"
                         data-bs-target="#create-premise-unit"
                         className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
-                        onClick={() => { setUnitName(''); setUnittype('');setPurpose(''); setNumberOfRooms(''); setSquarage('') }}
+                        onClick={() => { setUnitName(''); setUnittype('');}}
                       >
                         <i className="dripicons-plus font-size-16"></i>{" "}
                         <span className="pl-1 d-md-inline">
@@ -821,6 +875,7 @@ function OnePremise() {
                             <th>purpose</th>
                             <th>no of rooms</th>
                             <th>unit size</th>
+                            <th>months to renewal</th>
                             <th class=" ">Status</th>
                             <th class="text-right w-220px">Actions</th>
                           </tr>
@@ -834,12 +889,13 @@ function OnePremise() {
                                 <Link onMouseOver={() => setActiveUnitId(unit.id)} to={`/premise/${userId}/${activeUnitId}`}>{unit.unitName}</Link>
                               </td>
                               <td >{unit.unitType.name}</td>
-                              <td>{unit.purpose}</td>
-                              <td>{unit.numberOfRooms} rooms</td>
-                              <td>{unit.squarage} M <sup>2</sup></td>
+                              <td>{unit.unitType.purpose}</td>
+                              <td>{unit.unitType.numberOfRooms} rooms</td>
+                              <td>{unit.unitType.squarage} M <sup>2</sup></td>
+                              <td>{unit.unitType.monthCountForTenancyRenewal}</td>
                               <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
                               <td class="text-right cell-change d-flex align-items-center float-right justify-content-end">
-                                <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id); setPurpose(unit.purpose); setNumberOfRooms(unit.numberOfRooms); setSquarage(unit.squarage) }} data-bs-toggle="modal"
+                                <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id); }} data-bs-toggle="modal"
                                   data-bs-target="#edit-premise-unit" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                                 <div class="dropdown">
                                   <a onClick={() => setActiveUnitId(unit.id)} class="text-muted font-size-16 ml-7px" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
@@ -894,18 +950,7 @@ function OnePremise() {
                         ))}
                       </select>
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="">Purpose</label>
-                      <input type="text" value={purpose} className="form-control" onChange={(event) => setPurpose(event.target.value)} />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">Number of Rooms</label>
-                      <input type="text" value={numberOfRooms} className="form-control" onChange={(event) => setNumberOfRooms(event.target.value)} />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">unit size in M<sup>2</sup></label>
-                      <input type="text" value={squarage} className="form-control" onChange={(event) => setSquarage(event.target.value)} />
-                    </div>
+          
                   </div>
                   <div class="modal-footer">
                     <button
@@ -955,18 +1000,6 @@ function OnePremise() {
                           <option value={unit.id}> {unit.name}</option>
                         ))}
                       </select>
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">Purpose</label>
-                      <input type="text" value={purpose} className="form-control" onChange={(event) => setPurpose(event.target.value)} />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">Number of Rooms</label>
-                      <input type="text" value={numberOfRooms} className="form-control" onChange={(event) => setNumberOfRooms(event.target.value)} />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">unit size in M<sup>2</sup></label>
-                      <input type="text" value={squarage} className="form-control" onChange={(event) => setSquarage(event.target.value)} />
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -1030,6 +1063,7 @@ function OnePremise() {
                             <th>TENANCY RENEWAL</th>
                             <th>charge constraint</th>
                             <th>rate charge</th>
+                            <th>status</th>
                             <th></th>
                           </tr>
                         </thead>
@@ -1037,16 +1071,18 @@ function OnePremise() {
                         {premiseCharges && premiseCharges.map((unit, index) => (
                             <tr data-id="1 ">
                               <td style={{ width: "80px" }}>{index + 1}</td>
-                              <td >{unit.purpose}</td>
-                              <td>{unit.numberOfRooms} rooms</td>
-                              <td>{unit.squarage} m<sup>2</sup> </td>
-                              <td>{unit.monthCountForTenancyRenewal} months</td>
+                              <td >{unit.unitType.purpose}</td>
+                              <td>{unit.unitType.numberOfRooms} rooms</td>
+                              <td>{unit.unitType.squarage} m<sup>2</sup> </td>
+                              <td>{unit.unitType.monthCountForTenancyRenewal} months</td>
                               <td>{unit.chargeConstraint.toLowerCase()}</td>
                               <td>{unit.rateCharge? "true": "false"}</td>
                               <td>{unit.applicableCharge.name}</td>
                               <td>{unit.applicableCharge.applicableChargeType.toLowerCase()}</td>
                               <td>{unit.invoiceDay}</td>
                               <td>{unit.value}</td>
+                              <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                              
                               <td class="text-right d-flex align-items-center float-right justify-content-end">
                                 <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id) }} data-bs-toggle="modal"
                                   data-bs-target="#edit-premise-unit" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
@@ -1057,7 +1093,7 @@ function OnePremise() {
 
                                   <div class="dropdown-menu dropdown-menu-end">
                                     <Link class="dropdown-item" to={`/premise/${userId}/${activeUnitId}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
-                                    <a onClick={() => togglePremiseUnitStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
+                                    <a onClick={() => toggleChargeStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
                                   </div>
                                 </div>
                               </td>
@@ -1088,8 +1124,92 @@ function OnePremise() {
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
 
-                  <div className="modal-body">
-                     
+                <div
+                    className="modal-body">
+
+                   <div className="form-group mb-2">
+                      <label htmlFor="">Select unit type</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Select applicable charge</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setApplicableCharge(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {applicableCharges && applicableCharges.map((unit) => (
+                          <option value={unit.id}> {unit.name} - {unit.applicableChargeType}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Select charge constraint</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                   
+                    <div className="form-group mb-2">
+                      <label htmlFor="">rate charge</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="true">yes</option>
+                        <option value="false">no</option>     
+                      </select>
+                    </div> 
+
+                   
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">select collection account type</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="client">Client collection</option>
+                        <option value="landlord">landlord collection</option>     
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Select client account</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Select landlord account</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Invoice day (1-31) </label>
+                      <input type="number" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Unit cost </label>
+                      <input type="number" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">value </label>
+                      <input type="number" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                    </div>
                   </div>
                   <div class="modal-footer">
                     <button
@@ -1126,19 +1246,90 @@ function OnePremise() {
 
                   <div
                     className="modal-body">
-                    <div className="form-group">
-                      <label htmlFor="">Unit Name</label>
-                      <input type="text" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
-                    </div>
 
-                    <div className="form-group">
-                      <label htmlFor="">Select unit type</label>
+                   <div className="form-group mb-2">
+                      <label htmlFor="">Unit type</label>
                       <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
                         <option value="">Select unit type</option>
                         {unittypes && unittypes.map((unit) => (
                           <option value={unit.id}> {unit.name}</option>
                         ))}
                       </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Applicable charge</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setApplicableCharge(event.target.value)}>
+                        <option value="">Select applicable type</option>
+                        {applicableCharges && applicableCharges.map((unit) => (
+                          <option value={unit.id}> {unit.name} - {unit.applicableChargeType}</option>
+                        ))}
+                      </select>
+                    </div>
+
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Charge constraint</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setChargeConstraint(event.target.value)}>
+                        <option value="">Select charge constraint</option>
+                        {chargeConstraints && chargeConstraints.map((unit) => (
+                          <option value={unit}> {unit}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                   
+                    <div className="form-group mb-2">
+                      <label htmlFor="">rate charge</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setRateCharge(event.target.value)}>
+                        <option value="true">yes</option>
+                        <option value="false">no</option>     
+                      </select>
+                    </div> 
+
+                   
+                     <div className="form-group mb-2">
+                      <label htmlFor="">select collection account type</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setCollectionaccount(event.target.value)}>
+                        <option value="landlord">landlord collection</option>                             
+                        <option value="client">Client collection</option>
+                      </select>
+                    </div>
+
+                    { collectionaccount === 'client' &&   <div className="form-group mb-2">
+                      <label htmlFor="">client account</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
+                        <option value="">Select  client account</option>
+                        {clientAccounts && clientAccounts.map((unit) => (
+                          <option value={unit.id}> {unit.bank.name}</option>
+                        ))}
+                      </select>
+                    </div>}
+
+                    
+                  { collectionaccount === 'landlords' &&  <div className="form-group mb-2">
+                      <label htmlFor="">landlord account</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
+                        <option value="">Select landlord account</option>
+                        {clientAccounts && clientAccounts.map((unit) => (
+                          <option value={unit.id}> {unit.bank.name}</option>
+                        ))}
+                      </select>
+                    </div>}
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Invoice day (1-31) </label>
+                      <input type="number" placeholder="Enter Unit Name" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Unit cost </label>
+                      <input type="number" placeholder="Enter Unit Name" value={unitCost} className="form-control" onChange={(event) => setUnitCost(event.target.value)} />
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">value </label>
+                      <input type="number" placeholder="Enter Unit Name" value={value} className="form-control" onChange={(event) => setValue(event.target.value)} />
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -1205,19 +1396,19 @@ function OnePremise() {
                                 <tr data-id="1">
                                   <td>{index + 1}</td>
                                   <td>
-                                    {unit.firstName} {unit.lastName}
+                                    {unit.landLord.firstName} {unit.lastName}
                                   </td>
                                   <td className="text-capitalize">
-                                    {unit.landLordType.toLowerCase()}
+                                    {unit.landLord.landLordType.toLowerCase()}
                                   </td>
-                                  <td>{unit.phoneNumber}</td>
-                                  <td>{unit.email}</td>
-                                  <td>{unit.fileNumber}</td>
-                                  <td>{unit.landLordAgreementType.name}</td>
+                                  <td>{unit.landLord.phoneNumber}</td>
+                                  <td>{unit.landLord.email}</td>
+                                  <td>{unit.landLord.fileNumber}</td>
+                                  <td>{unit.landLord.landLordAgreementType.name}</td>
                                   <td>
-                                    {unit.remunerationPercentage} {"%"}
+                                    {unit.landLord.remunerationPercentage} {"%"}
                                   </td>
-                                  <td>{unit.agreementPeriod}</td>
+                                  <td>{unit.landLord.agreementPeriod}</td>
                                 </tr>
                               ))}
                           </tbody>

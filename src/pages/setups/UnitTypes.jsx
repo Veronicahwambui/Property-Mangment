@@ -19,6 +19,10 @@ function UnitTypes() {
     message: "",
     color: ""
   });
+  const [numberOfRooms ,setNumberOfRooms ] = useState('')
+  const [purpose ,setPurpose] = useState('')
+  const [squarage ,setSquarage] = useState('')
+  const [monthCountForTenancyRenewal ,setMonthCountForTenancyRenewal] = useState('')
 
   useEffect(() => {
     fetchTypes();
@@ -47,12 +51,18 @@ function UnitTypes() {
       active: true,
       clientId: parseInt(authService.getClientId()),
       id: null,
+      monthCountForTenancyRenewal: monthCountForTenancyRenewal,
       name: createName,
+      numberOfRooms: numberOfRooms,
+      purpose: purpose,
+      squarage: squarage,
       unitTypeApplicableCharges: selectedChargeTypes
     })
 
     requestsServiceService.createUnitTypes(data).then((res) => {
       fetchAll()
+     $("#add-new-zone").modal("hide");
+
       if(res.data.status){
         setError({
           ...error,
@@ -73,7 +83,8 @@ function UnitTypes() {
         }, 3000)
   
      }).catch((res)=>{
-  
+    $("#add-new-zone").modal("hide");
+        
         setError({
           ...error,
           message: res.data.message,
@@ -110,12 +121,18 @@ function UnitTypes() {
       active: true,
       clientId: authService.getClientId(),
       id: activeId,
+      monthCountForTenancyRenewal: monthCountForTenancyRenewal,
       name: updateName,
+      numberOfRooms: numberOfRooms,
+      purpose: purpose,
+      squarage: squarage,
       unitTypeApplicableCharges: selectedChargeTypes
     })
     requestsServiceService.updateUnitType(data).then((res) => {
+    $("#update-modal").modal("hide");
+       
+      fetchAll() 
 
-      fetchAll()
       if(res.data.status){
         setError({
           ...error,
@@ -136,6 +153,7 @@ function UnitTypes() {
         }, 3000)
   
       }).catch((res)=>{
+        $("#update-modal").modal("hide");
   
         setError({
           ...error,
@@ -211,6 +229,10 @@ function UnitTypes() {
                     </div>
                     <div class="d-flex">
                       <button
+                        onClick={()=>{ setMonthCountForTenancyRenewal('');
+                          setPurpose('');
+                        setNumberOfRooms('');
+                       setSquarage('')}}
                         type="button"
                         class="btn btn-primary waves-effect btn-label waves-light me-3"
                         data-bs-toggle="modal"
@@ -233,6 +255,10 @@ function UnitTypes() {
                         <tr class="text-uppercase table-dark">
                           <th>#</th>
                           <th>Unit Type</th>
+                          <th>purpose</th>
+                          <th>no of rooms</th>
+                          <th>unit size</th>
+                          <th>months to renewal</th>
                           <th>Status</th>
                           <th class="text-center">Actions</th>
                         </tr>
@@ -245,14 +271,23 @@ function UnitTypes() {
                             <tr data-id="1" key={index}>
                               <td style={{ width: "80px" }}>{index + 1}</td>
                               <td data-field="unit-num " className='text-capitalize'>{val.name}</td>
+                                <td>{val.purpose}</td>
+                              <td>{val.numberOfRooms} rooms</td>
+                              <td>{val.squarage} M <sup>2</sup></td>
+                              <td>{val.monthCountForTenancyRenewal}</td>
                               <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
                               <td class="text-center cell-change text-nowrap ">
-                                <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-center justify-content-between">
 
                                   <a onClick={() => { 
                                     setActiveId(val.id); 
                                   setUpdateName(val.name); 
-                                  Zones(val.applicableChargeType) }} data-bs-toggle="modal"
+                                  Zones(val.applicableChargeType);
+                                  setMonthCountForTenancyRenewal(val.monthCountForTenancyRenewal);
+                                  setPurpose(val.purpose);
+                                setNumberOfRooms(val.numberOfRooms);
+                               setSquarage(val.squarage)
+                              }} data-bs-toggle="modal"
                                     data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
 
                                   {val.active ? <button
@@ -308,6 +343,8 @@ function UnitTypes() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); create() }}>
+
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 New Unit Type
@@ -324,7 +361,7 @@ function UnitTypes() {
                 <div class="col-12">
                   <div class="form-group mb-4">
                     <label for="">Unit Type Name </label>
-                    <input value={createName} onChange={(e) => setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter unit type name" />
+                    <input required value={createName} onChange={(e) => setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter unit type name" />
                   </div>
                 </div>
                 <div class="col-12">
@@ -333,7 +370,6 @@ function UnitTypes() {
                   <select
                     class=" form-control"
                     multiple
-                    size="1"
                     onChange={(e) => setChargeTypes1(e)}
                   >
                     {chargeTypes && chargeTypes.map((charge , index) => {
@@ -349,6 +385,24 @@ function UnitTypes() {
                   </select>
 
                 </div>
+
+                <div className="form-group">
+                      <label htmlFor="">Purpose</label>
+                      <input required type="text" value={purpose} className="form-control" onChange={(event) => setPurpose(event.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Number of Rooms</label>
+                      <input required type="text" value={numberOfRooms} className="form-control" onChange={(event) => setNumberOfRooms(event.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">unit size in M<sup>2</sup></label>
+                      <input required type="text" value={squarage} className="form-control" onChange={(event) => setSquarage(event.target.value)} />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="">Months to renewal </label>
+                      <input required type="text" value={monthCountForTenancyRenewal} className="form-control" onChange={(event) => setMonthCountForTenancyRenewal(event.target.value)} />
+                    </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -360,14 +414,13 @@ function UnitTypes() {
                 Close
               </button>
               <button
-                onClick={create}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Create
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>
@@ -383,6 +436,8 @@ function UnitTypes() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); Update() }}>
+
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 Update Unit Type
@@ -399,7 +454,7 @@ function UnitTypes() {
                 <div class="col-12">
                   <div class="form-group mb-4">
                     <label for=""> Unit Type Name </label>
-                    <input value={updateName} onChange={(e) => setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
+                    <input required value={updateName} onChange={(e) => setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                   </div>
                 </div>
                 <div class="col-12">
@@ -425,6 +480,24 @@ function UnitTypes() {
                   </select>
 
                 </div>
+
+                <div className="form-group">
+                      <label htmlFor="">Purpose</label>
+                      <input required type="text" value={purpose} className="form-control" onChange={(event) => setPurpose(event.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Number of Rooms</label>
+                      <input required type="text" value={numberOfRooms} className="form-control" onChange={(event) => setNumberOfRooms(event.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">unit size in M<sup>2</sup></label>
+                      <input required type="text" value={squarage} className="form-control" onChange={(event) => setSquarage(event.target.value)} />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="">Months to renewal </label>
+                      <input required type="text" value={monthCountForTenancyRenewal} className="form-control" onChange={(event) => setMonthCountForTenancyRenewal(event.target.value)} />
+                    </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -436,14 +509,13 @@ function UnitTypes() {
                 Close
               </button>
               <button
-                onClick={Update}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Update
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>

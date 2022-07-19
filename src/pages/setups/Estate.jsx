@@ -1,3 +1,5 @@
+/* global $ */
+
 import React, { useEffect, useState } from 'react'
 import requestsServiceService from '../../services/requestsService.service'
 
@@ -8,14 +10,6 @@ function Estate() {
   const [activeId, setActiveId] = useState('')
   const [selectedZone, setSelectedZone] = useState("");
 
-  const [editName, setEditName] = useState('')
-  const [newZone, setNewZone] = useState('')
-  const [estateId, setEstateId] = useState('')
-  const [error, setError] = useState({
-    message: "",
-    color: ""
-  });
-
 
   const handleEdit = (name, id, zonId) => {
     setEditName(name)
@@ -24,6 +18,13 @@ function Estate() {
   }
 
 
+  const [editName, setEditName] = useState('')
+  const [newZone, setNewZone] = useState('')
+  const [estateId, setEstateId] = useState('')
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
   useEffect(() => {
     getZones()
@@ -50,6 +51,8 @@ function Estate() {
     })
     requestsServiceService.createEstate(data).then((res) => {
       getEstates()
+     $("#add-new-zone").modal("hide");
+       
       if (res.data.status) {
         setError({
           ...error,
@@ -70,7 +73,8 @@ function Estate() {
       }, 3000)
 
     }).catch((res) => {
-
+      $("#add-new-zone").modal("hide");
+     
       setError({
         ...error,
         message: res.data.message,
@@ -115,6 +119,8 @@ function Estate() {
 
     requestsServiceService.editEstate(data).then((res) => {
       getEstates()
+     $("#edit-zone").modal("hide");
+
       if (res.data.status) {
         setError({
           ...error,
@@ -135,7 +141,8 @@ function Estate() {
       }, 3000)
 
     }).catch((res) => {
-
+      $("#edit-zone").modal("hide");
+     
       setError({
         ...error,
         message: res.data.message,
@@ -185,7 +192,7 @@ function Estate() {
                     </div>
                     <div class="d-flex">
                       <button
-                        onClick={getZones}
+                        onClick={()=>{zones && setSelectedZone(zones[0].id); setEstateName('') ;getZones()}}
                         type="button"
                         class="btn btn-primary waves-effect btn-label waves-light me-3"
                         data-bs-toggle="modal"
@@ -225,7 +232,7 @@ function Estate() {
                               <td >{estate.zone.clientCounty.county.name.toLowerCase()}</td>
                               <td >{estate.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
                               <td class="text-right cell-change text-nowrap">
-                                <div className="d-flex">
+                                <div className=" align-items-center d-flex">
                                   <a onClick={() => {
                                     handleEdit(estate.name, estate.zone.id, estate.id)
                                   }} class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal"
@@ -323,6 +330,8 @@ function Estate() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); createEstates() }}>
+
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 New Estate
@@ -339,7 +348,7 @@ function Estate() {
                 <div class="col-12">
                   <div class="form-group mb-4">
                     <label for="">Estate Name</label>
-                    <input value={estateName} onChange={(e) => setEstateName(e.target.value)} type="text" class="form-control" placeholder="Enter estate name" />
+                    <input required value={estateName} onChange={(e) => setEstateName(e.target.value)} type="text" class="form-control" placeholder="Enter estate name" />
                   </div>
                 </div>
                 <div class="col-12">
@@ -367,14 +376,13 @@ function Estate() {
                 Close
               </button>
               <button
-                onClick={createEstates}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Save
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>
@@ -393,6 +401,8 @@ function Estate() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
+        <form onSubmit={(e) => { e.preventDefault(); updateEstate() }}>
+
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 Edit Estate
@@ -409,7 +419,7 @@ function Estate() {
                 <div class="col-12">
                   <div class="form-group mb-4">
                     <label for="">Estate Name</label>
-                    <input value={editName} onChange={(e) => setEditName(e.target.value)} type="text" class="form-control" placeholder="Enter estate name" />
+                    <input required value={editName} onChange={(e) => setEditName(e.target.value)} type="text" class="form-control" placeholder="Enter estate name" />
                   </div>
                 </div>
                 <div class="col-12">
@@ -441,14 +451,13 @@ function Estate() {
                 Close
               </button>
               <button
-                onClick={updateEstate}
-                type="button"
+                type="submit"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
               >
                 Save
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>

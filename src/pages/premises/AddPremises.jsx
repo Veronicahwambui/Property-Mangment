@@ -146,7 +146,8 @@ function AddPremises() {
           "applicableChargeName": chargee.name,
           "applicableChargeType": chargee.applicableChargeType,
 
-          "unitTypeName": selectedunitTypes[i].name,
+          "unitTypeName": selectedunitTypes[i].unitTypeName,
+          "landlordCollectionAccountId": undefined,
           "monthCountForTenancyRenewal": selectedunitTypes[i].monthCountForTenancyRenewal,
           "numberOfRooms": selectedunitTypes[i].numberOfRooms,
           "premiseId": undefined,
@@ -905,7 +906,13 @@ function AddPremises() {
                               }
 
                             </tbody>
-
+                            <tfoot>
+                              <tr>
+                                <td colSpan="7 ">
+                                  <button type="button" data-id="PREMISE" onClick={newUnitType}>Add A Unit Type</button>
+                                </td>
+                              </tr>
+                            </tfoot>
                           </table>
                         </div> */}
 

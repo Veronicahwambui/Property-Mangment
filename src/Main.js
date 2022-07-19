@@ -41,6 +41,7 @@ import { Helmet } from "react-helmet";
 import OnePremiseUnit from "./pages/premises/OnePremiseUnit";
 import ViewClient from "./pages/clients/ViewCLient";
 import Invoices from "./pages/invoices/Invoices";
+import PremiseTenancy from "./pages/premises/PremiseTenancy";
 
 function Main() {
 
@@ -85,6 +86,9 @@ function Main() {
                 <Route path='/addpremises' element={<AddPremises />} />
                 <Route path='/premise/:id' element={<OnePremise />} />
                 <Route path='/premise/:id/:one' element={<OnePremiseUnit />} />
+                <Route path='/premise/tenant/:id' element={<PremiseTenancy />} />
+                <Route path='/premise/:id/:one' element={<OnePremiseUnit />} />
+
                 {/* tenants  */}
                 <Route path='/alltenants' element={<AllTenants />} />
                 <Route path='/addtenant' element={<AddTenant />} />
@@ -127,6 +131,10 @@ function Main() {
                 <Route path='/landlord/:id' element={<ViewLandlord />} />
                 <Route path='/addclient/' element={<NewClient />} />
                 <Route path='/client/:id' element={<ViewClient />} />
+                <Route path='/clients' element={<Clients />} />
+                <Route path='/agreementtypes' element={<LandLordAgreementTypes />} />
+                <Route path='/addlandlord' element={<AddLandlord />} />
+                <Route path='/landlord/:id' element={<ViewLandlord />} />
 
                 <Route path="*" element={<Navigate to="/" />}></Route>
               </Routes>

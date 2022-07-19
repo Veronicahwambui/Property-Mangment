@@ -1,4 +1,3 @@
-import { typeImplementation } from '@testing-library/user-event/dist/type/typeImplementation'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
@@ -276,7 +275,7 @@ function OnePremiseUnit() {
                                                 </thead>
                                                 <tbody>
                                                     {tenancy && tenancy.map((unit, index) => (
-                                                        <tr data-id="1 ">
+                                                        <tr data-id="1">
                                                             <td style={{ width: "80px" }}>{index + 1}</td>
                                                             <td>{unit.tenant.firstName} {unit.tenant.lastName} </td>
                                                             <td>{unit.tenant.phoneNumber}</td>
@@ -294,7 +293,8 @@ function OnePremiseUnit() {
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                                        <a class="dropdown-item" ><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</a>
+                                                                    <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
+
                                                                         <a class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
                                                                     </div>
                                                                 </div>
