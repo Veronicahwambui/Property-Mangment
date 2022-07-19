@@ -1096,7 +1096,7 @@ let data = JSON.stringify({
                                   </a>
 
                                   <div class="dropdown-menu dropdown-menu-end">
-                                    <Link class="dropdown-item" to={`/premise/tenant/${unit.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
+                                    <Link class="dropdown-item" to={`/premise/${userId}/${unit.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
                                     <a onClick={() => toggleChargeStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
                                   </div>
                                 </div>
