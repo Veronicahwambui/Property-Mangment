@@ -3,15 +3,33 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import UnitTypes from "../setups/UnitTypes";
+import authService from "../../services/auth.service";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
   const [docName, setDocName] = useState("");
- const[tenantId,setTenantId]=useState("");
- 
-  
+  const [tenantId, setTenantId] = useState("");
+  const [contactPerson, setContactPerson] = useState([]);
 
+  //edit tenants-details
+  const [type, setType] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [email, setEmail] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [nationality, setNatioality] = useState("");
+  const [companyIncorporationNumber, setCompanyIncorporationNumber] =
+    useState("");
+  const [detailsId, setDetailsId] = useState("");
+  const [companyAddress, setCompanyAddress] = useState("");
+  const [companyDateOfRegistration, setCompanyDateOfRegistration] =
+    useState("");
+  const [dob, setDob] = useState("");
+  const [gender, setGender] = useState("");
+  const [maritalStatus, setMaritalStatus] = useState("");
+  const [occupation, setOccupation] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [tenantTypeName, setTenantTypeName] = useState("");
 
   // edit tenants
   const [unitTypeName, setUnitTypeName] = useState("");
@@ -19,7 +37,8 @@ function OneTenant() {
   const [unitCondition, setUnitCondition] = useState("");
   const [tenancyStatus, setTenancyStatus] = useState("");
   const [tenancyRenewalDate, setTenancyRenewalDate] = useState("");
-  const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] = useState("");
+  const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] =
+    useState("");
   const [premiseUnitId, setPremiseUnitId] = useState("");
   const [unitId, setUnitId] = useState("");
 
@@ -32,28 +51,74 @@ function OneTenant() {
   const [phoneNumber2, setPhoneNumber2] = useState("");
   const [relationship, setRelationship] = useState("");
   const [contactPersonId, setContactPersonId] = useState("");
-  const[contactPersonTypeName,setContactPersonTypeName]=useState("")
-  const[ contactId, setContactId]=useState("");
-
+  const [contactPersonTypeName, setContactPersonTypeName] = useState("");
+  const [contactPersonType, setContactPersonType] = useState("");
 
   const { id } = useParams();
   const userId = id;
-
 
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
     });
   };
+
+  const editTenantsDetails = () => {
+    let details = JSON.stringify({
+      active: true,
+      clientId: parseInt(authService.getClientId()),
+      companyAddress: companyAddress,
+      companyDateOfRegistration: companyDateOfRegistration,
+      companyIncorporationNumber: companyIncorporationNumber,
+      companyName: companyName,
+      dob: dob,
+      email: email,
+      firstName: firstName,
+      gender: gender,
+      id: detailsId,
+      idNumber: idNumber,
+      lastName: lastName,
+      maritalStatus: maritalStatus,
+      nationality: nationality,
+      occupation: occupation,
+      otherName: otherName,
+      phoneNumber: phoneNumber,
+      tenantTypeName: tenantTypeName,
+    });
+    //  console.log(id)
+    requestsServiceService.updateTenantsDetails(details).then((res) => {
+      console.log(res);
+    });
+    // console.log(id)
+  };
+  // console.log( editTenantsDetails)
+  const handleChangeTenantsDetails = (
+    detailsId,
+    type,
+    firstName,
+    lastName,
+    email,
+    idNumber,
+    companyName,
+    nationality
+  ) => {
+    setDetailsId(detailsId);
+    setType(type);
+    setFirstName(firstName);
+    setLastName(lastName);
+    setEmail(email);
+    setIdNumber(idNumber);
+    setCompanyName(companyName);
+    setNatioality(nationality);
+  };
+
   const editTenant = () => {
     let data = JSON.stringify({
-    
-
       active: true,
       id: userId,
-     tenancyRenewalDate:tenancyRenewalDate,
-     tenancyRenewalNotificationDate:tenancyRenewalNotificationDate,
-     unitTypeName:unitTypeName,
+      tenancyRenewalDate: tenancyRenewalDate,
+      tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
+      unitTypeName: unitTypeName,
       premiseUnitId: premiseUnitId,
       startDate: new Date(),
       tenancyCharges: [{}],
@@ -63,9 +128,7 @@ function OneTenant() {
       unitCondition: unitCondition,
     });
     requestsServiceService.updateTenant(data).then((res) => {
-     
-      
-      
+      fetchAll();
     });
   };
   const handleChange = (
@@ -75,10 +138,10 @@ function OneTenant() {
     unitCondition,
     tenancyRenewalDate,
     tenancyRenewalNotificationDate,
-    unitId,
+    unitId
   ) => {
     setPremiseUnitId(permiseUnitId);
-    setUnitTypeName(unitTypeName)
+    setUnitTypeName(unitTypeName);
     setStartDate(startDate);
     setUnitCondition(unitCondition);
     // setTenancyStatus(tenancyStatus);
@@ -86,39 +149,29 @@ function OneTenant() {
     setTenancyRenewalNotificationDate(tenancyRenewalNotificationDate);
     setUnitId(unitId);
   };
- 
- 
+
   const editContactPersons = () => {
-  
+    let contacts = JSON.stringify({
+      active: true,
 
-    let contacts =JSON.stringify({
-
-    active: true,
-  
-  firstName: firstName,
-  id: contactPersonId,
-  lastName: lastName,
-  otherName: otherName,
-  contactPersonTypeName: contactPersonTypeName,
-  phoneNumber1: phoneNumber1,
-  phoneNumber2: phoneNumber2,
-  relationship: relationship,
-  tenantId:tenantData.tenant.id
-  ,
-
-    })
+      firstName: firstName,
+      id: contactPersonId,
+      lastName: lastName,
+      otherName: otherName,
+      contactPersonTypeName: contactPersonTypeName,
+      phoneNumber1: phoneNumber1,
+      phoneNumber2: phoneNumber2,
+      relationship: relationship,
+      tenantId: tenantData.tenant.id,
+    });
     // console.log(contacts);
-
-
-
-  
 
     requestsServiceService.updateContactPersons(contacts).then((res) => {
       console.log(res);
-      fetchAll()
-
+      fetchAll();
     });
   };
+
   const handleChangeContacts = (
     contactPersonId,
     firstName,
@@ -128,13 +181,11 @@ function OneTenant() {
     phoneNumber1,
     relationship
   ) => {
-    setContactId(contactId)
     setContactPersonId(contactPersonId);
     setFirstName(firstName);
     setLastName(lastName);
     setOtherName(otherName);
-    setContactPersonTypeName
-    (contactPersonTypeName)
+    setContactPersonTypeName(contactPersonTypeName);
     setPhoneNumber1(phoneNumber1);
     setRelationship(relationship);
   };
@@ -145,18 +196,43 @@ function OneTenant() {
     });
   };
 
+  const getContactTypeName = () => {
+    requestsServiceService.getContactpersons().then((res) => {
+      setContactPerson(res.data.data);
+    });
+  };
+
+  const addConctactPersons = () => {
+    let contactPerson = JSON.stringify({
+      active: true,
+
+      firstName: firstName,
+      id: id,
+      lastName: lastName,
+      otherName: otherName,
+      contactPersonTypeName: contactPersonType,
+      phoneNumber1: phoneNumber1,
+      phoneNumber2: phoneNumber2,
+      relationship: relationship,
+      tenantId: tenantData.tenant.id,
+    });
+    // console.log(contactPerson);
+    // console.log(id)
+
+    requestsServiceService.createContactPerson(contactPerson).then((res) => {
+      console.log(res);
+      fetchAll();
+    });
+  };
+
   useEffect(() => {
     fetchAll();
+    getContactTypeName();
   }, []);
 
-
-  const deleteDeactivate =(id) =>{
-    requestsServiceService.deactivateTenancies(id).then((res)=>{
-    
-
-    }) 
-
-  }
+  const deleteDeactivate = (id) => {
+    requestsServiceService.deactivateTenancies(id).then((res) => {});
+  };
 
   return (
     <div className="page-content">
@@ -264,6 +340,31 @@ function OneTenant() {
                           {tenantData.tenant && tenantData.tenant.firstName}
                         </h4>
                       </div>
+                      <div className="d-flex">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleChangeTenantsDetails(
+                              tenantData.tenant.id,
+                              tenantData.tenant.tenantType,
+                              tenantData.tenant.firstName,
+                              tenantData.tenant.lastName,
+                              tenantData.tenant.email,
+                              tenantData.tenant.idNumber,
+                              tenantData.tenant.companyName,
+                              tenantData.tenant.nationality
+                            )
+                          }
+                          data-bs-toggle="modal"
+                          data-bs-target="#edit-tenant-detail"
+                          className="btn btn-primary dropdown-toggle option-selector"
+                        >
+                          <i className="dripicons-plus font-size-16"></i>{" "}
+                          <span className="pl-1 d-md-inline">
+                            Edit Tenants details
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div className="card-body">
@@ -368,147 +469,127 @@ function OneTenant() {
                             </div>
                           </div>
                         </div>
-                      
-                        
-                           
-                              <div>
-                                <div className="card-body">
-                                <div className="table-responsive">
-                                <table className="table align-middle table-nowrap table-hover mb-0">
-                                  <thead>
-                                    <tr class="text-uppercase table-dark">
-                                      <th>#</th>
-                                      <th>Unit Name</th>
-                                      <th>Unit Type</th>
-                                      <th>Start Date</th>
-                                      <th>Unit Condition</th>
-                                      <th>Tenancy Status</th>
-                                      <th>TenancyRenewalDate</th>
-                                      <th>TenancyRenewalNotificationDate</th>
-                                      <th>Status</th>
-                                      <th>Actions</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {tenantData.tenancies &&
-                                      tenantData.tenancies.map(
-                                        (unit, index) => (
-                                          <tr data-id="1">
-                                            <td>{index + 1}</td>
-                                            <td>{unit.premiseUnit.unitName}</td>
-                                            <td className="text-capitalize">
-                                              {unit.premiseUnit.unitType.name}
-                                            </td>
-                                            <td>
-                                              {unit.startDate.replace(
-                                                /[TZ]/g,
-                                                " "
-                                              )}
-                                            </td>
-                                            <td>{unit.unitCondition}</td>
-                                            <td>
-                               
 
-                                              {unit.tenancyStatus.toLowerCase() ? (
-                                                <span class="badge-soft-success badge">
-                                                  Closed
-                                                </span>
-                                              ) : (
-                                                <span class="badge-soft-danger badge">
-                                                  Activate
-                                                </span>
-                                              )}
-                                            </td>
-                                            <td>
-                                              {unit.tenancyRenewalDate}
-                                            </td>
-                                            <td>
-                                              {unit.tenancyRenewalNotificationDate}
+                        <div>
+                          <div className="card-body">
+                            <div className="table-responsive">
+                              <table className="table align-middle table-nowrap table-hover mb-0">
+                                <thead>
+                                  <tr class="text-uppercase table-dark">
+                                    <th>#</th>
+                                    <th>Unit Name</th>
+                                    <th>Unit Type</th>
+                                    <th>Start Date</th>
+                                    <th>Unit Condition</th>
+                                    <th>Tenancy Status</th>
+                                    <th>TenancyRenewalDate</th>
+                                    <th>TenancyRenewalNotificationDate</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {tenantData.tenancies &&
+                                    tenantData.tenancies.map((unit, index) => (
+                                      <tr data-id="1">
+                                        <td>{index + 1}</td>
+                                        <td>{unit.premiseUnit.unitName}</td>
+                                        <td className="text-capitalize">
+                                          {unit.premiseUnit.unitType.name}
+                                        </td>
+                                        <td>
+                                          {unit.startDate.replace(/[TZ]/g, " ")}
+                                        </td>
+                                        <td>{unit.unitCondition}</td>
+                                        <td>
+                                          {unit.tenancyStatus.toLowerCase() ? (
+                                            <span class="badge-soft-success badge">
+                                              Closed
+                                            </span>
+                                          ) : (
+                                            <span class="badge-soft-danger badge">
+                                              Activate
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>{unit.tenancyRenewalDate}</td>
+                                        <td>
+                                          {unit.tenancyRenewalNotificationDate}
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {unit.active ? (
+                                            <span class="badge-soft-success badge">
+                                              Active
+                                            </span>
+                                          ) : (
+                                            <span class="badge-soft-danger badge">
+                                              Inactive
+                                            </span>
+                                          )}
+                                        </td>
 
-                                            </td>
-                                            <td>
-                                              {" "}
-                                              {unit.active ? (
-                                                <span class="badge-soft-success badge">
-                                                  Active
-                                                </span>
-                                              ) : (
-                                                <span class="badge-soft-danger badge">
-                                                  Inactive
-                                                </span>
-                                              )}
-                                            </td>
+                                        <td className="text-right ">
+                                          <div class="dropdown">
+                                            <a
+                                              class="text-muted font-size-16"
+                                              role="button"
+                                              data-bs-toggle="dropdown"
+                                              aria-haspopup="true"
+                                            >
+                                              <i class="bx bx-dots-vertical-rounded"></i>
+                                            </a>
 
-                                            <td className="text-right ">
-                                              <div class="dropdown">
-                                                <a
-                                                  class="text-muted font-size-16"
-                                                  role="button"
-                                                  data-bs-toggle="dropdown"
-                                                  aria-haspopup="true"
-                                                >
-                                                  <i class="bx bx-dots-vertical-rounded"></i>
-                                                </a>
+                                            <div class="dropdown-menu dropdown-menu-end text-capitalize">
+                                              <p
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#edit-tenant"
+                                                class="dropdown-item"
+                                                href="#"
+                                                onClick={() =>
+                                                  handleChange(
+                                                    unit.premiseUnit.id,
+                                                    unit.premiseUnit.unitName,
+                                                    unit.startDate,
+                                                    unit.unitCondition,
 
-                                                <div class="dropdown-menu dropdown-menu-end text-capitalize">
-                                                  <p
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#edit-tenant"
-                                                    class="dropdown-item"
-                                                    href="#"
-                                                    onClick={() =>
-                                                      handleChange(
-                                                        unit.premiseUnit.id,
-                                                        unit.premiseUnit.unitName,
-                                                        unit.startDate,
-                                                        unit.unitCondition,
-                                                
-                                                       unit.tenancyRenewalDate,
-                                                        unit.tenancyRenewalNotificationDate,unit.id
-                                                      )
-                                                    }
-                                                  >
-                                                    <i class="font-size-15 mdi mdi-pencil me-3"></i>
-                                                    Edit
-                                                  </p>
+                                                    unit.tenancyRenewalDate,
+                                                    unit.tenancyRenewalNotificationDate,
+                                                    unit.id
+                                                  )
+                                                }
+                                              >
+                                                <i class="font-size-15 mdi mdi-pencil me-3"></i>
+                                                Edit
+                                              </p>
 
-                                
-                                        
-                                                <button  class="dropdown-item " onClick={()=>deleteDeactivate(unit.id)}>
-                                                  
-                                               
-                                                    
-                                                <i class="font-size-8 mdi mdi-close-circle me-3"> 
-                                                   Deactivate
+                                              <button
+                                                class="dropdown-item "
+                                                onClick={() =>
+                                                  deleteDeactivate(unit.id)
+                                                }
+                                              >
+                                                <i class="font-size-8 mdi mdi-close-circle me-3">
+                                                  Deactivate
                                                 </i>
-                                               
-                                    
-                                   </button>
-                                   
-
-
-
-                                                </div>
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        )
-                                      )}
-                                  </tbody>
-                                </table>
-                              </div>
-                              </div>
-                              </div>
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    ))}
+                                </tbody>
+                              </table>
                             </div>
-                      
-                        
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-       
+          </div>
         )}
 
         {activeLink === 3 && (
@@ -530,7 +611,15 @@ function OneTenant() {
                               </h4>
                             </div>
                             <div className="d-flex">
-                        
+                              <button
+                                type="button"
+                                className="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#create-contact"
+                              >
+                                <i className="mdi mdi-plus label-icon"></i> Add
+                                ContactPerson
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -585,22 +674,20 @@ function OneTenant() {
                                             </td>
 
                                             <td className="text-right cell-change ">
-
-                                              <a   data-bs-toggle="modal"
+                                              <a
+                                                data-bs-toggle="modal"
                                                 data-bs-target="#edit-contact"
                                                 className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                               
                                                 onClick={() =>
                                                   handleChangeContacts(
                                                     unit.id,
-                                                   
-                                                   
+
                                                     unit.firstName,
                                                     unit.lastName,
                                                     unit.otherName,
                                                     unit.contactPersonType,
                                                     unit.phoneNumber1,
-                                                    unit.relationship,
+                                                    unit.relationship
                                                   )
                                                 }
                                               >
@@ -651,13 +738,15 @@ function OneTenant() {
               <div class="modal-body">
                 <div class="row">
                   <div class="col-12">
-                  <div class="form-group mb-4">
+                    <div class="form-group mb-4">
                       <label for="">UnitTypeName</label>
                       <input
                         type="text"
                         class="form-control"
                         placeholder="Enter UnitTypeName"
-                        onChange={(event) => setUnitTypeName(event.target.value)}
+                        onChange={(event) =>
+                          setUnitTypeName(event.target.value)
+                        }
                         value={unitTypeName}
                       />
                     </div>
@@ -699,9 +788,7 @@ function OneTenant() {
                         type="text"
                         className="form-control"
                         value={tenancyRenewalDate}
-                        onChange={(e) =>
-                          setTenancyRenewalDate(e.target.value)
-                        }
+                        onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate"
                         required={true}
                       />
@@ -794,7 +881,6 @@ function OneTenant() {
                       />
                     </div>
 
-                 
                     <div className="form-group mb-4">
                       <label htmlFor="">OtherName</label>
                       <input
@@ -813,11 +899,12 @@ function OneTenant() {
                         type="text"
                         class="form-control"
                         placeholder="Enter Type"
-                        onChange={(event) => setContactPersonTypeName(event.target.value)}
+                        onChange={(event) =>
+                          setContactPersonTypeName(event.target.value)
+                        }
                         value={contactPersonTypeName}
                       />
                     </div>
-                    
 
                     <div className="form-group mb-4">
                       <label htmlFor="">PhoneNumber1</label>
@@ -858,7 +945,257 @@ function OneTenant() {
                   type="button"
                   class="btn btn-primary"
                   data-bs-dismiss="modal"
-                  onClick={()=>editContactPersons()}
+                  onClick={() => editContactPersons()}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* 
+
+ //edit tenanant details */}
+        <div
+          class="modal fade"
+          id="edit-tenant-detail"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div
+            class="modal-dialog modal-dialog-centered modal-lg"
+            role="document"
+          >
+            <div class="modal-content">
+              <div class="modal-body">
+                <div className="row">
+                  <div className="form-group">
+                  <div className="mb-3">
+                          <label className="form-label">Tenant type</label>
+                          <select
+                            onChange={(e) => setTenantTypeName(e.target.value)}
+                            name="tenantTypeName"
+                            className="form-control"
+                          >
+                            <option value="individual" >Individual</option>
+                            <option value="company">Company</option>
+                          </select>
+                        </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="">FirstName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setFirstName(event.target.value)}
+                        value={firstName}
+                        placeholder="Enter FirstName"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">LastName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setLastName(event.target.value)}
+                        value={lastName}
+                        placeholder="Enter LastName"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Email</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setEmail(event.target.value)}
+                        value={email}
+                        placeholder="Enter Email"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="">Id Number</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setIdNumber(event.target.value)}
+                        value={idNumber}
+                        placeholder="Enter Id Number"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Company Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyName(event.target.value)}
+                        value={companyName}
+                        placeholder="Enter Company"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Nationality</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setNatioality(event.target.value)}
+                        value={nationality}
+                        placeholder="Enter Nationality "
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => editTenantsDetails()}
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* // create ContactPerson */}
+
+        <div
+          class="modal fade"
+          id="create-contact"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Tenant
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">FirstName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter FirstName"
+                        onChange={(event) => setFirstName(event.target.value)}
+                        value={firstName}
+                      />
+                    </div>
+
+                    <div class="form-group mb-4">
+                      <label for="">LastName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter LastName"
+                        onChange={(event) => setLastName(event.target.value)}
+                        value={lastName}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">OtherName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={otherName}
+                        onChange={(e) => setOtherName(e.target.value)}
+                        placeholder="Enter OtherName"
+                        required={true}
+                      />
+                    </div>
+
+                    <div class="form-group mb-4">
+                      <label for="">Type</label>
+                      <select
+                        class="form-control"
+                        data-live-search="true"
+                        title="Select ContactPersonTypeName"
+                        onChange={(e) => setContactPersonType(e.target.value)}
+                      >
+                        <option className="text-black font-semibold ">
+                          --Select ContactPersonTypeName--
+                        </option>
+                        {contactPerson &&
+                          contactPerson.map((cont, index) => {
+                            return (
+                              <option key={index} value={cont}>
+                                {cont}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">PhoneNumber1</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={phoneNumber1}
+                        onChange={(e) => setPhoneNumber1(e.target.value)}
+                        placeholder="Enter PhoneNumber1"
+                        required={true}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Relationship</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={relationship}
+                        onChange={(e) => setRelationship(e.target.value)}
+                        placeholder="Enter Relationship"
+                        required={true}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => addConctactPersons()}
                 >
                   Save
                 </button>

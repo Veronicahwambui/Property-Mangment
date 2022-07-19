@@ -292,7 +292,7 @@ function OnePremise() {
                </div>
              </div>
 
-             <div
+    <div
       class="modal fade"
       id="edit-premise-detail"
       data-bs-backdrop="static"

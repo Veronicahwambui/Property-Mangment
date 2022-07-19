@@ -401,7 +401,15 @@ class RequestsService {
     deactivateTenancies(tenantId){
         return axiosInstance.get(baseUrl+ "/tenants/tenancy/" + tenantId + "/deactivate")
     }
+    updateTenantsDetails(data){
+        return axiosInstance.post(baseUrl+ "/tenants/update", data)
 
+    }
+    getContactpersons(){
+        return axiosInstance.get(baseUrl + "/setup/contactPersonTypes" )
+
+
+    }
     toggleTenantStatus() {
         // return axiosInstance.get(baseUrl + "/client-types");
     }
@@ -419,7 +427,10 @@ class RequestsService {
     }
 
     updateContactPersons(data){
-        return axiosInstance.post(baseUrl+"/tenants/contactpersons/update", data)
+        return axiosInstance.post(baseUrl+"/tenants/contactpersons/update", data);
+    }
+    createContactPerson(data){
+        return axiosInstance.post(baseUrl+ "/tenants/contactpersons/create",data);
     }
 
     download(name){
@@ -503,6 +514,7 @@ class RequestsService {
     downloadDocuments(data) {
         return axiosInstance.get(baseUrl + "/documents/download?docName=" + data)
     }
+    
 
 }
 
