@@ -545,6 +545,18 @@ class RequestsService {
     getChargeConstraints(){
         return axiosInstance.get(baseUrl + "/setup/chargeConstraints")
     }
+    viewTenancy(tenancyId){
+        return axiosInstance.get(baseUrl + "/tenants/tenancy/" + tenancyId)
+    }
+    getClientAccounts(clientId){
+        return axiosInstance.get(baseUrl + "/clients/"+clientId+ "/accounts")
+    }
+    getLandlordAccounts(fileNo){
+        return axiosInstance.get(baseUrl + "/landlord/findByFileNumber?landLordFileNumber=" + fileNo )
+    }
+    toggleChargeunitStatuses(premiseUnitTypeChargeId){
+        return axiosInstance.get(baseUrl + "/premiseUnitTypeCharges/"+premiseUnitTypeChargeId+"/toogleStatus" )
+    }
     // premise charges end
 
 }

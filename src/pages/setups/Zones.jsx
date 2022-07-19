@@ -112,7 +112,7 @@ function Zones() {
 requestsServiceService.editZone(data).then((res)=>{
   // console.log(res.data);
   getZones()
-  $("#update-modal").modal("hide");
+  $("#edit-zone").modal("hide");
 
   if(res.data.status){
     setError({
@@ -133,7 +133,7 @@ requestsServiceService.editZone(data).then((res)=>{
     }, 3000)
     
   }).catch((res)=>{
-    $("#update-modal").modal("hide");
+    $("#edit-zone").modal("hide");
     
     setError({
       ...error,

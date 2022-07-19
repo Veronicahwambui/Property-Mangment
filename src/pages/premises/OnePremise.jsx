@@ -5,12 +5,12 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import axios from "axios";
+import authService from "../../services/auth.service";
 
 function OnePremise() {
   const [activeLink, setActiveLink] = useState(1);
   const [premiseData, setPremiseData] = useState({});
   const [docName, setDocName] = useState('')
-  const [chargeConstraints , setChargeConstraints] = useState([])
   const [premiseUnits, setPremiseUnits] = useState([])
   const [premiseCharges, setPremiseCharges] = useState([])
   const [caretakers, setCaretakers] = useState([])
@@ -61,7 +61,10 @@ function OnePremise() {
     findUnitTypes()
     findAllCharges()
     findAllPremiseUnits()
-    chargeConstraint()
+    getchargeConstraint()
+    fetchApplicableCharges()
+    getClientAccounts()
+
   }, []);
 
   const [PremiseTypes, setPremiseTypes] = useState([])
@@ -301,44 +304,86 @@ function OnePremise() {
   //  premise unit Charges Stuff
   const [chargeId ,setChargeId] = useState('')
   const [rateCharge ,setRateCharge] = useState(true)
+  const [applicableCharge ,setApplicableCharge] = useState('')
+  const [applicableCharges ,setApplicableCharges] = useState([])
+  const [chargeConstraints , setChargeConstraints] = useState([])
+  const [chargeConstraint , setChargeConstraint] = useState([])
+  const [collectionaccount ,setCollectionaccount] =useState('landlord')
+  const [value , setValue] = useState('')
+  const [clientAccounts ,setClientAccounts ] = useState([])
+  const [landlordAccounts ,setLandlordAccounts ] = useState([])
+  const [clientAccount ,setClientAccount ] = useState('')
+  const [clientAccountState ,setClientAccountState ] = useState('')
+  const [landlordAccount ,setLandlordAccount ] = useState('')
+  const [invoiceDay,setInvoiceDay] = useState('')
+  const [unitCost,setUnitCost] = useState('')
+
+  const fetchApplicableCharges = ()=>{
+    requestsServiceService.allApplicableCharges().then((res)=>{
+      setApplicableCharges(res.data.data)
+    })
+  }
 
   const findAllCharges = () =>{
     requestsServiceService.findPremiseUnitTypeCharges(userId).then((res)=>{
       setPremiseCharges(res.data.data)
     })
   }
-
- const  toggleChargeStatus = ()=>{
-    requestsServiceService.tooglePremiseUnitTypeChargestatus(chargeId).then(()=>{
+  let clientChargeId = authService.getClientId()
+  const getClientAccounts = ()=>{
+    requestsServiceService.getClientAccounts(clientChargeId).then((res)=>{
+       setClientAccounts(res.data.data)
+    })
+  }
+ const  toggleChargeStatus = (id)=>{
+    requestsServiceService.toggleChargeunitStatuses(id).then(()=>{
       findAllCharges()
     })
   }
 
-  const chargeConstraint = ()=>{
+  const getchargeConstraint = ()=>{
      requestsServiceService.getChargeConstraints().then((res)=>{
       setChargeConstraints(res.data.data)
      })
   }
 
+  const createCharges = ()=>{
+let data = JSON.stringify({
+      active: true,
+      applicableChargeId: applicableCharge,
+      chargeConstraint: chargeConstraint,
+      clientCollectionAccountId: clientAccount,
+      collectedToClientAccount: clientAccountState,
+      constraintChargeId: "string",
+      id: null,
+      invoiceDay: invoiceDay,
+      landlordCollectionAccountId: landlordAccount,
+      premiseId: userId,
+      rateCharge: rateCharge,
+      unitCost: unitCost,
+      unitTypeId: unittype,
+      value: value
+    })
+  }
   const updateCharges = ()=>{
      const data = JSON.stringify({    
         active: true,
-        applicableChargeId: 'chargeId',
-        chargeConstraint: "ZERO_BALANCE",
-        clientCollectionAccountId: 0,
+        applicableChargeId: applicableCharge,
+        chargeConstraint: chargeConstraint,
+        clientCollectionAccountId: clientAccount,
         collectedToClientAccount: true,
         constraintChargeId: "string",
         id: 0,
-        invoiceDay: 0,
-        landlordCollectionAccountId: 0,
+        invoiceDay: invoiceDay,
+        landlordCollectionAccountId: landlordAccount,
         monthCountForTenancyRenewal: 0,
         numberOfRooms: 'numberOfRooms',
-        premiseId: 'userId',
+        premiseId: userId,
         purpose: '',
         rateCharge: 0,
         squarage: 0,
-        unitTypeId: 0,
-        value: 0
+        unitTypeId: unittype,
+        value: unitCost
      })
   }
 
@@ -1020,6 +1065,7 @@ function OnePremise() {
                             <th>TENANCY RENEWAL</th>
                             <th>charge constraint</th>
                             <th>rate charge</th>
+                            <th>status</th>
                             <th></th>
                           </tr>
                         </thead>
@@ -1027,16 +1073,18 @@ function OnePremise() {
                         {premiseCharges && premiseCharges.map((unit, index) => (
                             <tr data-id="1 ">
                               <td style={{ width: "80px" }}>{index + 1}</td>
-                              <td >{unit.purpose}</td>
-                              <td>{unit.numberOfRooms} rooms</td>
-                              <td>{unit.squarage} m<sup>2</sup> </td>
-                              <td>{unit.monthCountForTenancyRenewal} months</td>
+                              <td >{unit.unitType.purpose}</td>
+                              <td>{unit.unitType.numberOfRooms} rooms</td>
+                              <td>{unit.unitType.squarage} m<sup>2</sup> </td>
+                              <td>{unit.unitType.monthCountForTenancyRenewal} months</td>
                               <td>{unit.chargeConstraint.toLowerCase()}</td>
                               <td>{unit.rateCharge? "true": "false"}</td>
                               <td>{unit.applicableCharge.name}</td>
                               <td>{unit.applicableCharge.applicableChargeType.toLowerCase()}</td>
                               <td>{unit.invoiceDay}</td>
                               <td>{unit.value}</td>
+                              <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                              
                               <td class="text-right d-flex align-items-center float-right justify-content-end">
                                 <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id) }} data-bs-toggle="modal"
                                   data-bs-target="#edit-premise-unit" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
@@ -1047,7 +1095,7 @@ function OnePremise() {
 
                                   <div class="dropdown-menu dropdown-menu-end">
                                     <Link class="dropdown-item" to={`/premise/${userId}/${activeUnitId}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
-                                    <a onClick={() => togglePremiseUnitStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
+                                    <a onClick={() => toggleChargeStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
                                   </div>
                                 </div>
                               </td>
@@ -1078,8 +1126,92 @@ function OnePremise() {
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
 
-                  <div className="modal-body">
-                     
+                <div
+                    className="modal-body">
+
+                   <div className="form-group mb-2">
+                      <label htmlFor="">Select unit type</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Select applicable charge</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setApplicableCharge(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {applicableCharges && applicableCharges.map((unit) => (
+                          <option value={unit.id}> {unit.name} - {unit.applicableChargeType}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Select charge constraint</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                   
+                    <div className="form-group mb-2">
+                      <label htmlFor="">rate charge</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="true">yes</option>
+                        <option value="false">no</option>     
+                      </select>
+                    </div> 
+
+                   
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">select collection account type</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="client">Client collection</option>
+                        <option value="landlord">landlord collection</option>     
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Select client account</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Select landlord account</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <option value="">Select unit type</option>
+                        {unittypes && unittypes.map((unit) => (
+                          <option value={unit.id}> {unit.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Invoice day (1-31) </label>
+                      <input type="number" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Unit cost </label>
+                      <input type="number" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">value </label>
+                      <input type="number" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                    </div>
                   </div>
                   <div class="modal-footer">
                     <button
@@ -1116,19 +1248,90 @@ function OnePremise() {
 
                   <div
                     className="modal-body">
-                    <div className="form-group">
-                      <label htmlFor="">Unit Name</label>
-                      <input type="text" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
-                    </div>
 
-                    <div className="form-group">
-                      <label htmlFor="">Select unit type</label>
+                   <div className="form-group mb-2">
+                      <label htmlFor="">Unit type</label>
                       <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
                         <option value="">Select unit type</option>
                         {unittypes && unittypes.map((unit) => (
                           <option value={unit.id}> {unit.name}</option>
                         ))}
                       </select>
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Applicable charge</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setApplicableCharge(event.target.value)}>
+                        <option value="">Select applicable type</option>
+                        {applicableCharges && applicableCharges.map((unit) => (
+                          <option value={unit.id}> {unit.name} - {unit.applicableChargeType}</option>
+                        ))}
+                      </select>
+                    </div>
+
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Charge constraint</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setChargeConstraint(event.target.value)}>
+                        <option value="">Select charge constraint</option>
+                        {chargeConstraints && chargeConstraints.map((unit) => (
+                          <option value={unit}> {unit}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                   
+                    <div className="form-group mb-2">
+                      <label htmlFor="">rate charge</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setRateCharge(event.target.value)}>
+                        <option value="true">yes</option>
+                        <option value="false">no</option>     
+                      </select>
+                    </div> 
+
+                   
+                     <div className="form-group mb-2">
+                      <label htmlFor="">select collection account type</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setCollectionaccount(event.target.value)}>
+                        <option value="landlord">landlord collection</option>                             
+                        <option value="client">Client collection</option>
+                      </select>
+                    </div>
+
+                    { collectionaccount === 'client' &&   <div className="form-group mb-2">
+                      <label htmlFor="">client account</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
+                        <option value="">Select  client account</option>
+                        {clientAccounts && clientAccounts.map((unit) => (
+                          <option value={unit.id}> {unit.bank.name}</option>
+                        ))}
+                      </select>
+                    </div>}
+
+                    
+                  { collectionaccount === 'landlords' &&  <div className="form-group mb-2">
+                      <label htmlFor="">landlord account</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
+                        <option value="">Select landlord account</option>
+                        {clientAccounts && clientAccounts.map((unit) => (
+                          <option value={unit.id}> {unit.bank.name}</option>
+                        ))}
+                      </select>
+                    </div>}
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Invoice day (1-31) </label>
+                      <input type="number" placeholder="Enter Unit Name" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">Unit cost </label>
+                      <input type="number" placeholder="Enter Unit Name" value={unitCost} className="form-control" onChange={(event) => setUnitCost(event.target.value)} />
+                    </div>
+
+                    <div className="form-group mb-2">
+                      <label htmlFor="">value </label>
+                      <input type="number" placeholder="Enter Unit Name" value={value} className="form-control" onChange={(event) => setValue(event.target.value)} />
                     </div>
                   </div>
                   <div class="modal-footer">

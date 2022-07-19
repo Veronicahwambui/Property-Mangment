@@ -138,7 +138,7 @@ function PremiseUseTypes() {
     })
     requestsServiceService.updatePremiseUseType(data).then((res)=>{
      fetchAll()
-    $("#add-new-zone").modal("hide");
+    $("#update-modal").modal("hide");
 
      if(res.data.status){
       setError({
@@ -160,7 +160,7 @@ function PremiseUseTypes() {
       }, 3000)
 
     }).catch((res)=>{
-    $("#add-new-zone").modal("hide");
+    $("#update-modal").modal("hide");
       
       setError({
         ...error,

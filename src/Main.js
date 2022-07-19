@@ -38,6 +38,7 @@ import AddLandlord from "./pages/landlords/AddLandlord";
 import ViewLandlord from "./pages/landlords/ViewLandlord";
 import { Helmet } from "react-helmet";
 import OnePremiseUnit from "./pages/premises/OnePremiseUnit";
+import PremiseTenancy from "./pages/premises/PremiseTenancy";
 
 function Main() {
 
@@ -81,7 +82,9 @@ function Main() {
                 <Route path='/premisesregister' element={<PremisesRegister />} />
                 <Route path='/addpremises' element={<AddPremises />} />
                 <Route path='/premise/:id' element={<OnePremise />} />
+                <Route path='/premise/tenant/:id' element={<PremiseTenancy />} />
                 <Route path='/premise/:id/:one' element={<OnePremiseUnit />} />
+
                 {/* tenants  */}
                 <Route path='/alltenants' element={<AllTenants />} />
                 <Route path='/addtenant' element={<AddTenant />} />
