@@ -51,8 +51,8 @@ export default function ClientType() {
           message: '',
           color: ''
         });
+        clientClose()
       }, 2000);
-      clientClose()
       setName("");
     }).catch((err) => {
       setError({
@@ -96,8 +96,8 @@ export default function ClientType() {
           message: '',
           color: ''
         });
+        editClose();
       }, 3000);
-      editClose();
     }).catch((err) => {
       setError({
         ...error,

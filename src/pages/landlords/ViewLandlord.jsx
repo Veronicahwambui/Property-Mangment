@@ -558,7 +558,6 @@ function ViewLandlord() {
                                       <th scope="col">% Remuneration</th>
                                       <th scope="col">Status</th>
                                       <th className="text-right">Actions</th>
-                                      <th></th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -576,30 +575,26 @@ function ViewLandlord() {
                                           <div className="d-flex align-items-center">
                                             <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
                                               title="Edit" onClick={() => accshow(acc.id)}><i className="bx bx-edit-alt " /></a>
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <div className="d-flex">
-                                            {acc.active ? <button
-                                              className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
-                                              title="deactivate"
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#confirm-acc-deactivate"
-                                              style={{ marginLeft: "8px" }}
-                                              onClick={() => setActiveId(acc.id)}
-                                            >
-                                              Deactivate
-                                            </button> : <button
-                                              className="btn btn-success btn-sm btn-rounded waves-effect waves-light"
-                                              title="deactivate"
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#confirm-acc-activate"
-                                              style={{ marginLeft: "8px" }}
-                                              onClick={() => setActiveId(acc.id)}
-                                            >
-                                              Activate
-                                            </button>
-                                            }
+                                              {acc.active ? <button
+                                                className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-acc-deactivate"
+                                                style={{ marginLeft: "8px" }}
+                                                onClick={() => setActiveId(acc.id)}
+                                              >
+                                                Deactivate
+                                              </button> : <button
+                                                className="btn btn-success btn-sm btn-rounded waves-effect waves-light"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-acc-activate"
+                                                style={{ marginLeft: "8px" }}
+                                                onClick={() => setActiveId(acc.id)}
+                                              >
+                                                Activate
+                                              </button>
+                                              }
                                           </div>
                                         </td>
                                       </tr>
@@ -681,9 +676,8 @@ function ViewLandlord() {
                                               <span className="badge-soft-danger badge">Inactive</span>
                                             }
                                           </td>
-                                          
                                           <td className="text-right cell-change ">
-                                            <div className="d-flex">
+                                            <div className="d-flex align-items-center">
                                               <a href={baseUrl + "/documents/download?docName=" + `${doc.docName}`}
                                                 className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
                                                 target="_blank"><i className="bx bx-download" />
