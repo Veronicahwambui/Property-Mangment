@@ -10,6 +10,7 @@ import authService from "../../services/auth.service";
 function OnePremise() {
   const [activeLink, setActiveLink] = useState(1);
   const [premiseData, setPremiseData] = useState({});
+  const [chargeConstraint, setChargeConstraint] = useState('')
   const [docName, setDocName] = useState('')
   const [premiseUnits, setPremiseUnits] = useState([])
   const [premiseCharges, setPremiseCharges] = useState([])

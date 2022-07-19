@@ -217,6 +217,12 @@ function UnitTypes() {
           <div class="row">
             <div class="col-12">
               <div class="card">
+                <div className='card-body'>
+                {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                 <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                   <div
                     class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
@@ -244,11 +250,7 @@ function UnitTypes() {
                   </div>
                 </div>
                 <div class="card-body">
-                {error.color !== "" &&
-                  <div className={"alert alert-" + error.color} role="alert">
-                    {error.message}
-                  </div>
-                  }
+                
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
@@ -320,6 +322,7 @@ function UnitTypes() {
                     </table>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
             {/* <!-- end col --> */}

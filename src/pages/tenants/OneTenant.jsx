@@ -2,19 +2,141 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
+import UnitTypes from "../setups/UnitTypes";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
   const [docName, setDocName] = useState("");
+ const[tenantId,setTenantId]=useState("");
+ 
+  
+
+
+  // edit tenants
+  const [unitTypeName, setUnitTypeName] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [unitCondition, setUnitCondition] = useState("");
+  const [tenancyStatus, setTenancyStatus] = useState("");
+  const [tenancyRenewalDate, setTenancyRenewalDate] = useState("");
+  const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] = useState("");
+  const [premiseUnitId, setPremiseUnitId] = useState("");
+  const [unitId, setUnitId] = useState("");
+
+  //edit ContactPersons
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [otherName, setOtherName] = useState("");
+  const [phoneNumber1, setPhoneNumber1] = useState("");
+  const [phoneNumber2, setPhoneNumber2] = useState("");
+  const [relationship, setRelationship] = useState("");
+  const [contactPersonId, setContactPersonId] = useState("");
+  const[contactPersonTypeName,setContactPersonTypeName]=useState("")
+  const[ contactId, setContactId]=useState("");
+
 
   const { id } = useParams();
   const userId = id;
+
 
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
     });
+  };
+  const editTenant = () => {
+    let data = JSON.stringify({
+    
+
+      active: true,
+      id: userId,
+     tenancyRenewalDate:tenancyRenewalDate,
+     tenancyRenewalNotificationDate:tenancyRenewalNotificationDate,
+     unitTypeName:unitTypeName,
+      premiseUnitId: premiseUnitId,
+      startDate: new Date(),
+      tenancyCharges: [{}],
+      tenancyDocuments: [{}],
+      tenancyStatusName: tenancyStatus,
+      tenantId: unitId,
+      unitCondition: unitCondition,
+    });
+    requestsServiceService.updateTenant(data).then((res) => {
+     
+      
+      
+    });
+  };
+  const handleChange = (
+    permiseUnitId,
+    unitTypeName,
+    startDate,
+    unitCondition,
+    tenancyRenewalDate,
+    tenancyRenewalNotificationDate,
+    unitId,
+  ) => {
+    setPremiseUnitId(permiseUnitId);
+    setUnitTypeName(unitTypeName)
+    setStartDate(startDate);
+    setUnitCondition(unitCondition);
+    // setTenancyStatus(tenancyStatus);
+    setTenancyRenewalDate(tenancyRenewalDate);
+    setTenancyRenewalNotificationDate(tenancyRenewalNotificationDate);
+    setUnitId(unitId);
+  };
+ 
+ 
+  const editContactPersons = () => {
+  
+
+    let contacts =JSON.stringify({
+
+    active: true,
+  
+  firstName: firstName,
+  id: contactPersonId,
+  lastName: lastName,
+  otherName: otherName,
+  contactPersonTypeName: contactPersonTypeName,
+  phoneNumber1: phoneNumber1,
+  phoneNumber2: phoneNumber2,
+  relationship: relationship,
+  tenantId:tenantData.tenant.id
+  ,
+
+    })
+    // console.log(contacts);
+
+
+
+  
+
+    requestsServiceService.updateContactPersons(contacts).then((res) => {
+      console.log(res);
+      fetchAll()
+
+    });
+  };
+  const handleChangeContacts = (
+    contactPersonId,
+    firstName,
+    lastName,
+    otherName,
+    contactPersonTypeName,
+    phoneNumber1,
+    relationship
+  ) => {
+    setContactId(contactId)
+    setContactPersonId(contactPersonId);
+    setFirstName(firstName);
+    setLastName(lastName);
+    setOtherName(otherName);
+    setContactPersonTypeName
+    (contactPersonTypeName)
+    setPhoneNumber1(phoneNumber1);
+    setRelationship(relationship);
   };
 
   const download = () => {
@@ -27,6 +149,15 @@ function OneTenant() {
     fetchAll();
   }, []);
 
+
+  const deleteDeactivate =(id) =>{
+    requestsServiceService.deactivateTenancies(id).then((res)=>{
+    
+
+    }) 
+
+  }
+
   return (
     <div className="page-content">
       <div className="content-fluid">
@@ -35,7 +166,7 @@ function OneTenant() {
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
               <h4 class="mb-sm-0 font-size-18">
-              {tenantData.tenant && tenantData.tenant.firstName}
+                {tenantData.tenant && tenantData.tenant.firstName}
               </h4>
 
               <div class="page-title-right">
@@ -106,9 +237,8 @@ function OneTenant() {
                             : "nav-item cursor-pointer nav-link"
                         }
                       >
-                      Contact persons
+                        Contact persons
                       </a>
-                    
                     </div>
                   </div>
                 </nav>
@@ -131,8 +261,7 @@ function OneTenant() {
                       <div class="d-flex align-items-center flex-grow-1">
                         <h4 class="mb-0 m-0 bg-transparent">
                           Quick Stats on{" "}
-                          {tenantData.tenant &&
-                            tenantData.tenant.firstName}
+                          {tenantData.tenant && tenantData.tenant.firstName}
                         </h4>
                       </div>
                     </div>
@@ -153,8 +282,7 @@ function OneTenant() {
                           <label htmlFor="">First Name</label>
                           <div>
                             <span>
-                              {tenantData.tenant &&
-                                tenantData.tenant.firstName}
+                              {tenantData.tenant && tenantData.tenant.firstName}
                             </span>
                           </div>
                         </div>
@@ -162,8 +290,7 @@ function OneTenant() {
                           <label htmlFor="">Last Name</label>
                           <div>
                             <span>
-                              {tenantData.tenant &&
-                               tenantData.tenant.lastName}
+                              {tenantData.tenant && tenantData.tenant.lastName}
                             </span>
                           </div>
                         </div>
@@ -171,8 +298,7 @@ function OneTenant() {
                           <label htmlFor="">Email</label>
                           <div>
                             <span>
-                              {tenantData.tenant &&
-                                tenantData.tenant.email}
+                              {tenantData.tenant && tenantData.tenant.email}
                             </span>
                           </div>
                         </div>
@@ -182,8 +308,7 @@ function OneTenant() {
                           <label htmlFor="">Id Number</label>
                           <div>
                             <span>
-                            {tenantData.tenant &&
-                                tenantData.tenant.idNumber}
+                              {tenantData.tenant && tenantData.tenant.idNumber}
                             </span>
                           </div>
                         </div>
@@ -191,7 +316,7 @@ function OneTenant() {
                           <label htmlFor="">Company Name</label>
                           <div>
                             <span>
-                            {tenantData.tenant &&
+                              {tenantData.tenant &&
                                 tenantData.tenant.companyName}
                             </span>
                           </div>
@@ -200,7 +325,7 @@ function OneTenant() {
                           <label htmlFor="">Company Incorporation Number</label>
                           <div>
                             <span>
-                            {tenantData.tenant &&
+                              {tenantData.tenant &&
                                 tenantData.tenant.companyIncorporationNumber}
                             </span>
                           </div>
@@ -209,8 +334,8 @@ function OneTenant() {
                           <label htmlFor="">Nationality</label>
                           <div>
                             <span>
-                            {tenantData.tenant &&
-                                tenantData.tenant.nationality}  
+                              {tenantData.tenant &&
+                                tenantData.tenant.nationality}
                             </span>
                           </div>
                         </div>
@@ -225,132 +350,522 @@ function OneTenant() {
 
         {activeLink === 2 && (
           <div>
-          <div className="row">
-            <div className="col-xl-12">
-              <div className="card calc-h-3px">
-                <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                  <div
-                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
-                    <div class="d-flex align-items-center flex-grow-1">
-                      <h4 class="mb-0 m-0 bg-transparent">Tenancies</h4>
-                    </div>
-                  </div>
-                </div>
-                <div className="card-body">
-                  <div className="col-12">
-                    <div className="table-responsive">
-                      <table
-                        class="table align-middle table-edits rent-invoicing dt-responsive"
-                        id="data-table"
-                      >
-                        <thead>
-                          <tr class="text-uppercase table-dark">
-                            <th>#</th>
-                            <th>Unit Name</th>
-                            <th>Unit Type</th>
-                            <th>Start Date</th>
-                            <th>Unit Condition</th>
-                            <th>Tenancy Status</th>
-                            <th>Months to renewal</th>
-                            <th>Status</th>
+            <div className="row">
+              <div className="col-12">
+                <div className="card calc-h-3px">
+                  <div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="card-body bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                          <div
+                            className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <div className="d-flex align-items-center flex-grow-1">
+                              <h4 className="mb-0  bg-transparent  p-0 m-0">
+                                Tenancies
+                              </h4>
+                            </div>
+                          </div>
+                        </div>
+                      
+                        
                            
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {tenantData.tenancies &&
-                            tenantData.tenancies.map((unit, index) => (
-                              <tr data-id="1">
-                                <td>{index + 1}</td>
-                                <td>
-                                  {unit.premiseUnit.unitName}
-                                </td>
-                                <td className="text-capitalize">
-                                {unit.premiseUnit.unitType.name}
-                                  
-                                </td>
-                                <td>
-                                  {unit.startDate.replace(/[TZ]/g , " ")}
-                                </td>
-                                <td>{unit.unitCondition}</td>
-                                <td>{unit.tenancyStatus.toLowerCase()}</td>
-                                <td>{unit.monthsToTenancyRenewal}</td>
-                                <td> { unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
-                              </tr>
-                            ))}
-                        </tbody>
-                      </table>
+                              <div>
+                                <div className="card-body">
+                                <div className="table-responsive">
+                                <table className="table align-middle table-nowrap table-hover mb-0">
+                                  <thead>
+                                    <tr class="text-uppercase table-dark">
+                                      <th>#</th>
+                                      <th>Unit Name</th>
+                                      <th>Unit Type</th>
+                                      <th>Start Date</th>
+                                      <th>Unit Condition</th>
+                                      <th>Tenancy Status</th>
+                                      <th>TenancyRenewalDate</th>
+                                      <th>TenancyRenewalNotificationDate</th>
+                                      <th>Status</th>
+                                      <th>Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {tenantData.tenancies &&
+                                      tenantData.tenancies.map(
+                                        (unit, index) => (
+                                          <tr data-id="1">
+                                            <td>{index + 1}</td>
+                                            <td>{unit.premiseUnit.unitName}</td>
+                                            <td className="text-capitalize">
+                                              {unit.premiseUnit.unitType.name}
+                                            </td>
+                                            <td>
+                                              {unit.startDate.replace(
+                                                /[TZ]/g,
+                                                " "
+                                              )}
+                                            </td>
+                                            <td>{unit.unitCondition}</td>
+                                            <td>
+                               
+
+                                              {unit.tenancyStatus.toLowerCase() ? (
+                                                <span class="badge-soft-success badge">
+                                                  Closed
+                                                </span>
+                                              ) : (
+                                                <span class="badge-soft-danger badge">
+                                                  Activate
+                                                </span>
+                                              )}
+                                            </td>
+                                            <td>
+                                              {unit.tenancyRenewalDate}
+                                            </td>
+                                            <td>
+                                              {unit.tenancyRenewalNotificationDate}
+
+                                            </td>
+                                            <td>
+                                              {" "}
+                                              {unit.active ? (
+                                                <span class="badge-soft-success badge">
+                                                  Active
+                                                </span>
+                                              ) : (
+                                                <span class="badge-soft-danger badge">
+                                                  Inactive
+                                                </span>
+                                              )}
+                                            </td>
+
+                                            <td className="text-right ">
+                                              <div class="dropdown">
+                                                <a
+                                                  class="text-muted font-size-16"
+                                                  role="button"
+                                                  data-bs-toggle="dropdown"
+                                                  aria-haspopup="true"
+                                                >
+                                                  <i class="bx bx-dots-vertical-rounded"></i>
+                                                </a>
+
+                                                <div class="dropdown-menu dropdown-menu-end text-capitalize">
+                                                  <p
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#edit-tenant"
+                                                    class="dropdown-item"
+                                                    href="#"
+                                                    onClick={() =>
+                                                      handleChange(
+                                                        unit.premiseUnit.id,
+                                                        unit.premiseUnit.unitName,
+                                                        unit.startDate,
+                                                        unit.unitCondition,
+                                                
+                                                       unit.tenancyRenewalDate,
+                                                        unit.tenancyRenewalNotificationDate,unit.id
+                                                      )
+                                                    }
+                                                  >
+                                                    <i class="font-size-15 mdi mdi-pencil me-3"></i>
+                                                    Edit
+                                                  </p>
+
+                                
+                                        
+                                                <button  class="dropdown-item " onClick={()=>deleteDeactivate(unit.id)}>
+                                                  
+                                               
+                                                    
+                                                <i class="font-size-8 mdi mdi-close-circle me-3"> 
+                                                   Deactivate
+                                                </i>
+                                               
+                                    
+                                   </button>
+                                   
+
+
+
+                                                </div>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        )
+                                      )}
+                                  </tbody>
+                                </table>
+                              </div>
+                              </div>
+                              </div>
+                            </div>
+                      
+                        
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+       
         )}
 
         {activeLink === 3 && (
           <div>
-          <div className="row">
-            <div className="col-xl-12">
-              <div className="card calc-h-3px">
-                <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                  <div
-                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
-                    <div class="d-flex align-items-center flex-grow-1">
-                      <h4 class="mb-0 m-0 bg-transparent">Tenancies</h4>
-                    </div>
-                  </div>
-                </div>
-                <div className="card-body">
-                  <div className="col-12">
-                    <div className="table-responsive">
-                      <table
-                        class="table align-middle table-edits rent-invoicing dt-responsive"
-                        id="data-table"
-                      >
-                        <thead>
-                          <tr class="text-uppercase table-dark">
-                            <th>#</th>
-                            <th>Name (s) </th>
-                            <th>Type</th>
-                            <th>Relationship</th>
-                            <th>phone No</th>
-                            <th>Status</th>
-                           
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {tenantData.contactPeople &&
-                            tenantData.contactPeople.map((unit, index) => (
-                              <tr data-id="1">
-                                <td>{index + 1}</td>
-                                <td>
-                                  {unit.firstName}   {unit.lastName}   {unit.otherName}
-                                </td>
-                                <td className="text-capitalize">
-                                  {unit.contactPersonType.toLowerCase().replace(/_/g," ")}
-                                </td>
-                               <td>{unit.relationship}</td>
-                               <td>{unit.phoneNumber1}</td>
-                                <td> { unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
-                              </tr>
-                            ))}
-                        </tbody>
-                      </table>
+            <div className={"row"}>
+              <div className="col-12">
+                <div className="card calc-h-3px">
+                  <div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                          <div
+                            className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <div className="d-flex align-items-center flex-grow-1">
+                              <h4 className="mb-0  bg-transparent  p-0 m-0">
+                                Contact Persons
+                              </h4>
+                            </div>
+                            <div className="d-flex">
+                        
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <div className="row">
+                            {/* <div className={"alert alert-" + error.color} role="alert">
+                {error.message}
+              </div> */}
+
+                            <div className="col-12">
+                              <div className="table-responsive">
+                                <table className="table align-middle table-nowrap table-hover mb-0">
+                                  <thead>
+                                    <tr class="text-uppercase table-dark">
+                                      <th>#</th>
+                                      <th>Name (s) </th>
+                                      <th>Type</th>
+                                      <th>Relationship</th>
+                                      <th>phone No</th>
+                                      <th>Status</th>
+                                      <th className="text-right">Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {tenantData.contactPeople &&
+                                      tenantData.contactPeople.map(
+                                        (unit, index) => (
+                                          <tr data-id="1">
+                                            <td>{index + 1}</td>
+                                            <td>
+                                              {unit.firstName} {unit.lastName}{" "}
+                                              {unit.otherName}
+                                            </td>
+                                            <td className="text-capitalize">
+                                              {unit.contactPersonType
+                                                .toLowerCase()
+                                                .replace(/_/g, " ")}
+                                            </td>
+                                            <td>{unit.relationship}</td>
+                                            <td>{unit.phoneNumber1}</td>
+                                            <td>
+                                              {" "}
+                                              {unit.active ? (
+                                                <span class="badge-soft-success badge">
+                                                  Active
+                                                </span>
+                                              ) : (
+                                                <span class="badge-soft-danger badge">
+                                                  Inactive
+                                                </span>
+                                              )}
+                                            </td>
+
+                                            <td className="text-right cell-change ">
+
+                                              <a   data-bs-toggle="modal"
+                                                data-bs-target="#edit-contact"
+                                                className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                               
+                                                onClick={() =>
+                                                  handleChangeContacts(
+                                                    unit.id,
+                                                   
+                                                   
+                                                    unit.firstName,
+                                                    unit.lastName,
+                                                    unit.otherName,
+                                                    unit.contactPersonType,
+                                                    unit.phoneNumber1,
+                                                    unit.relationship,
+                                                  )
+                                                }
+                                              >
+                                                <i className="bx bx-edit-alt " />
+                                              </a>
+                                            </td>
+                                          </tr>
+                                        )
+                                      )}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         )}
 
-  
+        <div
+          class="modal fade"
+          id="edit-tenant"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Tenant
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                  <div class="form-group mb-4">
+                      <label for="">UnitTypeName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter UnitTypeName"
+                        onChange={(event) => setUnitTypeName(event.target.value)}
+                        value={unitTypeName}
+                      />
+                    </div>
+                    <div class="form-group mb-4">
+                      <label for="">StartDate</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter StartDate"
+                        onChange={(event) => setStartDate(event.target.value)}
+                        value={startDate}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Unit Condition</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={unitCondition}
+                        onChange={(e) => setUnitCondition(e.target.value)}
+                        placeholder="Enter UnitCondition"
+                        required={true}
+                      />
+                    </div>
+                    {/* <div className="form-group mb-4">
+                      <label htmlFor="">TenancyStatus</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={tenancyStatus}
+                        onChange={(e) => setTenancyStatus(e.target.value)}
+                        placeholder="Enter TenancyStatus"
+                        required={true}
+                      />
+                    </div> */}
+                    <div className="form-group mb-4">
+                      <label htmlFor="">TenancyRenewalDate</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={tenancyRenewalDate}
+                        onChange={(e) =>
+                          setTenancyRenewalDate(e.target.value)
+                        }
+                        placeholder="Enter TenancyRenewalDate"
+                        required={true}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">MonthsToTenancyRenewal</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={tenancyRenewalNotificationDate}
+                        onChange={(e) =>
+                          setTenancyRenewalNotificationDate(e.target.value)
+                        }
+                        placeholder="TenancyRenewalNotificationDate"
+                        required={true}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={editTenant}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Contact Modal */}
+
+        <div
+          class="modal fade"
+          id="edit-contact"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Tenant
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">FirstName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter FirstName"
+                        onChange={(event) => setFirstName(event.target.value)}
+                        value={firstName}
+                      />
+                    </div>
+
+                    <div class="form-group mb-4">
+                      <label for="">LastName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter LastName"
+                        onChange={(event) => setLastName(event.target.value)}
+                        value={lastName}
+                      />
+                    </div>
+
+                 
+                    <div className="form-group mb-4">
+                      <label htmlFor="">OtherName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={otherName}
+                        onChange={(e) => setOtherName(e.target.value)}
+                        placeholder="Enter OtherName"
+                        required={true}
+                      />
+                    </div>
+
+                    <div class="form-group mb-4">
+                      <label for="">Type</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Type"
+                        onChange={(event) => setContactPersonTypeName(event.target.value)}
+                        value={contactPersonTypeName}
+                      />
+                    </div>
+                    
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">PhoneNumber1</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={phoneNumber1}
+                        onChange={(e) => setPhoneNumber1(e.target.value)}
+                        placeholder="Enter PhoneNumber1"
+                        required={true}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Relationship</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={relationship}
+                        onChange={(e) => setRelationship(e.target.value)}
+                        placeholder="Enter Relationship"
+                        required={true}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={()=>editContactPersons()}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

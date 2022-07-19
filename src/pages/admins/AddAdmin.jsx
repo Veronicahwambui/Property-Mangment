@@ -19,6 +19,10 @@ function AddAdmin() {
   const [role, setRole] = useState("");
   const [privileges, setPrivileges] = useState([]);
   const [priveledgeNames, setPrivilegeNames] = useState([]);
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
   const addUser = (ev) => {
     ev.preventDefault();
@@ -42,12 +46,50 @@ function AddAdmin() {
       .addUser(data)
       .then((res) => {
         console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
+        if(res.data.status){
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success"
+          }) } else {
+    
+            setError({
+              ...error,
+              message: res.data.message,
+              color: "warning"
+            }) 
+          }
+          
+          
+          setTimeout(() => {
+            clear()
+          }, 3000)
+      }).catch((res)=>{
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+  
+        setTimeout(() => {
+          clear()
+        }, 3000)
+  
+  
+      })
+    }
+    
+    const clear = ()=> {
+      setError({
+        ...error,
+        message: "",
+        color: ""
+      });
+     
+  };
+ 
   const getUserRoles = () => {
     requestsServiceService.getUserRoles().then((res) => {
       setUserRoles(res.data.data);
@@ -121,6 +163,11 @@ function AddAdmin() {
             <div className="col-12">
               <div className="card p-4">
                 <div className="card-body">
+                {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                   <h4 className="card-title text-capitalize">
                     Register a new System administrator
                   </h4>
@@ -263,19 +310,20 @@ function AddAdmin() {
                             <strong className="text-danger">*</strong>
                           </strong>
                         </label>
+
                         <select
-                          className="form-select"
+                          className="form-control"
                           onChange={(e) => {
                             onRoleChange(e.target.value);
                           }}
                           title="System role"
                         >
-                          <option className="text-black font-semibold " disabled>--Select Role--
+                          <option className="text-black font-semibold "  >--Select Role--
                           </option>
 
                           {userRoles.map((role) => {
                             return (
-                              <option key={role.id} value={role.id}>
+                              <option key={role.id} value={role.id} >
                                 {role.name}
                                
                               </option>
@@ -316,7 +364,7 @@ function AddAdmin() {
                       <div className="col-lg-10">
                         <button type="submit" className="btn btn-primary w-100">
                           <i className="mdi mdi-account-plus-outline me-1"></i>
-                          Register Admin
+                          Register 
                         </button>
                       </div>
                     </div>

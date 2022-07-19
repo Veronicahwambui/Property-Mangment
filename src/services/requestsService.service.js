@@ -389,6 +389,13 @@ class RequestsService {
     getAllTenants() {
         return axiosInstance.get(baseUrl + "/tenants");
     }
+    updateTenant(data){
+        return axiosInstance.post(baseUrl + "/tenants/tenancy/update", data)
+  
+    }
+    deactivateTenancies(tenantId){
+        return axiosInstance.get(baseUrl+ "/tenants/tenancy/" + tenantId + "/deactivate")
+    }
 
     toggleTenantStatus() {
         // return axiosInstance.get(baseUrl + "/client-types");
@@ -406,7 +413,9 @@ class RequestsService {
         return axiosInstance.post(baseUrl+"/tenants", data);
     }
 
-
+    updateContactPersons(data){
+        return axiosInstance.post(baseUrl+"/tenants/contactpersons/update", data)
+    }
 
     download(name){
         return axiosInstance.get(baseUrl + "​/documents​/download?docName=" + name )

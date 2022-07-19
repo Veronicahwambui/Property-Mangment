@@ -5,15 +5,7 @@ import { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import requestsServiceService from '../../services/requestsService.service'
-const Demo = props => (
-  <div className="application">
-      <Helmet>
-      <script src="./assets/js/pages/refreshPage.js"></script>
-      </Helmet>
-      ...
-  </div>
 
-);
 
 
 
@@ -91,7 +83,8 @@ function AllTenants() {
 
               </div>
               <div className="card-body">
-                <table className="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
+               <div class="table-responsive">
+               <table className="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
                   <thead className="table-light">
                     <tr>
 
@@ -103,11 +96,11 @@ function AllTenants() {
                       <th scope="col">Contact Phone</th>
                       <th scope="col">Date Created</th>
                       <th scope="col">Status</th>
-                      <th></th>
+                      <th scope='col'>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    { premises &&  premises.map((premise, index) => {
+                    {premises?.map  ((premise, index) => {
 
                       return (
                         <tr key={index}>
@@ -159,12 +152,14 @@ function AllTenants() {
                               </div>
                             </div>
                           </td>
+                          
                         </tr>
                       )
                     })}
                     <tr></tr>
                   </tbody>
                 </table>
+               </div>
               </div>
             </div>
           </div>

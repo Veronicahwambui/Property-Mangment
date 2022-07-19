@@ -11,7 +11,6 @@ import StatusBadge from "../../components/StatusBadge";
 
 function AdminList() {
   const [userList, setUserList] = useState([]);
-  const [viewUser, setViewUser] = useState([]);
 
   const getData = () => {
     // e.preventDefault()
@@ -20,11 +19,7 @@ function AdminList() {
     });
   };
 
-  const oneUser = () => {
-    requestsServiceService.viewOneUser().then((res) => {
-      setViewUser(res.data.data);
-    });
-  };
+  
 
   useEffect(() => {
     getData();
@@ -159,7 +154,7 @@ function AdminList() {
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Admin List</h4>
+                <h4 class="mb-sm-0 font-size-18">User List</h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
@@ -169,7 +164,7 @@ function AdminList() {
                     <li class="breadcrumb-item">
                       <a href="#">System user</a>
                     </li>
-                    <li class="breadcrumb-item active">Admin List</li>
+                    <li class="breadcrumb-item active">User List</li>
                   </ol>
                 </div>
               </div>
@@ -183,7 +178,7 @@ function AdminList() {
             <div class="col-12">
               <div class="card">
                 <div class="card-body">
-                  <div className="table-responsive">
+                  <div className= "" >
                     <table
                       className="table no-wrap nowrap w-100 table-striped"
                       id="datatable-buttons"
@@ -292,16 +287,10 @@ function AdminList() {
                                             UnBlock User Account
                                           </button>
                                         )}
-
-                                        <a
-                                          class="dropdown-item"
-                                          href="tenant-new.html"
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#add-new"
-                                          onClick={() => viewUser(list.id)}
-                                        >
+                                        
+                                        <Link    class="dropdown-item" to={"/adminlist/view/"+ list.id}>
                                           View user
-                                        </a>
+                                        </Link>
                                       </div>
                                     </div>
                                   </td>

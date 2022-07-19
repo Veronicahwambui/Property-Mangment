@@ -42,6 +42,7 @@ import OnePremiseUnit from "./pages/premises/OnePremiseUnit";
 import ViewClient from "./pages/clients/ViewCLient";
 import Invoices from "./pages/invoices/Invoices";
 import PremiseTenancy from "./pages/premises/PremiseTenancy";
+import UserDetails from "./pages/admins/UserDetails";
 
 function Main() {
 
@@ -111,15 +112,19 @@ function Main() {
                 <Route path='/trasactions' element={<Transactions />} />
 
                 {/* stystem users */}
+
                 <Route exact path='/adminlist' element={<AdminList />} />
+                <Route exact path='/adminlist/edit/:id' element={<UpdateUser />} />
+                <Route exact path='/adminlist/view/:id' element={<UserDetails />} />
+                <Route exact path='/userdetails/edit/:id' element={<UserDetails />} />
                 <Route path='/addadmin' element={<AddAdmin />} />
+                <Route path='/usertypes' element={<UserTypes />} />
+
                 <Route path='/allroles' element={<AllRoles />} />
 
                 {/* setup */}
                 <Route path='/clientcounties' element={<ClientCounties />} />
 
-                <Route exact path='/adminlist/edit/:id' element={<UpdateUser />} />
-                <Route path='/usertypes' element={<UserTypes />} />
                 <Route path='/clienttype' element={<ClientType />} />
 
                 <Route path='/adminlist' element={<AdminList />} />
