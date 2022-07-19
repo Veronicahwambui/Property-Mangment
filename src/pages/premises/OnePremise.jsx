@@ -4,8 +4,9 @@ import { Helmet } from "react-helmet";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
-import axios from "axios";
 import authService from "../../services/auth.service";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 function OnePremise() {
   const [activeLink, setActiveLink] = useState(1);
@@ -24,7 +25,8 @@ function OnePremise() {
     address: '',
     premNmae: '',
   })
-
+  const [show, setShow] = useState(false);
+  const [docShow, setdocShow] = useState(false);
 
   const { id } = useParams();
   const userId = id;
@@ -1094,7 +1096,7 @@ let data = JSON.stringify({
                                   </a>
 
                                   <div class="dropdown-menu dropdown-menu-end">
-                                    <Link class="dropdown-item" to={`/premise/${userId}/${activeUnitId}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
+                                    <Link class="dropdown-item" to={`/premise/tenant/${unit.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
                                     <a onClick={() => toggleChargeStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
                                   </div>
                                 </div>
@@ -1482,6 +1484,9 @@ let data = JSON.stringify({
                 </div>
               </div>
             </div>
+                {/*document attachment modal*/}
+        
+
           </div>
         )}
 
