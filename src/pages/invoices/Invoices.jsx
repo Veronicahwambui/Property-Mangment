@@ -189,6 +189,8 @@ function Invoices() {
                 <br/>
                 {moment(activeInvoice.dateTimeCreated).format("dddd, MMMM Do YYYY, h:mm a")}
               </address>
+              <p>Title: {activeInvoice?.transactionTitle}</p>
+              <p>Description: {activeInvoice?.transactionDescription}</p>
             </div>
             <div className="col-12">
               <div className="py-2 mt-3">
