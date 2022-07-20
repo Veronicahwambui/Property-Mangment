@@ -36,6 +36,9 @@ function Invoices() {
     setactiveInvoice(acc);
     showInvoice();
   }
+  const addCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
 
   return (
     <>
@@ -117,9 +120,9 @@ function Invoices() {
                           <td>{invoice.transaction.tenantName}</td>
                           <td>{invoice.transaction.premiseName}</td>
                           <td>{invoice.transaction.premiseUnitName}</td>
-                          <td>KES. {invoice.billAmount}</td>
-                          <td>{invoice.billPaidAmount}</td>
-                          <td><span className="fw-semibold ">KES. {invoice && (invoice.billAmount - invoice.billPaidAmount)}</span></td>
+                          <td>KES. {addCommas(invoice.billAmount)}</td>
+                          <td>{addCommas(invoice.billPaidAmount)}</td>
+                          <td><span className="fw-semibold ">KES. {addCommas(invoice.billAmount - invoice.billPaidAmount)}</span></td>
                           <td>{invoice.paymentStatus}</td>
                           <td>
                             <div className="d-flex justify-content-end">
@@ -158,7 +161,7 @@ function Invoices() {
                         <th className="text-capitalize text-nowrap" colSpan="3">{invoices && invoices.length} Invoices</th>
                         <th className="text-nowrap" colSpan="3">{}</th>
                         <td className="text-nowrap" colSpan="3">
-                          <span className="fw-semibold ">KES. {total()}</span>
+                          <span className="fw-semibold ">KES. {addCommas(total())}</span>
                         </td>
                       </tr>
                       </tfoot>
@@ -207,7 +210,7 @@ function Invoices() {
                   <tr>
                     <td>01</td>
                     <td>{activeInvoice?.applicableChargeName}</td>
-                    <td className="text-end">{"KES " + activeInvoice?.billAmount}</td>
+                    <td className="text-end">KES. {activeInvoice?.billAmount}</td>
                   </tr>
                   <tr>
                     <td colSpan="2" className="text-end">Total</td>
