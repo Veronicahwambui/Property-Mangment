@@ -9,9 +9,8 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 function OnePremise() {
-  const [activeLink, setActiveLink] = useState(1);
+  const [activeLink, setActiveLink] = useState(JSON.parse(sessionStorage.getItem('activeId')));
   const [premiseData, setPremiseData] = useState({});
-  const [docName, setDocName] = useState('')
   const [premiseUnits, setPremiseUnits] = useState([])
   const [premiseCharges, setPremiseCharges] = useState([])
   const [caretakers, setCaretakers] = useState([])
@@ -25,8 +24,83 @@ function OnePremise() {
     address: '',
     premNmae: '',
   })
-  const [show, setShow] = useState(false);
-  const [docShow, setdocShow] = useState(false);
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
+
+    // document details
+    const [docName, setdocName] = useState("")
+    const [document, setdocument] = useState("")
+    const [documentTypeId, setdocumentTypeId] = useState(null)
+
+    //modals
+    const [show, setShow] = useState(false);
+    const [docShow, setdocShow] = useState(false);
+    const [documentTypes, setdocumentTypes] = useState([])
+
+  
+    const [editAccountShow, seteditAccountShow] = useState(false);
+    const [editDocShow, seteditDocShow] = useState(false);
+  
+    const handleShow = () => setShow(true);
+    const handleClose = () => setShow(false);
+  
+    const handleDocShow = () => setdocShow(true);
+    const handleDocClose = () => setdocShow(false);
+  
+    const handleEditShow = () => seteditDocShow(true);
+    const handleEditClose = () => seteditDocShow(false);
+
+
+    // doc 
+
+    const handleDocumentSubmit = (event) => {
+      event.preventDefault();
+    
+      handleDocClose();
+    }
+  
+    const handleFileRead = async (event) => {
+      const file = event.target.files[0]
+      const base64 = await convertBase64(file)
+      setdocument(base64);
+    }
+
+    const convertBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file)
+        fileReader.onload = () => {
+          resolve(fileReader.result);
+        }
+        fileReader.onerror = (error) => {
+          reject(error);
+        }
+      })
+    }
+  
+    // setting active id
+    const use=()=>{  
+      sessionStorage.setItem("activeId", activeLink )
+    }
+    const setIS = ()=>{
+      let id = JSON.parse( sessionStorage.getItem('activeId'))
+      if(id===null){
+        setActiveLink(1)
+      }else {
+      setActiveLink(id)}
+    }
+
+    useEffect(()=>{
+
+       use()
+       setIS()
+       return ()=>{
+      sessionStorage.setItem("activeId", 1 )   
+       }
+    },[activeLink])
+    // setting active id end 
 
   const { id } = useParams();
   const userId = id;
@@ -66,7 +140,9 @@ function OnePremise() {
     getchargeConstraint()
     fetchApplicableCharges()
     getClientAccounts()
-
+    requestsServiceService.getDocumentTypes().then((res) => {
+      setdocumentTypes(res.data.data);
+    })
   }, []);
 
   const [PremiseTypes, setPremiseTypes] = useState([])
@@ -253,7 +329,7 @@ function OnePremise() {
 
   const [activeUnitId, setActiveUnitId] = useState('')
   const [unittypes, setUnittypes] = useState([])
-  const [unittype, setUnittype] = useState('')
+  const [unittype, setUnittype] = useState(null)
   const [unitName, setUnitName] = useState('')
   const [numberOfRooms ,setNumberOfRooms ] = useState('')
   const [purpose ,setPurpose] = useState('')
@@ -285,12 +361,49 @@ function OnePremise() {
       unitTypeId: unittype
     }
 
-    requestsServiceService.updatePremiseUnit(userId, data).then(() => {
+    requestsServiceService.updatePremiseUnit(userId, data).then((res) => {
       findAllPremiseUnits()
-    })
-  }
+      $("#edit-premise-unit").modal("hide");
+      if(res.data.status){
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        }) } else {
+    
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+    
+        setTimeout(() => {
+          clear()
+        }, 3000)
+        
+      }).catch((res)=>{
+        $("#edit-premise-unit").modal("hide");
+        
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger"
+        })
+    
+      })
+    }
+    
+    const clear = ()=> {
+      setError({
+        ...error,
+        message: "",
+        color: ""
+      });
+    } 
 
-  const createPremiseType = () => {
+
+  const createPremiseType = (res) => {
     let data = JSON.stringify({
       active: true,
       id: null,
@@ -300,12 +413,41 @@ function OnePremise() {
     })
     requestsServiceService.createPremiseUnit(userId, data).then(() => {
       findAllPremiseUnits()
+     $("#create-premise-unit").modal("hide");
+
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+  
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+  
+      setTimeout(() => {
+        clear()
+      }, 3000)
+      
+    }).catch((res)=>{
+      $("#create-premise-unit").modal("hide");
+      
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+  
     })
   }
-
+  
   //  premise unit Charges Stuff
   const [chargeId ,setChargeId] = useState('')
-  const [rateCharge ,setRateCharge] = useState(true)
+  const [rateCharge ,setRateCharge] = useState(false)
   const [applicableCharge ,setApplicableCharge] = useState('')
   const [applicableCharges ,setApplicableCharges] = useState([])
   const [chargeConstraints , setChargeConstraints] = useState([])
@@ -314,9 +456,9 @@ function OnePremise() {
   const [value , setValue] = useState('')
   const [clientAccounts ,setClientAccounts ] = useState([])
   const [landlordAccounts ,setLandlordAccounts ] = useState([])
-  const [clientAccount ,setClientAccount ] = useState('')
-  const [clientAccountState ,setClientAccountState ] = useState('')
-  const [landlordAccount ,setLandlordAccount ] = useState('')
+  const [clientAccount ,setClientAccount ] = useState(null)
+  const [clientAccountState ,setClientAccountState ] = useState("false")
+  const [landlordAccount ,setLandlordAccount ] = useState(null)
   const [invoiceDay,setInvoiceDay] = useState('')
   const [unitCost,setUnitCost] = useState('')
 
@@ -348,6 +490,37 @@ function OnePremise() {
       setChargeConstraints(res.data.data)
      })
   }
+  const handleConstraintChange = (event) =>{
+    setChargeConstraint(event.target.value); 
+
+    chargeConstraint === "RATE_OF_CHARGE" ? setRateCharge("false") : setRateCharge("true")
+  
+  }
+
+  const handleChargeSubmit =(e)=>{
+    e.preventDefault()
+   if(collectionaccount === "landlord" && landlordAccount === null){
+    console.log("landlord account null");
+   };
+
+   if(collectionaccount === "client"){
+    setClientAccountState('true')
+   };
+
+   if(unittype === null){
+    // setClientAccountState('true')
+    console.log("unit type cannot be null");
+   };
+
+   if(collectionaccount === "client" && clientAccount === null){
+    console.log("client account null");
+    console.log(clientAccountState);
+   };
+   
+
+
+  }
+
 
   const createCharges = ()=>{
 let data = JSON.stringify({
@@ -719,7 +892,7 @@ let data = JSON.stringify({
                           className="form-control"
                           value={update.premNmae}
                           onChange={handleChange}
-                          name="premName"
+                          name="premNmae"
                         />
                       </div>
                       <div className="col-6">
@@ -859,7 +1032,7 @@ let data = JSON.stringify({
                         data-bs-toggle="modal"
                         data-bs-target="#create-premise-unit"
                         className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
-                        onClick={() => { setUnitName(''); setUnittype('');}}
+                        onClick={() => { setUnitName(''); unittypes && setUnittype(unittypes[0].id);}}
                       >
                         <i className="dripicons-plus font-size-16"></i>{" "}
                         <span className="pl-1 d-md-inline">
@@ -907,7 +1080,8 @@ let data = JSON.stringify({
 
                                   <div class="dropdown-menu dropdown-menu-end">
                                     <Link class="dropdown-item" to={`/premise/${userId}/${activeUnitId}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
-                                    <a onClick={() => togglePremiseUnitStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
+                                   {unit.active ? <a onClick={() => togglePremiseUnitStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a> :
+                                    <a onClick={() => togglePremiseUnitStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-success me-3"></i>Activate unit</a>}
                                   </div>
                                 </div>
                               </td>
@@ -937,12 +1111,13 @@ let data = JSON.stringify({
             >
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-
+        <form onSubmit={(e) => { e.preventDefault(); editPremiseType() }}>
+                 
                   <div
                     className="modal-body">
                     <div className="form-group">
                       <label htmlFor="">update Name</label>
-                      <input type="text" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                      <input type="text" required value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
                     </div>
 
                     <div className="form-group">
@@ -964,14 +1139,13 @@ let data = JSON.stringify({
                       close
                     </button>
                     <button
-                      type="button"
+                      type="submit"
                       class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      onClick={editPremiseType}
                     >
                       update
                     </button>
                   </div>
+        </form>
                 </div>
               </div>
             </div>
@@ -987,12 +1161,13 @@ let data = JSON.stringify({
             >
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-
+        <form onSubmit={(e) => { e.preventDefault(); createPremiseType() }}>
+                    
                   <div
                     className="modal-body">
                     <div className="form-group">
                       <label htmlFor="">Unit Name</label>
-                      <input type="text" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
+                      <input type="text" required placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
                     </div>
 
                     <div className="form-group">
@@ -1015,14 +1190,13 @@ let data = JSON.stringify({
                       close
                     </button>
                     <button
-                      type="button"
+                      type="submit"
                       class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      onClick={createPremiseType}
                     >
                       create
                     </button>
                   </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -1056,17 +1230,16 @@ let data = JSON.stringify({
                         <thead class="table-light" >
                           <tr class=" text-uppercase ">
                             <th>#</th>
-                            <th>unit type </th>
-                            <th>applicable charge </th>
-                            <th>applicable charge type </th>
-                            <th>invoice day</th>
-                            <th>amount </th>
                             <th class="">UNIT PURPOSE</th>
                             <th class=" ">NO of Rooms</th>
                             <th class=" ">UNIT SIZE M<sup>2</sup></th>
                             <th>TENANCY RENEWAL</th>
                             <th>charge constraint</th>
                             <th>rate charge</th>
+                            <th>applicable charge </th>
+                            <th>applicable charge type </th>
+                            <th>invoice day</th>
+                            <th>amount </th>
                             <th>status</th>
                             <th></th>
                           </tr>
@@ -1088,8 +1261,6 @@ let data = JSON.stringify({
                               <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
                               
                               <td class="text-right d-flex align-items-center float-right justify-content-end">
-                                <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id) }} data-bs-toggle="modal"
-                                  data-bs-target="#edit-premise-unit" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                                 <div class="dropdown">
                                   <a onClick={() => setActiveUnitId(unit.id)} class="text-muted font-size-16 ml-7px" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
                                     <i class="bx bx-dots-vertical-rounded"></i>
@@ -1097,7 +1268,7 @@ let data = JSON.stringify({
 
                                   <div class="dropdown-menu dropdown-menu-end">
                                     <Link class="dropdown-item" to={`/premise/${userId}/${unit.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
-                                    <a onClick={() => toggleChargeStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
+                                    {unit.active ? <a onClick={() => toggleChargeStatus(unit.id)} class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate charge</a>:" "}
                                   </div>
                                 </div>
                               </td>
@@ -1114,127 +1285,7 @@ let data = JSON.stringify({
               </div>
               {/* <!-- end col --> */}
             </div>
-         
-            {/* modals edit-premise-unit */}
-            <div
-              class="modal fade"
-              id="edit-premise-unit"
-              data-bs-backdrop="static"
-              data-bs-keyboard="false"
-              role="dialog"
-              aria-labelledby="staticBackdropLabel"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-
-                <div
-                    className="modal-body">
-
-                   <div className="form-group mb-2">
-                      <label htmlFor="">Select unit type</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
-                        <option value="">Select unit type</option>
-                        {unittypes && unittypes.map((unit) => (
-                          <option value={unit.id}> {unit.name}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="form-group mb-2">
-                      <label htmlFor="">Select applicable charge</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setApplicableCharge(event.target.value)}>
-                        <option value="">Select unit type</option>
-                        {applicableCharges && applicableCharges.map((unit) => (
-                          <option value={unit.id}> {unit.name} - {unit.applicableChargeType}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="form-group mb-2">
-                      <label htmlFor="">Select charge constraint</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
-                        <option value="">Select unit type</option>
-                        {unittypes && unittypes.map((unit) => (
-                          <option value={unit.id}> {unit.name}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                   
-                    <div className="form-group mb-2">
-                      <label htmlFor="">rate charge</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
-                        <option value="true">yes</option>
-                        <option value="false">no</option>     
-                      </select>
-                    </div> 
-
-                   
-
-                    <div className="form-group mb-2">
-                      <label htmlFor="">select collection account type</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
-                        <option value="client">Client collection</option>
-                        <option value="landlord">landlord collection</option>     
-                      </select>
-                    </div>
-
-                    <div className="form-group mb-2">
-                      <label htmlFor="">Select client account</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
-                        <option value="">Select unit type</option>
-                        {unittypes && unittypes.map((unit) => (
-                          <option value={unit.id}> {unit.name}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="form-group mb-2">
-                      <label htmlFor="">Select landlord account</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
-                        <option value="">Select unit type</option>
-                        {unittypes && unittypes.map((unit) => (
-                          <option value={unit.id}> {unit.name}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="form-group mb-2">
-                      <label htmlFor="">Invoice day (1-31) </label>
-                      <input type="number" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
-                    </div>
-
-                    <div className="form-group mb-2">
-                      <label htmlFor="">Unit cost </label>
-                      <input type="number" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
-                    </div>
-
-                    <div className="form-group mb-2">
-                      <label htmlFor="">value </label>
-                      <input type="number" placeholder="Enter Unit Name" value={unitName} className="form-control" onChange={(event) => setUnitName(event.target.value)} />
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      close
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      onClick={editPremiseType}
-                    >
-                      update
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+        
             {/* premise unit create  */}
             <div
               class="modal fade"
@@ -1247,14 +1298,15 @@ let data = JSON.stringify({
             >
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-
+                <form onSubmit={(e) =>  handleChargeSubmit(e) }>
+                    
                   <div
                     className="modal-body">
 
                    <div className="form-group mb-2">
                       <label htmlFor="">Unit type</label>
                       <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
-                        <option value="">Select unit type</option>
+                        <option>Select unit type</option>
                         {unittypes && unittypes.map((unit) => (
                           <option value={unit.id}> {unit.name}</option>
                         ))}
@@ -1274,7 +1326,7 @@ let data = JSON.stringify({
 
                     <div className="form-group mb-2">
                       <label htmlFor="">Charge constraint</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setChargeConstraint(event.target.value)}>
+                      <select name="" id="" className="form-control" onChange={ handleConstraintChange }>
                         <option value="">Select charge constraint</option>
                         {chargeConstraints && chargeConstraints.map((unit) => (
                           <option value={unit}> {unit}</option>
@@ -1282,14 +1334,15 @@ let data = JSON.stringify({
                       </select>
                     </div>
 
-                   
-                    <div className="form-group mb-2">
-                      <label htmlFor="">rate charge</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setRateCharge(event.target.value)}>
-                        <option value="true">yes</option>
-                        <option value="false">no</option>     
+                    { rateCharge === 'true' &&   <div className="form-group mb-2">
+                      <label htmlFor="">charge required</label>
+                      <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
+                        <option value="">Select  charge </option>
+                        {premiseCharges && premiseCharges.map((unit) => (
+                          <option value={unit.id} className={unit.active ? "" : "d-none"}  > {unit.unitType.purpose} {unit.value}</option>
+                        ))}
                       </select>
-                    </div> 
+                    </div>}
 
                    
                      <div className="form-group mb-2">
@@ -1311,7 +1364,7 @@ let data = JSON.stringify({
                     </div>}
 
                     
-                  { collectionaccount === 'landlords' &&  <div className="form-group mb-2">
+                  { collectionaccount === 'landlord' &&  <div className="form-group mb-2">
                       <label htmlFor="">landlord account</label>
                       <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
                         <option value="">Select landlord account</option>
@@ -1324,11 +1377,6 @@ let data = JSON.stringify({
                     <div className="form-group mb-2">
                       <label htmlFor="">Invoice day (1-31) </label>
                       <input type="number" placeholder="Enter Unit Name" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
-                    </div>
-
-                    <div className="form-group mb-2">
-                      <label htmlFor="">Unit cost </label>
-                      <input type="number" placeholder="Enter Unit Name" value={unitCost} className="form-control" onChange={(event) => setUnitCost(event.target.value)} />
                     </div>
 
                     <div className="form-group mb-2">
@@ -1345,14 +1393,13 @@ let data = JSON.stringify({
                       close
                     </button>
                     <button
-                      type="button"
+                      type="submit"
                       class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      onClick={createPremiseType}
                     >
                       create
                     </button>
                   </div>
+              </form>
                 </div>
               </div>
             </div>
@@ -1439,6 +1486,9 @@ let data = JSON.stringify({
                       <div class="d-flex align-items-center flex-grow-1">
                         <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
                       </div>
+                      <div   onClick={handleDocShow}>
+                                <span className="d-flex align-items-center cursor-pointer "><i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span className="pl-5 ">Add A Document</span></span>
+                              </div>
                     </div>
                   </div>
                   <div className="card-body">
@@ -1486,6 +1536,68 @@ let data = JSON.stringify({
             </div>
                 {/*document attachment modal*/}
         
+                <div>
+              <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
+              <form onSubmit={handleDocumentSubmit}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Add Documents</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
+                        <select
+                          className="form-control"
+                          onChange={(e) => {
+                            setdocumentTypeId(e.target.value);
+                          }}
+                          name="document type"
+                          required={true}
+                        >
+                          <option className="text-black font-semibold ">
+                            select..
+                          </option>
+                          {documentTypes.map((dT) => {
+                            return (
+                              <option
+                                key={dT.id}
+                                value={dT.id}
+                              >
+                                {dT.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Document Name. <strong className="text-danger ">*</strong></label>
+                        <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true}/>
+                      </div>
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Document Upload. <strong className="text-danger ">*</strong></label>
+                        <div className="input-group mb-0">
+                          <label className="input-group-text bg-info text-white cursor-pointer"
+                                 htmlFor="document1-1">
+                            <i className="font-14px mdi mdi-paperclip"></i> Attach File
+                          </label>
+                          <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true}/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" className={"btn btn-grey"} onClick={handleDocClose}>
+                    Close
+                  </Button>
+                  <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </form>
+            </Modal>
+          </div>
 
           </div>
         )}
@@ -1677,7 +1789,7 @@ let data = JSON.stringify({
                           <select name="caretakerTypeName" className="form-control" onChange={hadleCaretaker}>
                             <option value=""> Select Type</option>
                             {caretypes && caretypes.map((type) => (
-                              <option value={type}> {type} </option>
+                              <>{ <option value={type}> {type} </option>}</>    
                             ))}
                           </select>
                         </div>

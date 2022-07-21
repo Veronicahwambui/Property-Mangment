@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+import {  Route, Routes, Navigate, HashRouter } from 'react-router-dom'
 import Header from './components/Header';
 import SideBar from './components/SideBar';
 import Dashboard from './pages/Dashboard';
@@ -55,7 +55,7 @@ function Main() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="container-fluid p-0">
         {AuthService.getCurrentUserAccessToken() === null
           ?
@@ -165,7 +165,7 @@ function Main() {
         <script src="./assets/js/custom.js "></script>
       </Helmet>
 
-    </BrowserRouter >
+    </HashRouter >
   );
 }
 
