@@ -1,3 +1,4 @@
+/* global $ */
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import requestsServiceService from '../../services/requestsService.service';
@@ -12,13 +13,26 @@ function Invoices() {
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
+  const [startDate, setStartDate] = useState(moment().startOf('year'))
+  const [endDate, setEndDate] = useState(moment(new Date()).format("YYYY-MM-DD"))
 
   useEffect(() =>{
     getInvoices();
   }, [])
 
+  const sort = (event) => {
+    event.preventDefault()
+    let data = {startDate:startDate,endDate:endDate};
+    console.log(data)
+    requestsServiceService.getInvoices(data).then((res) => {
+      console.log(res);
+      setinvoices(res.data.data)
+    });
+  }
+
   const getInvoices = () => {
-    let data = {startDate:moment().startOf('year'),endDate:moment(new Date()).format("YYYY-MM-DD")}
+    let data = {startDate:startDate,endDate:endDate}
+    console.log(data)
     requestsServiceService.getInvoices(data).then((res) => {
       console.log(res);
       setinvoices(res.data.data)
@@ -41,6 +55,15 @@ function Invoices() {
   const addCommas = (x) => {
     return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
+  const addDate = (date) => {
+    setStartDate(new Date(date.target.value));
+  }
+  const addDate2 = (date) => {
+    setEndDate(new Date(date.target.value));
+  }
+
+  $(document).on("change", ".sdate", addDate);
+  $(document).on("change", ".edate", addDate2);
 
   return (
     <>
@@ -73,6 +96,17 @@ function Invoices() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       All rent and Bills invoices
                     </h4>
+                    <div className="d-flex">
+                      <div className="input-group" id="datepicker1">
+                        <input type="text" className="form-control mouse-pointer sdate"
+                               name="dob" placeholder="from" readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" />
+                        <span className="input-group-text"><i className="mdi mdi-calendar"></i></span>
+                        <input type="text" className="form-control mouse-pointer edate"
+                               name="dob" placeholder="to" readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" />
+                        <span className="input-group-text"><i className="mdi mdi-calendar"></i></span>
+                        <button className="btn btn-primary" onClick={sort}>filter</button>
+                      </div>
+                    </div>
                   </div>
                   {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
                   {/*     role="toolbar">*/}
