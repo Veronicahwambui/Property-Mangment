@@ -141,9 +141,9 @@ function Invoices() {
                                   <i className="bx bx-dots-vertical-rounded"></i>
                                 </a>
                                 <div className="dropdown-menu dropdown-menu-end ">
-                                  <a className="dropdown-item" href="#" onClick={() => getOneInvoice(invoice.transaction.transactionId)}>
+                                  <span className="dropdown-item" href="#" onClick={() => getOneInvoice(invoice.transaction.transactionId)}>
                                     <i className="font-size-15 mdi mdi-eye me-3 "></i>View
-                                  </a>
+                                  </span>
                                   <a className="dropdown-item " href="# "><i
                                     className="font-size-15 mdi mdi-printer me-3 "></i>Print</a>
                                   <a className="dropdown-item " href="# "><i
