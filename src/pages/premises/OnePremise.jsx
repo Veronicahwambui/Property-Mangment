@@ -5,8 +5,6 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 
 function OnePremise() {
   const [activeLink, setActiveLink] = useState(1);
