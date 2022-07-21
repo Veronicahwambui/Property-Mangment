@@ -96,7 +96,7 @@ function Landlords() {
                           </td>
                           <td data-field="unit-num ">{l.agreementPeriod + " months"}</td>
                           <td className="text-right cell-change text-nowrap">
-                            <div className="d-flex">
+                            <div className="d-flex align-items-center">
                               {l.active ?  <button
                                 class="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
                                 title="deactivate"
