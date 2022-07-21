@@ -221,14 +221,20 @@ function Invoices() {
                     <td className="text-end">KES. {activeInvoice?.billAmount}</td>
                   </tr>
                   <tr>
+                    <td></td>
+                    <td></td>
                     <td colSpan="2" className="text-end">Total</td>
                     <td className="text-end fw-bold">KES {activeInvoice?.billAmount}</td>
                   </tr>
                   <tr>
+                    <td></td>
+                    <td></td>
                     <td colSpan="2" className="text-end">Paid</td>
                     <td className="text-end  fw-bold">KES {activeInvoice?.billPaidAmount}</td>
                   </tr>
                   <tr>
+                    <td></td>
+                    <td></td>
                     <td colSpan="2" className="border-0 text-end">
                       <strong>Balance</strong>
                     </td>
