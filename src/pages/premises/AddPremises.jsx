@@ -7,6 +7,16 @@ import requestsServiceService from "../../services/requestsService.service";
 import { confirmAlert } from "react-confirm-alert";
 
 function AddPremises() {
+
+  const [landlordData, setLandlordData] = useState({
+    "active": true,
+    "agreementPeriod": undefined,
+    "landLordAgreementTypeId": undefined,
+    "landLordId": undefined,
+    "premiseId": undefined,
+    "remunerationPercentage": undefined
+  })
+
   const [landlordfileNumber, setLandlordfileNumber] = useState("");
   const [documentTypes, setDocumentTypes] = useState([]);
   const [applicableCharges, setApplicableCharges] = useState([]);
@@ -14,6 +24,7 @@ function AddPremises() {
   const [unitCharges, setUnitCharges] = useState([]);
   const [landLordAccounts, setLandLordAccounts] = useState([]);
   const [uniqueChargeId, setUniqueChargeIds] = useState([]);
+  const [agreementTypes, setAgreementTypes] = useState([]);
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
@@ -28,6 +39,14 @@ function AddPremises() {
     color: ""
   });
 
+  const redirectToCreateLandlord = () => {
+    window.location.href = "/#/addlandlord"
+  }
+
+  const redirectToPremises = () => {
+    window.location.href = "/#/premisesregister"
+  }
+
   const saveLandLordFileNumber = () => {
 
     if (landlordfileNumber != "") {
@@ -40,6 +59,11 @@ function AddPremises() {
           })
         } else {
           setLandLordAccounts(res.data.data.accounts)
+
+          let data = landlordData;
+          data.landLordId = res.data.data.landLord.id
+
+          setLandlordData(data);
           setError({
             ...error,
             message: res.data.message,
@@ -65,6 +89,7 @@ function AddPremises() {
     const updatedUnits = data.filter((unit, idx) => idx != index);
     setSelectedUnitTypes(updatedUnits);
   }
+
 
 
   const [general, setGeneral] = useState({
@@ -146,7 +171,7 @@ function AddPremises() {
           "applicableChargeName": chargee.name,
           "applicableChargeType": chargee.applicableChargeType,
 
-          "unitTypeName": selectedunitTypes[i].unitTypeName,
+          "unitTypeName": selectedunitTypes[i].name,
           "landlordCollectionAccountId": undefined,
           "monthCountForTenancyRenewal": selectedunitTypes[i].monthCountForTenancyRenewal,
           "numberOfRooms": selectedunitTypes[i].numberOfRooms,
@@ -177,8 +202,8 @@ function AddPremises() {
     }
   };
 
-  const handleUnitChange = (event) => {
-    setUnit({ ...unit, [event.target.name]: event.target.value });
+  const handlelandlordDataChange = (event) => {
+    setLandlordData({ ...landlordData, [event.target.name]: parseInt(event.target.value) });
   };
 
   const handleUnitTypeChange = (event) => {
@@ -245,6 +270,11 @@ function AddPremises() {
       setEstates(res.data.data)
     })
   }
+  const getAgreementTypes = () => {
+    requestsServiceService.getAllAgreementTypes().then((res) => {
+      setAgreementTypes(res.data.data)
+    })
+  }
 
   const [premiseTypes, setPremiseTypes] = useState([])
   const getPremiseTypes = () => {
@@ -290,6 +320,7 @@ function AddPremises() {
 
   useEffect(() => {
     getEstates()
+    getAgreementTypes()
     getPremiseTypes()
     getPremiseUseTypes()
     getAllDocumentTypes()
@@ -399,7 +430,12 @@ function AddPremises() {
 
   const submit = () => {
     let gen = general;
-    gen.landlordFileNumber.push(landlordfileNumber)
+    gen.landlordFileNumber.push(landlordfileNumber);
+    let landlords = [];
+    landlords.push(landlordData);
+
+    gen["premiseLandLord"] = landlords;
+
     let data = {
       "premise": gen,
       "premiseCaretakerDTO": caretaker,
@@ -415,7 +451,7 @@ function AddPremises() {
           message: res.data.message,
           buttons: [{
             label: "OK",
-            onClick: (e) => window.location.href = "/premisesregister"
+            onClick: (e) => window.location.href = "/#/premisesregister"
           }
           ]
         })
@@ -993,6 +1029,32 @@ function AddPremises() {
                             </div>
                           </div>
                         </div>
+                        <div className="row">
+                            <div class="col-lg-3 col-md-4 col-sm-12">
+                              <label for="agreement-type">Landlord MCA Agreement Type<strong class="text-danger ">*</strong></label>
+                              <select class="form-control " id="agreement-type" title="Landlord MCA agreement type" name="landLordAgreementTypeId" onChange={handlelandlordDataChange}>
+                                <option></option>
+                                {agreementTypes.map((type, index) => (
+                                  <option value={type.id}>{type.name}</option>
+                                ))
+                                }
+                              </select>
+                            </div>
+
+                            <div class="col-lg-3 col-md-4 col-sm-12 per-commision">
+                              <div class="mb-4 ">
+                                <label for="basicpill-lastname-input ">Agreement Period in months<strong class="text-danger ">*</strong></label>
+                                <input type="number " min="1" name="agreementPeriod" class="form-control " placeholder="No of months "  onChange={handlelandlordDataChange}/>
+                              </div>
+                            </div>
+
+                            <div class="col-lg-3 col-md-4 col-sm-12 per-commision">
+                              <div class="mb-4 ">
+                                <label for="basicpill-lastname-input ">Percentage commission<strong class="text-danger ">*</strong></label>
+                                <input type="number " name="remunerationPercentage" min="1" max="100" class="form-control " placeholder="Remuneration Percentage"  onChange={handlelandlordDataChange}/>
+                              </div>
+                          </div>
+                        </div>
                       </form>
                     </section>
 
@@ -1057,7 +1119,7 @@ function AddPremises() {
                                         {premiseUnitTypeCharge.applicableChargeType}
                                       </td>
                                       <td>
-                                        {unitTypee.unitTypeName}
+                                        {unitTypee.name}
                                       </td>
                                       <td>
                                         -
@@ -1372,6 +1434,18 @@ function AddPremises() {
                       <button class="btn btn-primary btn-block w-100 btn-lg" onClick={saveLandLordFileNumber}>
                         <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
                         <div class="d-none">Search</div>
+                      </button>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                      <button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToCreateLandlord}>
+                        <i class="bx bx-edit font-size-16 align-middle me-2 ">New Landlord</i>
+                      </button>
+                    </div>
+
+                    <div class="col-12 ">
+                      <button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToPremises}>
+                        Cancel
                       </button>
                     </div>
                   </div>
