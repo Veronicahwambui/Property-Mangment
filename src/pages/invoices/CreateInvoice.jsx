@@ -111,6 +111,13 @@ function CreateInvoice() {
   const addDate = (date) => {
     setdate(new Date(date.target.value).toISOString());
   }
+  const check = (x) => {
+    if (x.tenantType === "INDIVIDUAL") {
+      return x.firstName + " " + x.lastName
+    } else {
+      return x.companyName
+    }
+  }
   $(document).on("change", ".enddate", addDate);
 
   return (
@@ -180,7 +187,7 @@ function CreateInvoice() {
                                         </option>
                                         {
                                           tenants.map((item, index) => (
-                                            <option value={parseInt(item.id)}>{item.firstName}</option>
+                                            <option value={parseInt(item.id)}>{check(item)}</option>
                                           ))
                                         }
                                       </select>
