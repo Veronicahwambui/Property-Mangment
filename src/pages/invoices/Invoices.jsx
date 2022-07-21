@@ -20,6 +20,7 @@ function Invoices() {
   const getInvoices = () => {
     let data = {startDate:moment().subtract(7,'d').format("YYYY-MM-DD"),endDate:moment(new Date()).format("YYYY-MM-DD")}
     requestsServiceService.getInvoices(data).then((res) => {
+      console.log(res);
       setinvoices(res.data.data)
     });
   }
@@ -127,11 +128,11 @@ function Invoices() {
                           <td>{invoice.paymentStatus}</td>
                           <td>
                             <div className="d-flex justify-content-end">
-                              <button type="button"
-                                      className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"
-                                      // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}
-                                      >Receive Payment
-                              </button>
+                              {/*<button type="button"*/}
+                              {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
+                              {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
+                              {/*        >Receive Payment*/}
+                              {/*</button>*/}
                               <div className="dropdown">
                                 <a className="text-muted font-size-16" role="button"
                                    data-bs-toggle="dropdown" aria-haspopup="true">
@@ -206,6 +207,8 @@ function Invoices() {
                   <tr>
                     <th style={{width: "70px"}}>No.</th>
                     <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Cost</th>
                     <th className="text-end">Amount</th>
                   </tr>
                   </thead>
@@ -213,6 +216,8 @@ function Invoices() {
                   <tr>
                     <td>01</td>
                     <td>{activeInvoice?.applicableChargeName}</td>
+                    <td>{activeInvoice?.quantity}</td>
+                    <td>{activeInvoice?.unitCost}</td>
                     <td className="text-end">KES. {activeInvoice?.billAmount}</td>
                   </tr>
                   <tr>

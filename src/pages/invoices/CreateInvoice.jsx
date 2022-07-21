@@ -294,7 +294,7 @@ function CreateInvoice() {
                                 </div>
                                 <div className="col-md-6">
                                   <div className="mb-4">
-                                    <label htmlFor="" className="">Date of Birth</label>
+                                    <label htmlFor="" className="">Due date</label>
                                     <div className="input-group" id="datepicker1">
                                       <input type="text" className="form-control mouse-pointer enddate"
                                              name="dob" placeholder="Select Date" readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" />
