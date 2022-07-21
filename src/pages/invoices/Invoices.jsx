@@ -120,7 +120,7 @@ function Invoices() {
                               </div>
                             </div>
                           </td>
-                          <td>{invoice.transaction.tenantName}</td>
+                          <td>{invoice.transactionCustomerName}</td>
                           <td>{invoice.transaction.premiseName}</td>
                           <td>{invoice.transaction.premiseUnitName}</td>
                           <td>{invoice.applicableChargeName}</td>
@@ -163,6 +163,7 @@ function Invoices() {
                       <tfoot className="table-dark">
                       <tr>
                         <th className="text-capitalize text-nowrap" colSpan="3">{invoices && invoices.length} Invoices</th>
+                        <th className="text-nowrap" colSpan="3">{}</th>
                         <th className="text-nowrap" colSpan="3">{}</th>
                         <td className="text-nowrap" colSpan="3">
                           <span className="fw-semibold ">KES. {addCommas(total())}</span>
