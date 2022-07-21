@@ -583,13 +583,13 @@ class RequestsService {
     }
     //INVOICING
     createInvoice(data) {
-        return axiosInstance.post(baseUrl + "/payments", data)
+        return axiosInstance.post(baseUrl + "/payments/invoice/new", data)
     }
     getTenant(data) {
         return axiosInstance.get(baseUrl + "/tenants/" + data)
     }
     getInvoices(data) {
-        return axiosInstance.get(baseUrl + "/payments")
+        return axiosInstance.post(baseUrl + "/payments/invoice/transactions?size=100", data)
     }
     viewTenancy(tenancyId){
         return axiosInstance.get(baseUrl + "/tenants/tenancy/" + tenancyId)
