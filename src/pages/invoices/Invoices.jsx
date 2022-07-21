@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import requestsServiceService from '../../services/requestsService.service';
-import {Modal} from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import moment from 'moment';
 
 function Invoices() {
@@ -13,12 +13,12 @@ function Invoices() {
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
 
-  useEffect(() =>{
+  useEffect(() => {
     getInvoices();
   }, [])
 
   const getInvoices = () => {
-    let data = {startDate:moment().startOf('year'),endDate:moment(new Date()).format("YYYY-MM-DD")}
+    let data = { startDate: moment().startOf('year'), endDate: moment(new Date()).format("YYYY-MM-DD") }
     requestsServiceService.getInvoices(data).then((res) => {
       console.log(res);
       setinvoices(res.data.data)
@@ -31,7 +31,7 @@ function Invoices() {
       sum += item.billAmount
       paid += item.billPaidAmount
     });
-    return sum-paid
+    return sum - paid
   }
   const getOneInvoice = (id) => {
     let acc = invoices.find(invoice => invoice.transaction.transactionId === id);
@@ -69,7 +69,7 @@ function Invoices() {
                   className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
 
                   <div className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                       role="toolbar">
+                    role="toolbar">
                     <h4 className="card-title text-capitalize mb-0 ">
                       All rent and Bills invoices
                     </h4>
@@ -86,88 +86,88 @@ function Invoices() {
                   <div className="table-responsive overflow-visible">
 
                     <table className="table align-middle table-hover  contacts-table table-striped "
-                           id="datatable-buttons">
+                      id="datatable-buttons">
                       <thead className="table-light">
-                      <tr className="table-dark">
+                        <tr className="table-dark">
 
-                        <th scope="col">
-                          <div className="the-mail-checkbox pr-4">
-                            <label htmlFor="selectAll" className="d-none">Select All</label>
-                            <input className="form-check-input mt-0 pt-0 form-check-dark"
-                                   type="checkbox" id="selectAll"/>
-                          </div>
-                        </th>
-                        <th>Tenant</th>
-                        <th>Premises</th>
-                        <th>Hse/Unit</th>
-                        <th>Charge Name</th>
-                        <th>Bill Amount</th>
-                        <th>Paid Amount</th>
-                        <th>Total Balance</th>
-                        <th>Payment Status</th>
-                        <th className="text-right">Actions</th>
-                      </tr>
+                          <th scope="col">
+                            <div className="the-mail-checkbox pr-4">
+                              <label htmlFor="selectAll" className="d-none">Select All</label>
+                              <input className="form-check-input mt-0 pt-0 form-check-dark"
+                                type="checkbox" id="selectAll" />
+                            </div>
+                          </th>
+                          <th>Tenant</th>
+                          <th>Premises</th>
+                          <th>Hse/Unit</th>
+                          <th>Charge Name</th>
+                          <th>Bill Amount</th>
+                          <th>Paid Amount</th>
+                          <th>Total Balance</th>
+                          <th>Payment Status</th>
+                          <th className="text-right">Actions</th>
+                        </tr>
                       </thead>
                       <tbody>
-                      {invoices && invoices?.map((invoice, index) => (
-                        <tr data-id={index} key={index}>
-                          <td>
-                            <div className="d-flex  align-items-center">
-                              <div className="the-mail-checkbox pr-4">
-                                <input
-                                  className="form-check-input mt-0 pt-0 form-check-dark"
-                                  type="checkbox" id="formCheck1"/>
-                              </div>
-                            </div>
-                          </td>
-                          <td>{invoice.transaction.tenantName}</td>
-                          <td>{invoice.transaction.premiseName}</td>
-                          <td>{invoice.transaction.premiseUnitName}</td>
-                          <td>{invoice.applicableChargeName}</td>
-                          <td>KES. {addCommas(invoice.billAmount)}</td>
-                          <td>{addCommas(invoice.billPaidAmount)}</td>
-                          <td><span className="fw-semibold ">KES. {addCommas(invoice.billAmount - invoice.billPaidAmount)}</span></td>
-                          <td>{invoice.paymentStatus==="PENDING" ? <span class="badge-soft-danger badge">{invoice.paymentStatus}</span> : <span class="badge-soft-success badge">{invoice.paymentStatus}</span> }</td>
-                          <td>
-                            <div className="d-flex justify-content-end">
-                              {/*<button type="button"*/}
-                              {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                              {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
-                              {/*        >Receive Payment*/}
-                              {/*</button>*/}
-                              <div className="dropdown">
-                                <a className="text-muted font-size-16" role="button"
-                                   data-bs-toggle="dropdown" aria-haspopup="true">
-                                  <i className="bx bx-dots-vertical-rounded"></i>
-                                </a>
-                                <div className="dropdown-menu dropdown-menu-end ">
-                                  <a className="dropdown-item" href="#" onClick={() => getOneInvoice(invoice.transaction.transactionId)}>
-                                    <i className="font-size-15 mdi mdi-eye me-3 "></i>View
-                                  </a>
-                                  <a className="dropdown-item " href="# "><i
-                                    className="font-size-15 mdi mdi-printer me-3 "></i>Print</a>
-                                  <a className="dropdown-item " href="# "><i
-                                    className="font-size-15 mdi mdi-email me-3 "></i>Email
-                                    Tenant</a>
-                                  <a className="dropdown-item " href="# "><i
-                                    className="font-size-15 mdi mdi-chat me-3 "></i>Send
-                                    as SMS</a>
+                        {invoices && invoices?.map((invoice, index) => (
+                          <tr data-id={index} key={index}>
+                            <td>
+                              <div className="d-flex  align-items-center">
+                                <div className="the-mail-checkbox pr-4">
+                                  <input
+                                    className="form-check-input mt-0 pt-0 form-check-dark"
+                                    type="checkbox" id="formCheck1" />
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                      }
+                            </td>
+                            <td>{invoice.transaction.tenantName}</td>
+                            <td>{invoice.transaction.premiseName}</td>
+                            <td>{invoice.transaction.premiseUnitName}</td>
+                            <td>{invoice.applicableChargeName}</td>
+                            <td>KES. {addCommas(invoice.billAmount)}</td>
+                            <td>{addCommas(invoice.billPaidAmount)}</td>
+                            <td><span className="fw-semibold ">KES. {addCommas(invoice.billAmount - invoice.billPaidAmount)}</span></td>
+                            <td>{invoice.paymentStatus === "PENDING" ? <span class="badge-soft-danger badge">{invoice.paymentStatus}</span> : <span class="badge-soft-success badge">{invoice.paymentStatus}</span>}</td>
+                            <td>
+                              <div className="d-flex justify-content-end">
+                                {/*<button type="button"*/}
+                                {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
+                                {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
+                                {/*        >Receive Payment*/}
+                                {/*</button>*/}
+                                <div className="dropdown">
+                                  <a className="text-muted font-size-16" role="button"
+                                    data-bs-toggle="dropdown" aria-haspopup="true">
+                                    <i className="bx bx-dots-vertical-rounded"></i>
+                                  </a>
+                                  <div className="dropdown-menu dropdown-menu-end ">
+                                    <span className="dropdown-item" href="#" onClick={() => getOneInvoice(invoice.transaction.transactionId)}>
+                                      <i className="font-size-15 mdi mdi-eye me-3 "></i>View
+                                    </span>
+                                    <a className="dropdown-item " href="# "><i
+                                      className="font-size-15 mdi mdi-printer me-3 "></i>Print</a>
+                                    <a className="dropdown-item " href="# "><i
+                                      className="font-size-15 mdi mdi-email me-3 "></i>Email
+                                      Tenant</a>
+                                    <a className="dropdown-item " href="# "><i
+                                      className="font-size-15 mdi mdi-chat me-3 "></i>Send
+                                      as SMS</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                        }
                       </tbody>
                       <tfoot className="table-dark">
-                      <tr>
-                        <th className="text-capitalize text-nowrap" colSpan="3">{invoices && invoices.length} Invoices</th>
-                        <th className="text-nowrap" colSpan="3">{}</th>
-                        <td className="text-nowrap" colSpan="3">
-                          <span className="fw-semibold ">KES. {addCommas(total())}</span>
-                        </td>
-                      </tr>
+                        <tr>
+                          <th className="text-capitalize text-nowrap" colSpan="3">{invoices && invoices.length} Invoices</th>
+                          <th className="text-nowrap" colSpan="3">{ }</th>
+                          <td className="text-nowrap" colSpan="3">
+                            <span className="fw-semibold ">KES. {addCommas(total())}</span>
+                          </td>
+                        </tr>
                       </tfoot>
                     </table>
                   </div>
@@ -179,42 +179,42 @@ function Invoices() {
       </div>
 
       {/*VIEW INVOICE*/}
-        <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
-          <Modal.Header closeButton>
-            <h5 className="modal-title" id="myLargeModalLabel">Invoice Details</h5>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="col-12">
-              <address>
-                <strong>Billed To:</strong><br/>
-                {activeInvoice?.transaction?.tenantName} <br/>
-                {activeInvoice?.transactionCustomerEmail}<br/>
-                {activeInvoice?.transaction?.premiseName + " , "}{activeInvoice?.transaction?.premiseUnitName}<br/>
-                <br/>
-                {moment(activeInvoice.dateTimeCreated).format("dddd, MMMM Do YYYY, h:mm a")}
-              </address>
-              <p>Title: {activeInvoice?.transactionTitle}</p>
-              <p>Description: {activeInvoice?.transactionDescription}</p>
+      <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
+        <Modal.Header closeButton>
+          <h5 className="modal-title" id="myLargeModalLabel">Invoice Details</h5>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="col-12">
+            <address>
+              <strong>Billed To:</strong><br />
+              {activeInvoice?.transaction?.tenantName} <br />
+              {activeInvoice?.transactionCustomerEmail}<br />
+              {activeInvoice?.transaction?.premiseName + " , "}{activeInvoice?.transaction?.premiseUnitName}<br />
+              <br />
+              {moment(activeInvoice.dateTimeCreated).format("dddd, MMMM Do YYYY, h:mm a")}
+            </address>
+            <p>Title: {activeInvoice?.transactionTitle}</p>
+            <p>Description: {activeInvoice?.transactionDescription}</p>
+          </div>
+          <div className="col-12">
+            <div className="py-2 mt-3">
+              <h3 className="font-size-15 fw-bold">Invoice Details ( <span
+                className="text-primary fw-medium">{activeInvoice?.transaction?.transactionId}</span> )</h3>
             </div>
-            <div className="col-12">
-              <div className="py-2 mt-3">
-                <h3 className="font-size-15 fw-bold">Invoice Details ( <span
-                  className="text-primary fw-medium">{activeInvoice?.transaction?.transactionId}</span> )</h3>
-              </div>
-            </div>
-            <div className="col-12">
-              <div className="table-responsive">
-                <table className="table table-nowrap">
-                  <thead>
+          </div>
+          <div className="col-12">
+            <div className="table-responsive">
+              <table className="table table-nowrap">
+                <thead>
                   <tr>
-                    <th style={{width: "70px"}}>No.</th>
+                    <th style={{ width: "70px" }}>No.</th>
                     <th>Item</th>
                     <th>Quantity</th>
                     <th>Unit Cost</th>
                     <th className="text-end">Amount</th>
                   </tr>
-                  </thead>
-                  <tbody>
+                </thead>
+                <tbody>
                   <tr>
                     <td>01</td>
                     <td>{activeInvoice?.applicableChargeName}</td>
@@ -244,13 +244,13 @@ function Invoices() {
                       <h5 className="m-0 text-uppercase fw-bold">KES {addCommas(activeInvoice?.billAmount - activeInvoice?.billPaidAmount) + ".00"}</h5>
                     </td>
                   </tr>
-                  </tbody>
-                </table>
-              </div>
+                </tbody>
+              </table>
             </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <div className="col-12">
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          {/*  <div className="col-12">
               <div className="table-resposive p-4 px-2 pt-2 overflow-visible">
                 <table className="w-100">
                   <tbody>
@@ -289,15 +289,15 @@ function Invoices() {
                 </table>
               </div>
             </div>
-            {/*<div className="float-end">*/}
-            {/*  <a href="javascript:window.print()"*/}
-            {/*     className="btn btn-success waves-effect waves-light me-1"><i*/}
-            {/*    className="mdi mdi-printer font-16px"></i></a>*/}
-            {/*  <a href="javascript: void(0);"*/}
-            {/*     className="btn btn-primary w-md waves-effect waves-light">Receive Payment</a>*/}
-            {/*</div>*/}
-          </Modal.Footer>
-        </Modal>
+           <div className="float-end">*/}
+          {/*  <a href="javascript:window.print()"*/}
+          {/*     className="btn btn-success waves-effect waves-light me-1"><i*/}
+          {/*    className="mdi mdi-printer font-16px"></i></a>*/}
+          {/*  <a href="javascript: void(0);"*/}
+          {/*     className="btn btn-primary w-md waves-effect waves-light">Receive Payment</a>*/}
+          {/*</div>*/}
+        </Modal.Footer>
+      </Modal>
     </>
   )
 }
