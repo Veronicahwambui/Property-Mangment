@@ -39,7 +39,7 @@ function Invoices() {
     showInvoice();
   }
   const addCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
   return (
@@ -100,6 +100,7 @@ function Invoices() {
                         <th>Tenant</th>
                         <th>Premises</th>
                         <th>Hse/Unit</th>
+                        <th>Charge Name</th>
                         <th>Bill Amount</th>
                         <th>Paid Amount</th>
                         <th>Total Balance</th>
@@ -122,10 +123,11 @@ function Invoices() {
                           <td>{invoice.transaction.tenantName}</td>
                           <td>{invoice.transaction.premiseName}</td>
                           <td>{invoice.transaction.premiseUnitName}</td>
+                          <td>{invoice.applicableChargeName}</td>
                           <td>KES. {addCommas(invoice.billAmount)}</td>
                           <td>{addCommas(invoice.billPaidAmount)}</td>
                           <td><span className="fw-semibold ">KES. {addCommas(invoice.billAmount - invoice.billPaidAmount)}</span></td>
-                          <td>{invoice.paymentStatus}</td>
+                          <td>{invoice.paymentStatus==="PENDING" ? <span class="badge-soft-danger badge">{invoice.paymentStatus}</span> : <span class="badge-soft-success badge">{invoice.paymentStatus}</span> }</td>
                           <td>
                             <div className="d-flex justify-content-end">
                               {/*<button type="button"*/}
@@ -216,21 +218,21 @@ function Invoices() {
                   <tr>
                     <td>01</td>
                     <td>{activeInvoice?.applicableChargeName}</td>
-                    <td>{activeInvoice?.quantity}</td>
-                    <td>{activeInvoice?.unitCost}</td>
-                    <td className="text-end">KES. {activeInvoice?.billAmount}</td>
+                    <td>{addCommas(activeInvoice.quantity)}</td>
+                    <td>{addCommas(activeInvoice?.unitCost) + ".00"}</td>
+                    <td className="text-end">KES. {addCommas(activeInvoice?.billAmount) + ".00"}</td>
                   </tr>
                   <tr>
                     <td></td>
                     <td></td>
                     <td colSpan="2" className="text-end">Total</td>
-                    <td className="text-end fw-bold">KES {activeInvoice?.billAmount}</td>
+                    <td className="text-end fw-bold">KES {addCommas(activeInvoice?.billAmount) + ".00"}</td>
                   </tr>
                   <tr>
                     <td></td>
                     <td></td>
                     <td colSpan="2" className="text-end">Paid</td>
-                    <td className="text-end  fw-bold">KES {activeInvoice?.billPaidAmount}</td>
+                    <td className="text-end  fw-bold">KES {addCommas(activeInvoice?.billPaidAmount) + ".00"}</td>
                   </tr>
                   <tr>
                     <td></td>
@@ -239,7 +241,7 @@ function Invoices() {
                       <strong>Balance</strong>
                     </td>
                     <td className="border-0 text-end">
-                      <h5 className="m-0 text-uppercase fw-bold">KES {activeInvoice?.billAmount - activeInvoice?.billPaidAmount}</h5>
+                      <h5 className="m-0 text-uppercase fw-bold">KES {addCommas(activeInvoice?.billAmount - activeInvoice?.billPaidAmount) + ".00"}</h5>
                     </td>
                   </tr>
                   </tbody>
