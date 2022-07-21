@@ -18,7 +18,8 @@ function Invoices() {
   }, [])
 
   const getInvoices = () => {
-    requestsServiceService.getInvoices().then((res) => {
+    let data = {startDate:moment().subtract(7,'d').format("YYYY-MM-DD"),endDate:moment(new Date()).format("YYYY-MM-DD")}
+    requestsServiceService.getInvoices(data).then((res) => {
       setinvoices(res.data.data)
     });
   }
