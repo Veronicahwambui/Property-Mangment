@@ -408,6 +408,9 @@ class RequestsService {
         return axiosInstance.post(baseUrl+ "/tenants/update", data)
 
     }
+    getTenantStatus(){
+        return axiosInstance.get(baseUrl + "/setup/tenancyStatuses");
+    }
     getContactpersons(){
         return axiosInstance.get(baseUrl + "/setup/contactPersonTypes" )
 
