@@ -4,12 +4,17 @@ import { Link } from 'react-router-dom';
 import requestsServiceService from '../../services/requestsService.service';
 import {Modal} from "react-bootstrap";
 import moment from 'moment';
+import ReactPaginate from 'react-paginate';
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
   const [transaction, setTransaction] = useState({});
   const [size, setSize] = useState(100)
+  const [pageCount, setPageCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [perPage, setPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
   // MODAL
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
@@ -19,28 +24,38 @@ function Invoices() {
 
   useEffect(() =>{
     getInvoices();
-  }, [size])
+  }, [page, size, pageCount])
 
   const sort = (event) => {
     event.preventDefault()
-    let data = {startDate:startDate,endDate:endDate};
+    let data = {startDate:startDate,endDate:endDate, size:size, page:page};
     requestsServiceService.getInvoices(data).then((res) => {
+      console.log(res)
       setinvoices(res.data.data)
     });
   }
   const sortSize = (e) => {
-    console.log(e.target.value)
-    setSize(e.target.value)
+    setSize(e.target.value);
+    setPage(0);
   }
 
   const getInvoices = () => {
-    let data = {startDate:startDate,endDate:endDate, size: size}
-    console.log(data)
-    requestsServiceService.getInvoices(data, size).then((res) => {
-      console.log(res);
+    let data = {startDate:startDate,endDate:endDate, size: size, page: page}
+    requestsServiceService.getInvoices(data).then((res) => {
+      console.log("fetching......")
+      setPageCount(res.data.totalPages);
       setinvoices(res.data.data)
+      window.scrollTo(0, 0);
     });
   }
+  const handlePageClick = (data) => {
+    console.log(data)
+    let d = data.selected
+    setPage(d)
+    // setPage(() => data.selected);
+    // console.log(page)
+  };
+
   const total = () => {
     let sum = 0;
     let paid = 0
@@ -55,9 +70,10 @@ function Invoices() {
     setactiveInvoice(acc);
     showInvoice();
   }
-  const addCommas = (x) => {
-    return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  }
+  let formatCurrency = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'KES',
+  });
   const addDate = (date) => {
     setStartDate(new Date(date.target.value));
   }
@@ -101,12 +117,11 @@ function Invoices() {
                     </h4>
                     <div className="d-flex">
                       <div>
-                        <select name="" id="" value={size} onChange={(e) => sortSize(e)}>
-                          <option value="100">100</option>
-                          <option value="3">3</option>
-                          <option value="6">6</option>
-                          <option value="1">1</option>
-                          <option value="20">20</option>
+                        <select className={"btn btn-primary"} name="" id="" value={size} onChange={(e) => sortSize(e)}>
+                          <option value={parseInt(100)}>100</option>
+                          <option value={parseInt(20)}>20</option>
+                          <option value={parseInt(10)}>10</option>
+                          <option value={parseInt(5)}>5</option>
                         </select>
                       </div>
                       <div className="input-group" id="datepicker1">
@@ -143,6 +158,7 @@ function Invoices() {
                                    type="checkbox" id="selectAll"/>
                           </div>
                         </th>
+                        <th>Invoice Number</th>
                         <th>Tenant</th>
                         <th>Premises</th>
                         <th>Hse/Unit</th>
@@ -166,13 +182,14 @@ function Invoices() {
                               </div>
                             </div>
                           </td>
+                          <td>{invoice.transactionItemId}</td>
                           <td>{invoice.transactionCustomerName}</td>
                           <td>{invoice.transaction.premiseName}</td>
                           <td>{invoice.transaction.premiseUnitName}</td>
                           <td>{invoice.applicableChargeName}</td>
-                          <td>KES. {addCommas(invoice.billAmount)}</td>
-                          <td>{addCommas(invoice.billPaidAmount)}</td>
-                          <td><span className="fw-semibold ">KES. {addCommas(invoice.billAmount - invoice.billPaidAmount)}</span></td>
+                          <td>{formatCurrency.format(invoice.billAmount)}</td>
+                          <td>{formatCurrency.format(invoice.billPaidAmount)}</td>
+                          <td><span className="fw-semibold ">{formatCurrency.format(invoice.billAmount - invoice.billPaidAmount)}</span></td>
                           <td>{invoice.paymentStatus==="PENDING" ? <span class="badge-soft-danger badge">{invoice.paymentStatus}</span> : <span class="badge-soft-success badge">{invoice.paymentStatus}</span> }</td>
                           <td>
                             <div className="d-flex justify-content-end">
@@ -212,11 +229,45 @@ function Invoices() {
                         <th className="text-nowrap" colSpan="3">{}</th>
                         <th className="text-nowrap" colSpan="3">{}</th>
                         <td className="text-nowrap" colSpan="3">
-                          <span className="fw-semibold ">KES. {addCommas(total())}</span>
+                          <span className="fw-semibold ">{formatCurrency.format(total())}</span>
                         </td>
                       </tr>
                       </tfoot>
                     </table>
+                  </div>
+                  <div className="mt-4 mb-0 flex justify-between px-8">
+                    <p className=" font-medium text-xs text-gray-700">
+                      {" "}
+                      showing page{" "}
+                      <span className="text-green-700 text-opacity-100 font-bold text-sm">
+              {page + 1}
+            </span>{" "}
+                      of{" "}
+                      <span className="text-sm font-bold text-black">{pageCount}</span>{" "}
+                      pages
+                    </p>
+
+                    {pageCount !== 0 && (
+                        <ReactPaginate
+                            previousLabel={"prev"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            pageCount={pageCount} // total number of pages needed
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={1}
+                            onPageChange={handlePageClick}
+                            breakClassName={'page-item'}
+                            breakLinkClassName={'page-link'}
+                            containerClassName={'pagination'}
+                            pageClassName={'page-item'}
+                            pageLinkClassName={'page-link'}
+                            previousClassName={'page-item'}
+                            previousLinkClassName={'page-link'}
+                            nextClassName={'page-item'}
+                            nextLinkClassName={'page-link'}
+                            activeClassName={'active'}
+                        />
+                    )}
                   </div>
                 </div>
               </div>
@@ -265,21 +316,21 @@ function Invoices() {
                   <tr>
                     <td>01</td>
                     <td>{activeInvoice?.applicableChargeName}</td>
-                    <td>{addCommas(activeInvoice.quantity)}</td>
-                    <td>{addCommas(activeInvoice?.unitCost) + ".00"}</td>
-                    <td className="text-end">KES. {addCommas(activeInvoice?.billAmount) + ".00"}</td>
+                    <td>{formatCurrency.format(activeInvoice.quantity)}</td>
+                    <td>{formatCurrency.format(activeInvoice?.unitCost)}</td>
+                    <td className="text-end">KES. {formatCurrency.format(activeInvoice?.billAmount)}</td>
                   </tr>
                   <tr>
                     <td></td>
                     <td></td>
                     <td colSpan="2" className="text-end">Total</td>
-                    <td className="text-end fw-bold">KES {addCommas(activeInvoice?.billAmount) + ".00"}</td>
+                    <td className="text-end fw-bold">KES {formatCurrency.format(activeInvoice?.billAmount)}</td>
                   </tr>
                   <tr>
                     <td></td>
                     <td></td>
                     <td colSpan="2" className="text-end">Paid</td>
-                    <td className="text-end  fw-bold">KES {addCommas(activeInvoice?.billPaidAmount) + ".00"}</td>
+                    <td className="text-end  fw-bold">KES {formatCurrency.format(activeInvoice?.billPaidAmount)}</td>
                   </tr>
                   <tr>
                     <td></td>
@@ -288,7 +339,7 @@ function Invoices() {
                       <strong>Balance</strong>
                     </td>
                     <td className="border-0 text-end">
-                      <h5 className="m-0 text-uppercase fw-bold">KES {addCommas(activeInvoice?.billAmount - activeInvoice?.billPaidAmount) + ".00"}</h5>
+                      <h5 className="m-0 text-uppercase fw-bold">KES {formatCurrency.format(activeInvoice?.billAmount - activeInvoice?.billPaidAmount)}</h5>
                     </td>
                   </tr>
                   </tbody>

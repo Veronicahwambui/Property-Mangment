@@ -568,8 +568,8 @@ class RequestsService {
     getTenant(data) {
         return axiosInstance.get(baseUrl + "/tenants/" + data)
     }
-    getInvoices(data,x) {
-        return axiosInstance.post(baseUrl + `/payments/invoice/transactions?size=${x}`, data)
+    getInvoices(data) {
+        return axiosInstance.post(baseUrl + `/payments/invoice/transactions?page=${data.page}&size=${data.size}`, data)
     }
 }
 
