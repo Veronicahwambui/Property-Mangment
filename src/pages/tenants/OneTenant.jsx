@@ -34,7 +34,11 @@ function OneTenant() {
 
 
   //company details
-  
+
+
+  const [premises, setPremises] = useState([])
+  const [units, setUnits] = useState([])
+  const[premId,setPremId]=useState("")
  
   const[companyLocation,setCompanyLocation]=useState("")
   
@@ -151,7 +155,7 @@ function OneTenant() {
       unitCondition: unitCondition,
     });
     requestsServiceService.updateTenant(data).then((res) => {
-    
+ 
       fetchAll();
     });
   };
@@ -286,17 +290,94 @@ function OneTenant() {
       ...error,
       message: "",
       color: ""
-
-
-
-
-
-    });
+  });
   };
+
+
+  const addTenancies= ()=>{
+
+    let data =JSON.stringify({
+      active: true,
+      // id:0,
+      premiseUnitId:premiseUnitId,
+      startDate: new Date(startDate),
+      tenancyCharges: [],
+      tenancyDocuments: [],
+      tenancyRenewalDate:  new Date(tenancyRenewalDate),
+      tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
+      tenancyStatusName: tenancyStatus,
+      tenantId:tenantData.tenant.id,
+      unitCondition: unitCondition
+  
+    })
+    requestsServiceService.createTenancies(data).then((res)=>{
+    console.log(res)
+     fetchAll()
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+      
+      
+      setTimeout(() => {
+        cleared()
+      }, 3000)
+  }).catch((res)=>{
+
+    setError({
+      ...error,
+      message: res.data.message,
+      color: "danger"
+    })
+
+    setTimeout(() => {
+      cleared()
+    }, 3000)
+
+
+  })
+}
+
+const cleared = ()=> {
+  setError({
+    ...error,
+    message: "",
+    color: ""
+
+ })
+    
+   }
+const getPremises = () => {
+  requestsServiceService.allPremises().then((res) =>
+  setPremises(res.data.data)
+  )
+}
+
+const onPremiseChange = (event) => {
+
+  let vals = event.target.value.split(':');
+
+  requestsServiceService.getPremise(vals[0]).then((res) =>
+    setUnits(res.data.data.premiseUnits)
+  )
+}
+const premiseUnitChange = (event)=>{
+  setPremiseUnitId(event.target.value)
+}
 
   useEffect(() => {
     fetchAll();
     getContactTypeName();
+    getPremises();
   }, []);
 
   const deleteDeactivate = (id) => {
@@ -575,11 +656,27 @@ function OneTenant() {
                                 Tenancies
                               </h4>
                             </div>
+                            <div className="d-flex">
+                              <button
+                                type="button"
+                                className="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#create-tenancies"
+                              >
+                                <i className="mdi mdi-plus label-icon"></i> Add
+                                 Tenant
+                              </button>
+                            </div>
                           </div>
                         </div>
 
                         <div>
                           <div className="card-body">
+                          {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                             <div className="table-responsive">
                               <table className="table align-middle table-nowrap table-hover mb-0">
                                 <thead>
@@ -1281,7 +1378,7 @@ function OneTenant() {
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
-                  Tenant
+                  Contact Person
                 </h5>
                 <button
                   type="button"
@@ -1389,6 +1486,137 @@ function OneTenant() {
                   class="btn btn-primary"
                   data-bs-dismiss="modal"
                   onClick={() => addConctactPersons()}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        {/* //add Tenant */}
+
+
+
+        <div
+       class="modal fade"
+       id="create-tenancies"
+       data-bs-backdrop="static"
+       data-bs-keyboard="false"
+       role="dialog"
+       aria-labelledby="staticBackdropLabel"
+       aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="mod">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Tenant
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">Premises</label>
+                      <select className='form-control'onChange={onPremiseChange} name="premise">
+                          <option></option>
+                          {premises?.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
+                        </select>
+                    </div>
+                    <div class="form-group mb-4">
+                      <label for="">Unit</label>
+                      <select className='form-control' onChange={premiseUnitChange} name="premiseUnitId">
+                          <option></option>
+                          {units.length > 0 && units.map((prem, index) => <option value={prem.id }>{prem.unitName}</option>)}
+                        </select>
+                    </div>
+
+
+                    <div class="form-group mb-4">
+                      <label for="">Unit Condition</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter UnitCondition"
+                        onChange={(event) => setUnitCondition(event.target.value)}
+                        value={unitCondition}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">StartDate</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        placeholder="Enter StartDate"
+                        required={true}
+                      />
+
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">TenancyRenewalDate</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={tenancyRenewalDate}
+                        onChange={(e) => setTenancyRenewalDate(e.target.value)}
+                        placeholder="Enter "
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">TenancyRenewalNotificationDate</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={tenancyRenewalNotificationDate}
+                        onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
+                        placeholder="Enter TenancyRenewalNotificationDate"
+                        required={true}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">TenancyStatus</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={tenancyStatus}
+                        onChange={(e) => setTenancyStatus(e.target.value)}
+                        placeholder="Enter TenancyStatusName"
+                        required={true}
+                      />
+                    </div>
+
+                   
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => addTenancies()}
                 >
                   Save
                 </button>

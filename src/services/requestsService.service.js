@@ -398,6 +398,9 @@ class RequestsService {
         return axiosInstance.post(baseUrl + "/tenants/tenancy/update", data)
   
     }
+    createTenancies(data){
+        return axiosInstance.post(baseUrl+ "/tenants/tenancy/create" ,data)
+    }
     deactivateTenancies(tenantId){
         return axiosInstance.get(baseUrl+ "/tenants/tenancy/" + tenantId + "/deactivate")
     }
