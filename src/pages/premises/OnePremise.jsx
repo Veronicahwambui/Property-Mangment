@@ -461,6 +461,7 @@ function OnePremise() {
   const [landlordAccount ,setLandlordAccount ] = useState(null)
   const [invoiceDay,setInvoiceDay] = useState('')
   const [unitCost,setUnitCost] = useState('')
+  const [constraintChargeId,setConstraintChargeId] = useState('')
 
   const fetchApplicableCharges = ()=>{
     requestsServiceService.allApplicableCharges().then((res)=>{
@@ -499,23 +500,62 @@ function OnePremise() {
 
   const handleChargeSubmit =(e)=>{
     e.preventDefault()
-   if(collectionaccount === "landlord" && landlordAccount === null){
-    console.log("landlord account null");
-   };
+    try {
+      
+      if(collectionaccount === "landlord" && landlordAccount === null){
+        throw new Error("landlord account null");
+       };
+    
+       if(collectionaccount === "client"){
+        setClientAccountState('true')
+       };
+    
+       if(unittype === null){
+        // setClientAccountState('true')
+        throw new Error("unit type cannot be null");
+       };
+    
+       if(collectionaccount === "client" && clientAccount === null){
+        throw new Error("client account null");
+       };
+      
 
-   if(collectionaccount === "client"){
-    setClientAccountState('true')
-   };
+       
+      let data = JSON.stringify({
+        active: true,
+        applicableChargeId: applicableCharge,
+        chargeConstraint: chargeConstraint,
+        clientCollectionAccountId: clientAccount,
+        collectedToClientAccount: clientAccountState,
+        constraintChargeId: constraintChargeId,
+        id: null,
+        invoiceDay: invoiceDay,
+        landlordCollectionAccountId: landlordAccount,
+        premiseId: userId,
+        rateCharge: rateCharge,
+        unitCost: value,
+        unitTypeId: unittype,
+        value: value
+      })
 
-   if(unittype === null){
-    // setClientAccountState('true')
-    console.log("unit type cannot be null");
-   };
+      requestsServiceService.createPremiseUnitTypeCharges(data).then((res)=>{
+        console.log(res);
+      })
 
-   if(collectionaccount === "client" && clientAccount === null){
-    console.log("client account null");
-    console.log(clientAccountState);
-   };
+
+    } catch (err) {
+      setError({
+        ...error,
+        message: err.message,
+        color: "danger"
+      })
+      
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+    }
+ 
    
 
 
@@ -535,7 +575,7 @@ let data = JSON.stringify({
       landlordCollectionAccountId: landlordAccount,
       premiseId: userId,
       rateCharge: rateCharge,
-      unitCost: unitCost,
+      unitCost: value,
       unitTypeId: unittype,
       value: value
     })
@@ -1209,6 +1249,11 @@ let data = JSON.stringify({
               <div class="col-12">
                 <div class="card">
                   <div class="card-body">
+                  {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                     <div className="d-flex justify-content-between">
                       <h4 class="card-title text-capitalize mb-3">Charges And Unit Types </h4>
                       <button
@@ -1306,7 +1351,7 @@ let data = JSON.stringify({
                    <div className="form-group mb-2">
                       <label htmlFor="">Unit type</label>
                       <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
-                        <option>Select unit type</option>
+                        <option value={null}>Select unit type</option>
                         {unittypes && unittypes.map((unit) => (
                           <option value={unit.id}> {unit.name}</option>
                         ))}
@@ -1336,7 +1381,7 @@ let data = JSON.stringify({
 
                     { rateCharge === 'true' &&   <div className="form-group mb-2">
                       <label htmlFor="">charge required</label>
-                      <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
+                      <select name="" id="" className="form-control" onChange={(event) => setConstraintChargeId(event.target.value)}>
                         <option value="">Select  charge </option>
                         {premiseCharges && premiseCharges.map((unit) => (
                           <option value={unit.id} className={unit.active ? "" : "d-none"}  > {unit.unitType.purpose} {unit.value}</option>
