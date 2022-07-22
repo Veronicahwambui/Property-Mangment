@@ -19,7 +19,7 @@ function Invoices() {
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
-  const [startDate, setStartDate] = useState(moment().startOf('year'))
+  const [startDate, setStartDate] = useState(moment().startOf('month').format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment(new Date()).format("YYYY-MM-DD"))
 
   useEffect(() =>{
@@ -38,11 +38,14 @@ function Invoices() {
     setSize(e.target.value);
     setPage(0);
   }
+  const reset = () => {
+    setSize(100);
+    setPage(1);
+  }
 
   const getInvoices = () => {
     let data = {startDate:startDate,endDate:endDate, size: size, page: page}
     requestsServiceService.getInvoices(data).then((res) => {
-      console.log("fetching......")
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data)
       window.scrollTo(0, 0);
@@ -115,7 +118,7 @@ function Invoices() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       All rent and Bills invoices
                     </h4>
-                    <div className="d-flex">
+                    <div className="d-flex justify-content-end ">
                       <div>
                         <select className={"btn btn-primary"} name="" id="" value={size} onChange={(e) => sortSize(e)}>
                           <option value={parseInt(100)}>100</option>
@@ -124,14 +127,17 @@ function Invoices() {
                           <option value={parseInt(5)}>5</option>
                         </select>
                       </div>
-                      <div className="input-group" id="datepicker1">
-                        <input type="text" className="form-control mouse-pointer sdate"
-                               name="dob" placeholder="from" readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" />
-                        <span className="input-group-text"><i className="mdi mdi-calendar"></i></span>
-                        <input type="text" className="form-control mouse-pointer edate"
-                               name="dob" placeholder="to" readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" />
-                        <span className="input-group-text"><i className="mdi mdi-calendar"></i></span>
-                        <button className="btn btn-primary" onClick={sort}>filter</button>
+                      <div className="col-6">
+                        <div className="input-group" id="datepicker1">
+                          <input type="text" className="form-control mouse-pointer sdate"
+                                 placeholder={`${startDate}`}
+                                 name="dob" readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" />
+                          <span className="input-group-text"><i className="mdi mdi-calendar"></i></span>
+                          <input type="text" className="form-control mouse-pointer edate"
+                                 name="dob"  placeholder={`${endDate}`} readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" />
+                          <span className="input-group-text"><i className="mdi mdi-calendar"></i></span>
+                          <button className="btn btn-primary" onClick={sort}>filter</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -171,7 +177,7 @@ function Invoices() {
                       </tr>
                       </thead>
                       <tbody>
-                      {invoices && invoices?.map((invoice, index) => (
+                      {invoices.length > 0 && invoices?.map((invoice, index) => (
                         <tr data-id={index} key={index}>
                           <td>
                             <div className="d-flex  align-items-center">
