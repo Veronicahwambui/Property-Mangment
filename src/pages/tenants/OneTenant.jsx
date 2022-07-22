@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 
 function OneTenant() {
@@ -246,17 +246,18 @@ function OneTenant() {
                         id="data-table"
                       >
                         <thead>
-                          <tr class="text-uppercase table-dark">
-                            <th>#</th>
-                            <th>Unit Name</th>
-                            <th>Unit Type</th>
-                            <th>Start Date</th>
-                            <th>Unit Condition</th>
-                            <th>Tenancy Status</th>
-                            <th>Months to renewal</th>
-                            <th>Status</th>
-                           
-                          </tr>
+                        <tr class=" text-uppercase ">
+                                                        <th>#</th>
+                                                        <th>unit name </th>
+                                                        <th>tenant name</th>
+                                                        <th>phone no</th>
+                                                        <th>condition</th>
+                                                        <th>start Date</th>
+                                                       <th>renewal date</th>
+                                                        <th>tenancy status</th>
+                                                        <th>status</th>
+                                                        <th>Actions</th>
+                                                    </tr>
                         </thead>
                         <tbody>
                           {tenantData.tenancies &&
@@ -266,17 +267,25 @@ function OneTenant() {
                                 <td>
                                   {unit.premiseUnit.unitName}
                                 </td>
-                                <td className="text-capitalize">
-                                {unit.premiseUnit.unitType.name}
-                                  
+                                <td>{unit.tenant.lastName} {unit.tenant.lastName}</td>
+                                {/* <td className="text-capitalize">
+                                {unit.premiseUnit.unitType.name}  
+                                </td> */}
+                                <td>{unit.tenant.phoneNumber}</td>
+                               
+                                <td>{unit.unitCondition}</td>
+                                <td>
+                                  {unit.startDate}
                                 </td>
                                 <td>
-                                  {unit.startDate.replace(/[TZ]/g , " ")}
+                                  {unit.tenancyRenewalDate}
                                 </td>
-                                <td>{unit.unitCondition}</td>
                                 <td>{unit.tenancyStatus.toLowerCase()}</td>
-                                <td>{unit.monthsToTenancyRenewal}</td>
                                 <td> { unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
+                                <td>
+                                <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
+
+                                </td>
                               </tr>
                             ))}
                         </tbody>
