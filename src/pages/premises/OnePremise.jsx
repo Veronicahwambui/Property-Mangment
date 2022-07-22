@@ -12,6 +12,7 @@ function OnePremise() {
   const [activeLink, setActiveLink] = useState(JSON.parse(sessionStorage.getItem('activeId')));
   const [premiseData, setPremiseData] = useState({});
   const [premiseUnits, setPremiseUnits] = useState([])
+  const [landlordData, setLandlordData] = useState('')
   const [premiseCharges, setPremiseCharges] = useState([])
   const [caretakers, setCaretakers] = useState([])
   const [caretakerId, setCaretakerId] = useState('')
@@ -106,6 +107,29 @@ function OnePremise() {
   const { id } = useParams();
   const userId = id;
 
+
+
+  const download = () => {
+
+    requestsServiceService.download(docName).then((res) => {
+      console.log(res);
+    })
+  }
+
+  useEffect(() => {
+    fetchAll();
+    caretakerTypes();
+    findUnitTypes();
+    findAllCharges();
+    findAllPremiseUnits();
+    getchargeConstraint();
+    fetchApplicableCharges();
+    getClientAccounts();
+    requestsServiceService.getDocumentTypes().then((res) => {
+      setdocumentTypes(res.data.data);
+    })
+  }, []);
+
   const fetchAll = () => {
     requestsServiceService.viewPremise(userId).then((res) => {
       setPremiseData(res.data.data);
@@ -122,29 +146,11 @@ function OnePremise() {
         address: res.data.data.premise.address,
         premNmae: res.data.data.premise.premiseName,
       })
-    });
+      setLandlordData(res.data.data.landLords[0].landLord.fileNumber)
+    })
   };
 
-  const download = () => {
-
-    requestsServiceService.download(docName).then((res) => {
-      console.log(res);
-    })
-  }
-
-  useEffect(() => {
-    fetchAll();
-    caretakerTypes()
-    findUnitTypes()
-    findAllCharges()
-    findAllPremiseUnits()
-    getchargeConstraint()
-    fetchApplicableCharges()
-    getClientAccounts()
-    requestsServiceService.getDocumentTypes().then((res) => {
-      setdocumentTypes(res.data.data);
-    })
-  }, []);
+  console.log(landlordData);
 
   const [PremiseTypes, setPremiseTypes] = useState([])
   const [PremiseUseTypes, setPremiseUseTypes] = useState([])
@@ -450,11 +456,11 @@ function OnePremise() {
 
   //  premise unit Charges Stuff
   const [chargeId, setChargeId] = useState('')
-  const [rateCharge, setRateCharge] = useState(false)
+  const [rateCharge, setRateCharge] = useState("false")
   const [applicableCharge, setApplicableCharge] = useState('')
   const [applicableCharges, setApplicableCharges] = useState([])
   const [chargeConstraints, setChargeConstraints] = useState([])
-  const [chargeConstraint, setChargeConstraint] = useState([])
+  const [chargeConstraint, setChargeConstraint] = useState("ZERO_BALANCE")
   const [collectionaccount, setCollectionaccount] = useState('landlord')
   const [value, setValue] = useState('')
   const [clientAccounts, setClientAccounts] = useState([])
@@ -477,10 +483,20 @@ function OnePremise() {
       setPremiseCharges(res.data.data)
     })
   }
+
   let clientChargeId = authService.getClientId()
+
   const getClientAccounts = () => {
     requestsServiceService.getClientAccounts(clientChargeId).then((res) => {
       setClientAccounts(res.data.data)
+    })
+  }
+
+  
+  const getLandLordAccounts = () => {
+
+    requestsServiceService.getLandLordByFileNumber(landlordData).then((res) => {
+      setLandlordAccounts(res.data.data.accounts)
     })
   }
   const toggleChargeStatus = (id) => {
@@ -495,14 +511,28 @@ function OnePremise() {
     })
   }
   const handleConstraintChange = (event) => {
-    setChargeConstraint(event.target.value);
 
-    chargeConstraint === "RATE_OF_CHARGE" ? setRateCharge("false") : setRateCharge("true")
+      setChargeConstraint(event.target.value);
 
+      if(chargeConstraint === "RATE_OF_CHARGE"){
+       setRateCharge("true") ; 
+      }; 
+  
+
+      if(chargeConstraint === "ZERO_BALANCE"){
+       setRateCharge("false"); 
+       };
+
+    chargeConstraint === "ZERO_BALANCE" && setRateCharge("false"); 
+    chargeConstraint === "RATE_OF_CHARGE" && setRateCharge("true");
+    
+    // setRateCharge("true")
+   console.log(rateCharge);
   }
 
   const handleChargeSubmit = (e) => {
     e.preventDefault()
+
     try {
 
       if (collectionaccount === "landlord" && landlordAccount === null) {
@@ -510,6 +540,10 @@ function OnePremise() {
       };
 
       if (collectionaccount === "client") {
+        setClientAccountState('true')
+      };
+
+      if (collectionaccount === "landlord") {
         setClientAccountState('true')
       };
 
@@ -542,9 +576,44 @@ function OnePremise() {
       })
 
       requestsServiceService.createPremiseUnitTypeCharges(data).then((res) => {
-        console.log(res);
-      })
+        // console.log(res);
+        
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success"
+          })
+        } else {
+          
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          })
+        }
+        setTimeout(() => {
+          clear()
+          $("#create-premise-unit").modal("hide");
+        }, 3000)
 
+      }).catch((err)=>{
+
+
+        setError({
+          ...error,
+          message: err.message,
+          color: "danger"
+        })
+  
+        setTimeout(() => {
+          $("#create-premise-unit").modal("hide");
+          clear()
+
+        }, 3000)
+      })
+  
+    
 
     } catch (err) {
       setError({
@@ -560,50 +629,13 @@ function OnePremise() {
     }
 
 
-
+   
 
   }
 
 
-  const createCharges = () => {
-    let data = JSON.stringify({
-      active: true,
-      applicableChargeId: applicableCharge,
-      chargeConstraint: chargeConstraint,
-      clientCollectionAccountId: clientAccount,
-      collectedToClientAccount: clientAccountState,
-      constraintChargeId: "string",
-      id: null,
-      invoiceDay: invoiceDay,
-      landlordCollectionAccountId: landlordAccount,
-      premiseId: userId,
-      rateCharge: rateCharge,
-      unitCost: value,
-      unitTypeId: unittype,
-      value: value
-    })
-  }
-  const updateCharges = () => {
-    const data = JSON.stringify({
-      active: true,
-      applicableChargeId: applicableCharge,
-      chargeConstraint: chargeConstraint,
-      clientCollectionAccountId: clientAccount,
-      collectedToClientAccount: true,
-      constraintChargeId: "string",
-      id: 0,
-      invoiceDay: invoiceDay,
-      landlordCollectionAccountId: landlordAccount,
-      monthCountForTenancyRenewal: 0,
-      numberOfRooms: 'numberOfRooms',
-      premiseId: userId,
-      purpose: '',
-      rateCharge: 0,
-      squarage: 0,
-      unitTypeId: unittype,
-      value: unitCost
-    })
-  }
+ 
+
 
 
 
@@ -1252,11 +1284,7 @@ function OnePremise() {
               <div class="col-12">
                 <div class="card">
                   <div class="card-body">
-                    {error.color !== "" &&
-                      <div className={"alert alert-" + error.color} role="alert">
-                        {error.message}
-                      </div>
-                    }
+                
                     <div className="d-flex justify-content-between">
                       <h4 class="card-title text-capitalize mb-3">Charges And Unit Types </h4>
                       <button
@@ -1264,7 +1292,8 @@ function OnePremise() {
                         data-bs-toggle="modal"
                         data-bs-target="#create-premise-unit"
                         className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
-                        onClick={() => { setUnitName(''); setUnittype(''); }}
+                        onClick={() => { setUnitName(''); setUnittype('');  getLandLordAccounts();
+                      }}
                       >
                         <i className="dripicons-plus font-size-16"></i>{" "}
                         <span className="pl-1 d-md-inline">
@@ -1300,10 +1329,10 @@ function OnePremise() {
                               <td>{unit.unitType.numberOfRooms} rooms</td>
                               <td>{unit.unitType.squarage} m<sup>2</sup> </td>
                               <td>{unit.unitType.monthCountForTenancyRenewal} months</td>
-                              <td>{unit.chargeConstraint.toLowerCase()}</td>
+                              <td>{unit.chargeConstraint}</td>
                               <td>{unit.rateCharge ? "true" : "false"}</td>
                               <td>{unit.applicableCharge.name}</td>
-                              <td>{unit.applicableCharge.applicableChargeType.toLowerCase()}</td>
+                              <td>{unit.applicableCharge.applicableChargeType}</td>
                               <td>{unit.invoiceDay}</td>
                               <td>{unit.value}</td>
                               <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
@@ -1347,10 +1376,14 @@ function OnePremise() {
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <form onSubmit={(e) => handleChargeSubmit(e)}>
-
+                  {error.color !== "" &&
+                      <div className={"alert alert-" + error.color} role="alert">
+                        {error.message}
+                      </div>
+                    }
                     <div
                       className="modal-body">
-
+                      
                       <div className="form-group mb-2">
                         <label htmlFor="">Unit type</label>
                         <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
@@ -1382,7 +1415,7 @@ function OnePremise() {
                         </select>
                       </div>
 
-                      {rateCharge === 'true' && <div className="form-group mb-2">
+                      {chargeConstraint !== 'ZERO_BALANCE' && <div className="form-group mb-2">
                         <label htmlFor="">charge required</label>
                         <select name="" id="" className="form-control" onChange={(event) => setConstraintChargeId(event.target.value)}>
                           <option value="">Select  charge </option>
@@ -1406,7 +1439,7 @@ function OnePremise() {
                         <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
                           <option value="">Select  client account</option>
                           {clientAccounts && clientAccounts.map((unit) => (
-                            <option value={unit.id}> {unit.bank.name}</option>
+                            <option value={unit.id}> {unit.bank?.name} </option>
                           ))}
                         </select>
                       </div>}
@@ -1414,17 +1447,17 @@ function OnePremise() {
 
                       {collectionaccount === 'landlord' && <div className="form-group mb-2">
                         <label htmlFor="">landlord account</label>
-                        <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
+                        <select name="" id="" className="form-control" onChange={(event) => setLandlordAccount(event.target.value)}>
                           <option value="">Select landlord account</option>
-                          {clientAccounts && clientAccounts.map((unit) => (
-                            <option value={unit.id}> {unit.bank.name}</option>
+                          {landlordAccounts && landlordAccounts.map((unit) => (
+                            <option value={unit.id}> {unit.bank?.bankName} - {unit.bankAccountNumber} </option>
                           ))}
                         </select>
                       </div>}
 
                       <div className="form-group mb-2">
                         <label htmlFor="">Invoice day (1-31) </label>
-                        <input type="number" placeholder="Enter Unit Name" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
+                        <input type="number" max={31} min={1} placeholder="Enter Unit Name" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
                       </div>
 
                       <div className="form-group mb-2">

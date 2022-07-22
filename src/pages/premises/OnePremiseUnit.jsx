@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import moment from 'moment'
 import requestsServiceService from '../../services/requestsService.service'
 
 
@@ -281,8 +282,8 @@ function OnePremiseUnit() {
                                                             <td>{unit.tenant.firstName} {unit.tenant.lastName} </td>
                                                             <td>{unit.tenant.phoneNumber}</td>
                                                             <td>{unit.unitCondition}</td>
-                                                            <td>{unit.startDate}</td>
-                                                            <td>{unit.tenancyRenewalDate}</td>
+                                                            <td> {moment(unit.startDate).format("MMM Do YYYY")}</td>
+                                                            <td> {moment(unit.tenancyRenewalDate).format("MMM Do YYYY")}</td>
                                                             <td>{unit.tenancyStatus}</td>
                                                             
                                                             <td class="text-right d-flex align-items-center float-right justify-content-end">

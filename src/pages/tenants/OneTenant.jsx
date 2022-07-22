@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -275,10 +276,10 @@ function OneTenant() {
                                
                                 <td>{unit.unitCondition}</td>
                                 <td>
-                                  {unit.startDate}
+                                  {moment(unit.startDate).format("MMM Do YYYY")}
                                 </td>
                                 <td>
-                                  {unit.tenancyRenewalDate}
+                                  {moment(unit.tenancyRenewalDate).format("MMM Do YYYY")}
                                 </td>
                                 <td>{unit.tenancyStatus.toLowerCase()}</td>
                                 <td> { unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
