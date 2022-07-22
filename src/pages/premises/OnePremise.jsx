@@ -470,7 +470,7 @@ function OnePremise() {
   const [landlordAccount, setLandlordAccount] = useState(null)
   const [invoiceDay, setInvoiceDay] = useState('')
   const [unitCost, setUnitCost] = useState('')
-  const [constraintChargeId, setConstraintChargeId] = useState('')
+  const [constraintChargeId, setConstraintChargeId] = useState(null)
 
   const fetchApplicableCharges = () => {
     requestsServiceService.allApplicableCharges().then((res) => {
@@ -512,40 +512,26 @@ function OnePremise() {
   }
   const handleConstraintChange = (event) => {
 
-      setChargeConstraint(event.target.value);
-
-      if(chargeConstraint === "RATE_OF_CHARGE"){
-       setRateCharge("true") ; 
-      }; 
-  
-
-      if(chargeConstraint === "ZERO_BALANCE"){
-       setRateCharge("false"); 
-       };
-
-    chargeConstraint === "ZERO_BALANCE" && setRateCharge("false"); 
-    chargeConstraint === "RATE_OF_CHARGE" && setRateCharge("true");
-    
-    // setRateCharge("true")
-   console.log(rateCharge);
+    let vals = event.target.value.split(':');
+      setChargeConstraint(vals[0]);
+      setRateCharge(vals[1]);  
   }
+  console.log(rateCharge);
 
   const handleChargeSubmit = (e) => {
     e.preventDefault()
-
     try {
-
+     
       if (collectionaccount === "landlord" && landlordAccount === null) {
         throw new Error("landlord account null");
       };
-
+   
       if (collectionaccount === "client") {
         setClientAccountState('true')
-      };
+      }else {
+        setClientAccountState('false')
+      }
 
-      if (collectionaccount === "landlord") {
-        setClientAccountState('true')
-      };
 
       if (unittype === null) {
         // setClientAccountState('true')
@@ -577,7 +563,7 @@ function OnePremise() {
 
       requestsServiceService.createPremiseUnitTypeCharges(data).then((res) => {
         // console.log(res);
-        
+        fetchAll()
         if (res.data.status) {
           setError({
             ...error,
@@ -595,7 +581,7 @@ function OnePremise() {
         setTimeout(() => {
           clear()
           $("#create-premise-unit").modal("hide");
-        }, 3000)
+        }, 1500)
 
       }).catch((err)=>{
 
@@ -610,7 +596,7 @@ function OnePremise() {
           $("#create-premise-unit").modal("hide");
           clear()
 
-        }, 3000)
+        }, 1500)
       })
   
     
@@ -1292,7 +1278,7 @@ function OnePremise() {
                         data-bs-toggle="modal"
                         data-bs-target="#create-premise-unit"
                         className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
-                        onClick={() => { setUnitName(''); setUnittype('');  getLandLordAccounts();
+                        onClick={() => {  setUnittype(null);  getLandLordAccounts();
                       }}
                       >
                         <i className="dripicons-plus font-size-16"></i>{" "}
@@ -1407,11 +1393,11 @@ function OnePremise() {
 
                       <div className="form-group mb-2">
                         <label htmlFor="">Charge constraint</label>
-                        <select name="" id="" className="form-control" onChange={handleConstraintChange}>
-                          <option value="">Select charge constraint</option>
-                          {chargeConstraints && chargeConstraints.map((unit) => (
-                            <option value={unit}> {unit}</option>
-                          ))}
+                        <select name="" id="" className="form-control" onChange={(e)=>handleConstraintChange(e)}>
+                          <option value={null}>Select charge constraint</option>
+                          <option value={"ZERO_BALANCE" + ":" + "false"}> Zero Balance</option>
+                          <option value={"RATE_OF_CHARGE" + ":" + "true" }>Rate Charge</option>
+                         
                         </select>
                       </div>
 
@@ -1437,7 +1423,7 @@ function OnePremise() {
                       {collectionaccount === 'client' && <div className="form-group mb-2">
                         <label htmlFor="">client account</label>
                         <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
-                          <option value="">Select  client account</option>
+                          <option value={null} >Select  client account</option>
                           {clientAccounts && clientAccounts.map((unit) => (
                             <option value={unit.id}> {unit.bank?.name} </option>
                           ))}
@@ -1448,7 +1434,7 @@ function OnePremise() {
                       {collectionaccount === 'landlord' && <div className="form-group mb-2">
                         <label htmlFor="">landlord account</label>
                         <select name="" id="" className="form-control" onChange={(event) => setLandlordAccount(event.target.value)}>
-                          <option value="">Select landlord account</option>
+                          <option value={null}>Select landlord account</option>
                           {landlordAccounts && landlordAccounts.map((unit) => (
                             <option value={unit.id}> {unit.bank?.bankName} - {unit.bankAccountNumber} </option>
                           ))}
@@ -1457,7 +1443,7 @@ function OnePremise() {
 
                       <div className="form-group mb-2">
                         <label htmlFor="">Invoice day (1-31) </label>
-                        <input type="number" max={31} min={1} placeholder="Enter Unit Name" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
+                        <input type="number" max="31" min="1" placeholder="Enter Unit Name" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
                       </div>
 
                       <div className="form-group mb-2">
