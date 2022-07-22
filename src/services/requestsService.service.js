@@ -589,7 +589,7 @@ class RequestsService {
         return axiosInstance.get(baseUrl + "/tenants/" + data)
     }
     getInvoices(data) {
-        return axiosInstance.post(baseUrl + "/payments/invoice/transactions?size=100", data)
+        return axiosInstance.post(baseUrl + `/payments/invoice/transactions?page=${data.page}&size=${data.size}`, data)
     }
     viewTenancy(tenancyId){
         return axiosInstance.get(baseUrl + "/tenants/tenancy/" + tenancyId)
