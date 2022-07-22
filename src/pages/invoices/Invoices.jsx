@@ -9,6 +9,7 @@ function Invoices() {
   const [invoices, setinvoices] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
   const [transaction, setTransaction] = useState({});
+  const [size, setSize] = useState(100)
   // MODAL
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
@@ -18,22 +19,24 @@ function Invoices() {
 
   useEffect(() =>{
     getInvoices();
-  }, [])
+  }, [size])
 
   const sort = (event) => {
     event.preventDefault()
     let data = {startDate:startDate,endDate:endDate};
-    console.log(data)
     requestsServiceService.getInvoices(data).then((res) => {
-      console.log(res);
       setinvoices(res.data.data)
     });
   }
+  const sortSize = (e) => {
+    console.log(e.target.value)
+    setSize(e.target.value)
+  }
 
   const getInvoices = () => {
-    let data = {startDate:startDate,endDate:endDate}
+    let data = {startDate:startDate,endDate:endDate, size: size}
     console.log(data)
-    requestsServiceService.getInvoices(data).then((res) => {
+    requestsServiceService.getInvoices(data, size).then((res) => {
       console.log(res);
       setinvoices(res.data.data)
     });
@@ -97,6 +100,15 @@ function Invoices() {
                       All rent and Bills invoices
                     </h4>
                     <div className="d-flex">
+                      <div>
+                        <select name="" id="" value={size} onChange={(e) => sortSize(e)}>
+                          <option value="100">100</option>
+                          <option value="3">3</option>
+                          <option value="6">6</option>
+                          <option value="1">1</option>
+                          <option value="20">20</option>
+                        </select>
+                      </div>
                       <div className="input-group" id="datepicker1">
                         <input type="text" className="form-control mouse-pointer sdate"
                                name="dob" placeholder="from" readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" />
