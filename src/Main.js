@@ -41,6 +41,7 @@ import { Helmet } from "react-helmet";
 import OnePremiseUnit from "./pages/premises/OnePremiseUnit";
 import ViewClient from "./pages/clients/ViewCLient";
 import Invoices from "./pages/invoices/Invoices";
+import InvoiceParent from "./pages/invoices/InvoicesParent";
 
 function Main() {
 
@@ -101,6 +102,7 @@ function Main() {
                 {/* invoices */}
                 <Route path='/createinvoice' element={<CreateInvoice />} />
                 <Route path='/invoices' element={<Invoices />} />
+                <Route path='/monthly-invoices' element={<InvoiceParent />} />
                 {/* receipts */}
                 <Route path='/receipts' element={<Receipts />} />
                 {/* transactions  */}
