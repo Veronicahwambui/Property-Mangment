@@ -43,7 +43,7 @@ function Invoices() {
   }
 
   const getInvoices = () => {
-    let data = {startDate:startDate,endDate:endDate, size:size, page:page, search:searchTerm};
+    let data = {startDate:startDate,endDate:endDate, size:size, page:page, applicableChargeName:searchTerm};
     requestsServiceService.getInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data)
@@ -123,7 +123,7 @@ function Invoices() {
                           <form className="app-search d-none d-lg-block">
                             <div className="position-relative">
                               <input type="text" className="form-control"
-                                     placeholder="Search..." onChange={(e) => setSearchTerm(e.target.value)}/>
+                                     placeholder="Search by applicable charge name..." onChange={(e) => setSearchTerm(e.target.value)}/>
                               <span className="bx bx-search-alt"></span>
                             </div>
                           </form>
