@@ -571,6 +571,12 @@ class RequestsService {
     getInvoices(data) {
         return axiosInstance.post(baseUrl + `/payments/invoice/transactions?page=${data.page}&size=${data.size}`, data)
     }
+    getParentInvoices(data){
+        return axiosInstance.post(baseUrl + `/payments/parents/transactions?page=${data.page}&size=${data.size}`, data)
+    }
+    getParentInvoice(id) {
+        return axiosInstance.get(baseUrl + `/payments/parents/${id}`)
+    }
 }
 
 export default new RequestsService();
