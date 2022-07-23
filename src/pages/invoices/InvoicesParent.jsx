@@ -142,7 +142,7 @@ function InvoicesParent() {
                                                     <option value={parseInt(5)}>5</option>
                                                 </select>
                                             </div>
-                                            <div className="col-6">
+                                            <div className="col-4">
                                                 <div className="input-group" id="datepicker1">
                                                     <input type="text" className="form-control mouse-pointer sdate"
                                                            placeholder={`${startDate}`}
