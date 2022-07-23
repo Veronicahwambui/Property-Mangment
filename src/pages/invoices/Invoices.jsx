@@ -10,10 +10,9 @@ function Invoices() {
   const [invoices, setinvoices] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
   const [transaction, setTransaction] = useState({});
-  const [size, setSize] = useState(100)
+  const [size, setSize] = useState(10)
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const [perPage, setPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   // MODAL
   const [invoice_show, setinvoice_show] = useState(false);
@@ -24,11 +23,11 @@ function Invoices() {
 
   useEffect(() =>{
     getInvoices();
-  }, [page, size, pageCount])
+  }, [page, size, pageCount, searchTerm])
 
   const sort = (event) => {
     event.preventDefault()
-    let data = {startDate:startDate,endDate:endDate, size:size, page:page};
+    let data = {startDate:startDate,endDate:endDate, size:size, page:page, search:searchTerm};
     requestsServiceService.getInvoices(data).then((res) => {
       console.log(res)
       setinvoices(res.data.data)
@@ -44,7 +43,7 @@ function Invoices() {
   }
 
   const getInvoices = () => {
-    let data = {startDate:startDate,endDate:endDate, size: size, page: page}
+    let data = {startDate:startDate,endDate:endDate, size:size, page:page, search:searchTerm};
     requestsServiceService.getInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data)
@@ -118,7 +117,18 @@ function Invoices() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       All rent and Bills invoices
                     </h4>
-                    <div className="d-flex justify-content-end ">
+                    <div className="d-flex justify-content-end align-items-center">
+                      <div>
+                        <div>
+                          <form className="app-search d-none d-lg-block">
+                            <div className="position-relative">
+                              <input type="text" className="form-control"
+                                     placeholder="Search..." onChange={(e) => setSearchTerm(e.target.value)}/>
+                              <span className="bx bx-search-alt"></span>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
                       <div>
                         <select className={"btn btn-primary"} name="" id="" value={size} onChange={(e) => sortSize(e)}>
                           <option value={parseInt(100)}>100</option>
@@ -188,7 +198,7 @@ function Invoices() {
                               </div>
                             </div>
                           </td>
-                          <td>{invoice.transactionItemId}</td>
+                          <td>{invoice.transaction?.transactionId}</td>
                           <td>{invoice.transactionCustomerName}</td>
                           <td>{invoice.transaction.premiseName}</td>
                           <td>{invoice.transaction.premiseUnitName}</td>
@@ -242,16 +252,19 @@ function Invoices() {
                     </table>
                   </div>
                   <div className="mt-4 mb-0 flex justify-between px-8">
-                    <p className=" font-medium text-xs text-gray-700">
-                      {" "}
-                      showing page{" "}
-                      <span className="text-green-700 text-opacity-100 font-bold text-sm">
+                    {pageCount !== 0 &&
+                        <p className=" font-medium text-xs text-gray-700">
+                          {" "}
+                          showing page{" "}
+                          <span className="text-green-700 text-opacity-100 font-bold text-sm">
               {page + 1}
             </span>{" "}
-                      of{" "}
-                      <span className="text-sm font-bold text-black">{pageCount}</span>{" "}
-                      pages
-                    </p>
+                          of{" "}
+                          <span className="text-sm font-bold text-black">{pageCount}</span>{" "}
+                          pages
+                        </p>
+                    }
+
 
                     {pageCount !== 0 && (
                         <ReactPaginate

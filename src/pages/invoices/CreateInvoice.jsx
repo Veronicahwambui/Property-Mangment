@@ -43,6 +43,7 @@ function CreateInvoice() {
   const getId = (y) => {
     requestsServiceService.getTenant(y).then((res) => {
       let temp = res.data.data.tenancies;
+      console.log(tenancies)
       settenancies(temp)
     })
   }
