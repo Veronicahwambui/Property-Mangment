@@ -1,6 +1,5 @@
 /* global $ */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
@@ -8,7 +7,7 @@ import ReactPaginate from "react-paginate";
 
 function InvoicesParent() {
   const [invoices, setinvoices] = useState([]);
-  const [activeInvoice, setactiveInvoice] = useState({});
+  const [activeInvoice] = useState({});
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
