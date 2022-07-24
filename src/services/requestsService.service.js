@@ -577,6 +577,9 @@ class RequestsService {
     getParentInvoice(id) {
         return axiosInstance.get(baseUrl + `/payments/parents/${id}`)
     }
+    getpaymentItems() {
+        return axiosInstance.get(baseUrl + `/tenants/tenancy/11`)
+    }
 }
 
 export default new RequestsService();
