@@ -33,7 +33,16 @@ function CreateInvoice() {
     requestsServiceService.allApplicableCharges().then((res) => {
       setapplicableCharges(res.data.data);
     })
-  }, [])
+  }, [tenancyId])
+  useEffect(() => {
+    getTotalKsh()
+  }, [quantity,unitcost])
+
+  const getTotalKsh = () => {
+    if (quantity!=="" && unitcost!=="") {
+      settotal(parseInt(quantity) * parseInt(unitcost))
+    }
+  }
 
   const getTenants = () => {
     requestsServiceService.getAllTenants().then((res) => {
@@ -43,7 +52,6 @@ function CreateInvoice() {
   const getId = (y) => {
     requestsServiceService.getTenant(y).then((res) => {
       let temp = res.data.data.tenancies;
-      console.log(tenancies)
       settenancies(temp)
     })
   }
@@ -316,9 +324,9 @@ function CreateInvoice() {
                                            className="form-label">Invoice amount. <strong className="text-danger">*</strong></label>
                                     <input type="text"
                                            className="form-control invoice-amount"
-                                           value={total}
+                                           value={"KES " + total}
                                            onChange={(e) => settotal(e.target.value)}
-                                           id="formrow-password-input" placeholder="KES" required={true}/>
+                                           id="formrow-password-input" placeholder="KES" required={true} disabled={true}/>
                                   </div>
                                 </div>
                               </div>
