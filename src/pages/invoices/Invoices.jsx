@@ -40,7 +40,9 @@ function Invoices() {
     };
     requestsServiceService.getInvoices(data).then((res) => {
       console.log(res);
+      setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
+    }).then(() => {
     });
   };
   const sortSize = (e) => {
@@ -48,7 +50,7 @@ function Invoices() {
     setPage(0);
   };
   const reset = () => {
-    setSize(100);
+    setSize(10);
     setPage(1);
   };
 
@@ -67,7 +69,6 @@ function Invoices() {
     });
   };
   const handlePageClick = (data) => {
-    console.log(data);
     let d = data.selected;
     setPage(d);
     // setPage(() => data.selected);
@@ -180,6 +181,7 @@ function Invoices() {
                             data-date-container="#datepicker1"
                             data-provide="datepicker"
                             data-date-autoclose="true"
+                            min='1899-01-01' max='2000-13-13'
                           />
                           <span className="input-group-text">
                             <i className="mdi mdi-calendar"></i>
@@ -193,6 +195,7 @@ function Invoices() {
                             data-date-format="dd M, yyyy"
                             data-date-container="#datepicker1"
                             data-provide="datepicker"
+                            min='1899-01-01' max='2000-13-13'
                             data-date-autoclose="true"
                           />
                           <span className="input-group-text">
@@ -260,7 +263,7 @@ function Invoices() {
                                   </div>
                                 </div>
                               </td>
-                              <td>{invoice.transaction?.transactionId}</td>
+                              <td>{invoice.transactionItemId}</td>
                               <td>{invoice.transactionCustomerName}</td>
                               <td>{invoice.transaction.premiseName}</td>
                               <td>{invoice.transaction.premiseUnitName}</td>
@@ -436,7 +439,7 @@ function Invoices() {
               <h3 className="font-size-15 fw-bold">
                 Invoice Details ({" "}
                 <span className="text-primary fw-medium">
-                  {activeInvoice?.transaction?.transactionId}
+                  {activeInvoice?.transactionItemId}
                 </span>{" "}
                 )
               </h3>

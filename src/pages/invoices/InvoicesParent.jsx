@@ -41,6 +41,7 @@ function InvoicesParent() {
       page: page,
     };
     requestsServiceService.getParentInvoices(data).then((res) => {
+      setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
     });
   };
