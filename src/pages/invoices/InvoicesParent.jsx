@@ -22,12 +22,8 @@ function InvoicesParent() {
   const showInvoice = () => setinvoice_show(true);
   const [transaction, settransaction] = useState({});
   const [paymentItems, setpaymentItems] = useState([]);
-  useEffect(() => {
-    console.log(transaction);
-  }, [transaction]);
-  useEffect(() => {
-    console.log(paymentItems);
-  }, [paymentItems]);
+  useEffect(() => {}, [transaction]);
+  useEffect(() => {}, [paymentItems]);
   const closeInvoice = () => {
     setpaymentItems([]);
     settransaction({});
@@ -35,8 +31,6 @@ function InvoicesParent() {
   };
   useEffect(() => {
     getInvoices();
-    console.log(transaction?.transaction);
-    console.log(paymentItems);
   }, [size, page, activeInvoice, status, transaction, paymentItems]);
   const sort = (event) => {
     event.preventDefault();
@@ -47,7 +41,6 @@ function InvoicesParent() {
       page: page,
     };
     requestsServiceService.getParentInvoices(data).then((res) => {
-      console.log(res);
       setinvoices(res.data.data);
     });
   };
@@ -89,12 +82,10 @@ function InvoicesParent() {
     setPage(1);
   };
   const getOneInvoice = (id) => {
-    requestsServiceService.getpaymentItems().then((res) => {
-      setpaymentItems(res.data.data?.paymentTransactions);
+    requestsServiceService.getParentInvoice(id).then((res) => {
+      settransaction(res.data.data.transaction);
+      setpaymentItems(res.data.data.transactionItems);
     });
-    requestsServiceService
-      .getParentInvoice(id)
-      .then((res) => settransaction(res.data.data));
     setTimeout(() => {
       showInvoice();
     }, 800);
@@ -175,7 +166,7 @@ function InvoicesParent() {
                           <option value={parseInt(5)}>5</option>
                         </select>
                       </div>
-                      <div className="col-4">
+                      <div className="col-6">
                         <div className="input-group" id="datepicker1">
                           <input
                             type="text"
@@ -408,10 +399,9 @@ function InvoicesParent() {
             <address>
               <strong>Billed To:</strong>
               <br />
-              {transaction?.transaction?.tenantName} <br />
+              {transaction?.tenantName} <br />
               {/*{activeInvoice?.transactionCustomerEmail}<br/>*/}
-              {transaction?.transaction?.premiseName} -{" "}
-              {transaction?.transaction?.premiseUnitName}
+              {transaction?.premiseName} - {transaction?.premiseUnitName}
               <br />
               <br />
               {moment(transaction?.transaction?.invoiceDate).format(
@@ -419,14 +409,14 @@ function InvoicesParent() {
               )}
             </address>
             {/*<p>Title: {activeInvoice?.transactionTitle}</p>*/}
-            {/*<p>Description: {activeInvoice?.transactionDescription}</p>*/}
+            <p>Description: {transaction?.invoicePeriodDescription}</p>
           </div>
           <div className="col-12">
             <div className="py-2 mt-3">
               <h3 className="font-size-15 fw-bold">
                 Charges Breakdown ({" "}
                 <span className="text-primary fw-medium">
-                  {transaction?.transaction?.transactionId}
+                  {transaction?.transactionId}
                 </span>{" "}
                 )
               </h3>
