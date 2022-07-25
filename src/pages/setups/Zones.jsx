@@ -234,7 +234,7 @@ const deactivate = (id)=> {
                               <a onClick={()=>{
                                 handleEdit(zon.name , zon.clientCounty.id ,zon.id)
                               }} class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "  data-bs-toggle="modal"
-                      data-bs-target="#edit-zone" title="Edit "><i class="bx bx-edit-alt "></i></a>
+                               data-bs-target="#edit-zone" title="Edit "><i class="bx bx-edit-alt "></i></a>
                             {zon.active ?  <button
                                 class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"
                                 title="deactivate"

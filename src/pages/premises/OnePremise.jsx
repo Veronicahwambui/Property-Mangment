@@ -455,7 +455,6 @@ function OnePremise() {
   }
 
   //  premise unit Charges Stuff
-  const [chargeId, setChargeId] = useState('')
   const [rateCharge, setRateCharge] = useState("false")
   const [applicableCharge, setApplicableCharge] = useState('')
   const [applicableCharges, setApplicableCharges] = useState([])
@@ -469,7 +468,6 @@ function OnePremise() {
   const [clientAccountState, setClientAccountState] = useState("false")
   const [landlordAccount, setLandlordAccount] = useState(null)
   const [invoiceDay, setInvoiceDay] = useState('')
-  const [unitCost, setUnitCost] = useState('')
   const [constraintChargeId, setConstraintChargeId] = useState(null)
 
   const fetchApplicableCharges = () => {
@@ -1443,12 +1441,12 @@ function OnePremise() {
 
                       <div className="form-group mb-2">
                         <label htmlFor="">Invoice day (1-31) </label>
-                        <input type="number" max="31" min="1" placeholder="Enter Unit Name" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
+                        <input type="number" max="31" min="1" placeholder="Enter invoice day" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
                       </div>
 
                       <div className="form-group mb-2">
                         <label htmlFor="">value </label>
-                        <input type="number" placeholder="Enter Unit Name" value={value} className="form-control" onChange={(event) => setValue(event.target.value)} />
+                        <input type="number" placeholder="Enter the value" value={value} className="form-control" onChange={(event) => setValue(event.target.value)} />
                       </div>
                     </div>
                     <div class="modal-footer">
@@ -1554,7 +1552,7 @@ function OnePremise() {
                         <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
                       </div>
                       <div onClick={handleDocShow}>
-                        <span className="d-flex align-items-center cursor-pointer "><i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span className="pl-5 ">Add A Document</span></span>
+                        <span className="d-none align-items-center cursor-pointer "><i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span className="pl-5 ">Add A Document</span></span>
                       </div>
                     </div>
                   </div>
