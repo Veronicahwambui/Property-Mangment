@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import {  Route, Routes, Navigate, HashRouter } from 'react-router-dom'
+import { Route, Routes, Navigate, HashRouter } from 'react-router-dom'
 import Header from './components/Header';
 import SideBar from './components/SideBar';
 import Dashboard from './pages/Dashboard';
@@ -55,7 +55,7 @@ function Main() {
       }
     }, AuthService.getUserLoggedInAt() - Math.floor(Date.now()));
 
-    console.log(Math.floor(Date.now())-AuthService.getUserLoggedInAt());
+    console.log(Math.floor(Date.now()) - AuthService.getUserLoggedInAt());
   }, []);
 
   return (
