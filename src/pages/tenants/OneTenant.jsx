@@ -939,7 +939,7 @@ const getStatus =()=>{
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
-                  Tenant
+                  Tenancies
                 </h5>
                 <button
                   type="button"
@@ -963,13 +963,13 @@ const getStatus =()=>{
                         value={unitTypeName}
                       />
                     </div>
-                    <div class="form-group mb-4" id="datepicker1">
+                    <div class="form-group mb-4" id="datepicker12">
                       <label for="">StartDate</label>
                       <input
                         type="text"
                         class="form-control mouse-pointer enddate"
                         placeholder="Enter StartDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker12' data-provide="datepicker" data-date-autoclose="true"
                         onChange={(event) => setStartDate(event.target.value)}
                         value={startDate}
                       />
@@ -1006,7 +1006,7 @@ const getStatus =()=>{
                           })}
                       </select>
                     </div>
-                    <div className="form-group mb-4" id="datepicker1">
+                    <div className="form-group mb-4" id="datepicker14">
                       <label htmlFor="">TenancyRenewalDate</label>
                       <input
                         type="text"
@@ -1014,13 +1014,13 @@ const getStatus =()=>{
                         value={tenancyRenewalDate}
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker14' data-provide="datepicker" data-date-autoclose="true"
 
                         required={true}
                       />
                     </div>
 
-                    <div className="form-group mb-4"  id="datepicker1">
+                    <div className="form-group mb-4"  id="datepicker15">
                       <label htmlFor="">TenancyRenewalNotificationDate</label>
                       <input
                         type="text"
@@ -1030,7 +1030,7 @@ const getStatus =()=>{
                           setTenancyRenewalNotificationDate(e.target.value)
                         }
                         placeholder="TenancyRenewalNotificationDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker15' data-provide="datepicker" data-date-autoclose="true"
 
                         required={true}
                       />
@@ -1573,7 +1573,7 @@ const getStatus =()=>{
                       />
                     </div>
 
-                    <div className="form-group mb-4"   id="datepicker1">
+                    <div className="form-group mb-4" id="datepicker198">
                       <label htmlFor="">StartDate</label>
                       <input
                         type="text"
@@ -1581,13 +1581,13 @@ const getStatus =()=>{
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         placeholder="Enter StartDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" 
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-provide="datepicker" data-date-autoclose="true" 
                         required={true}
                       />
 
                     </div>
 
-                    <div className="form-group mb-4 " id="datepicker1">
+                    <div className="form-group mb-4 " id="datepicker199">
                       <label htmlFor="">TenancyRenewalDate</label>
                       <input
                         type="text"
@@ -1595,12 +1595,12 @@ const getStatus =()=>{
                         value={tenancyRenewalDate}
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate "
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" 
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker199' data-provide="datepicker" data-date-autoclose="true" 
 
                         required={true}
                       />
                     </div>
-                    <div className="form-group mb-4" id="datepicker1">
+                    <div className="form-group mb-4" id="datepicker120">
                       <label htmlFor="">TenancyRenewalNotificationDate</label>
                       <input
                         type="text"
@@ -1608,7 +1608,7 @@ const getStatus =()=>{
                         value={tenancyRenewalNotificationDate}
                         onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
                         placeholder="Enter TenancyRenewalNotificationDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" 
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker120' data-provide="datepicker" data-date-autoclose="true" 
 
                         required={true}
                       />
