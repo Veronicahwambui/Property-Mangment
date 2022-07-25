@@ -557,6 +557,9 @@ class RequestsService {
     toggleChargeunitStatuses(premiseUnitTypeChargeId){
         return axiosInstance.get(baseUrl + "/premiseUnitTypeCharges/"+premiseUnitTypeChargeId+"/toogleStatus" )
     }
+    createTenancyCharges(tenancyId,data){
+        return axiosInstance.post(baseUrl + "/tenants/tenancy/"+tenancyId+"/charge/create-update" , data)
+    }
     // premise charges end
 
 }
