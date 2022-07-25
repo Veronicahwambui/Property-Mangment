@@ -181,7 +181,7 @@ function Invoices() {
                             data-date-container="#datepicker1"
                             data-provide="datepicker"
                             data-date-autoclose="true"
-                            min='1899-01-01' max='2000-13-13'
+                            data-date-end-date="+0d"
                           />
                           <span className="input-group-text">
                             <i className="mdi mdi-calendar"></i>
@@ -195,7 +195,7 @@ function Invoices() {
                             data-date-format="dd M, yyyy"
                             data-date-container="#datepicker1"
                             data-provide="datepicker"
-                            min='1899-01-01' max='2000-13-13'
+                            data-date-end-date="+0d"
                             data-date-autoclose="true"
                           />
                           <span className="input-group-text">
