@@ -76,6 +76,7 @@ function OneTenant() {
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
+      setTenantTypeName(res.data.data.tenant.tenantType);
     });
   };
 
@@ -90,13 +91,13 @@ function OneTenant() {
       dob: dob,
       email: email,
       firstName: firstName,
-      gender: gender,
+      gender: null,
       id: detailsId,
       idNumber: idNumber,
       lastName: lastName,
       maritalStatus: maritalStatus,
       nationality: nationality,
-      occupation: occupation,
+      occupation: null,
       otherName: otherName,
       phoneNumber: phoneNumber,
       tenantTypeName: tenantTypeName,
@@ -104,7 +105,8 @@ function OneTenant() {
     });
     //  console.log(id)
     requestsServiceService.updateTenantsDetails(details).then((res) => {
-   fetchAll()
+    fetchAll()
+  
     });
 
     // console.log(details)
@@ -503,7 +505,7 @@ const getStatus =()=>{
                           onClick={() =>
                             handleChangeTenantsDetails(
                               tenantData.tenant.id,
-                              tenantData.tenant.tenantTypeName,
+                              tenantData.tenant.tenantType,
                               tenantData.tenant.firstName,
                               tenantData.tenant.lastName,
                               tenantData.tenant.otherName,
@@ -530,6 +532,7 @@ const getStatus =()=>{
                   </div>
                   <div className="card-body">
                     <div className="col-12">
+                     
                       <div className="row">
                         <div className="col-3">
                           <label htmlFor="">Type</label>
@@ -540,6 +543,9 @@ const getStatus =()=>{
                             </span>
                           </div>
                         </div>
+                        {tenantTypeName==="INDIVIDUAL" &&
+                        <div className="row mt-5">
+                          
                         <div className="col-3">
                           <label htmlFor="">First Name</label>
                           <div>
@@ -564,9 +570,17 @@ const getStatus =()=>{
                             </span>
                           </div>
                         </div>
-                       
+                        <div className="col-3">
+                          <label htmlFor="">Id Number</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant && tenantData.tenant.idNumber}
+                            </span>
+                          </div>
+                        </div>
 
-                      </div>
+                      
+
                       <div className="row mt-5">
                       <div className="col-3">
                           <label htmlFor="">PhoneNumber</label>
@@ -576,16 +590,23 @@ const getStatus =()=>{
                             </span>
                           </div>
                         </div>
-</div>
-                      <div className="row mt-5">
                         <div className="col-3">
-                          <label htmlFor="">Id Number</label>
+                          <label htmlFor="">Nationality</label>
                           <div>
                             <span>
-                              {tenantData.tenant && tenantData.tenant.idNumber}
+                              {tenantData.tenant &&
+                                tenantData.tenant.nationality}
                             </span>
                           </div>
                         </div>
+</div>
+                        
+                      
+                        </div>}
+                        </div>
+
+                        {tenantTypeName=== "COMPANY"  &&   
+                        <div className="row">                     
                         <div className="col-3">
                           <label htmlFor="">Company Name</label>
                           <div>
@@ -606,16 +627,6 @@ const getStatus =()=>{
                         </div>
 
                         <div className="col-3">
-                          <label htmlFor="">Nationality</label>
-                          <div>
-                            <span>
-                              {tenantData.tenant &&
-                                tenantData.tenant.nationality}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="row mt-5">
-                        <div className="col-3">
                           <label htmlFor="">Company Address</label>
                           <div>
                             <span>
@@ -624,6 +635,10 @@ const getStatus =()=>{
                             </span>
                           </div>
                         </div>
+
+                     
+                        <div className="row mt-5">
+                     
 
                         <div className="col-3">
                           <label htmlFor="">CompanyDateOfRegistration</label>
@@ -634,10 +649,12 @@ const getStatus =()=>{
                             </span>
                           </div>
                         </div>
+                        </div>
                    
-</div>
-                      </div>
-                    </div>
+</div>}
+                   
+
+                  </div>
                   </div>
                 </div>
               </div>
@@ -1212,67 +1229,17 @@ const getStatus =()=>{
                             name="tenantTypeName"
                             className="form-control"
                           >
+                            
+                           
                             <option value="INDIVIDUAL" >Individual</option>
                             <option value="COMPANY">Company</option>
                           </select>
                         </div>
                   </div>
 
-                  {tenantTypeName === "COMPANY" &&
-                  <div className="row">
-                  <div className="col-6">
-                    <div className="form-group">
-                      <label htmlFor="">CompanyName</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setCompanyName(event.target.value)}
-                        value={companyName}
-                        placeholder="Enter CompanyName"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">CompanyIncorporationNumber</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setCompanyIncorporationNumber(event.target.value)}
-                        value={companyIncorporationNumber}
-                        placeholder="Enter CompanyIncorporationNumber"
-                      />
-                    </div>
-                   
                  
 
-                  </div>
-                  <div className="col-6">
-                  <div className="form-group">
-                      <label htmlFor="">CompanyAddress</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setCompanyAddress(event.target.value)}
-                        value={companyAddress}
-                        placeholder="EnterCompanyAddress"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">CompanyDateOfRegistration </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setCompanyDateOfRegistration(event.target.value)}
-                        value={companyDateOfRegistration}
-                        placeholder="Enter CompanyDateOfRegistration "
-                      />
-                    </div>
-                  </div>
-                
-                </div> }
-
-          
-                 
-                {tenantTypeName!== "COMPANY" &&
+           {tenantTypeName === "INDIVIDUAL" &&
 
               <div className="row">
                   
@@ -1359,7 +1326,60 @@ const getStatus =()=>{
                   </div>
                 </div>}
 
-              </div>
+             
+
+              {tenantTypeName !== "INDIVIDUAL" &&
+                  <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="">CompanyName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyName(event.target.value)}
+                        value={companyName}
+                        placeholder="Enter CompanyName"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">CompanyIncorporationNumber</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyIncorporationNumber(event.target.value)}
+                        value={companyIncorporationNumber}
+                        placeholder="Enter CompanyIncorporationNumber"
+                      />
+                    </div>
+                   
+                 
+
+                  </div>
+                  <div className="col-6">
+                  <div className="form-group">
+                      <label htmlFor="">CompanyAddress</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyAddress(event.target.value)}
+                        value={companyAddress}
+                        placeholder="EnterCompanyAddress"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">CompanyDateOfRegistration </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyDateOfRegistration(event.target.value)}
+                        value={companyDateOfRegistration}
+                        placeholder="Enter CompanyDateOfRegistration "
+                      />
+                    </div>
+                  </div>
+                
+                </div> }
+                </div>
 
 
               <div class="modal-footer">
