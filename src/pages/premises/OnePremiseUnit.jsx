@@ -10,6 +10,7 @@ function OnePremiseUnit() {
     const [activeTab, setActiveTab] = useState(1)
     const [unitDetails, setUnitDetails] = useState({})
     const [tenancy, setTenancy] = useState([])
+    const [premiseCharges, setPremiseCharges] = useState([])
 
 
     const { id, one } = useParams()
@@ -20,6 +21,7 @@ function OnePremiseUnit() {
         requestsServiceService.viewOnePremiseUnit(premId, unitId).then((res) => {
             setTenancy(res.data.data.unitTenancy)
             setUnitDetails(res.data.data)
+            setPremiseCharges(res.data.data.defaultPremiseUnitTypeCharges)
         })
     }
 
@@ -44,7 +46,7 @@ function OnePremiseUnit() {
                             <div class="mail-list mt-4">
                                 <a onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-home-outline me-2"></i> Unit Details</a>
                                 <a onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-account-clock me-2"></i>Occupation History</a>
-                                <a onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-tools me-2"></i>Reported Issues</a>
+                                <a onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-tools me-2"></i> Default Charges </a>
                             </div>
                         </div>
                         {/* <!-- End Left sidebar --> */}
@@ -294,7 +296,7 @@ function OnePremiseUnit() {
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                                    <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
+                                                                    <Link class="dropdown-item" to={`/premise/tenant/${unit.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>Detailed view</Link>
 
                                                                         <a class="dropdown-item cursor-pinter"><i class="font-size-15 mdi mdi-home-remove text-danger me-3"></i>Deactivate unit</a>
                                                                     </div>
@@ -310,6 +312,64 @@ function OnePremiseUnit() {
                                     </div>
                                 </div>
                             </div>
+                        }
+                        {activeTab === 3 && 
+                            <div class="row">
+                            <div class="col-12">
+                              <div class="card">
+                                <div class="card-body">
+                              
+                                  <div className="d-flex justify-content-between">
+                                    <h4 class="card-title text-capitalize mb-3">Default charges  </h4>
+
+                                  </div>
+              
+                                  <div class="table-responsive table-responsive-md overflow-visible">
+                                    <table class="table table-editable align-middle table-edits" >
+                                      <thead class="table-light" >
+                                        <tr class=" text-uppercase ">
+                                          <th>#</th>
+                                          <th class="">UNit type</th>
+                                          <th class=" ">NO of Rooms</th>
+                                          <th class=" ">UNIT SIZE M<sup>2</sup></th>
+                                          <th>TENANCY RENEWAL</th>
+                                          <th>charge constraint</th>
+                                          <th>rate charge</th>
+                                          <th>applicable charge </th>
+                                          <th>applicable charge type </th>
+                                          <th>invoice day</th>
+                                          <th>amount </th>
+                                          <th>status</th>
+                                          <th></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                      {premiseCharges && premiseCharges.map((unit, index) => (
+                            <tr data-id="1 ">
+                              <td style={{ width: "80px" }}>{index + 1}</td>
+                              <td >{unit.unitType.name && unit.unitType.name}</td>
+                              <td>{unit.unitType.numberOfRooms} rooms</td>
+                              <td>{unit.unitType.squarage} m<sup>2</sup> </td>
+                              <td>{unit.unitType.monthCountForTenancyRenewal} months</td>
+                              <td>{unit.chargeConstraint}</td>
+                              <td>{unit.rateCharge ? "true" : "false"}</td>
+                              <td>{unit.applicableCharge.name}</td>
+                              <td>{unit.applicableCharge.applicableChargeType}</td>
+                              <td>{unit.invoiceDay}</td>
+                              <td>{unit.value}</td>
+                              <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                            </tr>
+                          ))}
+                                      </tbody>
+              
+                                    </table>
+                                  </div>
+              
+                                </div>
+                              </div>
+                            </div>
+                            {/* <!-- end col --> */}
+                          </div>
                         }
                     </div>
 
