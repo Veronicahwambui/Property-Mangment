@@ -195,7 +195,6 @@ function Invoices() {
                             data-date-format="dd M, yyyy"
                             data-date-container="#datepicker1"
                             data-provide="datepicker"
-                            data-date-end-date="+0d"
                             data-date-autoclose="true"
                           />
                           <span className="input-group-text">
