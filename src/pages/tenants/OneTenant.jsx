@@ -1,17 +1,23 @@
+/* global $*/  
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import UnitTypes from "../setups/UnitTypes";
 import authService from "../../services/auth.service";
-
+import moment from 'moment'
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
   const [docName, setDocName] = useState("");
   const [tenantId, setTenantId] = useState("");
   const [contactPerson, setContactPerson] = useState([]);
-
+  // $( "#datepicker198" ).datepicker({ minDate: new Date().getDay() });
+// $('#datepicker198').datepicker({
+//   format:'mm-dd-yyyy',
+//   startDate:'+0d',
+//   autoclose:true
+// })
   //edit tenants-details
   const [type, setType] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -85,7 +91,7 @@ function OneTenant() {
       active: true,
       clientId: parseInt(authService.getClientId()),
       companyAddress: companyAddress,
-      companyDateOfRegistration: companyDateOfRegistration,
+      companyDateOfRegistration: new Date(companyDateOfRegistration),
       companyIncorporationNumber: companyIncorporationNumber,
       companyName: companyName,
       dob: dob,
@@ -606,7 +612,8 @@ const getStatus =()=>{
                         </div>
 
                         {tenantTypeName=== "COMPANY"  &&   
-                        <div className="row">                     
+                        <div className="row mt-5">  
+                                           
                         <div className="col-3">
                           <label htmlFor="">Company Name</label>
                           <div>
@@ -644,8 +651,8 @@ const getStatus =()=>{
                           <label htmlFor="">CompanyDateOfRegistration</label>
                           <div>
                             <span>
-                              {tenantData.tenant &&
-                                tenantData.tenant.companyDateOfRegistration}
+                          {moment(tenantData.tenant &&
+                                tenantData.tenant.companyDateOfRegistration).format("DD MM YYYY")}
                             </span>
                           </div>
                         </div>
@@ -1366,7 +1373,7 @@ const getStatus =()=>{
                         placeholder="EnterCompanyAddress"
                       />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group" >
                       <label htmlFor="">CompanyDateOfRegistration </label>
                       <input
                         type="text"
@@ -1594,15 +1601,16 @@ const getStatus =()=>{
                     </div>
 
                     <div className="form-group mb-4" id="datepicker198">
-                      <label htmlFor="">StartDate</label>
+                      <label htmlFor="">StartDate (tests)</label>
                       <input
                         type="text"
                         className="form-control mouse-pointer enddate"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         placeholder="Enter StartDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-provide="datepicker" data-date-autoclose="true" 
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-date-start-date="+0d" data-provide="datepicker" data-date-autoclose="true" 
                         required={true}
+        
                       />
 
                     </div>
@@ -1616,7 +1624,7 @@ const getStatus =()=>{
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate "
                         readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker199' data-provide="datepicker" data-date-autoclose="true" 
-
+                        max={moment(tenancyRenewalNotificationDate).format('ddmmyyyy')}
                         required={true}
                       />
                     </div>
@@ -1629,7 +1637,7 @@ const getStatus =()=>{
                         onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
                         placeholder="Enter TenancyRenewalNotificationDate"
                         readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker120' data-provide="datepicker" data-date-autoclose="true" 
-
+                        min={tenancyRenewalDate}
                         required={true}
                       />
                     </div>

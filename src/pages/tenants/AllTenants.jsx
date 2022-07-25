@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import requestsServiceService from '../../services/requestsService.service'
 
+import moment from 'moment'
 
 
 
@@ -127,7 +128,7 @@ function AllTenants() {
 
                           </td>
                           <td>
-                            <h5 className="font-size-14 mb-1">{premise.dateTimeCreated}</h5>
+                            <h5 className="font-size-14 mb-1">{moment(premise.dateTimeCreated).format("DD MM YYYY")}</h5>
 
                           </td>
 
