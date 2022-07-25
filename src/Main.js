@@ -43,6 +43,7 @@ import ViewClient from "./pages/clients/ViewCLient";
 import Invoices from "./pages/invoices/Invoices";
 import PremiseTenancy from "./pages/premises/PremiseTenancy";
 import UserDetails from "./pages/admins/UserDetails";
+import InvoiceParent from "./pages/invoices/InvoicesParent";
 
 function Main() {
 
@@ -106,6 +107,7 @@ function Main() {
                 {/* invoices */}
                 <Route path='/createinvoice' element={<CreateInvoice />} />
                 <Route path='/invoices' element={<Invoices />} />
+                <Route path='/monthly-invoices' element={<InvoiceParent />} />
                 {/* receipts */}
                 <Route path='/receipts' element={<Receipts />} />
                 {/* transactions  */}

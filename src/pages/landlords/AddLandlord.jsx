@@ -337,7 +337,7 @@ export default function AddLandlord() {
                           <div className="col-lg-3 col-md-6 ">
                             <div className="mb-4 ">
                               <label htmlFor=" ">Other Name(s)</label>
-                              <input type="text " className="form-control " value={otherName} onChange={(e) => setOtherName(e.target.value)} id=" " placeholder="Enter Your Other Name "  required={true}/>
+                              <input type="text " className="form-control " value={otherName} onChange={(e) => setOtherName(e.target.value)} id=" " placeholder="Enter Your Other Name "/>
                             </div>
                           </div>
                           <div className="col-lg-3 col-md-6">

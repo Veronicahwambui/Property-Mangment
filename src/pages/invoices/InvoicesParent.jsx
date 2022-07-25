@@ -1,34 +1,37 @@
 /* global $ */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 
-function Invoices() {
+function InvoicesParent() {
   const [invoices, setinvoices] = useState([]);
-  const [activeInvoice, setactiveInvoice] = useState({});
-  const [transaction, setTransaction] = useState({});
+  const [activeInvoice] = useState({});
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
-  // MODAL
-  const [invoice_show, setinvoice_show] = useState(false);
-  const showInvoice = () => setinvoice_show(true);
-  const closeInvoice = () => setinvoice_show(false);
+  const [status, setStatus] = useState("");
   const [startDate, setStartDate] = useState(
     moment().startOf("month").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
     moment(new Date()).format("YYYY-MM-DD")
   );
-
+  const [invoice_show, setinvoice_show] = useState(false);
+  const showInvoice = () => setinvoice_show(true);
+  const [transaction, settransaction] = useState({});
+  const [paymentItems, setpaymentItems] = useState([]);
+  useEffect(() => { }, [transaction]);
+  useEffect(() => { }, [paymentItems]);
+  const closeInvoice = () => {
+    setpaymentItems([]);
+    settransaction({});
+    setinvoice_show(false);
+  };
   useEffect(() => {
     getInvoices();
-  }, [page, size, pageCount, searchTerm]);
-
+  }, [size, page, activeInvoice, status, transaction, paymentItems]);
   const sort = (event) => {
     event.preventDefault();
     let data = {
@@ -36,60 +39,57 @@ function Invoices() {
       endDate: endDate,
       size: size,
       page: page,
-      search: searchTerm,
     };
-    requestsServiceService.getInvoices(data).then((res) => {
-      console.log(res);
+    requestsServiceService.getParentInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
-    }).then(() => {
     });
   };
   const sortSize = (e) => {
     setSize(e.target.value);
     setPage(0);
   };
-  const reset = () => {
-    setSize(10);
-    setPage(1);
-  };
-
   const getInvoices = () => {
     let data = {
       startDate: startDate,
       endDate: endDate,
       size: size,
       page: page,
-      applicableChargeName: searchTerm,
+      search: status,
     };
-    requestsServiceService.getInvoices(data).then((res) => {
+    requestsServiceService.getParentInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
       window.scrollTo(0, 0);
     });
   };
   const handlePageClick = (data) => {
+    console.log(data);
     let d = data.selected;
     setPage(d);
-    // setPage(() => data.selected);
-    // console.log(page)
   };
 
   const total = () => {
     let sum = 0;
     let paid = 0;
-    invoices.map((item) => {
+    paymentItems.map((item) => {
       sum += item.billAmount;
       paid += item.billPaidAmount;
     });
-    return sum - paid;
+    return { sum: sum, paid: paid, balance: sum - paid };
+  };
+  const reset = () => {
+    setSize(100);
+    setPage(1);
   };
   const getOneInvoice = (id) => {
-    let acc = invoices.find(
-      (invoice) => invoice.transaction.transactionId === id
-    );
-    setactiveInvoice(acc);
-    showInvoice();
+    requestsServiceService.getParentInvoice(id).then((res) => {
+      settransaction(res.data.data.transaction);
+      setpaymentItems(res.data.data.transactionItems);
+    });
+    setTimeout(() => {
+      showInvoice();
+    }, 800);
   };
   let formatCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -122,7 +122,7 @@ function Invoices() {
                     <li className="breadcrumb-item">
                       <a href="#">Invoices</a>
                     </li>
-                    <li className="breadcrumb-item active">All Invoices</li>
+                    <li className="breadcrumb-item active">Monthly Invoices</li>
                   </ol>
                 </div>
               </div>
@@ -137,23 +137,21 @@ function Invoices() {
                     role="toolbar"
                   >
                     <h4 className="card-title text-capitalize mb-0 ">
-                      All rent and Bills invoices
+                      Monthly Invoices
                     </h4>
                     <div className="d-flex justify-content-end align-items-center">
                       <div>
-                        <div>
-                          <form className="app-search d-none d-lg-block">
-                            <div className="position-relative">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search..."
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                              />
-                              <span className="bx bx-search-alt"></span>
-                            </div>
-                          </form>
-                        </div>
+                        <form className="app-search d-none d-lg-block">
+                          <div className="position-relative">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search..."
+                              onChange={(e) => setStatus(e.target.value)}
+                            />
+                            <span className="bx bx-search-alt"></span>
+                          </div>
+                        </form>
                       </div>
                       <div>
                         <select
@@ -181,7 +179,6 @@ function Invoices() {
                             data-date-container="#datepicker1"
                             data-provide="datepicker"
                             data-date-autoclose="true"
-                            data-date-end-date="+0d"
                           />
                           <span className="input-group-text">
                             <i className="mdi mdi-calendar"></i>
@@ -239,10 +236,7 @@ function Invoices() {
                           <th>Tenant</th>
                           <th>Premises</th>
                           <th>Hse/Unit</th>
-                          <th>Charge Name</th>
-                          <th>Bill Amount</th>
-                          <th>Paid Amount</th>
-                          <th>Total Balance</th>
+                          <th>Date Issued</th>
                           <th>Payment Status</th>
                           <th className="text-right">Actions</th>
                         </tr>
@@ -262,31 +256,25 @@ function Invoices() {
                                   </div>
                                 </div>
                               </td>
-                              <td>{invoice.transactionItemId}</td>
-                              <td>{invoice.transactionCustomerName}</td>
-                              <td>{invoice.transaction.premiseName}</td>
-                              <td>{invoice.transaction.premiseUnitName}</td>
-                              <td>{invoice.applicableChargeName}</td>
-                              <td>
-                                {formatCurrency.format(invoice.billAmount)}
+                              <td
+                              >
+                                {invoice.transactionId}
                               </td>
+                              <td>{invoice.tenantName}</td>
+                              <td>{invoice.premiseName}</td>
+                              <td>{invoice.premiseUnitName}</td>
                               <td>
-                                {formatCurrency.format(invoice.billPaidAmount)}
-                              </td>
-                              <td>
-                                <span className="fw-semibold ">
-                                  {formatCurrency.format(
-                                    invoice.billAmount - invoice.billPaidAmount
-                                  )}
-                                </span>
+                                {moment(invoice.invoiceDate).format(
+                                  "MMMM Do YYYY"
+                                )}
                               </td>
                               <td>
                                 {invoice.paymentStatus === "PENDING" ? (
-                                  <span class="badge-soft-danger badge">
+                                  <span className="badge-soft-danger badge">
                                     {invoice.paymentStatus}
                                   </span>
                                 ) : (
-                                  <span class="badge-soft-success badge">
+                                  <span className="badge-soft-success badge">
                                     {invoice.paymentStatus}
                                   </span>
                                 )}
@@ -312,12 +300,13 @@ function Invoices() {
                                         className="dropdown-item"
                                         href="#"
                                         onClick={() =>
-                                          getOneInvoice(
-                                            invoice.transaction.transactionId
-                                          )
+                                          getOneInvoice(invoice.transactionId)
                                         }
                                       >
-                                        <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                        <i
+                                          className="font-size-15 mdi mdi-eye me-3 "
+                                          href="# "
+                                        ></i>
                                         View
                                       </span>
                                       <a className="dropdown-item " href="# ">
@@ -343,21 +332,10 @@ function Invoices() {
                         <tr>
                           <th
                             className="text-capitalize text-nowrap"
-                            colSpan="3"
+                            colSpan="12"
                           >
                             {invoices && invoices.length} Invoices
                           </th>
-                          <th className="text-nowrap" colSpan="3">
-                            {}
-                          </th>
-                          <th className="text-nowrap" colSpan="3">
-                            {}
-                          </th>
-                          <td className="text-nowrap" colSpan="3">
-                            <span className="fw-semibold ">
-                              {formatCurrency.format(total())}
-                            </span>
-                          </td>
                         </tr>
                       </tfoot>
                     </table>
@@ -407,7 +385,6 @@ function Invoices() {
         </div>
       </div>
 
-      {/*VIEW INVOICE*/}
       <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
         <Modal.Header closeButton>
           <h5 className="modal-title" id="myLargeModalLabel">
@@ -419,26 +396,24 @@ function Invoices() {
             <address>
               <strong>Billed To:</strong>
               <br />
-              {activeInvoice?.transaction?.tenantName} <br />
-              {activeInvoice?.transactionCustomerEmail}
-              <br />
-              {activeInvoice?.transaction?.premiseName + " , "}
-              {activeInvoice?.transaction?.premiseUnitName}
+              {transaction?.tenantName} <br />
+              {/*{activeInvoice?.transactionCustomerEmail}<br/>*/}
+              {transaction?.premiseName} - {transaction?.premiseUnitName}
               <br />
               <br />
-              {moment(activeInvoice.dateTimeCreated).format(
+              {moment(transaction?.transaction?.invoiceDate).format(
                 "dddd, MMMM Do YYYY, h:mm a"
               )}
             </address>
-            <p>Title: {activeInvoice?.transactionTitle}</p>
-            <p>Description: {activeInvoice?.transactionDescription}</p>
+            {/*<p>Title: {activeInvoice?.transactionTitle}</p>*/}
+            <p>Description: {transaction?.invoicePeriodDescription}</p>
           </div>
           <div className="col-12">
             <div className="py-2 mt-3">
               <h3 className="font-size-15 fw-bold">
-                Invoice Details ({" "}
+                Charges Breakdown ({" "}
                 <span className="text-primary fw-medium">
-                  {activeInvoice?.transactionItemId}
+                  {transaction?.transactionId}
                 </span>{" "}
                 )
               </h3>
@@ -450,56 +425,63 @@ function Invoices() {
                 <thead>
                   <tr>
                     <th style={{ width: "70px" }}>No.</th>
-                    <th>Item</th>
+                    <th>Charge name</th>
                     <th>Quantity</th>
                     <th>Unit Cost</th>
-                    <th className="text-end">Amount</th>
+                    <th>Paid Amount</th>
+                    <th></th>
+                    <th className={"text-end"}>Bill Amount</th>
                   </tr>
                 </thead>
                 <tbody>
+                  {paymentItems?.length > 0 &&
+                    paymentItems?.map((item, index) => (
+                      <tr data-id={index} key={index}>
+                        <td>{index + 1}</td>
+                        <td>{item.applicableChargeName}</td>
+                        <td>{item.quantity}</td>
+                        <td>{formatCurrency.format(item.unitCost)}</td>
+                        <td>{formatCurrency.format(item.billPaidAmount)}</td>
+                        <td></td>
+                        <td className="text-end">
+                          {formatCurrency.format(item.billAmount)}
+                        </td>
+                      </tr>
+                    ))}
                   <tr>
-                    <td>01</td>
-                    <td>{activeInvoice?.applicableChargeName}</td>
-                    <td>{formatCurrency.format(activeInvoice.quantity)}</td>
-                    <td>{formatCurrency.format(activeInvoice?.unitCost)}</td>
-                    <td className="text-end">
-                      KES. {formatCurrency.format(activeInvoice?.billAmount)}
-                    </td>
-                  </tr>
-                  <tr>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td colSpan="2" className="text-end">
                       Total
                     </td>
                     <td className="text-end fw-bold">
-                      KES {formatCurrency.format(activeInvoice?.billAmount)}
+                      {formatCurrency.format(total().sum)}
                     </td>
                   </tr>
                   <tr>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td colSpan="2" className="text-end">
                       Paid
                     </td>
-                    <td className="text-end  fw-bold">
-                      KES {formatCurrency.format(activeInvoice?.billPaidAmount)}
+                    <td className="text-end fw-bold">
+                      {formatCurrency.format(total().paid)}
                     </td>
                   </tr>
                   <tr>
                     <td></td>
                     <td></td>
-                    <td colSpan="2" className="border-0 text-end">
+                    <td></td>
+                    <td></td>
+                    <td colSpan="2" className="text-end">
                       <strong>Balance</strong>
                     </td>
-                    <td className="border-0 text-end">
-                      <h5 className="m-0 text-uppercase fw-bold">
-                        KES{" "}
-                        {formatCurrency.format(
-                          activeInvoice?.billAmount -
-                            activeInvoice?.billPaidAmount
-                        )}
-                      </h5>
+                    <td className="text-end fw-bold">
+                      {formatCurrency.format(total().balance)}
                     </td>
                   </tr>
                 </tbody>
@@ -578,4 +560,4 @@ function Invoices() {
   );
 }
 
-export default Invoices;
+export default InvoicesParent;
