@@ -179,6 +179,7 @@ function InvoicesParent() {
                             data-date-container="#datepicker1"
                             data-provide="datepicker"
                             data-date-autoclose="true"
+                            data-date-end-date="+0d"
                           />
                           <span className="input-group-text">
                             <i className="mdi mdi-calendar"></i>
