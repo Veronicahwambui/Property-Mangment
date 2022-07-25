@@ -23,10 +23,17 @@ function UnitTypes() {
   const [purpose ,setPurpose] = useState('')
   const [squarage ,setSquarage] = useState('')
   const [monthCountForTenancyRenewal ,setMonthCountForTenancyRenewal] = useState('')
+ 
+  useEffect(()=>{   
+    localStorage.setItem("activeId", activeId )
+  },[activeId])
+  
 
   useEffect(() => {
     fetchTypes();
     fetchAll();
+    let oldId = localStorage.getItem("activeId")
+    setActiveId(oldId)
   }, [])
 
 
@@ -284,7 +291,6 @@ function UnitTypes() {
                                   <a onClick={() => { 
                                     setActiveId(val.id); 
                                   setUpdateName(val.name); 
-                                  Zones(val.applicableChargeType);
                                   setMonthCountForTenancyRenewal(val.monthCountForTenancyRenewal);
                                   setPurpose(val.purpose);
                                 setNumberOfRooms(val.numberOfRooms);

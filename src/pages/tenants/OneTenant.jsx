@@ -1,6 +1,7 @@
+import moment from "moment";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import UnitTypes from "../setups/UnitTypes";
 import authService from "../../services/auth.service";
@@ -650,124 +651,58 @@ function OneTenant() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
+                <div className="card-body">
+                  <div className="col-12">
+                    <div className="table-responsive">
+                      <table
+                        class="table align-middle table-edits rent-invoicing dt-responsive"
+                        id="data-table"
+                      >
+                        <thead>
+                        <tr class=" text-uppercase ">
+                                                        <th>#</th>
+                                                        <th>unit name </th>
+                                                        <th>tenant name</th>
+                                                        <th>phone no</th>
+                                                        <th>condition</th>
+                                                        <th>start Date</th>
+                                                       <th>renewal date</th>
+                                                        <th>tenancy status</th>
+                                                        <th>status</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                        </thead>
+                        <tbody>
+                          {tenantData.tenancies &&
+                            tenantData.tenancies.map((unit, index) => (
+                              <tr data-id="1">
+                                <td>{index + 1}</td>
+                                <td>
+                                  {unit.premiseUnit.unitName}
+                                </td>
+                                <td>{unit.tenant.lastName} {unit.tenant.lastName}</td>
+                                {/* <td className="text-capitalize">
+                                {unit.premiseUnit.unitType.name}  
+                                </td> */}
+                                <td>{unit.tenant.phoneNumber}</td>
+                               
+                                <td>{unit.unitCondition}</td>
+                                <td>
+                                  {moment(unit.startDate).format("MMM Do YYYY")}
+                                </td>
+                                <td>
+                                  {moment(unit.tenancyRenewalDate).format("MMM Do YYYY")}
+                                </td>
+                                <td>{unit.tenancyStatus.toLowerCase()}</td>
+                                <td> { unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
+                                <td>
+                                <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
 
-        {activeLink === 3 && (
-          <div>
-            <div className={"row"}>
-              <div className="col-12">
-                <div className="card calc-h-3px">
-                  <div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                          <div
-                            className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                            role="toolbar"
-                          >
-                            <div className="d-flex align-items-center flex-grow-1">
-                              <h4 className="mb-0  bg-transparent  p-0 m-0">
-                                Contact Persons
-                              </h4>
-                            </div>
-                            <div className="d-flex">
-                              <button
-                                type="button"
-                                className="btn btn-primary waves-effect btn-label waves-light me-3"
-                                data-bs-toggle="modal"
-                                data-bs-target="#create-contact"
-                              >
-                                <i className="mdi mdi-plus label-icon"></i> Add
-                                ContactPerson
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="p-4">
-                          <div className="row">
-                   
-
-                            <div className="col-12">
-                                       <div className={"alert alert-" + error.color} role="alert">
-                {error.message}
-              </div>
-                              <div className="table-responsive">
-                                <table className="table align-middle table-nowrap table-hover mb-0">
-                                  <thead>
-                                    <tr class="text-uppercase table-dark">
-                                      <th>#</th>
-                                      <th>Name (s) </th>
-                                      <th>Type</th>
-                                      <th>Relationship</th>
-                                      <th>phone No</th>
-                                      <th>Status</th>
-                                      <th className="text-right">Actions</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {tenantData.contactPeople &&
-                                      tenantData.contactPeople.map(
-                                        (unit, index) => (
-                                          <tr data-id="1">
-                                            <td>{index + 1}</td>
-                                            <td>
-                                              {unit.firstName} {unit.lastName}{" "}
-                                              {unit.otherName}
-                                            </td>
-                                            <td className="text-capitalize">
-                                              {unit.contactPersonType
-                                                .toLowerCase()
-                                                .replace(/_/g, " ")}
-                                            </td>
-                                            <td>{unit.relationship}</td>
-                                            <td>{unit.phoneNumber1}</td>
-                                            <td>
-                                              {" "}
-                                              {unit.active ? (
-                                                <span class="badge-soft-success badge">
-                                                  Active
-                                                </span>
-                                              ) : (
-                                                <span class="badge-soft-danger badge">
-                                                  Inactive
-                                                </span>
-                                              )}
-                                            </td>
-
-                                            <td className="text-right cell-change ">
-                                              <a
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#edit-contact"
-                                                className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                                onClick={() =>
-                                                  handleChangeContacts(
-                                                    unit.id,
-
-                                                    unit.firstName,
-                                                    unit.lastName,
-                                                    unit.otherName,
-                                                    unit.contactPersonType,
-                                                    unit.phoneNumber1,
-                                                    unit.relationship
-                                                  )
-                                                }
-                                              >
-                                                <i className="bx bx-edit-alt " />
-                                              </a>
-                                            </td>
-                                          </tr>
-                                        )
-                                      )}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>

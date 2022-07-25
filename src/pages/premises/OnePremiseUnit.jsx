@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import moment from 'moment'
 import requestsServiceService from '../../services/requestsService.service'
 
 
@@ -263,13 +264,13 @@ function OnePremiseUnit() {
                                                 <thead class="table-light" >
                                                     <tr class=" text-uppercase ">
                                                         <th>#</th>
-                                                        <th>name</th>
-                                                        <th>phone No</th>
-                                                        <th>email</th>
+                                                        <th>unit name </th>
+                                                        <th>tenant name</th>
+                                                        <th>phone no</th>
                                                         <th>condition</th>
                                                         <th>start Date</th>
-                                                       <th>tenancy status</th>
                                                        <th>renewal date</th>
+                                                        <th>tenancy status</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -277,13 +278,13 @@ function OnePremiseUnit() {
                                                     {tenancy && tenancy.map((unit, index) => (
                                                         <tr data-id="1">
                                                             <td style={{ width: "80px" }}>{index + 1}</td>
+                                                            <td>{unit.premiseUnit.unitName}</td>
                                                             <td>{unit.tenant.firstName} {unit.tenant.lastName} </td>
                                                             <td>{unit.tenant.phoneNumber}</td>
-                                                            <td>{unit.tenant.email}</td>
                                                             <td>{unit.unitCondition}</td>
-                                                            <td>{unit.startDate}</td>
+                                                            <td> {moment(unit.startDate).format("MMM Do YYYY")}</td>
+                                                            <td> {moment(unit.tenancyRenewalDate).format("MMM Do YYYY")}</td>
                                                             <td>{unit.tenancyStatus}</td>
-                                                            <td>{unit.tenancyRenewalDate}</td>
                                                             
                                                             <td class="text-right d-flex align-items-center float-right justify-content-end">
 
