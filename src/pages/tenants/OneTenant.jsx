@@ -671,7 +671,7 @@ const getStatus =()=>{
                                 data-bs-target="#create-tenancies"
                               >
                                 <i className="mdi mdi-plus label-icon"></i> Add
-                                 Tenant
+                                 Tenancies
                               </button>
                             </div>
                           </div>
