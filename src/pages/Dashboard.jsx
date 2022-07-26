@@ -3,7 +3,10 @@ import React from 'react'
 function Dashboard() {
   return (
     <div className="page-content">
-    <div class="container-fluid">
+        <div>
+            Dashboard
+        </div>
+    <div class="container-fluid d-none">
 
 {/* <!-- start page title --> */}
 <div class="row">

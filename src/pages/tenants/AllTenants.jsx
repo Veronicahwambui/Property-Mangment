@@ -108,7 +108,7 @@ function AllTenants() {
                           <td className="text-capitalize">{index + 1}</td>
                           <td className="text-capitalize">
                             <Link to={"/tenant/" + premise.id}>
-                              {premise.tenantType === "COMPANY" ? premise.companyName : (premise.firstName + " " + premise.otherName)}
+                              {premise.tenantType === "COMPANY" ? premise.companyName : (premise.firstName + " " + premise.lastName)}
                             </Link>
                           </td>
                           <td>

@@ -239,7 +239,6 @@ function AddTenant() {
       "tenantDTO": tenantDto,
       "tenantDocuments": tenantDocuments
     })
-
     requestsServiceService.createTenant(dara).then((res) => {
 
       if (res.data.status == true) {
@@ -263,8 +262,7 @@ function AddTenant() {
         buttons: [{ label: "OK" }]
       })
     })
-
-  };
+  }
 
 
   const newContactPerson = (event) => {
@@ -322,6 +320,46 @@ function AddTenant() {
     }
     else
       setDocBody({ ...docBody, [event.target.name]: event.target.value });
+
+  }
+  useEffect(() => {
+    console.log(docBody)
+  }, [docBody])
+
+  const handleidchange = (event) => {
+
+    if (event.target.name === "file") {
+      let filereader = new FileReader();
+
+      filereader.readAsDataURL(event.target.files[0]);
+
+      filereader.onload = function () {
+        let data = {document: filereader.result, docName: "ID CARD FRONT", documentOwnerTypeName: "TENANT"}
+        tenantDocuments.push(data);
+        setDocBody({data});
+      };
+      filereader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+    }
+  }
+  const handleidchange2 = (event) => {
+
+    if (event.target.name === "file") {
+      let filereader = new FileReader();
+
+      filereader.readAsDataURL(event.target.files[0]);
+
+      filereader.onload = function () {
+        let data = {document: filereader.result, docName: "ID CARD BACK", documentOwnerTypeName: "TENANT"}
+        tenantDocuments.push(data);
+        setDocBody({data});
+      };
+      filereader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+    }
+
 
   }
 
@@ -415,18 +453,33 @@ function AddTenant() {
                   <h3>Tenant Details</h3>
                   <section>
                     <form>
-
-                      <div className="col-lg-4">
-                        <div className="mb-3">
-                          <label className="form-label">Tenant type</label>
-                          <select
-                            onChange={handleTenantDtoChange}
-                            name="tenantTypeName"
-                            className="form-control"
-                          >
-                            <option value="individual" >Individual</option>
-                            <option value="company">Company</option>
-                          </select>
+                      <div className="col-12">
+                        <div className="col-lg-4">
+                          <div className="mb-3">
+                            <label className="form-label">Tenant type</label>
+                            <select
+                                onChange={handleTenantDtoChange}
+                                name="tenantTypeName"
+                                className="form-control"
+                            >
+                              <option value="individual" >Individual</option>
+                              <option value="company">Company</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div className="col-lg-4">
+                          <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
+                            <i className="font-14px mdi mdi-paperclip"></i> ID FRONT
+                          </label>
+                          <input type="file" className="form-control" name="file"
+                                 onChange={(e) => handleidchange(e)} />
+                        </div>
+                        <div className="col-lg-4">
+                          <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
+                            <i className="font-14px mdi mdi-paperclip"></i> ID BACK
+                          </label>
+                          <input type="file" className="form-control" name="file"
+                                 onChange={(e) => handleidchange2(e)} />
                         </div>
                       </div>
 
@@ -486,11 +539,7 @@ function AddTenant() {
                               <div className="col-4">
                                 <div className="row">
                                   <div className="col-12">
-                                    <div className="mb-4">
-                                      <label htmlFor="basicpill-firstname-input">ID/PPT no.<strong className="text-danger">*</strong></label>
-                                      <input type="text" className="form-control"
-                                        onChange={(e) => handleTenantDtoChange(e)} id="basicpill-firstname-input" placeholder="Enter Id 0r PPT No." />
-                                    </div>
+                                
                                   </div>
 
 
@@ -505,7 +554,7 @@ function AddTenant() {
                                 <div className="mb-4">
                                   <label htmlFor="basicpill-firstname-input">ID Num/ PPT Num<strong className="text-danger">*</strong></label>
                                   <input type="text" className="form-control"
-                                    onChange={(e) => handleTenantDtoChange(e)} id="basicpill-firstname-input" placeholder="Enter Your First Name" />
+                                    onChange={(e) => handleTenantDtoChange(e)} id="basicpill-firstname-input" name='idNumber' placeholder="Enter Id no " />
                                 </div>
                               </div>
                               <div className="col-4">

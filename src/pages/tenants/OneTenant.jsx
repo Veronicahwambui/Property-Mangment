@@ -182,7 +182,7 @@ function OneTenant() {
     setUnitTypeName(unitTypeName);
     setStartDate(startDate);
     setUnitCondition(unitCondition);
-    // setTenancyStatus(tenancyStatus);
+    setTenancyStatus(tenancyStatus);
     setTenancyRenewalDate(tenancyRenewalDate);
     setTenancyRenewalNotificationDate(tenancyRenewalNotificationDate);
     setUnitId(unitId);
@@ -320,6 +320,7 @@ function OneTenant() {
       unitCondition: unitCondition
   
     })
+    console.log(data);
     requestsServiceService.createTenancies(data).then((res)=>{
     console.log(res)
      fetchAll()
@@ -400,6 +401,17 @@ const getStatus =()=>{
   const deleteDeactivate = (id) => {
     requestsServiceService.deactivateTenancies(id).then((res) => {});
   };
+console.log(tenancyRenewalDate)
+
+const date2  =(date) => {
+  setTenancyRenewalNotificationDate(new Date(date.target.value));
+}
+const date3 = (date) => {
+  setTenancyRenewalDate(new Date(date.target.value));
+}
+$(document).on("change", ".date2", date2)
+$(document).on("change", ".date3", date3)
+
 
   return (
     <div className="page-content">
@@ -654,7 +666,7 @@ const getStatus =()=>{
                           <div>
                             <span>
                           {moment(tenantData.tenant &&
-                                tenantData.tenant.companyDateOfRegistration).format("DD- MM -YYYY")}
+                                tenantData.tenant.companyDateOfRegistration).format("DD MM YYYY")}
                             </span>
                           </div>
                         </div>
@@ -910,7 +922,7 @@ const getStatus =()=>{
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group mb-4">
-                      <label for="">UnitTypeName</label>
+                      <label for="">UnitName</label>
                       <input
                         type="text"
                         class="form-control"
@@ -945,25 +957,19 @@ const getStatus =()=>{
                     </div>
                     <div className="form-group mb-4">
                       <label htmlFor="">TenancyStatus</label>
-                      <select
-                        class="form-control"
-                        data-live-search="true"
-                        title="Select TenancyStatus"
-                        onChange={(e) => setTenancyStatus(e.target.value)}
-                      >
-                        <option className="text-black font-semibold ">
-                          --Select TenancyStatus--
-                        </option>
-                        {tenantStatuses&&
-                          tenantStatuses.map((tenant, index) => {
-                            return (
-                              <option key={index} value={tenant}>
-                                {tenant}
-                              </option>
-                            );
-                          })}
-                      </select>
+                  <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter TenancyStatus"
+                  value={tenancyStatus}
+                       
+                  onChange={(e) => setTenancyStatus(e.target.value)}
+                  
+                     />
+
                     </div>
+                    
+                  
                     <div className="form-group mb-4" id="datepicker14">
                       <label htmlFor="">TenancyRenewalDate</label>
                       <input
@@ -1549,27 +1555,27 @@ const getStatus =()=>{
 
                     </div>
 
-                    <div className="form-group mb-4 " id="datepicker199">
+                    <div className="form-group mb-4 " id="datepicker1">
                       <label htmlFor="">TenancyRenewalDate</label>
                       <input
                         type="text"
-                        className="form-control mouse-pointer enddate"
+                        className="form-control mouse-pointer date3"
                         value={tenancyRenewalDate}
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate "
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker199' data-provide="datepicker" data-date-autoclose="true" 
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" 
                         required={true}
                       />
                     </div>
-                    <div className="form-group mb-4" id="datepicker120">
+                    <div className="form-group mb-4" id="datepicker1">
                       <label htmlFor="">TenancyRenewalNotificationDate</label>
                       <input
                         type="text"
-                        className="form-control mouse-pointer enddate"
+                        className="form-control mouse-pointer date2"
                         value={tenancyRenewalNotificationDate}
                         onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
                         placeholder="Enter TenancyRenewalNotificationDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker120' data-provide="datepicker" data-date-autoclose="true" 
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" 
                     
                         required={true}
                       />
@@ -1584,10 +1590,10 @@ const getStatus =()=>{
                         onChange={(e) => setTenancyStatus(e.target.value)}
                       >
                         <option className="text-black font-semibold ">
-                          --Select TenancyStatusName--
+                          --Select TenancyStatus--
                         </option>
-                        {
-                          tenantStatuses && tenantStatuses.map((tenant, index) => {
+                        {tenantStatuses&&
+                          tenantStatuses.map((tenant, index) => {
                             return (
                               <option key={index} value={tenant}>
                                 {tenant}

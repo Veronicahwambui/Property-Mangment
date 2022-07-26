@@ -184,6 +184,30 @@ function OnePremise() {
 
 
   const updatePrem = () => {
+    let f = {
+      active: true,
+      address: "string",
+      chargeFrequencyName: "string",
+      estateId: 0,
+      fileNumber: "string",
+      id: 0,
+      plotNumber: "string",
+      premiseLandLord: [
+        {
+          "active": true,
+          "agreementPeriod": 0,
+          "id": 0,
+          "landLordAgreementTypeId": 0,
+          "landLordId": 0,
+          "premiseId": 0,
+          "remunerationPercentage": 0
+        }
+      ],
+      premiseName: update.premNmae,
+      premiseTypeId: 0,
+      premiseUseTypeId: 0,
+      unitVacancyRestrictionStatus: "string"
+    }
     let data = JSON.stringify({
 
       active: premiseData.premise.active,
@@ -200,17 +224,44 @@ function OnePremise() {
       plotNumber: update.plotNo,
       premiseName: update.premNmae,
       premiseTypeId: update.premType,
-      premiseUseTypeId: update.premUseType
-
+      premiseUseTypeId: update.premUseType,
+      unitVacancyRestrictionStatus: "string"
     })
-    requestsServiceService.updatePremise(userId, data).then(() => {
+    requestsServiceService.updatePremise(userId, data).then((res) => {
       fetchAll()
       $("#edit-premise-detail").modal("hide");
 
+      if (res.data.status) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        })
+      } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        })
+      }
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+    }).catch((res) => {
+      $("#edit-premise-detail").modal("hide");
+
+     
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
     })
   }
-
-
   // premise caretakers stuff
 
 
@@ -388,12 +439,12 @@ function OnePremise() {
         clear()
       }, 3000)
 
-    }).catch((res) => {
+    }).catch(( error, res) => {
       $("#edit-premise-unit").modal("hide");
 
       setError({
         ...error,
-        message: res.data.message,
+        message: error.message,
         color: "danger"
       })
 
@@ -615,7 +666,24 @@ function OnePremise() {
 
   }
 
+// documents struff 
 
+const createDocs = ()=>{
+  setdocShow(!docShow)
+
+  let data = JSON.stringify({
+    docName: docName,
+    document: document,
+    documentOwnerTypeName: "PREMISE",
+    documentTypeId: documentTypeId,
+    id: 0,
+    ownerEntityId: userId
+  })
+requestsServiceService.createDocuments(data).then(()=>{
+  fetchAll()
+})
+
+}
  
 
 
@@ -800,7 +868,11 @@ function OnePremise() {
           </div>
         </div>
         {/* <!-- end of tool bar --> */}
-
+        {error.color !== "" &&
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
+                    </div>
+                  }
         {activeLink === 1 && (
           <div>
             <div className="row">
@@ -839,8 +911,10 @@ function OnePremise() {
                     </div>
                   </div>
                   <div className="card-body">
+               
                     <div className="col-12">
                       <div className="row">
+                
                         <div className="col-3">
                           <label htmlFor="">Type</label>
                           <div>
@@ -1402,7 +1476,7 @@ function OnePremise() {
                         <select name="" id="" className="form-control" onChange={(event) => setConstraintChargeId(event.target.value)}>
                           <option value="">Select  charge </option>
                           {premiseCharges && premiseCharges.map((unit) => (
-                            <option value={unit.id} className={unit.active ? "" : "d-none"}  > {unit.unitType.purpose} {unit.value}</option>
+                            <option value={unit.id} className={unit.active ? "" : "d-none"}  >{unit.unitType.name} - {unit.value}</option>
                           ))}
                         </select>
                       </div>}
@@ -1550,7 +1624,15 @@ function OnePremise() {
                         <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
                       </div>
                       <div onClick={handleDocShow}>
-                        <span className="d-none align-items-center cursor-pointer "><i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span className="pl-5 ">Add A Document</span></span>
+                      <button
+                        type="button"
+                        className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
+                      >
+                        <i className="dripicons-plus font-size-16"></i>{" "}
+                        <span className="pl-1 d-md-inline">
+                          New Premise Unit
+                        </span>
+                      </button>
                       </div>
                     </div>
                   </div>
@@ -1601,7 +1683,7 @@ function OnePremise() {
 
             <div>
               <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
-                <form onSubmit={handleDocumentSubmit}>
+                <form onSubmit={createDocs}>
                   <Modal.Header closeButton>
                     <Modal.Title>Add Documents</Modal.Title>
                   </Modal.Header>
@@ -1627,7 +1709,7 @@ function OnePremise() {
                                   key={dT.id}
                                   value={dT.id}
                                 >
-                                  {dT.name}
+                                  {dT.name.toLowerCase().replace(/_/g , " ")}
                                 </option>
                               );
                             })}

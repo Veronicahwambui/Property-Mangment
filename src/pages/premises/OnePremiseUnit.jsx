@@ -261,7 +261,7 @@ function OnePremiseUnit() {
                             <div className='email-rightbar mb-3'>
                                 <div className="card">
                                     <div className="card-body">
-                                        <div class="table-responsive table-responsive-md overflow-visible">
+                                        <div class="table-responsive table-responsive-md">
                                             <table class="table table-editable align-middle table-edits" >
                                                 <thead class="table-light" >
                                                     <tr class=" text-uppercase ">

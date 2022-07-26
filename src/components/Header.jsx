@@ -72,83 +72,7 @@ function Header() {
                             </button>
                     </div>
 
-                    <div class="dropdown d-inline-block">
-                        {/* <!-- notifications, i will come to this later --> */}
-                        <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-bell bx-tada"></i>
-                                <span class="badge bg-danger rounded-pill">3</span>
-                            </button>
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
-                            <div class="p-3">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h6 class="m-0" key="t-notifications"> Notifications </h6>
-                                    </div>
-                                    <div class="col-auto">
-                                        <a href="#!" class="small" key="t-view-all"> View All</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div data-simplebar style={{maxHeight: "230px"}}>
-                                <a href="javascript: void(0);" class="text-reset notification-item">
-                                    <div class="d-flex">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-warning rounded-circle font-size-16">
-                                                    <i class="mdi mdi-file-document-edit-outline  "></i>
-                                                </span>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1" key="t-shipped">Tenancy Agreement Renewal</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1" key="t-grammer">Aex Wanjala's agreement due in days</p>
-                                                <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">3 min ago</span></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <a href="javascript: void(0);" class="text-reset notification-item">
-                                    <div class="d-flex">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-warning rounded-circle font-size-16">
-                                                    <i class="mdi mdi-file-document-edit-outline  "></i>
-                                                </span>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1" key="t-shipped">Tenancy Agreement Renewal</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1" key="t-grammer">Aex Wanjala's agreement due in days</p>
-                                                <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">3 min ago</span></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <a href="javascript: void(0);" class="text-reset notification-item">
-                                    <div class="d-flex">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-danger rounded-circle font-size-16">
-                                                    <i class="mdi mdi-home-export-outline  "></i>
-                                                </span>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1" key="t-shipped">Tenant on Notice</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1" key="t-grammer">Kibor will be moving out in the next 7 Days</p>
-                                                <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">3 min ago</span></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-
-                            </div>
-                            <div class="p-2 border-top d-grid">
-                                <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
-                                    <i class="mdi mdi-arrow-right-circle me-1"></i> <span key="t-view-more">View More..</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                
 
                     <div class="dropdown d-inline-block">
                         <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -161,7 +85,7 @@ function Header() {
                             {/* <!-- item--> */}
                             <a class="dropdown-item" href="myprofile.html"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">My Profile</span></a>
                             <a class="dropdown-item" href="my-logs.html"><i class="bx bx-time font-size-16 align-middle me-1"></i> <span key="t-profile">My Logs</span></a>
-                            <a class="dropdown-item" href="auth-lock-screen.html"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock screen</span></a>
+                            {/* <a class="dropdown-item" href="auth-lock-screen.html"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock screen</span></a> */}
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" style={{cursor: "pointer"}} onClick={Logout}><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
                         </div>

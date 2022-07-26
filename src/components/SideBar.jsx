@@ -52,7 +52,61 @@ function SideBar() {
                             </ul>
                         </li>
 
+                      
+
                         <li>
+                            <a href="javascript: void(0)" className="waves-effect has-arrow">
+                                <i className="bx bx-receipt"></i>
+                                <span>Invoices</span>
+                            </a>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li><NavLink to="/createinvoice">Create an Invoice</NavLink></li>
+                                <li><NavLink to="/invoices">Invoices</NavLink></li>
+                                <li><NavLink to="/monthly-invoices">Monthly Invoices</NavLink></li>
+                            </ul>
+                        </li>
+
+
+                        {/* <li>
+                            <NavLink to="/receipts" className="waves-effect">
+                                <i className="mdi mdi-receipt"></i><span>Receipts</span>
+                            </NavLink>
+                        </li> */}
+
+                        {/* <li>
+                            <NavLink to="/trasactions" className="waves-effect">
+                                <i className="mdi mdi-cash-multiple"></i>
+                                <span>Transactions</span>
+                            </NavLink>
+                        </li> */}
+                        <li>
+                            <a href="javascript: void(0)" className="waves-effect has-arrow">
+                                <i className="mdi mdi-shield-account-outline"></i>
+                                <span>System Users</span>
+                            </a>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li><NavLink to="/adminlist">Users List</NavLink></li>
+                                <li><NavLink to="/addadmin">Add a User</NavLink></li>
+                                {/* <li><NavLink to="/updateuser">Update User</NavLink></li> */}
+                                <li><NavLink to="/usertypes"> UserTypes</NavLink></li>
+                            </ul>
+                        </li>
+                        {/* <li>
+                            <a href="javascript: void(0)" className="waves-effect has-arrow">
+                                <i className="bx bx-buildings"></i>
+                                <span>Clients</span>
+                            </a>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li><NavLink to="/clienttypes">Client types</NavLink></li>
+                            </ul>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li><NavLink to="/clients">Clients</NavLink></li>
+                            </ul>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li><NavLink to="/addclient">Add a client</NavLink></li>
+                            </ul>
+                        </li> */}
+                          <li>
                             <a href="javascript: void(0)" className="waves-effect has-arrow">
                                 <i className="mdi mdi-cog-outline"></i>
                                 <span>Set ups</span>
@@ -68,59 +122,6 @@ function SideBar() {
                                 <li><NavLink to="/zones">Zones</NavLink></li>
                                 <li><NavLink to="/estates">Estate</NavLink></li>
                                 <li><NavLink  to="/agreementtypes">Agreement Types</NavLink></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="javascript: void(0)" className="waves-effect has-arrow">
-                                <i className="bx bx-receipt"></i>
-                                <span>Invoices</span>
-                            </a>
-                            <ul className="sub-menu" aria-expanded="false">
-                                <li><NavLink to="/createinvoice">Create an Invoice</NavLink></li>
-                                <li><NavLink to="/invoices">Invoices</NavLink></li>
-                                <li><NavLink to="/monthly-invoices">Monthly Invoices</NavLink></li>
-                            </ul>
-                        </li>
-
-
-                        <li>
-                            <NavLink to="/receipts" className="waves-effect">
-                                <i className="mdi mdi-receipt"></i><span>Receipts</span>
-                            </NavLink>
-                        </li>
-
-                        <li>
-                            <NavLink to="/trasactions" className="waves-effect">
-                                <i className="mdi mdi-cash-multiple"></i>
-                                <span>Transactions</span>
-                            </NavLink>
-                        </li>
-                        <li>
-                            <a href="javascript: void(0)" className="waves-effect has-arrow">
-                                <i className="mdi mdi-shield-account-outline"></i>
-                                <span>System Users</span>
-                            </a>
-                            <ul className="sub-menu" aria-expanded="false">
-                                <li><NavLink to="/adminlist">Users List</NavLink></li>
-                                <li><NavLink to="/addadmin">Add a User</NavLink></li>
-                                {/* <li><NavLink to="/updateuser">Update User</NavLink></li> */}
-                                <li><NavLink to="/usertypes"> UserTypes</NavLink></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="javascript: void(0)" className="waves-effect has-arrow">
-                                <i className="bx bx-buildings"></i>
-                                <span>Clients</span>
-                            </a>
-                            <ul className="sub-menu" aria-expanded="false">
-                                <li><NavLink to="/clienttypes">Client types</NavLink></li>
-                            </ul>
-                            <ul className="sub-menu" aria-expanded="false">
-                                <li><NavLink to="/clients">Clients</NavLink></li>
-                            </ul>
-                            <ul className="sub-menu" aria-expanded="false">
-                                <li><NavLink to="/addclient">Add a client</NavLink></li>
                             </ul>
                         </li>
                     </ul>
