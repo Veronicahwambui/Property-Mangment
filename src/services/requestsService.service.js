@@ -560,6 +560,9 @@ class RequestsService {
     createTenancyCharges(tenancyId,data){
         return axiosInstance.post(baseUrl + "/tenants/tenancy/"+tenancyId+"/charge/create-update" , data)
     }
+    getTenancyStatuses(){
+        return axiosInstance.get(baseUrl + "/setup/tenancyStatuses")
+    }
     // premise charges end
 
 }
