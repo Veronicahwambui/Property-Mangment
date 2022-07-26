@@ -445,7 +445,7 @@ function ViewLandlord() {
                         <i className="mdi mdi-account-circle text-primary h1"></i>
                       </div>
                       <div>
-                        <h5 className="text-capitalize">{landlord.firstName + " " + landlord.lastName}
+                        <h5 className="text-capitalize">{landlord?.firstName} {landlord?.lastName} {landlord?.otherName}
                           {landlord.active ?
                             <span className="badge-soft-success badge">Active</span> :
                             <span className="badge-soft-danger badge">Inactive</span>
@@ -794,7 +794,7 @@ function ViewLandlord() {
                     <label htmlFor="">Other Name.</label>
                     <input type="text" value={editlandlordothername} onChange={(e) => seteditlandlordothername(e.target.value)}
                       className="form-control"
-                      required={true} />
+                       />
                   </div>
                 </div>
                 <div className="col-6">
