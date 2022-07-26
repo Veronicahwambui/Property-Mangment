@@ -350,13 +350,13 @@ function AllRoles() {
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group mb-4">
-                      <label for="">Role Name</label>
+                      <label for="">Role Name <strong class="text-danger">*</strong></label>
                       <input type="text" value={roleName} onChange={(e) => setRoleName(e.target.value)} class="form-control" placeholder="Enter the role Name" required />
                     </div>
                   </div>
                   <div class="col-12 text-capitalize">
                     <div class="form-group mb-0">
-                      <h6 class="font-16px text-info">Select permissions Specific to the role</h6>
+                      <h6 class="font-16px text-info">Select permissions Specific to the role <strong class="text-danger">*</strong></h6>
 
                     </div>
                   </div>
@@ -406,13 +406,13 @@ function AllRoles() {
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">Role Name</label>
+                    <label for="">Role Name <strong class="text-danger">*</strong></label>
                     <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} class="form-control" placeholder="Enter the role Name" required />
                   </div>
                 </div>
                 <div class="col-12 text-capitalize">
                   <div class="form-group mb-0">
-                    <h6 class="font-16px text-info">Edit permissions Specific to the role</h6>
+                    <h6 class="font-16px text-info">Edit permissions Specific to the role <strong class="text-danger">*</strong></h6>
 
                   </div>
                 </div>

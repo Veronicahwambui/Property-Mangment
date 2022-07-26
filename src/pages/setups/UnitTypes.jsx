@@ -369,13 +369,13 @@ function UnitTypes() {
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">Unit Type Name </label>
+                    <label for="">Unit Type Name <strong class="text-danger">*</strong></label>
                     <input required value={createName} onChange={(e) => setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter unit type name" />
                   </div>
                 </div>
                 <div class="col-12">
 
-                  <label for="">Charge Type </label>
+                  <label for="">Charge Type <strong class="text-danger">*</strong> </label>
                   <select
                     class=" form-control"
                     multiple
@@ -396,20 +396,20 @@ function UnitTypes() {
                 </div>
 
                 <div className="form-group">
-                      <label htmlFor="">Purpose</label>
+                      <label htmlFor="">Purpose <strong class="text-danger">*</strong></label>
                       <input required type="text" value={purpose} className="form-control" onChange={(event) => setPurpose(event.target.value)} />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="">Number of Rooms</label>
+                      <label htmlFor="">Number of Rooms <strong class="text-danger">*</strong></label>
                       <input required type="text" value={numberOfRooms} className="form-control" onChange={(event) => setNumberOfRooms(event.target.value)} />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="">unit size in M<sup>2</sup></label>
+                      <label htmlFor="">unit size in M<sup>2</sup> <strong class="text-danger">*</strong></label>
                       <input required type="text" value={squarage} className="form-control" onChange={(event) => setSquarage(event.target.value)} />
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="">Months to renewal </label>
+                      <label htmlFor="">Months to renewal <strong class="text-danger">*</strong></label>
                       <input required type="text" value={monthCountForTenancyRenewal} className="form-control" onChange={(event) => setMonthCountForTenancyRenewal(event.target.value)} />
                     </div>
               </div>
@@ -462,13 +462,13 @@ function UnitTypes() {
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for=""> Unit Type Name </label>
+                    <label for=""> Unit Type Name <strong class="text-danger">*</strong></label>
                     <input required value={updateName} onChange={(e) => setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                   </div>
                 </div>
                 <div class="col-12">
 
-                  <label for="">Charge Type </label>
+                  <label for="">Charge Type <strong class="text-danger">*</strong> </label>
                   <select
                     class="form-control"
                     data-live-search="true"
@@ -491,20 +491,20 @@ function UnitTypes() {
                 </div>
 
                 <div className="form-group">
-                      <label htmlFor="">Purpose</label>
+                      <label htmlFor="">Purpose <strong class="text-danger">*</strong></label>
                       <input required type="text" value={purpose} className="form-control" onChange={(event) => setPurpose(event.target.value)} />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="">Number of Rooms</label>
+                      <label htmlFor="">Number of Rooms <strong class="text-danger">*</strong></label>
                       <input required type="text" value={numberOfRooms} className="form-control" onChange={(event) => setNumberOfRooms(event.target.value)} />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="">unit size in M<sup>2</sup></label>
+                      <label htmlFor="">unit size in M<sup>2</sup> <strong class="text-danger">*</strong></label>
                       <input required type="text" value={squarage} className="form-control" onChange={(event) => setSquarage(event.target.value)} />
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="">Months to renewal </label>
+                      <label htmlFor="">Months to renewal <strong class="text-danger">*</strong></label>
                       <input required type="text" value={monthCountForTenancyRenewal} className="form-control" onChange={(event) => setMonthCountForTenancyRenewal(event.target.value)} />
                     </div>
               </div>
