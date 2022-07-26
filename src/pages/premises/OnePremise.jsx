@@ -204,14 +204,41 @@ function OnePremise() {
       premiseUseTypeId: update.premUseType
 
     })
-    requestsServiceService.updatePremise(userId, data).then(() => {
+    requestsServiceService.updatePremise(userId, data).then((res) => {
       fetchAll()
       $("#edit-premise-detail").modal("hide");
 
+      if (res.data.status) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        })
+      } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        })
+      }
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+
+    }).catch((res) => {
+      $("#edit-premise-detail").modal("hide");
+
+     
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
     })
   }
-
-
   // premise caretakers stuff
 
 
@@ -389,12 +416,12 @@ function OnePremise() {
         clear()
       }, 3000)
 
-    }).catch((res) => {
+    }).catch(( error, res) => {
       $("#edit-premise-unit").modal("hide");
 
       setError({
         ...error,
-        message: res.data.message,
+        message: error.message,
         color: "danger"
       })
 
@@ -801,7 +828,11 @@ function OnePremise() {
           </div>
         </div>
         {/* <!-- end of tool bar --> */}
-
+        {error.color !== "" &&
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
+                    </div>
+                  }
         {activeLink === 1 && (
           <div>
             <div className="row">
@@ -840,8 +871,10 @@ function OnePremise() {
                     </div>
                   </div>
                   <div className="card-body">
+               
                     <div className="col-12">
                       <div className="row">
+                
                         <div className="col-3">
                           <label htmlFor="">Type</label>
                           <div>

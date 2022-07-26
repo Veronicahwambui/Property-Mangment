@@ -13,6 +13,10 @@ function PremiseTenancy() {
     const [value, setValue] = useState('')
     const [invoiceDay, setInvoiceDay] = useState('')  
     const [tenancy, setTenancy] = useState({})
+    const [error, setError] = useState({
+        message: "",
+        color: ""
+      });
 
 
     
@@ -50,7 +54,6 @@ function PremiseTenancy() {
 
 
     const create = () => {
-      $("#create-tenant-charge").modal("hide");
 
         let data = JSON.stringify({
             active: true,
@@ -66,9 +69,46 @@ function PremiseTenancy() {
 
          requestsServiceService.createTenancyCharges(tenantId ,data).then((res)=>{
             fetchAll()
-         })
-    }
+      $("#create-tenant-charge").modal("hide");
 
+            if (res.data.status) {
+                setError({
+                  ...error,
+                  message: res.data.message,
+                  color: "success"
+                })
+              } else {
+        
+                setError({
+                  ...error,
+                  message: res.data.message,
+                  color: "warning"
+                })
+              }
+        
+              setTimeout(() => {
+                clear()
+              }, 3000)
+        
+            }).catch((res) => {
+      $("#create-tenant-charge").modal("hide");
+             
+              setError({
+                ...error,
+                message: res.data.message,
+                color: "danger"
+              })
+        
+            })
+          }
+        
+          const clear = () => {
+            setError({
+              ...error,
+              message: "",
+              color: ""
+            });
+          }
     return (
         <div className='page-content'>
             <div className="content-fluid">
@@ -333,7 +373,11 @@ function PremiseTenancy() {
                                     <div class="col-12">
                                         <div class="card">
                                             <div class="card-body">
-
+                                            {error.color !== "" &&
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
+                    </div>
+                  }
                                                 <div className="d-flex justify-content-between">
                                                     <h4 class="card-title text-capitalize mb-3">Charges  </h4>
                                                     <button

@@ -263,47 +263,6 @@ function Estate() {
                           )
                         })}
 
-                        <tr class="cloneCharges d-none">
-                          <td style={{ width: "80px" }} class="categoryIndex ">
-                            #
-                          </td>
-                          <td>
-                            <input
-                              type="text "
-                              class="form-control "
-                              placeholder="estate Name"
-                            />
-                          </td>
-
-                          <td>
-                            <select
-                              class="form-select"
-                              style={{ width: "130px" }}
-                            >
-                              <option value="">Nairobi</option>
-                              <option value="">Mombasa</option>
-                              <option value="">Nakuru</option>
-                            </select>
-                          </td>
-                          <td>-</td>
-                          <td>-</td>
-                          <td>-</td>
-
-                          <td class="text-right cell-change d-flex align-items-center justify-content-end">
-                            <button
-                              class="btn btn-primary btn-sm text-uppercase px-3 save-new-btn mx-3 "
-                              title="save "
-                            >
-                              Add
-                            </button>
-                            <a
-                              class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent cancel-new-category "
-                              title="Cancel "
-                            >
-                              <i class="bx bx-x "></i>
-                            </a>
-                          </td>
-                        </tr>
 
 
                       </tbody>

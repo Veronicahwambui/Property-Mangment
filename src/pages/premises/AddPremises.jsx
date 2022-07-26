@@ -14,6 +14,7 @@ function AddPremises() {
   const [unitCharges, setUnitCharges] = useState([]);
   const [landLordAccounts, setLandLordAccounts] = useState([]);
   const [uniqueChargeId, setUniqueChargeIds] = useState([]);
+  
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
@@ -1253,6 +1254,7 @@ function AddPremises() {
       </Modal>
 
       {/* <!-- enter landlord's id modal --> */}
+    
 
       <Modal show={fileNoShow} centered>
         <ModalBody>
