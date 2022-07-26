@@ -1,7 +1,6 @@
 
 /* global $*/  
 
-import moment from "moment";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
