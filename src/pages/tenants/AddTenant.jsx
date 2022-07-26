@@ -486,11 +486,7 @@ function AddTenant() {
                               <div className="col-4">
                                 <div className="row">
                                   <div className="col-12">
-                                    <div className="mb-4">
-                                      <label htmlFor="basicpill-firstname-input">ID/PPT no.<strong className="text-danger">*</strong></label>
-                                      <input type="text" className="form-control"
-                                        onChange={(e) => handleTenantDtoChange(e)} id="basicpill-firstname-input" placeholder="Enter Id 0r PPT No." />
-                                    </div>
+                                
                                   </div>
 
 
@@ -505,7 +501,7 @@ function AddTenant() {
                                 <div className="mb-4">
                                   <label htmlFor="basicpill-firstname-input">ID Num/ PPT Num<strong className="text-danger">*</strong></label>
                                   <input type="text" className="form-control"
-                                    onChange={(e) => handleTenantDtoChange(e)} id="basicpill-firstname-input" placeholder="Enter Your First Name" />
+                                    onChange={(e) => handleTenantDtoChange(e)} id="basicpill-firstname-input" name='idNumber' placeholder="Enter Id no " />
                                 </div>
                               </div>
                               <div className="col-4">
