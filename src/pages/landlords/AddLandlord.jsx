@@ -2,6 +2,10 @@ import React, {useEffect, useState} from 'react'
 import requestsServiceService from '../../services/requestsService.service'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import {useNavigate} from "react-router-dom";
+import { confirmAlert } from 'react-confirm-alert';
+
+
 
 export default function AddLandlord() {
 
@@ -12,7 +16,7 @@ export default function AddLandlord() {
   const [landlordtypes, setlandlordtypes] = useState([])
   const [documentTypes, setdocumentTypes] = useState([])
   const [landlordDocuments, setLandlordDocuments] = useState([]);
-
+  const navigate = useNavigate();
 
   useEffect(()=>{
     requestsServiceService.getAllAgreementTypes().then((res) => {
@@ -167,28 +171,28 @@ export default function AddLandlord() {
       landLordAccounts: accounts
     }
     requestsServiceService.createLandLord(new_t).then((res) => {
-      console.log(res);
-      setError({
-        ...error,
-        message: res.data.message + "! Landlord created",
-        color: "success"
-      })
-      setTimeout(() => {
-        setError({
-          ...error,
-          message: "",
-          color: ""
+      if (res.data.status == true) {
+        confirmAlert({
+          message: res.data.message,
+          buttons: [{
+            label: "OK",
+            onClick: (e) => {
+              navigate('/landlords', {replace: true})
+            }
+          }
+          ]
         })
-      }, 3000);
+      } else {
+        confirmAlert({
+          message: res.data.message,
+          buttons: [{ label: "OK" }]
+        })
+      }
     }).catch((err) => {
-      console.log(err)
-      setTimeout(() => {
-        setError({
-          ...error,
-          message: "",
-          color: ""
-        })
-      }, 3000);
+      confirmAlert({
+        message: err.message,
+        buttons: [{ label: "OK" }]
+      })
     })
   }
   const removeDoc = (id) => {
