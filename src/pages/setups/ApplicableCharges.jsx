@@ -13,7 +13,10 @@ function ApplicableCharges() {
   const [chargeTypes , setChargeTypes]= useState([])
   const [chargeType, setChargeType]= useState('')
   const [updateChargeType, setUpdateChargeType]= useState('')
-  const [error, setError] = useState({
+    const [isChecked, setIsChecked] = useState(false);
+    const [updateCheck, setUpdateCheck] = useState(false);
+
+    const [error, setError] = useState({
     message: "",
     color: ""
   });
@@ -48,9 +51,9 @@ function ApplicableCharges() {
     clientId: authService.getClientId(),
     expectManualValues: manualVal,
     id: null,
-    name: createName
+    name: createName,
+       refundable: isChecked,
   })
-   
    requestsServiceService.createApplicableCharges(data).then((res)=>{
      fetchAll()
      $("#add-new-zone").modal("hide");
@@ -65,10 +68,10 @@ function ApplicableCharges() {
           ...error,
           message: res.data.message,
           color: "warning"
-        }) 
+        })
       }
-      
-      
+
+
       setTimeout(() => {
         clear()
       }, 3000)
@@ -117,7 +120,8 @@ function ApplicableCharges() {
       clientId: authService.getClientId(),
       expectManualValues: newManualVal,
       id: activeId,
-      name: updateName
+      name: updateName,
+         refundable:updateCheck
     })
     requestsServiceService.updateApplicableCharges(data).then((res)=>{
      fetchAll()
@@ -134,10 +138,10 @@ function ApplicableCharges() {
           ...error,
           message: res.data.message,
           color: "warning"
-        }) 
+        })
       }
-      
-      
+
+
       setTimeout(() => {
         clear()
       }, 3000)
@@ -158,7 +162,10 @@ function ApplicableCharges() {
 
     })
   }
-  
+   const handleOnChange = () => {
+        setIsChecked(!isChecked);
+       setUpdateCheck(!updateCheck)
+    };
 
 
 
@@ -350,6 +357,9 @@ function ApplicableCharges() {
                     </select>
                   
                 </div>
+                  <div className="col-12 p-4">
+                          <input type="checkbox" checked={isChecked} onChange={handleOnChange}/> Refundable?
+                  </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -433,6 +443,9 @@ function ApplicableCharges() {
                     </select>
                   
                 </div>
+                  <div className="col-12 p-4">
+                      <input type="checkbox" checked={updateCheck} onChange={handleOnChange}/> Refundable?
+                  </div>
               </div>
             </div>
             <div class="modal-footer">

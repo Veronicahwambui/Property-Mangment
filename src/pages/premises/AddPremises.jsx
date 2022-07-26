@@ -29,6 +29,7 @@ function AddPremises() {
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
   const [fileNoShow, setFileNoShow] = useState(true);
+  const [tenancyStatus, setTenancyStatus] = useState("")
 
   const toogleShowUnitTypeChargesModal = () => {
     setShowUnitTypeChargesModal(!showUnitTypeChargesModal);
@@ -103,7 +104,8 @@ function AddPremises() {
     "plotNumber": undefined,
     "premiseName": undefined,
     "premiseTypeId": undefined,
-    "premiseUseTypeId": undefined
+    "premiseUseTypeId": undefined,
+    "unitVacancyRestrictionStatus": undefined,
   });
 
   const handleGeneral = (event) => {
@@ -307,6 +309,12 @@ function AddPremises() {
       setUnitTypes(res.data.data)
     )
   }
+  const [tenancyStatuses, setTenancyStatuses] = useState([]);
+  const getAllTenancyStatuses = () => {
+    requestsServiceService.getTenancyStatuses().then((res) => {
+      setTenancyStatuses(res.data.data)
+    })
+  }
 
   const [premiseDocuments, setPremiseDocuments] = useState([])
   const [docBody, setDocBody] = useState({
@@ -326,6 +334,7 @@ function AddPremises() {
     getAllDocumentTypes()
     getAllApplicableCharges()
     getAllUnitTypes()
+    getAllTenancyStatuses()
   }, [])
 
   const toogleShowNewDocumentModal = (event) => {
@@ -670,6 +679,26 @@ function AddPremises() {
                                 <option></option>
                                 {premiseUseTypes && premiseUseTypes.map((type) => (
                                   <option value={type.id}> {type.name}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                          <div className="col-lg-4 col-md-6 ">
+                            <div className="mb-4 ">
+                              <label htmlFor="basicpill-lastname-input ">
+                                Unit vacancy restriction status
+                                <strong className="text-danger ">*</strong>
+                              </label>
+                              <select
+                                  className="form-control "
+                                  title="Select restriction status "
+                                  name='unitVacancyRestrictionStatus'
+                                  onChange={handleGeneral}
+
+                              >
+                                <option></option>
+                                {tenancyStatuses && tenancyStatuses.map((t) => (
+                                    <option value={t}> {t}</option>
                                 ))}
                               </select>
                             </div>
