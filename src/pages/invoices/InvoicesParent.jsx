@@ -16,7 +16,7 @@ function InvoicesParent() {
     moment().startOf("month").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
-    moment(new Date()).format("YYYY-MM-DD")
+      moment(new Date()).add(3, 'M').format('YYYY-MM-DD')
   );
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
