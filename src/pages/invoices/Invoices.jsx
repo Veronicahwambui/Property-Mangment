@@ -236,6 +236,7 @@ function Invoices() {
                             </div>
                           </th>
                           <th>Invoice Number</th>
+                          <th>Bill Reference No</th>
                           <th>Tenant</th>
                           <th>Premises</th>
                           <th>Hse/Unit</th>
@@ -263,6 +264,7 @@ function Invoices() {
                                 </div>
                               </td>
                               <td>{invoice.transactionItemId}</td>
+                              <td>{invoice.billerBillNo}</td>
                               <td>{invoice.transactionCustomerName}</td>
                               <td>{invoice.transaction.premiseName}</td>
                               <td>{invoice.transaction.premiseUnitName}</td>

@@ -392,6 +392,7 @@ function CreateInvoice() {
                                       type="number"
                                       className="form-control"
                                       value={quantity}
+                                      min="1"
                                       onChange={(e) =>
                                         setquantity(e.target.value)
                                       }
@@ -413,6 +414,7 @@ function CreateInvoice() {
                                       type="number"
                                       className="form-control"
                                       value={unitcost}
+                                      min="1"
                                       onChange={(e) =>
                                         setunitcost(e.target.value)
                                       }
