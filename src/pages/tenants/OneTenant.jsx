@@ -53,11 +53,12 @@ function OneTenant() {
   const [unitTypeName, setUnitTypeName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [unitCondition, setUnitCondition] = useState("");
-  const [tenancyStatus, setTenancyStatus] = useState([]);
+  const [tenancyStatus, setTenancyStatus] = useState("");
   const [tenancyRenewalDate, setTenancyRenewalDate] = useState("");
   const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] =
     useState("");
   const [premiseUnitId, setPremiseUnitId] = useState("");
+  const[tenantStatuses, setTenantStatuses]=useState([])
   const [unitId, setUnitId] = useState("");
 
   //edit ContactPersons
@@ -384,7 +385,7 @@ const premiseUnitChange = (event)=>{
 
 const getStatus =()=>{
   requestsServiceService.getTenantStatus().then((res)=>{
-    setTenancyStatus(res.data.data)
+    setTenantStatuses(res.data.data)
   })
 }
 
@@ -1020,8 +1021,8 @@ const getStatus =()=>{
                         <option className="text-black font-semibold ">
                           --Select TenancyStatus--
                         </option>
-                        {tenancyStatus &&
-                          tenancyStatus.map((tenant, index) => {
+                        {tenantStatuses&&
+                          tenantStatuses.map((tenant, index) => {
                             return (
                               <option key={index} value={tenant}>
                                 {tenant}
@@ -1653,8 +1654,8 @@ const getStatus =()=>{
                         <option className="text-black font-semibold ">
                           --Select TenancyStatusName--
                         </option>
-                        {tenancyStatus &&
-                          tenancyStatus.map((tenant, index) => {
+                        {
+                          tenantStatuses && tenantStatuses.map((tenant, index) => {
                             return (
                               <option key={index} value={tenant}>
                                 {tenant}
