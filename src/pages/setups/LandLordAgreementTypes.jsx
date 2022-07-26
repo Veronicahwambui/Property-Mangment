@@ -276,7 +276,7 @@ function LandLordAgreementTypes() {
       <Modal show={show} onHide={handleClose} className={"modal fade"} centered>
         <form onSubmit={createAgreementType}>
           <Modal.Header closeButton>
-            <Modal.Title>Add type</Modal.Title>
+            <Modal.Title>Add agreement type</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="row">
