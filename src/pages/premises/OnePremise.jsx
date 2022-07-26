@@ -149,7 +149,6 @@ function OnePremise() {
     })
   };
 
-  console.log(landlordData);
 
   const [PremiseTypes, setPremiseTypes] = useState([])
   const [PremiseUseTypes, setPremiseUseTypes] = useState([])
@@ -1422,7 +1421,7 @@ function OnePremise() {
                         <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
                           <option value={null} >Select  client account</option>
                           {clientAccounts && clientAccounts.map((unit) => (
-                            <option value={unit.id}> {unit.bank?.name} </option>
+                            <option value={unit.id}> {unit.bank.bankName} - {unit.bankAccountNumber}</option>
                           ))}
                         </select>
                       </div>}

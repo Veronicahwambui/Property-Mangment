@@ -1,3 +1,4 @@
+/* global $ */
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
@@ -33,20 +34,39 @@ function PremiseTenancy() {
         fetchAll()
     }, [])
 
+    const [chargeConstraintName ,setChargeConstraintName]=useState('')
+    const [constraintChargeId ,setConstraintChargeId]=useState('')
+    const [constraintTypeChargeId ,setConstraintTypeChargeId]=useState('')
+    const [rateCharge ,setRateCharge]=useState('')
+    // const [chargeConstraintName ,setChargeConstraintName]=useState('')
+
+    const handleChargeChange = (e)=>{
+        let stat = e.target.value.split(":")
+        setChargeConstraintName(stat[0])
+        setRateCharge(stat[1])
+        setConstraintChargeId(stat[2])
+        setConstraintTypeChargeId(stat[3])
+    }
+
+
     const create = () => {
+      $("#create-tenant-charge").modal("hide");
 
         let data = JSON.stringify({
             active: true,
-            chargeConstraintName: "string",
-            constraintChargeId: "string",
-            invoiceDay: 0,
-            premiseUnitTypeChargeId: 0,
-            rateCharge: true,
-            tenancyId: 0,
+            chargeConstraintName: chargeConstraintName,
+            constraintChargeId: constraintChargeId,
+            invoiceDay: invoiceDay,
+            premiseUnitTypeChargeId: constraintTypeChargeId,
+            rateCharge: rateCharge,
+            tenancyId: tenantId,
             unitCost: '',
-            value: 0
+            value: value
         })
 
+         requestsServiceService.createTenancyCharges(tenantId ,data).then((res)=>{
+            fetchAll()
+         })
     }
 
     return (
@@ -318,6 +338,7 @@ function PremiseTenancy() {
                                                     <h4 class="card-title text-capitalize mb-3">Charges  </h4>
                                                     <button
                                                         type="button"
+                                                        onClick={()=>{setValue(''); setInvoiceDay('')}}
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#create-tenant-charge"
                                                         className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
@@ -335,21 +356,31 @@ function PremiseTenancy() {
                                                             <tr class=" text-uppercase ">
                                                                 <th>#</th>
                                                                 <th class="">UNit type</th>
-                                                                <th class=" ">NO of Rooms</th>
-                                                                <th class=" ">UNIT SIZE M<sup>2</sup></th>
-                                                                <th>TENANCY RENEWAL</th>
-                                                                <th>charge constraint</th>
-                                                                <th>rate charge</th>
-                                                                <th>applicable charge </th>
-                                                                <th>applicable charge type </th>
                                                                 <th>invoice day</th>
+                                                                <th>default amount</th>
                                                                 <th>amount </th>
                                                                 <th>status</th>
                                                                 <th></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            {charges && charges.map(( charge, index)=>{
+                                                                return (
+                                                                    <tr>
+                                                                        <td>{index + 1}</td>
+                                                                        <td>{charge.premiseUnitTypeCharge.unitType.name}</td>
+                                                                      
+                                                                        <td>{charge.invoiceDay}</td>
+                                                                        <td>{charge.premiseUnitTypeCharge.value}</td>
+                                                                        <td>{charge.value}</td>
+                                                                        <td> {charge.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
 
+                                                                    </tr>
+                                                                )
+                                                            })}
+                                                            <tr>
+                                                                
+                                                            </tr>
                                                         </tbody>
 
                                                     </table>
@@ -372,7 +403,7 @@ function PremiseTenancy() {
                                 >
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
-                                            <form onSubmit={(e) => { e.preventDefault(); }}>
+                                            <form onSubmit={(e) => { e.preventDefault();create() }}>
 
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="staticBackdropLabel">
@@ -388,23 +419,23 @@ function PremiseTenancy() {
                                                 <div class="modal-body">
                                                     <div className="form-group">
                                                         <label htmlFor=""> applicable charge </label>
-                                                        <select name="" id="" className='form-control'>
+                                                        <select name="" id="" className='form-control'onChange={(e)=> handleChargeChange(e)}>
                                                             <option value={null}>select applicable charge</option>
                                                             {defaultCharges && defaultCharges.map((charge) => {
                                                                 return (
-                                                                    <option value="">{charge.unitType.name} - KSH {charge.value}</option>
+                                                                    <option value={charge.chargeConstraint + ":" + charge.rateCharge + ":" + charge.constraintChargeId + ":" + charge.id}>{charge.unitType.name} - KSH {charge.value}</option>
                                                                 )
                                                             })}
                                                         </select>
                                                     </div>
                                                     <div className="form-group mb-2">
                                                         <label htmlFor="">Invoice day (1-31) </label>
-                                                        <input type="number" max="31" min="1" placeholder="Enter Unit Name" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
+                                                        <input type="number" max="31" min="1" placeholder="Enter invoice day" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
                                                     </div>
 
                                                     <div className="form-group mb-2">
                                                         <label htmlFor="">value </label>
-                                                        <input type="number" placeholder="Enter Unit Name" value={value} className="form-control" onChange={(event) => setValue(event.target.value)} />
+                                                        <input type="number" placeholder="Enter value" value={value} className="form-control" onChange={(event) => setValue(event.target.value)} />
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -419,7 +450,7 @@ function PremiseTenancy() {
                                                         type="submit"
                                                         class="btn btn-primary"
                                                     >
-                                                        Save
+                                                        add charge
                                                     </button>
                                                 </div>
                                             </form>
