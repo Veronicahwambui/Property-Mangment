@@ -781,6 +781,11 @@ function ViewLandlord() {
                     <input type="text" value={editlandlordlastname} onChange={(e) => seteditlandlordlastname(e.target.value)}
                       className="form-control"
                       required={true} />
+                    <br/>
+                    <label htmlFor="">Other Name.</label>
+                    <input type="text" value={editlandlordothername} onChange={(e) => seteditlandlordothername(e.target.value)}
+                           className="form-control"
+                    />
                   </div>
                 </div>
                 <div className="col-6">
@@ -789,12 +794,6 @@ function ViewLandlord() {
                     <input type="email" value={editlandlordemail} onChange={(e) => seteditlandlordemail(e.target.value)}
                       className="form-control"
                       required={true} />
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Other Name.</label>
-                    <input type="text" value={editlandlordothername} onChange={(e) => seteditlandlordothername(e.target.value)}
-                      className="form-control"
-                       />
                   </div>
                 </div>
                 <div className="col-6">
