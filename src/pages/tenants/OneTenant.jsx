@@ -313,7 +313,7 @@ function OneTenant() {
       startDate: new Date(),
       tenancyCharges: [],
       tenancyDocuments: [],
-      tenancyRenewalDate:  new Date(tenancyRenewalDate),
+      tenancyRenewalDate: tenancyRenewalDate,
       tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
       tenancyStatusName: tenancyStatus,
       tenantId:tenantData.tenant.id,
@@ -654,7 +654,7 @@ const getStatus =()=>{
                           <div>
                             <span>
                           {moment(tenantData.tenant &&
-                                tenantData.tenant.companyDateOfRegistration).format("DD MM YYYY")}
+                                tenantData.tenant.companyDateOfRegistration).format("DD- MM -YYYY")}
                             </span>
                           </div>
                         </div>
@@ -736,23 +736,20 @@ const getStatus =()=>{
                                           {unit.premiseUnit.unitType.name}
                                         </td>
                                         <td>
-                                          {unit.startDate.replace(/[TZ]/g, " ")}
+                                          {moment(unit.startDate.replace(/[TZ]/g, " ")).format("DD- MM -YYYY")}
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
-                                          {unit.tenancyStatus.toLowerCase() ? (
-                                            <span class="badge-soft-success badge">
-                                              Closed
-                                            </span>
-                                          ) : (
-                                            <span class="badge-soft-danger badge">
-                                              Activate
-                                            </span>
-                                          )}
+                                        <span className="badge-soft-success badge">  {unit.tenancyStatus.toLowerCase() 
+                                          
+                                         
+}</span>
                                         </td>
-                                        <td>{unit.tenancyRenewalDate}</td>
+                                        <td>{moment(unit.tenancyRenewalDate).format
+                                          ("DD MM YYYY")
+                                        }</td>
                                         <td>
-                                          {unit.tenancyRenewalNotificationDate}
+                                          {moment(unit.tenancyRenewalNotificationDate).format("DD MM YYYY")}
                                         </td>
                                         <td>
                                           {" "}
@@ -790,10 +787,11 @@ const getStatus =()=>{
                                                     unit.premiseUnit.unitName,
                                                     unit.startDate,
                                                     unit.unitCondition,
-
                                                     unit.tenancyRenewalDate,
                                                     unit.tenancyRenewalNotificationDate,
                                                     unit.id
+
+                                                    
                                                   )
                                                 }
                                               >
@@ -1560,7 +1558,6 @@ const getStatus =()=>{
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate "
                         readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker199' data-provide="datepicker" data-date-autoclose="true" 
-                        max={moment(tenancyRenewalNotificationDate).format('ddmmyyyy')}
                         required={true}
                       />
                     </div>
@@ -1573,7 +1570,7 @@ const getStatus =()=>{
                         onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
                         placeholder="Enter TenancyRenewalNotificationDate"
                         readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker120' data-provide="datepicker" data-date-autoclose="true" 
-                        min={tenancyRenewalDate}
+                    
                         required={true}
                       />
                     </div>

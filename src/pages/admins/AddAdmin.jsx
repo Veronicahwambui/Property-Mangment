@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
+import { useNavigate } from "react-router-dom";
 
 function AddAdmin() {
   const [firstName, setFirstName] = useState("");
@@ -14,6 +15,8 @@ function AddAdmin() {
   const [staffNo, setStaffNo] = useState("");
   const [userRoles, setUserRoles] = useState([]);
   const [roleIds, SetRoleIds] = useState([]);
+  const [errors, setErrors] = useState([]);
+
   const [userName, setUserName] = useState("");
 
   const [role, setRole] = useState("");
@@ -23,7 +26,7 @@ function AddAdmin() {
     message: "",
     color: ""
   });
-
+  const navigate = useNavigate();
   const addUser = (ev) => {
     ev.preventDefault();
     const data = JSON.stringify({
@@ -63,18 +66,16 @@ function AddAdmin() {
           
           
           setTimeout(() => {
-            clear()
+            navigate("/adminlist", { replace: true });
           }, 3000)
-      }).catch((res)=>{
-
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "danger"
-        })
+      }).catch((err, res)=>{
+            // console.log(err);
+           setErrors( err.response.data.data.messages) 
+       
   
         setTimeout(() => {
-          clear()
+        setErrors([]) 
+          
         }, 3000)
   
   
@@ -128,7 +129,8 @@ function AddAdmin() {
       setPrivilegeNames(res.data.data.permissions.map(pem => pem.name));
     });
   }
-
+ 
+  console.log(errors);
   // console.log(UserPermissionsIds);
 
   return (
@@ -168,8 +170,17 @@ function AddAdmin() {
                     {error.message}
                   </div>
                   }
+                  
+                        {errors &&
+                    errors.map((err)=>(
+                      <div className={"alert alert-danger mb-2"} role="alert">
+                      {err.message}
+                    </div>
+                    ))
+           
+                  }
                   <h4 className="card-title text-capitalize">
-                    Register a new System administrator
+                    Register a new System User
                   </h4>
 
                   <hr className="mb-5" />
@@ -215,7 +226,7 @@ function AddAdmin() {
                           onChange={(event) => setOtherName(event.target.value)}
                           className="form-control"
                           placeholder="Enter the other name(s)"
-                          required
+                         required
                         />
                       </div>
                       <label htmlFor="" className="col-form-label col-lg-2">
