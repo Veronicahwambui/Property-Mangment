@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
+import { useNavigate } from "react-router-dom";
 
 function AddAdmin() {
   const [firstName, setFirstName] = useState("");
@@ -23,7 +24,7 @@ function AddAdmin() {
     message: "",
     color: ""
   });
-
+  const navigate = useNavigate();
   const addUser = (ev) => {
     ev.preventDefault();
     const data = JSON.stringify({
@@ -63,7 +64,7 @@ function AddAdmin() {
           
           
           setTimeout(() => {
-            clear()
+            navigate("/adminlist", { replace: true });
           }, 3000)
       }).catch((res)=>{
 
@@ -169,7 +170,7 @@ function AddAdmin() {
                   </div>
                   }
                   <h4 className="card-title text-capitalize">
-                    Register a new System administrator
+                    Register a new System User
                   </h4>
 
                   <hr className="mb-5" />
@@ -215,7 +216,7 @@ function AddAdmin() {
                           onChange={(event) => setOtherName(event.target.value)}
                           className="form-control"
                           placeholder="Enter the other name(s)"
-                          required
+                         
                         />
                       </div>
                       <label htmlFor="" className="col-form-label col-lg-2">

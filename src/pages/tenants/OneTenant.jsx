@@ -312,7 +312,7 @@ function OneTenant() {
       startDate: new Date(),
       tenancyCharges: [],
       tenancyDocuments: [],
-      tenancyRenewalDate:  new Date(tenancyRenewalDate),
+      tenancyRenewalDate:  tenancyRenewalDate,
       tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
       tenancyStatusName: tenancyStatus,
       tenantId:tenantData.tenant.id,
