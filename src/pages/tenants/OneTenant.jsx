@@ -653,7 +653,7 @@ const getStatus =()=>{
                           <div>
                             <span>
                           {moment(tenantData.tenant &&
-                                tenantData.tenant.companyDateOfRegistration).format("DD MM YYYY")}
+                                tenantData.tenant.companyDateOfRegistration).format("DD- MM -YYYY")}
                             </span>
                           </div>
                         </div>
@@ -735,7 +735,7 @@ const getStatus =()=>{
                                           {unit.premiseUnit.unitType.name}
                                         </td>
                                         <td>
-                                          {moment(unit.startDate.replace(/[TZ]/g, " ")).format("DD MM YYYY")}
+                                          {moment(unit.startDate.replace(/[TZ]/g, " ")).format("DD- MM -YYYY")}
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
@@ -744,9 +744,11 @@ const getStatus =()=>{
                                          
 }</span>
                                         </td>
-                                        <td>{unit.tenancyRenewalDate}</td>
+                                        <td>{moment(unit.tenancyRenewalDate).format
+                                          ("DD MM YYYY")
+                                        }</td>
                                         <td>
-                                          {unit.tenancyRenewalNotificationDate}
+                                          {moment(unit.tenancyRenewalNotificationDate).format("DD MM YYYY")}
                                         </td>
                                         <td>
                                           {" "}
@@ -784,10 +786,11 @@ const getStatus =()=>{
                                                     unit.premiseUnit.unitName,
                                                     unit.startDate,
                                                     unit.unitCondition,
-
                                                     unit.tenancyRenewalDate,
                                                     unit.tenancyRenewalNotificationDate,
                                                     unit.id
+
+                                                    
                                                   )
                                                 }
                                               >
@@ -1620,7 +1623,6 @@ const getStatus =()=>{
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate "
                         readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker199' data-provide="datepicker" data-date-autoclose="true" 
-                        max={moment(tenancyRenewalNotificationDate).format('ddmmyyyy')}
                         required={true}
                       />
                     </div>
@@ -1633,7 +1635,7 @@ const getStatus =()=>{
                         onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
                         placeholder="Enter TenancyRenewalNotificationDate"
                         readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker120' data-provide="datepicker" data-date-autoclose="true" 
-                        min={tenancyRenewalDate}
+                    
                         required={true}
                       />
                     </div>
