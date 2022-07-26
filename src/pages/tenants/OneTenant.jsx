@@ -1,24 +1,31 @@
+
+/* global $*/  
+
 import moment from "moment";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
-import UnitTypes from "../setups/UnitTypes";
 import authService from "../../services/auth.service";
-
+import moment from 'moment'
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
   const [docName, setDocName] = useState("");
   const [tenantId, setTenantId] = useState("");
   const [contactPerson, setContactPerson] = useState([]);
-
+  // $( "#datepicker198" ).datepicker({ minDate: new Date().getDay() });
+// $('#datepicker198').datepicker({
+//   format:'mm-dd-yyyy',
+//   startDate:'+0d',
+//   autoclose:true
+// })
   //edit tenants-details
   const [type, setType] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [idNumber, setIdNumber] = useState("");
-  const [nationality, setNatioality] = useState("");
+  const [nationality, setNationality] = useState("");
   const [companyIncorporationNumber, setCompanyIncorporationNumber] =
     useState("");
   const [detailsId, setDetailsId] = useState("");
@@ -35,8 +42,12 @@ function OneTenant() {
 
 
   //company details
-  
-  const[certificateOfincorporation,setCertificateOfIncorporation]=useState("")
+
+
+  const [premises, setPremises] = useState([])
+  const [units, setUnits] = useState([])
+  const[premId,setPremId]=useState("")
+ 
   const[companyLocation,setCompanyLocation]=useState("")
   
 
@@ -49,6 +60,7 @@ function OneTenant() {
   const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] =
     useState("");
   const [premiseUnitId, setPremiseUnitId] = useState("");
+  const[tenantStatuses, setTenantStatuses]=useState([])
   const [unitId, setUnitId] = useState("");
 
   //edit ContactPersons
@@ -73,6 +85,7 @@ function OneTenant() {
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
+      setTenantTypeName(res.data.data.tenant.tenantType);
     });
   };
 
@@ -81,19 +94,19 @@ function OneTenant() {
       active: true,
       clientId: parseInt(authService.getClientId()),
       companyAddress: companyAddress,
-      companyDateOfRegistration: companyDateOfRegistration,
+      companyDateOfRegistration: new Date(companyDateOfRegistration),
       companyIncorporationNumber: companyIncorporationNumber,
       companyName: companyName,
       dob: dob,
       email: email,
       firstName: firstName,
-      gender: gender,
+      gender: null,
       id: detailsId,
       idNumber: idNumber,
       lastName: lastName,
       maritalStatus: maritalStatus,
       nationality: nationality,
-      occupation: occupation,
+      occupation: null,
       otherName: otherName,
       phoneNumber: phoneNumber,
       tenantTypeName: tenantTypeName,
@@ -101,9 +114,11 @@ function OneTenant() {
     });
     //  console.log(id)
     requestsServiceService.updateTenantsDetails(details).then((res) => {
-     fetchAll()
+    fetchAll()
+  
     });
 
+    // console.log(details)
   };
   // console.log( editTenantsDetails)
   const handleChangeTenantsDetails = (
@@ -112,10 +127,13 @@ function OneTenant() {
     firstName,
     lastName,
     otherName,
+    phoneNumber,
     email,
     idNumber,
     companyName,
-    nationality
+    nationality,
+    companyAddress,
+    companyDateOfRegistration,
     
   ) => {
     setDetailsId(detailsId);
@@ -123,10 +141,13 @@ function OneTenant() {
     setFirstName(firstName);
     setLastName(lastName);
     setOtherName(otherName);
+    setPhoneNumber(phoneNumber)
     setEmail(email);
     setIdNumber(idNumber);
     setCompanyName(companyName);
-    setNatioality(nationality);
+    setNationality(nationality);
+    setCompanyAddress(companyAddress);
+    setCompanyDateOfRegistration(companyDateOfRegistration);
   };
 
   const editTenant = () => {
@@ -145,7 +166,7 @@ function OneTenant() {
       unitCondition: unitCondition,
     });
     requestsServiceService.updateTenant(data).then((res) => {
-    
+ 
       fetchAll();
     });
   };
@@ -280,17 +301,101 @@ function OneTenant() {
       ...error,
       message: "",
       color: ""
-
-
-
-
-
-    });
+  });
   };
+
+
+  const addTenancies= ()=>{
+
+    let data =JSON.stringify({
+      active: true,
+      // id:0,
+      premiseUnitId:premiseUnitId,
+      startDate: new Date(startDate),
+      tenancyCharges: [],
+      tenancyDocuments: [],
+      tenancyRenewalDate:  new Date(tenancyRenewalDate),
+      tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
+      tenancyStatusName: tenancyStatus,
+      tenantId:tenantData.tenant.id,
+      unitCondition: unitCondition
+  
+    })
+    requestsServiceService.createTenancies(data).then((res)=>{
+    console.log(res)
+     fetchAll()
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+      
+      
+      setTimeout(() => {
+        cleared()
+      }, 3000)
+  }).catch((res)=>{
+
+    setError({
+      ...error,
+      message: res.data.message,
+      color: "danger"
+    })
+
+    setTimeout(() => {
+      cleared()
+    }, 3000)
+
+
+  })
+}
+
+const cleared = ()=> {
+  setError({
+    ...error,
+    message: "",
+    color: ""
+
+ })
+    
+   }
+const getPremises = () => {
+  requestsServiceService.allPremises().then((res) =>
+  setPremises(res.data.data)
+  )
+}
+
+const onPremiseChange = (event) => {
+
+  let vals = event.target.value.split(':');
+
+  requestsServiceService.getPremise(vals[0]).then((res) =>
+    setUnits(res.data.data.premiseUnits)
+  )
+}
+const premiseUnitChange = (event)=>{
+  setPremiseUnitId(event.target.value)
+}
+
+const getStatus =()=>{
+  requestsServiceService.getTenantStatus().then((res)=>{
+    setTenantStatuses(res.data.data)
+  })
+}
 
   useEffect(() => {
     fetchAll();
     getContactTypeName();
+    getPremises();
+    getStatus()
   }, []);
 
   const deleteDeactivate = (id) => {
@@ -409,14 +514,17 @@ function OneTenant() {
                           onClick={() =>
                             handleChangeTenantsDetails(
                               tenantData.tenant.id,
-                              tenantData.tenant.tenantTypeName,
+                              tenantData.tenant.tenantType,
                               tenantData.tenant.firstName,
                               tenantData.tenant.lastName,
                               tenantData.tenant.otherName,
+                              tenantData.tenant.phoneNumber,
                               tenantData.tenant.email,
                               tenantData.tenant.idNumber,
                               tenantData.tenant.companyName,
-                              tenantData.tenant.nationality
+                              tenantData.tenant.nationality,
+                              tenantData.tenant.companyAddress,
+                              tenantData.tenant.companyDateOfRegistration
                             )
                           }
                           data-bs-toggle="modal"
@@ -433,6 +541,7 @@ function OneTenant() {
                   </div>
                   <div className="card-body">
                     <div className="col-12">
+                     
                       <div className="row">
                         <div className="col-3">
                           <label htmlFor="">Type</label>
@@ -443,6 +552,9 @@ function OneTenant() {
                             </span>
                           </div>
                         </div>
+                        {tenantTypeName==="INDIVIDUAL" &&
+                        <div className="row mt-5">
+                          
                         <div className="col-3">
                           <label htmlFor="">First Name</label>
                           <div>
@@ -467,8 +579,6 @@ function OneTenant() {
                             </span>
                           </div>
                         </div>
-                      </div>
-                      <div className="row mt-5">
                         <div className="col-3">
                           <label htmlFor="">Id Number</label>
                           <div>
@@ -477,6 +587,36 @@ function OneTenant() {
                             </span>
                           </div>
                         </div>
+
+                      
+
+                      <div className="row mt-5">
+                      <div className="col-3">
+                          <label htmlFor="">PhoneNumber</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant && tenantData.tenant.phoneNumber}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-3">
+                          <label htmlFor="">Nationality</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant &&
+                                tenantData.tenant.nationality}
+                            </span>
+                          </div>
+                        </div>
+</div>
+                        
+                      
+                        </div>}
+                        </div>
+
+                        {tenantTypeName=== "COMPANY"  &&   
+                        <div className="row mt-5">  
+                                           
                         <div className="col-3">
                           <label htmlFor="">Company Name</label>
                           <div>
@@ -495,17 +635,36 @@ function OneTenant() {
                             </span>
                           </div>
                         </div>
+
                         <div className="col-3">
-                          <label htmlFor="">Nationality</label>
+                          <label htmlFor="">Company Address</label>
                           <div>
                             <span>
                               {tenantData.tenant &&
-                                tenantData.tenant.nationality}
+                                tenantData.tenant.companyAddress}
                             </span>
                           </div>
                         </div>
-                      </div>
-                    </div>
+
+                     
+                        <div className="row mt-5">
+                     
+
+                        <div className="col-3">
+                          <label htmlFor="">CompanyDateOfRegistration</label>
+                          <div>
+                            <span>
+                          {moment(tenantData.tenant &&
+                                tenantData.tenant.companyDateOfRegistration).format("DD MM YYYY")}
+                            </span>
+                          </div>
+                        </div>
+                        </div>
+                   
+</div>}
+                   
+
+                  </div>
                   </div>
                 </div>
               </div>
@@ -531,11 +690,27 @@ function OneTenant() {
                                 Tenancies
                               </h4>
                             </div>
+                            <div className="d-flex">
+                              <button
+                                type="button"
+                                className="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#create-tenancies"
+                              >
+                                <i className="mdi mdi-plus label-icon"></i> Add
+                                 Tenancies
+                              </button>
+                            </div>
                           </div>
                         </div>
 
                         <div>
                           <div className="card-body">
+                          {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                             <div className="table-responsive">
                               <table className="table align-middle table-nowrap table-hover mb-0">
                                 <thead>
@@ -725,7 +900,7 @@ function OneTenant() {
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
-                  Tenant
+                  Tenancies
                 </h5>
                 <button
                   type="button"
@@ -749,12 +924,13 @@ function OneTenant() {
                         value={unitTypeName}
                       />
                     </div>
-                    <div class="form-group mb-4">
+                    <div class="form-group mb-4" id="datepicker12">
                       <label for="">StartDate</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="form-control mouse-pointer enddate"
                         placeholder="Enter StartDate"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker12' data-provide="datepicker" data-date-autoclose="true"
                         onChange={(event) => setStartDate(event.target.value)}
                         value={startDate}
                       />
@@ -763,46 +939,60 @@ function OneTenant() {
                       <label htmlFor="">Unit Condition</label>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control "
                         value={unitCondition}
                         onChange={(e) => setUnitCondition(e.target.value)}
                         placeholder="Enter UnitCondition"
                         required={true}
                       />
                     </div>
-                    {/* <div className="form-group mb-4">
-                      <label htmlFor="">TenancyStatus</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={tenancyStatus}
-                        onChange={(e) => setTenancyStatus(e.target.value)}
-                        placeholder="Enter TenancyStatus"
-                        required={true}
-                      />
-                    </div> */}
                     <div className="form-group mb-4">
+                      <label htmlFor="">TenancyStatus</label>
+                      <select
+                        class="form-control"
+                        data-live-search="true"
+                        title="Select TenancyStatus"
+                        onChange={(e) => setTenancyStatus(e.target.value)}
+                      >
+                        <option className="text-black font-semibold ">
+                          --Select TenancyStatus--
+                        </option>
+                        {tenantStatuses&&
+                          tenantStatuses.map((tenant, index) => {
+                            return (
+                              <option key={index} value={tenant}>
+                                {tenant}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </div>
+                    <div className="form-group mb-4" id="datepicker14">
                       <label htmlFor="">TenancyRenewalDate</label>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control mouse-pointer enddate"
                         value={tenancyRenewalDate}
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker14' data-provide="datepicker" data-date-autoclose="true"
+
                         required={true}
                       />
                     </div>
 
-                    <div className="form-group mb-4">
-                      <label htmlFor="">MonthsToTenancyRenewal</label>
+                    <div className="form-group mb-4"  id="datepicker15">
+                      <label htmlFor="">TenancyRenewalNotificationDate</label>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control mouse-pointer enddate"
                         value={tenancyRenewalNotificationDate}
                         onChange={(e) =>
                           setTenancyRenewalNotificationDate(e.target.value)
                         }
                         placeholder="TenancyRenewalNotificationDate"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker15' data-provide="datepicker" data-date-autoclose="true"
+
                         required={true}
                       />
                     </div>
@@ -983,88 +1173,20 @@ function OneTenant() {
                             name="tenantTypeName"
                             className="form-control"
                           >
+                            
+                           
                             <option value="INDIVIDUAL" >Individual</option>
                             <option value="COMPANY">Company</option>
                           </select>
                         </div>
                   </div>
 
-                  {tenantTypeName === "COMPANY" &&
-                  <div className="row">
-                  <div className="col-6">
-                    <div className="form-group">
-                      <label htmlFor="">CompanyName</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setCompanyName(event.target.value)}
-                        value={companyName}
-                        placeholder="Enter CompanyName"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">CertificateOfIncorporation</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setCertificateOfIncorporation(event.target.value)}
-                        value={certificateOfincorporation}
-                        placeholder="Enter CertificateOfIncorporation"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">CompanyLocation</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setCompanyLocation(event.target.value)}
-                        value={companyLocation}
-                        placeholder="Enter Email"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="form-group">
-                      <label htmlFor="">Email</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setEmail(event.target.value)}
-                        value={email}
-                        placeholder="Enter Email"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">PhoneNumber</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setPhoneNumber(event.target.value)}
-                        value={phoneNumber}
-                        placeholder="Enter PhoneNumber"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="">CompanyDateOfRegistration </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        onChange={(event) => setCompanyDateOfRegistration(event.target.value)}
-                        value={companyDateOfRegistration}
-                        placeholder="Enter CompanyDateOfRegistration "
-                      />
-                    </div>
-                  </div>
-                
-                </div> }
-
-          
                  
-                {tenantTypeName!== "COMPANY" &&
+
+           {tenantTypeName === "INDIVIDUAL" &&
+
               <div className="row">
-                  <div className="form-group">
-                
-                  </div>
+                  
                   <div className="col-6">
                     <div className="form-group">
                       <label htmlFor="">FirstName</label>
@@ -1086,6 +1208,7 @@ function OneTenant() {
                         placeholder="Enter LastName"
                       />
                     </div>
+                    
                     <div className="form-group">
                       <label htmlFor="">OtherName</label>
                       <input
@@ -1094,6 +1217,16 @@ function OneTenant() {
                         onChange={(event) => setOtherName(event.target.value)}
                         value={otherName}
                         placeholder="Enter OtherName"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">PhoneNumber</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setPhoneNumber(event.target.value)}
+                        value={phoneNumber}
+                        placeholder="Enter Phone Number"
                       />
                     </div>
                
@@ -1113,10 +1246,10 @@ function OneTenant() {
                     <div className="form-group">
                       <label htmlFor="">Nationality</label>
                       <select className="form-control" data-live-search="true" title="Select nationality"
-                                onChange={(e) => setNatioality(e.target.value)} value={nationality}>
+                                onChange={(e) => setNationality(e.target.value)} value={nationality}>
 
                                 <option></option>
-                                <option value="Kenya">Kenya</option>
+                                <option value="Kenya">Kenyan</option>
 
                               </select>
                     </div>
@@ -1131,12 +1264,66 @@ function OneTenant() {
                         placeholder="Enter Email"
                       />
                     </div>
+                  
               
             
                   </div>
                 </div>}
 
-              </div>
+             
+
+              {tenantTypeName !== "INDIVIDUAL" &&
+                  <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="">CompanyName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyName(event.target.value)}
+                        value={companyName}
+                        placeholder="Enter CompanyName"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">CompanyIncorporationNumber</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyIncorporationNumber(event.target.value)}
+                        value={companyIncorporationNumber}
+                        placeholder="Enter CompanyIncorporationNumber"
+                      />
+                    </div>
+                   
+                 
+
+                  </div>
+                  <div className="col-6">
+                  <div className="form-group">
+                      <label htmlFor="">CompanyAddress</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyAddress(event.target.value)}
+                        value={companyAddress}
+                        placeholder="EnterCompanyAddress"
+                      />
+                    </div>
+                    <div className="form-group" >
+                      <label htmlFor="">CompanyDateOfRegistration </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyDateOfRegistration(event.target.value)}
+                        value={companyDateOfRegistration}
+                        placeholder="Enter CompanyDateOfRegistration "
+                      />
+                    </div>
+                  </div>
+                
+                </div> }
+                </div>
 
 
               <div class="modal-footer">
@@ -1177,7 +1364,7 @@ function OneTenant() {
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
-                  Tenant
+                  Contact Person
                 </h5>
                 <button
                   type="button"
@@ -1285,6 +1472,153 @@ function OneTenant() {
                   class="btn btn-primary"
                   data-bs-dismiss="modal"
                   onClick={() => addConctactPersons()}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        {/* //add Tenant */}
+
+
+
+        <div
+       class="modal fade"
+       id="create-tenancies"
+       data-bs-backdrop="static"
+       data-bs-keyboard="false"
+       role="dialog"
+       aria-labelledby="staticBackdropLabel"
+       aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="mod">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Tenancies
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">Premises</label>
+                      <select className='form-control'onChange={onPremiseChange} name="premise">
+                          <option> --Select Premises--</option>
+                          {premises?.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
+                        </select>
+                    </div>
+                    <div class="form-group mb-4">
+                      <label for="">Unit</label>
+                      <select className='form-control' onChange={premiseUnitChange} name="premiseUnitId">
+                          <option> --Select Unit--</option>
+                          {units.length > 0 && units.map((prem, index) => <option value={prem.id }>{prem.unitName}</option>)}
+                        </select>
+                    </div>
+
+
+                    <div class="form-group mb-4">
+                      <label for="">Unit Condition</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter UnitCondition"
+                        onChange={(event) => setUnitCondition(event.target.value)}
+                        value={unitCondition}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4" id="datepicker198">
+                      <label htmlFor="">StartDate (tests)</label>
+                      <input
+                        type="text"
+                        className="form-control mouse-pointer enddate"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        placeholder="Enter StartDate"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-date-start-date="+0d" data-provide="datepicker" data-date-autoclose="true" 
+                        required={true}
+        
+                      />
+
+                    </div>
+
+                    <div className="form-group mb-4 " id="datepicker199">
+                      <label htmlFor="">TenancyRenewalDate</label>
+                      <input
+                        type="text"
+                        className="form-control mouse-pointer enddate"
+                        value={tenancyRenewalDate}
+                        onChange={(e) => setTenancyRenewalDate(e.target.value)}
+                        placeholder="Enter TenancyRenewalDate "
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker199' data-provide="datepicker" data-date-autoclose="true" 
+                        max={moment(tenancyRenewalNotificationDate).format('ddmmyyyy')}
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4" id="datepicker120">
+                      <label htmlFor="">TenancyRenewalNotificationDate</label>
+                      <input
+                        type="text"
+                        className="form-control mouse-pointer enddate"
+                        value={tenancyRenewalNotificationDate}
+                        onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
+                        placeholder="Enter TenancyRenewalNotificationDate"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker120' data-provide="datepicker" data-date-autoclose="true" 
+                        min={tenancyRenewalDate}
+                        required={true}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">TenancyStatus</label>
+                      <select
+                        class="form-control"
+                        data-live-search="true"
+                        title="Select TenancyStatus"
+                        onChange={(e) => setTenancyStatus(e.target.value)}
+                      >
+                        <option className="text-black font-semibold ">
+                          --Select TenancyStatusName--
+                        </option>
+                        {
+                          tenantStatuses && tenantStatuses.map((tenant, index) => {
+                            return (
+                              <option key={index} value={tenant}>
+                                {tenant}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </div>
+
+                   
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => addTenancies()}
                 >
                   Save
                 </button>
