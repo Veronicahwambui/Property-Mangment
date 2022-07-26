@@ -15,6 +15,8 @@ function AddAdmin() {
   const [staffNo, setStaffNo] = useState("");
   const [userRoles, setUserRoles] = useState([]);
   const [roleIds, SetRoleIds] = useState([]);
+  const [errors, setErrors] = useState([]);
+
   const [userName, setUserName] = useState("");
 
   const [role, setRole] = useState("");
@@ -66,16 +68,14 @@ function AddAdmin() {
           setTimeout(() => {
             navigate("/adminlist", { replace: true });
           }, 3000)
-      }).catch((res)=>{
-
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "danger"
-        })
+      }).catch((err, res)=>{
+            // console.log(err);
+           setErrors( err.response.data.data.messages) 
+       
   
         setTimeout(() => {
-          clear()
+        setErrors([]) 
+          
         }, 3000)
   
   
@@ -129,7 +129,8 @@ function AddAdmin() {
       setPrivilegeNames(res.data.data.permissions.map(pem => pem.name));
     });
   }
-
+ 
+  console.log(errors);
   // console.log(UserPermissionsIds);
 
   return (
@@ -168,6 +169,15 @@ function AddAdmin() {
                   <div className={"alert alert-" + error.color} role="alert">
                     {error.message}
                   </div>
+                  }
+                  
+                        {errors &&
+                    errors.map((err)=>(
+                      <div className={"alert alert-danger mb-2"} role="alert">
+                      {err.message}
+                    </div>
+                    ))
+           
                   }
                   <h4 className="card-title text-capitalize">
                     Register a new System User
@@ -216,7 +226,7 @@ function AddAdmin() {
                           onChange={(event) => setOtherName(event.target.value)}
                           className="form-control"
                           placeholder="Enter the other name(s)"
-                         
+                         required
                         />
                       </div>
                       <label htmlFor="" className="col-form-label col-lg-2">

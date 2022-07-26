@@ -312,7 +312,7 @@ function OneTenant() {
       startDate: new Date(),
       tenancyCharges: [],
       tenancyDocuments: [],
-      tenancyRenewalDate:  tenancyRenewalDate,
+      tenancyRenewalDate: tenancyRenewalDate,
       tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
       tenancyStatusName: tenancyStatus,
       tenantId:tenantData.tenant.id,
@@ -735,19 +735,14 @@ const getStatus =()=>{
                                           {unit.premiseUnit.unitType.name}
                                         </td>
                                         <td>
-                                          {unit.startDate.replace(/[TZ]/g, " ")}
+                                          {moment(unit.startDate.replace(/[TZ]/g, " ")).format("DD MM YYYY")}
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
-                                          {unit.tenancyStatus.toLowerCase() ? (
-                                            <span class="badge-soft-success badge">
-                                              Closed
-                                            </span>
-                                          ) : (
-                                            <span class="badge-soft-danger badge">
-                                              Activate
-                                            </span>
-                                          )}
+                                        <span className="badge-soft-success badge">  {unit.tenancyStatus.toLowerCase() 
+                                          
+                                         
+}</span>
                                         </td>
                                         <td>{unit.tenancyRenewalDate}</td>
                                         <td>
