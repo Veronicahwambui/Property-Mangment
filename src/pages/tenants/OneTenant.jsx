@@ -309,7 +309,7 @@ function OneTenant() {
       active: true,
       // id:0,
       premiseUnitId:premiseUnitId,
-      startDate: new Date(startDate),
+      startDate: new Date(),
       tenancyCharges: [],
       tenancyDocuments: [],
       tenancyRenewalDate:  new Date(tenancyRenewalDate),
@@ -1045,7 +1045,7 @@ const getStatus =()=>{
                       />
                     </div>
 
-                    <div className="form-group mb-4"  id="datepicker15">
+                    <div className="form-group mb-4"  id="datepicker151">
                       <label htmlFor="">TenancyRenewalNotificationDate</label>
                       <input
                         type="text"
@@ -1055,7 +1055,7 @@ const getStatus =()=>{
                           setTenancyRenewalNotificationDate(e.target.value)
                         }
                         placeholder="TenancyRenewalNotificationDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker15' data-provide="datepicker" data-date-autoclose="true"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker151' data-provide="datepicker" data-date-autoclose="true"
 
                         required={true}
                       />
@@ -1602,14 +1602,14 @@ const getStatus =()=>{
                     </div>
 
                     <div className="form-group mb-4" id="datepicker198">
-                      <label htmlFor="">StartDate (tests)</label>
+                      <label htmlFor="">StartDate</label>
                       <input
                         type="text"
                         className="form-control mouse-pointer enddate"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         placeholder="Enter StartDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-date-start-date="+0d" data-provide="datepicker" data-date-autoclose="true" 
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-provide="datepicker" data-date-autoclose="true"  data-date-start-date="+0d"
                         required={true}
         
                       />

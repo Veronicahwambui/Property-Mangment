@@ -206,7 +206,7 @@ function AddAdmin() {
                     </div>
                     <div className="row  mb-4 pb-2 align-items-center">
                       <label htmlFor="" className="col-form-label col-lg-2">
-                        Other Name(s) <strong className="text-danger">*</strong>
+                        Other Name(s) 
                       </label>
                       <div className="col-lg-4">
                         <input
