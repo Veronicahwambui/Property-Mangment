@@ -249,7 +249,7 @@ function PremiseUseTypes() {
                           return(
                             <tr data-id="1" key={val}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
-                            <td data-field="unit-num ">{val.name}</td>
+                            <td data-field="unit-num " className='text-capitalize'>{val.name}</td>
                             <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
                             <div class="d-flex align-items-center">
@@ -324,7 +324,7 @@ function PremiseUseTypes() {
             <div class="row">
             <div class="col-12">
                       <div class="form-group mb-4">
-                                        <label for=""> Premise Use Type </label>
+                                        <label for=""> Premise Use Type <strong class="text-danger">*</strong></label>
                                         <input value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
                                     </div>
             </div>
@@ -380,7 +380,7 @@ function PremiseUseTypes() {
             <div class="row">
             <div class="col-12">
                       <div class="form-group mb-4">
-                                        <label for="">Premise Use Type</label>
+                                        <label for="">Premise Use Type <strong class="text-danger">*</strong></label>
                                         <input required value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                                     </div>
             </div>

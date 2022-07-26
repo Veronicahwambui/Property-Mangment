@@ -227,7 +227,7 @@ const deactivate = (id)=> {
                           return (
                               <tr data-id="1" key={zon}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
-                            <td data-field="unit-num ">{zon.name}</td>
+                            <td data-field="unit-numv " className='text-capitalize'>{zon.name}</td>
                             <td data-field="unit-num ">{zon.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
                               <div className="d-flex align-items-center">
@@ -260,50 +260,6 @@ const deactivate = (id)=> {
                             
                           )
                       })}
-
-                      <tr class="cloneCharges d-none">
-                        <td style={{ width: "80px" }} class="categoryIndex ">
-                          #
-                        </td>
-                        <td>
-                          <input
-                            type="text "
-                            class="form-control "
-                            placeholder="estate Name"
-                          />
-                        </td>
-
-                        <td>
-                          <select
-                            class="form-select"
-                            style={{ width: "130px" }}
-                          >
-                            <option value="">Nairobi</option>
-                            <option value="">Mombasa</option>
-                            <option value="">Nakuru</option>
-                          </select>
-                        </td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-
-                        <td class="text-right cell-change d-flex align-items-center justify-content-end">
-                          <button
-                            class="btn btn-primary btn-sm text-uppercase px-3 save-new-btn mx-3 "
-                            title="save "
-                          >
-                            Add
-                          </button>
-                          <a
-                            class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent cancel-new-category "
-                            title="Cancel "
-                          >
-                            <i class="bx bx-x "></i>
-                          </a>
-                        </td>
-                      </tr>
-
-
                     </tbody>
                   </table>
                 </div>
@@ -346,18 +302,19 @@ const deactivate = (id)=> {
             <div class="row">
             <div class="col-12">
                                     <div class="form-group mb-4">
-                                        <label for="">Zone Name</label>
+                                        <label for="">Zone Name <strong class="text-danger">*</strong></label>
                                         <input required value={zoneName} onChange={ (e)=> setZoneName(e.target.value)} type="text" class="form-control" placeholder="Enter zone name" />
                                     </div>
                                 </div>
               <div class="col-12">
-                  <label for="">County</label>
+                  <label for="">County <strong class="text-danger">*</strong></label>
                   <select
                     class="form-control"
                     data-live-search="true"
                     title="Select county where the zone is"
                     onChange={(e) => setSelectedCounty(e.target.value)}
                   >
+                    <option value=""> Select County</option>
                     {clientCounties && clientCounties.map((cou , index) =>{ 
                        let county = cou.county
                       return (
@@ -416,13 +373,13 @@ const deactivate = (id)=> {
             <div class="row">
             <div class="col-12">
               <div class="form-group mb-4">
-                <label for="">Zone Name</label>
+                <label for="">Zone Name <strong class="text-danger">*</strong></label>
                   <input required value={editName} onChange={ (e)=> setEditName(e.target.value)} type="text" class="form-control" placeholder="Enter zone name" />
                   </div>
                 </div>
 
               <div class="col-12">
-                  <label for="">County</label>
+                  <label for="">County <strong class="text-danger">*</strong></label>
                   <select
                     class="form-control"
                     data-live-search="true"

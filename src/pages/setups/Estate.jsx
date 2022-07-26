@@ -228,9 +228,9 @@ function Estate() {
                           return (
                             <tr data-id="1" key={estate}>
                               <td style={{ width: "80px" }}>{index + 1}</td>
-                              <td >{estate.name}</td>
-                              <td >{estate.zone.name}</td>
-                              <td >{estate.zone.clientCounty.county.name.toLowerCase()}</td>
+                              <td className='text-capitalize'>{estate.name}</td>
+                              <td className='text-capitalize'>{estate.zone.name}</td>
+                              <td className='text-capitalize'>{estate.zone.clientCounty.county.name.toLowerCase()}</td>
                               <td >{estate.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
                               <td class="text-right cell-change text-nowrap">
                                 <div className=" align-items-center d-flex">
@@ -307,7 +307,7 @@ function Estate() {
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">Estate Name</label>
+                    <label for="">Estate Name <strong class="text-danger">*</strong></label>
                     <input required value={estateName} onChange={(e) => setEstateName(e.target.value)} type="text" class="form-control" placeholder="Enter estate name" />
                   </div>
                 </div>
@@ -319,6 +319,7 @@ function Estate() {
                     title="Select county where the zone is"
                     onChange={(e) => setNewZone(e.target.value)}
                   >
+                    <option value="">Select Estate</option>
                     {zones && zones.map((zon, index) => (
                       <option key={index} value={zon.id}>{zon.name}</option>
                     ))}
@@ -378,7 +379,7 @@ function Estate() {
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">Estate Name</label>
+                    <label for="">Estate Name <strong class="text-danger">*</strong></label>
                     <input required value={editName} onChange={(e) => setEditName(e.target.value)} type="text" class="form-control" placeholder="Enter estate name" />
                   </div>
                 </div>

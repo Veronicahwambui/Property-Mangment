@@ -316,7 +316,7 @@ function ApplicableCharges() {
               <div class="row">
               <div class="col-12">
                 <div class="form-group mb-4">
-                  <label for="">Applicable Charge Name </label>
+                  <label for="">Applicable Charge Name <strong class="text-danger">*</strong> </label>
                     <input required value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter applicable charge name" />
                   </div>
             </div>
@@ -336,7 +336,7 @@ function ApplicableCharges() {
                 </div>
                 <div class="col-12">
                
-                    <label for="">Charge Type </label>
+                    <label for="">Charge Type <strong class="text-danger">*</strong></label>
                     <select
                       class="form-control"
                       data-live-search="true"
