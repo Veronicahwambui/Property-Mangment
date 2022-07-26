@@ -22,7 +22,7 @@ function Invoices() {
     moment().startOf("month").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
-    moment(new Date()).format("YYYY-MM-DD")
+      moment().endOf("month").format("YYYY-MM-DD")
   );
 
   useEffect(() => {
