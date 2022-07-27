@@ -5,6 +5,8 @@ import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
+import axios from "axios";
+import {confirmAlert} from "react-confirm-alert";
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -24,6 +26,10 @@ function Invoices() {
   const [endDate, setEndDate] = useState(
       moment(new Date()).add(3, 'M').format('YYYY-MM-DD')
   );
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
   useEffect(() => {
     getInvoices();
@@ -39,7 +45,6 @@ function Invoices() {
       search: searchTerm,
     };
     requestsServiceService.getInvoices(data).then((res) => {
-      console.log(res);
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
     }).then(() => {
@@ -86,7 +91,7 @@ function Invoices() {
   };
   const getOneInvoice = (id) => {
     let acc = invoices.find(
-      (invoice) => invoice.transaction.transactionId === id
+      (invoice) => invoice.transactionItemId === id
     );
     setactiveInvoice(acc);
     showInvoice();
@@ -104,6 +109,50 @@ function Invoices() {
 
   $(document).on("change", ".sdate", addDate);
   $(document).on("change", ".edate", addDate2);
+  const [phonenumber, setphonenumber] = useState("");
+
+  const sendSTK = (event) => {
+
+    event.preventDefault();
+    let invoiceNoo = activeInvoice;
+    let formData = new FormData()
+    formData.append("PayBillNumber", '4081125');
+    formData.append("Amount", parseInt(activeInvoice.billAmount))
+    formData.append("PhoneNumber", phonenumber)
+    formData.append("AccountReference", invoiceNoo.billerBillNo)
+    formData.append("TransactionDesc", invoiceNoo.transactionDescription)
+    formData.append("FullNames", `${invoiceNoo.transactionCustomerName}`)
+    formData.append("function", "CustomerPayBillOnline");
+
+    let config = {
+      method: 'post',
+      url: 'https://payme.revenuesure.co.ke/index.php',
+      data: formData
+    }
+    axios(config).then(res => {
+      if (typeof res.data === "string") {
+        setError({
+          ...error,
+          message: "Invalid Phone Number",
+          color: "danger"
+        })
+      } else {
+        let message = res.data.CustomerMessage;
+        setError({
+          ...error,
+          message: message,
+          color: "success"
+        })
+      }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        })
+      }, 4000);
+    })
+  }
 
   return (
     <>
@@ -244,6 +293,7 @@ function Invoices() {
                           <th>Bill Amount</th>
                           <th>Paid Amount</th>
                           <th>Total Balance</th>
+                          <th>Due Date</th>
                           <th>Payment Status</th>
                           <th className="text-right">Actions</th>
                         </tr>
@@ -283,6 +333,11 @@ function Invoices() {
                                 </span>
                               </td>
                               <td>
+                                {moment(invoice?.invoiceDate).format(
+                                    "DD-MM-YYYY"
+                                )}
+                              </td>
+                              <td>
                                 {invoice.paymentStatus === "PENDING" ? (
                                   <span class="badge-soft-danger badge">
                                     {invoice.paymentStatus}
@@ -315,7 +370,7 @@ function Invoices() {
                                         href="#"
                                         onClick={() =>
                                           getOneInvoice(
-                                            invoice.transaction.transactionId
+                                            invoice.transactionItemId
                                           )
                                         }
                                       >
@@ -349,17 +404,14 @@ function Invoices() {
                           >
                             {invoices && invoices.length} Invoices
                           </th>
-                          <th className="text-nowrap" colSpan="3">
-                            {}
-                          </th>
-                          <th className="text-nowrap" colSpan="3">
-                            {}
-                          </th>
-                          <td className="text-nowrap" colSpan="3">
-                            <span className="fw-semibold ">
+                          <td className="text-nowrap text-right" colSpan="7">
+                            <span className="fw-semibold">
                               {formatCurrency.format(total())}
                             </span>
                           </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
                         </tr>
                       </tfoot>
                     </table>
@@ -428,9 +480,10 @@ function Invoices() {
               {activeInvoice?.transaction?.premiseUnitName}
               <br />
               <br />
-              {moment(activeInvoice.dateTimeCreated).format(
-                "dddd, MMMM Do YYYY, h:mm a"
-              )}
+              <p>Issue date: {moment(activeInvoice.dateTimeCreated).format( "DD-MM-YYYY" )}</p>
+              <p>Due date:          {moment(activeInvoice.invoiceDate).format(
+                  "DD-MM-YYYY"
+              )}</p>
             </address>
             <p>Title: {activeInvoice?.transactionTitle}</p>
             <p>Description: {activeInvoice?.transactionDescription}</p>
@@ -475,7 +528,7 @@ function Invoices() {
                       Total
                     </td>
                     <td className="text-end fw-bold">
-                      KES {formatCurrency.format(activeInvoice?.billAmount)}
+                       {formatCurrency.format(activeInvoice?.billAmount)}
                     </td>
                   </tr>
                   <tr>
@@ -485,7 +538,7 @@ function Invoices() {
                       Paid
                     </td>
                     <td className="text-end  fw-bold">
-                      KES {formatCurrency.format(activeInvoice?.billPaidAmount)}
+                       {formatCurrency.format(activeInvoice?.billPaidAmount)}
                     </td>
                   </tr>
                   <tr>
@@ -496,7 +549,7 @@ function Invoices() {
                     </td>
                     <td className="border-0 text-end">
                       <h5 className="m-0 text-uppercase fw-bold">
-                        KES{" "}
+                        {" "}
                         {formatCurrency.format(
                           activeInvoice?.billAmount -
                             activeInvoice?.billPaidAmount
@@ -510,63 +563,65 @@ function Invoices() {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          {/*<div className="col-12">*/}
-          {/*  <div className="table-resposive p-4 px-2 pt-2 overflow-visible">*/}
-          {/*    <table className="w-100">*/}
-          {/*      <tbody>*/}
-          {/*        <tr data-id="1">*/}
-          {/*          <td>*/}
-          {/*            <label htmlFor="" className="">*/}
-          {/*              Payment Method*/}
-          {/*            </label>*/}
-          {/*            <select*/}
-          {/*              className="form-control selectpicker w-100 payment-method"*/}
-          {/*              data-style="btn-secondary w-100"*/}
-          {/*              data-live-search="true"*/}
-          {/*              title="Select payment Method"*/}
-          {/*            >*/}
-          {/*              <option value="Mpesa">MPESA</option>*/}
-          {/*              <option value="Cash">CASH</option>*/}
-          {/*            </select>*/}
-          {/*          </td>*/}
-          {/*          <td className="px-3 ">*/}
-          {/*            <div className="phone-num d-none">*/}
-          {/*              <label htmlFor="">Phone No.</label>*/}
-          {/*              <input*/}
-          {/*                type="text "*/}
-          {/*                className="form-control w-100 d-flex "*/}
-          {/*                placeholder="Phone No."*/}
-          {/*                spellCheck="false"*/}
-          {/*                data-ms-editor="true"*/}
-          {/*              />*/}
-          {/*            </div>*/}
-          {/*          </td>*/}
-          {/*          <td className="px-3">*/}
-          {/*            <label htmlFor="">Amount To Be Paid</label>*/}
-          {/*            <input*/}
-          {/*              type="text "*/}
-          {/*              className="form-control w-100 d-flex"*/}
-          {/*              placeholder="KES"*/}
-          {/*              spellCheck="false"*/}
-          {/*              data-ms-editor="true"*/}
-          {/*            />*/}
-          {/*          </td>*/}
-          {/*          <td className="text-right float-right">*/}
-          {/*            <div className="d-flex flex-column">*/}
-          {/*              <label className="opacity-0">Something</label>*/}
-          {/*              <a*/}
-          {/*                href="#"*/}
-          {/*                className="btn btn-primary w-md waves-effect waves-light"*/}
-          {/*              >*/}
-          {/*                Submit*/}
-          {/*              </a>*/}
-          {/*            </div>*/}
-          {/*          </td>*/}
-          {/*        </tr>*/}
-          {/*      </tbody>*/}
-          {/*    </table>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
+          <div className="col-12">
+            <div className="table-resposive p-4 px-2 pt-2 overflow-visible">
+              <form onSubmit={sendSTK}>
+              <table className="w-100">
+                <tbody>
+                  <tr data-id="1">
+                      <td>
+                        <label htmlFor="" className="">
+                          Payment Method
+                        </label>
+                        <select
+                            className="form-control"
+                            title="Select payment Method"
+                            disabled={true}
+                        >
+                          <option value="Mpesa">MPESA</option>
+                          <option value="Cash">CASH</option>
+                        </select>
+                      </td>
+                      <td className="px-3 ">
+                        <div className="phone-num">
+                          <label htmlFor="">Phone No.</label>
+                          <input
+                              className="form-control w-100 d-flex"
+                              spellCheck="false"
+                              onChange={(event)=> setphonenumber(event.target.value)}
+                              data-ms-editor="true"
+                              type="tel" id="phone" name="phone" placeholder="07XXXXXXXX" pattern="[0]{1}[0-9]{9}" required={true}/>
+                        </div>
+                      </td>
+                      {/*<td className="px-3">*/}
+                      {/*  <label htmlFor="">Amount To Be Paid</label>*/}
+                      {/*  <input*/}
+                      {/*      type="text "*/}
+                      {/*      className="form-control w-100 d-flex"*/}
+                      {/*      placeholder="KES"*/}
+                      {/*      spellCheck="false"*/}
+                      {/*      data-ms-editor="true"*/}
+                      {/*  />*/}
+                      {/*</td>*/}
+                      <td className="text-right float-right">
+                        <div className="d-flex flex-column">
+                          <label className="opacity-0">Something</label>
+                          <button type="submit" className="btn btn-primary w-md waves-effect waves-light">Submit</button>
+                        </div>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+                <br/>
+                {error.color !== "" &&
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
+                    </div>
+                }
+              </form>
+            </div>
+          </div>
+          <br/><br/>
           {/*<div className="float-end">*/}
           {/*  <a href="javascript:window.print()"*/}
           {/*     className="btn btn-success waves-effect waves-light me-1"><i*/}
