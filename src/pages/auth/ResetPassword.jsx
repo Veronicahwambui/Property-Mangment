@@ -34,21 +34,24 @@ export default function  ResetPassword() {
       verifyEmail: true
     });
     if (enabled()) {
-      setError({
-        ...error,
-        message: "Success!",
-        color:"success"
-      });
       AuthService.resetPassword(det).then((res) => {
-        if (res) {
+        if (res.data.status) {
           setError({
             ...error,
-            message: res.data.message + ". Redirecting...",
+            message: res.data.message,
             color: "success"
           });
+
           setTimeout(() => {
             navigate('/login', {replace: true})
-          }, 2000)
+          }, 4000)
+        }else{
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger"
+          });
+
         }
       }).catch((err) => {
         console.log(err)
