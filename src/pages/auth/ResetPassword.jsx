@@ -74,7 +74,7 @@ export default function  ResetPassword() {
         message: "",
         color:""
       })
-    }, 2000);
+    }, 4000);
   }
 
   return (
@@ -147,8 +147,8 @@ export default function  ResetPassword() {
                       </div>
                       <div className="p-2 mt-4">
                         <h4>Update your password</h4>
-                        <p className="mb-5">Please enter the 4 digit code<span
-                          className="fw-semibold">{}</span></p>
+                        {/*<p className="mb-5">Please enter the 4 digit code<span*/}
+                        {/*  className="fw-semibold">{}</span></p>*/}
                         <form onSubmit={handleSubmit}>
                           <div className="row">
                           
