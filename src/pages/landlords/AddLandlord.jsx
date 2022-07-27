@@ -99,8 +99,12 @@ export default function AddLandlord() {
     setEditBankName(selectedAccount.bankName)
     handleEditAccountShow()
     }
-  const areAllFieldsFilled = (phoneNumber != "")
+  const areAllFieldsFilled = (email !== "") && (phoneNumber !== "") && (remunerationPercentage !== undefined) && (phoneNumber !== "") && (fileNumber !== "") && (landLordAgreementTypeId !== null) && (agreementPeriod !== null) &&
+      (percentageRemuneration !== null) && (landLordTypeName !== "") && (gender !== "")
 
+  useEffect(() => {
+    console.log(areAllFieldsFilled)
+  }, [areAllFieldsFilled])
   const handleDocumentSubmit = (event) => {
     event.preventDefault();
     let data = {
@@ -171,7 +175,7 @@ export default function AddLandlord() {
       landLordAccounts: accounts
     }
     requestsServiceService.createLandLord(new_t).then((res) => {
-      if (res.data.status == true) {
+      if (res.data.status === true) {
         confirmAlert({
           message: res.data.message,
           buttons: [{
@@ -421,14 +425,14 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-lastname-input ">Percentage
                                 renumeration<strong className="text-danger ">*</strong></label>
-                              <input type="number" value={remunerationPercentage} onChange={(e) => setremunerationPercentage(e.target.value)} className="form-control "placeholder="Percentage renumeration % " required={true}/>
+                              <input type="number" min="1" max="99" value={remunerationPercentage} onChange={(e) => setremunerationPercentage(e.target.value)} className="form-control "placeholder="Percentage renumeration % " required={true}/>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-lastname-input ">Agreement Period
                                 <strong className="text-danger ">*</strong></label>
-                              <input type="number" value={agreementPeriod} onChange={(e) => setagreementPeriod(e.target.value)} className="form-control "placeholder="Agreement period (months)" required={true}/>
+                              <input type="number" min="1" max="99" value={agreementPeriod} onChange={(e) => setagreementPeriod(e.target.value)} className="form-control "placeholder="Agreement period (months)" required={true}/>
                             </div>
                           </div>
                         </div>
@@ -545,7 +549,7 @@ export default function AddLandlord() {
                     </form>
                     <div className="button-navigators">
                       <button disabled className="btn btn-primary waves-effect kev-prev me-3"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>
-                      <button className="btn btn-primary waves-effect kev-nxt me-3">Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
+                      <button className="btn btn-primary waves-effect kev-nxt me-3" disabled={!areAllFieldsFilled}>Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
                       <button type='submit' className="btn btn-success kev-submit me-3 d-none" form={"my-form"}>Submit <i className="mdi mdi-check-all me-2 font-16px"></i></button>
                     </div>
                   </div>
