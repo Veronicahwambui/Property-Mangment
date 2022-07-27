@@ -67,7 +67,7 @@ function Main() {
           <Routes>
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/recoverpassword" element={<RecoverPassword />} />
-            <Route exact path="/resetpassword" element={<ResetPassword />} />
+            <Route exact path="/resetpassword/:id" element={<ResetPassword />} />
 
             <Route path="*" element={<Navigate to="/login" />}></Route>
 

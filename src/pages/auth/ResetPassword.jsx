@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {Link, useNavigate} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import AuthService from '../../services/authLogin.service';
 
 export default function  ResetPassword() {
@@ -10,6 +10,7 @@ export default function  ResetPassword() {
   const [password, setPassword] = useState("");
   const [passwordconfirm, setPasswordConfirm] = useState("");
 
+  const { id } = useParams();
 
   const [error, setError] = useState({
     message: "",
@@ -17,22 +18,7 @@ export default function  ResetPassword() {
   });
 
   const navigate = useNavigate();
-  const handleChange1 = (event) => {
-    event.preventDefault();
-    setD1(event.target.value);
-  }
-  const handleChange2 = (event) => {
-    event.preventDefault();
-    setD2(event.target.value);
-  }
-  const handleChange3 = (event) => {
-    event.preventDefault();
-    setD3(event.target.value);
-  }
-  const handleChange4 = (event) => {
-    event.preventDefault();
-    setD4(event.target.value);
-  }
+ 
 
   const handlePassword = (event) => {
     setPassword(event.target.value)
@@ -42,10 +28,9 @@ export default function  ResetPassword() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    let userId = "96754171-ddfb-4c52-9a83-54a64987d343";
     let det = ({
       password: password,
-      userID: userId,
+      userID: id,
       verifyEmail: true
     });
     if (enabled()) {
@@ -163,37 +148,7 @@ export default function  ResetPassword() {
                           className="fw-semibold">{}</span></p>
                         <form onSubmit={handleSubmit}>
                           <div className="row">
-                            <label htmlFor="digit1-input">Enter OTP</label>
-                            <div className="col-3">
-                              <div className="mb-3">
-                                <label htmlFor="digit1-input" className="visually-hidden">Dight 1</label>
-                                <input type="text" onChange={handleChange1} className="form-control form-control-lg text-center two-step"
-                                       maxLength="1" data-value="1" id="digit1-input" value={d1} required/>
-                              </div>
-                            </div>
-                            <div className="col-3">
-                              <div className="mb-3">
-                                <label htmlFor="digit2-input" className="visually-hidden">Dight 2</label>
-                                <input type="text" onChange={handleChange2} className="form-control form-control-lg text-center two-step"
-                                       maxLength="1" data-value="2" id="digit2-input" value={d2} required/>
-                              </div>
-                            </div>
-
-                            <div className="col-3">
-                              <div className="mb-3">
-                                <label htmlFor="digit3-input" className="visually-hidden">Dight 3</label>
-                                <input type="text"  onChange={handleChange3} value={d3}  className="form-control form-control-lg text-center two-step"
-                                       maxLength="1" data-value="3" id="digit3-input" required/>
-                              </div>
-                            </div>
-
-                            <div className="col-3">
-                              <div className="mb-3">
-                                <label htmlFor="digit4-input" className="visually-hidden">Digit 4</label>
-                                <input type="text"  onChange={handleChange4}  className="form-control form-control-lg text-center two-step"
-                                       maxLength="1" data-value="4" id="digit4-input" value={d4} required/>
-                              </div>
-                            </div>
+                          
                             <div className=" mb-3 ">
                               {error.color !== "" &&
                               <div className={"alert alert-" + error.color} role="alert">
