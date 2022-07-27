@@ -4,7 +4,7 @@ import authService from "../../services/auth.service";
 
 function UserTypes() {
   const [userType, setUserType] = useState([]);
-  const[userTypeName, setuserTypeName]=useState("")
+  const[userTypeName, setUserTypeName]=useState("")
   const[editName, setEditName]=useState("")
   const[id, setId]=useState("")
   const [error, setError] = useState({
@@ -14,7 +14,7 @@ function UserTypes() {
 
  
   
-  const userTypeData = () => {
+  const userTypesData = () => {
     const data = JSON.stringify({
       clientId: parseInt(authService.getClientId()),
       id: null,
@@ -30,14 +30,15 @@ function UserTypes() {
   const addUserType =()=>{
 
     let data=JSON.stringify({
-      clientId:  parseInt(authService.getClientId()),
+    clientId:  parseInt(authService.getClientId()),
   id: null,
   name:userTypeName,
 
     })
     requestsServiceService.createUserType(data).then((res) => {
-       
-        userTypeData()
+       console.log(res.data)
+        userTypesData()
+
 
         if(res.data.status){
           setError({
@@ -52,34 +53,29 @@ function UserTypes() {
               color: "warning"
             }) 
           }
-          
-          
+    
           setTimeout(() => {
             clear()
           }, 3000)
-      }).catch((res)=>{
-
+          
+        }).catch((res)=>{
+    
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger"
+          })
+    
+        })
+      }
+    
+      const clear = ()=> {
         setError({
           ...error,
-          message: res.data.message,
-          color: "danger"
-        })
-  
-        setTimeout(() => {
-          clear()
-        }, 3000)
-  
-  
-      })
-    }
-    const clear = ()=> {
-      setError({
-        ...error,
-        message: "",
-        color: ""
-      });
-     
-  };
+          message: "",
+          color: ""
+        });
+      }
     
 
 const updateUser=()=>{
@@ -91,7 +87,7 @@ const updateUser=()=>{
 
   requestsServiceService.updateUserType(data).then((res)=>{
     console.log(res)
-    userTypeData()
+    userTypesData()
    
    
   }
@@ -113,7 +109,7 @@ const deactivateUser =(userId)=>{
 
   useEffect(() => {
  
-    userTypeData();
+    userTypesData();
   }, []);
 
   return (
@@ -155,6 +151,7 @@ const deactivateUser =(userId)=>{
                     
                     <div class="d-flex">
                       <button
+                      
                         type="button"
                         class="btn btn-primary waves-effect btn-label waves-light me-3"
                         data-bs-toggle="modal"
@@ -168,7 +165,7 @@ const deactivateUser =(userId)=>{
 
 
 
-                <div div class="card-body" onSubmit={userTypeData}>
+                <div div class="card-body" onSubmit={userTypesData}>
                
                 {error.color !== "" &&
                   <div className={"alert alert-" + error.color} role="alert">
@@ -273,14 +270,16 @@ const deactivateUser =(userId)=>{
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-4">
-                    <label for="">UserType Name</label>
+                    <label for="">UserType</label>
                     <input
-
+                     
                       type="text"
                       class="form-control"
                       placeholder="Enter UserTypeName"
-                      onChange={(event) =>setuserTypeName(event.target.value)}
+                      onChange={(event) =>setUserTypeName(event.target.value)}
                       value={userTypeName}
+                      required
+                     
                     />
                   </div>
                 </div>
