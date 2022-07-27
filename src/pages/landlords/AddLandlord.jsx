@@ -274,14 +274,14 @@ export default function AddLandlord() {
                       <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav mr-auto">
                           <li className="nav-item active">
-                            <a className="nav-link active" href="#">1. Landlord details <span
+                            <a className="nav-link active">1. Landlord details <span
                               className="sr-only">(current)</span></a>
                           </li>
                           <li className="nav-item">
-                            <a className="nav-link" href="#">2. Account details</a>
+                            <a className="nav-link">2. Account details</a>
                           </li>
                           <li className="nav-item">
-                            <a className="nav-link" href="#">3. Document attachments</a>
+                            <a className="nav-link">3. Document attachments</a>
                           </li>
                         </ul>
                       </div>
