@@ -390,15 +390,15 @@ function AddTenant() {
                       <a className="nav-link active" href="#">1. Tenant Details <span className="sr-only">(current)</span></a>
                     </li>
                     <li className="nav-item">
-                      <a className="nav-link" href="#">2. Kin Referees & Dependents</a>
+                      <a className="nav-link" >2. Kin Referees & Dependents</a>
                     </li>
 
                     <li className="nav-item">
-                      <a className="nav-link" href="#">3. Unit Assignment</a>
+                      <a className="nav-link" >3. Unit Assignment</a>
                     </li>
 
                     <li className="nav-item">
-                      <a className="nav-link" href="#">4. Tenant Document attachments</a>
+                      <a className="nav-link" >4. Tenant Document attachments</a>
                     </li>
                     
                   </ul>
@@ -437,7 +437,7 @@ function AddTenant() {
                               <label htmlFor="basicpill-firstname-input">Company Name<strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="" placeholder="Enter company's name" name="companyName"
                                 onChange={(e) => handleTenantDtoChange(e)}  
-                                required={true}/>
+                                required/>
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
@@ -445,7 +445,7 @@ function AddTenant() {
                               <label htmlFor="basicpill-firstname-input">Certificate of incorporation<strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="basicpill-firstname-input" placeholder="Enter certificate No." name="companyIncorporationNumber"
                                 onChange={(e) => handleTenantDtoChange(e)} 
-                                required={true}/>
+                                required/>
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
@@ -453,7 +453,7 @@ function AddTenant() {
                               <label htmlFor="basicpill-firstname-input">Company's location<strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="basicpill-firstname-input" placeholder="Enter physical address" name="companyAddress"
                                 onChange={(e) => handleTenantDtoChange(e)}  
-                                required={true}/>
+                                required/>
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
@@ -461,7 +461,7 @@ function AddTenant() {
                               <label htmlFor="basicpill-firstname-input">Email. <strong className="text-danger">*</strong></label>
                               <input type="email" className="form-control" id="Enter tenants email address" placeholder="Enter property plot No." name="email"
                                 onChange={(e) => handleTenantDtoChange(e)}
-                                required={true} />
+                                required/>
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
@@ -469,7 +469,7 @@ function AddTenant() {
                               <label htmlFor="basicpill-firstname-input">Phone. <strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="Enter tenants Phone Number" placeholder="Enter property plot No." name="phoneNumber"
                                 onChange={(e) => handleTenantDtoChange(e)}
-                                required={true} />
+                                required />
                             </div>
                           </div>
                           <div className="col-md-6 col-lg-4 col-sm-12">
@@ -508,7 +508,7 @@ function AddTenant() {
                                   <label htmlFor="basicpill-firstname-input">ID Num/ PPT Num<strong className="text-danger">*</strong></label>
                                   <input type="text" className="form-control"
                                     onChange={(e) => handleTenantDtoChange(e)} id="basicpill-firstname-input" name='idNumber' placeholder="Enter Id no " 
-                                    required={true}/>
+                                    required/>
                                 </div>
                               </div>
                               <div className="col-4">
@@ -518,7 +518,7 @@ function AddTenant() {
                                     <div className="form-check mb-3 pr-15px">
                                       <input className="form-check-input" type="radio" value="Male"
                                         onChange={(e) => handleTenantDtoChange(e)} name="gender" id="formRadios1"
-                                        required={true} />
+                                        required />
                                       <label className="form-check-label" htmlFor="formRadios1">
                                         Male
                                       </label>
@@ -526,7 +526,7 @@ function AddTenant() {
                                     <div className="form-check">
                                       <input className="form-check-input" type="radio" value="Female"
                                         onChange={(e) => handleTenantDtoChange(e)} name="gender" id="formRadios2" 
-                                        required={true}/>
+                                        required/>
                                       <label className="form-check-label" htmlFor="formRadios2">
                                         Female
                                       </label>
@@ -542,7 +542,7 @@ function AddTenant() {
                               <label htmlFor="basicpill-firstname-input">First name <strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="basicpill-firstname-input"
                                 onChange={(e) => handleTenantDtoChange(e)} name="firstName" placeholder="Enter Your First Name" 
-                                required={true}/>
+                                required/>
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
@@ -550,7 +550,7 @@ function AddTenant() {
                               <label htmlFor="basicpill-lastname-input">Last Name <strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="basicpill-lastname-input"
                                 onChange={(e) => handleTenantDtoChange(e)} name="lastName" placeholder="Enter Your Last Name"
-                                required={true} />
+                                required />
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
