@@ -5,6 +5,8 @@ import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
+import axios from "axios";
+import {confirmAlert} from "react-confirm-alert";
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -24,6 +26,10 @@ function Invoices() {
   const [endDate, setEndDate] = useState(
       moment(new Date()).add(3, 'M').format('YYYY-MM-DD')
   );
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
 
   useEffect(() => {
     getInvoices();
@@ -103,45 +109,49 @@ function Invoices() {
 
   $(document).on("change", ".sdate", addDate);
   $(document).on("change", ".edate", addDate2);
+  const [phonenumber, setphonenumber] = useState("");
 
   const sendSTK = (event) => {
 
     event.preventDefault();
     let invoiceNoo = activeInvoice;
-    console.log(invoiceNoo);
-
     let formData = new FormData()
     formData.append("PayBillNumber", '4081125');
     formData.append("Amount", parseInt(activeInvoice.billAmount))
-    formData.append("PhoneNumber", invoiceNoo.phoneNumber)
+    formData.append("PhoneNumber", phonenumber)
     formData.append("AccountReference", invoiceNoo.billerBillNo)
     formData.append("TransactionDesc", invoiceNoo.transactionDescription)
     formData.append("FullNames", `${invoiceNoo.transactionCustomerName}`)
     formData.append("function", "CustomerPayBillOnline");
-    console.log(formData)
 
     let config = {
       method: 'post',
       url: 'https://payme.revenuesure.co.ke/index.php',
       data: formData
     }
-
-    // axios(config).then(res => {
-    //   confirmAlert({
-    //     message: res.data.ResponseDescription,
-    //     buttons: [
-    //       {
-    //         label: 'OK',
-    //         onClick: () => window.location.reload()
-    //       }
-    //     ]
-    //   })
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    //   setError(err.message);
-    // })
-
+    axios(config).then(res => {
+      if (typeof res.data === "string") {
+        setError({
+          ...error,
+          message: "Invalid Phone Number",
+          color: "danger"
+        })
+      } else {
+        let message = res.data.CustomerMessage;
+        setError({
+          ...error,
+          message: message,
+          color: "success"
+        })
+      }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        })
+      }, 4000);
+    })
   }
 
   return (
@@ -566,6 +576,7 @@ function Invoices() {
                         <select
                             className="form-control"
                             title="Select payment Method"
+                            disabled={true}
                         >
                           <option value="Mpesa">MPESA</option>
                           <option value="Cash">CASH</option>
@@ -575,24 +586,23 @@ function Invoices() {
                         <div className="phone-num">
                           <label htmlFor="">Phone No.</label>
                           <input
-                              type="text "
-                              className="form-control w-100 d-flex "
-                              placeholder="Phone No."
+                              className="form-control w-100 d-flex"
                               spellCheck="false"
+                              onChange={(event)=> setphonenumber(event.target.value)}
                               data-ms-editor="true"
-                          />
+                              type="tel" id="phone" name="phone" placeholder="07XXXXXXXX" pattern="[0]{1}[0-9]{9}" required={true}/>
                         </div>
                       </td>
-                      <td className="px-3">
-                        <label htmlFor="">Amount To Be Paid</label>
-                        <input
-                            type="text "
-                            className="form-control w-100 d-flex"
-                            placeholder="KES"
-                            spellCheck="false"
-                            data-ms-editor="true"
-                        />
-                      </td>
+                      {/*<td className="px-3">*/}
+                      {/*  <label htmlFor="">Amount To Be Paid</label>*/}
+                      {/*  <input*/}
+                      {/*      type="text "*/}
+                      {/*      className="form-control w-100 d-flex"*/}
+                      {/*      placeholder="KES"*/}
+                      {/*      spellCheck="false"*/}
+                      {/*      data-ms-editor="true"*/}
+                      {/*  />*/}
+                      {/*</td>*/}
                       <td className="text-right float-right">
                         <div className="d-flex flex-column">
                           <label className="opacity-0">Something</label>
@@ -602,16 +612,23 @@ function Invoices() {
                   </tr>
                 </tbody>
               </table>
+                <br/>
+                {error.color !== "" &&
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
+                    </div>
+                }
               </form>
             </div>
           </div>
-          <div className="float-end">
-            <a href="javascript:window.print()"
-               className="btn btn-success waves-effect waves-light me-1"><i
-              className="mdi mdi-printer font-16px"></i></a>
-            <a href="javascript: void(0);"
-               className="btn btn-primary w-md waves-effect waves-light">Receive Payment</a>
-          </div>
+          <br/><br/>
+          {/*<div className="float-end">*/}
+          {/*  <a href="javascript:window.print()"*/}
+          {/*     className="btn btn-success waves-effect waves-light me-1"><i*/}
+          {/*    className="mdi mdi-printer font-16px"></i></a>*/}
+          {/*  <a href="javascript: void(0);"*/}
+          {/*     className="btn btn-primary w-md waves-effect waves-light">Receive Payment</a>*/}
+          {/*</div>*/}
         </Modal.Footer>
       </Modal>
     </>
