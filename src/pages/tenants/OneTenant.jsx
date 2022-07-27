@@ -400,7 +400,7 @@ const getStatus =()=>{
   const deleteDeactivate = (id) => {
     requestsServiceService.deactivateTenancies(id).then((res) => {});
   };
-console.log(tenancyRenewalDate)
+// console.log(tenancyRenewalDate)
 
 const date2  =(date) => {
   setTenancyRenewalNotificationDate(new Date(date.target.value));
@@ -665,7 +665,7 @@ $(document).on("change", ".date3", date3)
                           <div>
                             <span>
                           {moment(tenantData.tenant &&
-                                tenantData.tenant.companyDateOfRegistration).format("DD MM YYYY")}
+                                tenantData.tenant.companyDateOfRegistration).format("DD /MM /YYYY")}
                             </span>
                           </div>
                         </div>
@@ -747,7 +747,7 @@ $(document).on("change", ".date3", date3)
                                           {unit.premiseUnit.unitType.name}
                                         </td>
                                         <td>
-                                          {moment(unit.startDate.replace(/[TZ]/g, " ")).format("DD- MM -YYYY")}
+                                          {moment(unit.startDate.replace(/[TZ]/g, " ")).format("DD /MM /YYYY")}
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
@@ -757,10 +757,10 @@ $(document).on("change", ".date3", date3)
 }</span>
                                         </td>
                                         <td>{moment(unit.tenancyRenewalDate).format
-                                          ("DD MM YYYY")
+                                          ("DD /MM /YYYY")
                                         }</td>
                                         <td>
-                                          {moment(unit.tenancyRenewalNotificationDate).format("DD MM YYYY")}
+                                          {moment(unit.tenancyRenewalNotificationDate).format("DD /MM /YYYY")}
                                         </td>
                                         <td>
                                           {" "}
