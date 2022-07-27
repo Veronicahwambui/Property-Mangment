@@ -467,8 +467,8 @@ function ViewLandlord() {
                     <div className="card-body">
                       <p className="p-0 m-0"><span className="text-muted">File Number. </span>{landlord.fileNumber}</p>
                     </div>
-                    <div className="card-body border-top">
-                      <p className="p-0 m-0"><span className="text-muted">Landlord Type. </span>{landlord.landLordType}</p>
+                    <div className="card-body border-top text-capitalize">
+                      <p className="p-0 m-0"><span className="text-muted">Landlord Type. </span>{landlord.landLordType?.toLowerCase()?.replace(/_/g , " ")}</p>
                     </div>
                     <div className="card-body border-top">
                       <p className="p-0 m-0"><span className="text-muted">Other Name. </span>{landlord.otherName}</p>
@@ -484,8 +484,8 @@ function ViewLandlord() {
                     <div className="card-body border-top">
                       <p className="p-0 m-0"><span className="text-muted">Agreement Period. </span>{landlord.agreementPeriod} months</p>
                     </div>
-                    <div className="card-body border-top">
-                      <p className="p-0 m-0"><span className="text-muted">Agreement Type. </span>{landlord?.landLordAgreementType?.name}</p>
+                    <div className="card-body border-top text-capitalize">
+                      <p className="p-0 m-0"><span className="text-muted">Agreement Type. </span>{landlord?.landLordAgreementType?.name?.toLowerCase()?.replace(/_/g , " ")}</p>
                     </div>
                   </div>
                 </div>
@@ -559,10 +559,10 @@ function ViewLandlord() {
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {accountsData?.map((acc, index) => (
+                                    {accountsData?.sort((a, b) => a.bank.bankName.localeCompare(b.bank.bankName))?.map((acc, index) => (
                                       <tr data-id={index} key={index}>
                                         <td style={{ width: "80px" }}>{index + 1}</td>
-                                        <td data-field="estate">{acc.bank.bankName}</td>
+                                        <td data-field="estate" className="text-capitalize">{acc.bank.bankName?.toLowerCase()?.replace(/_/g , " ")}</td>
                                         <td data-field="unit-num ">{acc.bankAccountNumber}</td>
                                         <td data-field="unit-num ">{acc.percentageRemuneration}</td>
                                         <td data-field="unit-num ">{acc.active ?
@@ -668,7 +668,7 @@ function ViewLandlord() {
                                           <tr data-id={index} key={index}>
                                             <td style={{ width: "80px" }}>{index + 1}</td>
                                             <td data-field="estate">{doc.docName}</td>
-                                            <td data-field="unit-num ">{doc.documentType?.name}</td>
+                                            <td data-field="unit-num " className="text-capitalize">{doc.documentType?.name?.toLowerCase()}</td>
                                             <td data-field="unit-num ">
                                               {doc.active ?
                                                 <span className="badge-soft-success badge">Active</span> :
@@ -734,26 +734,26 @@ function ViewLandlord() {
               <div className="col-6">
                 <div className="form-group mb-4">
                   <label htmlFor="">Landlord Type <strong className="text-danger ">*</strong></label>
-                  <select className="form-control" value={editlandlordtypename} onChange={(e) => seteditlandlordtypename(e.target.value)}  required={true}>
+                  <select className="form-control text-capitalize" value={editlandlordtypename} onChange={(e) => seteditlandlordtypename(e.target.value)}  required={true}>
                     <option className="text-black font-semibold ">
-                      {editlandlordtypename}
+                      {editlandlordtypename?.toLowerCase()?.replace(/_/g , " ")}
                     </option>
                     {
-                      landlordtypes.map((item, index) => (
-                        <option value={item}>{item}</option>
+                      landlordtypes.sort((a, b) => a.localeCompare(b))?.map((item, index) => (
+                        <option value={item}>{item?.toLowerCase()?.replace(/_/g , " ")}</option>
                       ))
                     }
                   </select>
                 </div>
                 <div className="form-group mb-4">
                   <label htmlFor="">Agreement Type. <strong className="text-danger ">*</strong></label>
-                  <select className="form-control" value={editlandlordagreementtype} onChange={(e) => seteditlandlordagreementtype(e.target.value)}  required={true}>
+                  <select className="form-control text-capitalize" value={editlandlordagreementtype} onChange={(e) => seteditlandlordagreementtype(e.target.value)}  required={true}>
                     <option className="text-black font-semibold ">
-                      {edittypename}
+                      {edittypename?.toLowerCase()?.replace(/_/g , " ")}
                     </option>
                     {
-                      agreementtypes?.map((item, index) => (
-                        <option value={item.id}>{item.name}</option>
+                      agreementtypes.sort((a, b) => a.name.localeCompare(b.name))?.map((item, index) => (
+                        <option value={item.id}>{item.name?.toLowerCase()?.replace(/_/g , " ")}</option>
                       ))
                     }
                   </select>
@@ -860,7 +860,7 @@ function ViewLandlord() {
                   <div className="form-group mb-4">
                     <label htmlFor="">Select Bank/  <strong className="text-danger ">*</strong></label>
                     <select
-                      className="form-control"
+                      className="form-control text-capitalize"
                       onChange={(e) => {
                         editBankAccountDetails(e.target.value);
                       }}
@@ -870,7 +870,7 @@ function ViewLandlord() {
                       <option className="text-black font-semibold ">
                         select..
                       </option>
-                      {banks.map((bank) => {
+                      {banks.sort((a, b) => a.bankName.localeCompare(b.bankName))?.map((bank) => {
                         return (
                           <option
                             key={bank.id}
@@ -880,7 +880,7 @@ function ViewLandlord() {
                               bank.bankName
                             }
                           >
-                            {bank.bankName}
+                            {bank.bankName?.toLowerCase()?.replace(/_/g , " ")}
                           </option>
                         );
                       })}
@@ -920,7 +920,7 @@ function ViewLandlord() {
                 <div className="form-group mb-4">
                   <label htmlFor="">Select Bank.  <strong className="text-danger ">*</strong></label>
                   <select
-                    className="form-control"
+                    className="form-control text-capitalize"
                     onChange={(e) => {
                       setbankAccountDetails(e.target.value);
                     }}
@@ -930,7 +930,7 @@ function ViewLandlord() {
                     <option className="text-black font-semibold ">
                       select..
                     </option>
-                    {banks.map((bank) => {
+                    {banks.sort((a, b) => a.bankName.localeCompare(b.bankName))?.map((bank) => {
                       return (
                         <option
                           key={bank.id}
@@ -940,7 +940,7 @@ function ViewLandlord() {
                             bank.bankName
                           }
                         >
-                          {bank.bankName}
+                          {bank.bankName?.toLowerCase()?.replace(/_/g , " ")}
                         </option>
                       );
                     })}
@@ -979,7 +979,7 @@ function ViewLandlord() {
                 <div className="form-group mb-4">
                   <label htmlFor="">Select Document Type.  <strong className="text-danger ">*</strong></label>
                   <select
-                    className="form-control"
+                    className="form-control text-capitalize"
                     onChange={(e) => {
                       setdocumentTypeId(e.target.value);
                     }}
@@ -989,13 +989,13 @@ function ViewLandlord() {
                     <option className="text-black font-semibold ">
                       select..
                     </option>
-                    {documentTypes.map((dT) => {
+                    {documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
                       return (
                         <option
                           key={dT.id}
                           value={dT.id}
                         >
-                          {dT.name}
+                          {dT.name?.toLowerCase()?.replace(/_/g , " ")}
                         </option>
                       );
                     })}

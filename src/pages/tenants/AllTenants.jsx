@@ -1,4 +1,5 @@
 /* global $ */
+import moment from 'moment'
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -91,7 +92,7 @@ function AllTenants() {
 
               </div>
               <div className="card-body">
-                <table className="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
+                <table className="table table-responsive align-middle table-nowrap table-hover" id="datatable-buttons">
                   <thead className="table-light">
                     <tr>
 
@@ -134,7 +135,7 @@ function AllTenants() {
 
                           </td>
                           <td>
-                            <h5 className="font-size-14 mb-1">{premise.dateTimeCreated}</h5>
+                            <h5 className="font-size-14 mb-1">{moment(premise.dateTimeCreated).format("MMM DD YYYY")}</h5>
 
                           </td>
 

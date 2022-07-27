@@ -338,14 +338,14 @@ function ApplicableCharges() {
                
                     <label for="">Charge Type <strong class="text-danger">*</strong></label>
                     <select
-                      class="form-control"
+                      class="form-control text-capitalize"
                       data-live-search="true"
                       required="required"
                       title="Select Applicable Charge Type"
                       onChange={(e) =>{  setChargeType(e.target.value);}}
                     >
                       {chargeTypes &&  chargeTypes.map((charge) =>{ return (
-                       <option key={charge}  value={charge}>{charge.toLowerCase().replace(/_/g ," ")}</option>
+                       <option key={charge}  value={charge}>{charge?.toLowerCase().replace(/_/g ," ")}</option>
                       )})}
                     </select>
                   
@@ -422,13 +422,13 @@ function ApplicableCharges() {
                
                     <label for="">Charge Type </label>
                     <select
-                      class="form-control"
+                      class="form-control text-capitalize"
                       data-live-search="true"
                       title="Select Applicable Charge Type"
                       onChange={(e) => setUpdateChargeType(e.target.value)}
                     >
                       {chargeTypes &&  chargeTypes.map((charge) =>{ return (
-                       <option key={charge} value={charge} selected={ charge === updateChargeType ? "selected" : '' } className="text-capitalize">{charge.toLowerCase().replace(/_/g ," ")}</option>
+                       <option key={charge} value={charge} selected={ charge === updateChargeType ? "selected" : '' } className="text-capitalize">{charge?.toLowerCase().replace(/_/g ," ")}</option>
                       )})}
                     </select>
                   
