@@ -319,7 +319,7 @@ function OneTenant() {
       unitCondition: unitCondition
   
     })
-    console.log(data);
+   
     requestsServiceService.createTenancies(data).then((res)=>{
     console.log(res)
      fetchAll()

@@ -334,9 +334,9 @@ function AddTenant() {
       filereader.readAsDataURL(event.target.files[0]);
 
       filereader.onload = function () {
-        let data = {document: filereader.result, docName: "ID CARD FRONT", documentOwnerTypeName: "TENANT"}
+        let data = { document: filereader.result, docName: "ID CARD FRONT", documentOwnerTypeName: "TENANT" }
         tenantDocuments.push(data);
-        setDocBody({data});
+        setDocBody({ data });
       };
       filereader.onerror = function (error) {
         console.log('Error: ', error);
@@ -351,9 +351,9 @@ function AddTenant() {
       filereader.readAsDataURL(event.target.files[0]);
 
       filereader.onload = function () {
-        let data = {document: filereader.result, docName: "ID CARD BACK", documentOwnerTypeName: "TENANT"}
+        let data = { document: filereader.result, docName: "ID CARD BACK", documentOwnerTypeName: "TENANT" }
         tenantDocuments.push(data);
-        setDocBody({data});
+        setDocBody({ data });
       };
       filereader.onerror = function (error) {
         console.log('Error: ', error);
@@ -446,9 +446,6 @@ function AddTenant() {
 
                 {/* navigation bar end */}
 
-
-
-
                 <div className="step-cont active-step">
                   <h3>Tenant Details</h3>
                   <section>
@@ -458,9 +455,9 @@ function AddTenant() {
                           <div className="mb-3">
                             <label className="form-label">Tenant type</label>
                             <select
-                                onChange={handleTenantDtoChange}
-                                name="tenantTypeName"
-                                className="form-control"
+                              onChange={handleTenantDtoChange}
+                              name="tenantTypeName"
+                              className="form-control"
                             >
                               <option value="individual" >Individual</option>
                               <option value="company">Company</option>
@@ -472,14 +469,14 @@ function AddTenant() {
                             <i className="font-14px mdi mdi-paperclip"></i> ID FRONT
                           </label>
                           <input type="file" className="form-control" name="file"
-                                 onChange={(e) => handleidchange(e)} />
+                            onChange={(e) => handleidchange(e)} />
                         </div>
                         <div className="col-lg-4">
                           <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
                             <i className="font-14px mdi mdi-paperclip"></i> ID BACK
                           </label>
                           <input type="file" className="form-control" name="file"
-                                 onChange={(e) => handleidchange2(e)} />
+                            onChange={(e) => handleidchange2(e)} />
                         </div>
                       </div>
 
@@ -489,35 +486,40 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Company Name<strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="" placeholder="Enter company's name" name="companyName"
-                                onChange={(e) => handleTenantDtoChange(e)} />
+                                onChange={(e) => handleTenantDtoChange(e)}
+                                required={true} />
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Certificate of incorporation<strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="basicpill-firstname-input" placeholder="Enter certificate No." name="companyIncorporationNumber"
-                                onChange={(e) => handleTenantDtoChange(e)} />
+                                onChange={(e) => handleTenantDtoChange(e)}
+                                required={true} />
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Company's location<strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="basicpill-firstname-input" placeholder="Enter physical address" name="companyAddress"
-                                onChange={(e) => handleTenantDtoChange(e)} />
+                                onChange={(e) => handleTenantDtoChange(e)}
+                                required={true} />
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Email. <strong className="text-danger">*</strong></label>
                               <input type="email" className="form-control" id="Enter tenants email address" placeholder="Enter property plot No." name="email"
-                                onChange={(e) => handleTenantDtoChange(e)} />
+                                onChange={(e) => handleTenantDtoChange(e)}
+                                required={true} />
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Phone. <strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="Enter tenants Phone Number" placeholder="Enter property plot No." name="phoneNumber"
-                                onChange={(e) => handleTenantDtoChange(e)} />
+                                onChange={(e) => handleTenantDtoChange(e)}
+                                required={true} />
                             </div>
                           </div>
                           <div className="col-md-6 col-lg-4 col-sm-12">
@@ -526,7 +528,8 @@ function AddTenant() {
                               <div className="input-group" id="datepicker1">
 
                                 <input type="text" className="form-control mouse-pointer startdate" placeholder="Select Date" name="companyDateOfRegistration"
-                                  readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" />
+                                  readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                                  required={true} />
 
                                 <span className="input-group-text"><i className="mdi mdi-calendar"></i></span>
                               </div>
@@ -539,7 +542,7 @@ function AddTenant() {
                               <div className="col-4">
                                 <div className="row">
                                   <div className="col-12">
-                                
+
                                   </div>
 
 
@@ -554,7 +557,8 @@ function AddTenant() {
                                 <div className="mb-4">
                                   <label htmlFor="basicpill-firstname-input">ID Num/ PPT Num<strong className="text-danger">*</strong></label>
                                   <input type="text" className="form-control"
-                                    onChange={(e) => handleTenantDtoChange(e)} id="basicpill-firstname-input" name='idNumber' placeholder="Enter Id no " />
+                                    onChange={(e) => handleTenantDtoChange(e)} id="basicpill-firstname-input" name='idNumber' placeholder="Enter Id no "
+                                    required={true} />
                                 </div>
                               </div>
                               <div className="col-4">
@@ -563,14 +567,16 @@ function AddTenant() {
                                   <div className="d-flex">
                                     <div className="form-check mb-3 pr-15px">
                                       <input className="form-check-input" type="radio" value="Male"
-                                        onChange={(e) => handleTenantDtoChange(e)} name="gender" id="formRadios1" />
+                                        onChange={(e) => handleTenantDtoChange(e)} name="gender" id="formRadios1"
+                                        required={true} />
                                       <label className="form-check-label" htmlFor="formRadios1">
                                         Male
                                       </label>
                                     </div>
                                     <div className="form-check">
                                       <input className="form-check-input" type="radio" value="Female"
-                                        onChange={(e) => handleTenantDtoChange(e)} name="gender" id="formRadios2" />
+                                        onChange={(e) => handleTenantDtoChange(e)} name="gender" id="formRadios2"
+                                        required={true} />
                                       <label className="form-check-label" htmlFor="formRadios2">
                                         Female
                                       </label>
@@ -585,14 +591,16 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">First name <strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="basicpill-firstname-input"
-                                onChange={(e) => handleTenantDtoChange(e)} name="firstName" placeholder="Enter Your First Name" />
+                                onChange={(e) => handleTenantDtoChange(e)} name="firstName" placeholder="Enter Your First Name"
+                                required={true} />
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-lastname-input">Last Name <strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="basicpill-lastname-input"
-                                onChange={(e) => handleTenantDtoChange(e)} name="lastName" placeholder="Enter Your Last Name" />
+                                onChange={(e) => handleTenantDtoChange(e)} name="lastName" placeholder="Enter Your Last Name"
+                                required={true} />
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
@@ -617,10 +625,10 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="basicpill-lastname-input">Nationality <strong className="text-danger">*</strong></label>
                               <select className="form-control" data-live-search="true" title="Select nationality"
-                                onChange={(e) => handleTenantDtoChange(e)} name="nationality">
+                                onChange={(e) => handleTenantDtoChange(e)} name="nationality" required={true}>
 
                                 <option></option>
-                                <option value="Kenya">Kenya</option>
+                                <option value="Kenya">Kenyan</option>
 
                               </select>
                             </div>
@@ -629,7 +637,7 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="basicpill-lastname-input">Marital Status <strong className="text-danger">*</strong></label>
                               <select className="form-control" data-live-search="true" title="Select Marital status"
-                                onChange={(e) => handleTenantDtoChange(e)} name="maritalStatus">
+                                onChange={(e) => handleTenantDtoChange(e)} name="maritalStatus" required={true}>
                                 <option></option>
                                 <option value="Single">Single</option>
                                 <option value="Married">Married</option>
@@ -641,14 +649,14 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Email. <strong className="text-danger">*</strong></label>
                               <input type="email" className="form-control" id="Enter tenants email address" placeholder="Enter property plot No."
-                                onChange={(e) => handleTenantDtoChange(e)} name="email" />
+                                onChange={(e) => handleTenantDtoChange(e)} name="email" required={true} />
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Phone. <strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="Enter tenants Phone Number" placeholder="Enter property plot No."
-                                onChange={(e) => handleTenantDtoChange(e)} name="phoneNumber" />
+                                onChange={(e) => handleTenantDtoChange(e)} name="phoneNumber" required={true} />
                             </div>
                           </div>
 
@@ -656,7 +664,7 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Occupation <strong className="text-danger">*</strong></label>
                               <select className="form-control " data-live-search="true" title="Select occupation"
-                                onChange={(e) => handleTenantDtoChange(e)} name="occupation">
+                                onChange={(e) => handleTenantDtoChange(e)} name="occupation" required={true}>
                                 <option value="employed">Employed</option>
                                 <option value="student">Student</option>
                                 <option value="pension">Pension</option>
@@ -751,7 +759,7 @@ function AddTenant() {
                 </div>
 
                 <div className="step-cont d-none">
-                  <h3>Kins, Referees & Dependents</h3>
+                  <h3>Kin Referees & Dependents</h3>
                   <section>
                     <form>
                       <div className="row">
@@ -955,7 +963,7 @@ function AddTenant() {
                                   <tr>
                                     <td colSpan="9">
                                       {tenancyDTOS.length < 1 &&
-                                        <button type="button" onClick={toogleShowAssignUnits}>Add A Unit</button>
+                                        <button type="button" onClick={toogleShowAssignUnits}>Assign A Unit</button>
 
                                       }
                                     </td>
@@ -1150,10 +1158,12 @@ function AddTenant() {
                           onChange={(e) => handleAssignmentChange(e)} name="unitCondition" />
                       </div>
                     </div>
-                    <div className=" col-md-6">
+                    <div className=" col-md-6" id="datepicker14">
                       <div className="mb-4">
                         <label htmlFor="">Start Date</label>
-                        <input type="text" className="form-control" id="" placeholder=""
+                        <input type="text" className="form-control mouse-pointer enddate" id="" placeholder="Enter StartDate"
+                          readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker14' data-provide="datepicker" data-date-autoclose="true"
+
                           onChange={(e) => handleAssignmentChange(e)} name="startDate" />
                       </div>
                     </div>
