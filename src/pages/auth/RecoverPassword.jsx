@@ -152,14 +152,14 @@ export default function  RecoverPassword() {
                       </div>
                       <div className="p-2 mt-4">
                         {/*<h4>Verify your Account</h4>*/}
-                        <p>We have sent an email with the <strong>OTP</strong> to <span
-                          className="fw-semibold">{email}</span>, Please check it and use it to login so as to
+                        <p>We have sent a link to <span
+                          className="fw-semibold">{email}</span>, Please check it and use it to reset your password so as to
                           recover your account.</p>
-                        <div className="mt-4">
-                          <Link to="/resetpassword"
-                             className="btn btn-success w-md d-flex align-items-center justify-content-center">Continue <i
-                            className="pl-3 dripicons-arrow-thin-right d-flex justify-content-center align-items-center"></i></Link>
-                        </div>
+                        {/*<div className="mt-4">*/}
+                        {/*  <Link to="/resetpassword"*/}
+                        {/*     className="btn btn-success w-md d-flex align-items-center justify-content-center">Continue <i*/}
+                        {/*    className="pl-3 dripicons-arrow-thin-right d-flex justify-content-center align-items-center"></i></Link>*/}
+                        {/*</div>*/}
                       </div>
                     </div>
                   </div>

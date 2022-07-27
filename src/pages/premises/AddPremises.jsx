@@ -186,7 +186,6 @@ function AddPremises() {
 
           "clientCollectionAccountId": undefined,
           "collectedToClientAccount": undefined,
-          "landlordCollectionAccountId": undefined,
         }
         unitAppCharge.push(chargeBody);
       }
@@ -543,14 +542,14 @@ function AddPremises() {
                       <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav mr-auto">
                           <li className="nav-item active">
-                            <a className="nav-link active" href="#">1. Premise Details <span
+                            <a className="nav-link active">1. Premise Details <span
                               className="sr-only">(current)</span></a>
                           </li>
                           <li className="nav-item">
-                            <a className="nav-link" href="#">2. Invoices Breakdown</a>
+                            <a className="nav-link">2. Invoices Breakdown</a>
                           </li>
                           <li className="nav-item">
-                            <a className="nav-link" href="#">3. Document attachments</a>
+                            <a className="nav-link">3. Document attachments</a>
                           </li>
                         </ul>
 
@@ -1468,8 +1467,12 @@ function AddPremises() {
                     </div>
 
                     <div class="col-12 mb-2">
-                      <button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToCreateLandlord}>
-                        <i class="bx bx-edit font-size-16 align-middle me-2 ">New Landlord</i>
+                      {/*<button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToCreateLandlord}>*/}
+                      {/*  <i class="bx bx-edit font-size-16 align-middle me-2 ">New Landlord</i>*/}
+                      {/*</button>*/}
+                      <button className="btn btn-secondary btn-block mt-3 text-center w-100" onClick={redirectToCreateLandlord}>
+                        <i className="mdi mdi-account-multiple-plus font-size-16 align-middle me-2 "></i>
+                        Its a new landlord
                       </button>
                     </div>
 

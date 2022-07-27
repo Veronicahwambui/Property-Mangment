@@ -74,7 +74,7 @@ export default function  ResetPassword() {
         message: "",
         color:""
       })
-    }, 2000);
+    }, 4000);
   }
 
   return (
@@ -147,8 +147,8 @@ export default function  ResetPassword() {
                       </div>
                       <div className="p-2 mt-4">
                         <h4>Update your password</h4>
-                        <p className="mb-5">Please enter the 4 digit code<span
-                          className="fw-semibold">{}</span></p>
+                        {/*<p className="mb-5">Please enter the 4 digit code<span*/}
+                        {/*  className="fw-semibold">{}</span></p>*/}
                         <form onSubmit={handleSubmit}>
                           <div className="row">
                           
@@ -159,11 +159,11 @@ export default function  ResetPassword() {
                               </div>
                               }
                               <label htmlFor="password"  className="form-label float-start">New Password. <strong className="text-danger ">*</strong></label>
-                              <input type="text" className="form-control "  value={password} onChange={(e) => setPassword(e.target.value)} name={"password"} id="useremail " placeholder="Enter new password " required={true}/>
+                              <input type="password" className="form-control "  value={password} onChange={(e) => setPassword(e.target.value)} name={"password"} id="useremail " placeholder="Enter new password " required={true}/>
                             </div>
                             <div className=" mb-3 ">
                               <label htmlFor="password"  className="form-label float-start">Confirm Password. <strong className="text-danger ">*</strong></label>
-                              <input type="text" className="form-control "  value={passwordconfirm} onChange={(e) => setPasswordConfirm(e.target.value)} name={"password"} id="useremail " placeholder="Confirm new password " required={true}/>
+                              <input type="password" className="form-control "  value={passwordconfirm} onChange={(e) => setPasswordConfirm(e.target.value)} name={"password"} id="useremail " placeholder="Confirm new password " required={true}/>
                             </div>
                           </div>
                           <div className="mt-4">
