@@ -23,6 +23,8 @@ function OnePremise() {
     plotNo: '',
     address: '',
     premNmae: '',
+    premStatus: '',
+    freq: ''
   })
   const [error, setError] = useState({
     message: "",
@@ -33,7 +35,7 @@ function OnePremise() {
   const [docName, setdocName] = useState("")
   const [document, setdocument] = useState("")
   const [documentTypeId, setdocumentTypeId] = useState(null)
-
+  const [stat ,setStat] = useState('')
   //modals
   const [show, setShow] = useState(false);
   const [docShow, setdocShow] = useState(false);
@@ -115,6 +117,8 @@ function OnePremise() {
     })
   }
 
+  const [statuses ,setStatuses ] = useState([])
+
   useEffect(() => {
     fetchAll();
     caretakerTypes();
@@ -124,9 +128,14 @@ function OnePremise() {
     getchargeConstraint();
     fetchApplicableCharges();
     getClientAccounts();
+    requestsServiceService.getTenancyStatuses().then((res)=>{
+      setStatuses(res.data.data)
+    })
+
     requestsServiceService.getDocumentTypes().then((res) => {
       setdocumentTypes(res.data.data);
     })
+
   }, []);
 
   const fetchAll = () => {
@@ -184,34 +193,12 @@ function OnePremise() {
 
 
   const updatePrem = () => {
-    let f = {
-      active: true,
-      address: "string",
-      chargeFrequencyName: "string",
-      estateId: 0,
-      fileNumber: "string",
-      id: 0,
-      plotNumber: "string",
-      premiseLandLord: [
-        {
-          "active": true,
-          "agreementPeriod": 0,
-          "id": 0,
-          "landLordAgreementTypeId": 0,
-          "landLordId": 0,
-          "premiseId": 0,
-          "remunerationPercentage": 0
-        }
-      ],
-      premiseName: update.premNmae,
-      premiseTypeId: 0,
-      premiseUseTypeId: 0,
-      unitVacancyRestrictionStatus: "string"
-    }
+    
     let data = JSON.stringify({
 
       active: premiseData.premise.active,
       address: update.address,
+      chargeFrequencyName: update.freq,
       estateId: update.estate,
       fileNumber: update.fileNo,
       id: userId,
@@ -225,7 +212,7 @@ function OnePremise() {
       premiseName: update.premNmae,
       premiseTypeId: update.premType,
       premiseUseTypeId: update.premUseType,
-      unitVacancyRestrictionStatus: "string"
+      unitVacancyRestrictionStatus: update.premStatus
     })
     requestsServiceService.updatePremise(userId, data).then((res) => {
       fetchAll()
@@ -1015,7 +1002,11 @@ requestsServiceService.createDocuments(data).then(()=>{
                     <div class="modal-body">
 
                       <div className="row">
-                        <div className="form-group">
+
+                        
+                        <div className="col-6">
+                            <div className="col-6">
+                            <div className="form-group">
                           <label htmlFor="">Premise Name</label>
                           <input
                             type="text"
@@ -1025,6 +1016,29 @@ requestsServiceService.createDocuments(data).then(()=>{
                             onChange={handleChange}
                             name="premNmae"
                           />
+                        </div>
+                            </div>
+                            <div className="col-6">
+                            <div className="form-group">
+                            <label htmlFor="">Premise status</label>
+                            <select
+                              className="form-control"
+                              onChange={handleChange}
+                              name="premStatus"
+                            >
+                                  <option value="">select status</option>
+                              {statuses.map((prem) => (
+                                <option
+                                  value={prem}
+                                  className="text-black font-semibold "
+                                  selected={prem === update ? "selected" : ''}
+                                >
+                                  {prem}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                            </div>
                         </div>
                         <div className="col-6">
                           <div className="form-group">
@@ -1064,6 +1078,20 @@ requestsServiceService.createDocuments(data).then(()=>{
                                   {prem.name}
                                 </option>
                               ))}
+                            </select>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="">Charge frequency</label>
+                            <select
+                              className="form-control"
+                              onChange={handleChange}
+                              name="freq"
+                            >
+                              <option value="YEAR"> select frequency</option>
+                              <option value="YEAR">Yearly</option>
+                              <option value="MONTH">Monthly</option>
+
+      
                             </select>
                           </div>
                           <div className="form-group">
@@ -1584,7 +1612,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                                 <tr data-id="1">
                                   <td>{index + 1}</td>
                                   <td>
-                                    {unit.landLord.firstName} {unit.lastName}
+                                    {unit.landLord.firstName} {unit.landlord.lastName} {unit.landlord.otherName}
                                   </td>
                                   <td className="text-capitalize">
                                     {unit.landLord.landLordType.toLowerCase()}
@@ -1630,7 +1658,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                       >
                         <i className="dripicons-plus font-size-16"></i>{" "}
                         <span className="pl-1 d-md-inline">
-                          New Premise Unit
+                          New document
                         </span>
                       </button>
                       </div>
