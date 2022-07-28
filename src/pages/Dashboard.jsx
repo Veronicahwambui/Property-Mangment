@@ -18,6 +18,9 @@ function Dashboard() {
     requestsServiceService.getLandLords().then((res) => {
       setlandlords(res.data.data);
     });
+    requestsServiceService.getUnits().then((res) => {
+      setunits(res.data.data);
+    });
     getInvoices();
   }, []);
   const getInvoices = () => {
@@ -31,6 +34,13 @@ function Dashboard() {
       setinvoices(res.data.data);
     });
   };
+  const paidInvoices = () => {
+    let paid = 0;
+    invoices.map((item) => {
+      paid += item.billPaidAmount;
+    });
+    return paid;
+  };
   const total = () => {
     let sum = 0;
     let paid = 0;
@@ -40,17 +50,31 @@ function Dashboard() {
     });
     return sum - paid;
   };
+  const unpaidInvoices = () => {
+    let t = invoices.filter((item) => item.billPaidAmount === 0);
+    return t.length;
+  };
+
+  const partialInvoices = () => {
+    let t = invoices.filter(
+      (item) => item.billPaidAmount > 0 && item.billPaidAmount < item.billAmount
+    );
+    return t.length;
+  };
+  const tenantType = () => {};
+  let formatCurrency = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "KES",
+  });
 
   return (
     <div className="page-content">
-      <div>Dashboard</div>
       <div class="container-fluid">
         {/* <!-- start page title --> */}
         <div class="row">
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
               <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
-
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <li class="breadcrumb-item active">Dashboard</li>
@@ -93,7 +117,7 @@ function Dashboard() {
                         Units serving notice
                       </p>
                       <h5>
-                        <span>32 Units/Houses</span>
+                        <span>{units?.length} Units/Houses</span>
                       </h5>
                     </div>
                   </div>
@@ -143,7 +167,7 @@ function Dashboard() {
                                 <p class="text-muted text-truncate mb-2">
                                   Units
                                 </p>
-                                <h5 class="mb-0">16,503</h5>
+                                <h5 class="mb-0">{units?.length}</h5>
                               </div>
                             </div>
                             <div class="col-4 col-sm-4 col-md-2">
@@ -245,13 +269,14 @@ function Dashboard() {
                         </div>
                         <div class="text-muted mt-4">
                           <h4>
-                            {total()}
+                            {formatCurrency.format(total())}
                             <i class="mdi mdi-chevron-up ms-1 text-success"></i>
                           </h4>
                           <div class="d-flex">
                             <span class="text-truncate">
-                              From 32 Unpaid Invoices
+                              From {unpaidInvoices()} Unpaid Invoices
                             </span>
+                            <span className="text-truncate"></span>
                           </div>
                         </div>
                       </div>
@@ -306,16 +331,17 @@ function Dashboard() {
                         </div>
                         <div class="text-muted mt-4">
                           <h4 class="text-uppercase">
-                            kes 2,325
+                            {formatCurrency.format(paidInvoices())}
                             <i class="mdi mdi-chevron-up ms-1 text-success"></i>
                           </h4>
                           <div class="d-flex">
-                            <span class="badge badge-soft-success font-size-12">
-                              {" "}
-                              + 0.2%{" "}
-                            </span>
+                            {/*<span class="badge badge-soft-success font-size-12">*/}
+                            {/*  {" "}*/}
+                            {/*  + 0.2%{" "}*/}
+                            {/*</span>*/}
                             <span class="ms-2 text-truncate">
-                              From previous period
+                              {paidInvoices()} Invoices,
+                              {partialInvoices()} partially paid
                             </span>
                           </div>
                         </div>
@@ -371,15 +397,15 @@ function Dashboard() {
                         </div>
                         <div class="text-muted mt-4">
                           <h4 class="text-uppercase">
-                            KES 2,321,326
+                            {formatCurrency.format(paidInvoices())}
                             <i class="mdi mdi-chevron-up ms-1 text-success"></i>
                           </h4>
 
                           <div class="d-flex">
-                            <span class="badge badge-soft-success font-size-12">
-                              {" "}
-                              2%{" "}
-                            </span>
+                            {/*<span class="badge badge-soft-success font-size-12">*/}
+                            {/*  {" "}*/}
+                            {/*  2%{" "}*/}
+                            {/*</span>*/}
                             <span class="ms-2 text-truncate">
                               From previous period
                             </span>
@@ -657,16 +683,6 @@ function Dashboard() {
                         <li class="nav-item">
                           <a
                             class="nav-link active"
-                            data-bs-toggle="tab"
-                            href="#by-all"
-                            role="tab"
-                          >
-                            All Counties
-                          </a>
-                        </li>
-                        <li class="nav-item">
-                          <a
-                            class="nav-link"
                             data-bs-toggle="tab"
                             href="#by-nairobi"
                             role="tab"
