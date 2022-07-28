@@ -61,7 +61,6 @@ function Dashboard() {
     );
     return t.length;
   };
-  const tenantType = () => {};
   let formatCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "KES",
@@ -239,7 +238,8 @@ function Dashboard() {
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                               >
-                                Feb 2022 <i class="mdi mdi-chevron-down"></i>
+                                {moment(new Date()).format("MMMM YYYY")}{" "}
+                                <i class="mdi mdi-chevron-down"></i>
                               </button>
                               <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">
@@ -301,7 +301,8 @@ function Dashboard() {
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                               >
-                                Feb 2022 <i class="mdi mdi-chevron-down"></i>
+                                {moment(new Date()).format("MMMM YYYY")}{" "}
+                                <i class="mdi mdi-chevron-down"></i>
                               </button>
                               <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">
@@ -407,7 +408,7 @@ function Dashboard() {
                             {/*  2%{" "}*/}
                             {/*</span>*/}
                             <span class="ms-2 text-truncate">
-                              From previous period
+                              {/*From previous period*/}
                             </span>
                           </div>
                         </div>
