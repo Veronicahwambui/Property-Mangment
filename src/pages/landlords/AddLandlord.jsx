@@ -304,13 +304,13 @@ export default function AddLandlord() {
                             <label htmlFor="landlord-type" className="form-label">Landlord type.  <strong className="text-danger">*</strong></label>
                             {landlordtypes &&
                             <div className="form-group mb-4">
-                              <select className="form-control" value={landLordTypeName} onChange={(e) => setLandLordTypeName(e.target.value)}  required={true}>
+                              <select className="form-control text-capitalize" value={landLordTypeName} onChange={(e) => setLandLordTypeName(e.target.value)}  required={true}>
                                 <option className="text-black font-semibold ">
                                   select landlord type
                                 </option>
                                 {
                                   landlordtypes.map((item, index) => (
-                                    <option value={item}>{item}</option>
+                                    <option value={item}>{item?.toLowerCase()?.replace(/_/g , " ")}</option>
                                   ))
                                 }
                               </select>
@@ -401,7 +401,7 @@ export default function AddLandlord() {
                                 className="text-danger ">*</strong></label>
                               {agreementTypes &&
                               <div className="input-group" id="">
-                                <select className="form-control"
+                                <select className="form-control text-capitalize"
                                         required={true}
                                         onChange={(e) => {
                                           setlandLordAgreementTypeId(e.target.value);
@@ -410,9 +410,9 @@ export default function AddLandlord() {
                                   <option className="text-black font-semibold">
                                     select agreement type
                                   </option>
-                                  {agreementTypes.map((aT) => {
+                                  {agreementTypes.sort((a, b) => a.name.localeCompare(b.name)).map((aT) => {
                                     return(
-                                      <option value={aT.id}>{aT.name}</option>
+                                      <option value={aT.id}>{aT.name?.toLowerCase()?.replace(/_/g , " ")}</option>
                                     )
                                   })
                                   }
@@ -572,7 +572,7 @@ export default function AddLandlord() {
                       <div className="form-group mb-4">
                         <label htmlFor="">Select Bank. <strong className="text-danger ">*</strong></label>
                         <select
-                          className="form-control"
+                          className="form-control text-capitalize"
                           onChange={(e) => {
                             setbankAccountDetails(e.target.value);
                           }}
@@ -582,7 +582,7 @@ export default function AddLandlord() {
                           <option className="text-black font-semibold ">
                             select..
                           </option>
-                          {banks.map((bank) => {
+                          {banks?.sort((a, b) => a.bankName.localeCompare(b.bankName)).map((bank) => {
                             return (
                               <option
                                 key={bank.id}
@@ -592,7 +592,7 @@ export default function AddLandlord() {
                                   bank.bankName
                                 }
                               >
-                                {bank.bankName}
+                                {bank.bankName?.toLowerCase()?.replace(/_/g , " ")}
                               </option>
                             );
                           })}
@@ -695,7 +695,7 @@ export default function AddLandlord() {
                       <div className="form-group mb-4">
                         <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
                         <select
-                          className="form-control"
+                          className="form-control text-capitalize"
                           onChange={(e) => {
                             setdocumentTypeId(e.target.value);
                           }}
@@ -705,13 +705,13 @@ export default function AddLandlord() {
                           <option className="text-black font-semibold ">
                             select..
                           </option>
-                          {documentTypes.map((dT) => {
+                          {documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
                             return (
                               <option
                                 key={dT.id}
                                 value={dT.id}
                               >
-                                {dT.name}
+                                {dT.name?.toLowerCase()}
                               </option>
                             );
                           })}
