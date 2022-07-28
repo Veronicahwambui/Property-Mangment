@@ -226,7 +226,7 @@ function AddAdmin() {
                           onChange={(event) => setOtherName(event.target.value)}
                           className="form-control"
                           placeholder="Enter the other name(s)"
-                         required
+                    
                         />
                       </div>
                       <label htmlFor="" className="col-form-label col-lg-2">
