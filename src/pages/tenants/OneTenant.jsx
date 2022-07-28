@@ -1,10 +1,11 @@
-/* global $*/
+/* global $*/  
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import UnitTypes from "../setups/UnitTypes";
 import authService from "../../services/auth.service";
+import { Link } from "react-router-dom";
 import moment from 'moment'
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -13,11 +14,11 @@ function OneTenant() {
   const [tenantId, setTenantId] = useState("");
   const [contactPerson, setContactPerson] = useState([]);
   // $( "#datepicker198" ).datepicker({ minDate: new Date().getDay() });
-  // $('#datepicker198').datepicker({
-  //   format:'mm-dd-yyyy',
-  //   startDate:'+0d',
-  //   autoclose:true
-  // })
+// $('#datepicker198').datepicker({
+//   format:'mm-dd-yyyy',
+//   startDate:'+0d',
+//   autoclose:true
+// })
   //edit tenants-details
   const [type, setType] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -36,7 +37,7 @@ function OneTenant() {
   const [occupation, setOccupation] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [tenantTypeName, setTenantTypeName] = useState("");
-  const [premiseData, setPremiseData] = useState([])
+const[premiseData,setPremiseData]=useState([])
 
 
   //company details
@@ -44,10 +45,10 @@ function OneTenant() {
 
   const [premises, setPremises] = useState([])
   const [units, setUnits] = useState([])
-  const [premId, setPremId] = useState("")
-
-  const [companyLocation, setCompanyLocation] = useState("")
-
+  const[premId,setPremId]=useState("")
+ 
+  const[companyLocation,setCompanyLocation]=useState("")
+  
 
   // edit tenants
   const [unitTypeName, setUnitTypeName] = useState("");
@@ -58,7 +59,7 @@ function OneTenant() {
   const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] =
     useState("");
   const [premiseUnitId, setPremiseUnitId] = useState("");
-  const [tenantStatuses, setTenantStatuses] = useState([])
+  const[tenantStatuses, setTenantStatuses]=useState([])
   const [unitId, setUnitId] = useState("");
 
   //edit ContactPersons
@@ -112,8 +113,8 @@ function OneTenant() {
     });
     //  console.log(id)
     requestsServiceService.updateTenantsDetails(details).then((res) => {
-      fetchAll()
-
+    fetchAll()
+  
     });
 
     // console.log(details)
@@ -132,7 +133,7 @@ function OneTenant() {
     nationality,
     companyAddress,
     companyDateOfRegistration,
-
+    
   ) => {
     setDetailsId(detailsId);
     setTenantTypeName(tenantTypeName);
@@ -164,7 +165,7 @@ function OneTenant() {
       unitCondition: unitCondition,
     });
     requestsServiceService.updateTenant(data).then((res) => {
-
+ 
       fetchAll();
     });
   };
@@ -260,27 +261,26 @@ function OneTenant() {
     requestsServiceService.createContactPerson(contactPerson).then((res) => {
       console.log(res);
       fetchAll();
-
-      if (res.data.status) {
+      
+      if(res.data.status){
         setError({
           ...error,
           message: res.data.message,
           color: "success"
-        })
-      } else {
-
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning"
-        })
-      }
-
-
-      setTimeout(() => {
-        clear()
-      }, 3000)
-    }).catch((res) => {
+        }) } else {
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          }) 
+        }
+        
+        
+        setTimeout(() => {
+          clear()
+        }, 3000)
+    }).catch((res)=>{
 
       setError({
         ...error,
@@ -295,103 +295,102 @@ function OneTenant() {
 
     })
   }
-
-  const clear = () => {
+  
+  const clear = ()=> {
     setError({
       ...error,
       message: "",
       color: ""
-    });
+  });
   };
 
 
-  const addTenancies = () => {
+  const addTenancies= ()=>{
 
-    let data = JSON.stringify({
+    let data =JSON.stringify({
       active: true,
       // id:0,
-      premiseUnitId: premiseUnitId,
+      premiseUnitId:premiseUnitId,
       startDate: new Date(),
       tenancyCharges: [],
       tenancyDocuments: [],
       tenancyRenewalDate: tenancyRenewalDate,
       tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
       tenancyStatusName: tenancyStatus,
-      tenantId: tenantData.tenant.id,
+      tenantId:tenantData.tenant.id,
       unitCondition: unitCondition
-
+  
     })
-
-    requestsServiceService.createTenancies(data).then((res) => {
-      console.log(res)
-      fetchAll()
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success"
-        })
-      } else {
+   
+    requestsServiceService.createTenancies(data).then((res)=>{
+    console.log(res)
+     fetchAll()
+     if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
 
         setError({
           ...error,
           message: res.data.message,
           color: "warning"
-        })
+        }) 
       }
-
-
+      
+      
       setTimeout(() => {
         cleared()
       }, 3000)
-    }).catch((res) => {
+  }).catch((res)=>{
 
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger"
-      })
-
-      setTimeout(() => {
-        cleared()
-      }, 3000)
-
-
-    })
-  }
-
-  const cleared = () => {
     setError({
       ...error,
-      message: "",
-      color: ""
-
+      message: res.data.message,
+      color: "danger"
     })
 
-  }
-  const getPremises = () => {
-    requestsServiceService.allPremises().then((res) =>
-      setPremises(res.data.data)
-    )
-  }
+    setTimeout(() => {
+      cleared()
+    }, 3000)
 
-  const onPremiseChange = (event) => {
 
-    let vals = event.target.value.split(':');
+  })
+}
 
-    requestsServiceService.getPremise(vals[0]).then((res) =>
-      setUnits(res.data.data.premiseUnits)
-    )
-  }
-  const premiseUnitChange = (event) => {
-    setPremiseUnitId(event.target.value)
-  }
+const cleared = ()=> {
+  setError({
+    ...error,
+    message: "",
+    color: ""
 
-  const getStatus = () => {
-    requestsServiceService.getTenantStatus().then((res) => {
-      setTenantStatuses(res.data.data)
-    })
-  }
+ })
+    
+   }
+const getPremises = () => {
+  requestsServiceService.allPremises().then((res) =>
+  setPremises(res.data.data)
+  )
+}
+
+const onPremiseChange = (event) => {
+
+  let vals = event.target.value.split(':');
+
+  requestsServiceService.getPremise(vals[0]).then((res) =>
+    setUnits(res.data.data.premiseUnits)
+  )
+}
+const premiseUnitChange = (event)=>{
+  setPremiseUnitId(event.target.value)
+}
+
+const getStatus =()=>{
+  requestsServiceService.getTenantStatus().then((res)=>{
+    setTenantStatuses(res.data.data)
+  })
+}
 
   useEffect(() => {
     fetchAll();
@@ -409,16 +408,16 @@ function OneTenant() {
     
   
   };
-  // console.log(tenancyRenewalDate)
+// console.log(tenancyRenewalDate)
 
-  const date2 = (date) => {
-    setTenancyRenewalNotificationDate(new Date(date.target.value));
-  }
-  const date3 = (date) => {
-    setTenancyRenewalDate(new Date(date.target.value));
-  }
-  $(document).on("change", ".date2", date2)
-  $(document).on("change", ".date3", date3)
+const date2  =(date) => {
+  setTenancyRenewalNotificationDate(new Date(date.target.value));
+}
+const date3 = (date) => {
+  setTenancyRenewalDate(new Date(date.target.value));
+}
+$(document).on("change", ".date2", date2)
+$(document).on("change", ".date3", date3)
 
 
   return (
@@ -510,7 +509,7 @@ function OneTenant() {
                             : "nav-item cursor-pointer nav-link"
                         }
                       >
-                        Document Attachments
+                      Document Attachments
                       </a>
                     </div>
                   </div>
@@ -570,130 +569,130 @@ function OneTenant() {
                   </div>
                   <div className="card-body">
                     <div className="col-12">
-
+                     
                       <div className="row">
                         <div className="col-3">
                           <label htmlFor="">Type</label>
-                          <div className="text-capitalize">
+                          <div>
                             <span>
                               {tenantData.tenant &&
-                                tenantData.tenant.tenantType?.toLowerCase()?.replace(/_/g, " ")}
+                                tenantData.tenant.tenantType}
                             </span>
                           </div>
                         </div>
-                        {tenantTypeName === "INDIVIDUAL" &&
-                          <div className="row mt-5">
-
-                            <div className="col-3">
-                              <label htmlFor="">First Name</label>
-                              <div>
-                                <span>
-                                  {tenantData.tenant && tenantData.tenant.firstName}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="col-3">
-                              <label htmlFor="">Last Name</label>
-                              <div>
-                                <span>
-                                  {tenantData.tenant && tenantData.tenant.lastName}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="col-3">
-                              <label htmlFor="">Email</label>
-                              <div>
-                                <span>
-                                  {tenantData.tenant && tenantData.tenant.email}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="col-3">
-                              <label htmlFor="">Id Number</label>
-                              <div>
-                                <span>
-                                  {tenantData.tenant && tenantData.tenant.idNumber}
-                                </span>
-                              </div>
-                            </div>
-
-
-
-                            <div className="row mt-5">
-                              <div className="col-3">
-                                <label htmlFor="">PhoneNumber</label>
-                                <div>
-                                  <span>
-                                    {tenantData.tenant && tenantData.tenant.phoneNumber}
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="col-3">
-                                <label htmlFor="">Nationality</label>
-                                <div>
-                                  <span>
-                                    {tenantData.tenant &&
-                                      tenantData.tenant.nationality}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-
-
-                          </div>}
-                      </div>
-
-                      {tenantTypeName === "COMPANY" &&
+                        {tenantTypeName==="INDIVIDUAL" &&
                         <div className="row mt-5">
-
-                          <div className="col-3">
-                            <label htmlFor="">Company Name</label>
-                            <div>
-                              <span>
-                                {tenantData.tenant &&
-                                  tenantData.tenant.companyName}
-                              </span>
-                            </div>
+                          
+                        <div className="col-3">
+                          <label htmlFor="">First Name</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant && tenantData.tenant.firstName}
+                            </span>
                           </div>
-                          <div className="col-3">
-                            <label htmlFor="">Company Incorporation Number</label>
-                            <div>
-                              <span>
-                                {tenantData.tenant &&
-                                  tenantData.tenant.companyIncorporationNumber}
-                              </span>
-                            </div>
+                        </div>
+                        <div className="col-3">
+                          <label htmlFor="">Last Name</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant && tenantData.tenant.lastName}
+                            </span>
                           </div>
-
-                          <div className="col-3">
-                            <label htmlFor="">Company Address</label>
-                            <div>
-                              <span>
-                                {tenantData.tenant &&
-                                  tenantData.tenant.companyAddress}
-                              </span>
-                            </div>
+                        </div>
+                        <div className="col-3">
+                          <label htmlFor="">Email</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant && tenantData.tenant.email}
+                            </span>
                           </div>
-
-
-                          <div className="row mt-5">
-
-
-                            <div className="col-3">
-                              <label htmlFor="">CompanyDateOfRegistration</label>
-                              <div>
-                                <span>
-                                  {moment(tenantData.tenant &&
-                                    tenantData.tenant.companyDateOfRegistration).format("DD /MM /YYYY")}
-                                </span>
-                              </div>
-                            </div>
+                        </div>
+                        <div className="col-3">
+                          <label htmlFor="">Id Number</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant && tenantData.tenant.idNumber}
+                            </span>
                           </div>
+                        </div>
 
+                      
+
+                      <div className="row mt-5">
+                      <div className="col-3">
+                          <label htmlFor="">PhoneNumber</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant && tenantData.tenant.phoneNumber}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-3">
+                          <label htmlFor="">Nationality</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant &&
+                                tenantData.tenant.nationality}
+                            </span>
+                          </div>
+                        </div>
+</div>
+                        
+                      
                         </div>}
+                        </div>
 
+                        {tenantTypeName=== "COMPANY"  &&   
+                        <div className="row mt-5">  
+                                           
+                        <div className="col-3">
+                          <label htmlFor="">Company Name</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant &&
+                                tenantData.tenant.companyName}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-3">
+                          <label htmlFor="">Company Incorporation Number</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant &&
+                                tenantData.tenant.companyIncorporationNumber}
+                            </span>
+                          </div>
+                        </div>
 
-                    </div>
+                        <div className="col-3">
+                          <label htmlFor="">Company Address</label>
+                          <div>
+                            <span>
+                              {tenantData.tenant &&
+                                tenantData.tenant.companyAddress}
+                            </span>
+                          </div>
+                        </div>
+
+                     
+                        <div className="row mt-5">
+                     
+
+                        <div className="col-3">
+                          <label htmlFor="">CompanyDateOfRegistration</label>
+                          <div>
+                            <span>
+                          {moment(tenantData.tenant &&
+                                tenantData.tenant.companyDateOfRegistration).format("DD /MM /YYYY")}
+                            </span>
+                          </div>
+                        </div>
+                        </div>
+                   
+</div>}
+                   
+
+                  </div>
                   </div>
                 </div>
               </div>
@@ -727,7 +726,7 @@ function OneTenant() {
                                 data-bs-target="#create-tenancies"
                               >
                                 <i className="mdi mdi-plus label-icon"></i> Add
-                                Tenancies
+                                 Tenancies
                               </button>
                             </div>
                           </div>
@@ -735,11 +734,11 @@ function OneTenant() {
 
                         <div>
                           <div className="card-body">
-                            {error.color !== "" &&
-                              <div className={"alert alert-" + error.color} role="alert">
-                                {error.message}
-                              </div>
-                            }
+                          {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
                             <div className="table-responsive">
                               <table className="table align-middle table-nowrap table-hover mb-0">
                                 <thead>
@@ -773,10 +772,10 @@ function OneTenant() {
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
-                                          <span className="badge-soft-success badge">  {unit.tenancyStatus.toLowerCase()
-
-
-                                          }</span>
+                                        <span className="badge-soft-success badge">  {unit.tenancyStatus.toLowerCase() 
+                                          
+                                         
+}</span>
                                         </td>
                                         <td>{moment(unit.tenancyRenewalDate).format
                                           ("DD /MM /YYYY")
@@ -825,7 +824,7 @@ function OneTenant() {
                                                     unit.tenancyRenewalNotificationDate,
                                                     unit.id
 
-
+                                                    
                                                   )
                                                 }
                                               >
@@ -833,7 +832,7 @@ function OneTenant() {
                                                 Edit
                                               </p>
                                               <p>
-                                                <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
+                                              <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
                                               </p>
 
                                               <button
@@ -898,12 +897,12 @@ function OneTenant() {
                         </div>
                         <div className="p-4">
                           <div className="row">
-
+                   
 
                             <div className="col-12">
-                              <div className={"alert alert-" + error.color} role="alert">
-                                {error.message}
-                              </div>
+                                       <div className={"alert alert-" + error.color} role="alert">
+                {error.message}
+              </div>
                               <div className="table-responsive">
                                 <table className="table align-middle table-nowrap table-hover mb-0">
                                   <thead>
@@ -986,74 +985,78 @@ function OneTenant() {
           </div>
         )}
 
-        {activeLink === 4 && (
-          <div>
-            <div className="row">
-              <div className="col-xl-12">
-                <div className="card calc-h-3px">
-                  <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <div class="d-flex align-items-center flex-grow-1">
-                        <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
-                      </div>
-                      <div y>
-
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="col-12">
-                      <div className="table-responsive">
-                        <table
-                          class="table align-middle table-edits rent-invoicing dt-responsive"
-                          id="data-table"
-                        >
-                          <thead>
-                            <tr class="text-uppercase table-dark">
-                              <th>#</th>
-                              <th>Name</th>
-                              <th>Type</th>
-                              <th>Tenant type</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {premiseData.premiseDocuments &&
-                              premiseData.premiseDocuments.map(
-                                (unit, index) => (
-                                  <tr data-id="1">
-                                    <td>{index + 1}</td>
-                                    <td className="active nav-link cursor-pointer">
-                                      <a onClick={() => download}>
-                                        {/* {" "}
-                            {unit.docName} */}
-                                      </a>
-                                    </td>
-                                    {/* <td>{unit.documentType.name}</td> */}
-                                    <td className="text-capitalize">
-                                      {/* {unit.documentOwnerType.toLowerCase()} */}
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/*document attachment modal*/}
-
-
-
+{activeLink === 4 && (
+  <div>
+<div className="row">
+  <div className="col-xl-12">
+    <div className="card calc-h-3px">
+      <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+        <div
+          class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+          role="toolbar"
+        >
+          <div class="d-flex align-items-center flex-grow-1">
+            <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
           </div>
+          <div y>
+      
+          </div>
+        </div>
+      </div>
+      <div className="card-body">
+        <div className="col-12">
+          <div className="table-responsive">
+            <table
+              class="table align-middle table-edits rent-invoicing dt-responsive"
+              id="data-table"
+            >
+              <thead>
+                <tr class="text-uppercase table-dark">
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Tenant type</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {premiseData.premiseDocuments &&
+                  premiseData.premiseDocuments.map(
+                    (unit, index) => (
+                      <tr data-id="1">
+                        <td>{index + 1}</td>
+                        <td className="active nav-link cursor-pointer">
+                          <a onClick={() => download}>
+                            {/* {" "}
+                            {unit.docName} */}
+                          </a>
+                        </td>
+                        {/* <td>{unit.documentType.name}</td> */}
+                        <td className="text-capitalize">
+                          {/* {unit.documentOwnerType.toLowerCase()} */}
+                        </td>
+                      </tr>
+                    )
+                  )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{/*document attachment modal*/}
 
-        )}
+
+
+</div>
+
+
+
+
+
+   )}
 
         <div
           class="modal fade"
@@ -1117,20 +1120,20 @@ function OneTenant() {
                     </div>
                     <div className="form-group mb-4">
                       <label htmlFor="">TenancyStatus</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter TenancyStatus"
-
-
-                        onChange={(e) => setTenancyStatus(e.target.value)}
-                        value={tenancyStatus}
-
-                      />
+                    <input
+                     type="text"
+                    class="form-control"
+                    placeholder="Enter TenancyStatus"
+                
+                       
+                  onChange={(e) => setTenancyStatus(e.target.value)}
+                  value={tenancyStatus}
+                  
+                     />
 
                     </div>
-
-
+                    
+                  
                     <div className="form-group mb-4" id="datepicker14">
                       <label htmlFor="">TenancyRenewalDate</label>
                       <input
@@ -1145,7 +1148,7 @@ function OneTenant() {
                       />
                     </div>
 
-                    <div className="form-group mb-4" id="datepicker151">
+                    <div className="form-group mb-4"  id="datepicker151">
                       <label htmlFor="">TenancyRenewalNotificationDate</label>
                       <input
                         type="text"
@@ -1183,627 +1186,632 @@ function OneTenant() {
               </div>
             </div>
           </div>
-          {/* Contact Modal */}
+        </div>
+        {/* Contact Modal */}
 
-          <div
-            class="modal fade"
-            id="edit-contact"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="staticBackdropLabel">
-                    Tenant
-                  </h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="form-group mb-4">
-                        <label for="">FirstName</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="Enter FirstName"
-                          onChange={(event) => setFirstName(event.target.value)}
-                          value={firstName}
-                        />
-                      </div>
+        <div
+          class="modal fade"
+          id="edit-contact"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Tenant
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">FirstName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter FirstName"
+                        onChange={(event) => setFirstName(event.target.value)}
+                        value={firstName}
+                      />
+                    </div>
 
-                      <div class="form-group mb-4">
-                        <label for="">LastName</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="Enter LastName"
-                          onChange={(event) => setLastName(event.target.value)}
-                          value={lastName}
-                        />
-                      </div>
+                    <div class="form-group mb-4">
+                      <label for="">LastName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter LastName"
+                        onChange={(event) => setLastName(event.target.value)}
+                        value={lastName}
+                      />
+                    </div>
 
-                      <div className="form-group mb-4">
-                        <label htmlFor="">OtherName</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={otherName}
-                          onChange={(e) => setOtherName(e.target.value)}
-                          placeholder="Enter OtherName"
-                          required={true}
-                        />
-                      </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">OtherName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={otherName}
+                        onChange={(e) => setOtherName(e.target.value)}
+                        placeholder="Enter OtherName"
+                        required={true}
+                      />
+                    </div>
 
-                      <div class="form-group mb-4">
-                        <label for="">Type</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="Enter Type"
-                          onChange={(event) =>
-                            setContactPersonTypeName(event.target.value)
-                          }
-                          value={contactPersonTypeName}
-                        />
-                      </div>
+                    <div class="form-group mb-4">
+                      <label for="">Type</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Type"
+                        onChange={(event) =>
+                          setContactPersonTypeName(event.target.value)
+                        }
+                        value={contactPersonTypeName}
+                      />
+                    </div>
 
-                      <div className="form-group mb-4">
-                        <label htmlFor="">PhoneNumber1</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={phoneNumber1}
-                          onChange={(e) => setPhoneNumber1(e.target.value)}
-                          placeholder="Enter PhoneNumber1"
-                          required={true}
-                        />
-                      </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">PhoneNumber1</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={phoneNumber1}
+                        onChange={(e) => setPhoneNumber1(e.target.value)}
+                        placeholder="Enter PhoneNumber1"
+                        required={true}
+                      />
+                    </div>
 
-                      <div className="form-group mb-4">
-                        <label htmlFor="">Relationship</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={relationship}
-                          onChange={(e) => setRelationship(e.target.value)}
-                          placeholder="Enter Relationship"
-                          required={true}
-                        />
-                      </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Relationship</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={relationship}
+                        onChange={(e) => setRelationship(e.target.value)}
+                        placeholder="Enter Relationship"
+                        required={true}
+                      />
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-light"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    onClick={() => editContactPersons()}
-                  >
-                    Save
-                  </button>
-                </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => editContactPersons()}
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>
-          {/* 
+        </div>
+        {/* 
 
  //edit tenanant details */}
+        <div
+          class="modal fade"
+          id="edit-tenant-detail"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
           <div
-            class="modal fade"
-            id="edit-tenant-detail"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
+            class="modal-dialog modal-dialog-centered modal-lg"
+            role="document"
           >
-            <div
-              class="modal-dialog modal-dialog-centered modal-lg"
-              role="document"
-            >
-              <div class="modal-content">
-                <div class="modal-body">
-
-                  {/* //Company */}
+            <div class="modal-content">
+              <div class="modal-body">
+             
+                 {/* //Company */}
 
 
-                  <div className="row">
+                <div className="row">
+                  <div className="form-group">
+                  <div className="mb-3">
+                          <label className="form-label">Tenant type</label>
+                          <select
+                            onChange={(e) => setTenantTypeName(e.target.value)}
+                            name="tenantTypeName"
+                            className="form-control"
+                          >
+                            
+                           
+                            <option value="INDIVIDUAL" >Individual</option>
+                            <option value="COMPANY">Company</option>
+                          </select>
+                        </div>
+                  </div>
+
+                 
+
+           {tenantTypeName === "INDIVIDUAL" &&
+
+              <div className="row">
+                  
+                  <div className="col-6">
                     <div className="form-group">
-                      <div className="mb-3">
-                        <label className="form-label">Tenant type</label>
-                        <select
-                          onChange={(e) => setTenantTypeName(e.target.value)}
-                          name="tenantTypeName"
-                          className="form-control"
-                        >
+                      <label htmlFor="">FirstName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setFirstName(event.target.value)}
+                        value={firstName}
+                        placeholder="Enter FirstName"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">LastName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setLastName(event.target.value)}
+                        value={lastName}
+                        placeholder="Enter LastName"
+                      />
+                    </div>
+                    
+                    <div className="form-group">
+                      <label htmlFor="">OtherName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setOtherName(event.target.value)}
+                        value={otherName}
+                        placeholder="Enter OtherName"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">PhoneNumber</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setPhoneNumber(event.target.value)}
+                        value={phoneNumber}
+                        placeholder="Enter Phone Number"
+                      />
+                    </div>
+               
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="">Id Number</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setIdNumber(event.target.value)}
+                        value={idNumber}
+                        placeholder="Enter Id Number"
+                      />
+                    </div>
+                  
+                    <div className="form-group">
+                      <label htmlFor="">Nationality</label>
+                      <select className="form-control" data-live-search="true" title="Select nationality"
+                                onChange={(e) => setNationality(e.target.value)} value={nationality}>
 
+                                <option></option>
+                                <option value="Kenya">Kenyan</option>
 
-                          <option value="INDIVIDUAL" >Individual</option>
-                          <option value="COMPANY">Company</option>
-                        </select>
-                      </div>
+                              </select>
                     </div>
 
-
-
-                    {tenantTypeName === "INDIVIDUAL" &&
-
-                      <div className="row">
-
-                        <div className="col-6">
-                          <div className="form-group">
-                            <label htmlFor="">FirstName</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setFirstName(event.target.value)}
-                              value={firstName}
-                              placeholder="Enter FirstName"
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="">LastName</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setLastName(event.target.value)}
-                              value={lastName}
-                              placeholder="Enter LastName"
-                            />
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="">OtherName</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setOtherName(event.target.value)}
-                              value={otherName}
-                              placeholder="Enter OtherName"
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="">PhoneNumber</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setPhoneNumber(event.target.value)}
-                              value={phoneNumber}
-                              placeholder="Enter Phone Number"
-                            />
-                          </div>
-
-                        </div>
-                        <div className="col-6">
-                          <div className="form-group">
-                            <label htmlFor="">Id Number</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setIdNumber(event.target.value)}
-                              value={idNumber}
-                              placeholder="Enter Id Number"
-                            />
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="">Nationality</label>
-                            <select className="form-control" data-live-search="true" title="Select nationality"
-                              onChange={(e) => setNationality(e.target.value)} value={nationality}>
-
-                              <option></option>
-                              <option value="Kenya">Kenyan</option>
-
-                            </select>
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="">Email</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setEmail(event.target.value)}
-                              value={email}
-                              placeholder="Enter Email"
-                            />
-                          </div>
-
-
-
-                        </div>
-                      </div>}
-
-
-
-                    {tenantTypeName !== "INDIVIDUAL" &&
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="form-group">
-                            <label htmlFor="">CompanyName</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setCompanyName(event.target.value)}
-                              value={companyName}
-                              placeholder="Enter CompanyName"
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="">CompanyIncorporationNumber</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setCompanyIncorporationNumber(event.target.value)}
-                              value={companyIncorporationNumber}
-                              placeholder="Enter CompanyIncorporationNumber"
-                            />
-                          </div>
-
-
-
-                        </div>
-                        <div className="col-6">
-                          <div className="form-group">
-                            <label htmlFor="">CompanyAddress</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setCompanyAddress(event.target.value)}
-                              value={companyAddress}
-                              placeholder="EnterCompanyAddress"
-                            />
-                          </div>
-                          <div className="form-group" >
-                            <label htmlFor="">CompanyDateOfRegistration </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              onChange={(event) => setCompanyDateOfRegistration(event.target.value)}
-                              value={companyDateOfRegistration}
-                              placeholder="Enter CompanyDateOfRegistration "
-                            />
-                          </div>
-                        </div>
-
-                      </div>}
+                    <div className="form-group">
+                      <label htmlFor="">Email</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setEmail(event.target.value)}
+                        value={email}
+                        placeholder="Enter Email"
+                      />
+                    </div>
+                  
+              
+            
                   </div>
+                </div>}
 
+             
 
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      close
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      onClick={() => editTenantsDetails()}
-                    >
-                      Update
-                    </button>
+              {tenantTypeName !== "INDIVIDUAL" &&
+                  <div className="row">
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label htmlFor="">CompanyName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyName(event.target.value)}
+                        value={companyName}
+                        placeholder="Enter CompanyName"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">CompanyIncorporationNumber</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyIncorporationNumber(event.target.value)}
+                        value={companyIncorporationNumber}
+                        placeholder="Enter CompanyIncorporationNumber"
+                      />
+                    </div>
+                   
+                 
+
                   </div>
+                  <div className="col-6">
+                  <div className="form-group">
+                      <label htmlFor="">CompanyAddress</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyAddress(event.target.value)}
+                        value={companyAddress}
+                        placeholder="EnterCompanyAddress"
+                      />
+                    </div>
+                    <div className="form-group" >
+                      <label htmlFor="">CompanyDateOfRegistration </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        onChange={(event) => setCompanyDateOfRegistration(event.target.value)}
+                        value={companyDateOfRegistration}
+                        placeholder="Enter CompanyDateOfRegistration "
+                      />
+                    </div>
+                  </div>
+                
+                </div> }
                 </div>
+
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => editTenantsDetails()}
+                >
+                  Update
+                </button>
               </div>
             </div>
           </div>
+        </div>
+        </div>
 
-          {/* // create ContactPerson */}
+        {/* // create ContactPerson */}
 
+      
+        <div
+       class="modal fade"
+       id="create-contact"
+       data-bs-backdrop="static"
+       data-bs-keyboard="false"
+       role="dialog"
+       aria-labelledby="staticBackdropLabel"
+       aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="mod">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Contact Person
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">FirstName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter FirstName"
+                        onChange={(event) => setFirstName(event.target.value)}
+                        value={firstName}
+                      />
+                    </div>
 
-          <div
-            class="modal fade"
-            id="create-contact"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="mod">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="staticBackdropLabel">
-                    Contact Person
-                  </h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="form-group mb-4">
-                        <label for="">FirstName</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="Enter FirstName"
-                          onChange={(event) => setFirstName(event.target.value)}
-                          value={firstName}
-                        />
-                      </div>
+                    <div class="form-group mb-4">
+                      <label for="">LastName</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter LastName"
+                        onChange={(event) => setLastName(event.target.value)}
+                        value={lastName}
+                      />
+                    </div>
 
-                      <div class="form-group mb-4">
-                        <label for="">LastName</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="Enter LastName"
-                          onChange={(event) => setLastName(event.target.value)}
-                          value={lastName}
-                        />
-                      </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">OtherName</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={otherName}
+                        onChange={(e) => setOtherName(e.target.value)}
+                        placeholder="Enter OtherName"
+                        required={true}
+                      />
+                    </div>
 
-                      <div className="form-group mb-4">
-                        <label htmlFor="">OtherName</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={otherName}
-                          onChange={(e) => setOtherName(e.target.value)}
-                          placeholder="Enter OtherName"
-                          required={true}
-                        />
-                      </div>
+                    <div class="form-group mb-4">
+                      <label for="">Type</label>
+                      <select
+                        class="form-control"
+                        data-live-search="true"
+                        title="Select ContactPersonTypeName"
+                        onChange={(e) => setContactPersonType(e.target.value)}
+                      >
+                        <option className="text-black font-semibold ">
+                          --Select ContactPersonTypeName--
+                        </option>
+                        {contactPerson &&
+                          contactPerson.map((cont, index) => {
+                            return (
+                              <option key={index} value={cont}>
+                                {cont}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </div>
 
-                      <div class="form-group mb-4">
-                        <label for="">Type</label>
-                        <select
-                          class="form-control"
-                          data-live-search="true"
-                          title="Select ContactPersonTypeName"
-                          onChange={(e) => setContactPersonType(e.target.value)}
-                        >
-                          <option className="text-black font-semibold ">
-                            --Select ContactPersonTypeName--
-                          </option>
-                          {contactPerson &&
-                            contactPerson.map((cont, index) => {
-                              return (
-                                <option key={index} value={cont}>
-                                  {cont}
-                                </option>
-                              );
-                            })}
-                        </select>
-                      </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">PhoneNumber1</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={phoneNumber1}
+                        onChange={(e) => setPhoneNumber1(e.target.value)}
+                        placeholder="Enter PhoneNumber1"
+                        required={true}
+                      />
+                    </div>
 
-                      <div className="form-group mb-4">
-                        <label htmlFor="">PhoneNumber1</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={phoneNumber1}
-                          onChange={(e) => setPhoneNumber1(e.target.value)}
-                          placeholder="Enter PhoneNumber1"
-                          required={true}
-                        />
-                      </div>
-
-                      <div className="form-group mb-4">
-                        <label htmlFor="">Relationship</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={relationship}
-                          onChange={(e) => setRelationship(e.target.value)}
-                          placeholder="Enter Relationship"
-                          required={true}
-                        />
-                      </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Relationship</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={relationship}
+                        onChange={(e) => setRelationship(e.target.value)}
+                        placeholder="Enter Relationship"
+                        required={true}
+                      />
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-light"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    onClick={() => addConctactPersons()}
-                  >
-                    Save
-                  </button>
-                </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => addConctactPersons()}
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>
+        </div>
 
-          <div
-            class="modal fade"
-            id="create-tenancies"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="mod">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="staticBackdropLabel">
-                    Tenancies
-                  </h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="form-group mb-4">
-                        <label for="">Premises</label>
-                        <select className='form-control' onChange={onPremiseChange} name="premise">
+
+        {/* //add Tenant */}
+
+
+
+        <div
+       class="modal fade"
+       id="create-tenancies"
+       data-bs-backdrop="static"
+       data-bs-keyboard="false"
+       role="dialog"
+       aria-labelledby="staticBackdropLabel"
+       aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="mod">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Tenancies
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">Premises</label>
+                      <select className='form-control'onChange={onPremiseChange} name="premise">
                           <option> --Select Premises--</option>
                           {premises?.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
                         </select>
-                      </div>
-                      <div class="form-group mb-4">
-                        <label for="">Unit</label>
-                        <select className='form-control' onChange={premiseUnitChange} name="premiseUnitId">
+                    </div>
+                    <div class="form-group mb-4">
+                      <label for="">Unit</label>
+                      <select className='form-control' onChange={premiseUnitChange} name="premiseUnitId">
                           <option> --Select Unit--</option>
-                          {units.length > 0 && units.map((prem, index) => <option value={prem.id}>{prem.unitName}</option>)}
+                          {units.length > 0 && units.map((prem, index) => <option value={prem.id }>{prem.unitName}</option>)}
                         </select>
-                      </div>
+                    </div>
 
 
-                      <div class="form-group mb-4">
-                        <label for="">Unit Condition</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="Enter UnitCondition"
-                          onChange={(event) => setUnitCondition(event.target.value)}
-                          value={unitCondition}
-                        />
-                      </div>
+                    <div class="form-group mb-4">
+                      <label for="">Unit Condition</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter UnitCondition"
+                        onChange={(event) => setUnitCondition(event.target.value)}
+                        value={unitCondition}
+                      />
+                    </div>
 
-                      <div className="form-group mb-4" id="datepicker198">
-                        <label htmlFor="">StartDate</label>
-                        <input
-                          type="text"
-                          className="form-control mouse-pointer enddate"
-                          value={startDate}
-                          onChange={(e) => setStartDate(e.target.value)}
-                          placeholder="Enter StartDate"
-                          readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-provide="datepicker" data-date-autoclose="true" data-date-start-date="+0d"
-                          required={true}
-
-                        />
-
-                      </div>
-
-                      <div className="form-group mb-4 " id="datepicker1">
-                        <label htmlFor="">TenancyRenewalDate</label>
-                        <input
-                          type="text"
-                          className="form-control mouse-pointer date3"
-                          value={tenancyRenewalDate}
-                          onChange={(e) => setTenancyRenewalDate(e.target.value)}
-                          placeholder="Enter TenancyRenewalDate "
-                          readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
-                          required={true}
-                        />
-                      </div>
-                      <div className="form-group mb-4" id="datepicker1">
-                        <label htmlFor="">TenancyRenewalNotificationDate</label>
-                        <input
-                          type="text"
-                          className="form-control mouse-pointer date2"
-                          value={tenancyRenewalNotificationDate}
-                          onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
-                          placeholder="Enter TenancyRenewalNotificationDate"
-                          readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
-
-                          required={true}
-                        />
-                      </div>
-
-                      <div className="form-group mb-4">
-                        <label htmlFor="">TenancyStatus</label>
-                        <select
-                          class="form-control"
-                          data-live-search="true"
-                          title="Select TenancyStatus"
-                          onChange={(e) => setTenancyStatus(e.target.value)}
-                        >
-                          <option className="text-black font-semibold ">
-                            --Select TenancyStatus--
-                          </option>
-                          {tenantStatuses &&
-                            tenantStatuses.map((tenant, index) => {
-                              return (
-                                <option key={index} value={tenant}>
-                                  {tenant}
-                                </option>
-                              );
-                            })}
-                        </select>
-                      </div>
-
+                    <div className="form-group mb-4" id="datepicker198">
+                      <label htmlFor="">StartDate</label>
+                      <input
+                        type="text"
+                        className="form-control mouse-pointer enddate"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        placeholder="Enter StartDate"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-provide="datepicker" data-date-autoclose="true"  data-date-start-date="+0d"
+                        required={true}
+        
+                      />
 
                     </div>
+
+                    <div className="form-group mb-4 " id="datepicker1">
+                      <label htmlFor="">TenancyRenewalDate</label>
+                      <input
+                        type="text"
+                        className="form-control mouse-pointer date3"
+                        value={tenancyRenewalDate}
+                        onChange={(e) => setTenancyRenewalDate(e.target.value)}
+                        placeholder="Enter TenancyRenewalDate "
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" 
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4" id="datepicker1">
+                      <label htmlFor="">TenancyRenewalNotificationDate</label>
+                      <input
+                        type="text"
+                        className="form-control mouse-pointer date2"
+                        value={tenancyRenewalNotificationDate}
+                        onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
+                        placeholder="Enter TenancyRenewalNotificationDate"
+                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true" 
+                    
+                        required={true}
+                      />
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label htmlFor="">TenancyStatus</label>
+                      <select
+                        class="form-control"
+                        data-live-search="true"
+                        title="Select TenancyStatus"
+                        onChange={(e) => setTenancyStatus(e.target.value)}
+                      >
+                        <option className="text-black font-semibold ">
+                          --Select TenancyStatus--
+                        </option>
+                        {tenantStatuses&&
+                          tenantStatuses.map((tenant, index) => {
+                            return (
+                              <option key={index} value={tenant}>
+                                {tenant}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </div>
+
+                   
                   </div>
                 </div>
+              </div>
 
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-light"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    onClick={() => addTenancies()}
-                  >
-                    Save
-                  </button>
-                </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => addTenancies()}
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>
-
         </div>
 
-        <footer class="footer">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-sm-6">
-                <script>document.write(new Date().getFullYear())</script> ©
-                RevenueSure.
-              </div>
-              <div class="col-sm-6">
-                <div class="text-sm-end d-sm-block">
-                  Developed by Nouveta LTD.
-                </div>
+    
+    </div>
+    <footer class="footer">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <script>document.write(new Date().getFullYear())</script> ©
+              RevenueSure.
+            </div>
+            <div class="col-sm-6">
+              <div class="text-sm-end d-sm-block">
+                Developed by Nouveta LTD.
               </div>
             </div>
           </div>
-        </footer>
-      </div>
-      </div>
-      );
+        </div>
+      </footer>
+    </div>
+  );
 }
 
-      export default OneTenant;
+export default OneTenant;
