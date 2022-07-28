@@ -679,6 +679,11 @@ class RequestsService {
   getUnits() {
     return axiosInstance.get(baseUrl + "/premiseUnits");
   }
+
+  //start of statements
+  getStatements(data) {
+    return axiosInstance.get(baseUrl + `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`)
+  }
 }
 
 export default new RequestsService();

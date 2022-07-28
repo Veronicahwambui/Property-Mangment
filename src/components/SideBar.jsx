@@ -66,6 +66,16 @@ function SideBar() {
                             </ul>
                         </li>
 
+                      <li>
+                        <a href="javascript: void(0);" className="waves-effect has-arrow">
+                          <i className="bx bx-calculator"></i>
+                          <span>Statements</span>
+                        </a>
+                        <ul className="sub-menu" aria-expanded="false">
+                          <li><NavLink to="/statements">Tenant Statements</NavLink></li>
+                        </ul>
+                      </li>
+
 
                         {/* <li>
                             <NavLink to="/receipts" className="waves-effect">

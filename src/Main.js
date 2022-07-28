@@ -44,6 +44,7 @@ import Invoices from "./pages/invoices/Invoices";
 import PremiseTenancy from "./pages/premises/PremiseTenancy";
 import UserDetails from "./pages/admins/UserDetails";
 import InvoiceParent from "./pages/invoices/InvoicesParent";
+import Statements from "./pages/statements/Statements";
 
 function Main() {
 
@@ -142,6 +143,7 @@ function Main() {
                 <Route path='/agreementtypes' element={<LandLordAgreementTypes />} />
                 <Route path='/addlandlord' element={<AddLandlord />} />
                 <Route path='/landlord/:id' element={<ViewLandlord />} />
+                <Route path='/statements' element={<Statements />} />
 
                 <Route path="*" element={<Navigate to="/" />}></Route>
               </Routes>
