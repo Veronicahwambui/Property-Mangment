@@ -109,7 +109,7 @@ function OnePremiseUnit() {
                                                         <div class="d-flex">
                                                             <div class="overflow-hidden me-auto">
                                                                 <h5 class="font-size-14 text-truncate mb-1"><a href="javascript: void(0);" class="text-body">No. Of Rooms</a></h5>
-                                                                <p class="text-muted text-truncate mb-0">{Object.keys(unitDetails).length > 0 && unitDetails.unit.numberOfRooms} Rooms</p>
+                                                                <p class="text-muted text-truncate mb-0">{Object.keys(unitDetails).length > 0 && unitDetails.unit.unitType.numberOfRooms} Rooms</p>
                                                             </div>
 
                                                         </div>
@@ -185,7 +185,7 @@ function OnePremiseUnit() {
                                                         <div class="d-flex">
                                                             <div class="overflow-hidden me-auto">
                                                                 <h5 class="font-size-14 text-truncate mb-1"><a href="javascript: void(0);" class="text-body">Unit Size</a></h5>
-                                                                <p class="text-muted text-truncate mb-0">{Object.keys(unitDetails).length > 0 && unitDetails.unit.squarage} M <sup>2</sup></p>
+                                                                <p class="text-muted text-truncate mb-0">{Object.keys(unitDetails).length > 0 && unitDetails.unit.unitType.squarage} M <sup>2</sup></p>
                                                             </div>
 
                                                         </div>
@@ -207,9 +207,9 @@ function OnePremiseUnit() {
                                                             </div>
                                                         </div>
                                                         <div class="d-flex">
-                                                            <div class="overflow-hidden me-auto">
+                                                            <div class="overflow-hidden me-auto text-capitalize">
                                                                 <h5 class="font-size-14 text-truncate mb-1"><a href="javascript: void(0);" class="text-body">Unit Purpose</a></h5>
-                                                                <p class="text-muted text-truncate mb-0">{Object.keys(unitDetails).length > 0 && unitDetails.unit.purpose}</p>
+                                                                <p class="text-muted text-truncate mb-0">{Object.keys(unitDetails).length > 0 && unitDetails.unit.unitType.purpose}</p>
                                                             </div>
 
                                                         </div>
@@ -271,6 +271,7 @@ function OnePremiseUnit() {
                                                         <th>phone no</th>
                                                         <th>condition</th>
                                                         <th>start Date</th>
+                                                        <th>notification date </th>
                                                        <th>renewal date</th>
                                                         <th>tenancy status</th>
                                                         <th></th>
@@ -285,6 +286,7 @@ function OnePremiseUnit() {
                                                             <td>{unit.tenant.phoneNumber}</td>
                                                             <td className='text-capitalize'>{unit.unitCondition}</td>
                                                             <td> {moment(unit.startDate).format("MMM Do YYYY")}</td>
+                                                            <td> { unit?.tenancyRenewalDate && moment(unit?.tenancyRenewalNotificationDate).format("MMM Do YYYY")}</td>
                                                             <td> { unit?.tenancyRenewalDate && moment(unit?.tenancyRenewalDate).format("MMM Do YYYY")}</td>
                                                             <td className="text-capitalize">{unit.tenancyStatus?.toLowerCase()?.replace(/_/g , " ")}</td>
                                                             

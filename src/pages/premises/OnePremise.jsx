@@ -366,7 +366,7 @@ function OnePremise() {
         premiseId: userId
       }
     )
-    requestsServiceService.updateCaretaker(userId, caretakerId, data).then(() => {
+    requestsServiceService.updateCaretaker(userId, caretakerId, data).then((res) => {
       getCaretakers()
     })
   }
@@ -1535,7 +1535,7 @@ function OnePremise() {
                       <div className="form-group mb-2">
                         <label htmlFor="">select collection account type</label>
                         <select name="" id="" className="form-control" onChange={(event) => setCollectionaccount(event.target.value)}>
-                          <option value="landlord">landlord collection</option>
+                          <option value="landlord">Landlord collection</option>
                           <option value="client">Client collection</option>
                         </select>
                       </div>
@@ -1990,9 +1990,9 @@ function OnePremise() {
                         <div className="form-group text-capitalize">
                           <label htmlFor="">Caretaker Type <strong className="text-danger">*</strong></label>
                           <select name="caretakerTypeName" className="form-control" onChange={hadleCaretaker}>
-                            <option value=""> Select Type</option>
+                            <option value="" className="text-capitalize"> Select Type</option>
                             {caretypes && caretypes.sort((a, b) => a.localeCompare(b)).map((type) => (
-                              <>{<option value={type}> {type?.toLowerCase()?.replace(/_/g , " ")} </option>}</>
+                              <>{<option className="text-capitalize" value={type}> {type?.toLowerCase()?.replace(/_/g , " ")} </option>}</>
                             ))}
                           </select>
                         </div>
@@ -2122,7 +2122,7 @@ function OnePremise() {
                           <select name="caretakerTypeName" id="" className="form-control" onChange={hadleUpdateCaretaker}>
                             {caretypes && caretypes.sort((a, b) => a.localeCompare(b)).map((type) => (
 
-                              <option selected={type === updateCaretaker.caretakerTypeName ? "selected" : ''} value={type} >{type?.toLowerCase()?.replace(/_/g , " ")}</option>
+                              <option className="text-capitalize" selected={type === updateCaretaker.caretakerTypeName ? "selected" : ''} value={type} >{type?.toLowerCase()?.replace(/_/g , " ")}</option>
                             ))}
                           </select>
                         </div>

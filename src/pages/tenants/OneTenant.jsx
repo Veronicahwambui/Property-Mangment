@@ -143,10 +143,10 @@ function OneTenant() {
                       <div className="row">
                         <div className="col-3">
                           <label htmlFor="">Type</label>
-                          <div>
+                          <div className="text-capitalize">
                             <span>
                               {tenantData.tenant &&
-                                tenantData.tenant.tenantType}
+                                tenantData.tenant.tenantType?.toLowerCase()?.replace(/_/g , " ")}
                             </span>
                           </div>
                         </div>
@@ -249,6 +249,7 @@ function OneTenant() {
                         <thead>
                         <tr class=" text-uppercase ">
                                                         <th>#</th>
+                                                        <th>premise name </th>
                                                         <th>unit name </th>
                                                         <th>tenant name</th>
                                                         <th>phone no</th>
@@ -265,6 +266,9 @@ function OneTenant() {
                             tenantData.tenancies.map((unit, index) => (
                               <tr data-id="1">
                                 <td>{index + 1}</td>
+                                <td className="text-capitalize">
+                                  {unit.premiseUnit.premise.premiseName}
+                                </td>
                                 <td>
                                   {unit.premiseUnit.unitName}
                                 </td>
@@ -274,18 +278,17 @@ function OneTenant() {
                                 </td> */}
                                 <td>{unit.tenant.phoneNumber}</td>
                                
-                                <td>{unit.unitCondition}</td>
+                                <td className="text-capitalize">{unit.unitCondition?.toLowerCase()?.replace(/_/g , " ")}</td>
                                 <td>
                                   {moment(unit.startDate).format("MMM Do YYYY")}
                                 </td>
                                 <td>
-                                  {moment(unit.tenancyRenewalDate).format("MMM Do YYYY")}
+                                  {moment(unit?.tenancyRenewalDate).format("MMM Do YYYY")}
                                 </td>
-                                <td>{unit.tenancyStatus.toLowerCase()}</td>
+                                <td className="text-capitalize">{unit.tenancyStatus?.toLowerCase()?.replace(/_/g , " ")}</td>
                                 <td> { unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>  }</td>
                                 <td>
                                 <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
-
                                 </td>
                               </tr>
                             ))}
