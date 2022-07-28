@@ -174,7 +174,12 @@ function Statements() {
                                   </div>
                                 </div>
                               </td>
-                              <td>{statement.receiptNo}</td>
+                              <td>
+                                {
+                                  JSON.parse(statement.response).receiptInfo
+                                    .clientAccountNo
+                                }
+                              </td>
                               <td>
                                 {formatCurrency.format(statement.receiptAmount)}
                               </td>
