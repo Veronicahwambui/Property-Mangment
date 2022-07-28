@@ -400,7 +400,13 @@ const getStatus =()=>{
   }, []);
 
   const deleteDeactivate = (id) => {
-    requestsServiceService.deactivateTenancies(id).then((res) => {});
+    requestsServiceService.deactivateTenancies(id).then((res) => {
+      fetchAll()
+    }
+
+    );
+    
+  
   };
 // console.log(tenancyRenewalDate)
 

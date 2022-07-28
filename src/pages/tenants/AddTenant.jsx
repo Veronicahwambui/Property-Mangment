@@ -6,6 +6,10 @@ import moment from 'moment';
 import authService from '../../services/auth.service';
 import requestsServiceService from '../../services/requestsService.service';
 import {Helmet} from "react-helmet";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 
 
@@ -28,6 +32,8 @@ function AddTenant() {
   const [premises, setPremises] = useState([])
   const [units, setUnits] = useState([])
   const [documentTypes, setDocumentTypes] = useState([])
+  const navigate = useNavigate();
+
 
 
   useEffect(() => {
@@ -247,7 +253,7 @@ function AddTenant() {
           message: res.data.message,
           buttons: [{
             label: "OK",
-            onClick: (e) => window.reload()
+            onClick: (e) => navigate("/alltenants", { replace: true })
           }
           ]
         })
@@ -437,7 +443,7 @@ function AddTenant() {
                               <label htmlFor="basicpill-firstname-input">Company Name<strong className="text-danger">*</strong></label>
                               <input type="text" className="form-control" id="" placeholder="Enter company's name" name="companyName"
                                 onChange={(e) => handleTenantDtoChange(e)}  
-                                required/>
+                                />
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
@@ -688,12 +694,12 @@ function AddTenant() {
 
                                     </tbody>
                                     <tfoot>
-                                      <tr>
-                                        <td colSpan="7" className="bg-light add-field-3 cursor-pinter ">
-                                          <button type="button" data-id="ROOMMATE" onClick={newContactPerson}>Add New</button>
-
-                                        </td>
-                                      </tr>
+                                    <tr className='' data-id="ROOMMATE" onClick={newContactPerson}>
+                                            <td colspan="7" class="bg-light add-field-1 cursor-pointer">
+                                             <span class="d-flex align-items-center "><i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span class="pl-5 ">Add New</span></span>
+                                                </td>
+                                              </tr>
+              
                                     </tfoot>
                                   </table>
                                 </div>
@@ -753,12 +759,13 @@ function AddTenant() {
 
                             </tbody>
                             <tfoot>
-                              <tr>
-                                <td colSpan="7" className="bg-light add-field-3 cursor-pinter ">
-                                  <button type="button" data-id="REFEREE" onClick={newContactPerson}>Add New</button>
-
-                                </td>
-                              </tr>
+                            <tr className=''data-id="REFEREE" onClick={newContactPerson} >
+                                            <td colspan="7" class="bg-light add-field-1 cursor-pointer">
+                                             <span class="d-flex align-items-center "><i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span class="pl-5 " data-id="REFEREE" onClick={newContactPerson} >Add New</span></span>
+                                                </td>
+                                              </tr>             
+                            
+            
                             </tfoot>
                           </table>
                         </div>
@@ -805,12 +812,16 @@ function AddTenant() {
 
                             </tbody>
                             <tfoot>
-                              <tr>
+                            <tr className=''>
                                 <td colSpan="7" className="bg-light add-field-2 cursor-pinter ">
+                                <span class="d-flex align-items-center "><i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span class="pl-5 " data-id="NEXT_OF_KIN" onClick={newContactPerson}>Add New</span></span>
 
-                                  <button type="button" data-id="NEXT_OF_KIN" onClick={newContactPerson}>Add New</button>
+                              
                                 </td>
                               </tr>
+                               
+                          
+  
                             </tfoot>
                           </table>
                         </div>
@@ -852,9 +863,10 @@ function AddTenant() {
 
                             </tbody>
                             <tfoot>
+                            
                               <tr>
                                 <td colSpan="7" className="bg-light add-field-1 cursor-pointer">
-                                  <button type="button" data-id="DEPENDANT" onClick={newContactPerson}>Add A Dependent</button>
+                                  <span class="d-flex align-items-center "><i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span class="pl-5 " data-id="DEPENDANT" onClick={newContactPerson}>Add A Dependent</span></span>
                                 </td>
                               </tr>
                             </tfoot>
@@ -912,14 +924,16 @@ function AddTenant() {
 
                                 </tbody>
                                 <tfoot>
-                                  <tr>
-                                    <td colSpan="9" className="bg-light add-field-date cursor-pinter ">
-                                      {tenancyDTOS.length < 1 &&
-                                        <button type="button" onClick={toogleShowAssignUnits}>Assign A Unit</button>
-
-                                      }
-                                    </td>
-                                  </tr>
+                                {tenancyDTOS.length < 1 &&
+                                <tr className='' onClick={toogleShowAssignUnits}>
+                                            <td colspan="7" class="bg-light add-field-1 cursor-pointer">
+                                             <span class="d-flex align-items-center "><i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span class="pl-5 ">Assign A Unit</span></span>
+                                                </td>
+                                              </tr>
+}
+                                
+                                
+                               
                                 </tfoot>
                               </table>
 
@@ -952,12 +966,13 @@ function AddTenant() {
 
                                       </tbody>
                                       <tfoot>
-                                        <tr>
-                                          <td colSpan="7 " >
-                                            <button type="button" data-id="TENANCY" onClick={newDocument}>Add Tenancy Documents</button>
+                                      
 
-                                          </td>
-                                        </tr>
+<tr className='' data-id="TENANCY" onClick={newDocument}>
+                                            <td colspan="7" class="bg-light add-field-1 cursor-pointer">
+                                             <span class="d-flex align-items-center "><i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span class="pl-5 ">Add Tenancy Documents</span></span>
+                                                </td>
+                                              </tr>
                                       </tfoot>
                                     </table>
                                   </div>
@@ -1002,11 +1017,13 @@ function AddTenant() {
 
                         </tbody>
                         <tfoot>
-                          <tr>
-                            <td colSpan="7 " >
-                              <button type="button" data-id="TENANT" onClick={newDocument}>Add Tenant Documents</button>
-                            </td>
-                          </tr>
+                          
+
+                          <tr className='' data-id="TENANT" onClick={newDocument}>
+                                            <td colspan="7" class="bg-light add-field-1 cursor-pointer">
+                                             <span class="d-flex align-items-center "><i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span class="pl-5 ">Add Tenancy Documents</span></span>
+                                                </td>
+                                              </tr>
                         </tfoot>
                       </table>
                     </div>
@@ -1119,10 +1136,12 @@ function AddTenant() {
                           onChange={(e) => handleAssignmentChange(e)} name="startDate" />
                       </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6"  id="datepicker1O4">
                       <div className="mb-4">
                         <label htmlFor="">TenancyRenewalDate</label>
-                        <input type="number" className="form-control" id="" placeholder=""
+                        <input type="number" className="form-control  mouse-pointer enddate" id="" placeholder="Enter TenancyRenewalDate"
+                                                readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker14' data-provide="datepicker" data-date-autoclose="true"
+
                           onChange={(e) => handleAssignmentChange(e)} name="tenancyRenewalDate"  required />
                       </div>
                     </div>
