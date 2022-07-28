@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import UnitTypes from "../setups/UnitTypes";
 import authService from "../../services/auth.service";
+import { Link } from "react-router-dom";
 import moment from 'moment'
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -36,7 +37,7 @@ function OneTenant() {
   const [occupation, setOccupation] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [tenantTypeName, setTenantTypeName] = useState("");
-
+const[premiseData,setPremiseData]=useState([])
 
 
   //company details
@@ -173,6 +174,7 @@ function OneTenant() {
     unitTypeName,
     startDate,
     unitCondition,
+    tenancyStatus,
     tenancyRenewalDate,
     tenancyRenewalNotificationDate,
     unitId
@@ -493,6 +495,16 @@ $(document).on("change", ".date3", date3)
                       >
                         Contact persons
                       </a>
+                      <a
+                        onClick={() => setActiveLink(4)}
+                        class={
+                          activeLink === 4
+                            ? "nav-item nav-link active cursor-pointer"
+                            : "nav-item cursor-pointer nav-link"
+                        }
+                      >
+                      Document Attachments
+                      </a>
                     </div>
                   </div>
                 </nav>
@@ -727,6 +739,7 @@ $(document).on("change", ".date3", date3)
                                   <tr class="text-uppercase table-dark">
                                     <th>#</th>
                                     <th>Unit Name</th>
+                                    <th>Premise Name</th>
                                     <th>Unit Type</th>
                                     <th>Start Date</th>
                                     <th>Unit Condition</th>
@@ -743,6 +756,8 @@ $(document).on("change", ".date3", date3)
                                       <tr data-id="1">
                                         <td>{index + 1}</td>
                                         <td>{unit.premiseUnit.unitName}</td>
+                                        <td>{unit.premiseUnit.premise.premiseName}</td>
+
                                         <td className="text-capitalize">
                                           {unit.premiseUnit.unitType.name}
                                         </td>
@@ -798,6 +813,7 @@ $(document).on("change", ".date3", date3)
                                                     unit.premiseUnit.unitName,
                                                     unit.startDate,
                                                     unit.unitCondition,
+                                                    unit.tenancyStatus,
                                                     unit.tenancyRenewalDate,
                                                     unit.tenancyRenewalNotificationDate,
                                                     unit.id
@@ -808,6 +824,9 @@ $(document).on("change", ".date3", date3)
                                               >
                                                 <i class="font-size-15 mdi mdi-pencil me-3"></i>
                                                 Edit
+                                              </p>
+                                              <p>
+                                              <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
                                               </p>
 
                                               <button
@@ -960,6 +979,79 @@ $(document).on("change", ".date3", date3)
           </div>
         )}
 
+{activeLink === 4 && (
+  <div>
+<div className="row">
+  <div className="col-xl-12">
+    <div className="card calc-h-3px">
+      <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+        <div
+          class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+          role="toolbar"
+        >
+          <div class="d-flex align-items-center flex-grow-1">
+            <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
+          </div>
+          <div y>
+      
+          </div>
+        </div>
+      </div>
+      <div className="card-body">
+        <div className="col-12">
+          <div className="table-responsive">
+            <table
+              class="table align-middle table-edits rent-invoicing dt-responsive"
+              id="data-table"
+            >
+              <thead>
+                <tr class="text-uppercase table-dark">
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Tenant type</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {premiseData.premiseDocuments &&
+                  premiseData.premiseDocuments.map(
+                    (unit, index) => (
+                      <tr data-id="1">
+                        <td>{index + 1}</td>
+                        <td className="active nav-link cursor-pointer">
+                          <a onClick={() => download}>
+                            {/* {" "}
+                            {unit.docName} */}
+                          </a>
+                        </td>
+                        {/* <td>{unit.documentType.name}</td> */}
+                        <td className="text-capitalize">
+                          {/* {unit.documentOwnerType.toLowerCase()} */}
+                        </td>
+                      </tr>
+                    )
+                  )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{/*document attachment modal*/}
+
+
+
+</div>
+
+
+
+
+
+   )}
+
         <div
           class="modal fade"
           id="edit-tenant"
@@ -1022,13 +1114,14 @@ $(document).on("change", ".date3", date3)
                     </div>
                     <div className="form-group mb-4">
                       <label htmlFor="">TenancyStatus</label>
-                  <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Enter TenancyStatus"
-                  value={tenancyStatus}
+                    <input
+                     type="text"
+                    class="form-control"
+                    placeholder="Enter TenancyStatus"
+                
                        
                   onChange={(e) => setTenancyStatus(e.target.value)}
+                  value={tenancyStatus}
                   
                      />
 
