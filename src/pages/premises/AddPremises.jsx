@@ -106,6 +106,7 @@ function AddPremises() {
     "premiseTypeId": undefined,
     "premiseUseTypeId": undefined,
     "unitVacancyRestrictionStatus": undefined,
+    "chargeFrequencyName":undefined 
   });
 
   const handleGeneral = (event) => {
@@ -568,7 +569,7 @@ function AddPremises() {
                           </div>
                         </div>
                         <div class="row mb-4">
-                          <div class="col-2">
+                          <div class="col-4">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
                                 File No.<strong class="text-danger ">*</strong>
@@ -584,7 +585,7 @@ function AddPremises() {
                               />
                             </div>
                           </div>
-                          <div class="col-lg-2 col-md-2">
+                          <div class="col-lg-4 col-md-2">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
                                 Plot No. <strong class="text-danger ">*</strong>
@@ -607,7 +608,7 @@ function AddPremises() {
                                 <strong class="text-danger ">*</strong>
                               </label>
                               <input
-                                type="text "
+                                type="text text-capitalize"
                                 class="form-control "
                                 value={general.premiseName}
                                 onChange={handleGeneral}
@@ -624,22 +625,38 @@ function AddPremises() {
                                 Estate <strong class="text-danger ">*</strong>
                               </label>
                               <select
-                                class="form-control "
+                                class="form-control text-capitalize"
                                 title="Select estate "
                                 name="estateId"
                                 onChange={handleGeneral}
                               >
-                                <option></option>
-                                {estates && estates.map((estate) => {
+                                <option>Select estate</option>
+                                {estates && estates?.sort((a, b) => a.name.localeCompare(b.name)).map((estate) => {
                                   return (
-                                    <option value={estate.id} > {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.name} </option>
+                                    <option value={estate.id} className="text-capitalize"> {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.county.name?.toLowerCase()?.replace(/_/g , " ")} </option>
                                   )
                                 })}
 
                               </select>
                             </div>
                           </div>
-
+                          <div class="col-lg-4 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                                Address{" "}
+                                <strong class="text-danger ">*</strong>
+                              </label>
+                              <input
+                                type="text text-capitalize"
+                                class="form-control "
+                                value={general.address}
+                                onChange={handleGeneral}
+                                name='address'
+                                id="basicpill-firstname-input "
+                                placeholder="Enter Your First Name "
+                              />
+                            </div>
+                          </div>
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-lastname-input ">
@@ -647,15 +664,15 @@ function AddPremises() {
                                 <strong class="text-danger ">*</strong>
                               </label>
                               <select
-                                class="form-control "
+                                class="form-control text-capitalize"
                                 title="Select Building type "
                                 name='premiseTypeId'
                                 onChange={handleGeneral}
 
                               >
-                                <option></option>
-                                {premiseTypes && premiseTypes.map((type) => (
-                                  <option value={type.id}> {type.name}</option>
+                                <option>select premise type</option>
+                                {premiseTypes && premiseTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type) => (
+                                  <option value={type.id} className="text-capitalize" > {type.name}</option>
                                 ))}
 
                               </select>
@@ -669,15 +686,15 @@ function AddPremises() {
                                 <strong class="text-danger ">*</strong>
                               </label>
                               <select
-                                class="form-control "
+                                class="form-control text-capitalize "
                                 title="Select Property use type "
                                 name='premiseUseTypeId'
                                 onChange={handleGeneral}
 
                               >
-                                <option></option>
-                                {premiseUseTypes && premiseUseTypes.map((type) => (
-                                  <option value={type.id}> {type.name}</option>
+                                <option>Select premise use type </option>
+                                {premiseUseTypes && premiseUseTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type) => (
+                                  <option value={type.id} className="text-capitalize"> {type.name}</option>
                                 ))}
                               </select>
                             </div>
@@ -689,20 +706,34 @@ function AddPremises() {
                                 <strong className="text-danger ">*</strong>
                               </label>
                               <select
-                                  className="form-control "
+                                  className="form-control text-capitalize "
                                   title="Select restriction status "
                                   name='unitVacancyRestrictionStatus'
                                   onChange={handleGeneral}
 
                               >
-                                <option></option>
-                                {tenancyStatuses && tenancyStatuses.map((t) => (
-                                    <option value={t}> {t}</option>
+                                <option> Select status</option>
+                                {tenancyStatuses && tenancyStatuses?.sort((a, b) => a.localeCompare(b))?.map((t) => (
+                                    <option value={t} className="text-capitalize"> {t?.toLowerCase()?.replace(/_/g , " ")}</option>
                                 ))}
                               </select>
                             </div>
                           </div>
-
+                          <div className="col-4">
+                          
+                          <div className="form-group">
+                            <label htmlFor="">Charge frequency</label>
+                            <select
+                              className="form-control"
+                              onChange={handleGeneral}
+                              name="chargeFrequencyName"
+                            >
+                              <option value="YEAR"> Select frequency</option>
+                              <option value="MONTH">Monthly</option>
+                              <option value="YEAR">Yearly</option>
+                            </select>
+                          </div>
+                          </div>
                         </div>
 
                         <div class="col-12">
@@ -737,7 +768,7 @@ function AddPremises() {
                               </label>
                               <input
                                 type="text "
-                                class="form-control "
+                                class="form-control text-capitalize "
                                 value={caretaker.firstName}
                                 onChange={handleCaretaker}
                                 name="firstName"
@@ -898,7 +929,7 @@ function AddPremises() {
                         </div>
 
                         <div class="row">
-                          {unitTypes && unitTypes.map((prem, index) =>
+                          {unitTypes && unitTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((prem, index) =>
                             <div class="col-4">
                               <div class="form-check form-check-primary mb-3">
                                 <input
@@ -1000,7 +1031,7 @@ function AddPremises() {
                                 <i>Applicable Charges</i>
                               </p>
                               <div class="row border-right-1">
-                                {applicableCharges && applicableCharges.map((charge, index) => (
+                                {applicableCharges && applicableCharges?.sort((a, b) => a.name.localeCompare(b.name))?.map((charge, index) => (
                                   <>
                                     {charge.applicableChargeType === "MONTHLY_CHARGE" &&
                                       <div class="col-6">
@@ -1031,7 +1062,7 @@ function AddPremises() {
                                 <i>Deposits</i>
                               </p>
                               <div class="row border-right-1">
-                                {applicableCharges && applicableCharges.map((charge, index) => (
+                                {applicableCharges && applicableCharges?.sort((a, b) => a.name.localeCompare(b.name))?.map((charge, index) => (
                                   <>
                                     {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
                                       <div class="form-check form-check-primary mb-3">
@@ -1060,10 +1091,10 @@ function AddPremises() {
                         <div className="row">
                             <div class="col-lg-3 col-md-4 col-sm-12">
                               <label for="agreement-type">Landlord MCA Agreement Type<strong class="text-danger ">*</strong></label>
-                              <select class="form-control " id="agreement-type" title="Landlord MCA agreement type" name="landLordAgreementTypeId" onChange={handlelandlordDataChange}>
-                                <option></option>
-                                {agreementTypes.map((type, index) => (
-                                  <option value={type.id}>{type.name}</option>
+                              <select class="form-control text-capitalize" id="agreement-type" title="Landlord MCA agreement type" name="landLordAgreementTypeId" onChange={handlelandlordDataChange}>
+                                <option>select agreement type</option>
+                                {agreementTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type, index) => (
+                                  <option value={type.id} className="text-capitalize">{type.name?.toLowerCase()?.replace(/_/g , " ")}</option>
                                 ))
                                 }
                               </select>
@@ -1098,7 +1129,7 @@ function AddPremises() {
                             >
                               <thead>
                                 <tr class="text-uppercase table-light">
-                                  <th>#</th>
+                                  {/* <th>#</th> */}
                                   <th>Item type</th>
                                   <th>When to Charge</th>
                                   <th>Unit Type</th>
@@ -1114,19 +1145,19 @@ function AddPremises() {
                               </tfoot>
                               <tbody>
 
-                                {premiseUnitTypeCharges.length > 0 && premiseUnitTypeCharges.map((premiseUnitTypeCharge, indeewx) => (
-                                  <tr>
-                                    <td>
-                                      {/* {indeewx + 1} */}
-                                    </td>
-                                    <td>
+                                {premiseUnitTypeCharges.length > 0 && premiseUnitTypeCharges.map((premiseUnitTypeCharge, index) => (
+                                  <tr className="text-capitalize">
+                                    {/* <td>
+                                      {index + 1}
+                                    </td> */}
+                                    <td className="text-capitalize">
                                       {premiseUnitTypeCharge.applicableChargeName}
                                     </td>
-                                    <td>
-                                      {premiseUnitTypeCharge.applicableChargeType}
+                                    <td className="text-capitalize">
+                                      {premiseUnitTypeCharge.applicableChargeType?.toLowerCase()?.replace(/_/g , " ")}
                                     </td>
-                                    <td>
-                                      {premiseUnitTypeCharge.unitTypeName}
+                                    <td className="text-capitalize">
+                                      {premiseUnitTypeCharge.unitTypeName?.toLowerCase()?.replace(/_/g , " ")}
                                     </td>
                                     <td>
                                       {premiseUnitTypeCharge.value}
@@ -1137,9 +1168,9 @@ function AddPremises() {
                                 {selectedApplicableCharges && selectedApplicableCharges.map((premiseUnitTypeCharge, indeewx) => (
                                   premiseUnitTypeCharge.expectManualValues && selectedunitTypes.map((unitTypee, indeewx) => (
                                     <tr>
-                                      <td>
-                                        {/* {indeewx + 1} */}
-                                      </td>
+                                      {/* <td>
+                                        {indeewx + 1}
+                                      </td> */}
                                       <td>
                                         {premiseUnitTypeCharge.name}
                                       </td>
@@ -1300,9 +1331,9 @@ function AddPremises() {
               <div className="mb-4">
                 <label htmlFor="basicpill-firstname-input">Document Type<strong className="text-danger">*</strong></label>
 
-                <select className='form-control' onChange={handleDocumentChange} name="documentTypeId" required>
-                  <option></option>
-                  {documentTypes && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+                <select className='form-control text-capitalize' onChange={handleDocumentChange} name="documentTypeId" required>
+                  <option>select document type</option>
+                  {documentTypes && documentTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((prem, index) => <option value={prem.id} className="text-capitalize">{prem.name?.toLowerCase()?.replace(/_/g , " ")}</option>)}
                 </select>
               </div>
             </div>
@@ -1346,7 +1377,7 @@ function AddPremises() {
 
                 <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="charge" required>
                   <option></option>
-                  {selectedApplicableCharges && selectedApplicableCharges.map((prem, index) => (
+                  {selectedApplicableCharges && selectedApplicableCharges?.sort((a, b) => a.name.localeCompare(b.name))?.map((prem, index) => (
                     !prem.expectManualValues &&
                     <option value={prem.id}>{prem.name}</option>))}
                 </select>

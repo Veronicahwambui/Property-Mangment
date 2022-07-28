@@ -1094,10 +1094,8 @@ function OnePremise() {
                               name="freq"
                             >
                               <option value="YEAR"> Select frequency</option>
-                              <option value="YEAR">Yearly</option>
                               <option value="MONTH">Monthly</option>
-
-
+                              <option value="YEAR">Yearly</option>
                             </select>
                           </div>
                           </div>

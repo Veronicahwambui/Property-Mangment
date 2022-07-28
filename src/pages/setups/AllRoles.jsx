@@ -369,7 +369,7 @@ function AllRoles() {
                           <div class="form-check mb-3">
                             <input class="form-check-input" onChange={(event) =>
                               handleRoleChange(index, event)
-                            } required="required" type="checkbox" id="formCheck1" />
+                            }  type="checkbox" id="formCheck1" />
                             <label class="form-check-label" for="formCheck1">
                               {priv.name.toLowerCase().replace(/_/g, " ")}
                             </label>
