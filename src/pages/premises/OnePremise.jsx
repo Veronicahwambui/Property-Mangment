@@ -1705,13 +1705,13 @@ function OnePremise() {
                                 (unit, index) => (
                                   <tr data-id="1">
                                     <td>{index + 1}</td>
-                                    <td className="active nav-link cursor-pointer">
+                                    <td className=" nav-link cursor-pointer">
                                       
                                         
                                         {unit.docName}
                                       
                                     </td>
-                                    <td className="text-capitalize">{unit.documentType.name}</td>
+                                    <td className="text-capitalize">{unit.documentType.name?.toLowerCase()?.replace(/_/g , " ")}</td>
                                     <td className="text-capitalize">
                                       {unit.documentOwnerType.toLowerCase()}
                                     </td>

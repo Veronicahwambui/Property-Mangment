@@ -126,7 +126,7 @@ function AddPremises() {
     otherName: "",
     caretakerTypeName: "",
     gender: "",
-    phone: "",
+    phoneNumber: "",
     email: "",
     active: true
   });
@@ -888,7 +888,7 @@ function AddPremises() {
                                         type="text "
                                         class="form-control "
                                         value={caretaker.phone}
-                                        name="phone"
+                                        name="phoneNumber"
                                         onChange={handleCaretaker}
 
                                         id="basicpill-phoneno-input "
