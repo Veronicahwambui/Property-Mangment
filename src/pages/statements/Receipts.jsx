@@ -8,7 +8,7 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { confirmAlert } from "react-confirm-alert";
 
-function Statements() {
+function Receipts() {
   const [statements, setstatements] = useState([]);
   const [startDate, setStartDate] = useState("01/12/2022");
   const [endDate, setEndDate] = useState("12/12/2022");
@@ -33,7 +33,7 @@ function Statements() {
           <div className="row">
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 className="mb-sm-0 font-size-18">Statements</h4>
+                <h4 className="mb-sm-0 font-size-18">Receipts</h4>
 
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
@@ -41,9 +41,9 @@ function Statements() {
                       <a href="index.html">Dashboards</a>
                     </li>
                     <li className="breadcrumb-item">
-                      <a href="#">Statements</a>
+                      <a href="#">Receipts</a>
                     </li>
-                    <li className="breadcrumb-item active">All Statements</li>
+                    <li className="breadcrumb-item active">All Receipts</li>
                   </ol>
                 </div>
               </div>
@@ -58,7 +58,7 @@ function Statements() {
                     role="toolbar"
                   >
                     <h4 className="card-title text-capitalize mb-0 ">
-                      Tenant Statements
+                      Receipts
                     </h4>
                     <div className="d-flex justify-content-end align-items-center">
                       <div>
@@ -150,12 +150,12 @@ function Statements() {
                               />
                             </div>
                           </th>
-                          <th>Bill No</th>
-                          <th>Receipt Amount</th>
-                          <th>Pay Reference No</th>
-                          <th>Payment Mode</th>
-                          <th>Paid by</th>
-                          <th>Utilized Amount</th>
+                          <th>receiptNo</th>
+                          <th>paid by</th>
+                          <th>bill amount</th>
+                          <th>bill balance</th>
+                          <th>payment mode</th>
+                          <th>payment ref</th>
                           <th className="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -175,17 +175,21 @@ function Statements() {
                                 </div>
                               </td>
                               <td>{statement.receiptNo}</td>
-                              <td>
-                                {formatCurrency.format(statement.receiptAmount)}
-                              </td>
-                              <td>{statement.payReferenceNo}</td>
-                              <td>{statement.paymentMode}</td>
                               <td>{statement.paidBy}</td>
                               <td>
                                 {formatCurrency.format(
-                                  statement.utilisedAmount
+                                  JSON.parse(statement.response).receiptInfo
+                                    .billAmount
                                 )}
                               </td>
+                              <td>
+                                {formatCurrency.format(
+                                  JSON.parse(statement.response).receiptInfo
+                                    .billBalance
+                                )}
+                              </td>
+                              <td>{statement.paymentMode}</td>
+                              <td>{statement.payReferenceNo}</td>
                               <td>
                                 <div className="d-flex justify-content-end">
                                   {/*<button type="button"*/}
@@ -240,7 +244,7 @@ function Statements() {
                             className="text-capitalize text-nowrap"
                             colSpan="3"
                           >
-                            {statements && statements.length} Statements
+                            {statements && statements.length} Receipts
                           </th>
                           <td className="text-nowrap text-right" colSpan="7">
                             <span className="fw-semibold">
@@ -299,4 +303,4 @@ function Statements() {
   );
 }
 
-export default Statements;
+export default Receipts;

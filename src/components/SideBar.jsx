@@ -73,6 +73,7 @@ function SideBar() {
                         </a>
                         <ul className="sub-menu" aria-expanded="false">
                           <li><NavLink to="/statements">Tenant Statements</NavLink></li>
+                          <li><NavLink to="/receipts">Receipts</NavLink></li>
                         </ul>
                       </li>
 
