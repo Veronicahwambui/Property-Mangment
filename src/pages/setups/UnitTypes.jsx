@@ -280,7 +280,7 @@ function UnitTypes() {
                             <tr data-id="1" key={index}>
                               <td style={{ width: "80px" }}>{index + 1}</td>
                               <td data-field="unit-num " className='text-capitalize'>{val.name}</td>
-                                <td>{val.purpose}</td>
+                                <td className="text-capitalize">{val.purpose}</td>
                               <td>{val.numberOfRooms} rooms</td>
                               <td>{val.squarage} M <sup>2</sup></td>
                               <td>{val.monthCountForTenancyRenewal}</td>
@@ -381,7 +381,7 @@ function UnitTypes() {
                     multiple
                     onChange={(e) => setChargeTypes1(e)}
                   >
-                    {chargeTypes && chargeTypes.map((charge , index) => {
+                    {chargeTypes && chargeTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((charge , index) => {
                       return (
                         <option
                           key={index}
@@ -481,7 +481,8 @@ function UnitTypes() {
                         <option key={index} 
 
                         value={charge.id}
-                        selected={selectedChargeTypes.includes(charge.id)}
+                        selected={selectedChargeTypes.includes(charge.name)}
+
                          className="text-capitalize">
                           {charge.name}</option>
                       )

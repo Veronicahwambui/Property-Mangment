@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
 import {Modal, Button} from"react-bootstrap";
+import { baseUrl } from "../../services/API";
 
 function OnePremise() {
   const [activeLink, setActiveLink] = useState(JSON.parse(sessionStorage.getItem('activeId')));
@@ -35,7 +36,7 @@ function OnePremise() {
   const [docName, setdocName] = useState("")
   const [document, setdocument] = useState("")
   const [documentTypeId, setdocumentTypeId] = useState(null)
-  const [stat ,setStat] = useState('')
+  const [stat, setStat] = useState('')
   //modals
   const [show, setShow] = useState(false);
   const [docShow, setdocShow] = useState(false);
@@ -117,7 +118,7 @@ function OnePremise() {
     })
   }
 
-  const [statuses ,setStatuses ] = useState([])
+  const [statuses, setStatuses] = useState([])
 
   useEffect(() => {
     fetchAll();
@@ -128,7 +129,7 @@ function OnePremise() {
     getchargeConstraint();
     fetchApplicableCharges();
     getClientAccounts();
-    requestsServiceService.getTenancyStatuses().then((res)=>{
+    requestsServiceService.getTenancyStatuses().then((res) => {
       setStatuses(res.data.data)
     })
 
@@ -193,7 +194,7 @@ function OnePremise() {
 
 
   const updatePrem = () => {
-    
+
     let data = JSON.stringify({
 
       active: premiseData.premise.active,
@@ -240,7 +241,7 @@ function OnePremise() {
     }).catch((res) => {
       $("#edit-premise-detail").modal("hide");
 
-     
+
       setError({
         ...error,
         message: res.data.message,
@@ -335,7 +336,9 @@ function OnePremise() {
       }
     )
     requestsServiceService.createCaretaker(userId, data).then(() => {
+      $("#edit-caretaker").modal("hide");
       getCaretakers()
+
     })
   }
 
@@ -362,7 +365,7 @@ function OnePremise() {
         premiseId: userId
       }
     )
-    requestsServiceService.updateCaretaker(userId, caretakerId, data).then(() => {
+    requestsServiceService.updateCaretaker(userId, caretakerId, data).then((res) => {
       getCaretakers()
     })
   }
@@ -426,7 +429,7 @@ function OnePremise() {
         clear()
       }, 3000)
 
-    }).catch(( error, res) => {
+    }).catch((error, res) => {
       $("#edit-premise-unit").modal("hide");
 
       setError({
@@ -526,7 +529,7 @@ function OnePremise() {
     })
   }
 
-  
+
   const getLandLordAccounts = () => {
 
     requestsServiceService.getLandLordByFileNumber(landlordData).then((res) => {
@@ -547,22 +550,22 @@ function OnePremise() {
   const handleConstraintChange = (event) => {
 
     let vals = event.target.value.split(':');
-      setChargeConstraint(vals[0]);
-      setRateCharge(vals[1]);  
+    setChargeConstraint(vals[0]);
+    setRateCharge(vals[1]);
   }
   console.log(rateCharge);
 
   const handleChargeSubmit = (e) => {
     e.preventDefault()
     try {
-     
+
       if (collectionaccount === "landlord" && landlordAccount === null) {
         throw new Error("landlord account null");
       };
-   
+
       if (collectionaccount === "client") {
         setClientAccountState('true')
-      }else {
+      } else {
         setClientAccountState('false')
       }
 
@@ -605,7 +608,7 @@ function OnePremise() {
             color: "success"
           })
         } else {
-          
+
           setError({
             ...error,
             message: res.data.message,
@@ -617,7 +620,7 @@ function OnePremise() {
           $("#create-premise-unit").modal("hide");
         }, 1500)
 
-      }).catch((err)=>{
+      }).catch((err) => {
 
 
         setError({
@@ -625,15 +628,15 @@ function OnePremise() {
           message: err.message,
           color: "danger"
         })
-  
+
         setTimeout(() => {
           $("#create-premise-unit").modal("hide");
           clear()
 
         }, 1500)
       })
-  
-    
+
+
 
     } catch (err) {
       setError({
@@ -649,29 +652,29 @@ function OnePremise() {
     }
 
 
-   
+
 
   }
 
-// documents struff 
+  // documents struff 
 
-const createDocs = ()=>{
-  setdocShow(!docShow)
+  const createDocs = () => {
+    setdocShow(!docShow)
 
-  let data = JSON.stringify({
-    docName: docName,
-    document: document,
-    documentOwnerTypeName: "PREMISE",
-    documentTypeId: documentTypeId,
-    id: 0,
-    ownerEntityId: userId
-  })
-requestsServiceService.createDocuments(data).then(()=>{
-  fetchAll()
-})
+    let data = JSON.stringify({
+      docName: docName,
+      document: document,
+      documentOwnerTypeName: "PREMISE",
+      documentTypeId: documentTypeId,
+      id: 0,
+      ownerEntityId: userId
+    })
+    requestsServiceService.createDocuments(data).then(() => {
+      fetchAll()
+    })
 
-}
- 
+  }
+
 
 
 
@@ -856,10 +859,10 @@ requestsServiceService.createDocuments(data).then(()=>{
         </div>
         {/* <!-- end of tool bar --> */}
         {error.color !== "" &&
-                    <div className={"alert alert-" + error.color} role="alert">
-                      {error.message}
-                    </div>
-                  }
+          <div className={"alert alert-" + error.color} role="alert">
+            {error.message}
+          </div>
+        }
         {activeLink === 1 && (
           <div>
             <div className="row">
@@ -876,7 +879,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                           {premiseData.premise &&
                             premiseData.premise.premiseName}
 
-                          {premiseData.premise && premiseData.premise.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}
+                          {premiseData.premise && premiseData.premise.active ? <span className="badge-soft-success badge m-3">Active</span> : <span class="badge-soft-danger badge m-3">Inactive</span>}
 
                         </h4>
                       </div>
@@ -891,21 +894,21 @@ requestsServiceService.createDocuments(data).then(()=>{
                         >
                           <i className="dripicons-plus font-size-16"></i>{" "}
                           <span className="pl-1 d-md-inline">
-                            Edit Premise details
+                            Edit Premise Details
                           </span>
                         </button>
                       </div>
                     </div>
                   </div>
                   <div className="card-body">
-               
+
                     <div className="col-12">
                       <div className="row">
-                
+
                         <div className="col-3">
                           <label htmlFor="">Type</label>
                           <div>
-                            <span>
+                            <span className="text-capitalize">
                               {premiseData.premise &&
                                 premiseData.premise.premiseType.name}
                             </span>
@@ -914,7 +917,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                         <div className="col-3">
                           <label htmlFor="">Use Type</label>
                           <div>
-                            <span>
+                            <span className="text-capitalize">
                               {premiseData.premise &&
                                 premiseData.premise.premiseUseType.name}
                             </span>
@@ -923,7 +926,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                         <div className="col-3">
                           <label htmlFor="">Estate</label>
                           <div>
-                            <span>
+                            <span className="text-capitalize">
                               {premiseData.premise &&
                                 premiseData.premise.estate.name}
                             </span>
@@ -932,7 +935,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                         <div className="col-3">
                           <label htmlFor="">Zone</label>
                           <div>
-                            <span>
+                            <span className="text-capitalize">
                               {premiseData.premise &&
                                 premiseData.premise.estate.zone.name}
                             </span>
@@ -943,7 +946,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                         <div className="col-3">
                           <label htmlFor="">County</label>
                           <div>
-                            <span>
+                            <span className="text-capitalize">
                               {premiseData.premise &&
                                 premiseData.premise.estate.zone.clientCounty.county.name.toLowerCase()}
                             </span>
@@ -970,7 +973,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                         <div className="col-3">
                           <label htmlFor="">Physical Address</label>
                           <div>
-                            <span>
+                            <span className="text-capitalize">
                               {premiseData.premise &&
                                 premiseData.premise.address}
                             </span>
@@ -1003,57 +1006,55 @@ requestsServiceService.createDocuments(data).then(()=>{
 
                       <div className="row">
 
-                        
-                        <div className="col-6">
-                            <div className="col-6">
+                          <div className="col-6">
                             <div className="form-group">
-                          <label htmlFor="">Premise Name</label>
-                          <input
-                            type="text"
-                            required
-                            className="form-control"
-                            value={update.premNmae}
-                            onChange={handleChange}
-                            name="premNmae"
-                          />
-                        </div>
+                              <label htmlFor="">Premise Name</label>
+                              <input
+                                type="text"
+                                required
+                                className="form-control"
+                                value={update.premNmae}
+                                onChange={handleChange}
+                                name="premNmae"
+                              />
                             </div>
-                            <div className="col-6">
-                            <div className="form-group">
-                            <label htmlFor="">Premise status</label>
-                            <select
-                              className="form-control"
-                              onChange={handleChange}
-                              name="premStatus"
-                            >
-                                  <option value="">select status</option>
-                              {statuses.map((prem) => (
-                                <option
-                                  value={prem}
-                                  className="text-black font-semibold "
-                                  selected={prem === update ? "selected" : ''}
-                                >
-                                  {prem}
-                                </option>
-                              ))}
-                            </select>
                           </div>
+                          <div className="col-6">
+                            <div className="form-group">
+                              <label htmlFor="">Premise status</label>
+                              <select
+                                className="form-control"
+                                onChange={handleChange}
+                                name="premStatus"
+                              >
+                                <option value="">Select status</option>
+                                { statuses && statuses.sort((a, b) => a.localeCompare(b)).map((prem) => (
+                                  <option
+                                    value={prem}
+                                    className="text-black font-semibold text-capitalize"
+                                    selected={prem === update ? "selected" : ''}
+                                  >
+                                    {prem && prem.toLowerCase().replace(/_/g, " ")}
+                                  </option>
+                                ))}
+                              </select>
                             </div>
-                        </div>
-                        <div className="col-6">
+                          </div>
+                        
+                          <div className="col-6">
                           <div className="form-group">
                             <label htmlFor="">Premise Type</label>
                             <select
-                              className="form-control"
+                              className="form-control text-capitalize"
                               onChange={handleChange}
                               name="premType"
 
                             >
 
-                              {PremiseTypes.map((prem) => (
+                              {PremiseTypes &&  PremiseTypes.sort((a, b) => a.name.localeCompare(b.name)).map((prem) => (
                                 <option
                                   value={prem.id}
-                                  className="text-black font-semibold "
+                                  className="text-black font-semibold text-capitalize"
                                   selected={prem.id === update.premType ? "selected" : ''}
                                 >
                                   {prem.name}
@@ -1061,15 +1062,17 @@ requestsServiceService.createDocuments(data).then(()=>{
                               ))}
                             </select>
                           </div>
+                          </div>
+                          <div className="col-6">
                           <div className="form-group">
                             <label htmlFor="">Premise Use Type</label>
                             <select
-                              className="form-control"
+                              className="form-control text-capitalize"
                               onChange={handleChange}
                               name="premUseType"
                             >
 
-                              {PremiseUseTypes.map((prem) => (
+                              { PremiseUseTypes &&  PremiseUseTypes.sort((a, b) => a.name.localeCompare(b.name)).map((prem) => (
                                 <option
                                   value={prem.id}
                                   className="text-black font-semibold "
@@ -1080,6 +1083,9 @@ requestsServiceService.createDocuments(data).then(()=>{
                               ))}
                             </select>
                           </div>
+                          </div>
+                          <div className="col-6">
+                          
                           <div className="form-group">
                             <label htmlFor="">Charge frequency</label>
                             <select
@@ -1087,17 +1093,20 @@ requestsServiceService.createDocuments(data).then(()=>{
                               onChange={handleChange}
                               name="freq"
                             >
-                              <option value="YEAR"> select frequency</option>
+                              <option value="YEAR"> Select frequency</option>
                               <option value="YEAR">Yearly</option>
                               <option value="MONTH">Monthly</option>
 
-      
+
                             </select>
                           </div>
+                          </div>
+                          <div className="col-6">
+
                           <div className="form-group">
                             <label htmlFor="">Estate</label>
                             <select
-                              className="form-control"
+                              className="form-control text-capitalize"
                               onChange={handleChange}
                               name="estate"
                             >
@@ -1105,7 +1114,8 @@ requestsServiceService.createDocuments(data).then(()=>{
                                 {premiseData.premise &&
                                   premiseData.premise.estate.name}
                               </option>
-                              {Estates.map((prem) => (
+
+                              {Estates&&  Estates.sort((a, b) => a.name.localeCompare(b.name)).map((prem) => (
                                 <option
                                   value={prem.id}
                                   className="text-black font-semibold "
@@ -1115,8 +1125,10 @@ requestsServiceService.createDocuments(data).then(()=>{
                               ))}
                             </select>
                           </div>
-                        </div>
-                        <div className="col-6">
+                          </div>
+                        
+                          <div className="col-6">
+
                           <div className="form-group">
                             <label htmlFor="">File Number</label>
                             <input
@@ -1129,6 +1141,9 @@ requestsServiceService.createDocuments(data).then(()=>{
                               name="fileNo"
                             />
                           </div>
+                          </div>
+                          <div className="col-6">
+
                           <div className="form-group">
                             <label htmlFor="">Plot Number</label>
                             <input
@@ -1141,6 +1156,9 @@ requestsServiceService.createDocuments(data).then(()=>{
                               name="plotNo"
                             />
                           </div>
+                          </div>
+                          <div className="col-6">
+
                           <div className="form-group">
                             <label htmlFor="">Address</label>
                             <input
@@ -1153,7 +1171,9 @@ requestsServiceService.createDocuments(data).then(()=>{
                               name="address"
                             />
                           </div>
-                        </div>
+                          </div>
+                        
+                        
                       </div>
                     </div>
                     <div class="modal-footer">
@@ -1223,10 +1243,10 @@ requestsServiceService.createDocuments(data).then(()=>{
                               <td>
                                 <Link onMouseOver={() => setActiveUnitId(unit.id)} to={`/premise/${userId}/${activeUnitId}`}>{unit.unitName}</Link>
                               </td>
-                              <td >{unit.unitType.name}</td>
-                              <td>{unit.unitType.purpose}</td>
-                              <td>{unit.unitType.numberOfRooms} rooms</td>
-                              <td>{unit.unitType.squarage} M <sup>2</sup></td>
+                              <td className="text-capitalize">{unit.unitType.name}</td>
+                              <td className="text-capitalize">{unit.unitType.purpose}</td>
+                              <td className="text-capitalize">{unit.unitType.numberOfRooms} rooms</td>
+                              <td className="text-capitalize">{unit.unitType.squarage} M <sup>2</sup></td>
                               <td>{unit.unitType.monthCountForTenancyRenewal}</td>
                               <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
                               <td class="text-right cell-change d-flex align-items-center float-right justify-content-end">
@@ -1280,9 +1300,9 @@ requestsServiceService.createDocuments(data).then(()=>{
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="">Select unit type</label>
+                        <label htmlFor="">Unit Type</label>
                         <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
-                          {unittypes && unittypes.map((unit) => (
+                          {unittypes && unittypes.sort((a, b) => a.name.localeCompare(b.name)).map((unit) => (
                             <option value={unit.id} selected={unit.id === unittype ? "selected" : ''}> {unit.name}</option>
                           ))}
                         </select>
@@ -1330,10 +1350,10 @@ requestsServiceService.createDocuments(data).then(()=>{
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="">Select unit type</label>
-                        <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <label htmlFor="">Unit Type</label>
+                        <select name="" id="" className="form-control text-capitalize" onChange={(event) => setUnittype(event.target.value)}>
                           <option value="">Select unit type</option>
-                          {unittypes && unittypes.map((unit) => (
+                          {unittypes && unittypes.sort((a, b) => a.name.localeCompare(b.name)).map((unit) => (
                             <option value={unit.id}> {unit.name}</option>
                           ))}
                         </select>
@@ -1368,7 +1388,7 @@ requestsServiceService.createDocuments(data).then(()=>{
               <div class="col-12">
                 <div class="card">
                   <div class="card-body">
-                
+
                     <div className="d-flex justify-content-between">
                       <h4 class="card-title text-capitalize mb-3">Charges And Unit Types </h4>
                       <button
@@ -1376,8 +1396,9 @@ requestsServiceService.createDocuments(data).then(()=>{
                         data-bs-toggle="modal"
                         data-bs-target="#create-premise-unit"
                         className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
-                        onClick={() => {  setUnittype(null);  getLandLordAccounts();
-                      }}
+                        onClick={() => {
+                          setUnittype(null); getLandLordAccounts();
+                        }}
                       >
                         <i className="dripicons-plus font-size-16"></i>{" "}
                         <span className="pl-1 d-md-inline">
@@ -1386,7 +1407,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                       </button>
                     </div>
 
-                    <div class="table-responsive table-responsive-md overflow-visible">
+                    <div class="table-responsive table-responsive-md ">
                       <table class="table table-editable align-middle table-edits" >
                         <thead class="table-light" >
                           <tr class=" text-uppercase ">
@@ -1409,16 +1430,16 @@ requestsServiceService.createDocuments(data).then(()=>{
                           {premiseCharges && premiseCharges.map((unit, index) => (
                             <tr data-id="1 ">
                               <td style={{ width: "80px" }}>{index + 1}</td>
-                              <td >{unit.unitType.name && unit.unitType.name}</td>
-                              <td>{unit.unitType.numberOfRooms} rooms</td>
-                              <td>{unit.unitType.squarage} m<sup>2</sup> </td>
-                              <td>{unit.unitType.monthCountForTenancyRenewal} months</td>
-                              <td>{unit.chargeConstraint}</td>
-                              <td>{unit.rateCharge ? "true" : "false"}</td>
-                              <td>{unit.applicableCharge.name}</td>
-                              <td>{unit.applicableCharge.applicableChargeType}</td>
-                              <td>{unit.invoiceDay}</td>
-                              <td>{unit.value}</td>
+                              <td className="text-capitalize">{unit.unitType.name && unit.unitType.name}</td>
+                              <td className="text-capitalize">{unit.unitType.numberOfRooms} rooms</td>
+                              <td className="text-capitalize">{unit.unitType.squarage} m<sup>2</sup> </td>
+                              <td className="text-capitalize">{unit.unitType.monthCountForTenancyRenewal} months</td>
+                              <td className="text-capitalize">{unit.chargeConstraint?.toLowerCase()?.replace(/_/g , " ")}</td>
+                              <td className="text-capitalize">{unit.rateCharge ? "true" : "false"}</td>
+                              <td className="text-capitalize">{unit.applicableCharge.name}</td>
+                              <td className="text-capitalize">{unit.applicableCharge.applicableChargeType?.toLowerCase()?.replace(/_/g , " ")}</td>
+                              <td className="text-capitalize">{unit.invoiceDay}</td>
+                              <td className="text-capitalize">KSH {unit.value}</td>
                               <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
 
                               <td class="text-right d-flex align-items-center float-right justify-content-end">
@@ -1460,19 +1481,19 @@ requestsServiceService.createDocuments(data).then(()=>{
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <form onSubmit={(e) => handleChargeSubmit(e)}>
-                  {error.color !== "" &&
+                    {error.color !== "" &&
                       <div className={"alert alert-" + error.color} role="alert">
                         {error.message}
                       </div>
                     }
                     <div
                       className="modal-body">
-                      
+
                       <div className="form-group mb-2">
                         <label htmlFor="">Unit type</label>
-                        <select name="" id="" className="form-control" onChange={(event) => setUnittype(event.target.value)}>
+                        <select name="" id="" className="form-control text-capitalize" onChange={(event) => setUnittype(event.target.value)}>
                           <option value={null}>Select unit type</option>
-                          {unittypes && unittypes.map((unit) => (
+                          {unittypes && unittypes?.sort((a, b) => a.name.localeCompare(b.name)).map((unit) => (
                             <option value={unit.id}> {unit.name}</option>
                           ))}
                         </select>
@@ -1480,10 +1501,10 @@ requestsServiceService.createDocuments(data).then(()=>{
 
                       <div className="form-group mb-2">
                         <label htmlFor="">Applicable charge</label>
-                        <select name="" id="" className="form-control" onChange={(event) => setApplicableCharge(event.target.value)}>
+                        <select name="" id="" className="form-control text-capitalize" onChange={(event) => setApplicableCharge(event.target.value)}>
                           <option value="">Select applicable type</option>
-                          {applicableCharges && applicableCharges.map((unit) => (
-                            <option value={unit.id}> {unit.name} - {unit.applicableChargeType}</option>
+                          {applicableCharges && applicableCharges.sort((a, b) => a.name.localeCompare(b.name)).map((unit) => (
+                            <option value={unit.id}> {unit.name} - {unit.applicableChargeType?.toLowerCase()?.replace(/_/g , " ")}</option>
                           ))}
                         </select>
                       </div>
@@ -1491,20 +1512,20 @@ requestsServiceService.createDocuments(data).then(()=>{
 
                       <div className="form-group mb-2">
                         <label htmlFor="">Charge constraint</label>
-                        <select name="" id="" className="form-control" onChange={(e)=>handleConstraintChange(e)}>
+                        <select name="" id="" className="form-control" onChange={(e) => handleConstraintChange(e)}>
                           <option value={null}>Select charge constraint</option>
                           <option value={"ZERO_BALANCE" + ":" + "false"}> Zero Balance</option>
-                          <option value={"RATE_OF_CHARGE" + ":" + "true" }>Rate Charge</option>
-                         
+                          <option value={"RATE_OF_CHARGE" + ":" + "true"}>Rate Charge</option>
+
                         </select>
                       </div>
 
                       {chargeConstraint !== 'ZERO_BALANCE' && <div className="form-group mb-2">
                         <label htmlFor="">charge required</label>
-                        <select name="" id="" className="form-control" onChange={(event) => setConstraintChargeId(event.target.value)}>
+                        <select name="" id="" className="form-control text-capitalize" onChange={(event) => setConstraintChargeId(event.target.value)}>
                           <option value="">Select  charge </option>
                           {premiseCharges && premiseCharges.map((unit) => (
-                            <option value={unit.id} className={unit.active ? "" : "d-none"}  >{unit.unitType.name} - {unit.value}</option>
+                            <option value={unit.id} className={unit.active ? "" : "d-none"}  >{unit.unitType.name} - KSH {unit.value}</option>
                           ))}
                         </select>
                       </div>}
@@ -1513,17 +1534,17 @@ requestsServiceService.createDocuments(data).then(()=>{
                       <div className="form-group mb-2">
                         <label htmlFor="">select collection account type</label>
                         <select name="" id="" className="form-control" onChange={(event) => setCollectionaccount(event.target.value)}>
-                          <option value="landlord">landlord collection</option>
+                          <option value="landlord">Landlord collection</option>
                           <option value="client">Client collection</option>
                         </select>
                       </div>
 
                       {collectionaccount === 'client' && <div className="form-group mb-2">
                         <label htmlFor="">client account</label>
-                        <select name="" id="" className="form-control" onChange={(event) => setClientAccount(event.target.value)}>
+                        <select name="" id="" className="form-control text-capitalize" onChange={(event) => setClientAccount(event.target.value)}>
                           <option value={null} >Select  client account</option>
-                          {clientAccounts && clientAccounts.map((unit) => (
-                            <option value={unit.id}> {unit.bank.bankName} - {unit.bankAccountNumber}</option>
+                          {clientAccounts && clientAccounts.sort((a, b) => a.bank.bankName.localeCompare(b.bank.bankName)).map((unit) => (
+                            <option value={unit.id}> {unit.bank.bankName?.toLowerCase()?.replace(/_/g , " ")} - {unit.bankAccountNumber}</option>
                           ))}
                         </select>
                       </div>}
@@ -1531,10 +1552,10 @@ requestsServiceService.createDocuments(data).then(()=>{
 
                       {collectionaccount === 'landlord' && <div className="form-group mb-2">
                         <label htmlFor="">landlord account</label>
-                        <select name="" id="" className="form-control" onChange={(event) => setLandlordAccount(event.target.value)}>
+                        <select name="" id="" className="form-control text-capitalize" onChange={(event) => setLandlordAccount(event.target.value)}>
                           <option value={null}>Select landlord account</option>
-                          {landlordAccounts && landlordAccounts.map((unit) => (
-                            <option value={unit.id}> {unit.bank?.bankName} - {unit.bankAccountNumber} </option>
+                          {landlordAccounts && landlordAccounts.sort((a, b) => a.bank.bankName.localeCompare(b.bank.bankName)).map((unit) => (
+                            <option value={unit.id}> {unit.bank?.bankName?.toLowerCase()?.replace(/_/g , " ")} - {unit.bankAccountNumber} </option>
                           ))}
                         </select>
                       </div>}
@@ -1608,19 +1629,19 @@ requestsServiceService.createDocuments(data).then(()=>{
                           </thead>
                           <tbody>
                             {premiseData.landLords &&
-                              premiseData.landLords.map((unit, index) => (
+                              premiseData?.landLords.map((unit, index) => (
                                 <tr data-id="1">
                                   <td>{index + 1}</td>
-                                  <td>
-                                    {unit.landLord.firstName} {unit.landlord.lastName} {unit.landlord.otherName}
+                                  <td className="text-capitalize">
+                                    {unit?.landLord?.firstName} {unit?.landlord?.lastName} {unit?.landlord?.otherName}
                                   </td>
                                   <td className="text-capitalize">
-                                    {unit.landLord.landLordType.toLowerCase()}
+                                    {unit.landLord.landLordType?.toLowerCase()}
                                   </td>
                                   <td>{unit.landLord.phoneNumber}</td>
                                   <td>{unit.landLord.email}</td>
                                   <td>{unit.landLord.fileNumber}</td>
-                                  <td>{unit.landLord.landLordAgreementType.name}</td>
+                                  <td className="text-capitalize">{unit.landLord.landLordAgreementType.name?.toLowerCase()?.replace(/_/g , " ")}</td>
                                   <td>
                                     {unit.landLord.remunerationPercentage} {"%"}
                                   </td>
@@ -1652,15 +1673,15 @@ requestsServiceService.createDocuments(data).then(()=>{
                         <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
                       </div>
                       <div onClick={handleDocShow}>
-                      <button
-                        type="button"
-                        className="btn btn-primary dropdown-toggle option-selector mb-3 mt-0"
-                      >
-                        <i className="dripicons-plus font-size-16"></i>{" "}
-                        <span className="pl-1 d-md-inline">
-                          New document
-                        </span>
-                      </button>
+                        <button
+                          type="button"
+                          className="btn align-items-center d-flex btn-primary dropdown-toggle option-selector mb-3 mt-0"
+                        >
+                          <i className="dripicons-plus font-size-16 mt-1"></i>{" "}
+                          <span className="pl-1 d-md-inline">
+                            New document
+                          </span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -1677,7 +1698,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                               <th>Name</th>
                               <th>Type</th>
                               <th>Owner type</th>
-                              <th></th>
+                              <th>actions</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -1687,14 +1708,20 @@ requestsServiceService.createDocuments(data).then(()=>{
                                   <tr data-id="1">
                                     <td>{index + 1}</td>
                                     <td className="active nav-link cursor-pointer">
-                                      <a onClick={() => download}>
-                                        {" "}
+                                      
+                                        
                                         {unit.docName}
-                                      </a>
+                                      
                                     </td>
-                                    <td>{unit.documentType.name}</td>
+                                    <td className="text-capitalize">{unit.documentType.name}</td>
                                     <td className="text-capitalize">
                                       {unit.documentOwnerType.toLowerCase()}
+                                    </td>
+                                    <td>
+                                    <a href={baseUrl + "/documents/download?docName=" + `${unit.docName}`}
+                                                  className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                                  target="_blank"><i className="bx bx-download" />
+                                                </a>
                                     </td>
                                   </tr>
                                 )
@@ -1721,7 +1748,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                         <div className="form-group mb-4">
                           <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
                           <select
-                            className="form-control"
+                            className="form-control text-capitalize"
                             onChange={(e) => {
                               setdocumentTypeId(e.target.value);
                             }}
@@ -1731,13 +1758,13 @@ requestsServiceService.createDocuments(data).then(()=>{
                             <option className="text-black font-semibold ">
                               select..
                             </option>
-                            {documentTypes.map((dT) => {
+                            {documentTypes &&  documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
                               return (
                                 <option
                                   key={dT.id}
                                   value={dT.id}
                                 >
-                                  {dT.name.toLowerCase().replace(/_/g , " ")}
+                                  {dT.name?.toLowerCase().replace(/_/g, " ")}
                                 </option>
                               );
                             })}
@@ -1765,7 +1792,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                       Close
                     </Button>
                     <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
-                      Save Changes
+                      Add Document
                     </Button>
                   </Modal.Footer>
                 </form>
@@ -1828,13 +1855,13 @@ requestsServiceService.createDocuments(data).then(()=>{
                               caretakers.map((unit, index) => (
                                 <tr data-id="1">
                                   <td>{index + 1}</td>
-                                  <td>
-                                    {unit.firstName} {unit.lastName}
+                                  <td className="text-capitalize">
+                                    {unit?.firstName} {unit?.lastName}
                                   </td>
                                   <td className="text-capitalize">
-                                    {unit.caretakerType}
+                                    {unit.caretakerType?.toLowerCase()?.replace(/_/g , " ")}
                                   </td>
-                                  <td>{unit.phoneNumber}</td>
+                                  <td>{unit?.phoneNumber}</td>
                                   <td>{unit.email}</td>
                                   <td>
                                     {" "}
@@ -1849,7 +1876,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                                     )}
                                   </td>
                                   <td class="text-right cell-change text-nowrap ">
-                                    <div className="d-flex">
+                                    <div className="d-flex justify-content-center align-items-center">
                                       <a
                                         class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                         data-bs-toggle="modal"
@@ -1914,55 +1941,57 @@ requestsServiceService.createDocuments(data).then(()=>{
             >
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
+                <form onSubmit={(e) => { e.preventDefault(); createCaretaker() }}>
+                 
                   <div class="modal-body">
                     <div className="row">
                       <div className="col-4">
                         <div className="form-group">
-                          <label htmlFor=""> First Name</label>
-                          <input type="text" className="form-control" value={newCaretaker.firstName} onChange={hadleCaretaker} name="firstName" />
+                          <label htmlFor=""> First Name <strong className="text-danger">*</strong></label>
+                          <input type="text" required placeholder="Enter first name" className="form-control" value={newCaretaker.firstName} onChange={hadleCaretaker} name="firstName" />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
-                          <label htmlFor=""> Last Name</label>
-                          <input type="text" className="form-control" value={newCaretaker.lastName} onChange={hadleCaretaker} name='lastName' />
+                          <label htmlFor=""> Last Name <strong className="text-danger">*</strong></label>
+                          <input type="text" required placeholder="Enter last name" className="form-control" value={newCaretaker.lastName} onChange={hadleCaretaker} name='lastName' />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
-                          <label htmlFor="">Other Name</label>
-                          <input type="text" className="form-control" value={newCaretaker.otherName} onChange={hadleCaretaker} name='otherName' />
+                          <label htmlFor="">Other Name </label>
+                          <input type="text" placeholder="Enter other name" className="form-control" value={newCaretaker.otherName} onChange={hadleCaretaker} name='otherName' />
                         </div>
                       </div>
                     </div>
                     <div className="row mt-3">
                       <div className="col-4">
                         <div className="form-group">
-                          <label htmlFor=""> Phone No</label>
-                          <input type="text" className="form-control" value={newCaretaker.phoneNumber} onChange={hadleCaretaker} name="phoneNumber" />
+                          <label htmlFor=""> Phone No <strong className="text-danger">*</strong></label>
+                          <input type="text" required placeholder="Enter phone no" className="form-control" value={newCaretaker.phoneNumber} onChange={hadleCaretaker} name="phoneNumber" />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
-                          <label htmlFor=""> ID No</label>
-                          <input type="text" className="form-control" value={newCaretaker.idNumber} onChange={hadleCaretaker} name='idNumber' />
+                          <label htmlFor=""> ID No <strong className="text-danger">*</strong></label>
+                          <input type="text" required placeholder="Enter Id No" className="form-control" value={newCaretaker.idNumber} onChange={hadleCaretaker} name='idNumber' />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="form-group">
-                          <label htmlFor="">Email</label>
-                          <input type="text" className="form-control" value={newCaretaker.email} onChange={hadleCaretaker} name="email" />
+                          <label htmlFor="">Email <strong className="text-danger">*</strong></label>
+                          <input type="text" required placeholder="Enter your email" className="form-control" value={newCaretaker.email} onChange={hadleCaretaker} name="email" />
                         </div>
                       </div>
                     </div>
                     <div className="row mt-3">
                       <div className="col-6">
-                        <div className="form-group">
-                          <label htmlFor="">Caretaker Type</label>
+                        <div className="form-group text-capitalize">
+                          <label htmlFor="">Caretaker Type <strong className="text-danger">*</strong></label>
                           <select name="caretakerTypeName" className="form-control" onChange={hadleCaretaker}>
-                            <option value=""> Select Type</option>
-                            {caretypes && caretypes.map((type) => (
-                              <>{<option value={type}> {type} </option>}</>
+                            <option value="" className="text-capitalize"> Select Type</option>
+                            {caretypes && caretypes.sort((a, b) => a.localeCompare(b)).map((type) => (
+                              <>{<option className="text-capitalize" value={type}> {type?.toLowerCase()?.replace(/_/g , " ")} </option>}</>
                             ))}
                           </select>
                         </div>
@@ -2017,17 +2046,17 @@ requestsServiceService.createDocuments(data).then(()=>{
                       close
                     </button>
                     <button
-                      type="button"
+                      type="submit"
                       class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      // onClick={()=>deactivate(activeId)}
-                      onClick={createCaretaker}
                     >
-                      create
+                   Add caretaker
                     </button>
                   </div>
+     </form>
                 </div>
+
               </div>
+              
             </div>
 
             {/* updte modal */}
@@ -2087,12 +2116,12 @@ requestsServiceService.createDocuments(data).then(()=>{
                     </div>
                     <div className="row mt-3">
                       <div className="col-6">
-                        <div className="form-group">
+                        <div className="form-group text-capitalize">
                           <label htmlFor="">Caretaker Type</label>
                           <select name="caretakerTypeName" id="" className="form-control" onChange={hadleUpdateCaretaker}>
-                            {caretypes && caretypes.map((type) => (
+                            {caretypes && caretypes.sort((a, b) => a.localeCompare(b)).map((type) => (
 
-                              <option selected={type === updateCaretaker.caretakerTypeName ? "selected" : ''} value={type} >{type}</option>
+                              <option className="text-capitalize" selected={type === updateCaretaker.caretakerTypeName ? "selected" : ''} value={type} >{type?.toLowerCase()?.replace(/_/g , " ")}</option>
                             ))}
                           </select>
                         </div>
@@ -2153,7 +2182,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                       // onClick={()=>deactivate(activeId)}
                       onClick={updateCare}
                     >
-                      create
+                      Update caretaker
                     </button>
                   </div>
                 </div>

@@ -101,7 +101,7 @@ function PremisesRegister() {
 
                             </div>
                             <div class="card-body">
-                                <table class="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
+                                <table class="table  table-nowrap table-hover table-responsive contacts-table" id="datatable-buttons">
                                     <thead class="table-light">
                                         <tr>
 
@@ -150,7 +150,7 @@ function PremisesRegister() {
                                                             {premise.premiseName}
                                                         </Link>
                                                     </td>
-                                                    <td>
+                                                    <td className="text-capitalize">
                                                         <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">{premiseType.name}</a></h5>
 
                                                     </td>

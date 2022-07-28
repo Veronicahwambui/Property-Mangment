@@ -1,4 +1,5 @@
 /* global $ */
+import moment from 'moment'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
@@ -158,7 +159,7 @@ function PremiseTenancy() {
                                                         <div class="d-flex">
                                                             <div class="overflow-hidden me-auto">
                                                                 <h5 class="font-size-14 text-truncate mb-1"><a href="javascript: void(0);" class="text-body">Name</a></h5>
-                                                                <p class="text-muted text-truncate mb-0 text-uppercase">{Object.keys(tenancy).length > 0 && tenancy.tenant.firstName} {Object.keys(tenancy).length > 0 && tenancy.tenant.lastName}</p>
+                                                                <p class="text-muted text-truncate mb-0 text-capitalize">{Object.keys(tenancy).length > 0 && tenancy.tenant.firstName} {Object.keys(tenancy).length > 0 && tenancy.tenant.lastName}</p>
                                                             </div>
 
                                                         </div>
@@ -186,7 +187,7 @@ function PremiseTenancy() {
                                                         <div class="d-flex">
                                                             <div class="overflow-hidden me-auto">
                                                                 <h5 class="font-size-14 text-truncate mb-1"><a href="javascript: void(0);" class="text-body">tenant type</a></h5>
-                                                                <p class="text-muted text-truncate mb-0">{Object.keys(tenancy).length > 0 && tenancy.tenant.tenantType}</p>
+                                                                <p class="text-muted text-truncate text-capitalize mb-0">{Object.keys(tenancy).length > 0 && tenancy.tenant.tenantType?.toLowerCase()?.replace(/_/g , " ")}</p>
                                                             </div>
 
                                                         </div>
@@ -343,19 +344,18 @@ function PremiseTenancy() {
                                                     {paymentTransactions && paymentTransactions.map((ten, index) => (
                                                         <tr >
                                                             <td>{index + 1}</td>
-                                                            <td>{ten.transaction.tenantName}</td>
-                                                            <td>{ten.transaction.premiseName}</td>
-                                                            <td>{ten.transaction.premiseUnitName}</td>
-                                                            <td>{ten.transactionTitle}</td>
-                                                            <td>{ten.transactionDescription}</td>
-                                                            <td>{ten.quantity}</td>
-
-                                                            <td>{ten.applicableChargeName}</td>
-                                                            <td>{ten.applicableChargeType}</td>
-                                                            <td>{ten.billAmount}</td>
-                                                            <td>{ten.billPaidAmount}</td>
-                                                            <td>{ten.invoiceDate}</td>
-                                                            <td>{ten.paymentStatus}</td>
+                                                            <td className="text-capitalize">{ten.transaction.tenantName}</td>
+                                                            <td className="text-capitalize">{ten.transaction.premiseName}</td>
+                                                            <td className="text-capitalize">{ten.transaction.premiseUnitName}</td>
+                                                            <td className="text-capitalize">{ten.transactionTitle?.toLowerCase()?.replace(/_/g , " ")}</td>
+                                                            <td className="text-capitalize">{ten.transactionDescription}</td>
+                                                            <td className="text-capitalize">{ten.quantity}</td>
+                                                            <td className="text-capitalize">{ten.applicableChargeName}</td>
+                                                            <td className="text-capitalize">{ten.applicableChargeType?.toLowerCase()?.replace(/_/g , " ")}</td>
+                                                            <td className="text-capitalize">KSH {ten.billAmount}</td>
+                                                            <td className="text-capitalize">{ten.billPaidAmount}</td>
+                                                            <td className="text-capitalize">{ten.invoiceDate && moment(ten.invoiceDate).format("MMM DD YYYY")}</td>
+                                                            <td className="text-capitalize">{ten.paymentStatus?.toLowerCase()?.replace(/_/g , " ")}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -474,12 +474,12 @@ function PremiseTenancy() {
                                                     </div>
                                                     <div className="form-group mb-2">
                                                         <label htmlFor="">Invoice day (1-31) </label>
-                                                        <input type="number" max="31" min="1" placeholder="Enter invoice day" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
+                                                        <input required type="number" max="31" min="1" placeholder="Enter invoice day" value={invoiceDay} className="form-control" onChange={(event) => setInvoiceDay(event.target.value)} />
                                                     </div>
 
                                                     <div className="form-group mb-2">
                                                         <label htmlFor="">value </label>
-                                                        <input type="number" placeholder="Enter value" value={value} className="form-control" onChange={(event) => setValue(event.target.value)} />
+                                                        <input required type="number" placeholder="Enter value" value={value} className="form-control" onChange={(event) => setValue(event.target.value)} />
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

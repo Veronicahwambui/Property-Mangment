@@ -214,6 +214,7 @@ const deactivate = (id)=> {
                       <tr class="text-uppercase table-dark">
                         <th>#</th>
                         <th>Zone</th>
+                        <th>County</th>
                         <th>Status</th>
                         <th class="text-right">Actions</th>
                       </tr>
@@ -227,6 +228,7 @@ const deactivate = (id)=> {
                               <tr data-id="1" key={zon}>
                             <td style={{ width: "80px" }}>{index+ 1}</td>
                             <td data-field="unit-numv " className='text-capitalize'>{zon.name}</td>
+                            <td data-field="unit-numv " className='text-capitalize'>{zon?.clientCounty.county.name?.toLowerCase()?.replace(/_/g , " ")}</td>
                             <td data-field="unit-num ">{zon.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
                             <td class="text-right cell-change text-nowrap ">
                               <div className="d-flex align-items-center">

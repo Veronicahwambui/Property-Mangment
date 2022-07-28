@@ -86,11 +86,11 @@ function Landlords() {
                       {landlords?.map((l, index) => (
                         <tr data-id={index} key={index}>
                           <td style={{ width: "80px" }}>{index + 1}</td>
-                          <td data-field="estate">{l.firstName + " " + l.lastName}</td>
-                          <td data-field="unit-num ">{l.phoneNumber}</td>
-                          <td data-field="unit-num ">{l.landLordAgreementType.name}</td>
-                          <td data-field="unit-num ">{l.fileNumber}</td>
-                          <td data-field="unit-num ">{l.active ?
+                          <td className="text-capitalize" data-field="estate">{l.firstName + " " + l.lastName}</td>
+                          <td className="text-capitalize" >{l.phoneNumber}</td>
+                          <td className="text-capitalize" >{l.landLordAgreementType.name?.toLowerCase()?.replace(/_/g , " ")}</td>
+                          <td  >{l.fileNumber}</td>
+                          <td className="text-capitalize" >{l.active ?
                             <span className="badge-soft-success badge">Active</span> :
                             <span className="badge-soft-danger badge">Inactive</span>}
                           </td>
