@@ -225,6 +225,7 @@ function AddTenant() {
 
 
   const submit = (event) => {
+    console.log(event)
     event.preventDefault();
 
     let contacts = [];
@@ -324,7 +325,9 @@ function AddTenant() {
   }
   useEffect(() => {
     console.log(docBody)
-  }, [docBody])
+  }, [docBody,tenantDocuments])
+
+  const isIdFilled = (tenantDocuments.length > 1);
 
   const handleidchange = (event) => {
 
@@ -425,7 +428,7 @@ function AddTenant() {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                   <ul className="navbar-nav mr-auto">
                     <li className="nav-item active">
-                      <a className="nav-link active" href="#">1. Tenant Details <span className="sr-only">(current)</span></a>
+                      <a className="nav-link active">1. Tenant Details <span className="sr-only">(current)</span></a>
                     </li>
                     <li className="nav-item">
                       <a className="nav-link" >2. Kin Referees & Dependents</a>
@@ -438,11 +441,6 @@ function AddTenant() {
                     <li className="nav-item">
                       <a className="nav-link" >4. Tenant Document attachments</a>
                     </li>
-                    
-
-                      <li className="nav-item">
-                        <a className="nav-link" href="#">4. Tenant Document attachments</a>
-                      </li>
 
                     </ul>
 
@@ -450,11 +448,10 @@ function AddTenant() {
                 </nav>
 
                 {/* navigation bar end */}
-
+<form id="tenant-form" onSubmit={submit}>
                 <div className="step-cont active-step">
                   <h3>Tenant Details</h3>
                   <section>
-                    <form>
                       <div className="col-12">
                         <div className="col-lg-4">
                           <div className="mb-3">
@@ -474,14 +471,14 @@ function AddTenant() {
                             <i className="font-14px mdi mdi-paperclip"></i> ID FRONT
                           </label>
                           <input type="file" className="form-control" name="file"
-                            onChange={(e) => handleidchange(e)} />
+                            onChange={(e) => handleidchange(e)} required={true}/>
                         </div>
                         <div className="col-lg-4">
                           <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
                             <i className="font-14px mdi mdi-paperclip"></i> ID BACK
                           </label>
                           <input type="file" className="form-control" name="file"
-                            onChange={(e) => handleidchange2(e)} />
+                            onChange={(e) => handleidchange2(e)} required={true}/>
                         </div>
                       </div>
 
@@ -759,14 +756,12 @@ function AddTenant() {
 
                         </div>
                       }
-                    </form>
                   </section>
                 </div>
 
                 <div className="step-cont d-none">
                   <h3>Kin Referees & Dependents</h3>
                   <section>
-                    <form>
                       <div className="row">
 
                         <div className="col-12">
@@ -920,14 +915,12 @@ function AddTenant() {
 
 
 
-                    </form>
                   </section>
                 </div>
 
                 <div className="step-cont d-none">
                   <h3>Unit assignment</h3>
                   <section>
-                    <form>
                       <div className="row clone-cont">
                         <div className="col-12 clone-me">
                           <div className="row ">
@@ -1023,7 +1016,6 @@ function AddTenant() {
                         </div>
                       </div>
 
-                    </form>
                   </section>
                 </div>
 
@@ -1066,12 +1058,12 @@ function AddTenant() {
                   </section>
                 </div>
 
-
+</form>
                 {/* the buttons container */}
                 <div className="button-navigators">
                   <button disabled className="btn btn-primary waves-effect kev-prev me-3"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>
-                  <button className="btn btn-primary waves-effect kev-nxt me-3">Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
-                  <button type='button' className="btn btn-success kev-submit me-3 d-none" onClick={submit}>Submit <i className="mdi mdi-check-all me-2 font-16px"></i></button>
+                  <button className="btn btn-primary waves-effect kev-nxt me-3" disabled={!isIdFilled}>Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
+                  <button type='submit' form={"tenant-form"} className="btn btn-success kev-submit me-3 d-none">Submit <i className="mdi mdi-check-all me-2 font-16px"></i></button>
                 </div>
 
               </div>
