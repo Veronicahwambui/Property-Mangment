@@ -643,6 +643,15 @@ class RequestsService {
     return axiosInstance.get(baseUrl + `/payments/parents/${id}`);
   }
 
+//   DASHBOARD 
+
+getClientDashboardGraphs(){
+    return axiosInstance.get(baseUrl + "/reports/dashboard/graphs")
+}
+getClientDashboard(){
+    return axiosInstance.get(baseUrl + "/reports/dashboard")
+}
+
 }
 
 export default new RequestsService();
