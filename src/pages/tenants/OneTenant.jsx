@@ -8,6 +8,10 @@ import authService from "../../services/auth.service";
 import { Link } from "react-router-dom";
 import moment from 'moment'
 import {Modal, Button} from"react-bootstrap";
+import { baseUrl } from "../../services/API";
+
+
+
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
@@ -54,14 +58,14 @@ const[premiseData,setPremiseData]=useState([])
   const[companyLocation,setCompanyLocation]=useState("")
   //documents
 
-  const [docName, setdocName] = useState("")
-  const [document, setdocument] = useState("")
-  const [documentTypeId, setdocumentTypeId] = useState(null)
+  const [docName, setDocName] = useState("")
+  const [docs, setDocs] = useState("")
+  const [documentTypeId, setDocumentTypeId] = useState(null)
   const[documentTypes,setDocumentTypes]=useState([])
   const[tenantDocs, setTenantDocs]=useState([])
    //modals
    const [show, setShow] = useState(false);
-   const [docShow, setdocShow] = useState(false);
+   const [docShow, setdocShow] = useState(true);
   
  
  
@@ -88,7 +92,7 @@ const[premiseData,setPremiseData]=useState([])
   const handleFileRead = async (event) => {
     const file = event.target.files[0]
     const base64 = await convertBase64(file)
-    setdocument(base64);
+    setDocs(base64);
   }
 
   const convertBase64 = (file) => {
@@ -457,7 +461,7 @@ const createDoc =() =>{
   
   let data= JSON.stringify({
     docName: docName,
-    document: document,
+    document: docs,
     documentOwnerTypeName: "TENANT",
     documentTypeId: documentTypeId,
     id: null,
@@ -465,12 +469,21 @@ const createDoc =() =>{
 })
 
 requestsServiceService.createDocuments(data).then((res) => {
-setTenantDocs(res.data.data)
+// setTenantDocs(res.data.data)
+getDocument()
 
 
 })
 }
 
+const getDocument =()=>{
+  requestsServiceService.fetchDocuments("TENANT",id).then((res)=>{
+   setTenantDocs(res.data.data)
+    
+   
+  }
+  )
+}
   useEffect(() => {
     fetchAll();
     getContactTypeName();
@@ -478,6 +491,7 @@ setTenantDocs(res.data.data)
     getStatus()
     createDoc();
     createDocumentTypes()
+    getDocument()
     
     
    
@@ -1087,19 +1101,28 @@ $(document).on("change", ".date3", date3)
 <div className="row">
   <div className="col-xl-12">
     <div className="card calc-h-3px">
-      <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-        <div
-          class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-          role="toolbar"
-        >
-          <div class="d-flex align-items-center flex-grow-1">
-            <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
-          </div>
-          <div y>
-      
-          </div>
-        </div>
-      </div>
+    <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                    <div
+                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                      role="toolbar"
+                    >
+                      <div class="d-flex align-items-center flex-grow-1">
+                        <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
+                      </div>
+                      <div onClick={handleDocShow}>
+                        <button
+                          type="button"
+                          className="btn align-items-center d-flex btn-primary dropdown-toggle option-selector mb-3 mt-0"
+                        >
+                          <i className="dripicons-plus font-size-16 mt-1"></i>{" "}
+                          <span className="pl-1 d-md-inline">
+                            New document
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
       <div className="card-body" onSubmit={createDoc}>
         <div className="col-12">
           <div className="table-responsive">
@@ -1113,12 +1136,12 @@ $(document).on("change", ".date3", date3)
                   <th>Name</th>
                   <th>Type</th>
                   <th>Own type</th>
-                  <th></th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {premiseData &&
-                  premiseData.map(
+                {tenantDocs &&
+                  tenantDocs.map(
                     (unit, index) => (
                       <tr data-id="1">
                         <td>{index + 1}</td>
@@ -1132,6 +1155,12 @@ $(document).on("change", ".date3", date3)
                         <td className="text-capitalize">
                           {unit.documentOwnerType.toLowerCase()}
                         </td>
+                        <td>
+                                    <a href={baseUrl + "/documents/download?docName=" + `${unit.docName}`}
+                                                  className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                                  target="_blank"><i className="bx bx-download" />
+                                                </a>
+                                    </td>
                       </tr>
                     )
                   )}
@@ -1160,7 +1189,7 @@ $(document).on("change", ".date3", date3)
                           <select
                             className="form-control text-capitalize"
                             onChange={(e) => {
-                              setdocumentTypeId(e.target.value);
+                              setDocumentTypeId(e.target.value);
                             }}
                             name="document type"
                             required={true}
@@ -1182,7 +1211,7 @@ $(document).on("change", ".date3", date3)
                         </div>
                         <div className="form-group mb-4">
                           <label htmlFor="">Document Name. <strong className="text-danger ">*</strong></label>
-                          <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true} />
+                          <input type="text" className="form-control" value={docName} onChange={(e) => setDocName(e.target.value)} placeholder="Enter document name" required={true} />
                         </div>
                         <div className="form-group mb-4">
                           <label htmlFor="">Document Upload. <strong className="text-danger ">*</strong></label>

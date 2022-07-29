@@ -5,6 +5,7 @@ import requestsServiceService from "../../services/requestsService.service";
 import {Modal} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 
+
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useState(1);
   const [landlord, setLandlord] = useState([]);

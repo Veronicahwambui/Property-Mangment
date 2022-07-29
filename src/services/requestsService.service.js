@@ -450,8 +450,12 @@ class RequestsService {
     viewTenant(id) {
         return axiosInstance.get(baseUrl + "/tenants/" + id)
        }
+    fetchDocuments(docOwnerType, entity){
+        return axiosInstance.get(baseUrl +"/documents/"+docOwnerType+"/entity/"+entity)
+       
+       }
   
-    //landlord agreement types
+    //landlord agreement type
 
     createAgreementType(data) {
         return axiosInstance.post(baseUrl + "/setup/landLordAgreementTypes", data);
