@@ -46,6 +46,46 @@ const[premiseData,setPremiseData]=useState([])
   const [premises, setPremises] = useState([])
   const [units, setUnits] = useState([])
   const[premId,setPremId]=useState("")
+
+
+  const [editAccountShow, seteditAccountShow] = useState(false);
+  const [editDocShow, seteditDocShow] = useState(false);
+
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
+
+  const handleDocShow = () => setdocShow(true);
+  const handleDocClose = () => setdocShow(false);
+
+  const handleEditShow = () => seteditDocShow(true);
+  const handleEditClose = () => seteditDocShow(false);
+
+
+  const handleDocumentSubmit = (event) => {
+    event.preventDefault();
+
+    handleDocClose();
+  }
+
+  const handleFileRead = async (event) => {
+    const file = event.target.files[0]
+    const base64 = await convertBase64(file)
+    setdocument(base64);
+  }
+
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file)
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      }
+      fileReader.onerror = (error) => {
+        reject(error);
+      }
+    })
+  }
+
  
   const[companyLocation,setCompanyLocation]=useState("")
   
@@ -409,6 +449,11 @@ const getStatus =()=>{
   
   };
 // console.log(tenancyRenewalDate)
+
+
+
+
+
 
 const date2  =(date) => {
   setTenancyRenewalNotificationDate(new Date(date.target.value));
@@ -1048,7 +1093,69 @@ $(document).on("change", ".date3", date3)
 </div>
 {/*document attachment modal*/}
 
+<div>
+              <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
+                <form onSubmit={createDoc}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Add Documents</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="form-group mb-4">
+                          <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
+                          <select
+                            className="form-control text-capitalize"
+                            onChange={(e) => {
+                              setdocumentTypeId(e.target.value);
+                            }}
+                            name="document type"
+                            required={true}
+                          >
+                            <option className="text-black font-semibold ">
+                              select..
+                            </option>
+                            {documentTypes &&  documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
+                              return (
+                                <option
+                                  key={dT.id}
+                                  value={dT.id}
+                                >
+                                  {dT.name?.toLowerCase().replace(/_/g, " ")}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                        <div className="form-group mb-4">
+                          <label htmlFor="">Document Name. <strong className="text-danger ">*</strong></label>
+                          <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true} />
+                        </div>
+                        <div className="form-group mb-4">
+                          <label htmlFor="">Document Upload. <strong className="text-danger ">*</strong></label>
+                          <div className="input-group mb-0">
+                            <label className="input-group-text bg-info text-white cursor-pointer"
+                              htmlFor="document1-1">
+                              <i className="font-14px mdi mdi-paperclip"></i> Attach File
+                            </label>
+                            <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" className={"btn btn-grey"} onClick={handleDocClose}>
+                      Close
+                    </Button>
+                    <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                      Add Document
+                    </Button>
+                  </Modal.Footer>
+                </form>
+              </Modal>
 
+</div>
 
 </div>
 
