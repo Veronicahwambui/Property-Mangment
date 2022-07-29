@@ -7,10 +7,11 @@ import UnitTypes from "../setups/UnitTypes";
 import authService from "../../services/auth.service";
 import { Link } from "react-router-dom";
 import moment from 'moment'
+import {Modal, Button} from"react-bootstrap";
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
-  const [docName, setDocName] = useState("");
+ 
   const [tenantId, setTenantId] = useState("");
   const [contactPerson, setContactPerson] = useState([]);
   // $( "#datepicker198" ).datepicker({ minDate: new Date().getDay() });
@@ -48,20 +49,37 @@ const[premiseData,setPremiseData]=useState([])
   const[premId,setPremId]=useState("")
 
 
-  const [editAccountShow, seteditAccountShow] = useState(false);
-  const [editDocShow, seteditDocShow] = useState(false);
+  
+ 
+  const[companyLocation,setCompanyLocation]=useState("")
+  //documents
 
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
+  const [docName, setdocName] = useState("")
+  const [document, setdocument] = useState("")
+  const [documentTypeId, setdocumentTypeId] = useState(null)
+  const[documentTypes,setDocumentTypes]=useState([])
+  const[tenantDocs, setTenantDocs]=useState([])
+   //modals
+   const [show, setShow] = useState(false);
+   const [docShow, setdocShow] = useState(false);
+  
+ 
+ 
+   const [editAccountShow, seteditAccountShow] = useState(false);
+   const [editDocShow, seteditDocShow] = useState(false);
+ 
+   const handleShow = () => setShow(true);
+   const handleClose = () => setShow(false);
+ 
+   const handleDocShow = () => setdocShow(true);
+   const handleDocClose = () => setdocShow(false);
+ 
+   const handleEditShow = () => seteditDocShow(true);
+   const handleEditClose = () => seteditDocShow(false);
 
-  const handleDocShow = () => setdocShow(true);
-  const handleDocClose = () => setdocShow(false);
+   // doc 
 
-  const handleEditShow = () => seteditDocShow(true);
-  const handleEditClose = () => seteditDocShow(false);
-
-
-  const handleDocumentSubmit = (event) => {
+   const handleDocumentSubmit = (event) => {
     event.preventDefault();
 
     handleDocClose();
@@ -85,10 +103,9 @@ const[premiseData,setPremiseData]=useState([])
       }
     })
   }
-
  
-  const[companyLocation,setCompanyLocation]=useState("")
-  
+ 
+
 
   // edit tenants
   const [unitTypeName, setUnitTypeName] = useState("");
@@ -247,6 +264,7 @@ const[premiseData,setPremiseData]=useState([])
 
     requestsServiceService.updateContactPersons(contacts).then((res) => {
       console.log(res);
+
       fetchAll();
     });
   };
@@ -432,12 +450,46 @@ const getStatus =()=>{
   })
 }
 
+//documents create
+const createDoc =() =>{
+
+  setdocShow(!docShow)
+  
+  let data= JSON.stringify({
+    docName: docName,
+    document: document,
+    documentOwnerTypeName: "TENANT",
+    documentTypeId: documentTypeId,
+    id: null,
+    ownerEntityId: userId
+})
+
+requestsServiceService.createDocuments(data).then((res) => {
+setTenantDocs(res.data.data)
+
+
+})
+}
+
   useEffect(() => {
     fetchAll();
     getContactTypeName();
     getPremises();
     getStatus()
+    createDoc();
+    createDocumentTypes()
+    
+    
+   
   }, []);
+
+  const createDocumentTypes =(id)=>{
+    requestsServiceService.getDocumentTypes(id).then((res) => {
+      setDocumentTypes(res.data.data);
+     
+    })
+  }
+  
 
   const deleteDeactivate = (id) => {
     requestsServiceService.deactivateTenancies(id).then((res) => {
@@ -1048,7 +1100,7 @@ $(document).on("change", ".date3", date3)
           </div>
         </div>
       </div>
-      <div className="card-body">
+      <div className="card-body" onSubmit={createDoc}>
         <div className="col-12">
           <div className="table-responsive">
             <table
@@ -1060,25 +1112,25 @@ $(document).on("change", ".date3", date3)
                   <th>#</th>
                   <th>Name</th>
                   <th>Type</th>
-                  <th>Tenant type</th>
+                  <th>Own type</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {premiseData.premiseDocuments &&
-                  premiseData.premiseDocuments.map(
+                {premiseData &&
+                  premiseData.map(
                     (unit, index) => (
                       <tr data-id="1">
                         <td>{index + 1}</td>
                         <td className="active nav-link cursor-pointer">
                           <a onClick={() => download}>
-                            {/* {" "}
-                            {unit.docName} */}
+                            {" "}
+                            {unit.docName}
                           </a>
                         </td>
-                        {/* <td>{unit.documentType.name}</td> */}
+                        <td>{unit.documentType.name}</td>
                         <td className="text-capitalize">
-                          {/* {unit.documentOwnerType.toLowerCase()} */}
+                          {unit.documentOwnerType.toLowerCase()}
                         </td>
                       </tr>
                     )
@@ -1091,6 +1143,7 @@ $(document).on("change", ".date3", date3)
     </div>
   </div>
 </div>
+
 {/*document attachment modal*/}
 
 <div>
@@ -1164,6 +1217,7 @@ $(document).on("change", ".date3", date3)
 
 
    )}
+
 
         <div
           class="modal fade"

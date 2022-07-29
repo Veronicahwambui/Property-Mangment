@@ -465,7 +465,7 @@ function AddTenant() {
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Email. <strong className="text-danger">*</strong></label>
-                              <input type="email" className="form-control" id="Enter tenants email address" placeholder="Enter property plot No." name="email"
+                              <input type="email" className="form-control" id="Enter tenants email address" placeholder="" name="email"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 required/>
                             </div>
@@ -473,7 +473,7 @@ function AddTenant() {
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Phone. <strong className="text-danger">*</strong></label>
-                              <input type="text" className="form-control" id="Enter tenants Phone Number" placeholder="Enter property plot No." name="phoneNumber"
+                              <input type="text" className="form-control" id="Enter tenants Phone Number" placeholder="" name="phoneNumber"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 required />
                             </div>
@@ -1139,8 +1139,8 @@ function AddTenant() {
                     <div className="col-md-6"  id="datepicker1O4">
                       <div className="mb-4">
                         <label htmlFor="">TenancyRenewalDate</label>
-                        <input type="number" className="form-control  mouse-pointer enddate" id="" placeholder="Enter TenancyRenewalDate"
-                                                readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker14' data-provide="datepicker" data-date-autoclose="true"
+                        <input type="text" className="form-control  mouse-pointer enddate" id="" placeholder="Enter TenancyRenewalDate"
+                                                readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker104' data-provide="datepicker" data-date-autoclose="true"
 
                           onChange={(e) => handleAssignmentChange(e)} name="tenancyRenewalDate"  required />
                       </div>
