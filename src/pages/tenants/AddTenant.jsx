@@ -6,6 +6,7 @@ import moment from 'moment';
 import authService from '../../services/auth.service';
 import requestsServiceService from '../../services/requestsService.service';
 import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -28,6 +29,7 @@ function AddTenant() {
   const [premises, setPremises] = useState([])
   const [units, setUnits] = useState([])
   const [documentTypes, setDocumentTypes] = useState([])
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -246,7 +248,7 @@ function AddTenant() {
           message: res.data.message,
           buttons: [{
             label: "OK",
-            onClick: (e) => window.reload()
+            onClick: (e) => navigate("/alltenants", { replace: true })
           }
           ]
         })
@@ -258,7 +260,7 @@ function AddTenant() {
       }
     }).catch((err) => {
       confirmAlert({
-        message: err.message,
+        message: err.data.message,
         buttons: [{ label: "OK" }]
       })
     })
@@ -1034,6 +1036,7 @@ function AddTenant() {
                               <td>{index + 1}</td>
                               <td>{dependent.documentOwnerTypeName}</td>
                               <td>{dependent.docName}</td>
+
                               <td></td>
                             </tr>
                           ))
