@@ -28,8 +28,8 @@ function Clients() {
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="index.html">Dashboards</a></li>
-                    <li class="breadcrumb-item"><a href="#">Clients</a></li>
+                    <li class="breadcrumb-item">    <Link to='/'>Dashboard </Link></li>
+                    <li class="breadcrumb-item">Clients</li>
                     <li class="breadcrumb-item active">All Clients</li>
                   </ol>
                 </div>

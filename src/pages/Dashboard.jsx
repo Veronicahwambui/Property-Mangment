@@ -6,6 +6,7 @@ import Chart from "react-apexcharts";
 import numeral from "numeral"
 
 import requestsServiceService from '../services/requestsService.service'
+import { Link } from 'react-router-dom';
 
 function Dashboard() {
     const [dashboardData, setDashboardData] = useState({})
@@ -297,7 +298,7 @@ function Dashboard() {
 
     // small chart\
     var radialoptions1 = {
-        series: [37],
+        series: [99],
         chart: {
             type: "radialBar",
             width: 60,
@@ -310,6 +311,7 @@ function Dashboard() {
             enabled: !1
         },
         colors: ["#556ee6"],
+        labels: ["ngbfds"],
         plotOptions: {
             radialBar: {
                 hollow: {
@@ -342,7 +344,7 @@ function Dashboard() {
 
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item active">Dashboard</li>
+                                    <li class="breadcrumb-item active"> <Link to='/'>Dashboard </Link> </li>
                                 </ol>
                             </div>
 
@@ -510,7 +512,7 @@ function Dashboard() {
                                         <div class="d-sm-flex flex-wrap">
                                             <div class="d-flex flex-column">
                                                 <h4 class="card-title mb-0">Rent collection Summary</h4>
-                                                <p class="text-muted mb-4">2022 Rent collections summary </p>
+                                                <p class="text-muted mb-4"> Rent collections summary </p>
                                             </div>
                                             <div class="ms-auto d-none">
                                                 <ul class="nav nav-pills">
@@ -677,6 +679,7 @@ function Dashboard() {
                                                                 options={radialoptions1}
                                                                 plotOptions={radialoptions1.plotOptions}
                                                                 series={[item.variance]}
+                                                                labels={radialoptions1.labels}
                                                                 type="radialBar"
                                                                 height="60"
                                                             />

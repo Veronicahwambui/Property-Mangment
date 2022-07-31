@@ -428,10 +428,10 @@ function OneTenant() {
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <li class="breadcrumb-item">
-                    <a href="index.html">Dashboards</a>
+                  <Link to='/'>Dashboard </Link>
                   </li>
                   <li class="breadcrumb-item">
-                    <a href="property-list.html">All Properties</a>
+                  <Link to='/alltenants'>All Tenants</Link>
                   </li>
                   <li class="breadcrumb-item active">
                     {tenantData.tenant && tenantData.tenant.firstName}

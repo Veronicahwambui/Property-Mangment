@@ -319,7 +319,7 @@ function PremiseTenancy() {
                                             </div>
 
                                         </div>
-                                        <div class="table-responsive">
+                                        <div class="table-responsive overflow-visible">
                                             <table class="table table-editable align-middle table-edits" >
                                                 <thead class="table-light" >
                                                     <tr class=" text-uppercase ">

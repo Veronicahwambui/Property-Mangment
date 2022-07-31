@@ -1,6 +1,7 @@
 /* global $ */
 
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 
@@ -122,10 +123,10 @@ const deactivate = (id)=> {
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
-                      <a href="index.html">Dashboards</a>
+                    <Link to='/'>Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">
-                      <a href="#">Set Ups</a>
+                    Set Ups
                     </li>
                     <li class="breadcrumb-item active">Registered Counties</li>
                   </ol>

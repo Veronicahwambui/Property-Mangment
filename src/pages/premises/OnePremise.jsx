@@ -693,10 +693,11 @@ function OnePremise() {
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <li class="breadcrumb-item">
-                    <a href="index.html">Dashboards</a>
+                  <Link to='/'>Dashboard </Link>
                   </li>
                   <li class="breadcrumb-item">
-                    <a href="property-list.html">All Properties</a>
+                  <Link to='/premisesregister'>All Premises</Link>
+
                   </li>
                   <li class="breadcrumb-item active">
                     {premiseData.premise && premiseData.premise.premiseName}
@@ -1405,7 +1406,7 @@ function OnePremise() {
                       </button>
                     </div>
 
-                    <div class="table-responsive table-responsive-md ">
+                    <div class="table-responsive table-responsive-md overflow-visible">
                       <table class="table table-editable align-middle table-edits" >
                         <thead class="table-light" >
                           <tr class=" text-uppercase ">
@@ -1832,7 +1833,7 @@ function OnePremise() {
                   </div>
                   <div className="card-body">
                     <div className="col-12">
-                      <div className="table-responsive">
+                      <div className="table-responsive overflow-visible">
                         <table
                           class="table align-middle table-edits rent-invoicing dt-responsive"
                           id="data-table"

@@ -1,5 +1,6 @@
 /* global $ */
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import requestsServiceService from '../../services/requestsService.service'
 function AllRoles() {
   const [allRoles, setAllRoles] = useState([])
@@ -217,8 +218,8 @@ function AllRoles() {
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="index.html">Dashboards</a></li>
-                    <li class="breadcrumb-item"><a href="#">Set Ups</a></li>
+                    <li class="breadcrumb-item"><Link to='/'>Dashboard </Link></li>
+                    <li class="breadcrumb-item">Set Ups</li>
                     <li class="breadcrumb-item active">Registered Zones</li>
                   </ol>
                 </div>

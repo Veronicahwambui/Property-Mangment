@@ -345,10 +345,11 @@ function ViewLandlord() {
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
-                      <a href="">Dashboards</a>
+                    <Link to='/'>Dashboard </Link>
+
                     </li>
                     <li class="breadcrumb-item">
-                      <a href="">All Properties</a>
+                    <Link to='/landlords'>All Landlords</Link>
                     </li>
                     <li class="breadcrumb-item active">
                       {landlord.firstName && landlord.lastName}

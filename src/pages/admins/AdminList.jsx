@@ -159,12 +159,11 @@ function AdminList() {
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
-                      <a href="index.html">Dashboards</a>
+                    <Link to='/'>Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">
-                      <a href="#">System user</a>
+                    <Link to='/adminlist'> System Users</Link>
                     </li>
-                    <li class="breadcrumb-item active">User List</li>
                   </ol>
                 </div>
               </div>
