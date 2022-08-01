@@ -45,6 +45,7 @@ import PremiseTenancy from "./pages/premises/PremiseTenancy";
 import UserDetails from "./pages/admins/UserDetails";
 import InvoiceParent from "./pages/invoices/InvoicesParent";
 import Statements from "./pages/statements/Statements";
+import Issues from "./pages/setups/Issues";
 
 function Main() {
   useEffect(() => {
@@ -175,6 +176,7 @@ function Main() {
                 <Route path="/addlandlord" element={<AddLandlord />} />
                 <Route path="/landlord/:id" element={<ViewLandlord />} />
                 <Route path="/statements" element={<Statements />} />
+                <Route path="/issues" element={<Issues />} />
 
                 <Route path="*" element={<Navigate to="/" />}></Route>
               </Routes>
