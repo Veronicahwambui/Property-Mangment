@@ -171,21 +171,21 @@ $(window).on('load', function() {
 
     })
 
-    $('body').on('click', '.clone-fileds', function() {
+    // $('body').on('click', '.clone-fileds', function() {
 
-        $('.selectpicker').each(function(index) {
-            $(this).selectpicker('destroy');
+    //     $('.selectpicker').each(function(index) {
+    //         $(this).selectpicker('destroy');
 
-        });
-        var theParent = $(this).parent().parent().siblings('.clone-cont');
-        var cloneMe = theParent.children('.clone-me').eq(0);
-        cloneMe.clone().appendTo(theParent)
+    //     });
+    //     var theParent = $(this).parent().parent().siblings('.clone-cont');
+    //     var cloneMe = theParent.children('.clone-me').eq(0);
+    //     cloneMe.clone().appendTo(theParent)
 
-        $('select.form-control').each(function(index) {
-            $(this).selectpicker('render').addClass('selectpicker');
+    //     $('select.form-control').each(function(index) {
+    //         $(this).selectpicker('render').addClass('selectpicker');
 
-        });
-    })
+    //     });
+    // })
 
     // calculating rent totals
     $('.rent-invoicing td input').on('keyup', function() {
