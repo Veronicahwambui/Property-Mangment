@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { confirmAlert } from "react-confirm-alert";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 
@@ -128,10 +128,10 @@ function UpdateUser() {
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
-                      <a href="index.html">Dashboards</a>
+                    <Link to='/'>Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">
-                      <a href="#">System user</a>
+                    <Link to='/adminlist'> System Users</Link>
                     </li>
                     <li className="breadcrumb-item active">Add an admin</li>
                   </ol>

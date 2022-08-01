@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function AddAdmin() {
   const [firstName, setFirstName] = useState("");
@@ -146,10 +146,10 @@ function AddAdmin() {
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
-                      <a href="index.html">Dashboards</a>
+                    <Link to='/'>Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">
-                      <a href="#">System user</a>
+                    <Link to='/adminlist'> System Users</Link>
                     </li>
                     <li className="breadcrumb-item active">Create User</li>
                   </ol>

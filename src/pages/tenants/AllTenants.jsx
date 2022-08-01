@@ -42,7 +42,7 @@ function AllTenants() {
 
               <div className="page-title-right">
                 <ol className="breadcrumb m-0">
-                  <li className="breadcrumb-item"><a href="index.html">Dashboards</a></li>
+                  <li className="breadcrumb-item"><Link to='/'>Dashboard </Link></li>
                   <li className="breadcrumb-item active">Tenants Register</li>
                 </ol>
               </div>

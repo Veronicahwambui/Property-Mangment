@@ -568,8 +568,8 @@ function AddPremises() {
                             </p>
                           </div>
                         </div>
-                        <div class="row mb-4">
-                          <div class="col-4">
+                        <div class="row mb-4 ">
+                          <div class="col-4 col-md-6">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
                                 File No.<strong class="text-danger ">*</strong>
@@ -585,7 +585,7 @@ function AddPremises() {
                               />
                             </div>
                           </div>
-                          <div class="col-lg-4 col-md-2">
+                          <div class="col-lg-4 col-md-6">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
                                 Plot No. <strong class="text-danger ">*</strong>
@@ -653,7 +653,7 @@ function AddPremises() {
                                 onChange={handleGeneral}
                                 name='address'
                                 id="basicpill-firstname-input "
-                                placeholder="Enter Your First Name "
+                                placeholder="Enter Your Address "
                               />
                             </div>
                           </div>
@@ -719,7 +719,7 @@ function AddPremises() {
                               </select>
                             </div>
                           </div>
-                          <div className="col-4">
+                          <div className="col-4 col-md-6">
                           
                           <div className="form-group">
                             <label htmlFor="">Charge frequency</label>
@@ -812,7 +812,7 @@ function AddPremises() {
                             <div class="row ">
                               <div class="col-lg-4 ">
                                 <div class="row ">
-                                  <div class="col-12 ">
+                                  <div class="col-12 col-md-6 ">
                                     <div class="mb-4 ">
                                       <label for=" " class=" ">
                                         Caretaker type
@@ -833,7 +833,7 @@ function AddPremises() {
                                       </select>
                                     </div>
                                   </div>
-                                  <div class="col-12 ">
+                                  <div class="col-12 col-md-6 ">
                                     <div class="row mb-3">
                                       <label for=" " class=" ">
                                         Gender:{" "}
@@ -878,7 +878,7 @@ function AddPremises() {
                               </div>
                               <div class="col-lg-8">
                                 <div class="row ">
-                                  <div class="col-lg-6 ">
+                                  <div class="col-lg-6 col-md-6">
                                     <div class="mb-4 ">
                                       <label for="basicpill-phoneno-input ">
                                         Phone{" "}
@@ -896,7 +896,7 @@ function AddPremises() {
                                       />
                                     </div>
                                   </div>
-                                  <div class="col-lg-6 ">
+                                  <div class="col-lg-6 col-md-6">
                                     <div class="mb-4 ">
                                       <label for="basicpill-email-input ">
                                         Email{" "}

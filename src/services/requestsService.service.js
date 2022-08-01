@@ -679,6 +679,16 @@ class RequestsService {
   getUnits() {
     return axiosInstance.get(baseUrl + "/premiseUnits");
   }
+
+//   DASHBOARD 
+
+getClientDashboardGraphs(){
+    return axiosInstance.get(baseUrl + "/reports/dashboard/graphs")
+}
+getClientDashboard(){
+    return axiosInstance.get(baseUrl + "/reports/dashboard")
+}
+
 }
 
 export default new RequestsService();

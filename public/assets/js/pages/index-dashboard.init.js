@@ -210,7 +210,7 @@ options = {
 
 
 // revenue collection mode comparisons
-radialchart1 = new ApexCharts(document.querySelector("#radialchart-1"), radialoptions1);
+radialchart1 = new ApexCharts(document.querySelector("#radialchart-1"), radialchart-1);
 radialchart1.render();
 var radialoptions2 = {
     series: [72],
