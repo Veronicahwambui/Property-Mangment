@@ -21,6 +21,7 @@ function AddPremises() {
   const [documentTypes, setDocumentTypes] = useState([]);
   const [applicableCharges, setApplicableCharges] = useState([]);
   const [unitTypes, setUnitTypes] = useState([]);
+  const [caretakerTypes, setCaretakerTypes] = useState([]);
   const [unitCharges, setUnitCharges] = useState([]);
   const [landLordAccounts, setLandLordAccounts] = useState([]);
   const [uniqueChargeId, setUniqueChargeIds] = useState([]);
@@ -335,6 +336,8 @@ function AddPremises() {
     getAllApplicableCharges()
     getAllUnitTypes()
     getAllTenancyStatuses()
+    getCaretakerType()
+    
   }, [])
 
   const toogleShowNewDocumentModal = (event) => {
@@ -345,7 +348,11 @@ function AddPremises() {
     setNewUnitTypeModal(!newUnitTypeModal);
   }
 
-
+const getCaretakerType = ()=>{
+  requestsServiceService.getCaretakerTypes().then((res)=>{
+    setCaretakerTypes(res.data.data)
+  })
+}
   const addAppCharge = (el) => {
     el.preventDefault();
     let unicahgsg = unitCharges;
@@ -824,12 +831,13 @@ function AddPremises() {
                                         name="caretakerTypeName"
                                         title="Select caretaker type"
                                       >
-                                        <option value="SELF_COMMISSIONED">
-                                          Commissioned by MCA
-                                        </option>
-                                        <option value="LANDLORD_COMMISSIONED">
-                                          Brought by the landlord
-                                        </option>
+                                        <option value={null}>Select caretaker type</option>
+                                        {caretakerTypes?.map((item)=>(
+                                             <option value={item} className="text-capitalize">
+                                              {item?.toLowerCase()?.replace(/_/g , " ")}
+                                           </option>
+                                        ))}
+                                      
                                       </select>
                                     </div>
                                   </div>
@@ -1320,10 +1328,10 @@ function AddPremises() {
 
 
       {/* docs modal */}
-      <Modal show={showDocumentModal} dialogClassName="my-modal">
+      <Modal show={showDocumentModal} dialogClassName="my-modl">
         <form id="newContactPersonForm" onSubmit={addDocument}>
           <ModalHeader className='justify-content'>
-            <h3>New {docBody.documentOwnerTypeName} Document</h3>
+            <h3>New {docBody.documentOwnerTypeName?.toLowerCase()?.replace(/_/g , " ")} Document</h3>
             <span onClick={toogleShowNewDocumentModal}>X</span>
           </ModalHeader>
           <ModalBody className='row'>
