@@ -52,7 +52,7 @@ function AddTenant() {
 
     let vals = event.target.value.split(':');
 
-    requestsServiceService.getPremise(vals[0]).then((res) =>
+    requestsServiceService.findVacatPremise(vals[0]).then((res) =>
       setUnits(res.data.data.premiseUnits)
     )
 

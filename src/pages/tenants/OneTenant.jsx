@@ -376,8 +376,8 @@ const onPremiseChange = (event) => {
 
   let vals = event.target.value.split(':');
 
-  requestsServiceService.getPremise(vals[0]).then((res) =>
-    setUnits(res.data.data.premiseUnits)
+  requestsServiceService.findVacatPremise(vals[0]).then((res) =>
+    setUnits(res.data.data)
   )
 }
 const premiseUnitChange = (event)=>{
@@ -1589,7 +1589,7 @@ $(document).on("change", ".date3", date3)
                       <label for="">Unit</label>
                       <select className='form-control' onChange={premiseUnitChange} name="premiseUnitId">
                           <option> --Select Unit--</option>
-                          {units.length > 0 && units.map((prem, index) => <option value={prem.id }>{prem.unitName}</option>)}
+                          {units?.map((prem, index) => <option value={prem.id }>{ prem?.unitName}</option>)}
                         </select>
                     </div>
 

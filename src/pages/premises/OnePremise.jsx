@@ -1184,6 +1184,7 @@ requestsServiceService.createDocuments(data).then(()=>{
                             <th>unit size</th>
                             <th>months to renewal</th>
                             <th class=" ">Status</th>
+                            <th>Active</th>
                             <th class="text-right w-220px">Actions</th>
                           </tr>
                         </thead>
@@ -1200,6 +1201,8 @@ requestsServiceService.createDocuments(data).then(()=>{
                               <td>{unit.unitType.numberOfRooms} rooms</td>
                               <td>{unit.unitType.squarage} M <sup>2</sup></td>
                               <td>{unit.unitType.monthCountForTenancyRenewal}</td>
+                              <td className="text-capitalize">{unit.status?.toLowerCase()}</td>
+
                               <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
                               <td class="text-right cell-change d-flex align-items-center float-right justify-content-end">
                                 <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id); }} data-bs-toggle="modal"

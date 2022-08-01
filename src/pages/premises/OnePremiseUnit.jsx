@@ -11,6 +11,7 @@ function OnePremiseUnit() {
     const [unitDetails, setUnitDetails] = useState({})
     const [tenancy, setTenancy] = useState([])
     const [premiseCharges, setPremiseCharges] = useState([])
+    const[newStatus,setNewStatus]=useState("")
 
 
     const { id, one } = useParams()
@@ -24,6 +25,24 @@ function OnePremiseUnit() {
             setPremiseCharges(res.data.data.defaultPremiseUnitTypeCharges)
         })
     }
+
+    const editStatus=()=>{
+        let data=JSON.stringify({
+            newStatus: newStatus,
+            premiseId: premId,
+            premiseUnitId: unitId
+
+        })
+        requestsServiceService.updateStatus(premId, data).then((res)=>{
+            console.log(res.data)
+            // setUnitDetails(res.data.data)
+       
+           
+           
+          }
+          ) 
+    }
+  
 
     useEffect(() => {
         fetchAll()
@@ -42,12 +61,82 @@ function OnePremiseUnit() {
                             <button type="button" class="btn btn-danger btn-block waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".issue-modal">
                                 Report An Issues
                             </button>
-
+                  
                             <div class="mail-list mt-4">
                                 <a onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-home-outline me-2"></i> Unit Details</a>
                                 <a onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-account-clock me-2"></i>Occupation History</a>
                                 <a onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-tools me-2"></i> Default Charges </a>
                             </div>
+                            <div>
+                            <button type="button" class="btn btn-primary waves-effect btn-label waves-light me-3" data-bs-toggle="modal" data-bs-target="#updateStatus-modal"  
+                                 >
+                                Change Status
+                            </button>
+        </div>
+
+
+{/* updateSTATUS */}
+                            <div
+        class="modal fade"
+        id="updateStatus-modal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+        centered="true"
+        
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">
+                Edit Status
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group mb-4">
+                    <label for="">NewStatus</label>
+                    <input
+
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter name"
+                      onChange={(event) => setNewStatus(event.target.value)}
+                      value={newStatus}
+                    
+                    />
+                  </div>
+                </div>
+ 
+       
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-primary" 
+                data-bs-dismiss="modal" onClick={editStatus} >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
                         </div>
                         {/* <!-- End Left sidebar --> */}
 
@@ -219,6 +308,30 @@ function OnePremiseUnit() {
 
                                             </div>
                                         </div>
+                                        <div class="col-xl-4 col-sm-6">
+                                            <div class="card shadow-none border">
+                                                <div class="card-body p-3">
+                                                    <div class="">
+
+                                                        <div class="avatar-xs me-3 mb-3">
+                                                            <div class="avatar-title bg-transparent rounded">
+                                                                <i class="mdi mdi-floor-plan font-size-24 text-secondary"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            <div class="overflow-hidden me-auto">
+                                                                <h5 class="font-size-14 text-truncate mb-1"><a href="javascript: void(0);" class="text-body">Status</a></h5>
+                                                                <p class="text-muted text-truncate mb-0">{Object.keys(unitDetails).length > 0 && unitDetails.unit.status}</p>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
 
                                         {/* <!-- end col --> */}
                                         <div class="col-xl-4 col-sm-6">
@@ -369,6 +482,9 @@ function OnePremiseUnit() {
                               </div>
                             </div>
                             {/* <!-- end col --> */}
+
+
+      
                           </div>
                         }
                     </div>

@@ -300,7 +300,7 @@ class RequestsService {
             baseUrl + "/setup/premiseUses/toogleStatus/" + id
         );
     }
-
+   
     updatePremiseUseType(data) {
         return axiosInstance.post(
             baseUrl + "/setup/premiseUses/update",
@@ -422,6 +422,7 @@ class RequestsService {
     getPremise(id) {
         return axiosInstance.get(baseUrl + "/premises/"+id);
     }
+  
 
     createTenant(data){
         return axiosInstance.post(baseUrl+"/tenants", data);
@@ -639,6 +640,13 @@ class RequestsService {
   getParentInvoice(id) {
     return axiosInstance.get(baseUrl + `/payments/parents/${id}`);
   }
+  updateStatus(premiseId,data){
+    return axiosInstance.post(baseUrl+"/premiseUnits/"+premiseId+"/units/updateStatus",data)
+}
+findVacatPremise(premiseId) {
+    return axiosInstance.get(baseUrl+"/premiseUnits/"+premiseId+"/units/vacant")
+    }
+
 
 }
 
