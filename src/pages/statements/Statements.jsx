@@ -160,7 +160,7 @@ function Statements() {
                         </tr>
                       </thead>
                       <tbody>
-                        {statements.length > 0 &&
+                        {statements && statements?.length > 0 &&
                           statements?.map((statement, index) => (
                             <tr data-id={index} key={index}>
                               <td>
@@ -245,7 +245,7 @@ function Statements() {
                             className="text-capitalize text-nowrap"
                             colSpan="3"
                           >
-                            {statements && statements.length} Statements
+                            {statements && statements?.length} Statements
                           </th>
                           <td className="text-nowrap text-right" colSpan="7">
                             <span className="fw-semibold">

@@ -160,7 +160,7 @@ function Receipts() {
                         </tr>
                       </thead>
                       <tbody>
-                        {statements.length > 0 &&
+                        {statements && statements?.length > 0 &&
                           statements?.map((statement, index) => (
                             <tr data-id={index} key={index}>
                               <td>
@@ -244,7 +244,7 @@ function Receipts() {
                             className="text-capitalize text-nowrap"
                             colSpan="3"
                           >
-                            {statements && statements.length} Receipts
+                            {statements && statements?.length} Receipts
                           </th>
                           <td className="text-nowrap text-right" colSpan="7">
                             <span className="fw-semibold">
