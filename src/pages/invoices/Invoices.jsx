@@ -166,12 +166,11 @@ function Invoices() {
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
-                      <a href="index.html">Dashboards</a>
+                    <Link to='/'>Dashboard </Link>
                     </li>
                     <li className="breadcrumb-item">
-                      <a href="#">Invoices</a>
+                    <Link to='/invoices'> All Invoices </Link>
                     </li>
-                    <li className="breadcrumb-item active">All Invoices</li>
                   </ol>
                 </div>
               </div>
@@ -271,19 +270,7 @@ function Invoices() {
                       id="datatable-buttons"
                     >
                       <thead className="table-light">
-                        <tr className="table-dark">
-                          <th scope="col">
-                            <div className="the-mail-checkbox pr-4">
-                              <label htmlFor="selectAll" className="d-none">
-                                Select All
-                              </label>
-                              <input
-                                className="form-check-input mt-0 pt-0 form-check-dark"
-                                type="checkbox"
-                                id="selectAll"
-                              />
-                            </div>
-                          </th>
+                        <tr className="table-light">
                           <th>Invoice Number</th>
                           <th>Bill Reference No</th>
                           <th>Tenant</th>
@@ -302,17 +289,6 @@ function Invoices() {
                         {invoices.length > 0 &&
                           invoices?.map((invoice, index) => (
                             <tr data-id={index} key={index}>
-                              <td>
-                                <div className="d-flex  align-items-center">
-                                  <div className="the-mail-checkbox pr-4">
-                                    <input
-                                      className="form-check-input mt-0 pt-0 form-check-dark"
-                                      type="checkbox"
-                                      id="formCheck1"
-                                    />
-                                  </div>
-                                </div>
-                              </td>
                               <td>{invoice.transactionItemId}</td>
                               <td>{invoice.billerBillNo}</td>
                               <td>{invoice.transactionCustomerName}</td>

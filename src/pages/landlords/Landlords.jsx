@@ -4,9 +4,9 @@ import requestsServiceService from '../../services/requestsService.service'
 
 function Landlords() {
   const [landlords, setLandlords] = useState([])
-  const [activeId , setActiveId] = useState('')
+  const [activeId, setActiveId] = useState('')
 
-  useEffect(() =>{
+  useEffect(() => {
     getlandlords();
   }, [])
 
@@ -17,8 +17,8 @@ function Landlords() {
       setLandlords(res.data.data)
     });
   }
-  const deactivate = (id)=> {
-    requestsServiceService.deactivateLandlord(id).then((res)=>{
+  const deactivate = (id) => {
+    requestsServiceService.deactivateLandlord(id).then((res) => {
       getlandlords();
     })
   }
@@ -33,8 +33,9 @@ function Landlords() {
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="index.html">Dashboards</a></li>
-                    <li class="breadcrumb-item"><a href="#">Landlords</a></li>
+                    <li class="breadcrumb-item">   
+                      <Link to='/'>Dashboard </Link>
+                    </li>
                     <li class="breadcrumb-item active">All Landlords</li>
                   </ol>
                 </div>
@@ -55,7 +56,7 @@ function Landlords() {
                     <div class="d-flex">
                       <Link to="/addlandlord" >
                         <button type="button" className="btn btn-primary waves-effect btn-label waves-light me-3"
-                                data-bs-toggle="modal" data-bs-target="#add-new-client">
+                          data-bs-toggle="modal" data-bs-target="#add-new-client">
                           <i className="mdi mdi-plus label-icon"></i> Add a Landlord
                         </button>
                       </Link>
@@ -71,72 +72,72 @@ function Landlords() {
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
-                      <tr class="text-uppercase table-dark">
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Agreement Type</th>
-                        <th>File Number</th>
-                        <th>Status</th>
-                        <th>Agreement Period</th>
-                        <th class="text-right">Actions</th>
-                      </tr>
+                        <tr class="text-uppercase table-dark">
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Phone</th>
+                          <th>Agreement Type</th>
+                          <th>File Number</th>
+                          <th>Status</th>
+                          <th>Agreement Period</th>
+                          <th class="text-right">Actions</th>
+                        </tr>
                       </thead>
                       <tbody>
-                      {landlords?.map((l, index) => (
-                        <tr data-id={index} key={index}>
-                          <td style={{ width: "80px" }}>{index + 1}</td>
-                          <td className="text-capitalize" data-field="estate">{l.firstName + " " + l.lastName}</td>
-                          <td className="text-capitalize" >{l.phoneNumber}</td>
-                          <td className="text-capitalize" >{l.landLordAgreementType.name?.toLowerCase()?.replace(/_/g , " ")}</td>
-                          <td  >{l.fileNumber}</td>
-                          <td className="text-capitalize" >{l.active ?
-                            <span className="badge-soft-success badge">Active</span> :
-                            <span className="badge-soft-danger badge">Inactive</span>}
-                          </td>
-                          <td data-field="unit-num ">{l.agreementPeriod + " months"}</td>
-                          <td className="text-right cell-change text-nowrap">
-                            <div className="d-flex align-items-center">
-                              {l.active ?  <button
-                                class="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
-                                title="deactivate"
-                                data-bs-toggle="modal"
-                                data-bs-target="#confirm-deactivate"
-                                onClick={()=> setActiveId(l.id)}
-                              >
-                                Deactivate
-                              </button>:  <button
-                                class="btn btn-success btn-sm btn-rounded waves-effect waves-light"
-                                title="deactivate"
-                                data-bs-toggle="modal"
-                                data-bs-target="#confirm-activate"
-                                onClick={()=> setActiveId(l.id)}
-                              >
-                                Activate
-                              </button>
-                              }
-                              <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
-                                      title="save ">Save
-                              </button>
-                              <a
-                                className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
-                                title="Cancel "><i className="bx bx-x "></i></a>
-                              <Link to={"/landlord/"+l.id}> <button type="button"
-                                                                    className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                                                    data-bs-toggle="modal" data-bs-target="#edit"
-                                                                    onClick={() => {}}
-                                                                    style={{ marginLeft: "8px" }}
-                              >
-                                View Details
-                              </button>
-                              </Link>
-                            </div>
-                          </td>
-                          <td>
+                        {landlords?.map((l, index) => (
+                          <tr data-id={index} key={index}>
+                            <td style={{ width: "80px" }}>{index + 1}</td>
+                            <td className="text-capitalize" data-field="estate">{l.firstName + " " + l.lastName}</td>
+                            <td className="text-capitalize" >{l.phoneNumber}</td>
+                            <td className="text-capitalize" >{l.landLordAgreementType.name?.toLowerCase()?.replace(/_/g, " ")}</td>
+                            <td  >{l.fileNumber}</td>
+                            <td className="text-capitalize" >{l.active ?
+                              <span className="badge-soft-success badge">Active</span> :
+                              <span className="badge-soft-danger badge">Inactive</span>}
+                            </td>
+                            <td data-field="unit-num ">{l.agreementPeriod + " months"}</td>
+                            <td className="text-right cell-change text-nowrap">
+                              <div className="d-flex align-items-center">
+                                {l.active ? <button
+                                  class="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
+                                  title="deactivate"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#confirm-deactivate"
+                                  onClick={() => setActiveId(l.id)}
+                                >
+                                  Deactivate
+                                </button> : <button
+                                  class="btn btn-success btn-sm btn-rounded waves-effect waves-light"
+                                  title="deactivate"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#confirm-activate"
+                                  onClick={() => setActiveId(l.id)}
+                                >
+                                  Activate
+                                </button>
+                                }
+                                <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
+                                  title="save ">Save
+                                </button>
+                                <a
+                                  className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
+                                  title="Cancel "><i className="bx bx-x "></i></a>
+                                <Link to={"/landlord/" + l.id}> <button type="button"
+                                  className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                  data-bs-toggle="modal" data-bs-target="#edit"
+                                  onClick={() => { }}
+                                  style={{ marginLeft: "8px" }}
+                                >
+                                  View Details
+                                </button>
+                                </Link>
+                              </div>
+                            </td>
+                            <td>
 
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
@@ -220,7 +221,7 @@ function Landlords() {
           </div>
         </div>
       </div>
-      </>
+    </>
   )
 }
 

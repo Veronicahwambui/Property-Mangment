@@ -4,6 +4,7 @@ import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
+import { Link } from "react-router-dom";
 
 function InvoicesParent() {
   const [invoices, setinvoices] = useState([]);
@@ -117,10 +118,10 @@ function InvoicesParent() {
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
-                      <a href="index.html">Dashboards</a>
+                    <Link to='/'>Dashboard </Link>
                     </li>
                     <li className="breadcrumb-item">
-                      <a href="#">Invoices</a>
+                    <Link to='/invoices'> All Invoices </Link>
                     </li>
                     <li className="breadcrumb-item active">Monthly Invoices</li>
                   </ol>

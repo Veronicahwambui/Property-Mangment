@@ -36,9 +36,9 @@ function UserDetails() {
 
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="index.html">Dashboards</a></li>
-                                        <li class="breadcrumb-item"><a href="admin-list.html">System user's</a></li>
-                                        <li class="breadcrumb-item active">Kelvin Thuku</li>
+                                        <li class="breadcrumb-item">    <Link to='/'>Dashboard </Link></li>
+                                        <li class="breadcrumb-item"><Link to='/adminlist'> System Users</Link></li>
+                                        <li class="breadcrumb-item active"> {adminlistData.user && adminlistData?.user.firstName} {adminlistData.user && adminlistData?.user.lastName}</li>
                                     </ol>
                                 </div>
 

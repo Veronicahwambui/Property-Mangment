@@ -37,7 +37,9 @@ function PremisesRegister() {
 
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="index.html">Dashboards</a></li>
+                                    <li class="breadcrumb-item">  
+                                     <Link to='/'>Dashboard </Link>
+                                    </li>
                                     <li class="breadcrumb-item active">Property Register</li>
                                 </ol>
                             </div>
@@ -101,17 +103,9 @@ function PremisesRegister() {
 
                             </div>
                             <div class="card-body">
-                                <table class="table  table-nowrap table-hover table-responsive contacts-table" id="datatable-buttons">
+                                <table class="table  table-nowrap table-hover table-responsive overflow-visible contacts-table">
                                     <thead class="table-light">
                                         <tr>
-
-                                            <th scope="col">
-                                                <div class="the-mail-checkbox pr-4">
-                                                    <label for="selectAll" class="d-none">Select All</label>
-                                                    <input class="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="selectAll" />
-
-                                                </div>
-                                            </th>
                                             <th scope="col">#</th>
                                             <th scope="col">Premises</th>
                                             <th scope="col">Premises type</th>
@@ -136,14 +130,6 @@ function PremisesRegister() {
                                             return (
                                                 <tr key={index}>
 
-                                                    <td>
-                                                        <div class="d-flex  align-items-center">
-                                                            <div class="the-mail-checkbox pr-4">
-                                                                <input class="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1" />
-                                                            </div>
-
-                                                        </div>
-                                                    </td>
                                                     <td class="text-capitalize">{index + 1}</td>
                                                     <td class="text-capitalize">
                                                         <Link to={`/premise/${premise.id}`} title="View Details">
