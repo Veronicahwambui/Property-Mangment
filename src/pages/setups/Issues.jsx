@@ -30,16 +30,15 @@ function Issues() {
   const submit = (e) => {
     e.preventDefault();
     setFilled(true);
-    setTimeout(() => {
-      showModal();
-    }, 1500);
+    showModal();
   };
-
+  const [complete, setComplete] = useState(false);
   const addIssueState = (e) => {
     e.preventDefault();
     setStatus(nextStatus);
     if (nextStatus === resolveStatus) {
-      alert("FILLED");
+      setComplete(true);
+      hideModal();
     } else {
       let data = {
         active: true,
@@ -175,6 +174,70 @@ function Issues() {
                       </form>
                     </div>
                   </div>
+                  <div className="col-12">
+                    <div className="table-responsive table-responsive-md">
+                      <table className="table table-editable-1 align-middle table-edits">
+                        <thead className="table-light">
+                          <tr className="text-uppercase table-light">
+                            <th>#</th>
+                            <th>Days 2 Next</th>
+                            <th>Status</th>
+                            <th>Next Status</th>
+                            <th>Template Name</th>
+                            <th>State</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {issueTypeStateDTOS.length > 0 &&
+                            issueTypeStateDTOS.map((item, index) => {
+                              return (
+                                <tr data-id="1">
+                                  <td style={{ width: "80px" }}>{index + 1}</td>
+                                  <td>{item.daysToNextStep}</td>
+                                  <td>{item.status}</td>
+                                  <td>{item.nextStatus}</td>
+                                  <td>{item.templateName}</td>
+                                  <td data-field="unit-num ">
+                                    {item.active ? (
+                                      <span className="badge-soft-success badge">
+                                        Active
+                                      </span>
+                                    ) : (
+                                      <span className="badge-soft-danger badge">
+                                        Inactive
+                                      </span>
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                        {/*<tfoot>*/}
+                        {/*  <tr>*/}
+                        {/*    <td colSpan="7" onClick={showModal}>*/}
+                        {/*      <span className="d-flex align-items-center ">*/}
+                        {/*        <i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>*/}
+                        {/*        <span className="pl-5 ">Add A State</span>*/}
+                        {/*      </span>*/}
+                        {/*    </td>*/}
+                        {/*  </tr>*/}
+                        {/*</tfoot>*/}
+                      </table>
+                      <div className={"text-end"}>
+                        {" "}
+                        {status !== "" && status === resolveStatus && (
+                          <button
+                            variant="primary"
+                            type={"button"}
+                            className={"btn btn-primary"}
+                            onClick={finalSubmit}
+                          >
+                            Submit
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -270,16 +333,6 @@ function Issues() {
             >
               Save Changes
             </Button>
-            {status !== "" && status === resolveStatus && (
-              <button
-                variant="primary"
-                type={"button"}
-                className={"btn btn-primary"}
-                onClick={finalSubmit}
-              >
-                Final Submit
-              </button>
-            )}
           </Modal.Footer>
         </form>
       </Modal>

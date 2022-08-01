@@ -6,13 +6,12 @@ import { Modal } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { baseUrl } from "../../services/API";
 
-
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useState(1);
   const [landlord, setLandlord] = useState([]);
   const [accountsData, setAccountsData] = useState([]);
-  const [documents, setDocuments] = useState([])
-  const [agreementtypes, setAgreementTypes] = useState([])
+  const [documents, setDocuments] = useState([]);
+  const [agreementtypes, setAgreementTypes] = useState([]);
   const [landlordtypes, setLandlordTypes] = useState([]);
   const [banks, setBanks] = useState([]);
   const [documentTypes, setdocumentTypes] = useState([]);
@@ -22,17 +21,19 @@ function ViewLandlord() {
 
   //landlord edits
   const [editlandlordemail, seteditlandlordemail] = useState("");
-  const [editlandlordgender, seteditlandlordgender] = useState("")
-  const [editlandlordidnumber, seteditlandlordidnumber] = useState("")
-  const [editlandlordfilenumber, seteditlandlordfilenumber] = useState("")
-  const [editlandlordfirstname, seteditlandlordfirstname] = useState("")
-  const [editlandlordlastname, seteditlandlordlastname] = useState("")
-  const [editlandlordphonenumber, seteditlandlordphonenumber] = useState("")
-  const [editlandlordagreementtype, seteditlandlordagreementtype] = useState("");
+  const [editlandlordgender, seteditlandlordgender] = useState("");
+  const [editlandlordidnumber, seteditlandlordidnumber] = useState("");
+  const [editlandlordfilenumber, seteditlandlordfilenumber] = useState("");
+  const [editlandlordfirstname, seteditlandlordfirstname] = useState("");
+  const [editlandlordlastname, seteditlandlordlastname] = useState("");
+  const [editlandlordphonenumber, seteditlandlordphonenumber] = useState("");
+  const [editlandlordagreementtype, seteditlandlordagreementtype] =
+    useState("");
   const [editlandlordothername, seteditlandlordothername] = useState("");
-  const [editlandlordremuneration, seteditlandlordremuneration] = useState(null)
-  const [editagreementperiod, seteditagreementperiod] = useState(null)
-  const [editlandlordtypename, seteditlandlordtypename] = useState("")
+  const [editlandlordremuneration, seteditlandlordremuneration] =
+    useState(null);
+  const [editagreementperiod, seteditagreementperiod] = useState(null);
+  const [editlandlordtypename, seteditlandlordtypename] = useState("");
 
   //document edits
   const [editdocumentname, seteditdocumentname] = useState("");
@@ -40,23 +41,24 @@ function ViewLandlord() {
   const [editdocument, seteditdocument] = useState("");
 
   //documents create
-  const [docName, setdocName] = useState("")
-  const [document, setdocument] = useState("")
-  const [documentTypeId, setdocumentTypeId] = useState(null)
+  const [docName, setdocName] = useState("");
+  const [document, setdocument] = useState("");
+  const [documentTypeId, setdocumentTypeId] = useState(null);
 
   //accounts edit
-  const [editBankId, setEditBankId] = useState(null)
-  const [editBankName, setEditBankName] = useState("")
-  const [editBankAccount, setEditBankAccount] = useState("")
-  const [editpercentageRemuneration, setEditPercentageRemuneration] = useState(null)
+  const [editBankId, setEditBankId] = useState(null);
+  const [editBankName, setEditBankName] = useState("");
+  const [editBankAccount, setEditBankAccount] = useState("");
+  const [editpercentageRemuneration, setEditPercentageRemuneration] =
+    useState(null);
   const [acc_id, setacc_id] = useState(null);
 
   const editBankAccountDetails = (value) => {
     setEditBankId(value.split(":")[0]);
     setEditBankName(value.split(":")[1]);
-  }
+  };
   //accounts create
-  const [bankname, setbankname] = useState("")
+  const [bankname, setbankname] = useState("");
   const [bankAccountNumber, setbankAccountNumber] = useState("");
   const [bankId, setbankId] = useState(null);
   const [percentageRemuneration, setPercentageRemuneration] = useState(null);
@@ -76,53 +78,51 @@ function ViewLandlord() {
   const [show_acc, set_show_acc] = useState(false);
   const [edittypename, setedittypename] = useState("");
 
-
   const landlordshow = () => {
-    seteditlandlordemail(landlord.email)
-    seteditlandlordgender(landlord.gender)
-    seteditlandlordidnumber(landlord.idNumber)
-    seteditlandlordfilenumber(landlord.fileNumber)
-    seteditlandlordfirstname(landlord.firstName)
-    seteditlandlordlastname(landlord.lastName)
-    seteditlandlordphonenumber(landlord.phoneNumber)
-    setedittypename(landlord.landLordAgreementType?.name)
-    seteditlandlordagreementtype(landlord.landLordAgreementType?.id)
-    seteditlandlordothername(landlord.otherName)
-    seteditlandlordremuneration(landlord.remunerationPercentage)
-    seteditagreementperiod(landlord.agreementPeriod)
-    seteditlandlordtypename(landlord.landLordType)
-    setshowlandlord(true)
+    seteditlandlordemail(landlord.email);
+    seteditlandlordgender(landlord.gender);
+    seteditlandlordidnumber(landlord.idNumber);
+    seteditlandlordfilenumber(landlord.fileNumber);
+    seteditlandlordfirstname(landlord.firstName);
+    seteditlandlordlastname(landlord.lastName);
+    seteditlandlordphonenumber(landlord.phoneNumber);
+    setedittypename(landlord.landLordAgreementType?.name);
+    seteditlandlordagreementtype(landlord.landLordAgreementType?.id);
+    seteditlandlordothername(landlord.otherName);
+    seteditlandlordremuneration(landlord.remunerationPercentage);
+    seteditagreementperiod(landlord.agreementPeriod);
+    seteditlandlordtypename(landlord.landLordType);
+    setshowlandlord(true);
   };
   const landlordclose = () => setshowlandlord(false);
   const docshow = () => set_show_doc(true);
   const docclose = () => set_show_doc(false);
 
   const accshow = (id) => {
-    let acc = accountsData.find(account => account.id === id)
+    let acc = accountsData.find((account) => account.id === id);
     setEditBankName(acc.bank.bankName);
     setEditPercentageRemuneration(acc.percentageRemuneration);
     setEditBankAccount(acc.bankAccountNumber);
-    setEditBankId(acc.bank.id)
+    setEditBankId(acc.bank.id);
     setacc_id(id);
     set_show_acc(true);
-  }
+  };
   const accclose = () => set_show_acc(false);
-
 
   useEffect(() => {
     getlandlords();
     requestsServiceService.getAllAgreementTypes().then((res) => {
       setAgreementTypes(res.data.data);
-    })
+    });
     requestsServiceService.getLandlordTypes().then((res) => {
-      setLandlordTypes(res.data.data)
-    })
+      setLandlordTypes(res.data.data);
+    });
     requestsServiceService.getBanks().then((res) => {
       setBanks(res.data.data);
-    })
+    });
     requestsServiceService.getDocumentTypes().then((res) => {
       setdocumentTypes(res.data.data);
-    })
+    });
   }, []);
 
   const getlandlords = () => {
@@ -131,11 +131,11 @@ function ViewLandlord() {
         let data = res.data.data;
         setLandlord(data.landLord);
         setAccountsData(data.accounts);
-        console.log(accountsData)
+        console.log(accountsData);
         setDocuments(data.documents);
       }
     });
-  }
+  };
   // console.log(landlord)
   const download = (x) => {
     requestsServiceService.downloadDocuments(x).then((res) => {
@@ -144,11 +144,11 @@ function ViewLandlord() {
   };
   //modals
   const showEditLandLord = () => {
-    console.log("clicked")
-  }
+    console.log("clicked");
+  };
   const [error, setError] = useState({
     message: "",
-    color: ""
+    color: "",
   });
 
   const handlelandlordsubmit = (event) => {
@@ -167,38 +167,40 @@ function ViewLandlord() {
       lastName: editlandlordlastname,
       otherName: editlandlordothername,
       phoneNumber: editlandlordphonenumber,
-      remunerationPercentage: editlandlordremuneration
+      remunerationPercentage: editlandlordremuneration,
     });
     console.log(data);
 
-    requestsServiceService.updateLandLord(data).then((res) => {
-      console.log(res);
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "success"
-      })
-      landlordclose();
-      setTimeout(() => {
+    requestsServiceService
+      .updateLandLord(data)
+      .then((res) => {
+        console.log(res);
         setError({
           ...error,
-          message: "",
-          color: ""
-        })
-      }, 3000);
-      getlandlords();
-    }).catch((err) => {
-      setError({
-        ...error,
-        message: err.response.data.message,
-        color: "danger"
+          message: res.data.message,
+          color: "success",
+        });
+        landlordclose();
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        }, 3000);
+        getlandlords();
       })
-    })
-
-  }
+      .catch((err) => {
+        setError({
+          ...error,
+          message: err.response.data.message,
+          color: "danger",
+        });
+      });
+  };
 
   const handleaccountsubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     let data = JSON.stringify({
       id: acc_id,
       active: true,
@@ -212,21 +214,21 @@ function ViewLandlord() {
       setError({
         ...error,
         message: res.data.message,
-        color: "success"
-      })
+        color: "success",
+      });
       accclose();
       setTimeout(() => {
         setError({
           ...error,
           message: "",
-          color: ""
-        })
+          color: "",
+        });
       }, 3000);
       getlandlords();
     });
-  }
+  };
   const handleAccountSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     let data = {
       bankName: bankname,
       active: true,
@@ -234,42 +236,42 @@ function ViewLandlord() {
       bankId: bankId,
       id: null,
       landLordId: userId,
-      percentageRemuneration: percentageRemuneration
-    }
+      percentageRemuneration: percentageRemuneration,
+    };
     requestsServiceService.createLandLordAccounts(data).then((res) => {
       setError({
         ...error,
         message: res.data.message,
-        color: "success"
-      })
+        color: "success",
+      });
       getlandlords();
       docclose();
       setTimeout(() => {
         setError({
           ...error,
           message: "",
-          color: ""
-        })
+          color: "",
+        });
       }, 3000);
-    })
-  }
+    });
+  };
   const handleFileRead = async (event) => {
-    const file = event.target.files[0]
-    const base64 = await convertBase64(file)
+    const file = event.target.files[0];
+    const base64 = await convertBase64(file);
     setdocument(base64);
-  }
+  };
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const fileReader = new FileReader();
-      fileReader.readAsDataURL(file)
+      fileReader.readAsDataURL(file);
       fileReader.onload = () => {
         resolve(fileReader.result);
-      }
+      };
       fileReader.onerror = (error) => {
         reject(error);
-      }
-    })
-  }
+      };
+    });
+  };
   const [docShow, setdocShow] = useState(false);
   const handleDocShow = () => setdocShow(true);
   const handleDocClose = () => setdocShow(false);
@@ -282,55 +284,60 @@ function ViewLandlord() {
       documentOwnerTypeName: "LANDLORD",
       documentTypeId: documentTypeId,
       id: null,
-      ownerEntityId: userId
-    })
-    requestsServiceService.createDocuments(data).then((res) => {
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "success"
-      })
-      handleDocClose();
-      setTimeout(() => {
+      ownerEntityId: userId,
+    });
+    requestsServiceService
+      .createDocuments(data)
+      .then((res) => {
         setError({
           ...error,
-          message: "",
-          color: ""
-        })
-      }, 3000);
-      getlandlords();
-    }).catch((err) => {
-      console.log(err)
-      setError({
-        ...error,
-        message: err.message,
-        color: "danger"
+          message: res.data.message,
+          color: "success",
+        });
+        handleDocClose();
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        }, 3000);
+        getlandlords();
       })
-      handleDocClose()
-      setTimeout(() => {
+      .catch((err) => {
+        console.log(err);
         setError({
           ...error,
-          message: "",
-          color: ""
-        })
-      }, 3000);
-    })
-  }
-  const [activeId, setActiveId] = useState('')
+          message: err.message,
+          color: "danger",
+        });
+        handleDocClose();
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        }, 3000);
+      });
+  };
+  const [activeId, setActiveId] = useState("");
 
   const deactivate = (id) => {
-    let docOwnerType = "LANDLORD"
-    let entity = userId
-    let documentId = id
-    requestsServiceService.deactivateDocuments(docOwnerType, entity, documentId).then((res) => {
-      getlandlords();
-    })
-  }
+    let docOwnerType = "LANDLORD";
+    let entity = userId;
+    let documentId = id;
+    requestsServiceService
+      .deactivateDocuments(docOwnerType, entity, documentId)
+      .then((res) => {
+        getlandlords();
+      });
+  };
   const deactivateAcc = (id) => {
     requestsServiceService.deactivateAccounts(id).then((res) => {
       getlandlords();
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -340,17 +347,15 @@ function ViewLandlord() {
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">
-                </h4>
+                <h4 class="mb-sm-0 font-size-18"></h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
-                    <Link to='/'>Dashboard </Link>
-
+                      <Link to="/">Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">
-                    <Link to='/landlords'>All Landlords</Link>
+                      <Link to="/landlords">All Landlords</Link>
                     </li>
                     <li class="breadcrumb-item active">
                       {landlord.firstName && landlord.lastName}
@@ -367,11 +372,19 @@ function ViewLandlord() {
                   <nav className="navbar navbar-expand-md navbar-white bg-white py-2">
                     <button
                       className="navbar-toggler btn btn-sm px-3 font-size-16 header-item waves-effect h-auto text-primary"
-                      type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-                      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                      type="button"
+                      data-toggle="collapse"
+                      data-target="#navbarNavAltMarkup"
+                      aria-controls="navbarNavAltMarkup"
+                      aria-expanded="false"
+                      aria-label="Toggle navigation"
+                    >
                       <span className="mdi mdi-menu" />
                     </button>
-                    <div className="collapse navbar-collapse justify-content-between" id="navbarNavAltMarkup">
+                    <div
+                      className="collapse navbar-collapse justify-content-between"
+                      id="navbarNavAltMarkup"
+                    >
                       <div className="navbar-nav">
                         <a
                           onClick={() => setActiveLink(1)}
@@ -412,97 +425,149 @@ function ViewLandlord() {
 
             {/*LANDLORD DETAILS*/}
           </div>
-          {activeLink === 1 &&
-            <div className="row">
-              <div className="col-12">
-                {error.color !== "" &&
-                  <div className={"alert alert-" + error.color} role="alert">
-                    {error.message}
-                  </div>
-                }
-                <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                  <div className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar">
-                    <div className="d-flex align-items-center flex-grow-1">
-                      <h4 className="mb-0  bg-transparent  p-0 m-0">
-                        Landlord Details
-                      </h4>
+          {
+            activeLink === 1 && (
+              <div className="row">
+                <div className="col-12">
+                  {error.color !== "" && (
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
                     </div>
-                    <div className="d-flex align-items-center flex-grow-1">
+                  )}
+                  <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                    <div
+                      className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                      role="toolbar"
+                    >
+                      <div className="d-flex align-items-center flex-grow-1">
+                        <h4 className="mb-0  bg-transparent  p-0 m-0">
+                          Landlord Details
+                        </h4>
+                      </div>
+                      <div className="d-flex align-items-center flex-grow-1"></div>
+                      <div className="d-flex">
+                        <button
+                          type="button"
+                          onClick={() => landlordshow()}
+                          className="btn btn-primary dropdown-toggle option-selector"
+                        >
+                          <i className="dripicons-plus font-size-16"></i>{" "}
+                          <span className="pl-1 d-md-inline">
+                            Edit Landlord details
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card calc-h-3px">
+                    <div className="card-body pb-5">
+                      <div>
+                        <div className="mb-4 me-3">
+                          <i className="mdi mdi-account-circle text-primary h1"></i>
+                        </div>
+                        <div>
+                          <h5 className="text-capitalize">
+                            {landlord?.firstName} {landlord?.lastName}{" "}
+                            {landlord?.otherName}
+                            {landlord.active ? (
+                              <span className="badge-soft-success badge">
+                                Active
+                              </span>
+                            ) : (
+                              <span className="badge-soft-danger badge">
+                                Inactive
+                              </span>
+                            )}
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-body border-top">
+                      <p className="text-muted mb-0 d-flex align-items-center">
+                        <a
+                          href="tel:0704549859"
+                          className="d-flex align-items-center"
+                        >
+                          <i className="mdi mdi-phone me-2 font-size-18" />{" "}
+                          {landlord.phoneNumber}
+                        </a>{" "}
+                        <span className="px-3 px-3">|</span>
+                        <a
+                          className="d-flex align-items-center"
+                          href={"mailto:" + landlord.email}
+                        >
+                          <i className="mdi mdi-email-outline font-size-18 me-2" />
+                          {landlord.email}
+                        </a>
+                      </p>
+                    </div>
+                    <div className={"d-flex"}>
+                      <div className="card-body border-top">
+                        <p className="p-0 m-0">
+                          <span className="text-muted">National ID No. </span>
+                          {landlord.idNumber}
+                        </p>
+                      </div>
+                      <div className="card-body">
+                        <p className="p-0 m-0">
+                          <span className="text-muted">File Number. </span>
+                          {landlord.fileNumber}
+                        </p>
+                      </div>
+                      <div className="card-body border-top text-capitalize">
+                        <p className="p-0 m-0">
+                          <span className="text-muted">Landlord Type. </span>
+                          {landlord.landLordType
+                            ?.toLowerCase()
+                            ?.replace(/_/g, " ")}
+                        </p>
+                      </div>
+                      <div className="card-body border-top">
+                        <p className="p-0 m-0">
+                          <span className="text-muted">Other Name. </span>
+                          {landlord.otherName}
+                        </p>
+                      </div>
                     </div>
                     <div className="d-flex">
-                      <button type="button"
-                        onClick={() => landlordshow()}
-                        className="btn btn-primary dropdown-toggle option-selector">
-                        <i className="dripicons-plus font-size-16"></i> <span
-                          className="pl-1 d-md-inline">Edit Landlord details</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="card calc-h-3px">
-                  <div className="card-body pb-5">
-                    <div>
-                      <div className="mb-4 me-3">
-                        <i className="mdi mdi-account-circle text-primary h1"></i>
+                      <div className="card-body border-top">
+                        <p className="p-0 m-0">
+                          <span className="text-muted">Remuneration. </span>
+                          {landlord.remunerationPercentage} %
+                        </p>
                       </div>
-                      <div>
-                        <h5 className="text-capitalize">{landlord?.firstName} {landlord?.lastName} {landlord?.otherName}
-                          {landlord.active ?
-                            <span className="badge-soft-success badge">Active</span> :
-                            <span className="badge-soft-danger badge">Inactive</span>
-                          }
-                        </h5>
+                      <div className="card-body border-top">
+                        <p className="p-0 m-0">
+                          <span className="text-muted">Gender. </span>
+                          {landlord.gender}
+                        </p>
+                      </div>
+                      <div className="card-body border-top">
+                        <p className="p-0 m-0">
+                          <span className="text-muted">Agreement Period. </span>
+                          {landlord.agreementPeriod} months
+                        </p>
+                      </div>
+                      <div className="card-body border-top text-capitalize">
+                        <p className="p-0 m-0">
+                          <span className="text-muted">Agreement Type. </span>
+                          {landlord?.landLordAgreementType?.name
+                            ?.toLowerCase()
+                            ?.replace(/_/g, " ")}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <div className="card-body border-top">
-                    <p className="text-muted mb-0 d-flex align-items-center">
-                      <a href="tel:0704549859" className="d-flex align-items-center"><i
-                        className="mdi mdi-phone me-2 font-size-18" /> {landlord.phoneNumber}</a> <span
-                          className="px-3 px-3">|</span>
-                      <a className="d-flex align-items-center" href={"mailto:" + landlord.email}><i
-                        className="mdi mdi-email-outline font-size-18 me-2" />{landlord.email}</a>
-                    </p>
-                  </div>
-                  <div className={"d-flex"}>
-                    <div className="card-body border-top">
-                      <p className="p-0 m-0"><span className="text-muted">National ID No. </span>{landlord.idNumber}</p>
-                    </div>
-                    <div className="card-body">
-                      <p className="p-0 m-0"><span className="text-muted">File Number. </span>{landlord.fileNumber}</p>
-                    </div>
-                    <div className="card-body border-top text-capitalize">
-                      <p className="p-0 m-0"><span className="text-muted">Landlord Type. </span>{landlord.landLordType?.toLowerCase()?.replace(/_/g , " ")}</p>
-                    </div>
-                    <div className="card-body border-top">
-                      <p className="p-0 m-0"><span className="text-muted">Other Name. </span>{landlord.otherName}</p>
-                    </div>
-                  </div>
-                  <div className="d-flex">
-                    <div className="card-body border-top">
-                      <p className="p-0 m-0"><span className="text-muted">Remuneration. </span>{landlord.remunerationPercentage} %</p>
-                    </div>
-                    <div className="card-body border-top">
-                      <p className="p-0 m-0"><span className="text-muted">Gender. </span>{landlord.gender}</p>
-                    </div>
-                    <div className="card-body border-top">
-                      <p className="p-0 m-0"><span className="text-muted">Agreement Period. </span>{landlord.agreementPeriod} months</p>
-                    </div>
-                    <div className="card-body border-top text-capitalize">
-                      <p className="p-0 m-0"><span className="text-muted">Agreement Type. </span>{landlord?.landLordAgreementType?.name?.toLowerCase()?.replace(/_/g , " ")}</p>
-                    </div>
-                  </div>
+                  {/*<div className="row">*/}
+                  {/*  <div className="col-12 float-end">*/}
+                  {/*    <button type={"submit"} className={"btn btn-primary float-end"} form={"my-form"}>Update</button>*/}
+                  {/*    <button onClick={() => setActiveLink(1)}>Back</button>*/}
+                  {/*    <button onClick={() => setActiveLink(2)}>Next</button>*/}
+                  {/*  </div>*/}
+                  {/*</div>*/}
                 </div>
-                {/*<div className="row">*/}
-                {/*  <div className="col-12 float-end">*/}
-                {/*    <button type={"submit"} className={"btn btn-primary float-end"} form={"my-form"}>Update</button>*/}
-                {/*    <button onClick={() => setActiveLink(1)}>Back</button>*/}
-                {/*    <button onClick={() => setActiveLink(2)}>Next</button>*/}
-                {/*  </div>*/}
-                {/*</div>*/}
               </div>
-            </div>
+            )
             // <div className="row">
             //   <div className="row">
             //     <div className="col-12 float-end">
@@ -511,8 +576,7 @@ function ViewLandlord() {
             //
             // </div>
           }
-          {
-            activeLink === 2 &&
+          {activeLink === 2 && (
             <div className={"row"}>
               <div className="col-12">
                 <div className="card calc-h-3px">
@@ -522,7 +586,8 @@ function ViewLandlord() {
                         <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                           <div
                             className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                            role="toolbar">
+                            role="toolbar"
+                          >
                             <div className="d-flex align-items-center flex-grow-1">
                               <h4 className="mb-0  bg-transparent  p-0 m-0">
                                 Landlord Accounts
@@ -536,22 +601,25 @@ function ViewLandlord() {
                                 onClick={() => docshow()}
                                 data-bs-target="#add-new-agreementType"
                               >
-                                <i className="mdi mdi-plus label-icon"></i> Add Account
+                                <i className="mdi mdi-plus label-icon"></i> Add
+                                Account
                               </button>
                             </div>
                           </div>
                         </div>
                         <div className="p-4">
                           <div className="row">
-                            {error.color !== "" &&
-                              <div className={"alert alert-" + error.color} role="alert">
+                            {error.color !== "" && (
+                              <div
+                                className={"alert alert-" + error.color}
+                                role="alert"
+                              >
                                 {error.message}
                               </div>
-                            }
+                            )}
                             <div className="col-12">
                               <div className="table-responsive">
-                                <table
-                                  className="table align-middle table-nowrap table-hover mb-0">
+                                <table className="table align-middle table-nowrap table-hover mb-0">
                                   <thead>
                                     <tr className="text-uppercase table-dark">
                                       <th scope="col">#</th>
@@ -563,44 +631,84 @@ function ViewLandlord() {
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {accountsData?.sort((a, b) => a.bank.bankName.localeCompare(b.bank.bankName))?.map((acc, index) => (
-                                      <tr data-id={index} key={index}>
-                                        <td style={{ width: "80px" }}>{index + 1}</td>
-                                        <td data-field="estate" className="text-capitalize">{acc.bank.bankName?.toLowerCase()?.replace(/_/g , " ")}</td>
-                                        <td data-field="unit-num ">{acc.bankAccountNumber}</td>
-                                        <td data-field="unit-num ">{acc.percentageRemuneration}</td>
-                                        <td data-field="unit-num ">{acc.active ?
-                                          <span className="badge-soft-success badge">Active</span> :
-                                          <span className="badge-soft-danger badge">Inactive</span>}
-                                        </td>
-                                        <td className="text-right cell-change ">
-                                          <div className="d-flex align-items-center">
-                                            <a className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit" data-bs-toggle="modal" data-bs-target="#edit-client"
-                                              title="Edit" onClick={() => accshow(acc.id)}><i className="bx bx-edit-alt " /></a>
-                                              {acc.active ? <button
-                                                className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
-                                                title="deactivate"
+                                    {accountsData
+                                      ?.sort((a, b) =>
+                                        a.bank.bankName.localeCompare(
+                                          b.bank.bankName
+                                        )
+                                      )
+                                      ?.map((acc, index) => (
+                                        <tr data-id={index} key={index}>
+                                          <td style={{ width: "80px" }}>
+                                            {index + 1}
+                                          </td>
+                                          <td
+                                            data-field="estate"
+                                            className="text-capitalize"
+                                          >
+                                            {acc.bank.bankName
+                                              ?.toLowerCase()
+                                              ?.replace(/_/g, " ")}
+                                          </td>
+                                          <td data-field="unit-num ">
+                                            {acc.bankAccountNumber}
+                                          </td>
+                                          <td data-field="unit-num ">
+                                            {acc.percentageRemuneration}
+                                          </td>
+                                          <td data-field="unit-num ">
+                                            {acc.active ? (
+                                              <span className="badge-soft-success badge">
+                                                Active
+                                              </span>
+                                            ) : (
+                                              <span className="badge-soft-danger badge">
+                                                Inactive
+                                              </span>
+                                            )}
+                                          </td>
+                                          <td className="text-right cell-change ">
+                                            <div className="d-flex align-items-center">
+                                              <a
+                                                className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#confirm-acc-deactivate"
-                                                style={{ marginLeft: "8px" }}
-                                                onClick={() => setActiveId(acc.id)}
+                                                data-bs-target="#edit-client"
+                                                title="Edit"
+                                                onClick={() => accshow(acc.id)}
                                               >
-                                                Deactivate
-                                              </button> : <button
-                                                className="btn btn-success btn-sm btn-rounded waves-effect waves-light"
-                                                title="deactivate"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#confirm-acc-activate"
-                                                style={{ marginLeft: "8px" }}
-                                                onClick={() => setActiveId(acc.id)}
-                                              >
-                                                Activate
-                                              </button>
-                                              }
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    ))}
+                                                <i className="bx bx-edit-alt " />
+                                              </a>
+                                              {acc.active ? (
+                                                <button
+                                                  className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
+                                                  title="deactivate"
+                                                  data-bs-toggle="modal"
+                                                  data-bs-target="#confirm-acc-deactivate"
+                                                  style={{ marginLeft: "8px" }}
+                                                  onClick={() =>
+                                                    setActiveId(acc.id)
+                                                  }
+                                                >
+                                                  Deactivate
+                                                </button>
+                                              ) : (
+                                                <button
+                                                  className="btn btn-success btn-sm btn-rounded waves-effect waves-light"
+                                                  title="deactivate"
+                                                  data-bs-toggle="modal"
+                                                  data-bs-target="#confirm-acc-activate"
+                                                  style={{ marginLeft: "8px" }}
+                                                  onClick={() =>
+                                                    setActiveId(acc.id)
+                                                  }
+                                                >
+                                                  Activate
+                                                </button>
+                                              )}
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      ))}
                                   </tbody>
                                 </table>
                               </div>
@@ -613,8 +721,8 @@ function ViewLandlord() {
                 </div>
               </div>
             </div>
-          }
-          {activeLink === 3 &&
+          )}
+          {activeLink === 3 && (
             <div className={"row"}>
               <div className="col-12">
                 <div className="card">
@@ -626,7 +734,8 @@ function ViewLandlord() {
                             <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                               <div
                                 className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                                role="toolbar">
+                                role="toolbar"
+                              >
                                 <div className="d-flex align-items-center flex-grow-1">
                                   <h4 className="mb-0  bg-transparent  p-0 m-0">
                                     Landlord Documents
@@ -640,48 +749,67 @@ function ViewLandlord() {
                                     onClick={handleDocShow}
                                     data-bs-target="#add-new-agreementType"
                                   >
-                                    <i className="mdi mdi-plus label-icon"></i> Add Document
+                                    <i className="mdi mdi-plus label-icon"></i>{" "}
+                                    Add Document
                                   </button>
                                 </div>
                               </div>
                             </div>
                             <div className="p-4">
                               <div className="row">
-                                {error.color !== "" &&
-                                  <div className={"alert alert-" + error.color} role="alert">
+                                {error.color !== "" && (
+                                  <div
+                                    className={"alert alert-" + error.color}
+                                    role="alert"
+                                  >
                                     {error.message}
                                   </div>
-                                }
+                                )}
                                 <div className="col-12">
                                   <div className="table-responsive">
-                                    <table
-                                      className="table align-middle table-nowrap table-hover mb-0">
+                                    <table className="table align-middle table-nowrap table-hover mb-0">
                                       <thead>
                                         <tr className="text-uppercase table-dark">
                                           <th scope="col">#</th>
                                           <th scope="col">Document Name</th>
                                           <th scope="col">Document Type</th>
                                           <th scope="col">Status</th>
-                                          <th className="text-right">Actions</th>
+                                          <th className="text-right">
+                                            Actions
+                                          </th>
                                         </tr>
                                       </thead>
                                       <tbody>
                                         {documents?.map((doc, index) => (
                                           <tr data-id={index} key={index}>
-                                            <td style={{ width: "80px" }}>{index + 1}</td>
-                                            <td data-field="estate">{doc.docName}</td>
-                                            <td data-field="unit-num " className="text-capitalize">{doc.documentType?.name?.toLowerCase()}</td>
+                                            <td style={{ width: "80px" }}>
+                                              {index + 1}
+                                            </td>
+                                            <td data-field="estate">
+                                              {doc.docName}
+                                            </td>
+                                            <td
+                                              data-field="unit-num "
+                                              className="text-capitalize"
+                                            >
+                                              {doc.documentType?.name?.toLowerCase()}
+                                            </td>
                                             <td data-field="unit-num ">
-                                              {doc.active ?
-                                                <span className="badge-soft-success badge">Active</span> :
-                                                <span className="badge-soft-danger badge">Inactive</span>
-                                              }
-                                          </td>
-
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
+                                              {doc.active ? (
+                                                <span className="badge-soft-success badge">
+                                                  Active
+                                                </span>
+                                              ) : (
+                                                <span className="badge-soft-danger badge">
+                                                  Inactive
+                                                </span>
+                                              )}
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -693,488 +821,708 @@ function ViewLandlord() {
                 </div>
               </div>
             </div>
-        </div>
-}
-      {/*edit landlord modals*/}
-      <Modal show={show_landlord} onHide={landlordclose} className={"modal fade"}>
-        <form onSubmit={handlelandlordsubmit}>
-          <Modal.Header closeButton onClick={()=> landlordclose()}>
-            <Modal.Title>Update Landlord</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row">
-              <div className="col-6">
-                <div className="form-group mb-4">
-                  <label htmlFor="">Landlord Type <strong className="text-danger ">*</strong></label>
-                  <select className="form-control text-capitalize" value={editlandlordtypename} onChange={(e) => seteditlandlordtypename(e.target.value)}  required={true}>
-                    <option className="text-black font-semibold ">
-                      {editlandlordtypename?.toLowerCase()?.replace(/_/g , " ")}
-                    </option>
-                    {
-                      landlordtypes.sort((a, b) => a.localeCompare(b))?.map((item, index) => (
-                        <option value={item}>{item?.toLowerCase()?.replace(/_/g , " ")}</option>
-                      ))
-                    }
-                  </select>
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Agreement Type. <strong className="text-danger ">*</strong></label>
-                  <select className="form-control text-capitalize" value={editlandlordagreementtype} onChange={(e) => seteditlandlordagreementtype(e.target.value)}  required={true}>
-                    <option className="text-black font-semibold ">
-                      {edittypename?.toLowerCase()?.replace(/_/g , " ")}
-                    </option>
-                    {
-                      agreementtypes.sort((a, b) => a.name.localeCompare(b.name))?.map((item, index) => (
-                        <option value={item.id}>{item.name?.toLowerCase()?.replace(/_/g , " ")}</option>
-                      ))
-                    }
-                  </select>
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">File Num. <strong className="text-danger ">*</strong></label>
-                  <input type="text" value={editlandlordfilenumber} onChange={(e) => seteditlandlordfilenumber(e.target.value)} className="form-control"
-                         required={true} />
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="form-group mb-4">
-                  <label htmlFor="">ID Num. <strong className="text-danger ">*</strong></label>
-                  <input type="text" value={editlandlordidnumber} onChange={(e) => seteditlandlordidnumber(e.target.value)} className="form-control"
-                          required={true} />
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">First Name. <strong className="text-danger ">*</strong></label>
-                  <input type="text" value={editlandlordfirstname} onChange={(e) => seteditlandlordfirstname(e.target.value)}
-                         className="form-control"
-                         required={true} />
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Last Name. <strong className="text-danger ">*</strong></label>
-                  <input type="text" value={editlandlordlastname} onChange={(e) => seteditlandlordlastname(e.target.value)}
-                         className="form-control"
-                         required={true} />
-                </div>
-                <div className="col-6">
-                  <div className="form-group mb-4">
-                    <label htmlFor="">ID Num. <strong className="text-danger ">*</strong></label>
-                    <input type="text" value={editlandlordidnumber} onChange={(e) => seteditlandlordidnumber(e.target.value)} className="form-control"
-                      required={true} />
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">First Name. <strong className="text-danger ">*</strong></label>
-                    <input type="text" value={editlandlordfirstname} onChange={(e) => seteditlandlordfirstname(e.target.value)}
-                      className="form-control"
-                      required={true} />
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Last Name. <strong className="text-danger ">*</strong></label>
-                    <input type="text" value={editlandlordlastname} onChange={(e) => seteditlandlordlastname(e.target.value)}
-                      className="form-control"
-                      required={true} />
-                    <br/>
-                    <label htmlFor="">Other Name.</label>
-                    <input type="text" value={editlandlordothername} onChange={(e) => seteditlandlordothername(e.target.value)}
-                           className="form-control"
-                    />
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Email. <strong className="text-danger ">*</strong></label>
-                    <input type="email" value={editlandlordemail} onChange={(e) => seteditlandlordemail(e.target.value)}
-                      className="form-control"
-                      required={true} />
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div className="form-group mb-3">
-                    <label htmlFor="">Phone Number. <strong className="text-danger ">*</strong></label>
-                    <input type="text" value={editlandlordphonenumber} onChange={(e) => seteditlandlordphonenumber(e.target.value)}
-                      className="form-control"
-                      required={true} />
-                  </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor=" " className=" ">Gender: <strong className="text-danger ">*</strong></label>
-                    <div className="d-flex ">
-                      <div className="form-check me-3">
-                        <input className="form-check-input" type="radio" name="gender" checked={editlandlordgender === "male"} value={"male"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-male" />
-                        <label className="form-check-label" htmlFor="gender-male">
-                          Male
-                        </label>
-                      </div>
-                      <div className="form-check me-3">
-                        <input className="form-check-input" type="radio" name="gender" checked={editlandlordgender === "female"} value={"female"} onChange={(e) => seteditlandlordgender(e.target.value)} id="gender-female" />
-                        <label className="form-check-label" htmlFor="gender-female">
-                          Female
-                        </label>
+          )}
+          {/*edit landlord modals*/}
+          <Modal
+            show={show_landlord}
+            onHide={landlordclose}
+            className={"modal fade"}
+            centered
+          >
+            <form onSubmit={handlelandlordsubmit}>
+              <Modal.Header closeButton onClick={() => landlordclose()}>
+                <Modal.Title>Update Landlord</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Landlord Type{" "}
+                        <strong className="text-danger ">*</strong>
+                      </label>
+                      <select
+                        className="form-control text-capitalize"
+                        value={editlandlordtypename}
+                        onChange={(e) =>
+                          seteditlandlordtypename(e.target.value)
+                        }
+                        required={true}
+                      >
+                        <option className="text-black font-semibold ">
+                          {editlandlordtypename
+                            ?.toLowerCase()
+                            ?.replace(/_/g, " ")}
+                        </option>
+                        {landlordtypes
+                          .sort((a, b) => a.localeCompare(b))
+                          ?.map((item, index) => (
+                            <option value={item}>
+                              {item?.toLowerCase()?.replace(/_/g, " ")}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Agreement Type.{" "}
+                        <strong className="text-danger ">*</strong>
+                      </label>
+                      <select
+                        className="form-control text-capitalize"
+                        value={editlandlordagreementtype}
+                        onChange={(e) =>
+                          seteditlandlordagreementtype(e.target.value)
+                        }
+                        required={true}
+                      >
+                        <option className="text-black font-semibold ">
+                          {edittypename?.toLowerCase()?.replace(/_/g, " ")}
+                        </option>
+                        {agreementtypes
+                          .sort((a, b) => a.name.localeCompare(b.name))
+                          ?.map((item, index) => (
+                            <option value={item.id}>
+                              {item.name?.toLowerCase()?.replace(/_/g, " ")}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        File Num. <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="text"
+                        value={editlandlordfilenumber}
+                        onChange={(e) =>
+                          seteditlandlordfilenumber(e.target.value)
+                        }
+                        className="form-control"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Remuneration %.{" "}
+                        <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="number"
+                        value={editlandlordremuneration}
+                        onChange={(e) =>
+                          seteditlandlordremuneration(e.target.value)
+                        }
+                        className="form-control"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Agreement Period.{" "}
+                        <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="number"
+                        value={editagreementperiod}
+                        onChange={(e) => seteditagreementperiod(e.target.value)}
+                        className="form-control"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor=" " className=" ">
+                        Gender: <strong className="text-danger ">*</strong>
+                      </label>
+                      <div className="d-flex ">
+                        <div className="form-check me-3">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="gender"
+                            checked={editlandlordgender === "male"}
+                            value={"male"}
+                            onChange={(e) =>
+                              seteditlandlordgender(e.target.value)
+                            }
+                            id="gender-male"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="gender-male"
+                          >
+                            Male
+                          </label>
+                        </div>
+                        <div className="form-check me-3">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="gender"
+                            checked={editlandlordgender === "female"}
+                            value={"female"}
+                            onChange={(e) =>
+                              seteditlandlordgender(e.target.value)
+                            }
+                            id="gender-female"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="gender-female"
+                          >
+                            Female
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
+                  <div className="col-6">
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        ID Num. <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="text"
+                        value={editlandlordidnumber}
+                        onChange={(e) =>
+                          seteditlandlordidnumber(e.target.value)
+                        }
+                        className="form-control"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        First Name. <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="text"
+                        value={editlandlordfirstname}
+                        onChange={(e) =>
+                          seteditlandlordfirstname(e.target.value)
+                        }
+                        className="form-control"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Last Name. <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="text"
+                        value={editlandlordlastname}
+                        onChange={(e) =>
+                          seteditlandlordlastname(e.target.value)
+                        }
+                        className="form-control"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Email. <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="email"
+                        value={editlandlordemail}
+                        onChange={(e) => seteditlandlordemail(e.target.value)}
+                        className="form-control"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Phone Number.{" "}
+                        <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="text"
+                        value={editlandlordphonenumber}
+                        onChange={(e) =>
+                          seteditlandlordphonenumber(e.target.value)
+                        }
+                        className="form-control"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Other Name</label>
+                      <input
+                        type="text"
+                        value={editlandlordothername}
+                        onChange={(e) =>
+                          seteditlandlordothername(e.target.value)
+                        }
+                        className="form-control"
+                      />
+                    </div>
+                    <div className="col-6"></div>
+                  </div>
+                  <div className="col-12"></div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div className="form-group mb-4">
-                  <label htmlFor="">Remuneration %. <strong className="text-danger ">*</strong></label>
-                  <input type="number" value={editlandlordremuneration} onChange={(e) => seteditlandlordremuneration(e.target.value)}
-                    className="form-control"
-                    required={true} />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  className={"btn btn-grey"}
+                  onClick={landlordclose}
+                >
+                  Close
+                </Button>
+                <Button
+                  variant="primary"
+                  className={"btn btn-primary"}
+                  type={"submit"}
+                >
+                  Save Changes
+                </Button>
+              </Modal.Footer>
+            </form>
+          </Modal>
+          {/*edit accounts modal*/}
+          <Modal
+            show={show_acc}
+            onHide={accclose}
+            className={"modal fade"}
+            centered
+          >
+            <form onSubmit={handleaccountsubmit}>
+              <Modal.Header closeButton>
+                <Modal.Title>Edit account details</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="row">
+                  <div className="col-12">
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Select Bank/ <strong className="text-danger ">*</strong>
+                      </label>
+                      <select
+                        className="form-control text-capitalize"
+                        onChange={(e) => {
+                          editBankAccountDetails(e.target.value);
+                        }}
+                        name="bank account"
+                        required={true}
+                      >
+                        <option className="text-black font-semibold ">
+                          {editBankName}
+                        </option>
+                        {banks
+                          .sort((a, b) => a.bankName.localeCompare(b.bankName))
+                          ?.map((bank) => {
+                            return (
+                              <option
+                                key={bank.id}
+                                value={bank.id + ":" + bank.bankName}
+                              >
+                                {bank.bankName
+                                  ?.toLowerCase()
+                                  ?.replace(/_/g, " ")}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Bank account number.{" "}
+                        <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={editBankAccount}
+                        onChange={(e) => setEditBankAccount(e.target.value)}
+                        placeholder="Enter account number"
+                        required={true}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                        Percentage renumeration.{" "}
+                        <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={editpercentageRemuneration}
+                        onChange={(e) =>
+                          setEditPercentageRemuneration(e.target.value)
+                        }
+                        placeholder="Enter % renumeration"
+                        required={true}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Agreement Period. <strong className="text-danger ">*</strong></label>
-                  <input type="number" value={editagreementperiod} onChange={(e) => seteditagreementperiod(e.target.value)}
-                    className="form-control"
-                    required={true} />
-                </div>
-              </div>
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" className={"btn btn-grey"} onClick={landlordclose}>
-                Close
-              </Button>
-              <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
-                Save Changes
-              </Button>
-            </Modal.Footer>
-          </form>
-        </Modal>
-        {/*edit accounts modal*/}
-        <Modal show={show_acc} onHide={accclose} className={"modal fade"} centered>
-          <form onSubmit={handleaccountsubmit}>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  className={"btn btn-grey"}
+                  onClick={() => accclose()}
+                >
+                  Close
+                </Button>
+                <Button
+                  variant="primary"
+                  className={"btn btn-primary"}
+                  type={"submit"}
+                >
+                  Save Changes
+                </Button>
+              </Modal.Footer>
+            </form>
+          </Modal>
+        </div>
+        {/*add accounts modal*/}
+        <Modal
+          show={show_doc}
+          onHide={docclose}
+          className={"modal fade"}
+          centered
+        >
+          <form onSubmit={handleAccountSubmit}>
             <Modal.Header closeButton>
-              <Modal.Title>Edit account details</Modal.Title>
+              <Modal.Title>Add account details</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <div className="row">
                 <div className="col-12">
                   <div className="form-group mb-4">
-                    <label htmlFor="">Select Bank/  <strong className="text-danger ">*</strong></label>
+                    <label htmlFor="">
+                      Select Bank. <strong className="text-danger ">*</strong>
+                    </label>
                     <select
                       className="form-control text-capitalize"
                       onChange={(e) => {
-                        editBankAccountDetails(e.target.value);
+                        setbankAccountDetails(e.target.value);
                       }}
                       name="bank account"
                       required={true}
                     >
                       <option className="text-black font-semibold ">
-                        {editBankName}
+                        select..
                       </option>
-                      {banks.sort((a, b) => a.bankName.localeCompare(b.bankName))?.map((bank) => {
-                        return (
-                          <option
-                            key={bank.id}
-                            value={
-                              bank.id +
-                              ":" +
-                              bank.bankName
-                            }
-                          >
-                            {bank.bankName?.toLowerCase()?.replace(/_/g , " ")}
-                          </option>
-                        );
-                      })}
+                      {banks
+                        .sort((a, b) => a.bankName.localeCompare(b.bankName))
+                        ?.map((bank) => {
+                          return (
+                            <option
+                              key={bank.id}
+                              value={bank.id + ":" + bank.bankName}
+                            >
+                              {bank.bankName?.toLowerCase()?.replace(/_/g, " ")}
+                            </option>
+                          );
+                        })}
                     </select>
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="">Bank account number. <strong className="text-danger ">*</strong></label>
-                    <input type="text" className="form-control" value={editBankAccount} onChange={(e) => setEditBankAccount(e.target.value)} placeholder="Enter account number" required={true} />
+                    <label htmlFor="">
+                      Bank account number.{" "}
+                      <strong className="text-danger ">*</strong>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={bankAccountNumber}
+                      onChange={(e) => setbankAccountNumber(e.target.value)}
+                      placeholder="Enter account number"
+                      required={true}
+                    />
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="">Percentage renumeration.  <strong className="text-danger ">*</strong></label>
-                    <input type="text" className="form-control" value={editpercentageRemuneration} onChange={(e) => setEditPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
+                    <label htmlFor="">
+                      Percentage renumeration.{" "}
+                      <strong className="text-danger ">*</strong>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={percentageRemuneration}
+                      onChange={(e) =>
+                        setPercentageRemuneration(e.target.value)
+                      }
+                      placeholder="Enter % renumeration"
+                      required={true}
+                    />
                   </div>
                 </div>
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" className={"btn btn-grey"} onClick={() => accclose()}>
+              <Button
+                variant="secondary"
+                className={"btn btn-grey"}
+                onClick={() => docclose()}
+              >
                 Close
               </Button>
-              <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+              <Button
+                variant="primary"
+                className={"btn btn-primary"}
+                type={"submit"}
+              >
                 Save Changes
               </Button>
             </Modal.Footer>
           </form>
         </Modal>
-      </div>
-      {/*add accounts modal*/}
-      <Modal show={show_doc} onHide={docclose} className={"modal fade"} centered>
-        <form onSubmit={handleAccountSubmit}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add account details</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row">
-              <div className="col-12">
-                <div className="form-group mb-4">
-                  <label htmlFor="">Select Bank.  <strong className="text-danger ">*</strong></label>
-                  <select
-                    className="form-control text-capitalize"
-                    onChange={(e) => {
-                      setbankAccountDetails(e.target.value);
-                    }}
-                    name="bank account"
-                    required={true}
-                  >
-                    <option className="text-black font-semibold ">
-                      select..
-                    </option>
-                    {banks.sort((a, b) => a.bankName.localeCompare(b.bankName))?.map((bank) => {
-                      return (
-                        <option
-                          key={bank.id}
-                          value={
-                            bank.id +
-                            ":" +
-                            bank.bankName
-                          }
-                        >
-                          {bank.bankName?.toLowerCase()?.replace(/_/g , " ")}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Bank account number.  <strong className="text-danger ">*</strong></label>
-                  <input type="text" className="form-control" value={bankAccountNumber} onChange={(e) => setbankAccountNumber(e.target.value)} placeholder="Enter account number" required={true} />
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Percentage renumeration.  <strong className="text-danger ">*</strong></label>
-                  <input type="text" className="form-control" value={percentageRemuneration} onChange={(e) => setPercentageRemuneration(e.target.value)} placeholder="Enter % renumeration" required={true} />
-                </div>
-              </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" className={"btn btn-grey"} onClick={() => docclose()}>
-              Close
-            </Button>
-            <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
-      {/*add documents*/}
-      <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
-        <form onSubmit={handleDocumentSubmit}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Documents</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row">
-              <div className="col-12">
-                <div className="form-group mb-4">
-                  <label htmlFor="">Select Document Type.  <strong className="text-danger ">*</strong></label>
-                  <select
-                    className="form-control text-capitalize"
-                    onChange={(e) => {
-                      setdocumentTypeId(e.target.value);
-                    }}
-                    name="document type"
-                    required={true}
-                  >
-                    <option className="text-black font-semibold ">
-                      select document type..
-                    </option>
-                    {documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
-                      return (
-                        <option
-                          key={dT.id}
-                          value={dT.id}
-                        >
-                          {dT.name?.toLowerCase()?.replace(/_/g , " ")}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Document Name.  <strong className="text-danger ">*</strong></label>
-                  <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true} />
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Document Upload.  <strong className="text-danger ">*</strong></label>
-                  <div className="input-group mb-0">
-                    <label className="input-group-text bg-info text-white cursor-pointer"
-                      htmlFor="document1-1">
-                      <i className="font-14px mdi mdi-paperclip" /> Attach File
+        {/*add documents*/}
+        <Modal
+          show={docShow}
+          onHide={handleDocClose}
+          className={"modal fade"}
+          centered
+        >
+          <form onSubmit={handleDocumentSubmit}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add Documents</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-12">
+                  <div className="form-group mb-4">
+                    <label htmlFor="">
+                      Select Document Type.{" "}
+                      <strong className="text-danger ">*</strong>
                     </label>
-                    <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true} />
+                    <select
+                      className="form-control text-capitalize"
+                      onChange={(e) => {
+                        setdocumentTypeId(e.target.value);
+                      }}
+                      name="document type"
+                      required={true}
+                    >
+                      <option className="text-black font-semibold ">
+                        select document type..
+                      </option>
+                      {documentTypes
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        ?.map((dT) => {
+                          return (
+                            <option key={dT.id} value={dT.id}>
+                              {dT.name?.toLowerCase()?.replace(/_/g, " ")}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">
+                      Document Name. <strong className="text-danger ">*</strong>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={docName}
+                      onChange={(e) => setdocName(e.target.value)}
+                      placeholder="Enter document name"
+                      required={true}
+                    />
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">
+                      Document Upload.{" "}
+                      <strong className="text-danger ">*</strong>
+                    </label>
+                    <div className="input-group mb-0">
+                      <label
+                        className="input-group-text bg-info text-white cursor-pointer"
+                        htmlFor="document1-1"
+                      >
+                        <i className="font-14px mdi mdi-paperclip" /> Attach
+                        File
+                      </label>
+                      <input
+                        type="file"
+                        className="form-control"
+                        id="document1-1"
+                        onChange={(e) => handleFileRead(e)}
+                        required={true}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" className={"btn btn-grey"} onClick={handleDocClose}>
-              Close
-            </Button>
-            <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
-      <div
-        className="modal fade"
-        id="confirm-deactivate"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-        centered="true"
-      >
-        <div className="modal-dialog modal-dialog-centered" role="document">
-          <div className="modal-content">
-            <div className="modal-body">
-              <center>
-                <h5>Deactivate Document ?</h5>
-              </center>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-light"
-                data-bs-dismiss="modal"
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                className={"btn btn-grey"}
+                onClick={handleDocClose}
               >
-                no
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivate(activeId)}
+                Close
+              </Button>
+              <Button
+                variant="primary"
+                className={"btn btn-primary"}
+                type={"submit"}
               >
-                Yes
-              </button>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal>
+        <div
+          className="modal fade"
+          id="confirm-deactivate"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+          centered="true"
+        >
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content">
+              <div className="modal-body">
+                <center>
+                  <h5>Deactivate Document ?</h5>
+                </center>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  no
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => deactivate(activeId)}
+                >
+                  Yes
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* confirm dactivate  */}
-      <div
-        className="modal fade"
-        id="confirm-activate"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-        centered="false"
-      >
-        <div className="modal-dialog modal-dialog-centered" role="document">
-          <div className="modal-content">
-            <div className="modal-body">
-              <center>
-                <h5>Activate Document ?</h5>
-              </center>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                no
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivate(activeId)}
-              >
-                Yes
-              </button>
+        {/* confirm dactivate  */}
+        <div
+          className="modal fade"
+          id="confirm-activate"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+          centered="false"
+        >
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content">
+              <div className="modal-body">
+                <center>
+                  <h5>Activate Document ?</h5>
+                </center>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  no
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => deactivate(activeId)}
+                >
+                  Yes
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* confirm ACCOUNT  */}
-      <div
-        className="modal fade"
-        id="confirm-acc-activate"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-        centered="true"
-      >
-        <div className="modal-dialog modal-dialog-centered" role="document">
-          <div className="modal-content">
-            <div className="modal-body">
-              <center>
-                <h5>Activate Account ?</h5>
-              </center>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                no
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivateAcc(activeId)}
-              >
-                Yes
-              </button>
+        {/* confirm ACCOUNT  */}
+        <div
+          className="modal fade"
+          id="confirm-acc-activate"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+          centered="true"
+        >
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content">
+              <div className="modal-body">
+                <center>
+                  <h5>Activate Account ?</h5>
+                </center>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  no
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => deactivateAcc(activeId)}
+                >
+                  Yes
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* confirm dactivate  */}
-      <div
-        className="modal fade"
-        id="confirm-acc-deactivate"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-        centered="true"
-      >
-        <div className="modal-dialog modal-dialog-centered" role="document">
-          <div className="modal-content">
-            <div className="modal-body">
-              <center>
-                <h5>Deactivate Account ?</h5>
-              </center>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                no
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivateAcc(activeId)}
-              >
-                Yes
-              </button>
+        {/* confirm dactivate  */}
+        <div
+          className="modal fade"
+          id="confirm-acc-deactivate"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+          centered="true"
+        >
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content">
+              <div className="modal-body">
+                <center>
+                  <h5>Deactivate Account ?</h5>
+                </center>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  no
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => deactivateAcc(activeId)}
+                >
+                  Yes
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-   
-   </div>
     </>
-
   );
 }
 
