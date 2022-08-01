@@ -160,7 +160,7 @@ function Statements() {
                         </tr>
                       </thead>
                       <tbody>
-                        {statements.length > 0 &&
+                        {statements && statements.length > 0 &&
                           statements?.map((statement, index) => (
                             <tr data-id={index} key={index}>
                               <td>
