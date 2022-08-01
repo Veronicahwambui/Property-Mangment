@@ -6,6 +6,7 @@ import { Modal } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { baseUrl } from "../../services/API";
 
+
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useState(1);
   const [landlord, setLandlord] = useState([]);

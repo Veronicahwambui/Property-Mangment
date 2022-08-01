@@ -7,10 +7,15 @@ import UnitTypes from "../setups/UnitTypes";
 import authService from "../../services/auth.service";
 import { Link } from "react-router-dom";
 import moment from 'moment'
+import {Modal, Button} from"react-bootstrap";
+import { baseUrl } from "../../services/API";
+
+
+
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
-  const [docName, setDocName] = useState("");
+ 
   const [tenantId, setTenantId] = useState("");
   const [contactPerson, setContactPerson] = useState([]);
   // $( "#datepicker198" ).datepicker({ minDate: new Date().getDay() });
@@ -46,9 +51,65 @@ const[premiseData,setPremiseData]=useState([])
   const [premises, setPremises] = useState([])
   const [units, setUnits] = useState([])
   const[premId,setPremId]=useState("")
+
+
+  
  
   const[companyLocation,setCompanyLocation]=useState("")
+  //documents
+
+  const [docName, setDocName] = useState("")
+  const [docs, setDocs] = useState("")
+  const [documentTypeId, setDocumentTypeId] = useState(null)
+  const[documentTypes,setDocumentTypes]=useState([])
+  const[tenantDocs, setTenantDocs]=useState([])
+   //modals
+   const [show, setShow] = useState(false);
+   const [docShow, setdocShow] = useState(true);
   
+ 
+ 
+   const [editAccountShow, seteditAccountShow] = useState(false);
+   const [editDocShow, seteditDocShow] = useState(false);
+ 
+   const handleShow = () => setShow(true);
+   const handleClose = () => setShow(false);
+ 
+   const handleDocShow = () => setdocShow(true);
+   const handleDocClose = () => setdocShow(false);
+ 
+   const handleEditShow = () => seteditDocShow(true);
+   const handleEditClose = () => seteditDocShow(false);
+
+   // doc 
+
+   const handleDocumentSubmit = (event) => {
+    event.preventDefault();
+
+    handleDocClose();
+  }
+
+  const handleFileRead = async (event) => {
+    const file = event.target.files[0]
+    const base64 = await convertBase64(file)
+    setDocs(base64);
+  }
+
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file)
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      }
+      fileReader.onerror = (error) => {
+        reject(error);
+      }
+    })
+  }
+ 
+ 
+
 
   // edit tenants
   const [unitTypeName, setUnitTypeName] = useState("");
@@ -207,6 +268,7 @@ const[premiseData,setPremiseData]=useState([])
 
     requestsServiceService.updateContactPersons(contacts).then((res) => {
       console.log(res);
+
       fetchAll();
     });
   };
@@ -392,12 +454,56 @@ const getStatus =()=>{
   })
 }
 
+//documents create
+const createDoc =() =>{
+
+  setdocShow(!docShow)
+  
+  let data= JSON.stringify({
+    docName: docName,
+    document: docs,
+    documentOwnerTypeName: "TENANT",
+    documentTypeId: documentTypeId,
+    id: null,
+    ownerEntityId: userId
+})
+
+requestsServiceService.createDocuments(data).then((res) => {
+// setTenantDocs(res.data.data)
+getDocument()
+
+
+})
+}
+
+const getDocument =()=>{
+  requestsServiceService.fetchDocuments("TENANT",id).then((res)=>{
+   setTenantDocs(res.data.data)
+    
+   
+  }
+  )
+}
   useEffect(() => {
     fetchAll();
     getContactTypeName();
     getPremises();
     getStatus()
+    createDoc();
+    createDocumentTypes()
+    getDocument()
+    
+    
+   
   }, []);
+
+  const createDocumentTypes =(id)=>{
+    requestsServiceService.getDocumentTypes(id).then((res) => {
+      setDocumentTypes(res.data.data);
+     
+    })
+  }
+  
 
   const deleteDeactivate = (id) => {
     requestsServiceService.deactivateTenancies(id).then((res) => {
@@ -409,6 +515,11 @@ const getStatus =()=>{
   
   };
 // console.log(tenancyRenewalDate)
+
+
+
+
+
 
 const date2  =(date) => {
   setTenancyRenewalNotificationDate(new Date(date.target.value));
@@ -990,20 +1101,29 @@ $(document).on("change", ".date3", date3)
 <div className="row">
   <div className="col-xl-12">
     <div className="card calc-h-3px">
-      <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-        <div
-          class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-          role="toolbar"
-        >
-          <div class="d-flex align-items-center flex-grow-1">
-            <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
-          </div>
-          <div y>
-      
-          </div>
-        </div>
-      </div>
-      <div className="card-body">
+    <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                    <div
+                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                      role="toolbar"
+                    >
+                      <div class="d-flex align-items-center flex-grow-1">
+                        <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
+                      </div>
+                      <div onClick={handleDocShow}>
+                        <button
+                          type="button"
+                          className="btn align-items-center d-flex btn-primary dropdown-toggle option-selector mb-3 mt-0"
+                        >
+                          <i className="dripicons-plus font-size-16 mt-1"></i>{" "}
+                          <span className="pl-1 d-md-inline">
+                            New document
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+      <div className="card-body" onSubmit={createDoc}>
         <div className="col-12">
           <div className="table-responsive">
             <table
@@ -1015,26 +1135,32 @@ $(document).on("change", ".date3", date3)
                   <th>#</th>
                   <th>Name</th>
                   <th>Type</th>
-                  <th>Tenant type</th>
-                  <th></th>
+                  <th>Own type</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {premiseData.premiseDocuments &&
-                  premiseData.premiseDocuments.map(
+                {tenantDocs &&
+                  tenantDocs.map(
                     (unit, index) => (
                       <tr data-id="1">
                         <td>{index + 1}</td>
                         <td className="active nav-link cursor-pointer">
                           <a onClick={() => download}>
-                            {/* {" "}
-                            {unit.docName} */}
+                            {" "}
+                            {unit.docName}
                           </a>
                         </td>
-                        {/* <td>{unit.documentType.name}</td> */}
+                        <td>{unit.documentType.name}</td>
                         <td className="text-capitalize">
-                          {/* {unit.documentOwnerType.toLowerCase()} */}
+                          {unit.documentOwnerType.toLowerCase()}
                         </td>
+                        <td>
+                                    <a href={baseUrl + "/documents/download?docName=" + `${unit.docName}`}
+                                                  className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                                  target="_blank"><i className="bx bx-download" />
+                                                </a>
+                                    </td>
                       </tr>
                     )
                   )}
@@ -1046,9 +1172,72 @@ $(document).on("change", ".date3", date3)
     </div>
   </div>
 </div>
+
 {/*document attachment modal*/}
 
+<div>
+              <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
+                <form onSubmit={createDoc}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Add Documents</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="form-group mb-4">
+                          <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
+                          <select
+                            className="form-control text-capitalize"
+                            onChange={(e) => {
+                              setDocumentTypeId(e.target.value);
+                            }}
+                            name="document type"
+                            required={true}
+                          >
+                            <option className="text-black font-semibold ">
+                              select..
+                            </option>
+                            {documentTypes &&  documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
+                              return (
+                                <option
+                                  key={dT.id}
+                                  value={dT.id}
+                                >
+                                  {dT.name?.toLowerCase().replace(/_/g, " ")}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                        <div className="form-group mb-4">
+                          <label htmlFor="">Document Name. <strong className="text-danger ">*</strong></label>
+                          <input type="text" className="form-control" value={docName} onChange={(e) => setDocName(e.target.value)} placeholder="Enter document name" required={true} />
+                        </div>
+                        <div className="form-group mb-4">
+                          <label htmlFor="">Document Upload. <strong className="text-danger ">*</strong></label>
+                          <div className="input-group mb-0">
+                            <label className="input-group-text bg-info text-white cursor-pointer"
+                              htmlFor="document1-1">
+                              <i className="font-14px mdi mdi-paperclip"></i> Attach File
+                            </label>
+                            <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" className={"btn btn-grey"} onClick={handleDocClose}>
+                      Close
+                    </Button>
+                    <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                      Add Document
+                    </Button>
+                  </Modal.Footer>
+                </form>
+              </Modal>
 
+</div>
 
 </div>
 
@@ -1057,6 +1246,7 @@ $(document).on("change", ".date3", date3)
 
 
    )}
+
 
         <div
           class="modal fade"

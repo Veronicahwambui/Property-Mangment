@@ -327,7 +327,7 @@ function AddTenant() {
   }
   useEffect(() => {
     console.log(docBody)
-  }, [docBody,tenantDocuments])
+  }, [docBody, tenantDocuments])
 
   const isIdFilled = (tenantDocuments.length > 1);
 
@@ -420,29 +420,29 @@ function AddTenant() {
               <p>Fill in the form correctly. Fields with an Asterisk <strong className="text-danger">*</strong> are mandatory fields.</p>
               {/* step form starts here */}
               <div id="kev-step-form">
-              {/* step form navigation container */}
-              <nav class="navbar navbar-expand-lg navbar-light bg-light">
-               
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span className="navbar-toggler-icon"></span>
-                </button>
+                {/* step form navigation container */}
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul className="navbar-nav mr-auto">
-                    <li className="nav-item active">
-                      <a className="nav-link active">1. Tenant Details <span className="sr-only">(current)</span></a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" >2. Kin Referees & Dependents</a>
-                    </li>
+                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                  </button>
 
-                    <li className="nav-item">
-                      <a className="nav-link" >3. Unit Assignment</a>
-                    </li>
+                  <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav mr-auto">
+                      <li className="nav-item active">
+                        <a className="nav-link active">1. Tenant Details <span className="sr-only">(current)</span></a>
+                      </li>
+                      <li className="nav-item">
+                        <a className="nav-link" >2. Kin Referees & Dependents</a>
+                      </li>
 
-                    <li className="nav-item">
-                      <a className="nav-link" >4. Tenant Document attachments</a>
-                    </li>
+                      <li className="nav-item">
+                        <a className="nav-link" >3. Unit Assignment</a>
+                      </li>
+
+                      <li className="nav-item">
+                        <a className="nav-link" >4. Tenant Document attachments</a>
+                      </li>
 
                     </ul>
 
@@ -450,10 +450,10 @@ function AddTenant() {
                 </nav>
 
                 {/* navigation bar end */}
-<form id="tenant-form" onSubmit={submit}>
-                <div className="step-cont active-step">
-                  <h3>Tenant Details</h3>
-                  <section>
+                <form id="tenant-form" onSubmit={submit}>
+                  <div className="step-cont active-step">
+                    <h3>Tenant Details</h3>
+                    <section>
                       <div className="col-12">
                         <div className="col-lg-4">
                           <div className="mb-3">
@@ -473,14 +473,14 @@ function AddTenant() {
                             <i className="font-14px mdi mdi-paperclip"></i> ID FRONT
                           </label>
                           <input type="file" className="form-control" name="file"
-                            onChange={(e) => handleidchange(e)} required={true}/>
+                            onChange={(e) => handleidchange(e)} required={true} />
                         </div>
                         <div className="col-lg-4">
                           <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
                             <i className="font-14px mdi mdi-paperclip"></i> ID BACK
                           </label>
                           <input type="file" className="form-control" name="file"
-                            onChange={(e) => handleidchange2(e)} required={true}/>
+                            onChange={(e) => handleidchange2(e)} required={true} />
                         </div>
                       </div>
 
@@ -513,7 +513,7 @@ function AddTenant() {
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Email. <strong className="text-danger">*</strong></label>
-                              <input type="email" className="form-control" id="Enter tenants email address" placeholder="Enter property plot No." name="email"
+                              <input type="email" className="form-control" id="Enter tenants email address" placeholder="" name="email"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 required />
                             </div>
@@ -521,7 +521,7 @@ function AddTenant() {
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">Phone. <strong className="text-danger">*</strong></label>
-                              <input type="text" className="form-control" id="Enter tenants Phone Number" placeholder="Enter property plot No." name="phoneNumber"
+                              <input type="text" className="form-control" id="Enter tenants Phone Number" placeholder="" name="phoneNumber"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 required />
                             </div>
@@ -758,12 +758,12 @@ function AddTenant() {
 
                         </div>
                       }
-                  </section>
-                </div>
+                    </section>
+                  </div>
 
-                <div className="step-cont d-none">
-                  <h3>Kin Referees & Dependents</h3>
-                  <section>
+                  <div className="step-cont d-none">
+                    <h3>Kin Referees & Dependents</h3>
+                    <section>
                       <div className="row">
 
                         <div className="col-12">
@@ -923,12 +923,12 @@ function AddTenant() {
 
 
 
-                  </section>
-                </div>
+                    </section>
+                  </div>
 
-                <div className="step-cont d-none">
-                  <h3>Unit assignment</h3>
-                  <section>
+                  <div className="step-cont d-none">
+                    <h3>Unit assignment</h3>
+                    <section>
                       <div className="row clone-cont">
                         <div className="col-12 clone-me">
                           <div className="row ">
@@ -1024,51 +1024,51 @@ function AddTenant() {
                         </div>
                       </div>
 
-                  </section>
-                </div>
+                    </section>
+                  </div>
 
-                <div className="step-cont d-none">
-                  <h3>Tenant Document attachments</h3>
-                  <section>
-                    <div className="table-responsive table-responsive-md ">
-                      <table className="table table-editable-file align-middle table-edits ">
-                        <thead className="table-light ">
-                          <tr className="text-uppercase table-dark ">
-                            <th className="vertical-align-middle ">#</th>
-                            <th className="vertical-align-middle ">Document Type</th>
-                            <th className="vertical-align-middle ">Document Name</th>
-                            <th className="vertical-align-middle ">Actions</th>
-                            <th className="text-right "></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {tenantDocuments && tenantDocuments.map((dependent, index) => (
-                            <tr>
-                              <td>{index + 1}</td>
-                              <td>{dependent.documentOwnerTypeName}</td>
-                              <td>{dependent.docName}</td>
-                              <td></td>
+                  <div className="step-cont d-none">
+                    <h3>Tenant Document attachments</h3>
+                    <section>
+                      <div className="table-responsive table-responsive-md ">
+                        <table className="table table-editable-file align-middle table-edits ">
+                          <thead className="table-light ">
+                            <tr className="text-uppercase table-dark ">
+                              <th className="vertical-align-middle ">#</th>
+                              <th className="vertical-align-middle ">Document Type</th>
+                              <th className="vertical-align-middle ">Document Name</th>
+                              <th className="vertical-align-middle ">Actions</th>
+                              <th className="text-right "></th>
                             </tr>
-                          ))
+                          </thead>
+                          <tbody>
+                            {tenantDocuments && tenantDocuments.map((dependent, index) => (
+                              <tr>
+                                <td>{index + 1}</td>
+                                <td>{dependent.documentOwnerTypeName}</td>
+                                <td>{dependent.docName}</td>
+                                <td></td>
+                              </tr>
+                            ))
 
-                          }
+                            }
 
-                        </tbody>
-                        <tfoot>
+                          </tbody>
+                          <tfoot>
 
 
-                          <tr className='' data-id="TENANT" onClick={newDocument}>
-                            <td colspan="7" class="bg-light add-field-1 cursor-pointer">
-                              <span class="d-flex align-items-center "><i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span class="pl-5 ">Add Tenancy Documents</span></span>
-                            </td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-                  </section>
-                </div>
+                            <tr className='' data-id="TENANT" onClick={newDocument}>
+                              <td colspan="7" class="bg-light add-field-1 cursor-pointer">
+                                <span class="d-flex align-items-center "><i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i><span class="pl-5 ">Add Tenancy Documents</span></span>
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
 
-</form>
+                </form>
                 {/* the buttons container */}
                 <div className="button-navigators">
                   <button disabled className="btn btn-primary waves-effect kev-prev me-3"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>
@@ -1177,68 +1177,68 @@ function AddTenant() {
                     <div className="col-md-6" id="datepicker1O4">
                       <div className="mb-4">
                         <label htmlFor="">TenancyRenewalDate</label>
-                        <input type="number" className="form-control  mouse-pointer enddate" id="" placeholder="Enter TenancyRenewalDate"
-                          readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker14' data-provide="datepicker" data-date-autoclose="true"
+                        <input type="text" className="form-control  mouse-pointer enddate" id="" placeholder="Enter TenancyRenewalDate"
+                                                readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker104' data-provide="datepicker" data-date-autoclose="true"
 
-                          onChange={(e) => handleAssignmentChange(e)} name="tenancyRenewalDate" required />
-                      </div>
-                    </div>
-                  </form>
-                </ModalBody>
-                <ModalFooter>
-                  <button className='btn btn-basic' type="button" onClick={toogleShowAssignUnits}>Close</button>
-                  <button className='btn btn-success' type="button" onClick={addTenancy}>Add</button>
-                </ModalFooter>
-              </Modal>
-
-
-              <Modal show={showDocumentModal}>
-                <ModalHeader className='justify-content'>
-                  <h3>New {docBody.documentOwnerTypeName} Document</h3>
-                  <span onClick={toogleShowNewDocumentModal}>X</span>
-                </ModalHeader>
-                <ModalBody>
-                  <form id="newContactPersonForm" className='row'>
-                    <div className="col-md-6">
-                      <div className="mb-4">
-                        <label htmlFor="basicpill-firstname-input">Document Type<strong className="text-danger">*</strong></label>
-
-                        <select className='form-control' onChange={handleDocumentChange} name="documentTypeId">
-                          <option></option>
-                          {documentTypes && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="mb-4">
-                        <label htmlFor="">Doc Name</label>
-                        <input type="text" className="form-control" id="" placeholder=""
-                          onChange={(e) => handleDocumentChange(e)} name="docName" required />
-                      </div>
-                    </div>
-                    <div className="col-md-12">
-                      <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
-                        <i className="font-14px mdi mdi-paperclip"></i> Document
-                      </label>
-                      <input type="file" className="form-control" name="file"
-                        onChange={(e) => handleDocumentChange(e)} required />
+    onChange={(e) => handleAssignmentChange(e)} name="tenancyRenewalDate" required />
+                      </div >
+                    </div >
+                  </form >
+                </ModalBody >
+    <ModalFooter>
+      <button className='btn btn-basic' type="button" onClick={toogleShowAssignUnits}>Close</button>
+      <button className='btn btn-success' type="button" onClick={addTenancy}>Add</button>
+    </ModalFooter>
+              </Modal >
 
 
-                    </div>
-                  </form>
-                </ModalBody>
-                <ModalFooter>
-                  <button className='btn btn-basic' type="button" onClick={toogleShowNewDocumentModal}>Close</button>
-                  <button className='btn btn-success' type="button" onClick={addDocument}>Add</button>
-                </ModalFooter>
-              </Modal>
+    <Modal show={showDocumentModal}>
+      <ModalHeader className='justify-content'>
+        <h3>New {docBody.documentOwnerTypeName} Document</h3>
+        <span onClick={toogleShowNewDocumentModal}>X</span>
+      </ModalHeader>
+      <ModalBody>
+        <form id="newContactPersonForm" className='row'>
+          <div className="col-md-6">
+            <div className="mb-4">
+              <label htmlFor="basicpill-firstname-input">Document Type<strong className="text-danger">*</strong></label>
+
+              <select className='form-control' onChange={handleDocumentChange} name="documentTypeId">
+                <option></option>
+                {documentTypes && documentTypes.map((prem, index) => <option value={prem.id}>{prem.name}</option>)}
+              </select>
             </div>
           </div>
-        </div>
-      </div>
 
-    </div>
+          <div className="col-md-6">
+            <div className="mb-4">
+              <label htmlFor="">Doc Name</label>
+              <input type="text" className="form-control" id="" placeholder=""
+                onChange={(e) => handleDocumentChange(e)} name="docName" required />
+            </div>
+          </div>
+          <div className="col-md-12">
+            <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
+              <i className="font-14px mdi mdi-paperclip"></i> Document
+            </label>
+            <input type="file" className="form-control" name="file"
+              onChange={(e) => handleDocumentChange(e)} required />
+
+
+          </div>
+        </form>
+      </ModalBody>
+      <ModalFooter>
+        <button className='btn btn-basic' type="button" onClick={toogleShowNewDocumentModal}>Close</button>
+        <button className='btn btn-success' type="button" onClick={addDocument}>Add</button>
+      </ModalFooter>
+    </Modal>
+            </div >
+          </div >
+        </div >
+      </div >
+
+    </div >
   )
 }
 
