@@ -12,6 +12,7 @@ function OnePremiseUnit() {
     const [tenancy, setTenancy] = useState([])
     const [premiseCharges, setPremiseCharges] = useState([])
     const[newStatus,setNewStatus]=useState("")
+    const[premiseStatuses,setPremiseStatuses]=useState([])
 
 
     const { id, one } = useParams()
@@ -36,16 +37,23 @@ function OnePremiseUnit() {
         requestsServiceService.updateStatus(premId, data).then((res)=>{
             console.log(res.data)
             // setUnitDetails(res.data.data)
-       
+        fetchAll()
            
            
           }
           ) 
     }
-  
+    const getStatus =()=>{
+        requestsServiceService.getTenantStatus().then((res)=>{
+          setPremiseStatuses(res.data.data)
+          fetchAll()
+        })
+      }
+      
 
     useEffect(() => {
         fetchAll()
+        getStatus()
     }, [])
 
 
@@ -105,15 +113,35 @@ function OnePremiseUnit() {
                 <div class="col-12">
                   <div class="form-group mb-4">
                     <label for="">NewStatus</label>
-                    <input
+                    {/* <input
 
                       type="text"
                       class="form-control"
                       placeholder="Enter name"
                       onChange={(event) => setNewStatus(event.target.value)}
                       value={newStatus}
+                      
                     
-                    />
+                    /> */}
+                             <select
+                        class="form-control"
+                        data-live-search="true"
+                        title="Select TenancyStatus"
+                        onChange={(e) => setNewStatus(e.target.value)}
+                      >
+                        <option className="text-black font-semibold ">
+                          --Select TenancyStatus--
+                        </option>
+                        {premiseStatuses&&
+                        premiseStatuses.map((tenant, index) => {
+                            return (
+                              <option key={index} value={tenant}>
+                                {tenant}
+                              </option>
+                            );
+                          })}
+                      </select>
+                   
                   </div>
                 </div>
  

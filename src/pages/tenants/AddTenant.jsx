@@ -53,7 +53,7 @@ function AddTenant() {
     let vals = event.target.value.split(':');
 
     requestsServiceService.findVacatPremise(vals[0]).then((res) =>
-      setUnits(res.data.data.premiseUnits)
+      setUnits(res.data.data)
     )
 
     setTenancyBody({ ...tenancyBody, "premise": vals[0] });

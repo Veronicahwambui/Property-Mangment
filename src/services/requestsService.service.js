@@ -641,8 +641,8 @@ class RequestsService {
     return axiosInstance.get(baseUrl + `/payments/parents/${id}`);
   }
   updateStatus(premiseId,data){
-    return axiosInstance.post(baseUrl+"/premiseUnits/"+premiseId+"/units/updateStatus",data)
-}
+   return axiosInstance.post(baseUrl+"/premiseUnits/"+premiseId+"/units/updateStatus",data)
+ }
 findVacatPremise(premiseId) {
     return axiosInstance.get(baseUrl+"/premiseUnits/"+premiseId+"/units/vacant")
     }
