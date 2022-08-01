@@ -228,7 +228,9 @@ class RequestsService {
   togglePremiseStatus(id) {
     return axiosInstance.get(baseUrl + "/premises/toogleStatus/" + id);
   }
-
+  getCaretakerTypes(){
+    return axiosInstance.get(baseUrl + "/setup/caretakerTypes")
+  }
   //    one premise things  caretaker
 
   caretakerTypes() {
@@ -682,11 +684,11 @@ class RequestsService {
 
 //   DASHBOARD 
 
-getClientDashboardGraphs(){
-    return axiosInstance.get(baseUrl + "/reports/dashboard/graphs")
+getClientDashboardGraphs(startDate ,endDate){
+    return axiosInstance.get(baseUrl + "/reports/dashboard/graphs?startDate="+ startDate + "&endDate="+ endDate )
 }
-getClientDashboard(){
-    return axiosInstance.get(baseUrl + "/reports/dashboard")
+getClientDashboard(startDate ,endDate){
+    return axiosInstance.get(baseUrl + "/reports/dashboard?startDate="+ startDate + "&endDate="+ endDate)
 }
 
 }
