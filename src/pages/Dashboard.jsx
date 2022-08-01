@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import Chart from "react-apexcharts";
 import numeral from "numeral"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from 'moment';
 
 import requestsServiceService from '../services/requestsService.service'
 import { Link } from 'react-router-dom';
@@ -13,22 +16,29 @@ function Dashboard() {
     const [radioBarData, setRadioBarData] = useState([])
     const [radioBarData2, setRadioBarData2] = useState([])
     const [pieChartData, setPieChartData] = useState([])
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [transactionModesData, setTransactionModesData] = useState([])
     const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] = useState([])
 
     useEffect(() => {
         fetchDashData()
     }, [])
+    
+    const handleSubmit =(e)=>{
+        e.preventDefault()
+        fetchDashData()
 
+    }
     const fetchDashData = () => {
-        requestsServiceService.getClientDashboardGraphs().then((res) => {
+        requestsServiceService.getClientDashboardGraphs(moment(startDate).format("YYYY/MM/DD") ,moment(endDate).format("YYYY/MM/DD") ).then((res) => {
             setRadioBarData(res.data.data.collectionSummaryByPremiseUseType)
             setRadioBarData2(res.data.data.collectionSummaryByUnitType)
             setPieChartData(res.data.data.collectionSummaryByApplicableCharge)
             setTransactionModesData(res.data.data.collectionSummaryByPaymentMode)
             setMonthlyCollectionSummaryRevenue(res.data.data.monthlyCollectionSummaryRevenue)
         })
-        requestsServiceService.getClientDashboard().then((res) => {
+        requestsServiceService.getClientDashboard(moment(startDate).format("YYYY/MM/DD") ,moment(endDate).format("YYYY/MM/DD")).then((res) => {
             setDashboardData(res.data.data)
         })
     }
@@ -343,9 +353,50 @@ function Dashboard() {
                             <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
 
                             <div class="page-title-right">
-                                <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item active"> <Link to='/'>Dashboard </Link> </li>
-                                </ol>
+                                <form className="d-flex align-items-center">
+                                    <div className="d-flex justify-content-end align-items-center">
+                                    <div className="d-flex">
+                                        <label className="">
+                                            Start Date
+                                        </label>
+                                        <DatePicker
+                                            selected={startDate}
+                                            onChange={(date) => setStartDate(date)}
+                                            selectsStart
+                                            className="form-control mouse-pointer sdate"
+
+                                            startDate={startDate}
+                                            endDate={endDate}
+                                            maxDate={new Date()}
+                                        />
+                                    </div>
+                                    <div className="d-flex">
+                                        <label className="">
+                                            End Date
+                                        </label>
+                                        <DatePicker
+                                            selected={endDate}
+                                            onChange={(date) => setEndDate(date)}
+                                            selectsEnd
+                                            className="form-control mouse-pointer sdate"
+
+                                            startDate={startDate}
+                                            endDate={endDate}
+                                            minDate={startDate}
+                                            maxDate={new Date()}
+                                        />
+                                    </div>
+                                    </div>
+                                      <div className="d-flex mb-2">
+                                      <input
+                                        type="submit"
+                                        className="btn btn-primary"
+                                        onClick={handleSubmit}
+                                        value="filter"
+                                    />
+                                      </div>
+                                  
+                                </form>
                             </div>
 
                         </div>
@@ -443,7 +494,7 @@ function Dashboard() {
                                                                             <i class="mdi mdi-home-export-outline  text-white"></i>
                                                                         </span>
                                                                     </div>
-                                                                    <p class="text-muted text-truncate mb-2 text-capitalize">{item.item?.toLowerCase()?.replace(/-/g , " ")} Units</p>
+                                                                    <p class="text-muted text-truncate mb-2 text-capitalize">{item.item?.toLowerCase()?.replace(/-/g, " ")} Units</p>
                                                                     <h5 class="mb-0">{item.count}</h5>
                                                                 </div>
                                                             </div>
@@ -475,13 +526,13 @@ function Dashboard() {
                                                             </span>
                                                         </div>
                                                         <div class="d-flex flex-column">
-                                                            <span className='text-capitalize'>{item.item?.toLowerCase()?.replace(/-/g , " ")}</span>
+                                                            <span className='text-capitalize'>{item.item?.toLowerCase()?.replace(/-/g, " ")}</span>
                                                         </div>
                                                     </div>
                                                     <div class="text-muted mt-4">
                                                         <h4>KES {item.value}<i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
                                                         <div class="d-flex">
-                                                            <span class="text-truncate text-capitalize">From {item.count} {item.item?.toLowerCase()?.replace(/-/g , " ")} Invoices</span>
+                                                            <span class="text-truncate text-capitalize">From {item.count} {item.item?.toLowerCase()?.replace(/-/g, " ")} Invoices</span>
                                                         </div>
                                                     </div>
                                                 </div>
