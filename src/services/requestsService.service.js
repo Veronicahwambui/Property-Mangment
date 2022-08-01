@@ -689,6 +689,10 @@ getClientDashboard(){
     return axiosInstance.get(baseUrl + "/reports/dashboard")
 }
 
+  //start of statements
+  getStatements(data) {
+    return axiosInstance.get(baseUrl + `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`)
+  }
 }
 
 export default new RequestsService();
