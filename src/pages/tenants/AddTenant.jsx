@@ -31,7 +31,6 @@ function AddTenant() {
   const navigate = useNavigate();
 
 
-
   useEffect(() => {
     getAllPremises();
     getAllDocumentTypes()
@@ -52,8 +51,8 @@ function AddTenant() {
 
     let vals = event.target.value.split(':');
 
-    requestsServiceService.getPremise(vals[0]).then((res) =>
-      setUnits(res.data.data.premiseUnits)
+    requestsServiceService.findVacatPremise(vals[0]).then((res) =>
+      setUnits(res.data.data)
     )
 
     setTenancyBody({ ...tenancyBody, "premise": vals[0] });
@@ -261,7 +260,7 @@ function AddTenant() {
       }
     }).catch((err) => {
       confirmAlert({
-        message: err.message,
+        message: err.data.message,
         buttons: [{ label: "OK" }]
       })
     })

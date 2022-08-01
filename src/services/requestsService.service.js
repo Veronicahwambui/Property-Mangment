@@ -694,10 +694,19 @@ class RequestsService {
     return axiosInstance.get(baseUrl + `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`)
   }
 
-  fetchDocuments(docOwnerType, entity){
-    return axiosInstance.get(baseUrl +"/documents/"+docOwnerType+"/entity/"+entity)
-   
-   }
+  fetchDocuments(docOwnerType, entity) {
+    return axiosInstance.get(baseUrl + "/documents/" + docOwnerType + "/entity/" + entity)
+
+  }
+
+  updateStatus(premiseId, data) {
+    return axiosInstance.post(baseUrl + "/premiseUnits/" + premiseId + "/units/updateStatus", data)
+  }
+
+  findVacatPremise(premiseId) {
+    return axiosInstance.get(baseUrl + "/premiseUnits/" + premiseId + "/units/vacant")
+  }
+
 }
 
 export default new RequestsService();

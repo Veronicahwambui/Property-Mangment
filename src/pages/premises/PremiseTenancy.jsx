@@ -117,7 +117,7 @@ function PremiseTenancy() {
                     <div class="col-12">
                         {/* <!-- Left sidebar --> */}
                         <div class="email-leftbar card calc-h-3px-md">
-
+                           
 
                             <div class="mail-list mt-4">
                                 <a onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-home-outline me-2"></i> Client Details</a>
@@ -297,6 +297,33 @@ function PremiseTenancy() {
                                         </div>
 
                                         {/* <!-- end col --> */}
+
+
+                                        <div class="col-xl-4 col-sm-6">
+                                            <div class="card shadow-none border">
+                                                <div class="card-body p-3">
+                                                    <div class="">
+
+                                                        <div class="avatar-xs me-3 mb-3">
+                                                            <div class="avatar-title bg-transparent rounded">
+                                                                <i class="mdi mdi-floor-plan font-size-24 text-secondary"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            <div class="overflow-hidden me-auto">
+                                                                <h5 class="font-size-14 text-truncate mb-1"><a href="javascript: void(0);" class="text-body">Tenant Status</a></h5>
+                                                                <p class="text-muted text-truncate mb-0">{Object.keys(tenancy).length > 0 && tenancy.tenant.tenancyStatus}</p>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+{/* <!-- end col --> */}
 
 
                                     </div>
