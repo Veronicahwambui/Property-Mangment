@@ -5,8 +5,9 @@ import Alert from "react-bootstrap/Alert";
 import AuthService from "../../services/auth.service";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import requestsServiceService from "../../services/requestsService.service";
 
-function Issues() {
+function IssueTypes() {
   const [initialStatus, setInitialStatus] = useState("");
   const [name, setName] = useState("");
   const [resolveStatus, setResolveStatus] = useState("");
@@ -54,7 +55,10 @@ function Issues() {
       issueTypeStateDTOS.push(data);
     }
   };
-
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
   const finalSubmit = () => {
     let data = {
       active: true,
@@ -65,7 +69,35 @@ function Issues() {
       name: name,
       resolveStatus: resolveStatus,
     };
-    console.log(data);
+    requestsServiceService.createTenancyIssuesTypes(data).then((res) => {
+      let message = res.data.message;
+      if (res.data.status===false) {
+        setError({
+          ...error,
+          message: message,
+          color: "danger"
+        })
+      } else {
+        setError({
+          ...error,
+          message: message,
+          color: "success"
+        });
+      }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: ""
+        });
+      }, 2000)
+    }).catch((err)=> {
+      setError({
+        ...error,
+        message: err.data.message,
+        color: "success"
+      });
+    })
   };
   useEffect(() => {}, [issueTypeStateDTOS, status]);
 
@@ -84,7 +116,7 @@ function Issues() {
                       <Link to="/">Dashboard </Link>
                     </li>
                     <li className="breadcrumb-item">Set Ups</li>
-                    <li className="breadcrumb-item active">Issues</li>
+                    <li className="breadcrumb-item active">Issue types</li>
                   </ol>
                 </div>
               </div>
@@ -143,7 +175,7 @@ function Issues() {
                                 onChange={(e) => setName(e.target.value)}
                               />
                               <Alert variant={"warning"}>
-                                Name of the issue
+                                Name of the issue type
                               </Alert>
                             </div>
                           </div>
@@ -223,6 +255,11 @@ function Issues() {
                         {/*  </tr>*/}
                         {/*</tfoot>*/}
                       </table>
+                      {error.color !== "" &&
+                          <div className={"alert alert-" + error.color} role="alert">
+                            {error.message}
+                          </div>
+                      }
                       <div className={"text-end"}>
                         {" "}
                         {status !== "" && status === resolveStatus && (
@@ -247,7 +284,7 @@ function Issues() {
       <Modal show={show} onHide={hideModal} centered>
         <form onSubmit={addIssueState}>
           <Modal.Header closeButton>
-            <Modal.Title>Add Issue</Modal.Title>
+            <Modal.Title>Add Issue Type</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="row">
@@ -268,9 +305,9 @@ function Issues() {
                       setpremiseUnitTypeChargeId(e.target.value);
                     }}
                   >
-                    <option value="">1</option>
-                    <option value="">2</option>
-                    <option value="">3</option>
+                    <option value="CHARGE 1">CHARGE 1</option>
+                    <option value="CHARGE 2">CHARGE 2</option>
+                    <option value="CHARGE 3">CHARGE 3</option>
                   </select>
                 </div>
                 <div className="form-group mb-4">
@@ -310,7 +347,7 @@ function Issues() {
                     value={templateName}
                     onChange={(e) => setTemplateName(e.target.value)}
                   >
-                    <option value="tname1">T 1</option>
+                    <option value="template_name_1">T 1</option>
                     <option value="tname2">T 2</option>
                     <option value="tname3">T 3</option>
                   </select>
@@ -340,4 +377,4 @@ function Issues() {
   );
 }
 
-export default Issues;
+export default IssueTypes;

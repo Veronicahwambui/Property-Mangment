@@ -698,6 +698,15 @@ class RequestsService {
     return axiosInstance.get(baseUrl +"/documents/"+docOwnerType+"/entity/"+entity)
    
    }
+
+   //tenancy issues
+  getTenancyIssuesTypes() {
+    return axiosInstance.get(baseUrl + "/setup/tenancyIssueTypes")
+  }
+
+  createTenancyIssuesTypes(data) {
+    return axiosInstance.post(baseUrl+"/setup/tenancyIssueTypes", data)
+  }
 }
 
 export default new RequestsService();

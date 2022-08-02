@@ -133,7 +133,8 @@ function SideBar() {
                                 <li><NavLink to="/zones">Zones</NavLink></li>
                                 <li><NavLink to="/estates">Estate</NavLink></li>
                                 <li><NavLink  to="/agreementtypes">Agreement Types</NavLink></li>
-                                <li><NavLink  to="/issues">Issues</NavLink></li>
+                                <li><NavLink  to="/issuetypes">Create Issue Types</NavLink></li>
+                                <li><NavLink  to="/issuestypes">Issue Types</NavLink></li>
                             </ul>
                         </li>
                     </ul>
