@@ -52,7 +52,7 @@ function SideBar() {
                             </ul>
                         </li>
 
-                      
+
 
                         <li>
                             <a href="javascript: void(0)" className="waves-effect has-arrow">
@@ -133,7 +133,7 @@ function SideBar() {
                                 <li><NavLink to="/zones">Zones</NavLink></li>
                                 <li><NavLink to="/estates">Estate</NavLink></li>
                                 <li><NavLink  to="/agreementtypes">Agreement Types</NavLink></li>
-                                <li><NavLink  to="/issuetypes">Create Issue Types</NavLink></li>
+                                <li><NavLink  to="/create-issue-type">Create Issue Types</NavLink></li>
                                 <li><NavLink  to="/issuestypes">Issue Types</NavLink></li>
                             </ul>
                         </li>

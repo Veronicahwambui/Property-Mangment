@@ -7,7 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import requestsServiceService from "../../services/requestsService.service";
 
-function IssueTypes() {
+function CreateIssueTypes() {
   const [initialStatus, setInitialStatus] = useState("");
   const [applicableCharges, setApplicableCharges] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -430,4 +430,4 @@ function IssueTypes() {
   );
 }
 
-export default IssueTypes;
+export default CreateIssueTypes;

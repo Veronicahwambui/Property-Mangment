@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 
 function IssuesTypes() {
   const [issueTypes, setIssueTypes] = useState([]);
+  const [activeId, setActiveId] = useState("");
+
   useEffect(() => {
     getIssueTypes();
   }, []);
@@ -13,6 +15,14 @@ function IssuesTypes() {
   const getIssueTypes = () => {
     requestsServiceService.getTenancyIssuesTypes().then((res) => {
       setIssueTypes(res.data.data);
+    });
+  };
+
+  const deactivate = (x) => {
+    requestsServiceService.toggleIssueType(x).then((res) => {
+      if (res.data.status === true) {
+        getIssueTypes();
+      }
     });
   };
 
@@ -49,7 +59,7 @@ function IssuesTypes() {
                   >
                     <div class="d-flex align-items-center flex-grow-1">
                       <h4 class="mb-0  bg-transparent  p-0 m-0">
-                        Issue Types Register
+                        {/*Issue Types Register*/}
                       </h4>
                     </div>
                     <div class="d-flex">
@@ -79,10 +89,10 @@ function IssuesTypes() {
                         </tr>
                       </thead>
                       <tbody>
-                        {issueTypes?.map((iT, num) => {
+                        {issueTypes?.map((iT, index) => {
                           return (
-                            <tr data-id="1">
-                              <td style={{ width: "80px" }}>{num + 1}</td>
+                            <tr data-id="1" key={index}>
+                              <td style={{ width: "80px" }}>{index + 1}</td>
                               <td data-field="unit-num ">{iT.name}</td>
                               <td data-field="unit-num ">{iT.initialStatus}</td>
                               <td data-field="unit-num ">{iT.resolveStatus}</td>
@@ -98,35 +108,32 @@ function IssuesTypes() {
                                 )}
                               </td>
                               <td class="text-right cell-change text-nowrap ">
-                                <div className="d-flex">
-                                  <a
-                                    // onClick={() => {
-                                    //   getOneAgreementType(iT.id);
-                                    // }}
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#update-modal"
-                                    className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
+                                <div className="d-flex align-items-center">
+                                  <Link
+                                    to={`/issuestypes/${iT.id}`}
+                                    state={{ issueType: iT }}
+                                    className="btn btn-light btn-sm btn-rounded waves-effect btn-circle btn-transparent edit "
                                     title="Edit "
                                   >
-                                    <i className="bx bx-edit-alt "></i>
-                                  </a>
+                                    <i className="bx bx-show-alt "></i>
+                                  </Link>
                                   {iT.active ? (
                                     <button
-                                      class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"
+                                      class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
                                       title="deactivate"
                                       data-bs-toggle="modal"
                                       data-bs-target="#confirm-deactivate"
-                                      // onClick={() => setActiveId(iT.id)}
+                                      onClick={() => setActiveId(iT.id)}
                                     >
                                       Deactivate
                                     </button>
                                   ) : (
                                     <button
-                                      class="btn btn-success btn-sm w-5 text-uppercase px-3 mx-3"
+                                      class="btn btn-success btn-sm btn-rounded w-5 text-uppercase px-3 mx-3"
                                       title="deactivate"
                                       data-bs-toggle="modal"
                                       data-bs-target="#confirm-activate"
-                                      // onClick={() => setActiveId(iT.id)}
+                                      onClick={() => setActiveId(iT.id)}
                                     >
                                       Activate
                                     </button>
@@ -147,6 +154,83 @@ function IssuesTypes() {
           {/* <!-- end row --> */}
         </div>
         {/* <!-- container-fluid --> */}
+      </div>
+
+      {/*MODALS*/}
+      {/*deactivate activate modals*/}
+      {/* confirm deactivate  */}
+      <div
+        class="modal fade"
+        id="confirm-deactivate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <center>
+                <h5>Deactivate this Issue Type ?</h5>
+              </center>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivate(activeId)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* confirm dactivate  */}
+      <div
+        class="modal fade"
+        id="confirm-activate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <center>
+                <h5>Activate this Issue Type?</h5>
+              </center>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivate(activeId)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
