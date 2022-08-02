@@ -31,7 +31,6 @@ function Emails() {
 
 
  let modalMessage = Object.keys(messageData)?.length > 0 &&  JSON.parse(messageData?.data);
-console.log(modalMessage);
   return (
     <div className="page-content">
             <div className="container-fluid">
@@ -45,7 +44,7 @@ console.log(modalMessage);
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><Link to="/">Dashboard</Link></li>
-                                    <li class="breadcrumb-item active">Messages</li>
+                                    <li class="breadcrumb-item active">Emails</li>
                                 </ol>
                             </div>
 
@@ -85,7 +84,7 @@ console.log(modalMessage);
                             {pageData?.length > 0 && <table id="emailDataTable-btns" class="table nowrap w-100 table-hover mt-0 mb-0">
                                 <thead></thead>
                                 <tbody className="table-hover">
-                                    {pageData?.map((mes , index) =>{
+                                    { pageData?.length > 0 && pageData?.map((mes , index) =>{
                                         let message = JSON.parse(mes.data) 
                                         return (
                                         <tr key={mes.id} onClick={()=> setMessageData(pageData[index] )} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
@@ -97,7 +96,7 @@ console.log(modalMessage);
                                             </td>
                                             <td class="text-capitalize d-md-table-cell">{mes.createdBy}</td>
                                             <td class="the-msg the-msg-2">
-                                             <span>{message.subject}</span>  
+                                             <span>{message?.subject}</span>  
                                             </td>                                                
 
                                             <td class="text-capitalize d-md-table-cell">{moment(mes.dateTimeCreated).format("ddd MMM DD")}</td>
@@ -166,20 +165,20 @@ console.log(modalMessage);
 
                                             <div>
                                                 <div class="flex-grow-1  d-flex justify-content-between mb-3 chat-user-box">
-                                                    <p class="user-title m-0 text-capitalize text-muted"><strong>from: </strong> {modalMessage.from}</p>
-                                                    <p class="text-muted  pb-0"> <strong>To: </strong>{modalMessage.to}</p>
+                                                    <p class="user-title m-0 text-capitalize text-muted"><strong>from: </strong> {modalMessage?.from}</p>
+                                                    <p class="text-muted  pb-0"> <strong>To: </strong>{modalMessage?.to}</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="flex-grow-1">
                                             {/* <h5 class="font-size-14">Subject :</h5> */}
-                                            <p class="text-mute my-2 p-0 font-12px text-uppercase">{ modalMessage.subject} </p>
+                                            <p class="text-mute my-2 p-0 font-12px text-uppercase">{ modalMessage?.subject} </p>
                                             {/* <h5 class="font-size-14 my-2">Message :</h5> */}
-                                            <p class="text-muted m-0 p-0 font-12px">{ modalMessage?.model.message} </p>
+                                            <p class="text-muted m-0 p-0 font-12px">{ modalMessage?.model?.message} </p>
 
-                                            <p class="text-muted mt-3"><strong>Signature :</strong> { modalMessage?.model.signature}</p>
-                                            <p class="text-muted mt-0"><strong>Name :</strong> { modalMessage?.model.name}</p>
-                                            <p class="text-muted mt-2"><strong>Created on :</strong> {moment(messageData.dateTimeCreated).format("dddd MMM DD YYYY")}</p>
+                                            <p class="text-muted mt-3"><strong>Signature :</strong> { modalMessage?.model?.signature}</p>
+                                            <p class="text-muted mt-0"><strong>Name :</strong> { modalMessage?.model?.name}</p>
+                                            <p class="text-muted mt-2"><strong>Created on :</strong> {moment(messageData?.dateTimeCreated).format("dddd MMM DD YYYY")}</p>
                                         </div>
                                     </div>
                                 </div>

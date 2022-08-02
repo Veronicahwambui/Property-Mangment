@@ -72,7 +72,6 @@ function Messages() {
                                 <option value="USER">User </option>
                             </select>
 
-                            {/* <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown" role="combobox" aria-owns="bs-select-1" aria-haspopup="listbox" aria-expanded="false" data-id="length_change" title="10 Rows"><div class="filter-option"><div class="filter-option-inner"><div class="filter-option-inner-inner">10 Rows</div></div> </div></button> */}
                         </div>
                         {/* table  */}
                         <div className="card-body the-inbox">

@@ -713,7 +713,7 @@ class RequestsService {
     return communicationService.post(communicationBaseUrl + "/comm/templates",data)
   }
   getMessageTemplate(clientId){
-    return communicationService.get(communicationBaseUrl + "/comm/templates" + clientId)
+    return communicationService.get(communicationBaseUrl + "/comm/templates/" + clientId)
   }
   getSMS(page , size , type){
     return communicationService.get(communicationBaseUrl + "/comm/v1/sms?page="+ page + "&size=" + size + "&type=" + type )
