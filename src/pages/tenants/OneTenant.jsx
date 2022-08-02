@@ -891,10 +891,10 @@ function OneTenant() {
                                           }</span>
                                         </td>
                                         <td>{moment(unit.tenancyRenewalDate).format
-                                          ("DD /MM /YYYY")
+                                          ("DD/ MM/ YYYY")
                                         }</td>
                                         <td>
-                                          {moment(unit.tenancyRenewalNotificationDate).format("DD /MM /YYYY")}
+                                          {moment(unit.tenancyRenewalNotificationDate).format("DD /MM/ YYYY")}
                                         </td>
                                         <td>
                                           {" "}
