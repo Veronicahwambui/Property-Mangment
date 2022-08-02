@@ -47,23 +47,24 @@ function CreateIssueTypes() {
   const addIssueState = (e) => {
     let clientId = AuthService.getClientId();
     e.preventDefault();
-    setStatus(nextStatus);
     if (nextStatus === resolveStatus) {
+      setStatus(resolveStatus);
       let data = {
         active: true,
         chargeable: isChecked,
         clientId: clientId,
         daysToNextStep: daysToNextStep,
         id: null,
-        nextStatus: nextStatus,
+        nextStatus: "",
         applicableChargeId: applicableChargeId,
-        status: status,
+        status: resolveStatus,
         templateName: templateName,
       };
       issueTypeStateDTOS.push(data);
       setComplete(true);
       hideModal();
     } else {
+      setStatus(nextStatus);
       let data = {
         active: true,
         chargeable: isChecked,
@@ -109,15 +110,15 @@ function CreateIssueTypes() {
             message: message,
             color: "success",
           });
+          setTimeout(() => {
+            setError({
+              ...error,
+              message: "",
+              color: "",
+            });
+            navigate("/issuestypes", { replace: true });
+          }, 1000);
         }
-        setTimeout(() => {
-          setError({
-            ...error,
-            message: "",
-            color: "",
-          });
-          navigate("/issuestypes", { replace: true });
-        }, 2000);
       })
       .catch((err) => {
         setError({
@@ -236,12 +237,14 @@ function CreateIssueTypes() {
                           </div>
                         </div>
                         <div className="mb-3">
-                          <button
-                            className={"btn btn-primary float-end"}
-                            type={"submit"}
-                          >
-                            Add
-                          </button>
+                          {!complete && (
+                            <button
+                              className={"btn btn-primary float-end"}
+                              type={"submit"}
+                            >
+                              Add
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -425,6 +428,7 @@ function CreateIssueTypes() {
                   </div>
                 </div>
               </div>
+              <p></p>
             </Modal.Body>
             <Modal.Footer>
               <Button
@@ -439,7 +443,10 @@ function CreateIssueTypes() {
                 className={"btn btn-primary"}
                 type={"submit"}
               >
-                Save Changes
+                Add State
+                <span
+                  className={"p-1"}
+                >{`(${issueTypeStateDTOS.length})`}</span>
               </Button>
             </Modal.Footer>
           </form>
