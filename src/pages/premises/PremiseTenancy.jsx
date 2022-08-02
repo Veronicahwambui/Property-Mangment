@@ -750,15 +750,15 @@ function PremiseTenancy() {
                                                                             <td className="text-capitalize">{issue.issue.tenancyIssueType.name}</td>
                                                                             <td className="text-capitalize">{issue.issue?.status?.toLowerCase()?.replace(/_/g, " ")}</td>
                                                                             <td className="">{issue.issue.endDate && moment(issue.issue.endDate).format("MMM Do YY [at] h:mm a")}</td>
-                                                                            <td className='d-flex align-items-center'> {issue.nextState?.status && <button className="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                                            <td className=''> {issue.nextState?.status && <button className="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                                                 disabled>
                                                                                 {issue.nextState?.status?.toLowerCase()?.replace(/_/g, " ")}
                                                                             </button>}</td>
                                                                             <td>
-                                                                                <td className='d-flex align-items-center'> <button onClick={() => handleNextSatatus(issue.nextState.chargeable, issue.nextState.applicableCharge ,issue.issue.id,issue.nextState?.status)} className="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                                                <td className='text-nowrap'>{issue.nextState?.status &&  issue.issue.endDate === null && <button onClick={() => handleNextSatatus(issue.nextState.chargeable, issue.nextState.applicableCharge ,issue.issue.id,issue.nextState?.status)} className="btn btn-sm btn-warning" data-bs-toggle="modal"
                                                                                     data-bs-target=".update-issues">
                                                                                     next status
-                                                                                </button></td>
+                                                                                </button>}</td>
                                                                             </td>
 
                                                                         </tr>
