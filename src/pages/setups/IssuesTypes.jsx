@@ -63,7 +63,7 @@ function IssuesTypes() {
                       </h4>
                     </div>
                     <div class="d-flex">
-                      <Link to="/issuetypes">
+                      <Link to="/create-issue-type">
                         <button
                           type="button"
                           className="btn btn-primary waves-effect btn-label waves-light me-3"
