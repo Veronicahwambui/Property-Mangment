@@ -160,13 +160,17 @@ function CreateIssueTypes() {
                     className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
                     role="toolbar"
                   >
-                    <div className="d-flex align-items-center flex-grow-1"></div>
+                    <div className="d-flex align-items-center flex-grow-1">
+                      <h4 className="mb-0  bg-transparent  p-0 m-0">
+                        Add an Issue Type
+                      </h4>
+                    </div>
                   </div>
                 </div>
                 <div className="card-body">
-                  <div className="col-12">
-                    <div>
-                      <form onSubmit={submit}>
+                  <form onSubmit={submit}>
+                    <div className="col-12">
+                      <div className="row">
                         <div className="col-lg-4">
                           <div className="mb-3">
                             <label
@@ -176,21 +180,22 @@ function CreateIssueTypes() {
                               Initial Status{" "}
                               <strong className="text-danger">*</strong>
                             </label>
-                            <div className="form-group mb-4">
-                              <input
-                                type="text"
-                                className={"form-control"}
-                                name="initialstatus"
-                                onChange={(e) => {
-                                  setInitialStatus(e.target.value);
-                                  setStatus(e.target.value);
-                                }}
-                              />
-                              <Alert variant={"warning"}>
-                                Initial status. Must be first status
-                              </Alert>
-                            </div>
+                            <input
+                              type="text"
+                              className={"form-control"}
+                              name="initialstatus"
+                              onChange={(e) => {
+                                setInitialStatus(e.target.value);
+                                setStatus(e.target.value);
+                              }}
+                              required={true}
+                            />
+                            <Alert variant={"warning"}>
+                              Initial status. Must be first status
+                            </Alert>
                           </div>
+                        </div>
+                        <div className="col-lg-4">
                           <div className="mb-3">
                             <label
                               htmlFor="initial status"
@@ -198,17 +203,18 @@ function CreateIssueTypes() {
                             >
                               Name <strong className="text-danger">*</strong>
                             </label>
-                            <div className="form-group mb-4">
-                              <input
-                                type="text"
-                                className={"form-control"}
-                                onChange={(e) => setName(e.target.value)}
-                              />
-                              <Alert variant={"warning"}>
-                                Name of the issue type
-                              </Alert>
-                            </div>
+                            <input
+                              type="text"
+                              className={"form-control"}
+                              onChange={(e) => setName(e.target.value)}
+                              required={true}
+                            />
+                            <Alert variant={"warning"}>
+                              Name of the issue type
+                            </Alert>
                           </div>
+                        </div>
+                        <div className="col-lg-4">
                           <div className="mb-3">
                             <label
                               htmlFor="initial status"
@@ -217,97 +223,110 @@ function CreateIssueTypes() {
                               Resolve status{" "}
                               <strong className="text-danger">*</strong>
                             </label>
-                            <div className="form-group mb-4">
-                              <input
-                                type="text"
-                                className={"form-control"}
-                                onChange={(e) =>
-                                  setResolveStatus(e.target.value)
-                                }
-                              />
-                              <Alert variant={"warning"}>
-                                Status to show when the issue is resolved.Must
-                                be the final status
-                              </Alert>
-                            </div>
+                            <input
+                              type="text"
+                              className={"form-control"}
+                              onChange={(e) => setResolveStatus(e.target.value)}
+                              required={true}
+                            />
+                            <Alert variant={"warning"}>
+                              Status to show when the issue is resolved.Must be
+                              the final status
+                            </Alert>
                           </div>
                         </div>
-                        <button type={"submit"}>Add</button>
-                      </form>
-                    </div>
-                  </div>
-                  <div className="col-12">
-                    <div className="table-responsive table-responsive-md">
-                      <table className="table table-editable-1 align-middle table-edits">
-                        <thead className="table-light">
-                          <tr className="text-uppercase table-light">
-                            <th>#</th>
-                            <th>Days 2 Next</th>
-                            <th>Status</th>
-                            <th>Next Status</th>
-                            <th>Template Name</th>
-                            <th>State</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {issueTypeStateDTOS.length > 0 &&
-                            issueTypeStateDTOS.map((item, index) => {
-                              return (
-                                <tr data-id="1">
-                                  <td style={{ width: "80px" }}>{index + 1}</td>
-                                  <td>{item.daysToNextStep}</td>
-                                  <td>{item.status}</td>
-                                  <td>{item.nextStatus}</td>
-                                  <td>{item.templateName}</td>
-                                  <td data-field="unit-num ">
-                                    {item.active ? (
-                                      <span className="badge-soft-success badge">
-                                        Active
-                                      </span>
-                                    ) : (
-                                      <span className="badge-soft-danger badge">
-                                        Inactive
-                                      </span>
-                                    )}
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                        </tbody>
-                        {/*<tfoot>*/}
-                        {/*  <tr>*/}
-                        {/*    <td colSpan="7" onClick={showModal}>*/}
-                        {/*      <span className="d-flex align-items-center ">*/}
-                        {/*        <i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>*/}
-                        {/*        <span className="pl-5 ">Add A State</span>*/}
-                        {/*      </span>*/}
-                        {/*    </td>*/}
-                        {/*  </tr>*/}
-                        {/*</tfoot>*/}
-                      </table>
-                      {error.color !== "" && (
-                        <div
-                          className={"alert alert-" + error.color}
-                          role="alert"
-                        >
-                          {error.message}
-                        </div>
-                      )}
-                      <div className={"text-end"}>
-                        {" "}
-                        {status !== "" && status === resolveStatus && (
+                        <div className="mb-3">
                           <button
-                            variant="primary"
-                            type={"button"}
-                            className={"btn btn-primary"}
-                            onClick={finalSubmit}
+                            className={"btn btn-primary float-end"}
+                            type={"submit"}
                           >
-                            Submit
+                            Add
                           </button>
-                        )}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </form>
+                  {issueTypeStateDTOS.length > 0 && (
+                    <div className="col-12">
+                      <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                        <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                          Issue Type States
+                        </p>
+                      </div>
+                      <div className="table-responsive table-responsive-md">
+                        <table className="table table-editable-1 align-middle table-edits">
+                          <thead className="table-light">
+                            <tr className="text-uppercase table-light">
+                              <th>#</th>
+                              <th>Days 2 Next</th>
+                              <th>Status</th>
+                              <th>Next Status</th>
+                              <th>Template Name</th>
+                              <th>State</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {issueTypeStateDTOS.length > 0 &&
+                              issueTypeStateDTOS.map((item, index) => {
+                                return (
+                                  <tr data-id="1">
+                                    <td style={{ width: "80px" }}>
+                                      {index + 1}
+                                    </td>
+                                    <td>{item.daysToNextStep}</td>
+                                    <td>{item.status}</td>
+                                    <td>{item.nextStatus}</td>
+                                    <td>{item.templateName}</td>
+                                    <td data-field="unit-num ">
+                                      {item.active ? (
+                                        <span className="badge-soft-success badge">
+                                          Active
+                                        </span>
+                                      ) : (
+                                        <span className="badge-soft-danger badge">
+                                          Inactive
+                                        </span>
+                                      )}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                          </tbody>
+                          {/*<tfoot>*/}
+                          {/*  <tr>*/}
+                          {/*    <td colSpan="7" onClick={showModal}>*/}
+                          {/*      <span className="d-flex align-items-center ">*/}
+                          {/*        <i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>*/}
+                          {/*        <span className="pl-5 ">Add A State</span>*/}
+                          {/*      </span>*/}
+                          {/*    </td>*/}
+                          {/*  </tr>*/}
+                          {/*</tfoot>*/}
+                        </table>
+                        {error.color !== "" && (
+                          <div
+                            className={"alert alert-" + error.color}
+                            role="alert"
+                          >
+                            {error.message}
+                          </div>
+                        )}
+                        <div className={"text-end"}>
+                          {" "}
+                          {status !== "" && status === resolveStatus && (
+                            <button
+                              type="button"
+                              onClick={finalSubmit}
+                              className="btn btn-success kev-submit me-3"
+                            >
+                              Submit{" "}
+                              <i className="mdi mdi-check-all me-2 font-16px"></i>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
