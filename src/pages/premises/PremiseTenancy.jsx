@@ -6,7 +6,7 @@ import { useParams, Link } from 'react-router-dom'
 import AuthService from "../../services/authLogin.service"
 import requestsServiceService from '../../services/requestsService.service'
 
-const docArr = []
+// const docArr = []
 
 function PremiseTenancy() {
     const [activeTab, setActiveTab] = useState(1)
@@ -81,7 +81,7 @@ function PremiseTenancy() {
             fetchAll()
             $("#create-tenant-charge").modal("hide");
 
-            if (res.data.status) {
+            if (res.data?.status) {
                 setError({
                     ...error,
                     message: res.data.message,
@@ -131,7 +131,11 @@ function PremiseTenancy() {
     const [adddocument, setadddocument] = useState(false)
     const [documentTypes, setdocumentTypes] = useState([])
     const [documentTypeId, setdocumentTypeId] = useState(null)
-
+    const [docArr, setDocArr] = useState([])
+    const [chargeable, setChargable] = useState(false)
+    const [applicableCharge, setApplicableCharge] = useState(null)
+    const [unitCost, setUnitCost] = useState('')
+    const [tenacyIssueId ,setTenacyIssueId] = useState(null)
 
 
 
@@ -148,7 +152,7 @@ function PremiseTenancy() {
     }
 
     const submitIssue = (e) => {
-         e.preventDefault()
+        e.preventDefault()
 
         let data = JSON.stringify({
             comments: issueDetails.description,
@@ -166,7 +170,7 @@ function PremiseTenancy() {
                 issueTypeId: null,
             })
 
-            if (res.data.status) {
+            if (res.data?.status) {
                 setError({
                     ...error,
                     message: res.data.message,
@@ -187,7 +191,7 @@ function PremiseTenancy() {
 
             setActiveTab(4)
 
-         
+
 
         }).catch((res) => {
             $(".issue-modal").modal("hide");
@@ -204,7 +208,7 @@ function PremiseTenancy() {
 
         })
 
-       
+
     }
 
 
@@ -227,18 +231,17 @@ function PremiseTenancy() {
         setadddocument(false)
 
     }
-    const removeDoc = (index)=>{
-        if (index > -1) { 
-            docArr.splice(index, 1); 
-          }   
-          
-          return docArr
+    const removeDoc = (index) => {
+        if (index > -1) {
+            docArr.splice(index, 1);
+        }
     }
 
     const handleFileRead = async (event) => {
         const file = event.target.files[0]
         const base64 = await convertBase64(file)
         setdocument(base64);
+
     }
 
     const convertBase64 = (file) => {
@@ -253,7 +256,58 @@ function PremiseTenancy() {
             }
         })
     }
-    console.log(docArr);
+ 
+    const handleNextSatatus = (chargeable, applicableCharge , tenacyIssueId ,newStat) => {
+        setChargable(chargeable)
+        setApplicableCharge(applicableCharge)
+        setTenacyIssueId(tenacyIssueId)
+        setNewStatus(newStat)
+    }
+
+    const [newStatus, setNewStatus] = useState('')
+    const moveToNextStep = (e)=>{
+          e.preventDefault()
+          let date = new Date()
+
+          let data = JSON.stringify({
+            applicableChargeId: applicableCharge,
+            description: issueDetails.description,
+            documents: docArr,
+            invoiceDate: date,
+            newStatus: newStatus,
+            unitCost: unitCost
+          })
+
+          requestsServiceService.moveTenancyIssueToNextState(tenacyIssueId ,data).then((res)=>{
+            fetchAll() 
+            $(".update-issues").modal("hide");
+            if (res.data?.status) {
+                setError({
+                    ...error,
+                    message: res.data.message,
+                    color: "success"
+                })
+            } else {
+
+                setError({
+                    ...error,
+                    message: res.data.message,
+                    color: "warning"
+                })
+            }
+
+          }).catch((res) => {
+            $(".update-issues").modal("hide");
+            
+          
+            setError({
+                ...error,
+                message: res.data.message,
+                color: "danger"
+            })
+
+        })
+    }
 
     return (
         <div>
@@ -670,7 +724,7 @@ function PremiseTenancy() {
 
                                                     </div>
 
-                                                    <div class="table-responsive table-responsive-md overflow-visible">
+                                                    <div class="table-responsive table-responsive-md overflow-visibl">
                                                         <table class="table table-editable align-middle table-edits" >
                                                             <thead class="table-light" >
                                                                 <tr class=" text-uppercase ">
@@ -681,6 +735,7 @@ function PremiseTenancy() {
                                                                     <th>type </th>
                                                                     <th>status</th>
                                                                     <th>end Date</th>
+                                                                    <th>next state</th>
                                                                     <th>Actions</th>
                                                                 </tr>
                                                             </thead>
@@ -693,12 +748,19 @@ function PremiseTenancy() {
                                                                             <td className="">{moment(issue.issue.dateTimeCreated).format("MMM Do YY [at] h:mm a")}</td>
                                                                             <td className="text-capitalize">{issue.issue.description}</td>
                                                                             <td className="text-capitalize">{issue.issue.tenancyIssueType.name}</td>
-                                                                            <td className="text-capitalize">{issue.issue.status?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                                                            <td className="text-capitalize">{issue.issue?.status?.toLowerCase()?.replace(/_/g, " ")}</td>
                                                                             <td className="">{issue.issue.endDate && moment(issue.issue.endDate).format("MMM Do YY [at] h:mm a")}</td>
-                                                                            <td className='d-flex align-items-center'> <button className="btn btn-sm btn-warning" data-bs-toggle="modal"
-                                                                                data-bs-target=".update-issues">
-                                                                                next status
-                                                                            </button></td>
+                                                                            <td className='d-flex align-items-center'> {issue.nextState?.status && <button className="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                                                disabled>
+                                                                                {issue.nextState?.status?.toLowerCase()?.replace(/_/g, " ")}
+                                                                            </button>}</td>
+                                                                            <td>
+                                                                                <td className='d-flex align-items-center'> <button onClick={() => handleNextSatatus(issue.nextState.chargeable, issue.nextState.applicableCharge ,issue.issue.id,issue.nextState?.status)} className="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                                                    data-bs-target=".update-issues">
+                                                                                    next status
+                                                                                </button></td>
+                                                                            </td>
+
                                                                         </tr>
                                                                     )
                                                                 })}
@@ -716,114 +778,125 @@ function PremiseTenancy() {
                                         {/* <!-- end col --> */}
                                     </div>
                                     {/* edit modal  */}
-                                     <div class="modal fade update-issues pb-5" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                    <div class="modal fade update-issues pb-5" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-md modal-dialog-centered mb-5">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title">Update issue to next status</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <div className="modal-body">
-                                                    <div class="col-12">
-                                                        <div class="mb-4 ">
-                                                            <label for="basicpill-firstname-input ">Issue description <strong class="text-danger ">*</strong></label>
-                                                            <textarea  required name="description" class="form-control " placeholder="Enter details on the issue" id="" cols="30" rows="5" onChange={(e) => handleIssues(e)} ></textarea>
+                                                <form onSubmit={(e)=> moveToNextStep(e)}>
+                                                    <div className="modal-body">
+                                                        <div class="col-12">
+                                                            <div class="mb-4 ">
+                                                                <label for="basicpill-firstname-input ">Issue description <strong class="text-danger ">*</strong></label>
+                                                                <textarea required name="description" class="form-control " placeholder="Enter details on the issue" id="" cols="30" rows="5" onChange={(e) => handleIssues(e)} ></textarea>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    {/* docs table */}
-                                                    {docArr?.length > 0 &&
-                                                        <div class="table-responsive table-responsive-md overflow-visible">
-                                                            <table class="table table-editable align-middle table-edits" >
-                                                                <thead class="table-light" >
-                                                                    <tr class=" text-uppercase ">
-                                                                        <th>#</th>
-                                                                        <th class="">doc name</th>
-                                                                        <th>actions</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {docArr && docArr?.map((doc, index) => {
-                                                                        return (
-                                                                            <tr>
-                                                                                <td>{index + 1}</td>
-                                                                                <td className="text-capitalize">{doc.docName}</td>
-                                                                                <td><i class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit bx bx-trash" onClick={()=>removeDoc(index)}></i></td>
-                                                                            </tr>
-                                                                        )
-                                                                    })}
-                                                                    <tr>
+                                                        {/* docs table */}
+                                                        {docArr?.length > 0 &&
+                                                            <div class="table-responsive table-responsive-md overflow-visible">
+                                                                <table class="table table-editable align-middle table-edits" >
+                                                                    <thead class="table-light" >
+                                                                        <tr class=" text-uppercase ">
+                                                                            <th>#</th>
+                                                                            <th class="">doc name</th>
+                                                                            <th>actions</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {docArr && docArr?.map((doc, index) => {
+                                                                            return (
+                                                                                <tr key={doc.docName + index}>
+                                                                                    <td>{index + 1}</td>
+                                                                                    <td className="text-capitalize">{doc.docName}</td>
+                                                                                    <td><i class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit bx bx-trash" onClick={() => removeDoc(index)}></i></td>
+                                                                                </tr>
+                                                                            )
+                                                                        })}
+                                                                        <tr>
 
-                                                                    </tr>
-                                                                </tbody>
+                                                                        </tr>
+                                                                    </tbody>
 
-                                                            </table>
-                                                        </div>
-                                                    }
-                                                    {/* add doc buton */}
-                                                    {!adddocument && <button className="btn btn-sm btn-secondary" onClick={() => setadddocument(true)}>
-                                                        Add Document
-                                                    </button>
-                                                    }
-                                                    {/* doc add modal */}
-                                                    {adddocument &&
-                                                        <form onSubmit={(e) => addDoc(e)}>
-                                                            <div className="modal-body">
+                                                                </table>
+                                                            </div>
+                                                        }
+                                                        {/* add doc buton */}
+                                                        {!adddocument && <button className="btn btn-sm btn-secondary" onClick={() => setadddocument(true)}>
+                                                            Add Document
+                                                        </button>
+                                                        }
+                                                        {/* doc add modal */}
+                                                        {adddocument &&
+                                                            <form onSubmit={(e) => addDoc(e)}>
+                                                                <div className="modal-body">
 
-                                                                <div className="row">
-                                                                    <div className="col-12">
-                                                                        <div className="form-group mb-4">
-                                                                            <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
-                                                                            <select
-                                                                                className="form-control text-capitalize"
-                                                                                onChange={(e) => {
-                                                                                    setdocumentTypeId(e.target.value);
-                                                                                }}
-                                                                                name="document type"
-                                                                                required={true}
-                                                                            >
-                                                                                <option className="text-black font-semibold ">
-                                                                                    select..
-                                                                                </option>
-                                                                                {documentTypes && documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
-                                                                                    return (
-                                                                                        <option
-                                                                                            key={dT.id}
-                                                                                            value={dT.id}
-                                                                                        >
-                                                                                            {dT.name?.toLowerCase().replace(/_/g, " ")}
-                                                                                        </option>
-                                                                                    );
-                                                                                })}
-                                                                            </select>
-                                                                        </div>
-                                                                        <div className="form-group mb-4">
-                                                                            <label htmlFor="">Document Name. <strong className="text-danger ">*</strong></label>
-                                                                            <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true} />
-                                                                        </div>
-                                                                        <div className="form-group mb-4">
-                                                                            <label htmlFor="">Document Upload. <strong className="text-danger ">*</strong></label>
-                                                                            <div className="input-group mb-0">
-                                                                                <label className="input-group-text bg-info text-white cursor-pointer"
-                                                                                    htmlFor="document1-1">
-                                                                                    <i className="font-14px mdi mdi-paperclip"></i> Attach File
-                                                                                </label>
-                                                                                <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true} />
+                                                                    <div className="row">
+                                                                        <div className="col-12">
+                                                                            <div className="form-group mb-4">
+                                                                                <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
+                                                                                <select
+                                                                                    className="form-control text-capitalize"
+                                                                                    onChange={(e) => {
+                                                                                        setdocumentTypeId(e.target.value);
+                                                                                    }}
+                                                                                    name="document type"
+                                                                                    required={true}
+                                                                                >
+                                                                                    <option className="text-black font-semibold ">
+                                                                                        select..
+                                                                                    </option>
+                                                                                    {documentTypes && documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
+                                                                                        return (
+                                                                                            <option
+                                                                                                key={dT.id}
+                                                                                                value={dT.id}
+                                                                                            >
+                                                                                                {dT.name?.toLowerCase().replace(/_/g, " ")}
+                                                                                            </option>
+                                                                                        );
+                                                                                    })}
+                                                                                </select>
+                                                                            </div>
+                                                                            <div className="form-group mb-4">
+                                                                                <label htmlFor="">Document Name. <strong className="text-danger ">*</strong></label>
+                                                                                <input type="text" className="form-control" value={docName} onChange={(e) => setdocName(e.target.value)} placeholder="Enter document name" required={true} />
+                                                                            </div>
+                                                                            <div className="form-group mb-4">
+                                                                                <label htmlFor="">Document Upload. <strong className="text-danger ">*</strong></label>
+                                                                                <div className="input-group mb-0">
+                                                                                    <label className="input-group-text bg-info text-white cursor-pointer"
+                                                                                        htmlFor="document1-1">
+                                                                                        <i className="font-14px mdi mdi-paperclip"></i> Attach File
+                                                                                    </label>
+                                                                                    <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true} />
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
 
-                                                            <div class="modal-footer">
-                                                                <button type='submit' class="btn btn-primary">Add Document</button>
-                                                            </div>
-                                                        </form>
-                                                    }
-                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type='submit' class="btn btn-primary">Add Document</button>
+                                                                </div>
+                                                            </form>
+                                                        }
+                                                        {chargeable &&
 
+                                                            <div className="form-group mt-2">
+                                                                <label htmlFor=""> Issue cost</label>
+                                                                <input required type="text" className="form-control" placeholder='Enter expected cost' value={unitCost} onChange={(e) => setUnitCost(e.target.value)} />
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div className="modal-footer">
+                                                        <button type="submit" className='btn btn-sm btn-primary'> update</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
-                                     </div>
+                                    </div>
                                 </div>
                             }
                         </div>
@@ -856,7 +929,7 @@ function PremiseTenancy() {
                                     <div class="mb-4 ">
                                         <label for="agreement-type">Issue Type<strong class="text-danger ">*</strong></label>
                                         <select class="form-control" title="Select critical level" onChange={(e) => handleIssues(e)} name="issueTypeId">
-                                            <option selected={issueDetails.issueTypeId ?? "selected" }></option>
+                                            <option selected={issueDetails.issueTypeId ?? "selected"}></option>
                                             {issueTypes?.map((item) => (
                                                 <option value={item.id}> {item.name}</option>
                                             ))}

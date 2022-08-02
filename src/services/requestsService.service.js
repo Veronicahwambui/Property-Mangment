@@ -703,6 +703,10 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/reports/dashboard?startDate=" + startDate + "&endDate=" + endDate)
   }
 
+  moveTenancyIssueToNextState( tenancyIssueId,data){
+    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/" + tenancyIssueId + "/moveToNextState" , data)
+  }
+
 }
 
 export default new RequestsService();
