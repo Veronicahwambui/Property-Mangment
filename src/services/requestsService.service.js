@@ -682,6 +682,18 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/premiseUnits");
   }
 
+  // TENANCY ISSUES
+
+  createTenancyIssue(data) {
+    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/create", data)
+  }
+
+  findAllTenancyIssueTypes() {
+    return axiosInstance.get(baseUrl + "/setup/tenancyIssueTypes")
+  }
+
+
+
   //   DASHBOARD 
 
   getClientDashboardGraphs(startDate, endDate) {
@@ -693,7 +705,11 @@ class RequestsService {
 
   //start of statements
   getStatements(data) {
-    return axiosInstance.get(baseUrl + `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`)
+    return axiosInstance.get(baseUrl + `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`);
+  }
+  
+  moveTenancyIssueToNextState( tenancyIssueId,data){
+    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/" + tenancyIssueId + "/moveToNextState" , data)
   }
 
   fetchDocuments(docOwnerType, entity) {
