@@ -57,7 +57,7 @@ function CreateIssueTypes() {
         id: null,
         nextStatus: "",
         applicableChargeId: applicableChargeId,
-        status: resolveStatus,
+        status: resolveStatus.toUpperCase(),
         templateName: templateName,
       };
       issueTypeStateDTOS.push(data);
@@ -71,9 +71,9 @@ function CreateIssueTypes() {
         clientId: clientId,
         daysToNextStep: daysToNextStep,
         id: null,
-        nextStatus: nextStatus,
+        nextStatus: nextStatus.toUpperCase(),
         applicableChargeId: applicableChargeId,
-        status: status,
+        status: status.toUpperCase(),
         templateName: templateName,
       };
       issueTypeStateDTOS.push(data);
