@@ -1,3 +1,4 @@
+/* global $*/
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
@@ -27,11 +28,16 @@ function Dashboard() {
     
     const handleSubmit =(e)=>{
         e.preventDefault()
+        $("#spinner").removeClass("d-none")
+
         fetchDashData()
 
     }
     const fetchDashData = () => {
+
         requestsServiceService.getClientDashboardGraphs(moment(startDate).format("YYYY/MM/DD") ,moment(endDate).format("YYYY/MM/DD") ).then((res) => {
+            $("#spinner").addClass("d-none")
+            
             setRadioBarData(res.data.data.collectionSummaryByPremiseUseType)
             setRadioBarData2(res.data.data.collectionSummaryByUnitType)
             setPieChartData(res.data.data.collectionSummaryByApplicableCharge)
@@ -345,9 +351,22 @@ function Dashboard() {
         <div className="page-content">
 
             <div class="container-fluid">
-
+    
                 {/* <!-- start page title --> */}
                 <div class="row">
+                            {/* <!-- Loader --> */}
+            <div id="spinner">
+        <div id="status">
+            <div class="spinner-chase">
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+            </div>
+        </div>
+    </div>
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                             <h4 class="mb-sm-0 font-size-18">Dashboard</h4>

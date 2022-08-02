@@ -678,6 +678,18 @@ class RequestsService {
   getParentInvoice(id) {
     return axiosInstance.get(baseUrl + `/payments/parents/${id}`);
   }
+  
+// TENANCY ISSUES
+
+createTenancyIssue(data){
+  return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/create" , data )
+}
+
+findAllTenancyIssueTypes(){
+  return axiosInstance.get(baseUrl + "/setup/tenancyIssueTypes")
+}
+
+
 
 //   DASHBOARD 
 
