@@ -678,8 +678,9 @@ function PremiseTenancy() {
                                                                     <th class="">created by</th>
                                                                     <th>date created</th>
                                                                     <th>description</th>
-                                                                    {/* <th>amount </th> */}
+                                                                    <th>type </th>
                                                                     <th>status</th>
+                                                                    <th>end Date</th>
                                                                     <th>Actions</th>
                                                                 </tr>
                                                             </thead>
@@ -688,10 +689,12 @@ function PremiseTenancy() {
                                                                     return (
                                                                         <tr>
                                                                             <td>{index + 1}</td>
-                                                                            <td className="text-capitalize">{issue.createdBy}</td>
-                                                                            <td className="">{moment(issue.dateTimeCreated).format("MMM Do YY [at] h:mm a")}</td>
-                                                                            <td className="text-capitalize">{issue.description}</td>
-                                                                            <td className="text-capitalize">{issue.status?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                                                            <td className="text-capitalize">{issue.issue.createdBy}</td>
+                                                                            <td className="">{moment(issue.issue.dateTimeCreated).format("MMM Do YY [at] h:mm a")}</td>
+                                                                            <td className="text-capitalize">{issue.issue.description}</td>
+                                                                            <td className="text-capitalize">{issue.issue.tenancyIssueType.name}</td>
+                                                                            <td className="text-capitalize">{issue.issue.status?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                                                            <td className="">{issue.issue.endDate && moment(issue.issue.endDate).format("MMM Do YY [at] h:mm a")}</td>
                                                                             <td className='d-flex align-items-center'> <button className="btn btn-sm btn-warning" data-bs-toggle="modal"
                                                                                 data-bs-target=".update-issues">
                                                                                 next status
