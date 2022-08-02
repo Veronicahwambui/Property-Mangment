@@ -47,7 +47,10 @@ function CreateIssueTypes() {
   const addIssueState = (e) => {
     let clientId = AuthService.getClientId();
     e.preventDefault();
-    if (nextStatus === resolveStatus) {
+    const found = issueTypeStateDTOS.some(
+      (el) => el.status.toLowerCase() === nextStatus
+    );
+    if (!found && nextStatus === resolveStatus) {
       setStatus(resolveStatus);
       let data = {
         active: true,
@@ -63,7 +66,7 @@ function CreateIssueTypes() {
       issueTypeStateDTOS.push(data);
       setComplete(true);
       hideModal();
-    } else {
+    } else if (!found) {
       setStatus(nextStatus);
       let data = {
         active: true,
