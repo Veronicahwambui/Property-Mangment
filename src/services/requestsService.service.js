@@ -1,4 +1,5 @@
 import { axiosInstance, baseUrl } from "./API";
+import {communicationService ,communicationBaseUrl } from "./CommunicationAPI"
 
 class RequestsService {
   // roles
@@ -706,6 +707,22 @@ class RequestsService {
   moveTenancyIssueToNextState( tenancyIssueId,data){
     return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/" + tenancyIssueId + "/moveToNextState" , data)
   }
+
+  // MESSANGER API 
+  createMessageTemplate(data){
+    return communicationService.post(communicationBaseUrl + "/comm/templates",data)
+  }
+  getMessageTemplate(clientId){
+    return communicationService.get(communicationBaseUrl + "/comm/templates" + clientId)
+  }
+  getSMS(page , size , type){
+    return communicationService.get(communicationBaseUrl + "/comm/v1/sms?page="+ page + "&size=" + size + "&type=" + type )
+  }
+
+  getEmails(page , size , type){
+    return communicationService.get(communicationBaseUrl + "/comm/v1/emails?page="+ page + "&size=" + size + "&type=" + type )
+  }
+
 
 }
 
