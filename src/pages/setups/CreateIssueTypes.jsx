@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import AuthService from "../../services/auth.service";
 import Modal from "react-bootstrap/Modal";
@@ -9,7 +9,8 @@ import requestsServiceService from "../../services/requestsService.service";
 
 function IssueTypes() {
   const [initialStatus, setInitialStatus] = useState("");
-  const [applicableCharges, setApplicableCharges] = useState([])
+  const [applicableCharges, setApplicableCharges] = useState([]);
+  const [templates, setTemplates] = useState([]);
   const [name, setName] = useState("");
   const [resolveStatus, setResolveStatus] = useState("");
   const [issueTypeStateDTOS, setissueTypeStateDTOS] = useState([]);
@@ -18,15 +19,18 @@ function IssueTypes() {
   const [nextStatus, setNextStatus] = useState("");
   const [applicableChargeId, setapplicableChargeId] = useState("");
   const [templateName, setTemplateName] = useState("");
-
+  const navigate = useNavigate();
+  const clientId = AuthService.getClientId();
   useEffect(() => {
     requestsServiceService.allApplicableCharges().then((res) => {
-      setApplicableCharges(res.data.data)
-    })
-  }, [])
+      setApplicableCharges(res.data.data);
+    });
+    requestsServiceService.getTemplateNames(clientId).then((res) => {
+      setTemplates(res.data.data);
+    });
+  }, []);
 
   const [isChecked, setIsChecked] = useState(true);
-  const [filled, setFilled] = useState(false);
 
   const [show, setShow] = useState(false);
   const showModal = () => setShow(true);
@@ -37,23 +41,35 @@ function IssueTypes() {
 
   const submit = (e) => {
     e.preventDefault();
-    setFilled(true);
     showModal();
   };
   const [complete, setComplete] = useState(false);
   const addIssueState = (e) => {
+    let clientId = AuthService.getClientId();
     e.preventDefault();
     setStatus(nextStatus);
     if (nextStatus === resolveStatus) {
+      let data = {
+        active: true,
+        chargeable: isChecked,
+        clientId: clientId,
+        daysToNextStep: daysToNextStep,
+        id: null,
+        nextStatus: nextStatus,
+        applicableChargeId: applicableChargeId,
+        status: status,
+        templateName: templateName,
+      };
+      issueTypeStateDTOS.push(data);
       setComplete(true);
       hideModal();
     } else {
       let data = {
         active: true,
         chargeable: isChecked,
-        clientId: 0,
+        clientId: clientId,
         daysToNextStep: daysToNextStep,
-        id: 0,
+        id: null,
         nextStatus: nextStatus,
         applicableChargeId: applicableChargeId,
         status: status,
@@ -64,47 +80,52 @@ function IssueTypes() {
   };
   const [error, setError] = useState({
     message: "",
-    color: ""
+    color: "",
   });
   const finalSubmit = () => {
+    let clientId = AuthService.getClientId();
     let data = {
       active: true,
-      clientId: AuthService.getClientId(),
-      id: 0,
+      clientId: clientId,
+      id: null,
       initialStatus: initialStatus,
       issueTypeStateDTOS: issueTypeStateDTOS,
       name: name,
       resolveStatus: resolveStatus,
     };
-    requestsServiceService.createTenancyIssuesTypes(data).then((res) => {
-      let message = res.data.message;
-      if (res.data.status===false) {
+    requestsServiceService
+      .createTenancyIssuesTypes(data)
+      .then((res) => {
+        let message = res.data.message;
+        if (res.data.status === false) {
+          setError({
+            ...error,
+            message: message,
+            color: "danger",
+          });
+        } else {
+          setError({
+            ...error,
+            message: message,
+            color: "success",
+          });
+        }
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+          navigate("/issuestypes", { replace: true });
+        }, 2000);
+      })
+      .catch((err) => {
         setError({
           ...error,
-          message: message,
-          color: "danger"
-        })
-      } else {
-        setError({
-          ...error,
-          message: message,
-          color: "success"
+          message: err.data.message,
+          color: "success",
         });
-      }
-      setTimeout(() => {
-        setError({
-          ...error,
-          message: "",
-          color: ""
-        });
-      }, 2000)
-    }).catch((err)=> {
-      setError({
-        ...error,
-        message: err.data.message,
-        color: "success"
       });
-    })
   };
   useEffect(() => {}, [issueTypeStateDTOS, status]);
 
@@ -115,7 +136,7 @@ function IssueTypes() {
           <div className="row">
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 className="mb-sm-0 font-size-18">Issues</h4>
+                <h4 className="mb-sm-0 font-size-18">Issue Types</h4>
 
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
@@ -123,7 +144,9 @@ function IssueTypes() {
                       <Link to="/">Dashboard </Link>
                     </li>
                     <li className="breadcrumb-item">Set Ups</li>
-                    <li className="breadcrumb-item active">Issue types</li>
+                    <li className="breadcrumb-item active">
+                      Create Issue types
+                    </li>
                   </ol>
                 </div>
               </div>
@@ -262,11 +285,14 @@ function IssueTypes() {
                         {/*  </tr>*/}
                         {/*</tfoot>*/}
                       </table>
-                      {error.color !== "" &&
-                          <div className={"alert alert-" + error.color} role="alert">
-                            {error.message}
-                          </div>
-                      }
+                      {error.color !== "" && (
+                        <div
+                          className={"alert alert-" + error.color}
+                          role="alert"
+                        >
+                          {error.message}
+                        </div>
+                      )}
                       <div className={"text-end"}>
                         {" "}
                         {status !== "" && status === resolveStatus && (
@@ -287,110 +313,119 @@ function IssueTypes() {
             </div>
           </div>
         </div>
-      </div>
-      <Modal show={show} onHide={hideModal} centered>
-        <form onSubmit={addIssueState}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Issue Type</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row">
-              <div className="col-12">
-                <div className="form-group mb-4">
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={handleOnChange}
-                  />{" "}
-                  Chargeable
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Charges</label> <br />
-                  {applicableCharges.length> 0 && (
+        <Modal show={show} onHide={hideModal} centered>
+          <form onSubmit={addIssueState}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add Issue Type</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-12">
+                  <div className="form-group mb-4">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={handleOnChange}
+                    />{" "}
+                    Chargeable
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">Charges</label> <br />
+                    {applicableCharges.length > 0 && (
                       <div className="form-group mb-4">
                         <select
-                            className="form-control text-capitalize"
-                            value={applicableChargeId}
-                            onChange={(e) =>
-                                setapplicableChargeId(e.target.value)
-                            }
-                            required={true}
+                          className="form-control text-capitalize"
+                          value={applicableChargeId}
+                          onChange={(e) =>
+                            setapplicableChargeId(e.target.value)
+                          }
+                          required={true}
                         >
                           <option className="text-black font-semibold ">
                             select applicable charge
                           </option>
                           {applicableCharges?.map((item, index) => (
-                              <option value={item.id}>
-                                {item?.name.toLowerCase()?.replace(/_/g, " ")}
-                              </option>
+                            <option value={item.id}>
+                              {item?.name.toLowerCase()?.replace(/_/g, " ")}
+                            </option>
                           ))}
                         </select>
                       </div>
-                  )}
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Status</label>
-                  <input
-                    type="text"
-                    className={"form-control"}
-                    value={status}
-                    disabled
-                  />
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Next Status</label>
-                  <input
-                    type="text"
-                    className={"form-control"}
-                    value={nextStatus}
-                    onChange={(e) => setNextStatus(e.target.value)}
-                  />
-                </div>
-                <div className="form-group mb-4">
-                  {" "}
-                  <label htmlFor="">Days to next step</label>
-                  <input
-                    type="number"
-                    value={daysToNextStep}
-                    className={"form-control"}
-                    onChange={(e) => setdaysToNextStep(e.target.value)}
-                  />
-                </div>
-                <div className="form-group mb-4">
-                  <label htmlFor="">Template Name</label>
-                  <br />
-                  <select
-                    name="templateName"
-                    id=""
-                    value={templateName}
-                    onChange={(e) => setTemplateName(e.target.value)}
-                  >
-                    <option value="template_name_1">T 1</option>
-                    <option value="tname2">T 2</option>
-                    <option value="tname3">T 3</option>
-                  </select>
+                    )}
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">Status</label>
+                    <input
+                      type="text"
+                      className={"form-control"}
+                      value={status}
+                      disabled
+                    />
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">Next Status</label>
+                    <input
+                      type="text"
+                      className={"form-control"}
+                      value={nextStatus}
+                      onChange={(e) => setNextStatus(e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group mb-4">
+                    {" "}
+                    <label htmlFor="">Days to next step</label>
+                    <input
+                      type="number"
+                      value={daysToNextStep}
+                      className={"form-control"}
+                      onChange={(e) => setdaysToNextStep(e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group mb-4">
+                    <label htmlFor="">Template Name</label>
+                    <br />
+                    {applicableCharges.length > 0 && (
+                      <div className="form-group mb-4">
+                        <select
+                          className="form-control text-capitalize"
+                          value={templateName}
+                          onChange={(e) => setTemplateName(e.target.value)}
+                          required={true}
+                        >
+                          <option className="text-black font-semibold ">
+                            select template name
+                          </option>
+                          {templates?.map((item, index) => (
+                            <option value={item.templateName}>
+                              {item.templateName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              className={"btn btn-grey"}
-              onClick={hideModal}
-            >
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              className={"btn btn-primary"}
-              type={"submit"}
-            >
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                className={"btn btn-grey"}
+                onClick={hideModal}
+              >
+                Close
+              </Button>
+              <Button
+                variant="primary"
+                className={"btn btn-primary"}
+                type={"submit"}
+              >
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal>
+      </div>
     </>
   );
 }
