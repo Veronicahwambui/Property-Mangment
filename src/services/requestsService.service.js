@@ -723,6 +723,16 @@ class RequestsService {
 
   findVacatPremise(premiseId) {
     return axiosInstance.get(baseUrl + "/premiseUnits/" + premiseId + "/units/vacant")
+
+  }
+
+   //tenancy issues
+  getTenancyIssuesTypes() {
+    return axiosInstance.get(baseUrl + "/setup/tenancyIssueTypes")
+  }
+
+  createTenancyIssuesTypes(data) {
+    return axiosInstance.post(baseUrl+"/setup/tenancyIssueTypes", data)
   }
 }
 
