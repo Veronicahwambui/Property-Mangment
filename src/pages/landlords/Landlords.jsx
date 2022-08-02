@@ -1,3 +1,4 @@
+/* global $*/ 
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import requestsServiceService from '../../services/requestsService.service'
@@ -15,6 +16,8 @@ function Landlords() {
   const getlandlords = () => {
     requestsServiceService.getLandLords().then((res) => {
       setLandlords(res.data.data)
+      $("#spinner").addClass("d-none")
+
     });
   }
   const deactivate = (id) => {
@@ -26,6 +29,19 @@ function Landlords() {
     <>
       <div class="page-content">
         <div class="container-fluid">
+           {/* <!-- Loader --> */}
+           <div id="spinner">
+                    <div id="status">
+                        <div class="spinner-chase">
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                        </div>
+                    </div>
+                </div>
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">

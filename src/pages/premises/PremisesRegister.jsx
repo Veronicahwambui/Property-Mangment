@@ -1,3 +1,4 @@
+/* global $*/ 
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -17,6 +18,8 @@ function PremisesRegister() {
     const fetchAll = () => {
         requestsServiceService.getAllpremises().then((res) => {
             setPremises(res.data.data)
+            $("#spinner").addClass("d-none")
+
         })
     }
 
@@ -28,7 +31,19 @@ function PremisesRegister() {
     return (
         <div class="page-content">
             <div class="container-fluid">
-
+                {/* <!-- Loader --> */}
+                <div id="spinner">
+                    <div id="status">
+                        <div class="spinner-chase">
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                            <div class="chase-dot"></div>
+                        </div>
+                    </div>
+                </div>
                 {/* <!-- start page title --> */}
                 <div class="row">
                     <div class="col-12">
@@ -37,8 +52,8 @@ function PremisesRegister() {
 
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item">  
-                                     <Link to='/'>Dashboard </Link>
+                                    <li class="breadcrumb-item">
+                                        <Link to='/'>Dashboard </Link>
                                     </li>
                                     <li class="breadcrumb-item active">Property Register</li>
                                 </ol>
