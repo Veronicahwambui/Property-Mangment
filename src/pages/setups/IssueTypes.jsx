@@ -9,14 +9,21 @@ import requestsServiceService from "../../services/requestsService.service";
 
 function IssueTypes() {
   const [initialStatus, setInitialStatus] = useState("");
+  const [applicableCharges, setApplicableCharges] = useState([])
   const [name, setName] = useState("");
   const [resolveStatus, setResolveStatus] = useState("");
   const [issueTypeStateDTOS, setissueTypeStateDTOS] = useState([]);
   const [status, setStatus] = useState("");
   const [daysToNextStep, setdaysToNextStep] = useState("");
   const [nextStatus, setNextStatus] = useState("");
-  const [premiseUnitTypeChargeId, setpremiseUnitTypeChargeId] = useState("");
+  const [applicableChargeId, setapplicableChargeId] = useState("");
   const [templateName, setTemplateName] = useState("");
+
+  useEffect(() => {
+    requestsServiceService.allApplicableCharges().then((res) => {
+      setApplicableCharges(res.data.data)
+    })
+  }, [])
 
   const [isChecked, setIsChecked] = useState(true);
   const [filled, setFilled] = useState(false);
@@ -48,7 +55,7 @@ function IssueTypes() {
         daysToNextStep: daysToNextStep,
         id: 0,
         nextStatus: nextStatus,
-        premiseUnitTypeChargeId: premiseUnitTypeChargeId,
+        applicableChargeId: applicableChargeId,
         status: status,
         templateName: templateName,
       };
@@ -299,16 +306,27 @@ function IssueTypes() {
                 </div>
                 <div className="form-group mb-4">
                   <label htmlFor="">Charges</label> <br />
-                  <select
-                    id=""
-                    onChange={(e) => {
-                      setpremiseUnitTypeChargeId(e.target.value);
-                    }}
-                  >
-                    <option value="CHARGE 1">CHARGE 1</option>
-                    <option value="CHARGE 2">CHARGE 2</option>
-                    <option value="CHARGE 3">CHARGE 3</option>
-                  </select>
+                  {applicableCharges.length> 0 && (
+                      <div className="form-group mb-4">
+                        <select
+                            className="form-control text-capitalize"
+                            value={applicableChargeId}
+                            onChange={(e) =>
+                                setapplicableChargeId(e.target.value)
+                            }
+                            required={true}
+                        >
+                          <option className="text-black font-semibold ">
+                            select applicable charge
+                          </option>
+                          {applicableCharges?.map((item, index) => (
+                              <option value={item.id}>
+                                {item?.name.toLowerCase()?.replace(/_/g, " ")}
+                              </option>
+                          ))}
+                        </select>
+                      </div>
+                  )}
                 </div>
                 <div className="form-group mb-4">
                   <label htmlFor="">Status</label>
