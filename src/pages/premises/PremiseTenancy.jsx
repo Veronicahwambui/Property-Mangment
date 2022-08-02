@@ -227,6 +227,13 @@ function PremiseTenancy() {
         setadddocument(false)
 
     }
+    const removeDoc = (index)=>{
+        if (index > -1) { 
+            docArr.splice(index, 1); 
+          }   
+          
+          return docArr
+    }
 
     const handleFileRead = async (event) => {
         const file = event.target.files[0]
@@ -728,6 +735,7 @@ function PremiseTenancy() {
                                                                     <tr class=" text-uppercase ">
                                                                         <th>#</th>
                                                                         <th class="">doc name</th>
+                                                                        <th>actions</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -736,6 +744,7 @@ function PremiseTenancy() {
                                                                             <tr>
                                                                                 <td>{index + 1}</td>
                                                                                 <td className="text-capitalize">{doc.docName}</td>
+                                                                                <td><i class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit bx bx-trash" onClick={()=>removeDoc(index)}></i></td>
                                                                             </tr>
                                                                         )
                                                                     })}
