@@ -425,7 +425,7 @@ function AddTenant() {
                           </a>
                         </li>
                         <li className="nav-item">
-                          <a className="nav-link">2. Kin Referees & Dependents</a>
+                          <a className="nav-link">2. Kin ,Referees & Dependents</a>
                         </li>
 
                         <li className="nav-item">
@@ -970,7 +970,7 @@ function AddTenant() {
                     </div>
 
                     <div className="step-cont d-none">
-                      <h3>Kin Referees & Dependents</h3>
+                      <h3>Kin, Referees & Dependents</h3>
                       <section>
                         <div className="row">
                           <div className="col-12">
@@ -1035,7 +1035,7 @@ function AddTenant() {
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-4">
                               <p className="fw-semibold mb-0 pb-0">
-                                Next of Kin details
+                                Next of Kin, details
                               </p>
                             </div>
                           </div>
@@ -1248,7 +1248,7 @@ function AddTenant() {
                                           >
                                             <td
                                               colspan="7"
-                                              class="bg-light add-field-1 cursor-pointer"
+                                              class="bg-light cursor-pointe r"
                                             >
                                               <span class="d-flex align-items-center ">
                                                 <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
@@ -1302,7 +1302,7 @@ function AddTenant() {
                                 ))}
                             </tbody>
                             <tfoot>
-                              <tr
+                              {/* <tr
                                 className=""
                                 data-id="TENANT"
                                 onClick={newDocument}
@@ -1318,7 +1318,20 @@ function AddTenant() {
                                     </span>
                                   </span>
                                 </td>
-                              </tr>
+                              </tr> */}
+
+                              <tr>
+                            <td colSpan="7 " class="bg-light  cursor-pointer" >
+                           
+                              <span class="d-flex align-items-center ">
+                                    <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
+                                    <span class="pl-5 " data-id="TENANT" onClick={newDocument}>
+                                      Add Tenancy Documents
+                                    </span>
+                                    </span>
+                            </td>
+
+                          </tr>
                             </tfoot>
                           </table>
                         </div>
@@ -1536,6 +1549,7 @@ function AddTenant() {
                             name="startDate"
                           />
                         </div>
+                        
                       </div>
                       <div className="col-md-6" id="datepicker1O4">
                         <div className="mb-4">
