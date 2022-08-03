@@ -50,7 +50,7 @@ function CreateIssueTypes() {
     const found = issueTypeStateDTOS.some(
       (el) => el.status.toLowerCase() === nextStatus
     );
-    if (!found && nextStatus === resolveStatus) {
+    if (nextStatus === resolveStatus) {
       setStatus(resolveStatus);
       let data = {
         active: true,
@@ -66,7 +66,7 @@ function CreateIssueTypes() {
       issueTypeStateDTOS.push(data);
       setComplete(true);
       hideModal();
-    } else if (!found) {
+    } else {
       setStatus(nextStatus);
       let data = {
         active: true,
@@ -172,6 +172,11 @@ function CreateIssueTypes() {
                   </div>
                 </div>
                 <div className="card-body">
+                  <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                    <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                      Issue Type Details
+                    </p>
+                  </div>
                   <form onSubmit={submit}>
                     <div className="col-12">
                       <div className="row">
@@ -192,7 +197,9 @@ function CreateIssueTypes() {
                                 setInitialStatus(e.target.value);
                                 setStatus(e.target.value);
                               }}
+                              placeholder={"Enter initial status"}
                               required={true}
+                              disabled={complete}
                             />
                             <Alert variant={"warning"}>
                               Initial status. Must be first status
@@ -212,6 +219,8 @@ function CreateIssueTypes() {
                               className={"form-control"}
                               onChange={(e) => setName(e.target.value)}
                               required={true}
+                              placeholder={"Enter issue type name"}
+                              disabled={complete}
                             />
                             <Alert variant={"warning"}>
                               Name of the issue type
@@ -232,9 +241,11 @@ function CreateIssueTypes() {
                               className={"form-control"}
                               onChange={(e) => setResolveStatus(e.target.value)}
                               required={true}
+                              placeholder={"Enter resolve status"}
+                              disabled={complete}
                             />
                             <Alert variant={"warning"}>
-                              Status to show when the issue is resolved.Must be
+                              Status to show when the issue is resolved. Must be
                               the final status
                             </Alert>
                           </div>
@@ -245,7 +256,7 @@ function CreateIssueTypes() {
                               className={"btn btn-primary float-end"}
                               type={"submit"}
                             >
-                              Add
+                              Add Issue Type
                             </button>
                           )}
                         </div>
@@ -341,7 +352,7 @@ function CreateIssueTypes() {
         <Modal show={show} onHide={hideModal} centered>
           <form onSubmit={addIssueState}>
             <Modal.Header closeButton>
-              <Modal.Title>Add Issue Type</Modal.Title>
+              <Modal.Title>Add State</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <div className="row">

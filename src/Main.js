@@ -57,8 +57,6 @@ function Main() {
         window.location.reload();
       }
     }, AuthService.getUserLoggedInAt() - Math.floor(Date.now()));
-
-    console.log(Math.floor(Date.now()) - AuthService.getUserLoggedInAt());
   }, []);
 
   return (
@@ -178,7 +176,10 @@ function Main() {
                 <Route path="/addlandlord" element={<AddLandlord />} />
                 <Route path="/landlord/:id" element={<ViewLandlord />} />
                 <Route path="/statements" element={<Statements />} />
-                <Route path="//create-issue-type" element={<CreateIssueTypes />} />
+                <Route
+                  path="//create-issue-type"
+                  element={<CreateIssueTypes />}
+                />
                 <Route path="/issuestypes" element={<IssuesTypes />} />
                 <Route path="/issuestypes/:id" element={<IssueType />} />
 

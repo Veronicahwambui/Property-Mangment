@@ -786,7 +786,16 @@ function ViewLandlord() {
                                               {index + 1}
                                             </td>
                                             <td data-field="estate">
-                                              {doc.docName}
+                                              <a
+                                                href={
+                                                  baseUrl +
+                                                  "/documents/download?docName=" +
+                                                  `${doc.docName}`
+                                                }
+                                              >
+                                                {" "}
+                                                {doc.docName}
+                                              </a>
                                             </td>
                                             <td
                                               data-field="unit-num "
@@ -804,6 +813,52 @@ function ViewLandlord() {
                                                   Inactive
                                                 </span>
                                               )}
+                                            </td>
+                                            <td className="text-right cell-change ">
+                                              <div className="d-flex align-items-center">
+                                                <a
+                                                  href={
+                                                    baseUrl +
+                                                    "/documents/download?docName=" +
+                                                    `${doc.docName}`
+                                                  }
+                                                  className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                                  target="_blank"
+                                                >
+                                                  <i className="bx bx-download" />
+                                                </a>
+                                                {doc.active ? (
+                                                  <button
+                                                    className="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
+                                                    title="deactivate"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirm-deactivate"
+                                                    style={{
+                                                      marginLeft: "8px",
+                                                    }}
+                                                    onClick={() =>
+                                                      setActiveId(doc.id)
+                                                    }
+                                                  >
+                                                    Deactivate
+                                                  </button>
+                                                ) : (
+                                                  <button
+                                                    className="btn btn-success btn-sm btn-rounded waves-effect waves-light"
+                                                    title="deactivate"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirm-activate"
+                                                    style={{
+                                                      marginLeft: "8px",
+                                                    }}
+                                                    onClick={() =>
+                                                      setActiveId(doc.id)
+                                                    }
+                                                  >
+                                                    Activate
+                                                  </button>
+                                                )}
+                                              </div>
                                             </td>
                                           </tr>
                                         ))}
@@ -1020,6 +1075,17 @@ function ViewLandlord() {
                       />
                     </div>
                     <div className="form-group mb-4">
+                      <label htmlFor="">Other Name</label>
+                      <input
+                        type="text"
+                        value={editlandlordothername}
+                        onChange={(e) =>
+                          seteditlandlordothername(e.target.value)
+                        }
+                        className="form-control"
+                      />
+                    </div>
+                    <div className="form-group mb-4">
                       <label htmlFor="">
                         Email. <strong className="text-danger ">*</strong>
                       </label>
@@ -1046,20 +1112,7 @@ function ViewLandlord() {
                         required={true}
                       />
                     </div>
-                    <div className="form-group mb-4">
-                      <label htmlFor="">Other Name</label>
-                      <input
-                        type="text"
-                        value={editlandlordothername}
-                        onChange={(e) =>
-                          seteditlandlordothername(e.target.value)
-                        }
-                        className="form-control"
-                      />
-                    </div>
-                    <div className="col-6"></div>
                   </div>
-                  <div className="col-12"></div>
                 </div>
               </Modal.Body>
               <Modal.Footer>
