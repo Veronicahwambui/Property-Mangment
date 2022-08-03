@@ -1365,23 +1365,8 @@ function OneTenant() {
                             <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
 
                                 <div class="d-flex align-items-center flex-grow-1">
-                                    <button type="button" class="btn btn-secondary waves-effect waves-light write-msg-btn me-3">
-                                        <i class="mdi mdi-pencil font-size-16 align-middle me-2"></i> Write Message
-                                    </button>
-                                    <div class="btn-group pr-3" role="group" aria-label="Basic radio toggle button group">
-                                        <input type="radio" class="btn-check" name="msg-type-filter" value="" id="btn-allmsgs" autocomplete="off" checked=""/>
-                                        <label class="btn btn-primary mb-0 waves-light waves-effect" for="btn-allmsgs"><span class="d-inline">All</span></label>
-
-                                        <input type="radio" class="btn-check" value="SMS" name="msg-type-filter" id="btn-sms" autocomplete="off" />
-                                        <label class="btn btn-primary mb-0 waves-light waves-effect" for="btn-sms"><i class="mdi mdi-chat-outline font-size-16"></i><span class="pl-1 d-none d-lg-inline d-md-inline">SMS</span></label>
-
-                                        <input type="radio" class="btn-check" value="Email" name="msg-type-filter" id="btn-email" autocomplete="off" />
-                                        <label class="btn btn-primary mb-0 waves-light waves-effect" for="btn-email"><i class="mdi mdi-email-outline font-size-16"></i><span class="pl-1 d-none d-lg-inline d-md-inline">Emails</span></label>
-
-
-
-                                    </div>
-
+                                 
+                                
                                  
 
                                 </div>
@@ -1439,11 +1424,7 @@ function OneTenant() {
                                         
                                         <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
                                         <td class="the-msg the-msg-2">
-                                            <p class=" justify-content-between w-100 d-flex d-md-none">
-                                                <span class="font-16px">Alex Wanjala</span>
-                                                <span>20 Mar</span>
-                                            </p>
-                                            {/* <span class="">Re: The Message Title</span>- <br class="d-sm-block d-md-none"/> */}
+                                           
                                             <span>{JSON.parse(com.data).text}</span>
                                           
                                             <span class=" font-size-18 d-flex d-md-none">{com.communicationType}
