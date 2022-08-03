@@ -75,7 +75,7 @@ function SideBar() {
                             <ul class="sub-menu" aria-expanded="false">
                                 <li><NavLink to="/messages">Messages</NavLink></li>
                                 <li><NavLink to="/emails">Emails</NavLink></li>
-                                <li class=""><NavLink to="/createTemplate">Compose messages</NavLink></li>
+                                <li class=""><NavLink to="/createTemplate">Messages Templates</NavLink></li>
                             </ul>
                         </li>
                         {/* <li>

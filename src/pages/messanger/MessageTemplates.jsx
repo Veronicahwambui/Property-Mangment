@@ -1,3 +1,4 @@
+/* global $*/
 import moment from 'moment'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
@@ -10,31 +11,87 @@ function MessageTemplates() {
     const [messageTemplates, setMessageTemplates] = useState([])
     const [template, setTemplate] = useState('')
     const [templateName, setTemplateName] = useState('')
+    const [error, setError] = useState({
+        message: "",
+        color: ""
+    });
+
 
     let clientId = AuthService.getClientId()
     useEffect(() => {
-      fetchAll()
+        fetchAll()
     }, [])
-  const fetchAll = ()=>{
-    requestsServiceService.getMessageTemplate(clientId).then((res) => {
-        setMessageTemplates(res.data.data)
-    })
-  }
-    const createTemplate = ()=>{
+    const fetchAll = () => {
+        requestsServiceService.getMessageTemplate(clientId).then((res) => {
+            setMessageTemplates(res.data.data)
+        })
+    }
+    const createTemplate = (e) => {
+        e.preventDefault()
+
+        var templateString = template;
+
+        var params = templateString.match(/{{(.*?)}}/g);
+
+        if (params != null && params.length > 0) {
+
+            var paramsText = params.toString();
+            var paramsWithoutBraces = paramsText.replace(/{{|}}/gi, "");
+
+        }
+
 
         let data = JSON.stringify({
             clientId: clientId,
             id: null,
             language: "ENG",
-            parameterList: "string",
+            parameterList: paramsWithoutBraces,
             template: template,
-            templateName: templateName,
+            templateName: templateName?.toLocaleUpperCase(),
             templateType: "SMS"
-          })
+        })
 
-       requestsServiceService.createMessageTemplate(data).then((res)=>{
-           fetchAll()
-       })  
+        requestsServiceService.createMessageTemplate(data).then((res) => {
+            fetchAll()
+            $("#createTemplate").modal("hide");
+
+            if (res.data.status) {
+                setError({
+                    ...error,
+                    message: res.data.message,
+                    color: "success"
+                })
+            } else {
+
+                setError({
+                    ...error,
+                    message: res.data.message,
+                    color: "warning"
+                })
+            }
+
+            setTimeout(() => {
+                clear()
+            }, 3000)
+
+        }).catch((res) => {
+            $("#createTemplate").modal("hide");
+
+            setError({
+                ...error,
+                message: res.data.message,
+                color: "danger"
+            })
+
+        })
+    }
+
+    const clear = () => {
+        setError({
+            ...error,
+            message: "",
+            color: ""
+        });
     }
 
     return (
@@ -67,6 +124,11 @@ function MessageTemplates() {
                         </div>
                         {/* table  */}
                         <div className="card-body the-inbox">
+                            {error.color !== "" &&
+                                <div className={"alert alert-" + error.color} role="alert">
+                                    {error.message}
+                                </div>
+                            }
                             <table class="table  table-nowrap table-hover table-responsive overflow-visible contacts-table">
                                 <thead class="table-light">
                                     <tr>
@@ -99,6 +161,11 @@ function MessageTemplates() {
                 <div class="modal fade" id="createTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content border-radius-0">
+                            {error.color !== "" &&
+                                <div className={"alert alert-" + error.color} role="alert">
+                                    {error.message}
+                                </div>
+                            }
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalCenterTitle">Create Template</h5>
                                 <span class="close font-28 cursor-pointer" data-dismiss="modal" aria-label="Close">
@@ -106,17 +173,17 @@ function MessageTemplates() {
                                 </span>
                             </div>
                             <div class="modal-body">
-                               <form onSubmit={()=> createTemplate()}>
-                                  <div className="form-group">
-                                    <label htmlFor="">Template name</label>
-                                    <input type="text" required placeholder='Enter template name' className="form-control" value={templateName} onChange={(e)=> setTemplateName(e.target.value)} />
-                                  </div>
-                                  <div className="form-group mt-1">
-                                    <label htmlFor="">Template</label>
-                                    <textarea required name="description" class="form-control" placeholder="Enter desired template" id="" cols="30" rows="5" value={template} onChange={(e)=> setTemplate(e.target.value)} ></textarea>
-                                  </div>
-                                  <button type='submit' className='btn btn-primary btn-sm mt-3 float-end'> Create Template</button>
-                               </form>
+                                <form onSubmit={(e) => createTemplate(e)}>
+                                    <div className="form-group">
+                                        <label htmlFor="">Template name</label>
+                                        <input type="text" required placeholder='Enter template name' className="form-control" value={templateName} onChange={(e) => setTemplateName(e.target.value)} />
+                                    </div>
+                                    <div className="form-group mt-1">
+                                        <label htmlFor="">Template</label>
+                                        <textarea required name="description" class="form-control" placeholder="Enter desired template" id="" cols="30" rows="5" value={template} onChange={(e) => setTemplate(e.target.value)} ></textarea>
+                                    </div>
+                                    <button type='submit' className='btn btn-primary btn-sm mt-3 float-end'> Create Template</button>
+                                </form>
                             </div>
 
                         </div>
