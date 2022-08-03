@@ -23,10 +23,10 @@ function Header() {
 
                         <a href="index.html" class="logo logo-light">
                             <span class="logo-sm">
-                                    <img src="assets/images/logo-light.svg" alt="" height="22" />
+                                    <img src="assets/images/logo-light.svg" alt="" height="40" />
                                 </span>
                             <span class="logo-lg">
-                                    <img src="assets/images/logo-light.png" alt="" height="30" />
+                                    <img src="assets/images/logo-light.png" alt="" height="45" />
                                 </span>
                         </a>
                     </div>
