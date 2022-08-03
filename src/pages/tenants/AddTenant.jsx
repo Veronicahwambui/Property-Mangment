@@ -1125,7 +1125,7 @@ function AddTenant() {
                                 <tr>
                                   <td
                                     colSpan="7"
-                                    className="bg-light add-field-1 cursor-pointer"
+                                    className="bg-light  cursor-pointer"
                                   >
                                     <span class="d-flex align-items-center ">
                                       <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
@@ -1190,7 +1190,7 @@ function AddTenant() {
                                     >
                                       <td
                                         colspan="7"
-                                        class="bg-light add-field-1 cursor-pointer"
+                                        class="bg-light cursor-pointer"
                                       >
                                         <span class="d-flex align-items-center ">
                                           <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
@@ -1302,23 +1302,7 @@ function AddTenant() {
                                 ))}
                             </tbody>
                             <tfoot>
-                              {/* <tr
-                                className=""
-                                data-id="TENANT"
-                                onClick={newDocument}
-                              >
-                                <td
-                                  colspan="7"
-                                  class="bg-light add-field-1 cursor-pointer"
-                                >
-                                  <span class="d-flex align-items-center ">
-                                    <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
-                                    <span class="pl-5 ">
-                                      Add Tenancy Documents
-                                    </span>
-                                  </span>
-                                </td>
-                              </tr> */}
+                              
 
                               <tr>
                             <td colSpan="7 " class="bg-light  cursor-pointer" >
