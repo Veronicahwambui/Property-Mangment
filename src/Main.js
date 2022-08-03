@@ -53,14 +53,14 @@ import MessageTemplates from "./pages/messanger/MessageTemplates";
 import Emails from "./pages/messanger/Emails";
 
 function Main() {
-  // useEffect(() => {
-  //   setTimeout(function () {
-  //     if (AuthService.getCurrentUserAccessToken() != null) {
-  //       localStorage.clear();
-  //       window.location.reload();
-  //     }
-  //   }, new Date(AuthService.getUserLoggedInAt()).getTime()-Date.now());
-  // }, []);
+  useEffect(() => {
+    setTimeout(function () {
+      if (AuthService.getCurrentUserAccessToken() != null) {
+        localStorage.clear();
+        window.location.reload();
+      }
+    }, new Date(AuthService.getUserLoggedInAt()).getTime()-Date.now());
+  }, []);
 
   return (
     <HashRouter>
