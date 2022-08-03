@@ -6,7 +6,7 @@ import { useParams, Link } from 'react-router-dom'
 import AuthService from "../../services/authLogin.service"
 import requestsServiceService from '../../services/requestsService.service'
 
-// const docArr = []
+const docArr = []
 
 function PremiseTenancy() {
     const [activeTab, setActiveTab] = useState(1)
@@ -131,7 +131,7 @@ function PremiseTenancy() {
     const [adddocument, setadddocument] = useState(false)
     const [documentTypes, setdocumentTypes] = useState([])
     const [documentTypeId, setdocumentTypeId] = useState(null)
-    const [docArr, setDocArr] = useState([])
+    // const [docArr, setDocArr] = useState([])
     const [chargeable, setChargable] = useState(false)
     const [applicableCharge, setApplicableCharge] = useState(null)
     const [unitCost, setUnitCost] = useState('')
@@ -229,7 +229,6 @@ function PremiseTenancy() {
         setdocument(null)
         setdocumentTypeId(null)
         setadddocument(false)
-
     }
     const removeDoc = (index) => {
         if (index > -1) {
@@ -270,7 +269,7 @@ function PremiseTenancy() {
         let date = new Date()
 
         let data = JSON.stringify({
-            applicableChargeId: applicableCharge,
+            applicableChargeId: applicableCharge?.id,
             description: issueDetails.description,
             documents: docArr,
             invoiceDate: date,
@@ -280,6 +279,12 @@ function PremiseTenancy() {
 
         requestsServiceService.moveTenancyIssueToNextState(tenacyIssueId, data).then((res) => {
             fetchAll()
+            setIssueDetails({
+                description: '',
+                issueTypeId: null,
+            })
+            setUnitCost(null)
+
             $(".update-issues").modal("hide");
             if (res.data?.status) {
                 setError({
@@ -298,7 +303,10 @@ function PremiseTenancy() {
 
         }).catch((res) => {
             $(".update-issues").modal("hide");
-
+            setIssueDetails({
+                description: '',
+                issueTypeId: null,
+            })
 
             setError({
                 ...error,
@@ -317,8 +325,8 @@ function PremiseTenancy() {
                         <div class="col-12">
                             {/* <!-- Left sidebar --> */}
                             <div class="email-leftbar card calc-h-3px-md">
-                                <button type="button" class="btn btn-danger btn-block waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".issue-modal">
-                                    Report An Issues
+                                <button type="button" class="btn btn-danger btn-block waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".issue-modal" >
+                                    Report An Issue
                                 </button>
                                 <div class="mail-list mt-4">
                                     <a onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-home-outline me-2"></i> Client Details</a>
@@ -782,7 +790,7 @@ function PremiseTenancy() {
                                         <div class="modal-dialog modal-md modal-dialog-centered mb-5">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Update issue to next status</h5>
+                                                    <h5 class="modal-title">Update issue to <span className='text-capitalize text-success'>{newStatus?.toLowerCase()?.replace(/_/g, " ")}</span> </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <form onSubmit={(e) => moveToNextStep(e)}>
@@ -793,6 +801,15 @@ function PremiseTenancy() {
                                                                 <textarea required name="description" class="form-control " placeholder="Enter details on the issue" id="" cols="30" rows="5" onChange={(e) => handleIssues(e)} ></textarea>
                                                             </div>
                                                         </div>
+                                                        {chargeable &&
+                                                            <div className="col-12 mb-3">
+                                                                <span className="text-danger">This state is Chargable </span>
+                                                                <div className="form-group mt-2">
+                                                                    <label htmlFor=""> Issue cost <strong className="text-danger">*</strong></label>
+                                                                    <input required type="text" className="form-control" placeholder='Enter expected cost' value={unitCost} onChange={(e) => setUnitCost(e.target.value)} />
+                                                                </div>
+                                                            </div>
+                                                        }
                                                         {/* docs table */}
                                                         {docArr?.length > 0 &&
                                                             <div class="table-responsive table-responsive-md overflow-visible">
@@ -829,8 +846,8 @@ function PremiseTenancy() {
                                                         }
                                                         {/* doc add modal */}
                                                         {adddocument &&
-                                                            <form onSubmit={(e) => addDoc(e)}>
-                                                                <div className="modal-body">
+                                                            <div>
+                                                                <div className="col-12">
 
                                                                     <div className="row">
                                                                         <div className="col-12">
@@ -877,18 +894,12 @@ function PremiseTenancy() {
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="modal-footer">
-                                                                    <button type='submit' class="btn btn-primary">Add Document</button>
+                                                                <div class="col-12 mt-2">
+                                                                    <button type='button' onClick={(e) => addDoc(e)} class="btn btn-primary">Add Document</button>
                                                                 </div>
-                                                            </form>
-                                                        }
-                                                        {chargeable &&
-
-                                                            <div className="form-group mt-2">
-                                                                <label htmlFor=""> Issue cost</label>
-                                                                <input required type="text" className="form-control" placeholder='Enter expected cost' value={unitCost} onChange={(e) => setUnitCost(e.target.value)} />
                                                             </div>
                                                         }
+
                                                     </div>
                                                     <div className="modal-footer">
                                                         <button type="submit" className='btn btn-sm btn-primary'> update</button>
@@ -927,11 +938,11 @@ function PremiseTenancy() {
                                 </div>
                                 <div class="col-12">
                                     <div class="mb-4 ">
-                                        <label for="agreement-type">Issue Type<strong class="text-danger ">*</strong></label>
+                                        <label for="agreement-typ">Issue Type<strong class="text-danger ">*</strong></label>
                                         <select class="form-control" title="Select critical level" onChange={(e) => handleIssues(e)} name="issueTypeId">
-                                            <option selected={issueDetails.issueTypeId ?? "selected"}></option>
+                                            <option></option>
                                             {issueTypes?.map((item) => (
-                                                <option value={item.id}> {item.name}</option>
+                                                <option key={item.id} value={item.id}> {item.name}</option>
                                             ))}
 
                                         </select>

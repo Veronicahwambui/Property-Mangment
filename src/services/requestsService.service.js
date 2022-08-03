@@ -1,5 +1,9 @@
 import { axiosInstance, baseUrl } from "./API";
+<<<<<<< HEAD
 import {communicationService, communicationBaseUrl} from "./CommunicationApi";
+=======
+import {communicationService ,communicationBaseUrl } from "./CommunicationAPI"
+>>>>>>> feature/messenger
 
 class RequestsService {
   // roles
@@ -771,6 +775,22 @@ class RequestsService {
   getEntityCommunication(entityId, page, size) {
     return communicationService.get(communicationBaseUrl + "/comm/v1/communication/" + entityId + "?page=" + page + "&size=" + size + "&type=" + "TENANT")
   }
+
+  // MESSANGER API 
+  createMessageTemplate(data){
+    return communicationService.post(communicationBaseUrl + "/comm/templates",data)
+  }
+  getMessageTemplate(clientId){
+    return communicationService.get(communicationBaseUrl + "/comm/templates/" + clientId)
+  }
+  getSMS(page , size , type){
+    return communicationService.get(communicationBaseUrl + "/comm/v1/sms?page="+ page + "&size=" + size + "&type=" + type )
+  }
+
+  getEmails(page , size , type){
+    return communicationService.get(communicationBaseUrl + "/comm/v1/emails?page="+ page + "&size=" + size + "&type=" + type )
+  }
+
 
 }
 
