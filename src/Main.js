@@ -55,11 +55,11 @@ import Emails from "./pages/messanger/Emails";
 function Main() {
   useEffect(() => {
     setTimeout(function () {
-      if (AuthService.getCurrentUserAccessToken() != null) {
+      if (AuthService.getCurrentUserAccessToken() != null && Date.now() > AuthService.getUserLoggedInAt()) {
         localStorage.clear();
         window.location.reload();
       }
-    }, AuthService.getUserLoggedInAt() - Math.floor(Date.now()));
+    });
   }, []);
 
   return (
