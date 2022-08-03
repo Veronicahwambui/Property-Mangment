@@ -66,9 +66,9 @@ function OnePremiseUnit() {
                     <div class="col-12">
                         {/* <!-- Left sidebar --> */}
                         <div class="email-leftbar card calc-h-3px-md">
-                            <button type="button" class="btn btn-danger btn-block waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".issue-modal">
+                            {/* <button type="button" class="btn btn-danger btn-block waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".issue-modal">
                                 Report An Issues
-                            </button>
+                            </button> */}
                   
                             <div class="mail-list mt-4">
                                 <a onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-home-outline me-2"></i> Unit Details</a>

@@ -45,6 +45,12 @@ import PremiseTenancy from "./pages/premises/PremiseTenancy";
 import UserDetails from "./pages/admins/UserDetails";
 import InvoiceParent from "./pages/invoices/InvoicesParent";
 import Statements from "./pages/statements/Statements";
+import CreateIssueTypes from "./pages/setups/CreateIssueTypes";
+import IssuesTypes from "./pages/setups/IssuesTypes";
+import IssueType from "./pages/setups/IssueType";
+import Messages from "./pages/messanger/Messages";
+import MessageTemplates from "./pages/messanger/MessageTemplates";
+import Emails from "./pages/messanger/Emails";
 
 function Main() {
   useEffect(() => {
@@ -53,9 +59,7 @@ function Main() {
         localStorage.clear();
         window.location.reload();
       }
-    }, AuthService.getUserLoggedInAt() - Math.floor(Date.now()));
-
-    console.log(Math.floor(Date.now()) - AuthService.getUserLoggedInAt());
+    }, new Date(AuthService.getUserLoggedInAt()).getTime()-Date.now());
   }, []);
 
   return (
@@ -175,6 +179,17 @@ function Main() {
                 <Route path="/addlandlord" element={<AddLandlord />} />
                 <Route path="/landlord/:id" element={<ViewLandlord />} />
                 <Route path="/statements" element={<Statements />} />
+                <Route path="/create-issue-type" element={<CreateIssueTypes />} />
+                <Route path="/issuestypes" element={<IssuesTypes />} />
+                <Route path="/issuestypes/:id" element={<IssueType />} />
+
+
+                {/* messageer  */}
+                <Route path='/messages' element={<Messages />} />
+                <Route path='/createTemplate' element={<MessageTemplates />} />
+                <Route path='/emails' element={<Emails />} />
+
+
 
                 <Route path="*" element={<Navigate to="/" />}></Route>
               </Routes>

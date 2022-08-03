@@ -1,3 +1,4 @@
+/* global $*/
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
@@ -12,6 +13,8 @@ import requestsServiceService from '../services/requestsService.service'
 import { Link } from 'react-router-dom';
 
 function Dashboard() {
+   const colors = [ '#3399ff','#ff7f50' ,'#00ff00', '#00a591', '#ecdb54' ,'#6b5b95','#944743' ,'#dc4c46', '#034f84', '#edf1ff']
+
     const [dashboardData, setDashboardData] = useState({})
     const [radioBarData, setRadioBarData] = useState([])
     const [radioBarData2, setRadioBarData2] = useState([])
@@ -24,21 +27,26 @@ function Dashboard() {
     useEffect(() => {
         fetchDashData()
     }, [])
-    
-    const handleSubmit =(e)=>{
+
+    const handleSubmit = (e) => {
         e.preventDefault()
+        $("#spinner").removeClass("d-none")
+
         fetchDashData()
 
     }
     const fetchDashData = () => {
-        requestsServiceService.getClientDashboardGraphs(moment(startDate).format("YYYY/MM/DD") ,moment(endDate).format("YYYY/MM/DD") ).then((res) => {
+
+        requestsServiceService.getClientDashboardGraphs(moment(startDate).format("YYYY/MM/DD"), moment(endDate).format("YYYY/MM/DD")).then((res) => {
+            $("#spinner").addClass("d-none")
+
             setRadioBarData(res.data.data.collectionSummaryByPremiseUseType)
             setRadioBarData2(res.data.data.collectionSummaryByUnitType)
             setPieChartData(res.data.data.collectionSummaryByApplicableCharge)
             setTransactionModesData(res.data.data.collectionSummaryByPaymentMode)
             setMonthlyCollectionSummaryRevenue(res.data.data.monthlyCollectionSummaryRevenue)
         })
-        requestsServiceService.getClientDashboard(moment(startDate).format("YYYY/MM/DD") ,moment(endDate).format("YYYY/MM/DD")).then((res) => {
+        requestsServiceService.getClientDashboard(moment(startDate).format("YYYY/MM/DD"), moment(endDate).format("YYYY/MM/DD")).then((res) => {
             setDashboardData(res.data.data)
         })
     }
@@ -101,7 +109,7 @@ function Dashboard() {
             }
         },
         stroke: { lineCap: "round" },
-        colors: ["#556ee6", "#e83e8c", "#00a884"],
+        colors: colors,
         labels: radioBarData.map(x => x.item),
         legend: { show: !1 }
     };
@@ -162,7 +170,7 @@ function Dashboard() {
             }
         },
         stroke: { lineCap: "round" },
-        colors: ["#556ee6", "#e83e8c", "#00a884"],
+        colors: colors,
         labels: radioBarData2.map(x => x.item),
         legend: { show: !1 }
     };
@@ -301,7 +309,7 @@ function Dashboard() {
         series: pieChartData.map(x => x.variance),
         chart: { type: "donut", height: 250 },
         labels: pieChartData.map(x => x.item),
-        colors: ["#556ee6", "#34c38f", "#f46a6a", "#556ee6", "#34c38f", "#f46a6a"],
+        colors: colors,
         legend: { show: !1 },
         plotOptions: { pie: { donut: { size: "40%" } } }
     };
@@ -340,7 +348,6 @@ function Dashboard() {
 
 
 
-
     return (
         <div className="page-content">
 
@@ -348,6 +355,19 @@ function Dashboard() {
 
                 {/* <!-- start page title --> */}
                 <div class="row">
+                    {/* <!-- Loader --> */}
+                    <div id="spinner">
+                        <div id="status">
+                            <div class="spinner-chase">
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                             <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
@@ -355,47 +375,47 @@ function Dashboard() {
                             <div class="page-title-right">
                                 <form className="d-flex align-items-center">
                                     <div className="d-flex justify-content-end align-items-center">
-                                    <div className="d-flex">
-                                        <label className="">
-                                            Start Date
-                                        </label>
-                                        <DatePicker
-                                            selected={startDate}
-                                            onChange={(date) => setStartDate(date)}
-                                            selectsStart
-                                            className="form-control mouse-pointer sdate"
+                                        <div className="d-flex">
+                                            <label className="">
+                                                Start Date
+                                            </label>
+                                            <DatePicker
+                                                selected={startDate}
+                                                onChange={(date) => setStartDate(date)}
+                                                selectsStart
+                                                className="form-control mouse-pointer sdate"
 
-                                            startDate={startDate}
-                                            endDate={endDate}
-                                            maxDate={new Date()}
+                                                startDate={startDate}
+                                                endDate={endDate}
+                                                maxDate={new Date()}
+                                            />
+                                        </div>
+                                        <div className="d-flex">
+                                            <label className="">
+                                                End Date
+                                            </label>
+                                            <DatePicker
+                                                selected={endDate}
+                                                onChange={(date) => setEndDate(date)}
+                                                selectsEnd
+                                                className="form-control mouse-pointer sdate"
+
+                                                startDate={startDate}
+                                                endDate={endDate}
+                                                minDate={startDate}
+                                                maxDate={new Date()}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="d-flex mb-2">
+                                        <input
+                                            type="submit"
+                                            className="btn btn-primary"
+                                            onClick={handleSubmit}
+                                            value="filter"
                                         />
                                     </div>
-                                    <div className="d-flex">
-                                        <label className="">
-                                            End Date
-                                        </label>
-                                        <DatePicker
-                                            selected={endDate}
-                                            onChange={(date) => setEndDate(date)}
-                                            selectsEnd
-                                            className="form-control mouse-pointer sdate"
 
-                                            startDate={startDate}
-                                            endDate={endDate}
-                                            minDate={startDate}
-                                            maxDate={new Date()}
-                                        />
-                                    </div>
-                                    </div>
-                                      <div className="d-flex mb-2">
-                                      <input
-                                        type="submit"
-                                        className="btn btn-primary"
-                                        onClick={handleSubmit}
-                                        value="filter"
-                                    />
-                                      </div>
-                                  
                                 </form>
                             </div>
 
@@ -620,10 +640,10 @@ function Dashboard() {
 
                                         <div class="text-center text-muted">
                                             <div class="row">
-                                                {pieChartData?.map((item) => (
+                                                {pieChartData?.map((item , index) => (
                                                     <div class="col-4">
                                                         <div class="mt-4 text-left">
-                                                            <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle text-primary me-1"></i>{item.item}</p>
+                                                            <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle me-1" style={{color: "" + colors[index] + "" }}></i>{item.item}</p>
                                                             <h5>KES {item.value}</h5>
                                                         </div>
                                                     </div>
@@ -658,10 +678,10 @@ function Dashboard() {
                                         </div>
                                     </div>
                                     <div class="col-sm-5 align-self-center">
-                                        {radioBarData?.map((item) => (
+                                        {radioBarData?.map((item ,index) => (
                                             <div class="">
                                                 <div class="mt-4 text-left">
-                                                    <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle text-primary me-1 "></i>{item.item}</p>
+                                                    <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle me-1 " style={{color: "" + colors[index] + "" }}></i>{item.item}</p>
                                                     <h5>KES {item.value}</h5>
                                                 </div>
                                             </div>
@@ -693,9 +713,9 @@ function Dashboard() {
                                         </div>
                                     </div>
                                     <div class="col-sm-5 align-self-center">
-                                        {radioBarData2?.map((item) => (
+                                        {radioBarData2?.map((item,index) => (
                                             <div>
-                                                <p class="mb-2 text-capitalize"><i class="mdi mdi-circle align-middle font-size-10 me-2 text-primary"></i> {item.item}</p>
+                                                <p class="mb-2 text-capitalize"><i class="mdi mdi-circle align-middle font-size-10 me-2 " style={{color: "" + colors[index] + "" }}></i> {item.item}</p>
                                                 <h5>KES {item.value} <br /><span class="text-muted font-size-12 d-none"> Contacts</span></h5>
                                             </div>
                                         ))}

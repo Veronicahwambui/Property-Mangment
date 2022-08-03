@@ -8,7 +8,7 @@ import authService from "../../services/auth.service";
 import { Link } from "react-router-dom";
 import moment from 'moment'
 import { Modal, Button } from "react-bootstrap";
-import { baseUrl } from "../../services/API";
+import { baseUrl} from "../../services/API";
 
 
 
@@ -142,10 +142,20 @@ function OneTenant() {
   const { id } = useParams();
   const userId = id;
 
+
+
+  //communication
+
+ const[ communication, setCommunication]=useState([])
+//  const [typeMes, setTypeMes] = useState("TENANT");
+ const[message,setMessage]=useState([]);
+
+
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
       setTenantTypeName(res.data.data.tenant.tenantType);
+
     });
   };
 
@@ -481,7 +491,7 @@ function OneTenant() {
   const getDocument = () => {
     requestsServiceService.fetchDocuments("TENANT", id).then((res) => {
       setTenantDocs(res.data.data)
-
+     
 
     }
     )
@@ -494,6 +504,8 @@ function OneTenant() {
     createDoc();
     createDocumentTypes()
     getDocument()
+    fetchCommunication();
+    // fetchMessages()
 
 
 
@@ -519,6 +531,68 @@ function OneTenant() {
   // console.log(tenancyRenewalDate)
 
 
+  //communication
+
+  // const fetchMessages=()=>{
+  //   let data= JSON.stringify({
+      
+  //     "dateTimeCreated": "2022-08-02T10:20:23Z",
+  //     "lastModifiedDate": "2022-08-02T10:20:23Z",
+  //     "id": 2,
+  //     "data": "{\"templateName\":\"temolate\",\"portalName\":\"Nouv test\",\"from\":\"nouveta.tech@outlook.com\",\"to\":\"kamau@gmail.com\",\"subject\":\"Test subject\",\"model\":{},\"attachments\":[]}",
+  //     "createdBy": "developer",
+  //     "counter": 0,
+  //     "sentAt": null,
+  //     "deliveryReport": null,
+  //     "status": 1,
+  //     "contact": "kamau@gmail.com",
+  //     "communicationType": "EMAIL",
+  //     "entityType": "TENANT",
+  //     "entityId": tenantId,
+    
+    
+  //     "dateTimeCreated": "2022-08-02T10:20:15Z",
+  //     "lastModifiedDate": "2022-08-02T10:20:16Z",
+  //     "id": 1,
+  //     "data": "{\"text\":\"string\",\"templateName\":null,\"model\":{}}",
+  //     "createdBy": "developer",
+  //     "counter": 1,
+  //     "sentAt": "2022-08-02T10:20:16Z",
+  //     "deliveryReport": "{\"request_id\":\"6e064dd858df47ad92b0a6902731515c\",\"sms_units_balance\":100924,\"message_length\":6,\"sms_count\":1}",
+  //     "status": 2,
+  //     "contact": "0755222555",
+  //     "communicationType": "SMS",
+  //     "entityType": "TENANT",
+  //     "entityId": userId,
+    
+  //     "page": 0,
+  //     "size": 30,
+  //     "totalElements": 2,
+  //     "totalPages": 1,
+  //     "last": true
+  
+
+
+
+
+
+
+  //   })
+
+
+
+
+  // }
+
+   const fetchCommunication=()=>{
+   
+    requestsServiceService.getEntityCommunication(userId,0,5).then((res)=>{
+      setCommunication(res.data.data)
+
+    })
+
+   }
+
 
 
 
@@ -541,7 +615,7 @@ function OneTenant() {
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
               <h4 class="mb-sm-0 font-size-18">
-                {tenantData.tenant && tenantData.tenant.firstName}
+                {tenantData?.tenant?.firstName}
               </h4>
 
               <div class="page-title-right">
@@ -553,7 +627,7 @@ function OneTenant() {
                     <Link to='/alltenants'>All Tenants</Link>
                   </li>
                   <li class="breadcrumb-item active">
-                    {tenantData.tenant && tenantData.tenant.firstName}
+                    {tenantData?.tenant?.firstName}
                   </li>
                 </ol>
               </div>
@@ -624,6 +698,17 @@ function OneTenant() {
                       >
                         Document Attachments
                       </a>
+                      <a
+                        onClick={() => setActiveLink(5)}
+                        class={
+                          activeLink === 5
+                            ? "nav-item nav-link active cursor-pointer"
+                            : "nav-item cursor-pointer nav-link"
+                        }
+                      >
+                        Communication
+                      </a>
+
                     </div>
                   </div>
                 </nav>
@@ -646,7 +731,7 @@ function OneTenant() {
                       <div class="d-flex align-items-center flex-grow-1">
                         <h4 class="mb-0 m-0 bg-transparent">
                           Quick Stats on{" "}
-                          {tenantData.tenant && tenantData.tenant.firstName}
+                          {tenantData?.tenant?.firstName}
                         </h4>
                       </div>
                       <div className="d-flex">
@@ -688,8 +773,8 @@ function OneTenant() {
                           <label htmlFor="">Type</label>
                           <div>
                             <span>
-                              {tenantData.tenant &&
-                                tenantData.tenant.tenantType}
+                              {
+                                tenantData?.tenant?.tenantType}
                             </span>
                           </div>
                         </div>
@@ -700,7 +785,7 @@ function OneTenant() {
                               <label htmlFor="">First Name</label>
                               <div>
                                 <span>
-                                  {tenantData.tenant && tenantData.tenant.firstName}
+                                  {tenantData?.tenant?.firstName}
                                 </span>
                               </div>
                             </div>
@@ -708,7 +793,7 @@ function OneTenant() {
                               <label htmlFor="">Last Name</label>
                               <div>
                                 <span>
-                                  {tenantData.tenant && tenantData.tenant.lastName}
+                                  {tenantData?.tenant?.lastName}
                                 </span>
                               </div>
                             </div>
@@ -716,7 +801,7 @@ function OneTenant() {
                               <label htmlFor="">Email</label>
                               <div>
                                 <span>
-                                  {tenantData.tenant && tenantData.tenant.email}
+                                  {tenantData?.tenant?.email}
                                 </span>
                               </div>
                             </div>
@@ -724,7 +809,7 @@ function OneTenant() {
                               <label htmlFor="">Id Number</label>
                               <div>
                                 <span>
-                                  {tenantData.tenant && tenantData.tenant.idNumber}
+                                  {tenantData?.tenant?.idNumber}
                                 </span>
                               </div>
                             </div>
@@ -736,7 +821,7 @@ function OneTenant() {
                                 <label htmlFor="">PhoneNumber</label>
                                 <div>
                                   <span>
-                                    {tenantData.tenant && tenantData.tenant.phoneNumber}
+                                    {tenantData?.tenant?.phoneNumber}
                                   </span>
                                 </div>
                               </div>
@@ -744,8 +829,8 @@ function OneTenant() {
                                 <label htmlFor="">Nationality</label>
                                 <div>
                                   <span>
-                                    {tenantData.tenant &&
-                                      tenantData.tenant.nationality}
+                                    {
+                                      tenantData?.tenant?.nationality}
                                   </span>
                                 </div>
                               </div>
@@ -762,8 +847,8 @@ function OneTenant() {
                             <label htmlFor="">Company Name</label>
                             <div>
                               <span>
-                                {tenantData.tenant &&
-                                  tenantData.tenant.companyName}
+                                {
+                                  tenantData?.tenant?.companyName}
                               </span>
                             </div>
                           </div>
@@ -771,8 +856,8 @@ function OneTenant() {
                             <label htmlFor="">Company Incorporation Number</label>
                             <div>
                               <span>
-                                {tenantData.tenant &&
-                                  tenantData.tenant.companyIncorporationNumber}
+                                {
+                                  tenantData?.tenant?.companyIncorporationNumber}
                               </span>
                             </div>
                           </div>
@@ -781,8 +866,8 @@ function OneTenant() {
                             <label htmlFor="">Company Address</label>
                             <div>
                               <span>
-                                {tenantData.tenant &&
-                                  tenantData.tenant.companyAddress}
+                                {
+                                  tenantData?.tenant?.companyAddress}
                               </span>
                             </div>
                           </div>
@@ -795,8 +880,8 @@ function OneTenant() {
                               <label htmlFor="">CompanyDateOfRegistration</label>
                               <div>
                                 <span>
-                                  {moment(tenantData.tenant &&
-                                    tenantData.tenant.companyDateOfRegistration).format("DD /MM /YYYY")}
+                                  {moment(
+                                    tenantData?.tenant?.companyDateOfRegistration).format("DD /MM /YYYY")}
                                 </span>
                               </div>
                             </div>
@@ -891,10 +976,10 @@ function OneTenant() {
                                           }</span>
                                         </td>
                                         <td>{moment(unit.tenancyRenewalDate).format
-                                          ("DD /MM /YYYY")
+                                          ("DD/ MM/ YYYY")
                                         }</td>
                                         <td>
-                                          {moment(unit.tenancyRenewalNotificationDate).format("DD /MM /YYYY")}
+                                          {moment(unit.tenancyRenewalNotificationDate).format("DD /MM/ YYYY")}
                                         </td>
                                         <td>
                                           {" "}
@@ -1249,6 +1334,143 @@ function OneTenant() {
 
         )}
 
+
+    {activeLink===5 &&(
+  <div>
+ 
+
+
+    <div class="container-fluid">
+
+        {/* <!-- start page title --> */}
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0 font-size-18">All Messages</h4>
+
+               
+                </div>
+            </div>
+        </div>
+        {/* <!-- end page title --> */}
+
+        <div class="row">
+            <div class="col-12">
+
+                {/* <!-- Right Sidebar --> */}
+                <div class="mb-3">
+
+                    <div class="card">
+                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                            <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
+
+                                <div class="d-flex align-items-center flex-grow-1">
+                                 
+                                
+                                 
+
+                                </div>
+
+                           
+
+                            </div>
+                        </div>
+                        <div class="card-body the-inbox">
+                            <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
+                                <thead>
+                                    <tr class="d-none">
+                                        <th>Mode</th>
+                                        <th>
+                                            {/* <!-- this is where the index is stored --> */}
+                                        </th>
+                                        <th>Status</th>
+                                        <th>Name</th>
+                                        <th>Message Content</th>
+                                        <th>Date</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody class="table-hover">
+                                  {communication?.map((com, index) => (
+                                      
+                                
+                                      <tr data-id="1">
+                                    <td>{index + 1}</td>
+                                    {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                        <td class="">
+                                            {/* <!-- put the index here --> */}
+
+                                            <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
+                                                <div class="avatar-xs m-0">
+                                                    <span class="avatar-title rounded-circle bg-success bg-orange text-white">
+                                                        AW
+                                                    </span>
+                                                </div>
+
+                                            </div>
+
+
+                                            <span class=" font-size-18 d-none d-md-flex">
+                                                <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">SMS</span></i>
+                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i>
+
+                                            </span>
+
+
+                                        </td>
+
+                                        <td class="d-none"><span class="d-none">0</span></td>
+                                        
+                                        <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
+                                        <td class="the-msg the-msg-2">
+                                           
+                                            <span>{JSON.parse(com.data).text}</span>
+                                          
+                                            <span class=" font-size-18 d-flex d-md-none">{com.communicationType}
+                                                {/* <br/>
+                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">SMS</span></i>
+                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
+
+                                            </span>
+                                        </td>
+                                        <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+                                        </tr>
+                                       ) 
+                              )}
+                              
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                    </div>
+                 
+
+
+                </div>
+                {/* <!-- end Col-9 --> */}
+
+            </div>
+
+        </div>
+        {/* <!-- End row --> */}
+
+    </div>
+    {/* <!-- container-fluid --> */}
+
+
+
+
+
+
+</div>
+
+
+    )
+    }
 
         <div
           class="modal fade"
