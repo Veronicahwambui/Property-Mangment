@@ -937,8 +937,8 @@ function OneTenant() {
                                 {error.message}
                               </div>
                             }
-                            <div className="table-responsive">
-                              <table className="table align-middle table-nowrap table-hover mb-0">
+                            <div className="table-responsive table-responsive-vontainer">
+                              <table className="table align-middle table-nowrap table-hover" id="datatable-buttons">
                                 <thead>
                                   <tr class="text-uppercase table-dark">
                                     <th>#</th>
@@ -1039,9 +1039,9 @@ function OneTenant() {
                                                   deleteDeactivate(unit.id)
                                                 }
                                               >
-                                                <i class="font-size-8 mdi mdi-close-circle me-3">
+                                                <i class="font-size-8 mdi mdi-close-circle me-3"></i>
                                                   Deactivate
-                                                </i>
+                                                
                                               </button>
                                             </div>
                                           </div>
