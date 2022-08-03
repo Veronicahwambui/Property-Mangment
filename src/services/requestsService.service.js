@@ -1,8 +1,5 @@
 import { axiosInstance, baseUrl } from "./API";
-import {
-  communicationService,
-  communicationBaseUrl,
-} from "./CommunicationsAPI";
+import {communicationService, communicationBaseUrl} from "./CommunicationApi";
 
 class RequestsService {
   // roles
@@ -244,22 +241,22 @@ class RequestsService {
   toggleCaretaker(premiseId, caretakerId) {
     return axiosInstance.get(
       baseUrl +
-        "/premises/" +
-        premiseId +
-        "/caretaker/" +
-        caretakerId +
-        "/deactivate"
+      "/premises/" +
+      premiseId +
+      "/caretaker/" +
+      caretakerId +
+      "/deactivate"
     );
   }
 
   updateCaretaker(premiseId, caretakerId, data) {
     return axiosInstance.post(
       baseUrl +
-        "/premises/" +
-        premiseId +
-        "/caretaker/" +
-        caretakerId +
-        "/update",
+      "/premises/" +
+      premiseId +
+      "/caretaker/" +
+      caretakerId +
+      "/update",
       data
     );
   }
@@ -624,7 +621,7 @@ class RequestsService {
   getInvoices(data) {
     return axiosInstance.post(
       baseUrl +
-        `/payments/invoice/transactions?page=${data.page}&size=${data.size}`,
+      `/payments/invoice/transactions?page=${data.page}&size=${data.size}`,
       data
     );
   }
@@ -642,9 +639,9 @@ class RequestsService {
   toggleChargeunitStatuses(premiseUnitTypeChargeId) {
     return axiosInstance.get(
       baseUrl +
-        "/premiseUnitTypeCharges/" +
-        premiseUnitTypeChargeId +
-        "/toogleStatus"
+      "/premiseUnitTypeCharges/" +
+      premiseUnitTypeChargeId +
+      "/toogleStatus"
     );
   }
   createTenancyCharges(tenancyId, data) {
@@ -668,14 +665,14 @@ class RequestsService {
   getInvoices(data) {
     return axiosInstance.post(
       baseUrl +
-        `/payments/invoice/transactions?page=${data.page}&size=${data.size}`,
+      `/payments/invoice/transactions?page=${data.page}&size=${data.size}`,
       data
     );
   }
   getParentInvoices(data) {
     return axiosInstance.post(
       baseUrl +
-        `/payments/parents/transactions?page=${data.page}&size=${data.size}`,
+      `/payments/parents/transactions?page=${data.page}&size=${data.size}`,
       data
     );
   }
@@ -711,9 +708,9 @@ class RequestsService {
   getStatements(data) {
     return axiosInstance.get(baseUrl + `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`);
   }
-  
-  moveTenancyIssueToNextState( tenancyIssueId,data){
-    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/" + tenancyIssueId + "/moveToNextState" , data)
+
+  moveTenancyIssueToNextState(tenancyIssueId, data) {
+    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/" + tenancyIssueId + "/moveToNextState", data)
   }
 
   fetchDocuments(docOwnerType, entity) {
@@ -768,6 +765,13 @@ class RequestsService {
       baseUrl + "/setup/tenancyIssueTypes/toogleStatus/" + id
     );
   }
+
+  // communication
+
+  getEntityCommunication(entityId, page, size) {
+    return communicationService.get(communicationBaseUrl + "/comm/v1/communication/" + entityId + "?page=" + page + "&size=" + size + "&type=" + "TENANT")
+  }
+
 }
 
 export default new RequestsService();
