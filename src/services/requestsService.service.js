@@ -1,4 +1,5 @@
 import { axiosInstance, baseUrl } from "./API";
+import { communicationService,communicationBaseUrl} from "./CommunicationApi";
 
 class RequestsService {
   // roles
@@ -708,6 +709,13 @@ class RequestsService {
   findVacatPremise(premiseId) {
     return axiosInstance.get(baseUrl + "/premiseUnits/" + premiseId + "/units/vacant")
   }
+
+ // communication
+
+ getEntityCommunication(entityId,page,size){
+   return communicationService.get(communicationBaseUrl +"/comm/v1/communication/"+entityId +"?page="+page+"&size="+size+"&type="+"TENANT")
+ }
+
 }
 
 export default new RequestsService();
