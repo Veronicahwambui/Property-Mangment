@@ -263,8 +263,10 @@ function IssueType() {
                                   <tr className="text-uppercase table-light">
                                     <th>#</th>
                                     <th>Days 2 Next</th>
+                                    <th>Previous Status</th>
                                     <th>Status</th>
                                     <th>Next Status</th>
+                                    <th>Action</th>
                                     <th>Template Name</th>
                                     <th>State</th>
                                     <th>Actions</th>
@@ -279,8 +281,10 @@ function IssueType() {
                                             {index + 1}
                                           </td>
                                           <td>{item.daysToNextStep}</td>
+                                          <td>{item.previousStatus}</td>
                                           <td>{item.status}</td>
                                           <td>{item.nextStatus}</td>
+                                          <td>{item.stateAction}</td>
                                           <td>{item.templateName}</td>
                                           <td data-field="unit-num ">
                                             {item.active ? (

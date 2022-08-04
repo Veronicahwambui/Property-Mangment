@@ -1,4 +1,4 @@
-/* global $*/ 
+/* global $*/
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -17,8 +17,9 @@ function PremisesRegister() {
 
     const fetchAll = () => {
         requestsServiceService.getAllpremises().then((res) => {
-            setPremises(res.data.data)
-            $("#spinner").addClass("d-none")
+            setPremises(res.data.data);
+            $("#spinner").addClass("d-none");
+            $(".table").bootstrapTable();
 
         })
     }
@@ -118,7 +119,9 @@ function PremisesRegister() {
 
                             </div>
                             <div class="card-body">
-                                <table class="table  table-nowrap table-hover table-responsive overflow-visible contacts-table">
+                                <table className="table  table-responsive overflow-visible table-paginated" data-plugin="bootstrapTable"
+                                    data-pagination="true"
+                                >
                                     <thead class="table-light">
                                         <tr>
                                             <th scope="col">#</th>
