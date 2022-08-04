@@ -1205,3 +1205,6 @@ padding: 0px;
         display:flex;
         justify-content: flex-end;
     }
+    .table-responsive{
+        min-height:40vh
+    }

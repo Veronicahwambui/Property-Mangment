@@ -81,81 +81,83 @@ function AllTenants() {
 
               </div>
               <div className="card-body">
-                <table className="table table-responsive align-middle table-nowrap table-hover" id="datatable-buttons">
-                  <thead className="table-light">
-                    <tr>
+                  <div className="table-responsive">
+                    <table className="table  align-middle table-nowrap table-hover" id="datatable-buttons">
+                      <thead className="table-light">
+                        <tr>
 
-                      <th scope="col">#</th>
-                      <th scope="col">Names</th>
-                      <th scope="col">Tenant Type</th>
-                      <th scope="col">Nationality</th>
-                      <th scope="col">Contact Email</th>
-                      <th scope="col">Contact Phone</th>
-                      <th scope="col">Date Created</th>
-                      <th scope="col">Status</th>
-                      <th scope='col'>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {premises?.map  ((premise, index) => {
-
-                      return (
-                        <tr key={index}>
-                          <td className="text-capitalize">{index + 1}</td>
-                          <td className="text-capitalize">
-                            <Link to={"/tenant/" + premise.id}>
-                              {premise.tenantType === "COMPANY" ? premise.companyName : (premise.firstName + " " + premise.lastName)}
-                            </Link>
-                          </td>
-                          <td>
-                            <h5 className="font-size-14 mb-1">{premise.tenantType === "COMPANY" ? <span className="badge-soft-success badge">{premise.tenantType}</span> : <span className="badge-soft-primary badge">{premise.tenantType}</span>}</h5>
-
-                          </td>
-                          <td>
-                            <h5 className="font-size-14 mb-1">{premise.nationality}</h5>
-
-                          </td>
-                          <td>
-                            <h5 className="font-size-14 mb-1">{premise.email}</h5>
-
-                          </td>
-                          <td>
-                            <h5 className="font-size-14 mb-1">{premise.phoneNumber}</h5>
-
-                          </td>
-                          <td>
-                            <h5 className="font-size-14 mb-1">{moment(premise.dateTimeCreated).format("MMM DD YYYY")}</h5>
-
-                          </td>
-
-                          <td >{premise.active ? <span className="badge-soft-success badge">Active</span> : <span className="badge-soft-danger badge">Inactive</span>}</td>
-
-                          <td>
-                            <div className="dropdown">
-                              <a className="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                <i className="bx bx-dots-vertical-rounded"></i>
-                              </a>
-
-                              <div className="dropdown-menu dropdown-menu-end">
-
-                                <Link className="dropdown-item" to={"/tenant/" + premise.id}>
-                                  <i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed View
-                                </Link>
-
-                                {/* <a className="dropdown-item" href="property-details.html"><i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a> */}
-                                {/* <a className="dropdown-item" href="property-units.html"><i className="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
-                                <a className="dropdown-item" href="#"><i className="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
-                                <a className="dropdown-item" href="#"> <i className="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Change ownership</a> */}
-                              </div>
-                            </div>
-                          </td>
-                          
+                          <th scope="col">#</th>
+                          <th scope="col">Names</th>
+                          <th scope="col">Tenant Type</th>
+                          <th scope="col">Nationality</th>
+                          <th scope="col">Contact Email</th>
+                          <th scope="col">Contact Phone</th>
+                          <th scope="col">Date Created</th>
+                          <th scope="col">Status</th>
+                          <th scope='col'>Actions</th>
                         </tr>
-                      )
-                    })}
-                    <tr></tr>
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody>
+                        {premises?.map  ((premise, index) => {
+
+                          return (
+                            <tr key={index}>
+                              <td className="text-capitalize">{index + 1}</td>
+                              <td className="text-capitalize">
+                                <Link to={"/tenant/" + premise.id}>
+                                  {premise.tenantType === "COMPANY" ? premise.companyName : (premise.firstName + " " + premise.lastName)}
+                                </Link>
+                              </td>
+                              <td>
+                                <h5 className="font-size-14 mb-1">{premise.tenantType === "COMPANY" ? <span className="badge-soft-success badge">{premise.tenantType}</span> : <span className="badge-soft-primary badge">{premise.tenantType}</span>}</h5>
+
+                              </td>
+                              <td>
+                                <h5 className="font-size-14 mb-1">{premise.nationality}</h5>
+
+                              </td>
+                              <td>
+                                <h5 className="font-size-14 mb-1">{premise.email}</h5>
+
+                              </td>
+                              <td>
+                                <h5 className="font-size-14 mb-1">{premise.phoneNumber}</h5>
+
+                              </td>
+                              <td>
+                                <h5 className="font-size-14 mb-1">{moment(premise.dateTimeCreated).format("MMM DD YYYY")}</h5>
+
+                              </td>
+
+                              <td >{premise.active ? <span className="badge-soft-success badge">Active</span> : <span className="badge-soft-danger badge">Inactive</span>}</td>
+
+                              <td>
+                                <div className="dropdown">
+                                  <a className="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                                    <i className="bx bx-dots-vertical-rounded"></i>
+                                  </a>
+
+                                  <div className="dropdown-menu dropdown-menu-end">
+
+                                    <Link className="dropdown-item" to={"/tenant/" + premise.id}>
+                                      <i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed View
+                                    </Link>
+
+                                    {/* <a className="dropdown-item" href="property-details.html"><i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a> */}
+                                    {/* <a className="dropdown-item" href="property-units.html"><i className="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
+                                    <a className="dropdown-item" href="#"><i className="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
+                                    <a className="dropdown-item" href="#"> <i className="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Change ownership</a> */}
+                                  </div>
+                                </div>
+                              </td>
+                              
+                            </tr>
+                          )
+                        })}
+                        <tr></tr>
+                      </tbody>
+                    </table>
+                  </div>
                </div>
               </div>
             </div>

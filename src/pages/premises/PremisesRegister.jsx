@@ -119,80 +119,80 @@ function PremisesRegister() {
 
                             </div>
                             <div class="card-body">
-                                <table className="table  table-responsive overflow-visible table-paginated" data-plugin="bootstrapTable"
-                                    data-pagination="true"
-                                >
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Premises</th>
-                                            <th scope="col">Premises type</th>
-                                            <th scope="col">Premises use type</th>
-                                            <th scope="col">Address</th>
-                                            <th scope="col">Estate</th>
-                                            <th scope="col">Zone</th>
-                                            <th scope='col'>County</th>
-                                            <th scope="col">File No</th>
-                                            <th scope="col">Status</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {premises?.map((premise, index) => {
-                                            let premiseType = premise.premiseType
-                                            let premiseUseType = premise.premiseUseType
-                                            let estate = premise.estate
-                                            let zone = premise.estate.zone
-                                            let county = premise.estate.zone.clientCounty.county
+                                <div className="table-responsive">
+                                    <table class="table  table-nowrap table-hover overflow-visible contacts-table">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Premises</th>
+                                                <th scope="col">Premises type</th>
+                                                <th scope="col">Premises use type</th>
+                                                <th scope="col">Address</th>
+                                                <th scope="col">Estate</th>
+                                                <th scope="col">Zone</th>
+                                                <th scope='col'>County</th>
+                                                <th scope="col">File No</th>
+                                                <th scope="col">Status</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {premises?.map((premise, index) => {
+                                                let premiseType = premise.premiseType
+                                                let premiseUseType = premise.premiseUseType
+                                                let estate = premise.estate
+                                                let zone = premise.estate.zone
+                                                let county = premise.estate.zone.clientCounty.county
 
-                                            return (
-                                                <tr key={index}>
+                                                return (
+                                                    <tr key={index}>
 
-                                                    <td class="text-capitalize">{index + 1}</td>
-                                                    <td class="text-capitalize">
-                                                        <Link to={`/premise/${premise.id}`} title="View Details">
-                                                            {premise.premiseName}
-                                                        </Link>
-                                                    </td>
-                                                    <td className="text-capitalize">
-                                                        <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">{premiseType.name}</a></h5>
+                                                        <td class="text-capitalize">{index + 1}</td>
+                                                        <td class="text-capitalize">
+                                                            <Link to={`/premise/${premise.id}`} title="View Details">
+                                                                {premise.premiseName}
+                                                            </Link>
+                                                        </td>
+                                                        <td className="text-capitalize">
+                                                            <h5 class="font-size-14 mb-1"><a href="landlord-details.html" class="text-dark">{premiseType.name}</a></h5>
 
-                                                    </td>
-                                                    <td className="text-capitalize">
-                                                        <span class="badge badge-soft-warning font-size-11 m-1 text-capitalize">{premiseUseType.name}</span>
-                                                    </td>
-                                                    <td className='text-capitalize'>{premise.address}</td>
-                                                    <td className="text-capitalize">
-                                                        {estate.name}
-                                                    </td>
-                                                    <td className="text-capitalize">{zone.name}</td>
-                                                    <td className="text-capitalize">{county.name.toLowerCase()}</td>
-                                                    <td class="text-danger">
-                                                        {premise.fileNumber}
-                                                    </td>
-                                                    <td >{premise.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                                                        </td>
+                                                        <td className="text-capitalize">
+                                                            <span class="badge badge-soft-warning font-size-11 m-1 text-capitalize">{premiseUseType.name}</span>
+                                                        </td>
+                                                        <td className='text-capitalize'>{premise.address}</td>
+                                                        <td className="text-capitalize">
+                                                            {estate.name}
+                                                        </td>
+                                                        <td className="text-capitalize">{zone.name}</td>
+                                                        <td className="text-capitalize">{county.name.toLowerCase()}</td>
+                                                        <td class="text-danger">
+                                                            {premise.fileNumber}
+                                                        </td>
+                                                        <td >{premise.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
 
-                                                    <td>
-                                                        <div class="dropdown">
-                                                            <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                                            </a>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                                </a>
 
-                                                            <div class="dropdown-menu dropdown-menu-end">
-                                                                <Link class="dropdown-item" to={`/premise/${premise.id}`} ><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</Link>
-                                                                {/* <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a> */}
-                                                                {/* <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a> */}
-                                                                {/* <a class="dropdown-item" href="#"> <i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Change ownership</a> */}
-                                                                <a onClick={() => { setActiveId(premise.id); deactivate() }} class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>{premise.active ? "Deactivate" : "Activate"}</a>
+                                                                <div class="dropdown-menu dropdown-menu-end">
+                                                                    <Link class="dropdown-item" to={`/premise/${premise.id}`} ><i class="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</Link>
+                                                                    {/* <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a> */}
+                                                                    {/* <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a> */}
+                                                                    {/* <a class="dropdown-item" href="#"> <i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Change ownership</a> */}
+                                                                    <a onClick={() => { setActiveId(premise.id); deactivate() }} class="dropdown-item" href="#"><i class="font-size-15  dripicons-wrong me-3 text-danger"></i>{premise.active ? "Deactivate" : "Activate"}</a>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })}
-                                        {/* <tr></tr> */}
-                                    </tbody>
-                                </table>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
+                                            {/* <tr></tr> */}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
