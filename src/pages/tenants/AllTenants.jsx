@@ -81,6 +81,7 @@ function AllTenants() {
 
               </div>
               <div className="card-body">
+                <div className=' table-responsive'>
                 <table className="table table-responsive align-middle table-nowrap table-hover" id="datatable-buttons">
                   <thead className="table-light">
                     <tr>
@@ -156,6 +157,7 @@ function AllTenants() {
                     <tr></tr>
                   </tbody>
                 </table>
+                </div>
                </div>
               </div>
             </div>

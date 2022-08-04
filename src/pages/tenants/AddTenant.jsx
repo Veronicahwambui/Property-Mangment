@@ -557,8 +557,8 @@ function AddTenant() {
                                 <input
                                   type="email"
                                   className="form-control"
-                                  id="Enter tenants email address"
-                                  placeholder=""
+                                  placeholder="Enter tenants email address"
+                                
                                   name="email"
                                   onChange={(e) => handleTenantDtoChange(e)}
                                   required
@@ -585,7 +585,7 @@ function AddTenant() {
                             <div className="col-md-6 col-lg-4 col-sm-12">
                               <div className="mb-4">
                                 <label htmlFor="" className="">
-                                  Date of Registration
+                                  Date of Registration                                                                                                               
                                   <strong className="text-danger">*</strong>
                                 </label>
                                 <div className="input-group" id="datepicker1">

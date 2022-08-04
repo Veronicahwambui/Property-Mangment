@@ -113,16 +113,7 @@ function OnePremiseUnit() {
                 <div class="col-12">
                   <div class="form-group mb-4">
                     <label for="">NewStatus</label>
-                    {/* <input
-
-                      type="text"
-                      class="form-control"
-                      placeholder="Enter name"
-                      onChange={(event) => setNewStatus(event.target.value)}
-                      value={newStatus}
-                      
-                    
-                    /> */}
+                 
                              <select
                         class="form-control"
                         data-live-search="true"
