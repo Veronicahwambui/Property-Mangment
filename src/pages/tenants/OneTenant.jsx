@@ -122,6 +122,7 @@ function OneTenant() {
   const [premiseUnitId, setPremiseUnitId] = useState("");
   const [tenantStatuses, setTenantStatuses] = useState([])
   const [unitId, setUnitId] = useState("");
+  const[endReason,setEndReason]=useState("")
 
   //edit ContactPersons
 
@@ -519,70 +520,69 @@ function OneTenant() {
   }
 
 
-  const deleteDeactivate = (id) => {
-    requestsServiceService.deactivateTenancies(id).then((res) => {
+  const deleteDeactivate = () => {
+    requestsServiceService.deactivateTenancies(id,endReason).then((res) => {
+      console.log(res.data)
       fetchAll()
-    }
 
-    );
+      if (res.data.status) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success"
+        })
+      } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        })
+      }
 
 
-  };
+      setTimeout(() => {
+        clearTenant ()
+      }, 3000)
+    }).catch((res) => {
+
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+      setTimeout(() => {
+        clearTenant ()
+      }, 3000)
+
+
+    })
+  }
+
+  const clearTenant = () => {
+    setError({
+      ...error,
+      message: "",
+      color: ""
+
+    })
+    
+
+};
+
+  // const vacantTenant =(premiseId)=>{
+  //   requestsServiceService.findVacatPremise(premiseId).then(()=>{
+
+  //   }
+  //   )
+  // }
   // console.log(tenancyRenewalDate)
 
 
   //communication
 
-  // const fetchMessages=()=>{
-  //   let data= JSON.stringify({
-      
-  //     "dateTimeCreated": "2022-08-02T10:20:23Z",
-  //     "lastModifiedDate": "2022-08-02T10:20:23Z",
-  //     "id": 2,
-  //     "data": "{\"templateName\":\"temolate\",\"portalName\":\"Nouv test\",\"from\":\"nouveta.tech@outlook.com\",\"to\":\"kamau@gmail.com\",\"subject\":\"Test subject\",\"model\":{},\"attachments\":[]}",
-  //     "createdBy": "developer",
-  //     "counter": 0,
-  //     "sentAt": null,
-  //     "deliveryReport": null,
-  //     "status": 1,
-  //     "contact": "kamau@gmail.com",
-  //     "communicationType": "EMAIL",
-  //     "entityType": "TENANT",
-  //     "entityId": tenantId,
-    
-    
-  //     "dateTimeCreated": "2022-08-02T10:20:15Z",
-  //     "lastModifiedDate": "2022-08-02T10:20:16Z",
-  //     "id": 1,
-  //     "data": "{\"text\":\"string\",\"templateName\":null,\"model\":{}}",
-  //     "createdBy": "developer",
-  //     "counter": 1,
-  //     "sentAt": "2022-08-02T10:20:16Z",
-  //     "deliveryReport": "{\"request_id\":\"6e064dd858df47ad92b0a6902731515c\",\"sms_units_balance\":100924,\"message_length\":6,\"sms_count\":1}",
-  //     "status": 2,
-  //     "contact": "0755222555",
-  //     "communicationType": "SMS",
-  //     "entityType": "TENANT",
-  //     "entityId": userId,
-    
-  //     "page": 0,
-  //     "size": 30,
-  //     "totalElements": 2,
-  //     "totalPages": 1,
-  //     "last": true
-  
 
-
-
-
-
-
-  //   })
-
-
-
-
-  // }
 
    const fetchCommunication=()=>{
    
@@ -981,7 +981,8 @@ function OneTenant() {
                                         <td>
                                           {moment(unit.tenancyRenewalNotificationDate).format("DD /MM/ YYYY")}
                                         </td>
-                                        <td>
+                                 
+                                         <td>
                                           {" "}
                                           {unit.active ? (
                                             <span class="badge-soft-success badge">
@@ -992,7 +993,7 @@ function OneTenant() {
                                               Inactive
                                             </span>
                                           )}
-                                        </td>
+                                        </td> 
 
                                         <td className="text-right ">
                                           <div class="dropdown">
@@ -1034,14 +1035,14 @@ function OneTenant() {
                                               </p>
 
                                               <button
+                                                    data-bs-toggle="modal"
+                                                data-bs-target="#vacate-modal"
                                                 class="dropdown-item "
-                                                onClick={() =>
-                                                  deleteDeactivate(unit.id)
-                                                }
-                                              >
-                                                <i class="font-size-8 mdi mdi-close-circle me-3"></i>
-                                                  Deactivate
                                                 
+                                              >
+                                                <i class="font-size-8 mdi mdi-close-circle me-3">
+                                                  Vacate Tenant
+                                                </i>
                                               </button>
                                             </div>
                                           </div>
@@ -2206,6 +2207,81 @@ function OneTenant() {
             </div>
           </div>
         </div>
+
+        {/* //vacantTenant */}
+
+
+        <div
+        class="modal fade"
+        id="vacate-modal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+        centered="true"
+        
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">
+                Edit Status
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group mb-4">
+                    <label for="">Reason</label>
+                    <input
+
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter name"
+                      onChange={(event) => setEndReason(event.target.value)}
+                      value={endReason}
+                      
+                    
+                    />
+                   
+                   
+                  </div>
+                </div>
+ 
+       
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-primary" 
+                data-bs-dismiss="modal"onClick={() =>
+                  deleteDeactivate()
+                } >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+                 
+
+
+
+
 
 
       </div>

@@ -397,9 +397,9 @@ class RequestsService {
   createTenancies(data) {
     return axiosInstance.post(baseUrl + "/tenants/tenancy/create", data);
   }
-  deactivateTenancies(tenantId) {
+  deactivateTenancies(tenantId,endReason) {
     return axiosInstance.get(
-      baseUrl + "/tenants/tenancy/" + tenantId + "/deactivate"
+      baseUrl + "/tenants/tenancy/" + tenantId + "/deactivate?endReason="+endReason
     );
   }
   updateTenantsDetails(data) {
