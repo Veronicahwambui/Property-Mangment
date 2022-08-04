@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import moment from 'moment'
 import { Modal, Button } from "react-bootstrap";
 import { baseUrl} from "../../services/API";
+import AuthService from "../../services/auth.service";
 
 
 
@@ -582,11 +583,11 @@ function OneTenant() {
 
   //communication
 
-
+let clientId=AuthService.getClientId()
 
    const fetchCommunication=()=>{
    
-    requestsServiceService.getEntityCommunication(userId,0,5).then((res)=>{
+    requestsServiceService.getEntityCommunication(userId,0,5,clientId).then((res)=>{
       setCommunication(res.data.data)
 
     })
@@ -1038,6 +1039,7 @@ function OneTenant() {
                                                     data-bs-toggle="modal"
                                                 data-bs-target="#vacate-modal"
                                                 class="dropdown-item "
+                                                onClick={()=>setEndReason('')}
                                                 
                                               >
                                                 <i class="font-size-8 mdi mdi-close-circle me-3">
