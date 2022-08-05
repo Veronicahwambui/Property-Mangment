@@ -467,7 +467,7 @@ function Dashboard() {
                                                                         <i class="mdi mdi-office-building-outline text-white"></i>
                                                                     </span>
                                                                 </div>
-                                                                <p class="text-muted text-truncate mb-2">Properties</p>
+                                                                <p class="text-muted text-truncate mb-2">Premises</p>
                                                                 <h5 class="mb-0">{dashboardData?.premiseCount}</h5>
                                                             </div>
                                                         </div>

@@ -314,7 +314,7 @@ function AddTenant() {
           let data = {
             document: filereader.result,
             docName: "ID CARD FRONT",
-            documentOwnerTypeName: "TENANT",
+            documentOwnerTypeName: "TENANT",documentTypeId:1
           };
           tenantDocuments.push(data);
           setDocBody({ data });
@@ -334,7 +334,7 @@ function AddTenant() {
           let data = {
             document: filereader.result,
             docName: "ID CARD BACK",
-            documentOwnerTypeName: "TENANT",
+            documentOwnerTypeName: "TENANT",documentTypeId:2
           };
           tenantDocuments.push(data);
           setDocBody({ data });
