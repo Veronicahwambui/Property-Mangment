@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
-import UnitTypes from "../setups/UnitTypes";
 import authService from "../../services/auth.service";
 import { Link } from "react-router-dom";
 import moment from 'moment'
@@ -19,24 +18,16 @@ function OneTenant() {
 
   const [tenantId, setTenantId] = useState("");
   const [contactPerson, setContactPerson] = useState([]);
-  // $( "#datepicker198" ).datepicker({ minDate: new Date().getDay() });
-  // $('#datepicker198').datepicker({
-  //   format:'mm-dd-yyyy',
-  //   startDate:'+0d',
-  //   autoclose:true
-  // })
   //edit tenants-details
   const [type, setType] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [nationality, setNationality] = useState("");
-  const [companyIncorporationNumber, setCompanyIncorporationNumber] =
-    useState("");
+  const [companyIncorporationNumber, setCompanyIncorporationNumber] = useState("");
   const [detailsId, setDetailsId] = useState("");
   const [companyAddress, setCompanyAddress] = useState("");
-  const [companyDateOfRegistration, setCompanyDateOfRegistration] =
-    useState("");
+  const [companyDateOfRegistration, setCompanyDateOfRegistration] = useState("");
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
@@ -967,7 +958,7 @@ let clientId=AuthService.getClientId()
                                           {unit.premiseUnit.unitType.name}
                                         </td>
                                         <td>
-                                          {moment(unit.startDate.replace(/[TZ]/g, " ")).format("DD /MM /YYYY")}
+                                          {moment(unit.startDate&& unit.startDate.replace(/[TZ]/g, " ")).format("DD /MM /YYYY")}
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
@@ -976,11 +967,11 @@ let clientId=AuthService.getClientId()
 
                                           }</span>
                                         </td>
-                                        <td>{moment(unit.tenancyRenewalDate).format
+                                        <td>{unit.tenancyRenewalDate&&moment(unit.tenancyRenewalDate).format
                                           ("DD/ MM/ YYYY")
                                         }</td>
                                         <td>
-                                          {moment(unit.tenancyRenewalNotificationDate).format("DD /MM/ YYYY")}
+                                          {unit.tenancyRenewalNotificationDate&&moment(unit.tenancyRenewalNotificationDate).format("DD /MM/ YYYY")}
                                         </td>
                                  
                                          <td>
