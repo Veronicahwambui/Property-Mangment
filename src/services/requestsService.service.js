@@ -768,8 +768,8 @@ class RequestsService {
 
   // communication
 
-  getEntityCommunication(entityId, page, size,client) {
-    return communicationService.get(communicationBaseUrl + "/comm/v1/communication/" + entityId + "?page=" + page + "&size=" + size + "&type=" + "TENANT"+"&client="+client )
+  getEntityCommunication(entityId, page, size ,type,client) {
+    return communicationService.get(communicationBaseUrl + "/comm/v1/communication/" + entityId + "?page=" + page + "&size=" + size + "&type=" + type+"&client="+client )
   }
 
   // MESSANGER API 

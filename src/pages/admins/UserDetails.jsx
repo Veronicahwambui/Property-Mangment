@@ -2,12 +2,18 @@ import React from 'react'
 import { useState,useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import moment from 'moment'
+import AuthService from "../../services/auth.service";
 
 import requestsServiceService from "../../services/requestsService.service";
 
 
 function UserDetails() {
      const [adminlistData, setAdminListData] = useState({});
+     const [activeLink, setActiveLink] = useState(1);
+     const[ communication, setCommunication]=useState([])
+  
+      const[message,setMessage]=useState([]);
     
      const { id } = useParams();
      const userId = id;
@@ -20,9 +26,20 @@ function UserDetails() {
 
      useEffect(() => {
         fetchAll();
+        fetchCommunication();
       }, []);
     
 
+      let clientId=AuthService.getClientId()
+
+      const fetchCommunication=()=>{
+      
+       requestsServiceService.getEntityCommunication(userId,0,5,"USER",clientId).then((res)=>{
+         setCommunication(res.data.data)
+   
+       })
+   
+      }
   return (
    <div className=''>
     <div className=' page-content'>
@@ -39,7 +56,9 @@ function UserDetails() {
                                         <li class="breadcrumb-item">    <Link to='/'>Dashboard </Link></li>
                                         <li class="breadcrumb-item"><Link to='/adminlist'> System Users</Link></li>
                                         <li class="breadcrumb-item active"> {adminlistData.user && adminlistData?.user.firstName} {adminlistData.user && adminlistData?.user.lastName}</li>
+                     
                                     </ol>
+
                                 </div>
 
                             </div>
@@ -57,12 +76,37 @@ function UserDetails() {
                                         </button>
                                         <div class="collapse navbar-collapse justify-content-between" id="navbarNavAltMarkup">
                                             <div class="navbar-nav">
-                                            <a class="nav-item nav-link" href="user-details.html">User's Profile<span class="sr-only">(current)</span></a>
-                                                <a class="nav-item nav-link" href="user-logs.html">All Logs</a>
+                                            {/* <a class="nav-item nav-link" >User's Profile<span class="sr-only">(current)</span></a> */}
+
+                                            <a
+                        onClick={() => setActiveLink(1)}
+                        class={
+                          activeLink === 1
+                            ? "nav-item nav-link active cursor-pointer"
+                            : "nav-item cursor-pointer nav-link"
+                        }
+                      >
+                        User's Profile
+                        
+                      </a>
+                                
+
+
+                                            <a
+                        onClick={() => setActiveLink(2)}
+                        class={
+                          activeLink === 2
+                            ? "nav-item nav-link active cursor-pointer"
+                            : "nav-item cursor-pointer nav-link"
+                        }
+                      >
+                        Communication
+                      </a>
+                                                {/* <a class="nav-item nav-link" >All Logs</a> */}
 
                                             </div>
                                             <div class="navbar-nav">
-                                                <a href="collector-new.html" type="button" class="btn btn-primary waves-effect waves-light text-white">
+                                                <a  type="button" class="btn btn-primary waves-effect waves-light text-white">
                                                     <i class="bx bx bxs-edit-alt font-size-16 align-middle me-2">
                                                   
                                                      Edit Account
@@ -79,7 +123,7 @@ function UserDetails() {
                         </div>
                     </div>
 
-                  
+                    {activeLink===1 &&(
             <div class="row">
                         <div class="col-xl-4">
                             <div class="card calc-h-3px">
@@ -166,14 +210,8 @@ function UserDetails() {
                  
                
                   
-                     
-             
-
-              
-
-                
-
-                <div class="col-xl-8">                            
+                       
+<div class="col-xl-8">                            
                             <div class="card">
                                 <div>
                                     <div class="row">
@@ -238,12 +276,152 @@ function UserDetails() {
                         </div>
                         {/* <!-- end col --> */}
                      
-                    
+                
                    
                         </div>
+
+                    )}
+
+                     {activeLink===2 &&(
+            <div>
+ 
+
+
+    <div class="container-fluid">
+
+        {/* <!-- start page title --> */}
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0 font-size-18">All Messages</h4>
+
+               
+                </div>
+            </div>
+        </div>
+        {/* <!-- end page title --> */}
+
+        <div class="row">
+            <div class="col-12">
+
+                {/* <!-- Right Sidebar --> */}
+                <div class="mb-3">
+
+                    <div class="card">
+                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                            <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
+
+                                <div class="d-flex align-items-center flex-grow-1">
+                                 
+                                
+                                 
+
+                                </div>
+
+                           
+
+                            </div>
+                        </div>
+                        <div class="card-body the-inbox">
+                            <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
+                                <thead>
+                                    <tr class="d-none">
+                                        <th>Mode</th>
+                                        <th>
+                                            {/* <!-- this is where the index is stored --> */}
+                                        </th>
+                                        <th>Status</th>
+                                        <th>Name</th>
+                                        <th>Message Content</th>
+                                        <th>Date</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody class="table-hover">
+                                  {communication?.map((com, index) => (
+                                      
+                                
+                                      <tr data-id="1">
+                                    <td>{index + 1}</td>
+                                    {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                        <td class="">
+                                            {/* <!-- put the index here --> */}
+
+                                            <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
+                                                <div class="avatar-xs m-0">
+                                                    <span class="avatar-title rounded-circle bg-success bg-orange text-white">
+                                                        AW
+                                                    </span>
+                                                </div>
+
+                                            </div>
+
+
+                                            <span class=" font-size-18 d-none d-md-flex">
+                                                <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
+                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>
+
+                                            </span>
+                                            <span class=" font-size-18 d-flex d-md-none">
+                                                <br/>
+                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                            {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
+
+                                            </span>
+
+
+
+                                        </td>
+
+                                        <td class="d-none"><span class="d-none">0</span></td>
+                                        
+                                        <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
+                                        <td class="the-msg the-msg-2">
+                                           
+                                            
+                                        </td>
+                                        <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+                                        </tr>
+                                       ) 
+                              )}
+                              
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                    </div>
+                 
+
+
+                </div>
+                {/* <!-- end Col-9 --> */}
+
+            </div>
+
+        </div>
+        {/* <!-- End row --> */}
+
+    </div>
+    {/* <!-- container-fluid --> */}
+
+
+
+
+
+
+</div>
+
+
+    )
+    }
+      
         </div>
     </div>
-
+ 
     <footer class="footer">
                 <div class="container-fluid">
                     <div class="row">

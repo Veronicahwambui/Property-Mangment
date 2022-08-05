@@ -587,7 +587,7 @@ let clientId=AuthService.getClientId()
 
    const fetchCommunication=()=>{
    
-    requestsServiceService.getEntityCommunication(userId,0,5,clientId).then((res)=>{
+    requestsServiceService.getEntityCommunication(userId,0,5,"TENANT",clientId).then((res)=>{
       setCommunication(res.data.data)
 
     })
@@ -1415,10 +1415,17 @@ let clientId=AuthService.getClientId()
 
 
                                             <span class=" font-size-18 d-none d-md-flex">
-                                                <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">SMS</span></i>
-                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i>
+                                                <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
+                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">sms</span></i>
 
                                             </span>
+                                            <span class=" font-size-18 d-flex d-md-none">
+                                                <br/>
+                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                            {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
+
+                                            </span>
+
 
 
                                         </td>
@@ -1428,14 +1435,7 @@ let clientId=AuthService.getClientId()
                                         <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
                                         <td class="the-msg the-msg-2">
                                            
-                                            <span>{JSON.parse(com.data).text}</span>
-                                          
-                                            <span class=" font-size-18 d-flex d-md-none">{com.communicationType}
-                                                {/* <br/>
-                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">SMS</span></i>
-                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-
-                                            </span>
+                                            
                                         </td>
                                         <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
                                         </tr>
