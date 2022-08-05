@@ -1531,6 +1531,7 @@ function AddTenant() {
                             data-date-autoclose="true"
                             onChange={(e) => handleAssignmentChange(e)}
                             name="startDate"
+                            required
                           />
                         </div>
                         
@@ -1545,7 +1546,7 @@ function AddTenant() {
                             placeholder="Enter TenancyRenewalDate"
                             readOnly
                             data-date-format="dd M, yyyy"
-                            data-date-container="#datepicker104"
+                            data-date-container="#datepicker14"
                             data-provide="datepicker"
                             data-date-autoclose="true"
                             onChange={(e) => handleAssignmentChange(e)}
