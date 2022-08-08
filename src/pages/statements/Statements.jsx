@@ -35,7 +35,6 @@ function Statements() {
     let acc = statements.find((statement) => statement.billNo === bill);
     setactiveInvoice(acc);
     showInvoice();
-    console.log(acc);
   };
   const utilize = (e, a, b, c) => {
     e.preventDefault();
@@ -332,11 +331,11 @@ function Statements() {
               <br />
               <p>
                 Issue date:{" "}
-                {moment(activeInvoice.dateTimeCreated).format("DD-MM-YYYY")}
+                {moment(activeInvoice?.dateTimeCreated).format("DD-MM-YYYY")}
               </p>
               <p>
                 Due date:{" "}
-                {moment(activeInvoice.invoiceDate).format("DD-MM-YYYY")}
+                {moment(activeInvoice?.invoiceDate).format("DD-MM-YYYY")}
               </p>
             </address>
           </div>
