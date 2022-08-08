@@ -36,6 +36,10 @@ function Statements() {
     setactiveInvoice(acc);
     showInvoice();
   };
+  const [error, setError] = useState({
+    message: "",
+    color: "",
+  });
   const utilize = (e, a, b, c) => {
     e.preventDefault();
     let data = {
@@ -44,7 +48,26 @@ function Statements() {
       tenantId: c,
     };
     requestsServiceService.utilize(data).then((res) => {
-      console.log(res);
+      if (res.data.status === true) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success",
+        });
+      } else {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: "",
+        });
+      }, 2000);
     });
   };
   return (
@@ -102,6 +125,16 @@ function Statements() {
                 </div>
                 <div className="card-body">
                   <div className="table-responsive overflow-visible">
+                    <div style={{ minHeight: "50px", maxHeight: "52px" }}>
+                      {error.color !== "" && (
+                        <div
+                          className={"alert alert-" + error.color}
+                          role="alert"
+                        >
+                          {error.message}
+                        </div>
+                      )}
+                    </div>
                     <table
                       className="table align-middle table-hover  contacts-table table-striped "
                       id="datatable-buttons"
@@ -222,7 +255,7 @@ function Statements() {
                                             )
                                           }
                                         >
-                                          <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                          <i className="font-size-15 mdi mdi-account-check me-3 "></i>
                                           Utilize
                                         </a>
                                       )}
