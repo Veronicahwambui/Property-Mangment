@@ -96,6 +96,9 @@ function CreateIssueTypes() {
           ...issueTypeStateDTOS,
           data,
         ]);
+        setstateActionName("");
+        setdaysToNextStep("");
+        setTemplateName("");
       } else {
         setStatus(nextStatus);
         let data = {
