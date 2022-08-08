@@ -73,19 +73,19 @@ function Statements() {
   return (
     <>
       <div className="page-content">
-        <div className="container-fluid">
-          <div id="spinner">
-            <div id="status">
-              <div className="spinner-chase">
-                <div className="chase-dot"></div>
-                <div className="chase-dot"></div>
-                <div className="chase-dot"></div>
-                <div className="chase-dot"></div>
-                <div className="chase-dot"></div>
-                <div className="chase-dot"></div>
-              </div>
+        <div id="spinner">
+          <div id="status">
+            <div className="spinner-chase">
+              <div className="chase-dot"></div>
+              <div className="chase-dot"></div>
+              <div className="chase-dot"></div>
+              <div className="chase-dot"></div>
+              <div className="chase-dot"></div>
+              <div className="chase-dot"></div>
             </div>
           </div>
+        </div>
+        <div className="container-fluid">
           <div className="row">
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -125,16 +125,14 @@ function Statements() {
                 </div>
                 <div className="card-body">
                   <div className="table-responsive overflow-visible">
-                    <div style={{ minHeight: "50px", maxHeight: "52px" }}>
-                      {error.color !== "" && (
-                        <div
-                          className={"alert alert-" + error.color}
-                          role="alert"
-                        >
-                          {error.message}
-                        </div>
-                      )}
-                    </div>
+                    {error.color !== "" && (
+                      <div
+                        className={"alert alert-" + error.color}
+                        role="alert"
+                      >
+                        {error.message}
+                      </div>
+                    )}
                     <table
                       className="table align-middle table-hover  contacts-table table-striped "
                       id="datatable-buttons"
