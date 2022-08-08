@@ -50,36 +50,16 @@ function CreateIssueTypes() {
   };
   const [tempstatus, settempstatus] = useState("");
   const [complete, setComplete] = useState(false);
+  const [alert, setAlert] = useState("");
   const addIssueState = (e) => {
-    //new, inspected, approved.
-    //new inspected, unrepaireable decline
     let clientId = AuthService.getClientId();
     e.preventDefault();
-    // const found = issueTypeStateDTOS.some(
-    //   (el) => el.status.toLowerCase() === nextStatus
-    // );
-    if (nextStatus === resolveStatus) {
-      setStatus(resolveStatus);
-      let data = {
-        active: true,
-        chargeable: isChecked,
-        clientId: clientId,
-        daysToNextStep: daysToNextStep,
-        id: null,
-        nextStatus: "",
-        applicableChargeId: applicableChargeId,
-        status: resolveStatus.toUpperCase(),
-        templateName: templateName,
-        stateActionName: stateActionName,
-      };
-      setissueTypeStateDTOS((issueTypeStateDTOS) => [
-        ...issueTypeStateDTOS,
-        data,
-      ]);
-      setComplete(true);
-      hideModal();
+    if (status === nextStatus) {
+      setAlert("state already added!");
     } else {
-      if (stateActionName === "DENY") {
+      setAlert("");
+      if (nextStatus === resolveStatus) {
+        setStatus(resolveStatus);
         let data = {
           active: true,
           chargeable: isChecked,
@@ -88,7 +68,7 @@ function CreateIssueTypes() {
           id: null,
           nextStatus: "",
           applicableChargeId: applicableChargeId,
-          status: tempstatus.toUpperCase(),
+          status: resolveStatus.toUpperCase(),
           templateName: templateName,
           stateActionName: stateActionName,
         };
@@ -96,27 +76,51 @@ function CreateIssueTypes() {
           ...issueTypeStateDTOS,
           data,
         ]);
-        setstateActionName("");
-        setdaysToNextStep("");
-        setTemplateName("");
+        setComplete(true);
+        setNextStatus("");
+        hideModal();
       } else {
-        setStatus(nextStatus);
-        let data = {
-          active: true,
-          chargeable: isChecked,
-          clientId: clientId,
-          daysToNextStep: daysToNextStep,
-          id: null,
-          nextStatus: nextStatus.toUpperCase(),
-          applicableChargeId: applicableChargeId,
-          status: status.toUpperCase(),
-          templateName: templateName,
-          stateActionName: stateActionName,
-        };
-        setissueTypeStateDTOS((issueTypeStateDTOS) => [
-          ...issueTypeStateDTOS,
-          data,
-        ]);
+        if (stateActionName === "DECLINE") {
+          let data = {
+            active: true,
+            chargeable: isChecked,
+            clientId: clientId,
+            daysToNextStep: daysToNextStep,
+            id: null,
+            nextStatus: "",
+            applicableChargeId: applicableChargeId,
+            status: tempstatus.toUpperCase(),
+            templateName: templateName,
+            stateActionName: stateActionName,
+          };
+          setissueTypeStateDTOS((issueTypeStateDTOS) => [
+            ...issueTypeStateDTOS,
+            data,
+          ]);
+          setstateActionName("");
+          setdaysToNextStep("");
+          setTemplateName("");
+          setNextStatus("");
+        } else {
+          setStatus(nextStatus);
+          let data = {
+            active: true,
+            chargeable: isChecked,
+            clientId: clientId,
+            daysToNextStep: daysToNextStep,
+            id: null,
+            nextStatus: nextStatus.toUpperCase(),
+            applicableChargeId: applicableChargeId,
+            status: status.toUpperCase(),
+            templateName: templateName,
+            stateActionName: stateActionName,
+          };
+          setissueTypeStateDTOS((issueTypeStateDTOS) => [
+            ...issueTypeStateDTOS,
+            data,
+          ]);
+          setNextStatus("");
+        }
       }
     }
   };
@@ -169,7 +173,9 @@ function CreateIssueTypes() {
         });
       });
   };
-  useEffect(() => {}, [issueTypeStateDTOS, status]);
+  useEffect(() => {
+    // console.log(issueTypeStateDTOS);
+  }, [issueTypeStateDTOS, status, nextStatus]);
 
   return (
     <>
@@ -325,7 +331,7 @@ function CreateIssueTypes() {
                             {issueTypeStateDTOS.length > 0 &&
                               issueTypeStateDTOS.map((item, index) => {
                                 return (
-                                  <tr data-id="1">
+                                  <tr data-id="1" key={index}>
                                     <td style={{ width: "80px" }}>
                                       {index + 1}
                                     </td>
@@ -390,7 +396,7 @@ function CreateIssueTypes() {
           </div>
         </div>
         <Modal show={show} onHide={hideModal} centered>
-          <form onSubmit={addIssueState}>
+          <form onSubmit={(e) => addIssueState(e)}>
             <Modal.Header closeButton>
               <Modal.Title>Add State</Modal.Title>
             </Modal.Header>
@@ -417,11 +423,10 @@ function CreateIssueTypes() {
                           }
                           required={true}
                         >
-                          <option className="text-black font-semibold ">
-                            select applicable charge
-                          </option>
+                          <option value="">select action name</option>
+
                           {applicableCharges?.map((item, index) => (
-                            <option value={item.id}>
+                            <option value={item.id} key={index}>
                               {item?.name.toLowerCase()?.replace(/_/g, " ")}
                             </option>
                           ))}
@@ -431,7 +436,7 @@ function CreateIssueTypes() {
                   </div>
                   <div className="form-group mb-4">
                     <label htmlFor="">
-                      {stateActionName === "DENY" ? (
+                      {stateActionName === "DECLINE" ? (
                         <>Previous status</>
                       ) : (
                         <>Status</>
@@ -444,17 +449,6 @@ function CreateIssueTypes() {
                       disabled
                     />
                   </div>
-                  {stateActionName === "DENY" && (
-                    <div className="form-group mb-4">
-                      <label htmlFor="">Status</label>
-                      <input
-                        type="text"
-                        className={"form-control"}
-                        value={tempstatus}
-                        onChange={(e) => settempstatus(e.target.value)}
-                      />
-                    </div>
-                  )}
                   <div className="form-group mb-4">
                     <label htmlFor="">State Action Name</label>
                     <select
@@ -465,19 +459,37 @@ function CreateIssueTypes() {
                     >
                       <option value="">select action name</option>
                       <option value="APPROVE">APPROVE</option>
-                      <option value="DENY">DENY</option>
+                      <option value="DECLINE">DECLINE</option>
                     </select>
                   </div>
-                  {stateActionName !== "DENY" && (
-                    <div className="form-group mb-4">
-                      <label htmlFor="">Next Status</label>
-                      <input
-                        type="text"
-                        className={"form-control"}
-                        value={nextStatus}
-                        onChange={(e) => setNextStatus(e.target.value)}
-                      />
-                    </div>
+                  {stateActionName === "DECLINE" ? (
+                    <>
+                      {" "}
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Status</label>
+                        <input
+                          type="text"
+                          className={"form-control"}
+                          value={tempstatus}
+                          onChange={(e) => settempstatus(e.target.value)}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Next Status</label>
+                        <input
+                          type="text"
+                          className={"form-control"}
+                          value={nextStatus}
+                          onChange={(e) => setNextStatus(e.target.value)}
+                          required={true}
+                        />
+                        <span className="text-danger">{alert}</span>
+                      </div>
+                    </>
                   )}
                   <div className="form-group mb-4">
                     {" "}
@@ -487,6 +499,7 @@ function CreateIssueTypes() {
                       value={daysToNextStep}
                       className={"form-control"}
                       onChange={(e) => setdaysToNextStep(e.target.value)}
+                      required={true}
                     />
                   </div>
                   <div className="form-group mb-4">
@@ -504,7 +517,7 @@ function CreateIssueTypes() {
                             select template name
                           </option>
                           {templates?.map((item, index) => (
-                            <option value={item.templateName}>
+                            <option value={item.templateName} key={index}>
                               {item.templateName}
                             </option>
                           ))}
