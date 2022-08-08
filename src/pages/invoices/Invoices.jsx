@@ -6,7 +6,7 @@ import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
-import {confirmAlert} from "react-confirm-alert";
+import { confirmAlert } from "react-confirm-alert";
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -24,11 +24,11 @@ function Invoices() {
     moment().startOf("month").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
-      moment(new Date()).add(3, 'M').format('YYYY-MM-DD')
+    moment(new Date()).add(3, "M").format("YYYY-MM-DD")
   );
   const [error, setError] = useState({
     message: "",
-    color: ""
+    color: "",
   });
 
   useEffect(() => {
@@ -44,11 +44,13 @@ function Invoices() {
       page: page,
       search: searchTerm,
     };
-    requestsServiceService.getInvoices(data).then((res) => {
-      setPageCount(res.data.totalPages);
-      setinvoices(res.data.data);
-    }).then(() => {
-    });
+    requestsServiceService
+      .getInvoices(data)
+      .then((res) => {
+        setPageCount(res.data.totalPages);
+        setinvoices(res.data.data);
+      })
+      .then(() => {});
   };
   const sortSize = (e) => {
     setSize(e.target.value);
@@ -90,9 +92,7 @@ function Invoices() {
     return sum - paid;
   };
   const getOneInvoice = (id) => {
-    let acc = invoices.find(
-      (invoice) => invoice.transactionItemId === id
-    );
+    let acc = invoices.find((invoice) => invoice.transactionItemId === id);
     setactiveInvoice(acc);
     showInvoice();
   };
@@ -112,47 +112,46 @@ function Invoices() {
   const [phonenumber, setphonenumber] = useState("");
 
   const sendSTK = (event) => {
-
     event.preventDefault();
     let invoiceNoo = activeInvoice;
-    let formData = new FormData()
-    formData.append("PayBillNumber", '4081125');
-    formData.append("Amount", parseInt(activeInvoice.billAmount))
-    formData.append("PhoneNumber", phonenumber)
-    formData.append("AccountReference", invoiceNoo.billerBillNo)
-    formData.append("TransactionDesc", invoiceNoo.transactionDescription)
-    formData.append("FullNames", `${invoiceNoo.transactionCustomerName}`)
+    let formData = new FormData();
+    formData.append("PayBillNumber", "4081125");
+    formData.append("Amount", parseInt(activeInvoice.billAmount));
+    formData.append("PhoneNumber", phonenumber);
+    formData.append("AccountReference", invoiceNoo.billerBillNo);
+    formData.append("TransactionDesc", invoiceNoo.transactionDescription);
+    formData.append("FullNames", `${invoiceNoo.transactionCustomerName}`);
     formData.append("function", "CustomerPayBillOnline");
 
     let config = {
-      method: 'post',
-      url: 'https://payme.revenuesure.co.ke/index.php',
-      data: formData
-    }
-    axios(config).then(res => {
+      method: "post",
+      url: "https://payme.revenuesure.co.ke/index.php",
+      data: formData,
+    };
+    axios(config).then((res) => {
       if (typeof res.data === "string") {
         setError({
           ...error,
           message: "Invalid Phone Number",
-          color: "danger"
-        })
+          color: "danger",
+        });
       } else {
         let message = res.data.CustomerMessage;
         setError({
           ...error,
           message: message,
-          color: "success"
-        })
+          color: "success",
+        });
       }
       setTimeout(() => {
         setError({
           ...error,
           message: "",
-          color: ""
-        })
+          color: "",
+        });
       }, 4000);
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -166,10 +165,10 @@ function Invoices() {
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
-                    <Link to='/'>Dashboard </Link>
+                      <Link to="/">Dashboard </Link>
                     </li>
                     <li className="breadcrumb-item">
-                    <Link to='/invoices'> All Invoices </Link>
+                      <Link to="/invoices"> All Invoices </Link>
                     </li>
                   </ol>
                 </div>
@@ -291,7 +290,7 @@ function Invoices() {
                             <tr data-id={index} key={index}>
                               <td>{invoice.transactionItemId}</td>
                               <td>{invoice.billerBillNo}</td>
-                              <td>{invoice.transactionCustomerName}</td>
+                              <td>{invoice.transaction?.tenantName}</td>
                               <td>{invoice.transaction.premiseName}</td>
                               <td>{invoice.transaction.premiseUnitName}</td>
                               <td>{invoice.applicableChargeName}</td>
@@ -310,7 +309,7 @@ function Invoices() {
                               </td>
                               <td>
                                 {moment(invoice?.invoiceDate).format(
-                                    "DD-MM-YYYY"
+                                  "DD-MM-YYYY"
                                 )}
                               </td>
                               <td>
@@ -341,9 +340,9 @@ function Invoices() {
                                       <i className="bx bx-dots-vertical-rounded"></i>
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end ">
-                                      <span
-                                        className="dropdown-item"
-                                        href="#"
+                                      <a
+                                        className="dropdown-item "
+                                        href="# "
                                         onClick={() =>
                                           getOneInvoice(
                                             invoice.transactionItemId
@@ -352,7 +351,7 @@ function Invoices() {
                                       >
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
-                                      </span>
+                                      </a>
                                       <a className="dropdown-item " href="# ">
                                         <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                         Print
@@ -380,7 +379,7 @@ function Invoices() {
                           >
                             {invoices && invoices.length} Invoices
                           </th>
-                          <td className="text-nowrap text-right" colSpan="7">
+                          <td className="text-nowrap text-right" colSpan="6">
                             <span className="fw-semibold">
                               {formatCurrency.format(total())}
                             </span>
@@ -456,10 +455,14 @@ function Invoices() {
               {activeInvoice?.transaction?.premiseUnitName}
               <br />
               <br />
-              <p>Issue date: {moment(activeInvoice.dateTimeCreated).format( "DD-MM-YYYY" )}</p>
-              <p>Due date:          {moment(activeInvoice.invoiceDate).format(
-                  "DD-MM-YYYY"
-              )}</p>
+              <p>
+                Issue date:{" "}
+                {moment(activeInvoice.dateTimeCreated).format("DD-MM-YYYY")}
+              </p>
+              <p>
+                Due date:{" "}
+                {moment(activeInvoice.invoiceDate).format("DD-MM-YYYY")}
+              </p>
             </address>
             <p>Title: {activeInvoice?.transactionTitle}</p>
             <p>Description: {activeInvoice?.transactionDescription}</p>
@@ -504,7 +507,7 @@ function Invoices() {
                       Total
                     </td>
                     <td className="text-end fw-bold">
-                       {formatCurrency.format(activeInvoice?.billAmount)}
+                      {formatCurrency.format(activeInvoice?.billAmount)}
                     </td>
                   </tr>
                   <tr>
@@ -514,7 +517,7 @@ function Invoices() {
                       Paid
                     </td>
                     <td className="text-end  fw-bold">
-                       {formatCurrency.format(activeInvoice?.billPaidAmount)}
+                      {formatCurrency.format(activeInvoice?.billPaidAmount)}
                     </td>
                   </tr>
                   <tr>
@@ -542,17 +545,17 @@ function Invoices() {
           <div className="col-12">
             <div className="table-resposive p-4 px-2 pt-2 overflow-visible">
               <form onSubmit={sendSTK}>
-              <table className="w-100">
-                <tbody>
-                  <tr data-id="1">
+                <table className="w-100">
+                  <tbody>
+                    <tr data-id="1">
                       <td>
                         <label htmlFor="" className="">
                           Payment Method
                         </label>
                         <select
-                            className="form-control"
-                            title="Select payment Method"
-                            disabled={true}
+                          className="form-control"
+                          title="Select payment Method"
+                          disabled={true}
                         >
                           <option value="Mpesa">MPESA</option>
                           <option value="Cash">CASH</option>
@@ -562,11 +565,19 @@ function Invoices() {
                         <div className="phone-num">
                           <label htmlFor="">Phone No.</label>
                           <input
-                              className="form-control w-100 d-flex"
-                              spellCheck="false"
-                              onChange={(event)=> setphonenumber(event.target.value)}
-                              data-ms-editor="true"
-                              type="tel" id="phone" name="phone" placeholder="07XXXXXXXX" pattern="[0]{1}[0-9]{9}" required={true}/>
+                            className="form-control w-100 d-flex"
+                            spellCheck="false"
+                            onChange={(event) =>
+                              setphonenumber(event.target.value)
+                            }
+                            data-ms-editor="true"
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="07XXXXXXXX"
+                            pattern="[0]{1}[0-9]{9}"
+                            required={true}
+                          />
                         </div>
                       </td>
                       {/*<td className="px-3">*/}
@@ -582,22 +593,28 @@ function Invoices() {
                       <td className="text-right float-right">
                         <div className="d-flex flex-column">
                           <label className="opacity-0">Something</label>
-                          <button type="submit" className="btn btn-primary w-md waves-effect waves-light">Submit</button>
+                          <button
+                            type="submit"
+                            className="btn btn-primary w-md waves-effect waves-light"
+                          >
+                            Submit
+                          </button>
                         </div>
                       </td>
-                  </tr>
-                </tbody>
-              </table>
-                <br/>
-                {error.color !== "" &&
-                    <div className={"alert alert-" + error.color} role="alert">
-                      {error.message}
-                    </div>
-                }
+                    </tr>
+                  </tbody>
+                </table>
+                <br />
+                {error.color !== "" && (
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                )}
               </form>
             </div>
           </div>
-          <br/><br/>
+          <br />
+          <br />
           {/*<div className="float-end">*/}
           {/*  <a href="javascript:window.print()"*/}
           {/*     className="btn btn-success waves-effect waves-light me-1"><i*/}
