@@ -1,5 +1,6 @@
 import { axiosInstance, baseUrl } from "./API";
 import { communicationService, communicationBaseUrl } from "./CommunicationApi";
+import axios from "axios";
 
 class RequestsService {
   // roles
@@ -695,7 +696,7 @@ class RequestsService {
 
 
 
-  //   DASHBOARD 
+  //   DASHBOARD
 
   getClientDashboardGraphs(startDate, endDate) {
     return axiosInstance.get(baseUrl + "/reports/dashboard/graphs?startDate=" + startDate + "&endDate=" + endDate)
@@ -772,7 +773,7 @@ class RequestsService {
     return communicationService.get(communicationBaseUrl + "/comm/v1/communication/" + entityId + "?page=" + page + "&size=" + size + "&type=" + "TENANT"+"&client="+client )
   }
 
-  // MESSANGER API 
+  // MESSANGER API
   createMessageTemplate(data) {
     return communicationService.post(communicationBaseUrl + "/comm/templates", data)
   }
@@ -785,6 +786,10 @@ class RequestsService {
 
   getEmails(page, size, type) {
     return communicationService.get(communicationBaseUrl + "/comm/v1/emails?page=" + page + "&size=" + size + "&type=" + type)
+  }
+
+  utilize(data) {
+    return axiosInstance.post(baseUrl + "/payments/statements/utilize", data)
   }
 
 

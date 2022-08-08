@@ -17,14 +17,14 @@ function InvoicesParent() {
     moment().startOf("month").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
-      moment(new Date()).add(3, 'M').format('YYYY-MM-DD')
+    moment(new Date()).add(3, "M").format("YYYY-MM-DD")
   );
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
   const [transaction, settransaction] = useState({});
   const [paymentItems, setpaymentItems] = useState([]);
-  useEffect(() => { }, [transaction]);
-  useEffect(() => { }, [paymentItems]);
+  useEffect(() => {}, [transaction]);
+  useEffect(() => {}, [paymentItems]);
   const closeInvoice = () => {
     setpaymentItems([]);
     settransaction({});
@@ -118,10 +118,10 @@ function InvoicesParent() {
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
-                    <Link to='/'>Dashboard </Link>
+                      <Link to="/">Dashboard </Link>
                     </li>
                     <li className="breadcrumb-item">
-                    <Link to='/invoices'> All Invoices </Link>
+                      <Link to="/invoices"> All Invoices </Link>
                     </li>
                     <li className="breadcrumb-item active">Monthly Invoices</li>
                   </ol>
@@ -258,10 +258,7 @@ function InvoicesParent() {
                                   </div>
                                 </div>
                               </td>
-                              <td
-                              >
-                                {invoice.transactionId}
-                              </td>
+                              <td>{invoice.transactionId}</td>
                               <td>{invoice.tenantName}</td>
                               <td>{invoice.premiseName}</td>
                               <td>{invoice.premiseUnitName}</td>
@@ -394,6 +391,17 @@ function InvoicesParent() {
           </h5>
         </Modal.Header>
         <Modal.Body>
+          <span className="text-end">
+            {transaction?.paymentStatus === "PENDING" ? (
+              <span className="badge-soft-danger badge">
+                {transaction?.paymentStatus}
+              </span>
+            ) : (
+              <span className="badge-soft-success badge">
+                {transaction?.paymentStatus}
+              </span>
+            )}
+          </span>
           <div className="col-12">
             <address>
               <strong>Billed To:</strong>

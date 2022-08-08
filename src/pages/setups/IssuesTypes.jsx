@@ -112,10 +112,17 @@ function IssuesTypes() {
                                   <Link
                                     to={`/issuestypes/${iT.id}`}
                                     state={{ issueType: iT }}
-                                    className="btn btn-light btn-sm btn-rounded waves-effect btn-circle btn-transparent edit "
-                                    title="Edit "
                                   >
-                                    <i className="bx bx-show-alt "></i>
+                                    <button
+                                      type="button"
+                                      className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#edit"
+                                      onClick={() => {}}
+                                      style={{ marginLeft: "8px" }}
+                                    >
+                                      View Details
+                                    </button>
                                   </Link>
                                   {iT.active ? (
                                     <button
