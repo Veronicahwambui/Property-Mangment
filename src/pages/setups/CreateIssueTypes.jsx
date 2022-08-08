@@ -173,9 +173,7 @@ function CreateIssueTypes() {
         });
       });
   };
-  useEffect(() => {
-    // console.log(issueTypeStateDTOS);
-  }, [issueTypeStateDTOS, status, nextStatus]);
+  useEffect(() => {}, [issueTypeStateDTOS, status, nextStatus]);
 
   return (
     <>
