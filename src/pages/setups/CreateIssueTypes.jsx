@@ -173,7 +173,7 @@ function CreateIssueTypes() {
         });
       });
   };
-  useEffect(() => {}, [issueTypeStateDTOS, status, nextStatus]);
+  useEffect(() => { }, [issueTypeStateDTOS, status, nextStatus]);
 
   return (
     <>
@@ -409,29 +409,30 @@ function CreateIssueTypes() {
                     />{" "}
                     Chargeable
                   </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="">Charges</label> <br />
-                    {applicableCharges.length > 0 && (
-                      <div className="form-group mb-4">
-                        <select
-                          className="form-control text-capitalize"
-                          value={applicableChargeId}
-                          onChange={(e) =>
-                            setapplicableChargeId(e.target.value)
-                          }
-                          required={true}
-                        >
-                          <option value="">select action name</option>
+                  {isChecked &&
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Charges</label> <br />
+                      {applicableCharges.length > 0 && (
+                        <div className="form-group mb-4">
+                          <select
+                            className="form-control text-capitalize"
+                            value={applicableChargeId}
+                            onChange={(e) =>
+                              setapplicableChargeId(e.target.value)
+                            }
+                            required={true}
+                          >
+                            <option value="">select action name</option>
 
-                          {applicableCharges?.map((item, index) => (
-                            <option value={item.id} key={index}>
-                              {item?.name.toLowerCase()?.replace(/_/g, " ")}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
-                  </div>
+                            {applicableCharges?.map((item, index) => (
+                              <option value={item.id} key={index}>
+                                {item?.name.toLowerCase()?.replace(/_/g, " ")}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>}
                   <div className="form-group mb-4">
                     <label htmlFor="">
                       {stateActionName === "DECLINE" ? (
