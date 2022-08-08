@@ -13,6 +13,7 @@ function CreateIssueTypes() {
   const [templates, setTemplates] = useState([]);
   const [name, setName] = useState("");
   const [resolveStatus, setResolveStatus] = useState("");
+  const [stateActionName, setstateActionName] = useState("");
   const [issueTypeStateDTOS, setissueTypeStateDTOS] = useState([]);
   const [status, setStatus] = useState("");
   const [daysToNextStep, setdaysToNextStep] = useState("");
@@ -30,6 +31,10 @@ function CreateIssueTypes() {
     });
   }, []);
 
+  const handleAction = (text) => {
+    setstateActionName(text);
+  };
+
   const [isChecked, setIsChecked] = useState(true);
 
   const [show, setShow] = useState(false);
@@ -43,13 +48,16 @@ function CreateIssueTypes() {
     e.preventDefault();
     showModal();
   };
+  const [tempstatus, settempstatus] = useState("");
   const [complete, setComplete] = useState(false);
   const addIssueState = (e) => {
+    //new, inspected, approved.
+    //new inspected, unrepaireable decline
     let clientId = AuthService.getClientId();
     e.preventDefault();
-    const found = issueTypeStateDTOS.some(
-      (el) => el.status.toLowerCase() === nextStatus
-    );
+    // const found = issueTypeStateDTOS.some(
+    //   (el) => el.status.toLowerCase() === nextStatus
+    // );
     if (nextStatus === resolveStatus) {
       setStatus(resolveStatus);
       let data = {
@@ -62,24 +70,51 @@ function CreateIssueTypes() {
         applicableChargeId: applicableChargeId,
         status: resolveStatus.toUpperCase(),
         templateName: templateName,
+        stateActionName: stateActionName,
       };
-      issueTypeStateDTOS.push(data);
+      setissueTypeStateDTOS((issueTypeStateDTOS) => [
+        ...issueTypeStateDTOS,
+        data,
+      ]);
       setComplete(true);
       hideModal();
     } else {
-      setStatus(nextStatus);
-      let data = {
-        active: true,
-        chargeable: isChecked,
-        clientId: clientId,
-        daysToNextStep: daysToNextStep,
-        id: null,
-        nextStatus: nextStatus.toUpperCase(),
-        applicableChargeId: applicableChargeId,
-        status: status.toUpperCase(),
-        templateName: templateName,
-      };
-      issueTypeStateDTOS.push(data);
+      if (stateActionName === "DENY") {
+        let data = {
+          active: true,
+          chargeable: isChecked,
+          clientId: clientId,
+          daysToNextStep: daysToNextStep,
+          id: null,
+          nextStatus: "",
+          applicableChargeId: applicableChargeId,
+          status: tempstatus.toUpperCase(),
+          templateName: templateName,
+          stateActionName: stateActionName,
+        };
+        setissueTypeStateDTOS((issueTypeStateDTOS) => [
+          ...issueTypeStateDTOS,
+          data,
+        ]);
+      } else {
+        setStatus(nextStatus);
+        let data = {
+          active: true,
+          chargeable: isChecked,
+          clientId: clientId,
+          daysToNextStep: daysToNextStep,
+          id: null,
+          nextStatus: nextStatus.toUpperCase(),
+          applicableChargeId: applicableChargeId,
+          status: status.toUpperCase(),
+          templateName: templateName,
+          stateActionName: stateActionName,
+        };
+        setissueTypeStateDTOS((issueTypeStateDTOS) => [
+          ...issueTypeStateDTOS,
+          data,
+        ]);
+      }
     }
   };
   const [error, setError] = useState({
@@ -278,6 +313,7 @@ function CreateIssueTypes() {
                               <th>Days 2 Next</th>
                               <th>Status</th>
                               <th>Next Status</th>
+                              <th>stateActionName</th>
                               <th>Template Name</th>
                               <th>State</th>
                             </tr>
@@ -293,6 +329,7 @@ function CreateIssueTypes() {
                                     <td>{item.daysToNextStep}</td>
                                     <td>{item.status}</td>
                                     <td>{item.nextStatus}</td>
+                                    <td>{item.stateActionName}</td>
                                     <td>{item.templateName}</td>
                                     <td data-field="unit-num ">
                                       {item.active ? (
@@ -390,7 +427,13 @@ function CreateIssueTypes() {
                     )}
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="">Status</label>
+                    <label htmlFor="">
+                      {stateActionName === "DENY" ? (
+                        <>Previous status</>
+                      ) : (
+                        <>Status</>
+                      )}
+                    </label>
                     <input
                       type="text"
                       className={"form-control"}
@@ -398,15 +441,41 @@ function CreateIssueTypes() {
                       disabled
                     />
                   </div>
+                  {stateActionName === "DENY" && (
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Status</label>
+                      <input
+                        type="text"
+                        className={"form-control"}
+                        value={tempstatus}
+                        onChange={(e) => settempstatus(e.target.value)}
+                      />
+                    </div>
+                  )}
                   <div className="form-group mb-4">
-                    <label htmlFor="">Next Status</label>
-                    <input
-                      type="text"
-                      className={"form-control"}
-                      value={nextStatus}
-                      onChange={(e) => setNextStatus(e.target.value)}
-                    />
+                    <label htmlFor="">State Action Name</label>
+                    <select
+                      className="form-control text-capitalize"
+                      value={stateActionName}
+                      onChange={(e) => handleAction(e.target.value)}
+                      required={true}
+                    >
+                      <option value="">select action name</option>
+                      <option value="APPROVE">APPROVE</option>
+                      <option value="DENY">DENY</option>
+                    </select>
                   </div>
+                  {stateActionName !== "DENY" && (
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Next Status</label>
+                      <input
+                        type="text"
+                        className={"form-control"}
+                        value={nextStatus}
+                        onChange={(e) => setNextStatus(e.target.value)}
+                      />
+                    </div>
+                  )}
                   <div className="form-group mb-4">
                     {" "}
                     <label htmlFor="">Days to next step</label>
