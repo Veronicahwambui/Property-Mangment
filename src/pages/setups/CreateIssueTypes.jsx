@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
@@ -6,12 +6,14 @@ import AuthService from "../../services/auth.service";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import requestsServiceService from "../../services/requestsService.service";
+import issueType from "./IssueType";
 
 function CreateIssueTypes() {
   const [initialStatus, setInitialStatus] = useState("");
   const [applicableCharges, setApplicableCharges] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [name, setName] = useState("");
+  const [previousStatus, setPreviousStatus] = useState("");
   const [resolveStatus, setResolveStatus] = useState("");
   const [stateActionName, setstateActionName] = useState("");
   const [issueTypeStateDTOS, setissueTypeStateDTOS] = useState([]);
@@ -22,6 +24,16 @@ function CreateIssueTypes() {
   const [templateName, setTemplateName] = useState("");
   const navigate = useNavigate();
   const clientId = AuthService.getClientId();
+
+  const prevStatus = usePrevious(status);
+  useEffect(() => {}, [status, prevStatus, nextStatus, issueTypeStateDTOS]);
+  function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    }, [value]);
+    return ref.current;
+  }
   useEffect(() => {
     requestsServiceService.allApplicableCharges().then((res) => {
       setApplicableCharges(res.data.data);
@@ -54,72 +66,103 @@ function CreateIssueTypes() {
   const addIssueState = (e) => {
     let clientId = AuthService.getClientId();
     e.preventDefault();
-    if (status === nextStatus) {
-      setAlert("state already added!");
+    if (issueTypeStateDTOS.length === 0) {
+      setPreviousStatus(prevStatus);
+      let data = {
+        active: true,
+        chargeable: isChecked,
+        clientId: clientId,
+        daysToNextStep: daysToNextStep,
+        id: null,
+        nextStatus: nextStatus,
+        applicableChargeId: applicableChargeId,
+        status: status.toUpperCase(),
+        templateName: templateName,
+        stateActionName: stateActionName,
+        previousStatus: "",
+      };
+      setissueTypeStateDTOS((issueTypeStateDTOS) => [
+        ...issueTypeStateDTOS,
+        data,
+      ]);
+      setStatus(nextStatus);
+      setNextStatus("");
     } else {
-      setAlert("");
-      if (nextStatus === resolveStatus) {
-        setStatus(resolveStatus);
-        let data = {
-          active: true,
-          chargeable: isChecked,
-          clientId: clientId,
-          daysToNextStep: daysToNextStep,
-          id: null,
-          nextStatus: "",
-          applicableChargeId: applicableChargeId,
-          status: resolveStatus.toUpperCase(),
-          templateName: templateName,
-          stateActionName: stateActionName,
-        };
-        setissueTypeStateDTOS((issueTypeStateDTOS) => [
-          ...issueTypeStateDTOS,
-          data,
-        ]);
-        setComplete(true);
-        setNextStatus("");
-        hideModal();
+      if (status === nextStatus) {
+        setAlert("state already added!");
       } else {
-        if (stateActionName === "DECLINE") {
-          let data = {
-            active: true,
-            chargeable: isChecked,
-            clientId: clientId,
-            daysToNextStep: daysToNextStep,
-            id: null,
-            nextStatus: "",
-            applicableChargeId: applicableChargeId,
-            status: tempstatus.toUpperCase(),
-            templateName: templateName,
-            stateActionName: stateActionName,
-          };
-          setissueTypeStateDTOS((issueTypeStateDTOS) => [
-            ...issueTypeStateDTOS,
-            data,
-          ]);
-          setstateActionName("");
-          setdaysToNextStep("");
-          setTemplateName("");
-          setNextStatus("");
-        } else {
+        setAlert("");
+        if (nextStatus === resolveStatus) {
+          setComplete(true);
           setStatus(nextStatus);
+          setPreviousStatus(prevStatus);
           let data = {
             active: true,
             chargeable: isChecked,
             clientId: clientId,
             daysToNextStep: daysToNextStep,
             id: null,
-            nextStatus: nextStatus.toUpperCase(),
+            nextStatus: nextStatus,
             applicableChargeId: applicableChargeId,
             status: status.toUpperCase(),
             templateName: templateName,
             stateActionName: stateActionName,
+            previousStatus: previousStatus,
           };
           setissueTypeStateDTOS((issueTypeStateDTOS) => [
             ...issueTypeStateDTOS,
             data,
           ]);
+          setAlert("");
           setNextStatus("");
+        } else {
+          if (stateActionName === "DECLINE") {
+            let data = {
+              active: true,
+              chargeable: isChecked,
+              clientId: clientId,
+              daysToNextStep: daysToNextStep,
+              id: null,
+              nextStatus: "",
+              applicableChargeId: applicableChargeId,
+              status: tempstatus.toUpperCase(),
+              templateName: templateName,
+              stateActionName: stateActionName,
+              previousStatus: previousStatus,
+            };
+            setissueTypeStateDTOS((issueTypeStateDTOS) => [
+              ...issueTypeStateDTOS,
+              data,
+            ]);
+            setstateActionName("APPROVE");
+            setdaysToNextStep("");
+            setTemplateName("");
+            setNextStatus("");
+            settempstatus("");
+            setdaysToNextStep("");
+          } else {
+            setStatus(nextStatus);
+            setPreviousStatus(prevStatus);
+            let data = {
+              active: true,
+              chargeable: isChecked,
+              clientId: clientId,
+              daysToNextStep: daysToNextStep,
+              id: null,
+              nextStatus: nextStatus,
+              applicableChargeId: applicableChargeId,
+              status: status.toUpperCase(),
+              templateName: templateName,
+              stateActionName: stateActionName,
+              previousStatus: previousStatus,
+            };
+            setissueTypeStateDTOS((issueTypeStateDTOS) => [
+              ...issueTypeStateDTOS,
+              data,
+            ]);
+            setAlert("");
+            setNextStatus("");
+          }
         }
       }
     }
@@ -236,9 +279,11 @@ function CreateIssueTypes() {
                               className={"form-control"}
                               name="initialstatus"
                               onChange={(e) => {
-                                setInitialStatus(e.target.value);
-                                setStatus(e.target.value);
+                                setInitialStatus(e.target.value.toUpperCase());
+                                setPreviousStatus("");
+                                setStatus(e.target.value.toUpperCase());
                               }}
+                              value={initialStatus}
                               placeholder={"Enter initial status"}
                               required={true}
                               disabled={complete}
@@ -259,6 +304,7 @@ function CreateIssueTypes() {
                             <input
                               type="text"
                               className={"form-control"}
+                              value={name}
                               onChange={(e) => setName(e.target.value)}
                               required={true}
                               placeholder={"Enter issue type name"}
@@ -281,7 +327,10 @@ function CreateIssueTypes() {
                             <input
                               type="text"
                               className={"form-control"}
-                              onChange={(e) => setResolveStatus(e.target.value)}
+                              onChange={(e) =>
+                                setResolveStatus(e.target.value.toUpperCase())
+                              }
+                              value={resolveStatus}
                               required={true}
                               placeholder={"Enter resolve status"}
                               disabled={complete}
@@ -317,7 +366,8 @@ function CreateIssueTypes() {
                           <thead className="table-light">
                             <tr className="text-uppercase table-light">
                               <th>#</th>
-                              <th>Days 2 Next</th>
+                              <th>Days to Next Status</th>
+                              <th>Previous status</th>
                               <th>Status</th>
                               <th>Next Status</th>
                               <th>stateActionName</th>
@@ -329,14 +379,31 @@ function CreateIssueTypes() {
                             {issueTypeStateDTOS.length > 0 &&
                               issueTypeStateDTOS.map((item, index) => {
                                 return (
-                                  <tr data-id="1" key={index}>
+                                  <tr
+                                    data-id="1"
+                                    key={index}
+                                    className={
+                                      item.stateActionName === "DECLINE"
+                                        ? "text-uppercase table-danger"
+                                        : "text-uppercase table-success"
+                                    }
+                                  >
                                     <td style={{ width: "80px" }}>
                                       {index + 1}
                                     </td>
                                     <td>{item.daysToNextStep}</td>
+                                    <td>{item.previousStatus}</td>
                                     <td>{item.status}</td>
                                     <td>{item.nextStatus}</td>
-                                    <td>{item.stateActionName}</td>
+                                    <td
+                                      className={
+                                        item.stateActionName === "DECLINE"
+                                          ? "text-danger"
+                                          : "text-success"
+                                      }
+                                    >
+                                      {item.stateActionName}
+                                    </td>
                                     <td>{item.templateName}</td>
                                     <td data-field="unit-num ">
                                       {item.active ? (
@@ -374,7 +441,7 @@ function CreateIssueTypes() {
                         )}
                         <div className={"text-end"}>
                           {" "}
-                          {status !== "" && status === resolveStatus && (
+                          {complete === true && (
                             <button
                               type="button"
                               onClick={finalSubmit}
@@ -421,8 +488,7 @@ function CreateIssueTypes() {
                           }
                           required={true}
                         >
-                          <option value="">select action name</option>
-
+                          <option value="">select charge name</option>
                           {applicableCharges?.map((item, index) => (
                             <option value={item.id} key={index}>
                               {item?.name.toLowerCase()?.replace(/_/g, " ")}
@@ -469,7 +535,10 @@ function CreateIssueTypes() {
                           type="text"
                           className={"form-control"}
                           value={tempstatus}
-                          onChange={(e) => settempstatus(e.target.value)}
+                          onChange={(e) =>
+                            settempstatus(e.target.value.toUpperCase())
+                          }
+                          required={true}
                         />
                       </div>
                     </>
@@ -482,7 +551,10 @@ function CreateIssueTypes() {
                           type="text"
                           className={"form-control"}
                           value={nextStatus}
-                          onChange={(e) => setNextStatus(e.target.value)}
+                          onChange={(e) =>
+                            setNextStatus(e.target.value.toUpperCase())
+                          }
+                          disabled={complete}
                           required={true}
                         />
                         <span className="text-danger">{alert}</span>
@@ -535,16 +607,36 @@ function CreateIssueTypes() {
               >
                 Close
               </Button>
-              <Button
-                variant="primary"
-                className={"btn btn-primary"}
-                type={"submit"}
-              >
-                Add State
-                <span
-                  className={"p-1"}
-                >{`(${issueTypeStateDTOS.length})`}</span>
-              </Button>
+              {complete ? (
+                <>
+                  {" "}
+                  <Button
+                    variant="primary"
+                    className={"btn btn-primary"}
+                    onClick={() => hideModal()}
+                    type={"submit"}
+                  >
+                    Add Final State
+                    <span
+                      className={"p-1"}
+                    >{`(${issueTypeStateDTOS.length})`}</span>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <Button
+                    variant="primary"
+                    className={"btn btn-primary"}
+                    type={"submit"}
+                  >
+                    Add State
+                    <span
+                      className={"p-1"}
+                    >{`(${issueTypeStateDTOS.length})`}</span>
+                  </Button>
+                </>
+              )}
             </Modal.Footer>
           </form>
         </Modal>
