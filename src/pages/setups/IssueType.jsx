@@ -26,6 +26,7 @@ function IssueType() {
     nextStatus: undefined,
     status: undefined,
     templateName: undefined,
+    stateActionName: undefined,
   });
   const [error, setError] = useState({
     message: "",
@@ -85,10 +86,19 @@ function IssueType() {
 
   //take input
   const handleChange = (event) => {
-    setIssueTypeDetails({
-      ...issueTypeDetails,
-      [event.target.name]: event.target.value,
-    });
+    console.log(event.target.value);
+    if (event.target.name === "DECLINE") {
+      setIssueTypeDetails({
+        ...issueTypeDetails,
+        stateActionName: event.target.value,
+        nextStatus: "",
+      });
+    } else {
+      setIssueTypeDetails({
+        ...issueTypeDetails,
+        [event.target.name]: event.target.value,
+      });
+    }
   };
 
   const handleEditChange = (event) => {
@@ -111,6 +121,7 @@ function IssueType() {
       nextStatus: issueTypeDetails.nextStatus,
       status: issueTypeDetails.status,
       templateName: issueTypeDetails.templateName,
+      stateActionName: issueTypeDetails.stateActionName,
     };
     requestsServiceService
       .createTenancyIssueStates(data)
@@ -203,7 +214,9 @@ function IssueType() {
       }
     });
   };
-  useEffect(() => {}, [temp]);
+  useEffect(() => {
+    console.log(issueTypeDetails);
+  }, [temp, issueTypeDetails]);
 
   return (
     <>
@@ -640,15 +653,34 @@ function IssueType() {
                   />
                 </div>
                 <div className="form-group mb-4">
-                  <label htmlFor="">Next Status</label>
-                  <input
-                    type="text"
-                    className={"form-control"}
-                    name={"nextStatus"}
+                  <label htmlFor="">State Action Name</label>
+                  <select
+                    className="form-control text-capitalize"
+                    name={"stateActionName"}
                     onChange={(e) => handleEditChange(e)}
                     required={true}
-                  />
+                  >
+                    <option value="">select action name</option>
+                    <option value="APPROVE">APPROVE</option>
+                    <option value="DECLINE">DECLINE</option>
+                  </select>
                 </div>
+                {issueTypeDetails?.stateActionName === "DECLINE" ? (
+                  <></>
+                ) : (
+                  <>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Next Status</label>
+                      <input
+                        type="text"
+                        className={"form-control"}
+                        name={"nextStatus"}
+                        onChange={(e) => handleEditChange(e)}
+                        required={true}
+                      />
+                    </div>
+                  </>
+                )}
                 <div className="form-group mb-4">
                   {" "}
                   <label htmlFor="">Days to next step</label>
