@@ -66,6 +66,20 @@ function IssueType() {
       setIssueStates(res.data.data);
     });
   };
+  useEffect(() => {
+    checks(issueStates);
+    console.log(issueStates);
+  }, [issueStates]);
+
+  const checks = (issueStates) => {
+    let temp = [];
+    if (issueStates.length > 0) {
+      issueStates.forEach((state) => {
+        temp.push(state.status);
+      });
+    }
+    console.log(temp);
+  };
 
   //take input
   const handleChange = (event) => {
@@ -276,7 +290,14 @@ function IssueType() {
                                   {issueStates?.length > 0 &&
                                     issueStates?.map((item, index) => {
                                       return (
-                                        <tr data-id="1">
+                                        <tr
+                                          data-id="1"
+                                          className={
+                                            item.stateAction === "DECLINE"
+                                              ? "text-uppercase table-danger"
+                                              : "text-uppercase table-success"
+                                          }
+                                        >
                                           <td style={{ width: "80px" }}>
                                             {index + 1}
                                           </td>
@@ -284,7 +305,15 @@ function IssueType() {
                                           <td>{item.previousStatus}</td>
                                           <td>{item.status}</td>
                                           <td>{item.nextStatus}</td>
-                                          <td>{item.stateAction}</td>
+                                          <td
+                                            className={
+                                              item.stateAction === "DECLINE"
+                                                ? "text-danger"
+                                                : "text-success"
+                                            }
+                                          >
+                                            {item.stateAction}
+                                          </td>
                                           <td>{item.templateName}</td>
                                           <td data-field="unit-num ">
                                             {item.active ? (
