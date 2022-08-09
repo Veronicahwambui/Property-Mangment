@@ -33,7 +33,7 @@ function IssuesTypes() {
     <>
       <div class="page-content">
         <div class="container-fluid">
-          <div id="spinner">
+          <div id="spinner" className={""}>
             <div id="status">
               <div className="spinner-chase">
                 <div className="chase-dot"></div>
@@ -106,7 +106,11 @@ function IssuesTypes() {
                       <tbody>
                         {issueTypes?.map((iT, index) => {
                           return (
-                            <tr data-id="1" key={index}>
+                            <tr
+                              data-id="1"
+                              key={index}
+                              className={"text-uppercase"}
+                            >
                               <td style={{ width: "80px" }}>{index + 1}</td>
                               <td data-field="unit-num ">{iT.name}</td>
                               <td data-field="unit-num ">{iT.initialStatus}</td>

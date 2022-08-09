@@ -214,9 +214,7 @@ function IssueType() {
       }
     });
   };
-  useEffect(() => {
-    console.log(issueTypeDetails);
-  }, [temp, issueTypeDetails]);
+  useEffect(() => {}, [temp, issueTypeDetails]);
 
   return (
     <>
