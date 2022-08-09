@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+/* global $*/
+import React, { useEffect, Fragment } from "react";
 import { useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
@@ -64,21 +65,22 @@ function IssueType() {
   const getIssueStates = () => {
     requestsServiceService.getIssueStates(issueType.id).then((res) => {
       setIssueStates(res.data.data);
+      $("#spinner").addClass("d-none");
     });
   };
   useEffect(() => {
     checks(issueStates);
-    console.log(issueStates);
   }, [issueStates]);
-
+  const [temp, settemp] = useState([]);
   const checks = (issueStates) => {
-    let temp = [];
-    if (issueStates.length > 0) {
-      issueStates.forEach((state) => {
-        temp.push(state.status);
+    let tp = [];
+    if (issueStates?.length > 0) {
+      issueStates?.forEach((state) => {
+        let x = new Object({ status: state.status, action: state.stateAction });
+        tp.push(x);
       });
+      settemp(tp);
     }
-    console.log(temp);
   };
 
   //take input
@@ -201,11 +203,25 @@ function IssueType() {
       }
     });
   };
+  useEffect(() => {}, [temp]);
 
   return (
     <>
       <div className="page-content">
         <div className="content-fluid">
+          {/* <!-- Loader --> */}
+          <div id="spinner">
+            <div id="status">
+              <div class="spinner-chase">
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+              </div>
+            </div>
+          </div>
           {/* <!-- start page title --> */}
           <div class="row">
             <div class="col-12">
@@ -266,24 +282,67 @@ function IssueType() {
                           {/*  </div>*/}
                           {/*)}*/}
                           <div className="col-12">
-                            <p>{issueType?.name}</p>
-                            <p>{issueType?.initialStatus}</p>
-                            <p>{issueType?.resolveStatus}</p>
+                            <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                              <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                                {issueType?.name} States
+                                {`   (${issueStates?.length})`}
+                              </p>
+                            </div>
+                            <p className={"d-flex align-items-center"}>
+                              {temp?.length > 0 &&
+                                temp?.map((val, idx) => {
+                                  return (
+                                    <Fragment key={`${val.status}${idx}`}>
+                                      <>
+                                        <span
+                                          className={
+                                            val.action === "DECLINE"
+                                              ? "text-danger"
+                                              : ""
+                                          }
+                                        >
+                                          {" "}
+                                          {val.status}
+                                        </span>
+                                        {idx < temp?.length - 1 && (
+                                          <i
+                                            style={{
+                                              fontSize: "18px",
+                                              paddingLeft: "5px",
+                                              margin: "0.5em",
+                                            }}
+                                            className={
+                                              val.action === "DECLINE"
+                                                ? "dripicons-warning mr-5 justify-content-center text-danger d-flex align-items-center"
+                                                : "dripicons-arrow-thin-right mr-5 justify-content-center text-success d-flex align-items-center"
+                                            }
+                                          />
+                                        )}
+                                      </>
+                                    </Fragment>
+                                  );
+                                })}
+                            </p>
+                            {/*<div>*/}
+                            {/*  <p>{issueType?.name}</p>*/}
+                            {/*  <p>{issueType?.initialStatus}</p>*/}
+                            {/*  <p>{issueType?.resolveStatus}</p>*/}
+                            {/*</div>*/}
                           </div>
                           <div className="col-12">
                             <div className="table-responsive table-responsive-md">
                               <table className="table table-editable-1 align-middle table-edits">
                                 <thead className="table-light">
-                                  <tr className="text-uppercase table-light">
+                                  <tr className="text-uppercase text-nowrap">
                                     <th>#</th>
-                                    <th>Days 2 Next</th>
+                                    <th>Days to Next Status</th>
                                     <th>Previous Status</th>
                                     <th>Status</th>
                                     <th>Next Status</th>
                                     <th>Action</th>
                                     <th>Template Name</th>
                                     <th>State</th>
-                                    <th>Actions</th>
+                                    <th className={"text-end"}>Actions</th>
                                   </tr>
                                 </thead>
                                 <tbody>

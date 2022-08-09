@@ -1,3 +1,5 @@
+/* global $*/
+
 import React, { useEffect, useState } from "react";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
@@ -15,6 +17,7 @@ function IssuesTypes() {
   const getIssueTypes = () => {
     requestsServiceService.getTenancyIssuesTypes().then((res) => {
       setIssueTypes(res.data.data);
+      $("#spinner").addClass("d-none");
     });
   };
 
@@ -30,6 +33,18 @@ function IssuesTypes() {
     <>
       <div class="page-content">
         <div class="container-fluid">
+          <div id="spinner">
+            <div id="status">
+              <div className="spinner-chase">
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+              </div>
+            </div>
+          </div>
           {/* <!-- start page title --> */}
           <div class="row">
             <div class="col-12">
