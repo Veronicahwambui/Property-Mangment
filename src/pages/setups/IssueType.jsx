@@ -302,7 +302,7 @@ function IssueType() {
                                           }
                                         >
                                           {" "}
-                                          {val.status}
+                                          <b>{val.status}</b>
                                         </span>
                                         {idx < temp?.length - 1 && (
                                           <i
