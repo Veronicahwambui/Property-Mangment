@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+/* global $*/
+import React, { useEffect, Fragment } from "react";
 import { useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
@@ -25,6 +26,7 @@ function IssueType() {
     nextStatus: undefined,
     status: undefined,
     templateName: undefined,
+    stateActionName: undefined,
   });
   const [error, setError] = useState({
     message: "",
@@ -64,15 +66,39 @@ function IssueType() {
   const getIssueStates = () => {
     requestsServiceService.getIssueStates(issueType.id).then((res) => {
       setIssueStates(res.data.data);
+      $("#spinner").addClass("d-none");
     });
+  };
+  useEffect(() => {
+    checks(issueStates);
+  }, [issueStates]);
+  const [temp, settemp] = useState([]);
+  const checks = (issueStates) => {
+    let tp = [];
+    if (issueStates?.length > 0) {
+      issueStates?.forEach((state) => {
+        let x = new Object({ status: state.status, action: state.stateAction });
+        tp.push(x);
+      });
+      settemp(tp);
+    }
   };
 
   //take input
   const handleChange = (event) => {
-    setIssueTypeDetails({
-      ...issueTypeDetails,
-      [event.target.name]: event.target.value,
-    });
+    console.log(event.target.value);
+    if (event.target.name === "DECLINE") {
+      setIssueTypeDetails({
+        ...issueTypeDetails,
+        stateActionName: event.target.value,
+        nextStatus: "",
+      });
+    } else {
+      setIssueTypeDetails({
+        ...issueTypeDetails,
+        [event.target.name]: event.target.value,
+      });
+    }
   };
 
   const handleEditChange = (event) => {
@@ -95,6 +121,7 @@ function IssueType() {
       nextStatus: issueTypeDetails.nextStatus,
       status: issueTypeDetails.status,
       templateName: issueTypeDetails.templateName,
+      stateActionName: issueTypeDetails.stateActionName,
     };
     requestsServiceService
       .createTenancyIssueStates(data)
@@ -187,11 +214,25 @@ function IssueType() {
       }
     });
   };
+  useEffect(() => {}, [temp, issueTypeDetails]);
 
   return (
     <>
       <div className="page-content">
         <div className="content-fluid">
+          {/* <!-- Loader --> */}
+          <div id="spinner">
+            <div id="status">
+              <div class="spinner-chase">
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+              </div>
+            </div>
+          </div>
           {/* <!-- start page title --> */}
           <div class="row">
             <div class="col-12">
@@ -252,31 +293,81 @@ function IssueType() {
                           {/*  </div>*/}
                           {/*)}*/}
                           <div className="col-12">
-                            <p>{issueType?.name}</p>
-                            <p>{issueType?.initialStatus}</p>
-                            <p>{issueType?.resolveStatus}</p>
+                            <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                              <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                                {issueType?.name} States
+                                {`   (${issueStates?.length})`}
+                              </p>
+                            </div>
+                            <p className={"d-flex align-items-center"}>
+                              {temp?.length > 0 &&
+                                temp?.map((val, idx) => {
+                                  return (
+                                    <Fragment key={`${val.status}${idx}`}>
+                                      <>
+                                        <span
+                                          className={
+                                            val.action === "DECLINE"
+                                              ? "text-danger"
+                                              : ""
+                                          }
+                                        >
+                                          {" "}
+                                          <b>{val.status}</b>
+                                        </span>
+                                        {idx < temp?.length - 1 && (
+                                          <i
+                                            style={{
+                                              fontSize: "18px",
+                                              paddingLeft: "5px",
+                                              margin: "0.5em",
+                                            }}
+                                            className={
+                                              val.action === "DECLINE"
+                                                ? "dripicons-warning mr-5 justify-content-center text-danger d-flex align-items-center"
+                                                : "dripicons-arrow-thin-right mr-5 justify-content-center text-success d-flex align-items-center"
+                                            }
+                                          />
+                                        )}
+                                      </>
+                                    </Fragment>
+                                  );
+                                })}
+                            </p>
+                            {/*<div>*/}
+                            {/*  <p>{issueType?.name}</p>*/}
+                            {/*  <p>{issueType?.initialStatus}</p>*/}
+                            {/*  <p>{issueType?.resolveStatus}</p>*/}
+                            {/*</div>*/}
                           </div>
                           <div className="col-12">
                             <div className="table-responsive table-responsive-md">
                               <table className="table table-editable-1 align-middle table-edits">
                                 <thead className="table-light">
-                                  <tr className="text-uppercase table-light">
+                                  <tr className="text-uppercase text-nowrap">
                                     <th>#</th>
-                                    <th>Days 2 Next</th>
+                                    <th>Days to Next Status</th>
                                     <th>Previous Status</th>
                                     <th>Status</th>
                                     <th>Next Status</th>
                                     <th>Action</th>
                                     <th>Template Name</th>
                                     <th>State</th>
-                                    <th>Actions</th>
+                                    <th className={"text-end"}>Actions</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   {issueStates?.length > 0 &&
                                     issueStates?.map((item, index) => {
                                       return (
-                                        <tr data-id="1">
+                                        <tr
+                                          data-id="1"
+                                          className={
+                                            item.stateAction === "DECLINE"
+                                              ? "text-uppercase table-danger"
+                                              : "text-uppercase table-success"
+                                          }
+                                        >
                                           <td style={{ width: "80px" }}>
                                             {index + 1}
                                           </td>
@@ -284,7 +375,15 @@ function IssueType() {
                                           <td>{item.previousStatus}</td>
                                           <td>{item.status}</td>
                                           <td>{item.nextStatus}</td>
-                                          <td>{item.stateAction}</td>
+                                          <td
+                                            className={
+                                              item.stateAction === "DECLINE"
+                                                ? "text-danger"
+                                                : "text-success"
+                                            }
+                                          >
+                                            {item.stateAction}
+                                          </td>
                                           <td>{item.templateName}</td>
                                           <td data-field="unit-num ">
                                             {item.active ? (
@@ -552,15 +651,34 @@ function IssueType() {
                   />
                 </div>
                 <div className="form-group mb-4">
-                  <label htmlFor="">Next Status</label>
-                  <input
-                    type="text"
-                    className={"form-control"}
-                    name={"nextStatus"}
+                  <label htmlFor="">State Action Name</label>
+                  <select
+                    className="form-control text-capitalize"
+                    name={"stateActionName"}
                     onChange={(e) => handleEditChange(e)}
                     required={true}
-                  />
+                  >
+                    <option value="">select action name</option>
+                    <option value="APPROVE">APPROVE</option>
+                    <option value="DECLINE">DECLINE</option>
+                  </select>
                 </div>
+                {issueTypeDetails?.stateActionName === "DECLINE" ? (
+                  <></>
+                ) : (
+                  <>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">Next Status</label>
+                      <input
+                        type="text"
+                        className={"form-control"}
+                        name={"nextStatus"}
+                        onChange={(e) => handleEditChange(e)}
+                        required={true}
+                      />
+                    </div>
+                  </>
+                )}
                 <div className="form-group mb-4">
                   {" "}
                   <label htmlFor="">Days to next step</label>
