@@ -47,6 +47,8 @@ function IssueType() {
   const editshowModal = (x) => {
     console.log(x);
     let acc = issueStates.find((iS) => iS.id === x);
+    console.log(acc);
+    setapplicablechargeid(acc?.applicableCharge?.id);
     setstateActionName(acc?.stateAction);
     seteditState(acc);
     setsId(x);
@@ -121,7 +123,7 @@ function IssueType() {
         });
     setstateActionName(text);
   };
-
+  const [applicablechargeid, setapplicablechargeid] = useState("");
   const handleEditChange = (event) => {
     console.log(event.target.name, event.target.value);
     event.target.name === "applicableChargeId"
@@ -137,7 +139,7 @@ function IssueType() {
 
   //create issue state
   const addIssueState = (e) => {
-    console.log(id)
+    console.log(id);
     e.preventDefault();
     let data = {
       active: true,
@@ -189,11 +191,11 @@ function IssueType() {
   };
 
   const editIssueState = (e) => {
-    console.log(sId)
+    console.log(sId);
     e.preventDefault();
     let data = {
       active: true,
-      applicableChargeId: parseInt(editState?.applicableChargeId),
+      applicableChargeId: parseInt(applicablechargeid),
       chargeable: isChecked,
       clientId: parseInt(AuthService.getClientId()),
       daysToNextStep: parseInt(editState.daysToNextStep),
@@ -246,8 +248,7 @@ function IssueType() {
       }
     });
   };
-  useEffect(() => {
-  }, [temp, issueTypeDetails, editState]);
+  useEffect(() => {}, [temp, issueTypeDetails, editState]);
 
   return (
     <>
@@ -633,9 +634,9 @@ function IssueType() {
               </div>
             </div>
             {error.color !== "" && (
-                <div className={"alert alert-" + error.color} role="alert">
-                  {error.message}
-                </div>
+              <div className={"alert alert-" + error.color} role="alert">
+                {error.message}
+              </div>
             )}
           </Modal.Body>
           <Modal.Footer>
@@ -679,11 +680,17 @@ function IssueType() {
                       <select
                         className="form-control text-capitalize"
                         name={"applicableChargeId"}
-                        onChange={(e) => handleEditChange(e)}
+                        value={applicablechargeid}
+                        onChange={(e) => setapplicablechargeid(e.target.value)}
                         required={true}
                       >
                         {applicableCharges?.map((item, index) => (
-                          <option value={item.id}>
+                          <option
+                            selected={
+                              item.id === applicablechargeid ? "selected" : ""
+                            }
+                            value={item.id}
+                          >
                             {item?.name.toLowerCase()?.replace(/_/g, " ")}
                           </option>
                         ))}
