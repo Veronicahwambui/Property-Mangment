@@ -20,6 +20,8 @@ function PremisesRegister() {
     const [page, setPage] = useState(0);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const [searchTerm, setSearchTerm] = useState("");
+
 
     useEffect(() => {
         $("#spinner").addClass("d-none")
@@ -35,29 +37,28 @@ function PremisesRegister() {
     }
 
     const handlePageClick = (data) => {
-        setPage( () =>  data.selected );
+        setPage(() => data.selected);
     };
 
-    const handleRangeChange = (e)=> { 
+    const handleRangeChange = (e) => {
         setSize(e.target.value);
         setPageCount(0);
         setPage(0)
-       }
+    }
 
     const fetchAll = () => {
 
         let data = {
-            // "clientId": authService.getClientId(),
             "dateCreatedEnd": moment(endDate).format("YYYY-MM-DD"),
-            "dateCreatedStart": moment(startDate).format("YYYY-MM-DD")
+            "dateCreatedStart": moment(startDate).format("YYYY-MM-DD"),
+            "search": searchTerm.trim()
         }
         requestsServiceService.getAllpremises(page, size, data).then((res) => {
             setPremises(res.data.data)
             setPage(res.data.page)
             setSize(res.data.size)
             setPageCount(res.data.totalPages)
-            $("#spinner").addClass("d-none");
-            $(".table").bootstrapTable();
+            // setSearchTerm(" ")
 
         })
     }
@@ -156,7 +157,8 @@ function PremisesRegister() {
                                 </div>
 
                             </div>
-                            <div className="col-12 d-flex justify-content-between align-items-center">
+
+                            <div className="col-11 mx-auto mt-2 d-flex justify-content-between align-items-center">
                                 <select className="btn btn-md btn-primary" title="Select A range" onChange={(e) => handleRangeChange(e)}>
                                     <option className="bs-title-option" value="">Select A range</option>
                                     <option value="5">10 Rows</option>
@@ -166,6 +168,22 @@ function PremisesRegister() {
                                 </select>
                                 <div class="page-title-right">
                                     <form className="d-flex align-items-center">
+                                        <div>
+                                            <div>
+                                                <form className="app-search d-none d-lg-block mr-15px">
+                                                    <div className="position-relative">
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            placeholder="Search..."
+                                                            value={searchTerm}
+                                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                                        />
+                                                        <span className="bx bx-search-alt"></span>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                         <div className="d-flex justify-content-end align-items-center">
                                             <div className="d-flex">
                                                 <label className="">
@@ -310,8 +328,8 @@ function PremisesRegister() {
                                                     nextClassName="page-item"
                                                     nextLinkClassName="page-link"
                                                     activeClassName="active"
-                                                    onPageChange={(data) => handlePageClick(data) }
-                                                 
+                                                    onPageChange={(data) => handlePageClick(data)}
+
                                                 />
                                             </nav>
                                         )}

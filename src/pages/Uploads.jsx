@@ -453,8 +453,8 @@ function Uploads() {
       let newData = [];
       for (let counter = 0; counter < data.length; counter++) {
 
-        if (counter <= 3999) continue;
-        else if (counter > 3999 && counter < 4900) {
+        if (counter <= 4999) continue;
+        else if (counter > 4999 && counter < 6000) {
           if (data[counter]["property id"] != "") {
             let dara = {
               active: true,
