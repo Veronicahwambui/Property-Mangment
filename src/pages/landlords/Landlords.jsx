@@ -135,7 +135,7 @@ function Landlords() {
                       <option value="150">150 Rows</option>
                     </select>
                     <div class="page-title-right">
-                      <form className="d-flex align-items-center">
+                      <form className="d-flex align-items-center justify-content-end">
                         <div>
                           <div>
                             <form className="app-search d-none d-lg-block mr-15px">
@@ -154,38 +154,39 @@ function Landlords() {
                         </div>
                         <div className="d-flex justify-content-end align-items-center">
                           <div className="d-flex">
-                            <label className="">
-                              Start Date
-                            </label>
                             <DatePicker
                               selected={startDate}
                               onChange={(date) => setStartDate(date)}
                               selectsStart
-                              className="form-control mouse-pointer sdate"
-
+                              className="form-control cursor-pointer"
                               startDate={startDate}
                               endDate={endDate}
                               maxDate={new Date()}
                             />
+                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                           </div>
-                          <div className="d-flex">
-                            <label className="">
-                              End Date
-                            </label>
+                          <div className="d-flex" id='datepicker1'>
+                      
                             <DatePicker
                               selected={endDate}
                               onChange={(date) => setEndDate(date)}
                               selectsEnd
-                              className="form-control mouse-pointer sdate"
-
+                              showMonthDropdown
+                              showYearDropdown
+                              className="form-control cursor-pointer"
+                              calendarClassName="form-group"
                               startDate={startDate}
                               endDate={endDate}
                               minDate={startDate}
                               maxDate={new Date()}
+                              type="text"
+                           
                             />
+                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+
                           </div>
                         </div>
-                        <div className="d-flex mb-2">
+                        <div className="d-flex">
                           <input
                             type="submit"
                             className="btn btn-primary"

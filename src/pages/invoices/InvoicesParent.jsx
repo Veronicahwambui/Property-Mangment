@@ -224,18 +224,7 @@ function InvoicesParent() {
                     >
                       <thead className="table-light">
                         <tr className="table-dark">
-                          <th scope="col">
-                            <div className="the-mail-checkbox pr-4">
-                              <label htmlFor="selectAll" className="d-none">
-                                Select All
-                              </label>
-                              <input
-                                className="form-check-input mt-0 pt-0 form-check-dark"
-                                type="checkbox"
-                                id="selectAll"
-                              />
-                            </div>
-                          </th>
+                    
                           <th>Invoice Number</th>
                           <th>Tenant</th>
                           <th>Premises</th>
@@ -249,17 +238,7 @@ function InvoicesParent() {
                         {invoices.length > 0 &&
                           invoices?.map((invoice, index) => (
                             <tr data-id={index} key={index}>
-                              <td>
-                                <div className="d-flex  align-items-center">
-                                  <div className="the-mail-checkbox pr-4">
-                                    <input
-                                      className="form-check-input mt-0 pt-0 form-check-dark"
-                                      type="checkbox"
-                                      id="formCheck1"
-                                    />
-                                  </div>
-                                </div>
-                              </td>
+                              
                               <td
                               >
                                 {invoice.transactionId}
