@@ -113,20 +113,6 @@ export default function Message(props) {
                 <div className="dropdownd-lg-inline-block ms-1">
                   <button
                     type="button"
-                    className="btn header-item noti-icon waves-effect minimize"
-                  >
-                    <i className="mdi mdi-window-minimize"></i>
-                  </button>
-                  <button
-                    type="button"
-                    className="btn header-item noti-icon waves-effect"
-                    data-bs-toggle="fullscreen"
-                  >
-                    <i className="bx bx-fullscreen"></i>
-                  </button>
-
-                  <button
-                    type="button"
                     className="btn header-item noti-icon waves-effect close-message-maker"
                   >
                     <i className="mdi mdi-close"></i>
