@@ -32,7 +32,7 @@ function InvoicesParent() {
   };
   useEffect(() => {
     getInvoices();
-  }, [size, page, activeInvoice, status, transaction, paymentItems]);
+  }, [size, page, activeInvoice, transaction, paymentItems]);
   const sort = (event) => {
     event.preventDefault();
     let data = {
@@ -40,6 +40,7 @@ function InvoicesParent() {
       endDate: endDate,
       size: size,
       page: page,
+      search: status,
     };
     requestsServiceService.getParentInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
@@ -61,6 +62,7 @@ function InvoicesParent() {
     requestsServiceService.getParentInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
+      setStatus('')
       window.scrollTo(0, 0);
     });
   };

@@ -7,7 +7,7 @@ import ReactPaginate from 'react-paginate';
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { Helmet } from 'react-helmet'
+import HelmetExport, { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import requestsServiceService from '../../services/requestsService.service'
 
@@ -18,6 +18,8 @@ function AllTenants() {
   const [page, setPage] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [searchTerm, setSearchTerm] = useState("");
+
 
 
   const [premises, setPremises] = useState([])
@@ -25,7 +27,7 @@ function AllTenants() {
 
   useEffect(() => {
     $("#spinner").addClass("d-none")
-    
+
     fetchAll()
   }, [page, size, pageCount])
 
@@ -34,27 +36,29 @@ function AllTenants() {
     // $("#spinner").removeClass("d-none")
     fetchAll()
   }
- const handleRangeChange = (e)=> { 
-   setSize(e.target.value);
-   setPageCount(0);
-   setPage(0)
+  const handleRangeChange = (e) => {
+    setSize(e.target.value);
+    setPageCount(0);
+    setPage(0)
   }
   const handlePageClick = (data) => {
     setPage(() => data.selected);
   };
 
+
   const fetchAll = () => {
     let data = {
-        "dateCreatedEnd": endDate,
+      "dateCreatedEnd": endDate,
       "dateCreatedStart": startDate,
-        }
+      "search": searchTerm
+    }
 
     requestsServiceService.getAllTenants(page, size, data).then((res) => {
       setPremises(res.data.data)
       setPage(res.data.page)
       setSize(res.data.size)
       setPageCount(res.data.totalPages)
-
+      setSearchTerm(" ")
     })
   }
 
@@ -114,7 +118,7 @@ function AllTenants() {
 
               </div>
 
-              <div className="col-12 d-flex justify-content-between align-items-center">
+              <div className="col-11 mx-auto mt-2 d-flex justify-content-between align-items-center">
                 <select className="btn btn-md btn-primary" title="Select A range" onChange={(e) => handleRangeChange(e)}>
                   <option className="bs-title-option" value="">Select A range</option>
                   <option value="5">10 Rows</option>
@@ -124,6 +128,22 @@ function AllTenants() {
                 </select>
                 <div class="page-title-right">
                   <form className="d-flex align-items-center">
+                    <div>
+                      <div>
+                        <form className="app-search d-none d-lg-block mr-15px">
+                          <div className="position-relative">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search..."
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <span className="bx bx-search-alt"></span>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
                     <div className="d-flex justify-content-end align-items-center">
                       <div className="d-flex">
                         <label className="">
@@ -173,7 +193,7 @@ function AllTenants() {
 
               <div className="card-body">
                 <div className="table-responsive">
-                  <table className="table  align-middle table-nowrap table-hover" id="datatable-buttons">
+                  <table className="table  align-middle table-nowrap table-hover" id="example">
                     <thead className="table-light">
                       <tr>
 
@@ -272,7 +292,7 @@ function AllTenants() {
                           nextClassName="page-item"
                           nextLinkClassName="page-link"
                           activeClassName="active"
-                          onPageChange={(data) => handlePageClick(data) }
+                          onPageChange={(data) => handlePageClick(data)}
                         />
                       </nav>
                     )}
@@ -284,7 +304,10 @@ function AllTenants() {
         </div>
         {/* <!-- end col --> */}
       </div>
+      <Helmet>
+        <script src="assets/js/pages/datatables.init.js"></script>
 
+      </Helmet>
       {/* <!-- end row --> */}
     </div>
   )
