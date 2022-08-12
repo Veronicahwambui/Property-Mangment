@@ -3,13 +3,14 @@ import moment from 'moment'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import useTabs from '../../hooks/useTabs'
 import AuthService from "../../services/authLogin.service"
 import requestsServiceService from '../../services/requestsService.service'
 
 const docArr = []
 
 function PremiseTenancy() {
-    const [activeTab, setActiveTab] = useState(1)
+    const [activeLink, setActiveLink] = useTabs()
     const [paymentTransactions, setPaymentTransactions] = useState([])
     const [charges, setCharges] = useState([])
     const [defaultCharges, setDefaultCharges] = useState([])
@@ -189,7 +190,7 @@ function PremiseTenancy() {
                 clear()
             }, 3000)
 
-            setActiveTab(4)
+            setActiveLink(4)
 
 
 
@@ -329,10 +330,10 @@ function PremiseTenancy() {
                                     Report An Issue
                                 </button>
                                 <div class="mail-list mt-4">
-                                    <a onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-home-outline me-2"></i> Client Details</a>
-                                    <a onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-account-clock me-2"></i>Transactions History</a>
-                                    <a onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-tools me-2"></i>Charges</a>
-                                    <a onClick={() => setActiveTab(4)} className={activeTab === 4 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-bug me-2"></i>Issues</a>
+                                    <a onClick={() => setActiveLink(1)} className={activeLink === 1 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-home-outline me-2"></i> Client Details</a>
+                                    <a onClick={() => setActiveLink(2)} className={activeLink === 2 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-account-clock me-2"></i>Transactions History</a>
+                                    <a onClick={() => setActiveLink(3)} className={activeLink === 3 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-tools me-2"></i>Charges</a>
+                                    <a onClick={() => setActiveLink(4)} className={activeLink === 4 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-bug me-2"></i>Issues</a>
                                 </div>
 
                             </div>
@@ -340,7 +341,7 @@ function PremiseTenancy() {
 
 
                             {/* <!-- Right Sidebar --> */}
-                            {activeTab === 1 && <div class="email-rightbar mb-3">
+                            {activeLink === 1 && <div class="email-rightbar mb-3">
 
                                 <div class="card">
                                     <div class="card-body">
@@ -518,7 +519,7 @@ function PremiseTenancy() {
 
                             </div>}
                             {/* <!-- end Col-9 --> */}
-                            {activeTab === 2 &&
+                            {activeLink === 2 &&
                                 <div className='email-rightbar mb-3'>
                                     <div className="card">
                                         <div className="card-body">
@@ -577,7 +578,7 @@ function PremiseTenancy() {
                                     </div>
                                 </div>
                             }
-                            {activeTab === 3 &&
+                            {activeLink === 3 &&
                                 <div>
 
                                     <div class="row">
@@ -715,7 +716,7 @@ function PremiseTenancy() {
                                 </div>
                             }
 
-                            {activeTab === 4 &&
+                            {activeLink === 4 &&
                                 <div>
 
                                     <div class="row">

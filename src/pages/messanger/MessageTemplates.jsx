@@ -1,4 +1,4 @@
-/* global $*/
+/* global $ */
 import moment from 'moment'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
@@ -27,6 +27,8 @@ function MessageTemplates() {
         })
     }
     const createTemplate = (e) => {
+        $("#createTemplate").modal("hide");
+
         e.preventDefault()
 
         var templateString = template;
@@ -53,7 +55,7 @@ function MessageTemplates() {
 
         requestsServiceService.createMessageTemplate(data).then((res) => {
             fetchAll()
-            $("#createTemplate").modal("hide");
+            $("#createTemplate").modal('hide');
 
             if (res.data.status) {
                 setError({
@@ -74,14 +76,15 @@ function MessageTemplates() {
                 clear()
             }, 3000)
 
-        }).catch((res) => {
-            $("#createTemplate").modal("hide");
+        }).catch(( err) => {
+            $("#createTemplate").hide();
 
-            setError({
-                ...error,
-                message: res.data.message,
-                color: "danger"
-            })
+        
+        }).finally(()=>{
+            // $("#createTemplate").addClass("d-none");
+            // $("#createTemplate").modal('toggle');
+
+            $("#createTemplate").remove();
 
         })
     }
@@ -129,10 +132,11 @@ function MessageTemplates() {
                                     {error.message}
                                 </div>
                             }
-                            <table class="table  table-nowrap table-hover table-responsive overflow-visible contacts-table">
+                          <div className="table-responsive">
+                          <table class="table table-hover overflow-visible">
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col">#</th>
+                                        <th>#</th>
                                         <th>name</th>
                                         <th>Langauge</th>
                                         <th>date created</th>
@@ -143,7 +147,7 @@ function MessageTemplates() {
                                     {messageTemplates?.map((temp, index) => {
 
                                         return (
-                                            <tr key={index}>
+                                            <tr key={index} >
                                                 <td class="text-capitalize">{index + 1}</td>
                                                 <td className="text-capitalize">{temp.templateName?.toLowerCase()?.replace(/_/g, " ")}</td>
                                                 <td>{temp.language}</td>
@@ -154,11 +158,18 @@ function MessageTemplates() {
                                     })}
                                 </tbody>
                             </table>
+                          </div>
                         </div>
                     </div>
                 </div>
                 {/* <!-- message details modal --> */}
-                <div class="modal fade" id="createTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div     class="modal fade"
+        id="createTemplate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content border-radius-0">
                             {error.color !== "" &&

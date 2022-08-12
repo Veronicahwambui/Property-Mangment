@@ -13,6 +13,7 @@ function Emails() {
     const [perPage, setPerPage] = useState(10);
     const [pageData, setPageData] = useState([])
     const [messageData, setMessageData] = useState({})
+    const [loading, setLoading]= useState(true)
 
 
     const handlePageClick = (data) => {
@@ -20,13 +21,19 @@ function Emails() {
     };
 
     useEffect(() => {
+        setLoading(!false)
+
         requestsServiceService.getEmails(page, perPage, type).then((res) => {
+            setLoading(false)
             setPage(res.data.page)
             setPerPage(res.data.size)
             setPageCount(res.data.totalPages)
             setPageData(res.data.data)
             window.scrollTo(0, 0);
-        });
+        }).catch((err)=>{
+            setLoading(false)
+        })
+
     }, [page, perPage, type]);
 
 
@@ -60,7 +67,7 @@ function Emails() {
 
                             <select className="btn btn-md btn-primary" title="Select A range" onChange={(e) => setPerPage(e.target.value)}>
                                 <option className="bs-title-option" value="">Select A range</option>
-                                <option value="5">10 Rows</option>
+                                <option value="10">10 Rows</option>
                                 <option value="30">30 Rows</option>
                                 <option value="50">50 Rows</option>
                                 <option value="150">150 Rows</option>
@@ -76,13 +83,20 @@ function Emails() {
                         </div>
                         {/* table  */}
                         <div className="card-body the-inbox">
-                            {pageData?.length === 0 &&
+                            {loading && 
+                             <div className="d-flex justify-content-center align-items-center">
+                                <div className="loading loader2"></div>
+                                </div>
+                            }
+                            {pageData?.length === 0 && !loading &&
                                 <div className="d-flex justify-content-center align-items-center">
                                     <h4 className="text-muted">No Emails Found</h4>
                                 </div>
                             }
                             {pageData?.length > 0 && <table id="emailDataTable-btns" class="table nowrap w-100 table-hover mt-0 mb-0">
-                                <thead></thead>
+                                <thead>
+
+                                </thead>
                                 <tbody className="table-hover">
                                     { pageData?.length > 0 && pageData?.map((mes , index) =>{
                                         let message = JSON.parse(mes.data) 
@@ -129,7 +143,7 @@ function Emails() {
                                             nextClassName="page-item"
                                             nextLinkClassName="page-link"
                                             activeClassName="active"
-                                            onPageChange={() => handlePageClick}
+                                            onPageChange={handlePageClick}
                                             hrefBuilder={(page, pageCount, selected) =>
                                                 page >= 1 && page <= pageCount ? `/page/${page}` : '#'
                                             }
@@ -159,7 +173,7 @@ function Emails() {
                                             <div>
                                                 <div class="flex-grow-1  d-flex justify-content-between  mb-1 chat-user-box">
                                                     <p class="user-title m-0 text-capitalize"> <strong>Created by: </strong>{messageData?.createdBy}</p>
-                                                    <p class="text-muted  pb-0"> <strong><i class="mdi mdi-email me-1" ></i> </strong>{messageData?.contact + " " }<i class="mdi mdi-phone me-1"></i> {messageData?.contact}</p>
+                                                    <p class="text-muted  pb-0"> <strong><i class="mdi mdi-email me-1" ></i> </strong>{messageData?.contact + " " }</p>
                                                 </div>
                                             </div>
 

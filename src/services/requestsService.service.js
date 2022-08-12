@@ -210,8 +210,8 @@ class RequestsService {
   }
 
   // premise
-  getAllpremises() {
-    return axiosInstance.get(baseUrl + "/premises");
+  getAllpremises(page,size ,data) {
+    return axiosInstance.post(baseUrl + "/premises/list?page=" + page +"&size=" + size  , data);
   }
 
   createPremise(data) {
@@ -388,8 +388,8 @@ class RequestsService {
     return axiosInstance.get(baseUrl + `/clients/${id}`);
   }
 
-  getAllTenants() {
-    return axiosInstance.get(baseUrl + "/tenants");
+  getAllTenants(page,size ,data) {
+    return axiosInstance.post(baseUrl + "/tenants/list?page=" + page +"&size=" + size  , data);
   }
   updateTenant(data) {
     return axiosInstance.post(baseUrl + "/tenants/tenancy/update", data);
@@ -495,8 +495,8 @@ class RequestsService {
   updateLandLordAccounts(data) {
     return axiosInstance.post(baseUrl + "/landlord/accounts/update", data);
   }
-  getLandLords() {
-    return axiosInstance.get(baseUrl + "/landlord");
+  getLandLords(page,size ,data) {
+    return axiosInstance.post(baseUrl + "/landlord/list?page=" + page +"&size=" + size  , data);
   }
   getLandlord(id) {
     return axiosInstance.get(baseUrl + "/landlord/" + id);
@@ -779,12 +779,12 @@ class RequestsService {
   getMessageTemplate(clientId) {
     return communicationService.get(communicationBaseUrl + "/comm/templates/" + clientId)
   }
-  getSMS(page, size, type) {
-    return communicationService.get(communicationBaseUrl + "/comm/v1/sms?page=" + page + "&size=" + size + "&type=" + type)
+  getSMS(page, size, type,clientId) {
+    return communicationService.get(communicationBaseUrl + "/comm/v1/sms?page=" + page + "&size=" + size + "&type=" + type + "&client=" + clientId)
   }
 
-  getEmails(page, size, type) {
-    return communicationService.get(communicationBaseUrl + "/comm/v1/emails?page=" + page + "&size=" + size + "&type=" + type)
+  getEmails(page, size, type ,clientId) {
+    return communicationService.get(communicationBaseUrl + "/comm/v1/emails?page=" + page + "&size=" + size + "&type=" + type + "&client=" + clientId)
   }
 
 

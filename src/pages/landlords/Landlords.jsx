@@ -1,4 +1,8 @@
-/* global $*/ 
+/* global $*/
+import moment from 'moment'
+import DatePicker from "react-datepicker";
+import ReactPaginate from 'react-paginate';
+
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import requestsServiceService from '../../services/requestsService.service'
@@ -6,18 +10,47 @@ import requestsServiceService from '../../services/requestsService.service'
 function Landlords() {
   const [landlords, setLandlords] = useState([])
   const [activeId, setActiveId] = useState('')
-
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   useEffect(() => {
+
+    $("#spinner").addClass("d-none")
+
     getlandlords();
-  }, [])
+  }, [page, size, pageCount])
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    // $("#spinner").removeClass("d-none")
+
+    getlandlords()
+  }
+
+  const handlePageClick = (data) => {
+    setPage(() => data.selected);
+  };
 
   const getOneLandlord = () => {
   }
   const getlandlords = () => {
-    requestsServiceService.getLandLords().then((res) => {
-      setLandlords(res.data.data)
-      $("#spinner").addClass("d-none")
 
+    let data = {
+      "clientId": 0,
+      "dateCreatedEnd": endDate,
+      "dateCreatedStart": startDate,
+      "fileNumber": "string",
+      "landlordEmail": "string",
+      "landlordName": "string",
+      "landlordPhoneNumber": "string"
+    }
+    requestsServiceService.getLandLords(page, size, data).then((res) => {
+      setLandlords(res.data.data)
+      setPage(res.data.page)
+      setSize(res.data.size)
+      setPageCount(res.data.totalPages)
     });
   }
   const deactivate = (id) => {
@@ -29,19 +62,19 @@ function Landlords() {
     <>
       <div class="page-content">
         <div class="container-fluid">
-           {/* <!-- Loader --> */}
-           <div id="spinner">
-                    <div id="status">
-                        <div class="spinner-chase">
-                            <div class="chase-dot"></div>
-                            <div class="chase-dot"></div>
-                            <div class="chase-dot"></div>
-                            <div class="chase-dot"></div>
-                            <div class="chase-dot"></div>
-                            <div class="chase-dot"></div>
-                        </div>
-                    </div>
-                </div>
+          {/* <!-- Loader --> */}
+          <div id="spinner">
+            <div id="status">
+              <div class="spinner-chase">
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -49,7 +82,7 @@ function Landlords() {
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item">   
+                    <li class="breadcrumb-item">
                       <Link to='/'>Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item active">All Landlords</li>
@@ -85,6 +118,63 @@ function Landlords() {
                   {/*  {error.message}*/}
                   {/*</div>*/}
                   {/*}*/}
+
+                  <div className="col-12 d-flex justify-content-between align-items-center">
+                    <select className="btn btn-md btn-primary" title="Select A range" onChange={(e) => setSize(e.target.value)}>
+                      <option className="bs-title-option" value="">Select A range</option>
+                      <option value="5">10 Rows</option>
+                      <option value="30">30 Rows</option>
+                      <option value="50">50 Rows</option>
+                      <option value="150">150 Rows</option>
+                    </select>
+                    <div class="page-title-right">
+                      <form className="d-flex align-items-center">
+                        <div className="d-flex justify-content-end align-items-center">
+                          <div className="d-flex">
+                            <label className="">
+                              Start Date
+                            </label>
+                            <DatePicker
+                              selected={startDate}
+                              onChange={(date) => setStartDate(date)}
+                              selectsStart
+                              className="form-control mouse-pointer sdate"
+
+                              startDate={startDate}
+                              endDate={endDate}
+                              maxDate={new Date()}
+                            />
+                          </div>
+                          <div className="d-flex">
+                            <label className="">
+                              End Date
+                            </label>
+                            <DatePicker
+                              selected={endDate}
+                              onChange={(date) => setEndDate(date)}
+                              selectsEnd
+                              className="form-control mouse-pointer sdate"
+
+                              startDate={startDate}
+                              endDate={endDate}
+                              minDate={startDate}
+                              maxDate={new Date()}
+                            />
+                          </div>
+                        </div>
+                        <div className="d-flex mb-2">
+                          <input
+                            type="submit"
+                            className="btn btn-primary"
+                            onClick={handleSubmit}
+                            value="filter"
+                          />
+                        </div>
+
+                      </form>
+                    </div>
+
+                  </div>
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
@@ -156,6 +246,39 @@ function Landlords() {
                         ))}
                       </tbody>
                     </table>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h5 className="font-medium  text-muted mt-2">
+                        showing page <span className="text-primary">{pageCount === 0 ? page : page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
+                      </h5>
+
+                      {pageCount !== 0 && pageCount > 1 && (
+                        <nav aria-label="Page navigation comments" className="mt-4">
+                          <ReactPaginate
+                            previousLabel="<"
+                            nextLabel=">"
+                            breakLabel="..."
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link"
+                            pageCount={pageCount}
+                            pageRangeDisplayed={4}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            onPageChange={() => handlePageClick}
+                            hrefBuilder={(page, pageCount, selected) =>
+                              page >= 1 && page <= pageCount ? `/page/${page}` : '#'
+                            }
+                            hrefAllControls
+                          />
+                        </nav>
+                      )}
+                    </div>
                   </div>
 
                 </div>

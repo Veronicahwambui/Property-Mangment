@@ -13,6 +13,8 @@ function Messages() {
     const [perPage, setPerPage] = useState(10);
     const [pageData, setPageData] = useState([])
     const [messageData, setMessageData] = useState({})
+    const [loading, setLoading]= useState(true)
+
 
 
     const handlePageClick = (data) => {
@@ -20,13 +22,19 @@ function Messages() {
     };
 
     useEffect(() => {
+        setLoading(!false)
+
         requestsServiceService.getSMS(page, perPage, type).then((res) => {
             setPage(res.data.page)
             setPerPage(res.data.size)
             setPageCount(res.data.totalPages)
             setPageData(res.data.data)
             window.scrollTo(0, 0);
-        });
+            setLoading(false)
+
+        }).catch((err)=>{
+            setLoading(false)
+        })
     }, [page, perPage, type]);
 
 
@@ -75,12 +83,17 @@ function Messages() {
                         </div>
                         {/* table  */}
                         <div className="card-body the-inbox">
-                            {pageData?.length === 0 &&
+                        {loading && 
+                             <div className="d-flex justify-content-center align-items-center">
+                                <div className="loading loader2"></div>
+                                </div>
+                            }
+                            {pageData?.length === 0 && !loading &&
                                 <div className="d-flex justify-content-center align-items-center">
                                     <h4 className="text-muted">No Messages Found</h4>
                                 </div>
                             }
-                            {pageData?.length > 0 && <table id="emailDataTable-btns" class="table nowrap w-100 table-hover mt-0 mb-0">
+                            {pageData?.length > 0 &&   <table id="emailDataTable-btns" class="table nowrap w-100 table-hover mt-0 mb-0">
                                 <thead></thead>
                                 <tbody className="table-hover">
                                     {pageData?.map((mes , index) =>{
