@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
+import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import AuthService from "../../services/auth.service";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import requestsServiceService from "../../services/requestsService.service";
+import issueType from "./IssueType";
 
 function CreateIssueTypes() {
   const [initialStatus, setInitialStatus] = useState("");
@@ -24,7 +26,7 @@ function CreateIssueTypes() {
   const clientId = AuthService.getClientId();
 
   const prevStatus = usePrevious(status);
-  useEffect(() => { }, [status, prevStatus, nextStatus, issueTypeStateDTOS]);
+  useEffect(() => {}, [status, prevStatus, nextStatus, issueTypeStateDTOS]);
   function usePrevious(value) {
     const ref = useRef();
     useEffect(() => {
@@ -528,43 +530,41 @@ function CreateIssueTypes() {
                       <option value="DECLINE">DECLINE</option>
                     </select>
                   </div>
-                  {
-                    stateActionName === "DECLINE" ? (
-                      <>
-                        {" "}
-                        <div className="form-group mb-4">
-                          <label htmlFor="">Status</label>
-                          <input
-                            type="text"
-                            className={"form-control"}
-                            value={tempstatus}
-                            onChange={(e) =>
-                              settempstatus(e.target.value.toUpperCase())
-                            }
-                            required={true}
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        {" "}
-                        <div className="form-group mb-4">
-                          <label htmlFor="">Next Status</label>
-                          <input
-                            type="text"
-                            className={"form-control"}
-                            value={nextStatus}
-                            onChange={(e) =>
-                              setNextStatus(e.target.value.toUpperCase())
-                            }
-                            disabled={complete}
-                            required={true}
-                          />
-                          <span className="text-danger">{alert}</span>
-                        </div>
-                      </>
-                    )
-                  }
+                  {stateActionName === "DECLINE" ? (
+                    <>
+                      {" "}
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Status</label>
+                        <input
+                          type="text"
+                          className={"form-control"}
+                          value={tempstatus}
+                          onChange={(e) =>
+                            settempstatus(e.target.value.toUpperCase())
+                          }
+                          required={true}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      <div className="form-group mb-4">
+                        <label htmlFor="">Next Status</label>
+                        <input
+                          type="text"
+                          className={"form-control"}
+                          value={nextStatus}
+                          onChange={(e) =>
+                            setNextStatus(e.target.value.toUpperCase())
+                          }
+                          disabled={complete}
+                          required={true}
+                        />
+                        <span className="text-danger">{alert}</span>
+                      </div>
+                    </>
+                  )}
                   <div className="form-group mb-4">
                     {" "}
                     <label htmlFor="">Days to next step</label>

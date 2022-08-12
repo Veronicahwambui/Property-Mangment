@@ -744,15 +744,15 @@ class RequestsService {
   getIssueStates(id) {
     return axiosInstance.get(baseUrl + `/setup/tenancyIssueTypes/${id}/states`);
   }
-  updateTenancyIssueStates(data) {
+  updateTenancyIssueStates(data,id) {
     return axiosInstance.post(
-      baseUrl + `/setup/tenancyIssueTypes/${data.id}/state/update`,
+      baseUrl + `/setup/tenancyIssueTypes/${id}/state/update`,
       data
     );
   }
-  createTenancyIssueStates(data) {
+  createTenancyIssueStates(data, id) {
     return axiosInstance.post(
-      baseUrl + `/setup/tenancyIssueTypes/${data.id}/state`,
+      baseUrl + `/setup/tenancyIssueTypes/${id}/state`,
       data
     );
   }

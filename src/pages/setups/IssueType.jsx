@@ -27,6 +27,7 @@ function IssueType() {
     status: undefined,
     templateName: undefined,
     stateActionName: undefined,
+    previousStatus: undefined,
   });
   const [error, setError] = useState({
     message: "",
@@ -38,12 +39,19 @@ function IssueType() {
   // modals
   const [show, setShow] = useState(false);
   const [editshow, seteditshow] = useState(false);
-  const showModal = (id) => {
-    setsId(id);
+  const showModal = (x) => {
+    setsId(x);
     setShow(true);
   };
-  const editshowModal = (id) => {
-    setsId(id);
+  const [editState, seteditState] = useState({});
+  const editshowModal = (x) => {
+    console.log(x);
+    let acc = issueStates.find((iS) => iS.id === x);
+    console.log(acc);
+    setapplicablechargeid(acc?.applicableCharge?.id);
+    setstateActionName(acc?.stateAction);
+    seteditState(acc);
+    setsId(x);
     seteditshow(true);
   };
   const hideModal = () => setShow(false);
@@ -71,7 +79,7 @@ function IssueType() {
   };
   useEffect(() => {
     checks(issueStates);
-  }, [issueStates]);
+  }, [issueStates, editState]);
   const [temp, settemp] = useState([]);
   const checks = (issueStates) => {
     let tp = [];
@@ -101,30 +109,53 @@ function IssueType() {
     }
   };
 
+  const [stateActionName, setstateActionName] = useState("");
+  const handleAction = (text) => {
+    text === "DECLINE"
+      ? seteditState({
+          ...editState,
+          stateActionName: text,
+          nextStatus: "",
+        })
+      : seteditState({
+          ...editState,
+          stateActionName: text,
+        });
+    setstateActionName(text);
+  };
+  const [applicablechargeid, setapplicablechargeid] = useState("");
   const handleEditChange = (event) => {
-    setIssueTypeDetails({
-      ...issueTypeDetails,
-      [event.target.name]: event.target.value,
-    });
+    console.log(event.target.name, event.target.value);
+    event.target.name === "applicableChargeId"
+      ? seteditState({
+          ...editState,
+          applicableChargeId: event.target.value,
+        })
+      : seteditState({
+          ...editState,
+          [event.target.name]: event.target.value,
+        });
   };
 
   //create issue state
   const addIssueState = (e) => {
+    console.log(id);
     e.preventDefault();
     let data = {
       active: true,
-      applicableChargeId: issueTypeDetails.applicableChargeId,
+      applicableChargeId: parseInt(issueTypeDetails.applicableChargeId),
       chargeable: isChecked,
-      clientId: AuthService.getClientId(),
-      daysToNextStep: issueTypeDetails.daysToNextStep,
-      id: id,
+      clientId: parseInt(AuthService.getClientId()),
+      daysToNextStep: parseInt(issueTypeDetails.daysToNextStep),
+      id: null,
       nextStatus: issueTypeDetails.nextStatus,
       status: issueTypeDetails.status,
       templateName: issueTypeDetails.templateName,
       stateActionName: issueTypeDetails.stateActionName,
+      previousStatus: issueTypeDetails.previousStatus,
     };
     requestsServiceService
-      .createTenancyIssueStates(data)
+      .createTenancyIssueStates(data, id)
       .then((res) => {
         let message = res.data.message;
         if (res.data.status === false) {
@@ -147,7 +178,7 @@ function IssueType() {
               color: "",
             });
             edithideModal();
-          }, 2000);
+          }, 1000);
         }
       })
       .catch((err) => {
@@ -160,20 +191,23 @@ function IssueType() {
   };
 
   const editIssueState = (e) => {
+    console.log(sId);
     e.preventDefault();
     let data = {
       active: true,
-      applicableChargeId: issueTypeDetails.applicableChargeId,
+      applicableChargeId: parseInt(applicablechargeid),
       chargeable: isChecked,
-      clientId: AuthService.getClientId(),
-      daysToNextStep: issueTypeDetails.daysToNextStep,
-      id: id,
-      nextStatus: issueTypeDetails.nextStatus,
-      status: issueTypeDetails.status,
-      templateName: issueTypeDetails.templateName,
+      clientId: parseInt(AuthService.getClientId()),
+      daysToNextStep: parseInt(editState.daysToNextStep),
+      id: sId,
+      previousStatus: editState.previousStatus,
+      nextStatus: editState.nextStatus,
+      status: editState.status,
+      templateName: editState.templateName,
+      stateActionName: stateActionName,
     };
     requestsServiceService
-      .updateTenancyIssueStates(data)
+      .updateTenancyIssueStates(data, id)
       .then((res) => {
         let message = res.data.message;
         if (res.data.status === false) {
@@ -214,7 +248,7 @@ function IssueType() {
       }
     });
   };
-  useEffect(() => {}, [temp, issueTypeDetails]);
+  useEffect(() => {}, [temp, issueTypeDetails, editState]);
 
   return (
     <>
@@ -500,7 +534,7 @@ function IssueType() {
                   />{" "}
                   Chargeable
                 </div>
-                <div className="form-group mb-4">
+               {isChecked&& <div className="form-group mb-4">
                   <label htmlFor="">Charges</label> <br />
                   {applicableCharges.length > 0 && (
                     <div className="form-group mb-4">
@@ -510,9 +544,6 @@ function IssueType() {
                         onChange={(e) => handleChange(e)}
                         required={true}
                       >
-                        <option className="text-black font-semibold ">
-                          select applicable charge
-                        </option>
                         {applicableCharges?.map((item, index) => (
                           <option value={item.id}>
                             {item?.name.toLowerCase()?.replace(/_/g, " ")}
@@ -521,6 +552,16 @@ function IssueType() {
                       </select>
                     </div>
                   )}
+                </div>}
+                <div className="form-group mb-4">
+                  <label htmlFor="">Previous Status</label>
+                  <input
+                    type="text"
+                    className={"form-control"}
+                    name={"previousStatus"}
+                    onChange={(e) => handleChange(e)}
+                    required={true}
+                  />
                 </div>
                 <div className="form-group mb-4">
                   <label htmlFor="">Status</label>
@@ -543,7 +584,21 @@ function IssueType() {
                   />
                 </div>
                 <div className="form-group mb-4">
-                  {" "}
+                  <label htmlFor="">State Action Name</label>
+                  <select
+                    className="form-control"
+                    name={"stateActionName"}
+                    onChange={(e) => handleChange(e)}
+                    required={true}
+                  >
+                    {["APPROVE", "DECLINE"].map((item) => (
+                      <option className="text-capitalize" value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group mb-4">
                   <label htmlFor="">Days to next step</label>
                   <input
                     type="number"
@@ -578,6 +633,11 @@ function IssueType() {
                 </div>
               </div>
             </div>
+            {error.color !== "" && (
+              <div className={"alert alert-" + error.color} role="alert">
+                {error.message}
+              </div>
+            )}
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -595,11 +655,6 @@ function IssueType() {
               Add State
             </Button>
           </Modal.Footer>
-          {error.color !== "" && (
-            <div className={"alert alert-" + error.color} role="alert">
-              {error.message}
-            </div>
-          )}
         </form>
       </Modal>
       <Modal show={editshow} onHide={edithideModal} centered>
@@ -625,14 +680,17 @@ function IssueType() {
                       <select
                         className="form-control text-capitalize"
                         name={"applicableChargeId"}
-                        onChange={(e) => handleEditChange(e)}
+                        value={applicablechargeid}
+                        onChange={(e) => setapplicablechargeid(e.target.value)}
                         required={true}
                       >
-                        <option className="text-black font-semibold ">
-                          select applicable charge
-                        </option>
                         {applicableCharges?.map((item, index) => (
-                          <option value={item.id}>
+                          <option
+                            selected={
+                              item.id === applicablechargeid ? "selected" : ""
+                            }
+                            value={item.id}
+                          >
                             {item?.name.toLowerCase()?.replace(/_/g, " ")}
                           </option>
                         ))}
@@ -641,11 +699,22 @@ function IssueType() {
                   )}
                 </div>
                 <div className="form-group mb-4">
+                  <label htmlFor="">Previous Status</label>
+                  <input
+                    type="text"
+                    className={"form-control"}
+                    name={"previousStatus"}
+                    value={editState?.previousStatus}
+                    onChange={(e) => handleEditChange(e)}
+                  />
+                </div>
+                <div className="form-group mb-4">
                   <label htmlFor="">Status</label>
                   <input
                     type="text"
                     className={"form-control"}
                     name={"status"}
+                    value={editState?.status}
                     onChange={(e) => handleEditChange(e)}
                     required={true}
                   />
@@ -653,15 +722,36 @@ function IssueType() {
                 <div className="form-group mb-4">
                   <label htmlFor="">State Action Name</label>
                   <select
-                    className="form-control text-capitalize"
+                    className="form-control"
                     name={"stateActionName"}
-                    onChange={(e) => handleEditChange(e)}
+                    value={editState?.stateActionName}
+                    onChange={(e) => handleAction(e.target.value)}
                     required={true}
                   >
-                    <option value="">select action name</option>
-                    <option value="APPROVE">APPROVE</option>
-                    <option value="DECLINE">DECLINE</option>
+                    {["APPROVE", "DECLINE"].map((item) => (
+                      <option
+                        className="text-capitalize"
+                        selected={
+                          item === editState?.stateAction ? "selected" : ""
+                        }
+                        value={item}
+                      >
+                        {item}
+                      </option>
+                    ))}
                   </select>
+                </div>
+                <div className="form-group mb-4">
+                  <label htmlFor="">Next Status</label>
+                  <input
+                    type="text"
+                    className={"form-control"}
+                    value={editState?.nextStatus}
+                    name={"nextStatus"}
+                    onChange={(e) => handleEditChange(e)}
+                    required={true}
+                    disabled={stateActionName === "DECLINE"}
+                  />
                 </div>
                 {issueTypeDetails?.stateActionName === "DECLINE" ? (
                   <></>
@@ -683,8 +773,9 @@ function IssueType() {
                   {" "}
                   <label htmlFor="">Days to next step</label>
                   <input
-                    type="number"
+                    type="text"
                     name={"daysToNextStep"}
+                    value={editState?.daysToNextStep}
                     className={"form-control"}
                     onChange={(e) => handleEditChange(e)}
                     required={true}
@@ -698,14 +789,19 @@ function IssueType() {
                       <select
                         className="form-control text-capitalize"
                         name={"templateName"}
+                        value={editState?.templateName}
                         onChange={(e) => handleEditChange(e)}
                         required={true}
                       >
-                        <option className="text-black font-semibold ">
-                          select template name
-                        </option>
                         {templates?.map((item, index) => (
-                          <option value={item.templateName}>
+                          <option
+                            value={item.templateName}
+                            selected={
+                              item.templateName === editState?.templateName
+                                ? "selected"
+                                : ""
+                            }
+                          >
                             {item.templateName}
                           </option>
                         ))}
