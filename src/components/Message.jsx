@@ -28,6 +28,7 @@ export default function Message(props) {
     e.preventDefault();
     console.log(messageBody);
     setmessageBody({
+      ...messageBody,
       to: "",
       message: "",
       contact: "",
@@ -41,10 +42,15 @@ export default function Message(props) {
       to: props.contact?.email,
       message: props.contact?.message,
     });
-    console.log(messageBody);
   }, [mes, props]);
   $("body").on("click", ".close-message-maker", function () {
-    setmes("");
+    setmessageBody({
+      ...messageBody,
+      to: "",
+      message: "",
+      contact: "",
+      subject: "",
+    });
     $(".the-message-maker").removeClass("email-overlay-transform");
     setTimeout(function () {
       $(".email-overlay").addClass("d-none");
