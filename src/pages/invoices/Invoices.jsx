@@ -92,6 +92,7 @@ function Invoices() {
     return sum - paid;
   };
   const getOneInvoice = (id) => {
+    console.log(id);
     let acc = invoices.find((invoice) => invoice.transactionItemId === id);
     setactiveInvoice(acc);
     showInvoice();
@@ -341,8 +342,7 @@ function Invoices() {
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end ">
                                       <a
-                                        className="dropdown-item "
-                                        href="# "
+                                        className="dropdown-item cursor-pointer"
                                         onClick={() =>
                                           getOneInvoice(
                                             invoice.transactionItemId
