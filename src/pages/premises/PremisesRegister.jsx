@@ -9,7 +9,6 @@ import requestsServiceService from '../../services/requestsService.service'
 function PremisesRegister() {
     const [premises, setPremises] = useState([])
     const [activeId, setActiveId] = useState('')
-    const [failedLandlordUploads, setFailedLandlordUploads] = useState([])
 
 
     useEffect(() => {
@@ -30,136 +29,7 @@ function PremisesRegister() {
             fetchAll()
         })
     }
-
-    const csvToArray = (str, delimiter = ",") => {
-        // slice from start of text to the first \n index
-        // use split to create an array from string by delimiter
-        const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
-
-        // slice from \n index + 1 to the end of the text
-        // use split to create an array of each csv value row
-        const rows = str.slice(str.indexOf("\n") + 1).split("\n");
-
-        // Map the rows
-        // split values from each row into an array
-        // use headers.reduce to create an object
-        // object properties derived from headers:values
-        // the object passed as an element of the array
-        const arr = rows.map(function (row) {
-            const values = row.split(delimiter);
-            const el = headers.reduce(function (object, header, index) {
-                object[header] = values[index];
-                return object;
-            }, {});
-            return el;
-        });
-
-        // return the array
-        return arr;
-    }
-
-    const submitFile = (e) => {
-        e.preventDefault();
-
-        const csvFile = document.getElementById("csvFile");
-
-        const input = csvFile.files[0];
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            const text = e.target.result;
-
-            let data = csvToArray(text, ",");
-            console.log(data);
-            let newData = [];
-            for (let counter = 0; counter < data.length; counter++) {
-
-                let data1 = {
-                    "active": true,
-                    "address": data[counter]["postal_address"],
-                    "town": data[counter]["Town"],
-                    "country": data[counter]["Country"],
-                    "estateId": 1,
-                    "fileNumber": data[counter]["RC No"]+data[counter]["Property No"],
-                    "id": undefined,
-                    "landLordId": [],
-                    "landlordFileNumber": [],
-                    "plotNumber": undefined,
-                    "premiseName": data[counter].name,
-                    "premiseTypeId": 1,
-                    "premiseUseTypeId": 1,
-                    "unitVacancyRestrictionStatus": "CLOSED",
-                    "chargeFrequencyName": "MONTH",
-                    "premiseLandLord": [{
-                        "active": true,
-                        "agreementPeriod": 12,
-                        "id": undefined,
-                        "landLordAgreementTypeId": 1,
-                        "landLordId": data[counter]["landlord id"],
-                        "premiseId": undefined,
-                        "remunerationPercentage": parseFloat(data[counter]["pcommission"])
-                    }]
-                };
-
-
-                let dara = {
-                    "premise": data1,
-                    "premiseCaretakerDTO": null,
-                    "premiseDocuments": [],
-                    "premiseUnitTypeCharges": [],
-                    "premiseUnits": []
-                };
-                newData.push(dara);
-                // if (newData.length == 1)
-                    handleSubmitting(dara);
-            }
-            console.log(newData.length);
-            console.log(newData);
-
-        };
-
-        console.log(csvToArray(reader.readAsText(input), ";"));
-
-    }
-
-
-    const handleSubmitting = (data) => {
-
-        requestsServiceService.createPremise(data)
-            .then((res) => {
-                if (res.data.status === true) {
-
-                    // fetchAll();
-                } else {
-                    let dat = {
-                        name: data.premise.premiseName,
-                        failureReason: res.data.message
-                    }
-
-                    setFailedLandlordUploads(failedLandlordUploads => [dat, ...failedLandlordUploads]);
-                }
-            })
-            .catch((error) => {
-
-                let err = "";
-                if (error.response) {
-                    err = error.response.data.message.substring(0, 130);
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    err = error.request;
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    err = error.message;
-                }
-                let dat = {
-                    name: data.premise.premiseName,
-                    failureReason: err
-                }
-
-                setFailedLandlordUploads(failedLandlordUploads => [dat, ...failedLandlordUploads]);
-            });
-    };
-
+    
 
     return (
         <div class="page-content">
@@ -199,22 +69,7 @@ function PremisesRegister() {
 
                 {/* <!-- quick stast end --> */}
 
-                <body>
-                    <form id="myForm" className='row card-body'>
-                        <input type="file" id="csvFile" accept=".csv" />
-                        <br />
-                        <input type="button" onClick={submitFile} value="Submit" />
-                    </form>
-                    <div className='row'>
-                        <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
-                        <ul>
-                            {failedLandlordUploads.map((failed, index) => <>{<li className='alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>}</>)}
-                        </ul>
-                    </div>
-                </body>
-
-
-
+        
 
                 <div class="row">
                     <div class="col-12">

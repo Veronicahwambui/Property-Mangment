@@ -51,6 +51,7 @@ import IssueType from "./pages/setups/IssueType";
 import Messages from "./pages/messanger/Messages";
 import MessageTemplates from "./pages/messanger/MessageTemplates";
 import Emails from "./pages/messanger/Emails";
+import Uploads from "./pages/Uploads";
 
 function Main() {
   useEffect(() => {
@@ -182,6 +183,9 @@ function Main() {
                 <Route path="/create-issue-type" element={<CreateIssueTypes />} />
                 <Route path="/issuestypes" element={<IssuesTypes />} />
                 <Route path="/issuestypes/:id" element={<IssueType />} />
+
+
+                <Route path="/uploads" element={<Uploads />} />
 
 
                 {/* messageer  */}

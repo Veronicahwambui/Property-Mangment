@@ -28,127 +28,7 @@ function Landlords() {
     })
   }
 
-  const csvToArray = (str, delimiter = ",") => {
-    // slice from start of text to the first \n index
-    // use split to create an array from string by delimiter
-    const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
 
-    // slice from \n index + 1 to the end of the text
-    // use split to create an array of each csv value row
-    const rows = str.slice(str.indexOf("\n") + 1).split("\n");
-
-    // Map the rows
-    // split values from each row into an array
-    // use headers.reduce to create an object
-    // object properties derived from headers:values
-    // the object passed as an element of the array
-    const arr = rows.map(function (row) {
-      const values = row.split(delimiter);
-      const el = headers.reduce(function (object, header, index) {
-        object[header] = values[index];
-        return object;
-      }, {});
-      return el;
-    });
-
-    // return the array
-    return arr;
-  }
-
-  const submitFile = (e) => {
-    e.preventDefault();
-
-    const csvFile = document.getElementById("csvFile");
-
-    const input = csvFile.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function (e) {
-      const text = e.target.result;
-
-      let data = csvToArray(text, ",");
-      console.log(data);
-      let newData = [];
-
-      for (let counter = 0; counter < data.length; counter++) {
-
-        let data1 = {
-          active: true,
-          agreementPeriod: 12,
-          email: "",
-          fileNumber: data[counter]["RC Number"],
-          firstName: data[counter]["First name"],
-          gender: "",
-          id: null,
-          idNumber: "",
-          landLordAgreementTypeId: 1,
-          landLordTypeName: "INDIVIDUAL",
-          lastName: data[counter]["Last name"],
-          otherName: data[counter]["Middle"],
-          phoneNumber: "",
-          postalAddress: data[counter]["postal_address"],
-          town: data[counter]["Town"],
-          country: data[counter]["Country"],
-          remunerationPercentage: parseFloat(data[counter].commission),
-        };
-        let new_t = {
-          documents: [],
-          landLord: data1,
-          landLordAccounts: [],
-        };
-        newData.push(new_t);
-        if (newData.length > 0)
-          handleSubmitting(new_t);
-      }
-
-      console.log(newData.length);
-      console.log(newData);
-
-    };
-
-    console.log(csvToArray(reader.readAsText(input), ";"));
-
-
-  }
-
-
-  const handleSubmitting = (data) => {
-    requestsServiceService
-      .createLandLord(data)
-      .then((res) => {
-        if (res.data.status === true) {
-
-          // getlandlords();
-        } else {
-          let dat = {
-            name: data.landLord.firstName,
-            failureReason: res.data.message
-          }
-          // setFailedLandlordUploads([...failedLandlordUploads, dat]);
-          setFailedLandlordUploads(failedLandlordUploads => [dat, ...failedLandlordUploads]);
-        }
-      })
-      .catch((error) => {
-
-        let err = "";
-        if (error.response) {
-          err = error.response.data.message.substring(0, 130);
-        } else if (error.request) {
-          // The request was made but no response was received
-          err = error.request;
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          err = error.message;
-        }
-
-        let dat = {
-          name: data.landLord.firstName,
-          failureReason: err
-        }
-        setFailedLandlordUploads(failedLandlordUploads => [dat, ...failedLandlordUploads]);
-        // setFailedLandlordUploads([...failedLandlordUploads, dat]);
-      });
-  };
   return (
     <>
       <div class="page-content">
@@ -204,19 +84,6 @@ function Landlords() {
                   </div>
                 </div>
 
-                {/* <body>
-                  <form id="myForm" className='row card-body'>
-                    <input type="file" id="csvFile" accept=".csv" />
-                    <br />
-                    <input type="button" onClick={submitFile} value="Submit" />
-                  </form>
-                  {failedLandlordUploads.length > 0 && <div className='row'>
-                    <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
-                    <ul>
-                      {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
-                    </ul>
-                  </div>}
-                </body> */}
 
                 <div class="card-body">
                   {/*{error.color !== "" &&*/}
