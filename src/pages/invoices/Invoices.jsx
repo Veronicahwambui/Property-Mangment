@@ -6,7 +6,7 @@ import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
-import { confirmAlert } from "react-confirm-alert";
+import StatusBadge from "../../components/StatusBadge";
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -314,15 +314,7 @@ function Invoices() {
                                 )}
                               </td>
                               <td>
-                                {invoice.paymentStatus === "PENDING" ? (
-                                  <span class="badge-soft-danger badge">
-                                    {invoice.paymentStatus}
-                                  </span>
-                                ) : (
-                                  <span class="badge-soft-success badge">
-                                    {invoice.paymentStatus}
-                                  </span>
-                                )}
+                                <StatusBadge type={invoice?.paymentStatus} />
                               </td>
                               <td>
                                 <div className="d-flex justify-content-end">
@@ -444,6 +436,7 @@ function Invoices() {
           </h5>
         </Modal.Header>
         <Modal.Body>
+          <StatusBadge type={activeInvoice?.transaction?.paymentStatus} />
           <div className="col-12">
             <address>
               <strong>Billed To:</strong>
@@ -479,149 +472,126 @@ function Invoices() {
             </div>
           </div>
           <div className="col-12">
-            <div className="table-responsive">
-              <table className="table table-nowrap">
-                <thead>
-                  <tr>
-                    <th style={{ width: "70px" }}>No.</th>
-                    <th>Item</th>
-                    <th>Quantity</th>
-                    <th>Unit Cost</th>
-                    <th className="text-end">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>01</td>
-                    <td>{activeInvoice?.applicableChargeName}</td>
-                    <td>{formatCurrency.format(activeInvoice.quantity)}</td>
-                    <td>{formatCurrency.format(activeInvoice?.unitCost)}</td>
-                    <td className="text-end">
-                      KES. {formatCurrency.format(activeInvoice?.billAmount)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td colSpan="2" className="text-end">
-                      Total
-                    </td>
-                    <td className="text-end fw-bold">
-                      {formatCurrency.format(activeInvoice?.billAmount)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td colSpan="2" className="text-end">
-                      Paid
-                    </td>
-                    <td className="text-end  fw-bold">
-                      {formatCurrency.format(activeInvoice?.billPaidAmount)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td colSpan="2" className="border-0 text-end">
-                      <strong>Balance</strong>
-                    </td>
-                    <td className="border-0 text-end">
-                      <h5 className="m-0 text-uppercase fw-bold">
-                        {" "}
-                        {formatCurrency.format(
-                          activeInvoice?.billAmount -
-                            activeInvoice?.billPaidAmount
-                        )}
-                      </h5>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <table className="table table-nowrap">
+              <thead>
+                <tr>
+                  <th style={{ width: "70px" }}>No.</th>
+                  <th>Item</th>
+                  <th>Quantity</th>
+                  <th>Unit Cost</th>
+                  <th className="text-end">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>01</td>
+                  <td>{activeInvoice?.applicableChargeName}</td>
+                  <td>{formatCurrency.format(activeInvoice.quantity)}</td>
+                  <td>{formatCurrency.format(activeInvoice?.unitCost)}</td>
+                  <td className="text-end">
+                    KES. {formatCurrency.format(activeInvoice?.billAmount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Total
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency.format(activeInvoice?.billAmount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Paid
+                  </td>
+                  <td className="text-end  fw-bold">
+                    {formatCurrency.format(activeInvoice?.billPaidAmount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="border-0 text-end">
+                    <strong>Balance</strong>
+                  </td>
+                  <td className="border-0 text-end">
+                    <h5 className="m-0 text-uppercase fw-bold">
+                      {" "}
+                      {formatCurrency.format(
+                        activeInvoice?.billAmount -
+                          activeInvoice?.billPaidAmount
+                      )}
+                    </h5>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <div className="col-12">
-            <div className="table-resposive p-4 px-2 pt-2 overflow-visible">
-              <form onSubmit={sendSTK}>
-                <table className="w-100">
-                  <tbody>
-                    <tr data-id="1">
-                      <td>
-                        <label htmlFor="" className="">
-                          Payment Method
-                        </label>
-                        <select
-                          className="form-control"
-                          title="Select payment Method"
-                          disabled={true}
+            <form onSubmit={sendSTK}>
+              <table className="w-100">
+                <tbody>
+                  <tr data-id="1">
+                    <td>
+                      <label htmlFor="" className="">
+                        Payment Method
+                      </label>
+                      <select
+                        className="form-control"
+                        title="Select payment Method"
+                        disabled={true}
+                      >
+                        <option value="Mpesa">MPESA</option>
+                        <option value="Cash">CASH</option>
+                      </select>
+                    </td>
+                    <td className="px-3">
+                      <div className="phone-num">
+                        <label htmlFor="">Phone No.</label>
+                        <input
+                          className="form-control w-100 d-flex"
+                          spellCheck="false"
+                          onChange={(event) =>
+                            setphonenumber(event.target.value)
+                          }
+                          data-ms-editor="true"
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          placeholder="07XXXXXXXX"
+                          pattern="[0]{1}[0-9]{9}"
+                          required={true}
+                        />
+                      </div>
+                    </td>
+                    <td className="text-right float-right">
+                      <div className="d-flex flex-column">
+                        <label className="opacity-0">Something</label>
+                        <button
+                          type="submit"
+                          className="btn btn-primary w-md waves-effect waves-light"
                         >
-                          <option value="Mpesa">MPESA</option>
-                          <option value="Cash">CASH</option>
-                        </select>
-                      </td>
-                      <td className="px-3 ">
-                        <div className="phone-num">
-                          <label htmlFor="">Phone No.</label>
-                          <input
-                            className="form-control w-100 d-flex"
-                            spellCheck="false"
-                            onChange={(event) =>
-                              setphonenumber(event.target.value)
-                            }
-                            data-ms-editor="true"
-                            type="tel"
-                            id="phone"
-                            name="phone"
-                            placeholder="07XXXXXXXX"
-                            pattern="[0]{1}[0-9]{9}"
-                            required={true}
-                          />
-                        </div>
-                      </td>
-                      {/*<td className="px-3">*/}
-                      {/*  <label htmlFor="">Amount To Be Paid</label>*/}
-                      {/*  <input*/}
-                      {/*      type="text "*/}
-                      {/*      className="form-control w-100 d-flex"*/}
-                      {/*      placeholder="KES"*/}
-                      {/*      spellCheck="false"*/}
-                      {/*      data-ms-editor="true"*/}
-                      {/*  />*/}
-                      {/*</td>*/}
-                      <td className="text-right float-right">
-                        <div className="d-flex flex-column">
-                          <label className="opacity-0">Something</label>
-                          <button
-                            type="submit"
-                            className="btn btn-primary w-md waves-effect waves-light"
-                          >
-                            Submit
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <br />
-                {error.color !== "" && (
-                  <div className={"alert alert-" + error.color} role="alert">
-                    {error.message}
-                  </div>
-                )}
-              </form>
-            </div>
+                          Submit
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <br />
+              {error.color !== "" && (
+                <div className={"alert alert-" + error.color} role="alert">
+                  {error.message}
+                </div>
+              )}
+            </form>
           </div>
-          <br />
-          <br />
-          {/*<div className="float-end">*/}
-          {/*  <a href="javascript:window.print()"*/}
-          {/*     className="btn btn-success waves-effect waves-light me-1"><i*/}
-          {/*    className="mdi mdi-printer font-16px"></i></a>*/}
-          {/*  <a href="javascript: void(0);"*/}
-          {/*     className="btn btn-primary w-md waves-effect waves-light">Receive Payment</a>*/}
-          {/*</div>*/}
         </Modal.Footer>
       </Modal>
     </>
