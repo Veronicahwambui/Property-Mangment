@@ -21,5 +21,5 @@ export const axiosInstance = axios.create({
   timeout: 200000,
 });
 
-export const baseUrl = "http://142.93.231.97:8081";
+export const baseUrl = "http://142.93.231.97:8082";
 // export const baseUrl = "http://localhost:8081";

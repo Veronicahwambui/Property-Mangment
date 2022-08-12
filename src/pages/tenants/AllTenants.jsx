@@ -51,7 +51,7 @@ function AllTenants() {
     let data = {
       "dateCreatedEnd": endDate,
       "dateCreatedStart": startDate,
-      "search": searchTerm
+      "search": searchTerm.trim()
     }
 
     requestsServiceService.getAllTenants(page, size, data).then((res) => {

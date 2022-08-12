@@ -42,7 +42,7 @@ function Invoices() {
       endDate: endDate,
       size: size,
       page: page,
-      search: searchTerm?.toLowerCase(),
+      search: searchTerm?.toLowerCase().trim(),
     };
     requestsServiceService.getInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);

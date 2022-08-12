@@ -49,7 +49,7 @@ function Landlords() {
     let data = {
       "dateCreatedEnd": endDate,
       "dateCreatedStart": startDate,
-      "search": searchTerm
+      "search": searchTerm.trim()
 
     }
     requestsServiceService.getLandLords(page, size, data).then((res) => {
@@ -57,7 +57,6 @@ function Landlords() {
       setPage(res.data.page)
       setSize(res.data.size)
       setPageCount(res.data.totalPages)
-      setSearchTerm(" ")
 
     });
   }

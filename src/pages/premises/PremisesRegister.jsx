@@ -51,7 +51,7 @@ function PremisesRegister() {
         let data = {
             "dateCreatedEnd": endDate,
             "dateCreatedStart": startDate,
-            "search": searchTerm
+            "search": searchTerm.trim()
         }
         requestsServiceService.getAllpremises(page, size, data).then((res) => {
             setPremises(res.data.data)

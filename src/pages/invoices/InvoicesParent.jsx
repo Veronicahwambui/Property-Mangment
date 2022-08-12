@@ -58,7 +58,7 @@ function InvoicesParent() {
       endDate: endDate,
       size: size,
       page: page,
-      search: status,
+      search: status.trim(),
     };
     requestsServiceService.getParentInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
