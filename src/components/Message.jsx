@@ -3,11 +3,22 @@ import React, { useState, useEffect } from "react";
 
 export default function Message(props) {
   const [mode, setmode] = useState("Email");
+  const [mes, setmes] = useState(props.contact?.message);
   const [messageBody, setmessageBody] = useState({
-    to: "",
-    message: "",
-    contact: "",
+    attachments: [
+      {
+        code: "string",
+        name: "string",
+        value: "string",
+      },
+    ],
+    to: props.contact?.email,
+    message: props.contact?.message,
     subject: "",
+    templateName: "GREETING",
+    from: "LANDLORD",
+    model: {},
+    portalName: "string",
   });
 
   const handleChange = (e) => {
@@ -23,6 +34,22 @@ export default function Message(props) {
       subject: "",
     });
   };
+
+  useEffect(() => {
+    setmessageBody({
+      ...messageBody,
+      to: props.contact?.email,
+      message: props.contact?.message,
+    });
+    console.log(messageBody);
+  }, [mes, props]);
+  $("body").on("click", ".close-message-maker", function () {
+    setmes("");
+    $(".the-message-maker").removeClass("email-overlay-transform");
+    setTimeout(function () {
+      $(".email-overlay").addClass("d-none");
+    }, 200);
+  });
   return (
     <>
       {/*ADD CONTACTS*/}
@@ -178,36 +205,40 @@ export default function Message(props) {
                   </div>
                 </div>
 
-                <div className="col-12">
-                  <div className="pb-3">
-                    <button
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#upload-contacts"
-                      className="btn btn-success waves-effect btn-label waves-light"
-                    >
-                      <i className="mdi-account-multiple-plus font-16px mdi label-icon"></i>{" "}
-                      Upload Contacts
-                    </button>
-                  </div>
-                </div>
+                {/*<div className="col-12">*/}
+                {/*  <div className="pb-3">*/}
+                {/*    <button*/}
+                {/*      type="button"*/}
+                {/*      data-bs-toggle="modal"*/}
+                {/*      data-bs-target="#upload-contacts"*/}
+                {/*      className="btn btn-success waves-effect btn-label waves-light"*/}
+                {/*    >*/}
+                {/*      <i className="mdi-account-multiple-plus font-16px mdi label-icon"></i>{" "}*/}
+                {/*      Upload Contacts*/}
+                {/*    </button>*/}
+                {/*  </div>*/}
+                {/*</div>*/}
                 {mode === "Email" ? (
                   <>
                     <div className="col-12">
-                      <input
-                        type="text"
-                        placeholder="Subject"
-                        name={"subject"}
-                        value={messageBody.subject}
-                        className="form-control mb-3"
-                        onChange={(e) => handleChange(e)}
-                      />
+                      <br />
+                      <div className="form-group">
+                        <label htmlFor="">Subject</label>"
+                        <input
+                          type="text"
+                          placeholder="Subject"
+                          name={"subject"}
+                          className="form-control mb-3"
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
                     </div>
                   </>
                 ) : (
                   <></>
                 )}
                 <div className="col-12">
+                  <label htmlFor="">Message</label>"
                   <textarea
                     name="message"
                     value={messageBody.message}

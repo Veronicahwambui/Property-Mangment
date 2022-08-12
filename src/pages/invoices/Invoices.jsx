@@ -158,11 +158,39 @@ function Invoices() {
   // MESSAGE TEST
   const [entity, setentity] = useState(null);
   const [entitytype, setentitytype] = useState("COMMON");
-  const [contact, setcontact] = useState("");
+  const [det, setdet] = useState({
+    message: "",
+    email: "",
+  });
+  const handleCallback = (det) => {
+    setdet({
+      ...det,
+      message: det.message,
+      email: det.email,
+    });
+  };
+
+  const handleClicked = (i, n, m, b) => {
+    let mes = `Dear ${n}, your invoice ${i} balance is KES ${b}. Click <a>here</a> to pay for it`;
+    setdet({
+      ...det,
+      message: mes,
+      email: m,
+    });
+    $(".email-overlay").removeClass("d-none");
+    setTimeout(function () {
+      $(".the-message-maker").addClass("email-overlay-transform");
+    }, 0);
+  };
+  useEffect(() => {
+    console.log(det);
+  }, [det]);
 
   return (
     <>
       <div className="page-content">
+        <Message onCallback={handleCallback} contact={det} />
+
         <div className="container-fluid">
           <div className="row">
             <div className="col-12">
@@ -354,12 +382,23 @@ function Invoices() {
                                         <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                         Print
                                       </a>
-                                      <a className="dropdown-item cursor-pointer  dropdown-toggle option-selector write-msg-btn">
+                                      <a
+                                        className="dropdown-item cursor-pointer"
+                                        onClick={() =>
+                                          handleClicked(
+                                            invoice.transactionItemId,
+                                            invoice.transactionCustomerName,
+                                            invoice.transactionCustomerEmail,
+                                            invoice.billAmount -
+                                              invoice.billPaidAmount
+                                          )
+                                        }
+                                      >
                                         <i className="font-size-15 mdi mdi-email me-3 "></i>
                                         Email Tenant
                                       </a>
                                       <a className="dropdown-item ">
-                                        <i className="font-size-15 mdi mdi-chat me-3  dropdown-toggle option-selector write-msg-btn"></i>
+                                        <i className="font-size-15 mdi mdi-chat me-3"></i>
                                         Send as SMS
                                       </a>
                                     </div>
@@ -432,7 +471,6 @@ function Invoices() {
             </div>
           </div>
         </div>
-        <Message entity={entity} entityType={entitytype} contact={contact} />
       </div>
 
       {/*VIEW INVOICE*/}
