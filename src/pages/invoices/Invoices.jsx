@@ -7,6 +7,7 @@ import moment from "moment";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import StatusBadge from "../../components/StatusBadge";
+import Message from "../../components/Message";
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -153,6 +154,11 @@ function Invoices() {
       }, 4000);
     });
   };
+
+  // MESSAGE TEST
+  const [entity, setentity] = useState(null);
+  const [entitytype, setentitytype] = useState("COMMON");
+  const [contact, setcontact] = useState("");
 
   return (
     <>
@@ -344,16 +350,16 @@ function Invoices() {
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
                                       </a>
-                                      <a className="dropdown-item " href="# ">
+                                      <a className="dropdown-item">
                                         <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                         Print
                                       </a>
-                                      <a className="dropdown-item " href="# ">
+                                      <a className="dropdown-item cursor-pointer  dropdown-toggle option-selector write-msg-btn">
                                         <i className="font-size-15 mdi mdi-email me-3 "></i>
                                         Email Tenant
                                       </a>
-                                      <a className="dropdown-item " href="# ">
-                                        <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                      <a className="dropdown-item ">
+                                        <i className="font-size-15 mdi mdi-chat me-3  dropdown-toggle option-selector write-msg-btn"></i>
                                         Send as SMS
                                       </a>
                                     </div>
@@ -426,6 +432,7 @@ function Invoices() {
             </div>
           </div>
         </div>
+        <Message entity={entity} entityType={entitytype} contact={contact} />
       </div>
 
       {/*VIEW INVOICE*/}
