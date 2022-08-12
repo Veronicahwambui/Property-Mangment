@@ -8,6 +8,7 @@ import moment from 'moment';
 
 function Uploads() {
   const [failedLandlordUploads, setFailedLandlordUploads] = useState([])
+  const [activeUpload, setActiveUpload] = useState(1)
 
   const csvToArray = (str, delimiter = ",") => {
     // slice from start of text to the first \n index
@@ -453,7 +454,7 @@ function Uploads() {
       for (let counter = 0; counter < data.length; counter++) {
 
         if (counter <= 3999) continue;
-        else if (counter > 3999 && counter < 5000) {
+        else if (counter > 3999 && counter < 4900) {
           if (data[counter]["property id"] != "") {
             let dara = {
               active: true,
@@ -510,7 +511,7 @@ function Uploads() {
   }
 
 
-  const handleLeaseSubmitting = (data,index) => {
+  const handleLeaseSubmitting = (data, index) => {
 
     requestsServiceService.createTenancies(data).then((res) => {
       if (res.data.status === true) {
@@ -519,7 +520,7 @@ function Uploads() {
       } else {
         let dat = {
           name: data.unitName,
-          failureReason: res.data.message +" at index " + index
+          failureReason: res.data.message + " at index " + index
         }
 
         setFailedLandlordUploads(failedLandlordUploads => [dat, ...failedLandlordUploads]);
@@ -540,7 +541,7 @@ function Uploads() {
 
         let failures = failedLandlordUploads;
         let dat = {
-          name: data.unitName +" at index " + index,
+          name: data.unitName + " at index " + index,
           failureReason: err
         }
         failures.push(dat);
@@ -549,36 +550,35 @@ function Uploads() {
   };
 
 
-  $("#spinner").addClass("d-none")
-  
+
   return (
     <>
-      <div class="page-content">
-        <div class="container-fluid">
+      <div className="page-content">
+        <div className="container-fluid">
           {/* <!-- Loader --> */}
-          <div id="spinner">
+          {/* <div id="spinner">
             <div id="status">
-              <div class="spinner-chase">
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
+              <div className="spinner-chase">
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-12">
-              <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Data Management</h4>
+          </div> */}
+          <div className="row">
+            <div className="col-12">
+              <div className="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 className="mb-sm-0 font-size-18">Data Management</h4>
 
-                <div class="page-title-right">
-                  <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item">
+                <div className="page-title-right">
+                  <ol className="breadcrumb m-0">
+                    <li className="breadcrumb-item">
                       <Link to='/'>Uploads </Link>
                     </li>
-                    <li class="breadcrumb-item active">Uploads</li>
+                    <li className="breadcrumb-item active">Uploads</li>
                   </ol>
                 </div>
 
@@ -586,14 +586,37 @@ function Uploads() {
             </div>
           </div>
           {/* <!-- end page title --> */}
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
+          <div className="row">
+
+
+
+
+            <div className="col-12">
+
+
+              <div className="mb-3">
+                <label className="form-label">Upload type</label>
+                <select
+                value={activeUpload }
+                  onChange={(e) => setActiveUpload(parseInt(e.target.value))}
+                  className="form-control"
+                >
+                  <option value="1">Landlords</option>
+                  <option value="2">Premises</option>
+                  <option value="3">Tenants</option>
+                  <option value="4">Units</option>
+                  <option value="5">Leases</option>
+                </select>
+              </div>
+            </div>
+
+            {activeUpload == 1 && <div className="col-12">
+              <div className="card">
 
                 <h3>Landlords Upload</h3>
 
-                <div class="card-body">
-                  <body>
+                <div className="card-body">
+                  <section>
                     <form id="myForm" className='row card-body'>
                       <input type="file" id="csvFile" accept=".csv" />
                       <br />
@@ -605,152 +628,130 @@ function Uploads() {
                         {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
                       </ul>
                     </div>}
-                  </body>
+                  </section>
 
                 </div>
               </div>
             </div>
+            }
 
 
 
+            {activeUpload == 2 &&
+              <div className="col-12">
+                <div className="card">
 
+                  <h3>Premise Upload</h3>
 
-            <div class="col-12">
-              <div class="card">
+                  <div className="card-body">
+                    <section>
+                      <form id="myForm" className='row card-body'>
+                        <input type="file" id="csvFile" accept=".csv" />
+                        <br />
+                        <input type="button" onClick={submitPremiseFile} value="Submit" />
+                      </form>
+                      {failedLandlordUploads.length > 0 && <div className='row'>
+                        <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
+                        <ul>
+                          {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
+                        </ul>
+                      </div>}
+                    </section>
 
-                <h3>Premise Upload</h3>
-
-                <div class="card-body">
-                  <body>
-                    <form id="myForm" className='row card-body'>
-                      <input type="file" id="csvFile" accept=".csv" />
-                      <br />
-                      <input type="button" onClick={submitPremiseFile} value="Submit" />
-                    </form>
-                    {failedLandlordUploads.length > 0 && <div className='row'>
-                      <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
-                      <ul>
-                        {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
-                      </ul>
-                    </div>}
-                  </body>
-
+                  </div>
                 </div>
               </div>
-            </div>
+
+            }
 
 
+            {activeUpload == 3 &&
+              <div className="col-12">
+                <div className="card">
 
+                  <h3>Tenants Upload</h3>
 
+                  <div className="card-body">
+                    <section>
+                      <form id="myForm" className='row card-body'>
+                        <input type="file" id="csvFile" accept=".csv" />
+                        <br />
+                        <input type="button" onClick={submitTenantFile} value="Submit" />
+                      </form>
+                      {failedLandlordUploads.length > 0 && <div className='row'>
+                        <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
+                        <ul>
+                          {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
+                        </ul>
+                      </div>}
+                    </section>
 
-            <div class="col-12">
-              <div class="card">
-
-                <h3>Tenants Upload</h3>
-
-                <div class="card-body">
-                  <body>
-                    <form id="myForm" className='row card-body'>
-                      <input type="file" id="csvFile" accept=".csv" />
-                      <br />
-                      <input type="button" onClick={submitTenantFile} value="Submit" />
-                    </form>
-                    {failedLandlordUploads.length > 0 && <div className='row'>
-                      <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
-                      <ul>
-                        {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
-                      </ul>
-                    </div>}
-                  </body>
-
+                  </div>
                 </div>
               </div>
-            </div>
 
+            }
 
+            {activeUpload == 4 &&
 
+              <div className="col-12">
+                <div className="card">
 
+                  <h3>Units Upload</h3>
 
-            <div class="col-12">
-              <div class="card">
+                  <div className="card-body">
+                    <section>
+                      <form id="myForm" className='row card-body'>
+                        <input type="file" id="csvFile" accept=".csv" />
+                        <br />
+                        <input type="button" onClick={submitUnitFile} value="Submit" />
+                      </form>
+                      {failedLandlordUploads.length > 0 && <div className='row'>
+                        <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
+                        <ul>
+                          {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
+                        </ul>
+                      </div>}
+                    </section>
 
-                <h3>Units Upload</h3>
-
-                <div class="card-body">
-                  <body>
-                    <form id="myForm" className='row card-body'>
-                      <input type="file" id="csvFile" accept=".csv" />
-                      <br />
-                      <input type="button" onClick={submitUnitFile} value="Submit" />
-                    </form>
-                    {failedLandlordUploads.length > 0 && <div className='row'>
-                      <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
-                      <ul>
-                        {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
-                      </ul>
-                    </div>}
-                  </body>
-
+                  </div>
                 </div>
               </div>
-            </div>
 
 
+            }
 
 
+            {activeUpload == 5 &&
+              <div className="col-12">
+                <div className="card">
 
+                  <h3>Leases Upload</h3>
 
-            <div class="col-12">
-              <div class="card">
+                  <div className="card-body">
+                    <section>
+                      <form id="myForm" className='row card-body'>
+                        <input type="file" id="csvFile" accept=".csv" />
+                        <br />
+                        <input type="button" onClick={submitLeaseFile} value="Submit" />
+                      </form>
+                      {failedLandlordUploads.length > 0 && <div className='row'>
+                        <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
+                        <ul>
+                          {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
+                        </ul>
+                      </div>}
+                    </section>
 
-                <h3>Leases Upload</h3>
-
-                <div class="card-body">
-                  <body>
-                    <form id="myForm" className='row card-body'>
-                      <input type="file" id="csvFile" accept=".csv" />
-                      <br />
-                      <input type="button" onClick={submitLeaseFile} value="Submit" />
-                    </form>
-                    {failedLandlordUploads.length > 0 && <div className='row'>
-                      <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
-                      <ul>
-                        {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
-                      </ul>
-                    </div>}
-                  </body>
-
+                  </div>
                 </div>
               </div>
-            </div>
+
+
+            }
 
 
 
-
-
-            <div class="col-12">
-              <div class="card">
-
-                <h3>Landlords Upload</h3>
-
-                <div class="card-body">
-                  <body>
-                    <form id="myForm" className='row card-body'>
-                      <input type="file" id="csvFile" accept=".csv" />
-                      <br />
-                      <input type="button" onClick={submitLandlordsFile} value="Submit" />
-                    </form>
-                    {failedLandlordUploads.length > 0 && <div className='row'>
-                      <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
-                      <ul>
-                        {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
-                      </ul>
-                    </div>}
-                  </body>
-
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
