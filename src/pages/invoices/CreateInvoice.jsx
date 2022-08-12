@@ -27,6 +27,10 @@ function CreateInvoice() {
   });
   const navigate = useNavigate();
 
+  setTimeout(function() {
+    $("#subscribeModal").modal("show")
+}, 0);
+
   useEffect(() => {
     getTenants();
     requestsServiceService.allApplicableCharges().then((res) => {
@@ -135,6 +139,180 @@ function CreateInvoice() {
   return (
     <>
       <div>
+      {/* the tenant modal */}
+      <div className="modal fade" id="subscribeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div className="modal-dialog modal-dialog-centered modal-lg">
+        <div className="modal-content">
+            <div className="modal-header border-bottom-0 d-none">
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body ">
+                <div className="text-center mb-4 pt-2">
+                    <div className="avatar-md mx-auto mb-4 ">
+                        <div className="avatar-title bg-light rounded-circle text-primary h1 ">
+                            <i className="mdi mdi-account-details "></i>
+                        </div>
+                    </div>
+
+                    <div className="row justify-content-center ">
+                        <div className="col-xl-10 ">
+                            <h4 className="text-primary ">Search for Tenant</h4>
+                            <p className="text-muted font-size-14 mb-4 ">
+                              Search for the tenant and procede with creating the invoice                           
+                            </p>
+
+                            <form>
+                                <div className="row text-capitalize">
+                                    <div className="col-12">
+                                        <div className="mb-3 ">
+                                            <label for="digit1-input " className="visually-hidden ">First Name.</label>
+                                            <input type="text " className="form-control form-control-lg  text-center two-step " placeholder="Enter first Name"/>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-12">
+                                        <div className="mb-3 ">
+                                            <label for="digit1-input " className="visually-hidden ">Other Names.</label>
+                                            <input type="text " className="form-control form-control-lg  text-center two-step " placeholder="Enter the other names"/>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <button className="btn btn-primary btn-block mt-3 text-center w-100 d-flex  align-items-center justify-content-center">
+                                    <i className="mdi mdi-account-search font-size-20 align-middle me-2 "></i>
+                                    Search
+                                </button>
+
+
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="modal-body d-none">
+            <h4 className="pb-4 pt-2">Seacrh Results</h4>
+            <table className="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
+              <thead className="table-light">
+                  <tr>
+
+                      <th width="8px" scope="col">
+                          
+                      </th>
+                      <th scope="col">#</th>
+                      <th scope="col">Tenant</th>
+                      <th scope="col">Premises</th>
+                      <th scope="col">Hse/Unit No.</th>           
+                  </tr>
+              </thead>
+                <tbody>
+                    <tr>
+
+                      <td>
+                          <div className="d-flex  align-items-center">
+                              <div className="the-mail-checkbox pr-4">
+                                  <input className="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
+                              </div>
+
+                          </div>
+                      </td>
+                      <td className="text-capitalize">1</td>
+                      <td className="text-capitalize">
+                          <a href="property-details.html" title="View Details">Kelvin Thuku</a>
+                      </td>
+                      <td>
+                          <h5 className="font-size-14 mb-1"><a href="landlord-details.html" className="text-dark">Mania Apartments</a></h5>
+
+                      </td>
+                      <td>
+                          410
+                      </td>
+                      
+                      
+                    </tr>
+                    <tr>
+
+                      <td>
+                          <div className="d-flex  align-items-center">
+                              <div className="the-mail-checkbox pr-4">
+                                  <input className="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
+                              </div>
+
+                          </div>
+                      </td>
+                      <td className="text-capitalize">2</td>
+                      <td className="text-capitalize">
+                          <a href="property-details.html" title="View Details">Kelvin Thuku</a>
+                      </td>
+                      <td>
+                          <h5 className="font-size-14 mb-1"><a href="landlord-details.html" className="text-dark">Mania Apartments</a></h5>
+
+                      </td>
+                      <td>
+                          410
+                      </td>
+                      
+                      
+                    </tr>
+                    <tr>
+
+                      <td>
+                          <div className="d-flex  align-items-center">
+                              <div className="the-mail-checkbox pr-4">
+                                  <input className="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
+                              </div>
+
+                          </div>
+                      </td>
+                      <td className="text-capitalize">3</td>
+                      <td className="text-capitalize">
+                          <a href="property-details.html" title="View Details">Kelvin Thuku</a>
+                      </td>
+                      <td>
+                          <h5 className="font-size-14 mb-1"><a href="landlord-details.html" className="text-dark">Mania Apartments</a></h5>
+
+                      </td>
+                      <td>
+                          410
+                      </td>
+                      
+                      
+                    </tr>
+                    <tr>
+
+                      <td>
+                          <div className="d-flex  align-items-center">
+                              <div className="the-mail-checkbox pr-4">
+                                  <input className="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
+                              </div>
+
+                          </div>
+                      </td>
+                      <td className="text-capitalize">4</td>
+                      <td className="text-capitalize">
+                          <a href="property-details.html" title="View Details">Kelvin Thuku</a>
+                      </td>
+                      <td>
+                          <h5 className="font-size-14 mb-1"><a href="landlord-details.html" className="text-dark">Mania Apartments</a></h5>
+
+                      </td>
+                      <td>
+                          410
+                      </td>
+                      
+                      
+                    </tr>
+                </tbody>
+                </table>
+                <div className="col-12 d-flex justify-content-end">
+                  <button className="btn btn-primary">Continue</button>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
         <div className="page-content">
           <div className="container-fluid">
             <div className="row">
