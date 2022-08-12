@@ -35,8 +35,14 @@ function PremisesRegister() {
     }
 
     const handlePageClick = (data) => {
-        setPage(() => data.selected);
+        setPage( () =>  data.selected );
     };
+
+    const handleRangeChange = (e)=> { 
+        setSize(e.target.value);
+        setPageCount(0);
+        setPage(0)
+       }
 
     const fetchAll = () => {
 
@@ -151,7 +157,7 @@ function PremisesRegister() {
 
                             </div>
                             <div className="col-12 d-flex justify-content-between align-items-center">
-                                <select className="btn btn-md btn-primary" title="Select A range" onChange={(e) => setSize(e.target.value)}>
+                                <select className="btn btn-md btn-primary" title="Select A range" onChange={(e) => handleRangeChange(e)}>
                                     <option className="bs-title-option" value="">Select A range</option>
                                     <option value="5">10 Rows</option>
                                     <option value="30">30 Rows</option>
@@ -304,11 +310,8 @@ function PremisesRegister() {
                                                     nextClassName="page-item"
                                                     nextLinkClassName="page-link"
                                                     activeClassName="active"
-                                                    onPageChange={() => handlePageClick}
-                                                    hrefBuilder={(page, pageCount, selected) =>
-                                                        page >= 1 && page <= pageCount ? `/page/${page}` : '#'
-                                                    }
-                                                    hrefAllControls
+                                                    onPageChange={(data) => handlePageClick(data) }
+                                                 
                                                 />
                                             </nav>
                                         )}
