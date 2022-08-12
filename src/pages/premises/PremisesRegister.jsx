@@ -49,8 +49,8 @@ function PremisesRegister() {
     const fetchAll = () => {
 
         let data = {
-            "dateCreatedEnd": endDate,
-            "dateCreatedStart": startDate,
+            "dateCreatedEnd": moment(endDate).format("YYYY-MM-DD"),
+            "dateCreatedStart": moment(startDate).format("YYYY-MM-DD"),
             "search": searchTerm.trim()
         }
         requestsServiceService.getAllpremises(page, size, data).then((res) => {
@@ -58,7 +58,7 @@ function PremisesRegister() {
             setPage(res.data.page)
             setSize(res.data.size)
             setPageCount(res.data.totalPages)
-            setSearchTerm(" ")
+            // setSearchTerm(" ")
 
         })
     }

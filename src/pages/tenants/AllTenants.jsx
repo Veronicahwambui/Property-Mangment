@@ -59,7 +59,7 @@ function AllTenants() {
       setPage(res.data.page)
       setSize(res.data.size)
       setPageCount(res.data.totalPages)
-      setSearchTerm(" ")
+      // setSearchTerm(" ")
     })
   }
 
