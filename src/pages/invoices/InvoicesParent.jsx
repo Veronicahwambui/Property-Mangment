@@ -5,6 +5,7 @@ import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
+import StatusBadge from "../../components/StatusBadge";
 
 function InvoicesParent() {
   const [invoices, setinvoices] = useState([]);
@@ -268,15 +269,7 @@ function InvoicesParent() {
                                 )}
                               </td>
                               <td>
-                                {invoice.paymentStatus === "PENDING" ? (
-                                  <span className="badge-soft-danger badge">
-                                    {invoice.paymentStatus}
-                                  </span>
-                                ) : (
-                                  <span className="badge-soft-success badge">
-                                    {invoice.paymentStatus}
-                                  </span>
-                                )}
+                                <StatusBadge type={invoice?.paymentStatus} />
                               </td>
                               <td>
                                 <div className="d-flex justify-content-end">
@@ -391,17 +384,7 @@ function InvoicesParent() {
           </h5>
         </Modal.Header>
         <Modal.Body>
-          <span className="text-end">
-            {transaction?.paymentStatus === "PENDING" ? (
-              <span className="badge-soft-danger badge">
-                {transaction?.paymentStatus}
-              </span>
-            ) : (
-              <span className="badge-soft-success badge">
-                {transaction?.paymentStatus}
-              </span>
-            )}
-          </span>
+          <StatusBadge type={transaction?.paymentStatus} />
           <div className="col-12">
             <address>
               <strong>Billed To:</strong>

@@ -6,7 +6,7 @@ import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
-import { confirmAlert } from "react-confirm-alert";
+import StatusBadge from "../../components/StatusBadge";
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -314,15 +314,7 @@ function Invoices() {
                                 )}
                               </td>
                               <td>
-                                {invoice.paymentStatus === "PENDING" ? (
-                                  <span class="badge-soft-danger badge">
-                                    {invoice.paymentStatus}
-                                  </span>
-                                ) : (
-                                  <span class="badge-soft-success badge">
-                                    {invoice.paymentStatus}
-                                  </span>
-                                )}
+                                <StatusBadge type={invoice?.paymentStatus} />
                               </td>
                               <td>
                                 <div className="d-flex justify-content-end">
@@ -444,6 +436,7 @@ function Invoices() {
           </h5>
         </Modal.Header>
         <Modal.Body>
+          <StatusBadge type={activeInvoice?.transaction?.paymentStatus} />
           <div className="col-12">
             <address>
               <strong>Billed To:</strong>
