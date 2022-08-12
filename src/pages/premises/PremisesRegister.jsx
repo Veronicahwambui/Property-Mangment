@@ -76,9 +76,11 @@ function PremisesRegister() {
 
                 let data1 = {
                     "active": true,
-                    "address": undefined,
+                    "address": data[counter]["postal_address"],
+                    "town": data[counter]["Town"],
+                    "country": data[counter]["Country"],
                     "estateId": 1,
-                    "fileNumber": data[counter]["RC No"] + data[counter]["Property No"],
+                    "fileNumber": data[counter]["RC No"]+data[counter]["Property No"],
                     "id": undefined,
                     "landLordId": [],
                     "landlordFileNumber": [],
@@ -87,7 +89,16 @@ function PremisesRegister() {
                     "premiseTypeId": 1,
                     "premiseUseTypeId": 1,
                     "unitVacancyRestrictionStatus": "CLOSED",
-                    "chargeFrequencyName": "MONTH"
+                    "chargeFrequencyName": "MONTH",
+                    "premiseLandLord": [{
+                        "active": true,
+                        "agreementPeriod": 12,
+                        "id": undefined,
+                        "landLordAgreementTypeId": 1,
+                        "landLordId": data[counter]["landlord id"],
+                        "premiseId": undefined,
+                        "remunerationPercentage": parseFloat(data[counter]["pcommission"])
+                    }]
                 };
 
 
@@ -99,14 +110,15 @@ function PremisesRegister() {
                     "premiseUnits": []
                 };
                 newData.push(dara);
-                handleSubmitting(dara);
+                // if (newData.length == 1)
+                    handleSubmitting(dara);
             }
             console.log(newData.length);
+            console.log(newData);
 
         };
 
         console.log(csvToArray(reader.readAsText(input), ";"));
-
 
     }
 
@@ -117,7 +129,7 @@ function PremisesRegister() {
             .then((res) => {
                 if (res.data.status === true) {
 
-                    fetchAll();
+                    // fetchAll();
                 } else {
                     let dat = {
                         name: data.premise.premiseName,
@@ -196,7 +208,7 @@ function PremisesRegister() {
                     <div className='row'>
                         <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
                         <ul>
-                            {failedLandlordUploads.map((failed, index) => <>{index < 5 && <li className='danger-alert'> {failed.name + " => " + failed.failureReason}</li>}</>)}
+                            {failedLandlordUploads.map((failed, index) => <>{<li className='alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>}</>)}
                         </ul>
                     </div>
                 </body>

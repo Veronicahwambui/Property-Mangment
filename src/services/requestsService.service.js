@@ -781,11 +781,11 @@ class RequestsService {
     return communicationService.get(communicationBaseUrl + "/comm/templates/" + clientId)
   }
   getSMS(page, size, type,client) {
-    return communicationService.get(communicationBaseUrl + "/comm/v1/sms?page=" + page + "&size=" + size + "&type=" + type)
+    return communicationService.get(communicationBaseUrl + "/comm/v1/sms?page=" + page + "&size=" + size + "&type=" + type+"&client="+client)
   }
 
-  getEmails(page, size, type) {
-    return communicationService.get(communicationBaseUrl + "/comm/v1/emails?page=" + page + "&size=" + size + "&type=" + type)
+  getEmails(page, size, type, client) {
+    return communicationService.get(communicationBaseUrl + "/comm/v1/emails?page=" + page + "&size=" + size + "&type=" + type+"&client="+client)
   }
 
   utilize(data) {

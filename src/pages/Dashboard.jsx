@@ -346,6 +346,10 @@ function Dashboard() {
         }
     }
 
+    let formatCurrency = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "KES",
+      });
 
 
     return (
@@ -550,7 +554,7 @@ function Dashboard() {
                                                         </div>
                                                     </div>
                                                     <div class="text-muted mt-4">
-                                                        <h4>KES {item.value}<i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
+                                                        <h4>{formatCurrency.format(item.value)}<i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
                                                         <div class="d-flex">
                                                             <span class="text-truncate text-capitalize">From {item.count} {item.item?.toLowerCase()?.replace(/-/g, " ")} Invoices</span>
                                                         </div>
@@ -644,7 +648,7 @@ function Dashboard() {
                                                     <div class="col-4">
                                                         <div class="mt-4 text-left">
                                                             <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle me-1" style={{color: "" + colors[index] + "" }}></i>{item.item}</p>
-                                                            <h5>KES {item.value}</h5>
+                                                            <h5>{formatCurrency.format(item.value)}</h5>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -682,7 +686,7 @@ function Dashboard() {
                                             <div class="">
                                                 <div class="mt-4 text-left">
                                                     <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle me-1 " style={{color: "" + colors[index] + "" }}></i>{item.item}</p>
-                                                    <h5>KES {item.value}</h5>
+                                                    <h5>{formatCurrency.format(item.value)}</h5>
                                                 </div>
                                             </div>
                                         ))}
@@ -716,7 +720,7 @@ function Dashboard() {
                                         {radioBarData2?.map((item,index) => (
                                             <div>
                                                 <p class="mb-2 text-capitalize"><i class="mdi mdi-circle align-middle font-size-10 me-2 " style={{color: "" + colors[index] + "" }}></i> {item.item}</p>
-                                                <h5>KES {item.value} <br /><span class="text-muted font-size-12 d-none"> Contacts</span></h5>
+                                                <h5>{formatCurrency.format(item.value)} <br /><span class="text-muted font-size-12 d-none"> Contacts</span></h5>
                                             </div>
                                         ))}
 
@@ -740,7 +744,7 @@ function Dashboard() {
                                                 <tr>
                                                     <td>
                                                         <h5 class="font-size-14 mb-1">{item.item}</h5>
-                                                        <p class="text-muted mb-0">KES {item.value}</p>
+                                                        <p class="text-muted mb-0">{formatCurrency.format(item.value)}</p>
                                                     </td>
 
                                                     <td>

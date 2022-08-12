@@ -71,64 +71,68 @@ function AllTenants() {
     reader.onload = function (e) {
       const text = e.target.result;
 
-      let data = csvToArray(text, ";");
+      let data = csvToArray(text, ",");
       console.log(data);
       let newData = [];
       for (let counter = 0; counter < data.length; counter++) {
 
-        let data1 = {
-          active: true,
-          clientId: parseInt(authService.getClientId()),
-          companyAddress: undefined,
-          companyDateOfRegistration: undefined,
-          companyIncorporationNumber: undefined,
-          companyName: undefined,
-          dob: undefined,
-          email: undefined,
-          firstName: data[counter]["first name"],
-          gender: undefined,
-          id: undefined,
-          idNumber: undefined,
-          lastName: data[counter]["last name"],
-          maritalStatus: undefined,
-          nationality: undefined,
-          occupation: undefined,
-          otherName: data[counter]["middle name"],
-          phoneNumber: undefined,
-          tenantTypeName: "INDIVIDUAL",
-        };
+        if (counter <= 5999) continue;
+        else if (counter > 5999 && counter < 7000) {
+          let data1 = {
+            active: true,
+            clientId: parseInt(authService.getClientId()),
+            companyAddress: undefined,
+            companyDateOfRegistration: undefined,
+            companyIncorporationNumber: undefined,
+            companyName: undefined,
+            dob: undefined,
+            email: undefined,
+            firstName: data[counter]["First name"],
+            gender: undefined,
+            id: undefined,
+            idNumber: undefined,
+            lastName: data[counter]["last name"],
+            maritalStatus: undefined,
+            nationality: undefined,
+            occupation: undefined,
+            otherName: data[counter]["middle name"],
+            phoneNumber: undefined,
+            tenantTypeName: "INDIVIDUAL",
+          };
 
 
-        let dara = {
-          "tenancyDTOS": [],
-          "tenantContactPersons": [],
-          "tenantDTO": data1,
-          "tenantDocuments": []
-        };
-        newData.push(dara);
-
-        handleSubmitting(dara);
+          let dara = {
+            "tenancyDTOS": [],
+            "tenantContactPersons": [],
+            "tenantDTO": data1,
+            "tenantDocuments": []
+          };
+          newData.push(dara);
+          handleSubmitting(dara, counter);
+        }
+        else break;
       }
       console.log(newData.length);
+      console.log(newData);
 
     };
 
-    console.log(csvToArray(reader.readAsText(input), ";"));
+    console.log(csvToArray(reader.readAsText(input), ","));
 
 
   }
 
 
-  const handleSubmitting = (data) => {
+  const handleSubmitting = (data, index) => {
     requestsServiceService.createTenant(data)
       .then((res) => {
         if (res.data.status === true) {
 
-          fetchAll();
+          // fetchAll();
         } else {
           let dat = {
             name: data.tenantDTO.firstName,
-            failureReason: res.data.message
+            failureReason: res.data.message + " at index " + index
           }
           setFailedLandlordUploads(failedLandlordUploads => [dat, ...failedLandlordUploads]);
         }

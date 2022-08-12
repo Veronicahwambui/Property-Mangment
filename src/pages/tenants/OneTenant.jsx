@@ -7,7 +7,7 @@ import authService from "../../services/auth.service";
 import { Link } from "react-router-dom";
 import moment from 'moment'
 import { Modal, Button } from "react-bootstrap";
-import { baseUrl} from "../../services/API";
+import { baseUrl } from "../../services/API";
 import AuthService from "../../services/auth.service";
 
 
@@ -15,6 +15,8 @@ import AuthService from "../../services/auth.service";
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
   const [tenantData, setTenantData] = useState({});
+
+  const [failedLandlordUploads, setFailedLandlordUploads] = useState([]);
 
   const [tenantId, setTenantId] = useState("");
   const [contactPerson, setContactPerson] = useState([]);
@@ -114,7 +116,7 @@ function OneTenant() {
   const [premiseUnitId, setPremiseUnitId] = useState("");
   const [tenantStatuses, setTenantStatuses] = useState([])
   const [unitId, setUnitId] = useState("");
-  const[endReason,setEndReason]=useState("")
+  const [endReason, setEndReason] = useState("")
 
   //edit ContactPersons
 
@@ -139,9 +141,9 @@ function OneTenant() {
 
   //communication
 
- const[ communication, setCommunication]=useState([])
-//  const [typeMes, setTypeMes] = useState("TENANT");
- const[message,setMessage]=useState([]);
+  const [communication, setCommunication] = useState([])
+  //  const [typeMes, setTypeMes] = useState("TENANT");
+  const [message, setMessage] = useState([]);
 
 
   const fetchAll = () => {
@@ -484,7 +486,7 @@ function OneTenant() {
   const getDocument = () => {
     requestsServiceService.fetchDocuments("TENANT", id).then((res) => {
       setTenantDocs(res.data.data)
-     
+
 
     }
     )
@@ -513,7 +515,7 @@ function OneTenant() {
 
 
   const deleteDeactivate = () => {
-    requestsServiceService.deactivateTenancies(id,endReason).then((res) => {
+    requestsServiceService.deactivateTenancies(id, endReason).then((res) => {
       console.log(res.data)
       fetchAll()
 
@@ -534,7 +536,7 @@ function OneTenant() {
 
 
       setTimeout(() => {
-        clearTenant ()
+        clearTenant()
       }, 3000)
     }).catch((res) => {
 
@@ -545,7 +547,7 @@ function OneTenant() {
       })
 
       setTimeout(() => {
-        clearTenant ()
+        clearTenant()
       }, 3000)
 
 
@@ -559,9 +561,9 @@ function OneTenant() {
       color: ""
 
     })
-    
 
-};
+
+  };
 
   // const vacantTenant =(premiseId)=>{
   //   requestsServiceService.findVacatPremise(premiseId).then(()=>{
@@ -574,16 +576,16 @@ function OneTenant() {
 
   //communication
 
-let clientId=AuthService.getClientId()
+  let clientId = AuthService.getClientId()
 
-   const fetchCommunication=()=>{
-   
-    requestsServiceService.getEntityCommunication(userId,0,5,"TENANT",clientId).then((res)=>{
+  const fetchCommunication = () => {
+
+    requestsServiceService.getEntityCommunication(userId, 0, 5, "TENANT", clientId).then((res) => {
       setCommunication(res.data.data)
 
     })
 
-   }
+  }
 
 
 
@@ -597,6 +599,149 @@ let clientId=AuthService.getClientId()
   }
   $(document).on("change", ".date2", date2)
   $(document).on("change", ".date3", date3)
+
+
+
+  const csvToArray = (str, delimiter = ",") => {
+    // slice from start of text to the first \n index
+    // use split to create an array from string by delimiter
+    const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+
+    // slice from \n index + 1 to the end of the text
+    // use split to create an array of each csv value row
+    const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+
+    // Map the rows
+    // split values from each row into an array
+    // use headers.reduce to create an object
+    // object properties derived from headers:values
+    // the object passed as an element of the array
+    const arr = rows.map(function (row) {
+      const values = row.split(delimiter);
+      const el = headers.reduce(function (object, header, index) {
+        object[header] = values[index];
+        return object;
+      }, {});
+      return el;
+    });
+
+    // return the array
+    return arr;
+  }
+
+  const submitFile = (e) => {
+    e.preventDefault();
+    console.log("JSON.stringify(failedLandlordUploads)");
+    console.log(JSON.stringify(failedLandlordUploads));
+
+    const csvFile = document.getElementById("csvFile");
+
+    const input = csvFile.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const text = e.target.result;
+
+      let data = csvToArray(text, ",");
+      console.log(data);
+      let newData = [];
+      for (let counter = 0; counter < data.length; counter++) {
+
+        if (counter <= 3999) continue;
+        else if (counter > 3999 && counter < 5000) {
+          if (data[counter]["property id"] != "") {
+            let dara = {
+              active: true,
+              premiseUnitId: parseInt(data[counter]["New Unit ID"]),
+              startDate: moment(data[counter]["date_occupied"]).format("YYYY-MM-DD"),
+              tenancyCharges: [{
+                active: true,
+                premiseUnitTypeChargeId: null,
+                applicableChargeId: 1,
+                chargeConstraintName: "ZERO_BALANCE",
+                constraintChargeId: null,
+                id: null,
+                invoiceDay: 1,
+                rateCharge: false,
+                unitCost: parseFloat(data[counter]["monthly rent"]),
+                value: parseFloat(data[counter]["monthly rent"])
+              }],
+              oldTenantId: parseInt(data[counter]["old tenant id"]),
+              oldUnitId: parseInt(data[counter]["old unitid"]),
+              tenancyDocuments: [],
+              tenancyRenewalDate: moment(new Date()).add(1, 'years').format("YYYY-MM-DD"),
+              tenancyRenewalNotificationDate: moment(new Date()).add(9, 'months').format("YYYY-MM-DD"),
+              tenancyStatusName: "CURRENT",
+              tenantId: parseInt(data[counter]["New tenant ID"]),
+              unitCondition: "Great"
+            };
+
+
+            newData.push(dara);
+
+            // if (newData.length == 1)
+            if (dara.startDate != "Invalid date")
+              handleSubmitting(dara, counter);
+            else {
+              let dat = {
+                name: "Invalid date erroor at index " + counter,
+                failureReason: "NEW unit id => " + parseInt(data[counter]["New Unit ID"]) + " cound not be created due to invalid start date",
+              }
+
+              setFailedLandlordUploads(failedLandlordUploads => [dat, ...failedLandlordUploads]);
+            }
+          }
+        }
+        else break;
+      }
+      console.log(newData.length);
+      console.log(newData);
+
+    };
+
+    console.log(csvToArray(reader.readAsText(input), ";"));
+
+
+  }
+
+
+  const handleSubmitting = (data,index) => {
+
+    requestsServiceService.createTenancies(data).then((res) => {
+      if (res.data.status === true) {
+
+        // fetchAll();
+      } else {
+        let dat = {
+          name: data.unitName,
+          failureReason: res.data.message +" at index " + index
+        }
+
+        setFailedLandlordUploads(failedLandlordUploads => [dat, ...failedLandlordUploads]);
+      }
+    })
+      .catch((error) => {
+
+        let err = "";
+        if (error.response) {
+          err = error.response.data.message.substring(0, 130);
+        } else if (error.request) {
+          // The request was made but no response was received
+          err = error.request;
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          err = error.message;
+        }
+
+        let failures = failedLandlordUploads;
+        let dat = {
+          name: data.unitName +" at index " + index,
+          failureReason: err
+        }
+        failures.push(dat);
+        setFailedLandlordUploads(failures);
+      });
+  };
 
 
   return (
@@ -924,6 +1069,23 @@ let clientId=AuthService.getClientId()
 
                         <div>
                           <div className="card-body">
+
+                            <body>
+                              <form id="myForm" className='row card-body'>
+                                <input type="file" id="csvFile" accept=".csv" />
+                                <br />
+                                <input type="button" onClick={submitFile} value="Submit" />
+                              </form>
+                              <div className='row'>
+                                <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
+                                <ul>
+                                  {failedLandlordUploads.map((failed, index) => <> <li className='alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li></>)}
+                                </ul>
+                              </div>
+                            </body>
+
+
+
                             {error.color !== "" &&
                               <div className={"alert alert-" + error.color} role="alert">
                                 {error.message}
@@ -958,7 +1120,7 @@ let clientId=AuthService.getClientId()
                                           {unit.premiseUnit.unitType.name}
                                         </td>
                                         <td>
-                                          {moment(unit.startDate&& unit.startDate.replace(/[TZ]/g, " ")).format("DD /MM /YYYY")}
+                                          {moment(unit.startDate && unit.startDate.replace(/[TZ]/g, " ")).format("DD /MM /YYYY")}
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
@@ -967,14 +1129,14 @@ let clientId=AuthService.getClientId()
 
                                           }</span>
                                         </td>
-                                        <td>{unit.tenancyRenewalDate&&moment(unit.tenancyRenewalDate).format
+                                        <td>{unit.tenancyRenewalDate && moment(unit.tenancyRenewalDate).format
                                           ("DD/ MM/ YYYY")
                                         }</td>
                                         <td>
-                                          {unit.tenancyRenewalNotificationDate&&moment(unit.tenancyRenewalNotificationDate).format("DD /MM/ YYYY")}
+                                          {unit.tenancyRenewalNotificationDate && moment(unit.tenancyRenewalNotificationDate).format("DD /MM/ YYYY")}
                                         </td>
-                                 
-                                         <td>
+
+                                        <td>
                                           {" "}
                                           {unit.active ? (
                                             <span class="badge-soft-success badge">
@@ -985,7 +1147,7 @@ let clientId=AuthService.getClientId()
                                               Inactive
                                             </span>
                                           )}
-                                        </td> 
+                                        </td>
 
                                         <td className="text-right ">
                                           <div class="dropdown">
@@ -1027,11 +1189,11 @@ let clientId=AuthService.getClientId()
                                               </p>
 
                                               <button
-                                                    data-bs-toggle="modal"
+                                                data-bs-toggle="modal"
                                                 data-bs-target="#vacate-modal"
                                                 class="dropdown-item "
-                                                onClick={()=>setEndReason('')}
-                                                
+                                                onClick={() => setEndReason('')}
+
                                               >
                                                 <i class="font-size-8 mdi mdi-close-circle me-3">
                                                   Vacate Tenant
@@ -1329,142 +1491,142 @@ let clientId=AuthService.getClientId()
         )}
 
 
-    {activeLink===5 &&(
-  <div>
- 
+        {activeLink === 5 && (
+          <div>
 
 
-    <div class="container-fluid">
 
-        {/* <!-- start page title --> */}
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="container-fluid">
+
+              {/* <!-- start page title --> */}
+              <div class="row">
+                <div class="col-12">
+                  <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <h4 class="mb-sm-0 font-size-18">All Messages</h4>
 
-               
+
+                  </div>
                 </div>
-            </div>
-        </div>
-        {/* <!-- end page title --> */}
+              </div>
+              {/* <!-- end page title --> */}
 
-        <div class="row">
-            <div class="col-12">
+              <div class="row">
+                <div class="col-12">
 
-                {/* <!-- Right Sidebar --> */}
-                <div class="mb-3">
+                  {/* <!-- Right Sidebar --> */}
+                  <div class="mb-3">
 
                     <div class="card">
-                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                            <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
+                      <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                        <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
 
-                                <div class="d-flex align-items-center flex-grow-1">
-                                 
-                                
-                                 
-
-                                </div>
-
-                           
-
-                            </div>
-                        </div>
-                        <div class="card-body the-inbox">
-                            <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
-                                <thead>
-                                    <tr class="d-none">
-                                        <th>Mode</th>
-                                        <th>
-                                            {/* <!-- this is where the index is stored --> */}
-                                        </th>
-                                        <th>Status</th>
-                                        <th>Name</th>
-                                        <th>Message Content</th>
-                                        <th>Date</th>
-
-                                    </tr>
-                                </thead>
-
-                                <tbody class="table-hover">
-                                  {communication?.map((com, index) => (
-                                      
-                                
-                                      <tr data-id="1">
-                                    <td>{index + 1}</td>
-                                    {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
-                                        <td class="">
-                                            {/* <!-- put the index here --> */}
-
-                                            <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
-                                                <div class="avatar-xs m-0">
-                                                    <span class="avatar-title rounded-circle bg-success bg-orange text-white">
-                                                        AW
-                                                    </span>
-                                                </div>
-
-                                            </div>
-
-
-                                            <span class=" font-size-18 d-none d-md-flex">
-                                                <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
-                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">sms</span></i>
-
-                                            </span>
-                                            <span class=" font-size-18 d-flex d-md-none">
-                                                <br/>
-                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
-                                            {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-
-                                            </span>
+                          <div class="d-flex align-items-center flex-grow-1">
 
 
 
-                                        </td>
 
-                                        <td class="d-none"><span class="d-none">0</span></td>
-                                        
-                                        <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-                                        <td class="the-msg the-msg-2">
-                                           
-                                            
-                                        </td>
-                                        <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
-                                        </tr>
-                                       ) 
-                              )}
-                              
-                                </tbody>
+                          </div>
 
-                            </table>
+
 
                         </div>
+                      </div>
+                      <div class="card-body the-inbox">
+                        <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
+                          <thead>
+                            <tr class="d-none">
+                              <th>Mode</th>
+                              <th>
+                                {/* <!-- this is where the index is stored --> */}
+                              </th>
+                              <th>Status</th>
+                              <th>Name</th>
+                              <th>Message Content</th>
+                              <th>Date</th>
+
+                            </tr>
+                          </thead>
+
+                          <tbody class="table-hover">
+                            {communication?.map((com, index) => (
+
+
+                              <tr data-id="1">
+                                <td>{index + 1}</td>
+                                {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                <td class="">
+                                  {/* <!-- put the index here --> */}
+
+                                  <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
+                                    <div class="avatar-xs m-0">
+                                      <span class="avatar-title rounded-circle bg-success bg-orange text-white">
+                                        AW
+                                      </span>
+                                    </div>
+
+                                  </div>
+
+
+                                  <span class=" font-size-18 d-none d-md-flex">
+                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
+                                    <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">sms</span></i>
+
+                                  </span>
+                                  <span class=" font-size-18 d-flex d-md-none">
+                                    <br />
+                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                    {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
+
+                                  </span>
+
+
+
+                                </td>
+
+                                <td class="d-none"><span class="d-none">0</span></td>
+
+                                <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
+                                <td class="the-msg the-msg-2">
+
+
+                                </td>
+                                <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+                              </tr>
+                            )
+                            )}
+
+                          </tbody>
+
+                        </table>
+
+                      </div>
 
 
                     </div>
-                 
 
+
+
+                  </div>
+                  {/* <!-- end Col-9 --> */}
 
                 </div>
-                {/* <!-- end Col-9 --> */}
+
+              </div>
+              {/* <!-- End row --> */}
 
             </div>
-
-        </div>
-        {/* <!-- End row --> */}
-
-    </div>
-    {/* <!-- container-fluid --> */}
+            {/* <!-- container-fluid --> */}
 
 
 
 
 
 
-</div>
+          </div>
 
 
-    )
-    }
+        )
+        }
 
         <div
           class="modal fade"
@@ -2205,72 +2367,72 @@ let clientId=AuthService.getClientId()
 
 
         <div
-        class="modal fade"
-        id="vacate-modal"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-        centered="true"
-        
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">
-                Edit Status
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-12">
-                  <div class="form-group mb-4">
-                    <label for="">Reason</label>
-                    <input
+          class="modal fade"
+          id="vacate-modal"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+          centered="true"
 
-                      type="text"
-                      class="form-control"
-                      placeholder="Enter name"
-                      onChange={(event) => setEndReason(event.target.value)}
-                      value={endReason}
-                      
-                    
-                    />
-                   
-                   
-                  </div>
-                </div>
- 
-       
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Edit Status
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
               </div>
-            </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">Reason</label>
+                      <input
 
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" class="btn btn-primary" 
-                data-bs-dismiss="modal"onClick={() =>
-                  deleteDeactivate()
-                } >
-                Save
-              </button>
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter name"
+                        onChange={(event) => setEndReason(event.target.value)}
+                        value={endReason}
+
+
+                      />
+
+
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="button" class="btn btn-primary"
+                  data-bs-dismiss="modal" onClick={() =>
+                    deleteDeactivate()
+                  } >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-                 
+
 
 
 

@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import { baseUrl } from "../../services/API";
 import moment from 'moment'
 import AuthService from "../../services/auth.service";
+import authService from "../../services/auth.service";
 
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useState(1);
@@ -356,7 +357,7 @@ function ViewLandlord() {
 
    const fetchCommunication=()=>{
    
-    requestsServiceService.getEntityCommunication(userId,0,5,"LANDLORD".clientId).then((res)=>{
+    requestsServiceService.getEntityCommunication(userId,0,5,"LANDLORD", authService.getClientId()).then((res)=>{
       setCommunication(res.data.data)
 
     })

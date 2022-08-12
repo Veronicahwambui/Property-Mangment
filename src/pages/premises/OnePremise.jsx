@@ -715,26 +715,47 @@ function OnePremise() {
     reader.onload = function (e) {
       const text = e.target.result;
 
-      let data = csvToArray(text, ",");
+      let data = csvToArray(text, ";");
       console.log(data);
       let newData = [];
       for (let counter = 0; counter < data.length; counter++) {
 
-        if (data[counter]["property id"] == userId) {
-          let dara = {
-            active: true,
-            id: null,
-            premiseId: userId,
-            unitName: data[counter].name,
-            unitTypeId: 1,
+        if (counter <= 7999) continue;
+        else if (counter > 7999 && counter < 9000) {
+          if (data[counter]["New Property_No"] != "") {
+            let dara = {
+              active: true,
+              id: null,
+              premiseId: parseInt(data[counter]["New Property_No"]),
+              unitName: data[counter].name + " " + data[counter]["house number"] + " " + data[counter]["property number"],
+              unitTypeId: 1,
+              chargeDTO: {
+                active: true,
+                applicableChargeId: 1,
+                chargeConstraint: "ZERO_BALANCE",
+                clientCollectionAccountId: 1,
+                collectedToClientAccount: true,
+                constraintChargeId: null,
+                id: null,
+                invoiceDay: 1,
+                landlordCollectionAccountId: null,
+                premiseId: parseInt(data[counter]["New Property_No"]),
+                rateCharge: false,
+                unitCost: parseInt(data[counter]["rent"]),
+                unitTypeId: 1,
+                value: parseInt(data[counter]["rent"])
+              }
+            };
 
-          };
+            newData.push(dara);
 
-          newData.push(dara);
-          handleSubmitting(dara);
+            // handleSubmitting(dara);
+          }
         }
+        else break;
       }
       console.log(newData.length);
+      console.log(newData);
 
     };
 
@@ -749,7 +770,7 @@ function OnePremise() {
     requestsServiceService.createPremiseUnit(userId, data).then((res) => {
       if (res.data.status === true) {
 
-        fetchAll();
+        // fetchAll();
       } else {
         let dat = {
           name: data.unitName,

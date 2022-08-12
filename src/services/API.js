@@ -18,8 +18,8 @@ if (authService.getCurrentUserAccessToken()) {
 
 export const axiosInstance = axios.create({
   headers: headers,
-  timeout: 20000,
+  timeout: 200000,
 });
 
-export const baseUrl = "http://142.93.231.97:8081";
+export const baseUrl = "http://142.93.231.97:8082";
 // export const baseUrl = "http://localhost:8081";

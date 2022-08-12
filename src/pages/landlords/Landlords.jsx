@@ -66,26 +66,30 @@ function Landlords() {
     reader.onload = function (e) {
       const text = e.target.result;
 
-      let data = csvToArray(text, ";");
+      let data = csvToArray(text, ",");
       console.log(data);
       let newData = [];
+
       for (let counter = 0; counter < data.length; counter++) {
 
         let data1 = {
           active: true,
           agreementPeriod: 12,
           email: "",
-          fileNumber: data[counter].file_number,
-          firstName: data[counter].first_name,
+          fileNumber: data[counter]["RC Number"],
+          firstName: data[counter]["First name"],
           gender: "",
           id: null,
-          idNumber: data[counter].id_number,
-          landLordAgreementTypeId: data[counter].landlord_agreement_id,
+          idNumber: "",
+          landLordAgreementTypeId: 1,
           landLordTypeName: "INDIVIDUAL",
-          lastName: data[counter].last_name,
-          otherName: data[counter].other_name,
+          lastName: data[counter]["Last name"],
+          otherName: data[counter]["Middle"],
           phoneNumber: "",
-          remunerationPercentage: data[counter].percentage_renumeration,
+          postalAddress: data[counter]["postal_address"],
+          town: data[counter]["Town"],
+          country: data[counter]["Country"],
+          remunerationPercentage: parseFloat(data[counter].commission),
         };
         let new_t = {
           documents: [],
@@ -93,10 +97,12 @@ function Landlords() {
           landLordAccounts: [],
         };
         newData.push(new_t);
-
-        handleSubmitting(new_t);
+        if (newData.length > 0)
+          handleSubmitting(new_t);
       }
+
       console.log(newData.length);
+      console.log(newData);
 
     };
 
@@ -112,7 +118,7 @@ function Landlords() {
       .then((res) => {
         if (res.data.status === true) {
 
-          getlandlords();
+          // getlandlords();
         } else {
           let dat = {
             name: data.landLord.firstName,
@@ -198,19 +204,19 @@ function Landlords() {
                   </div>
                 </div>
 
-                <body>
+                {/* <body>
                   <form id="myForm" className='row card-body'>
                     <input type="file" id="csvFile" accept=".csv" />
                     <br />
                     <input type="button" onClick={submitFile} value="Submit" />
                   </form>
-                   {failedLandlordUploads.length>0 && <div className='row'>
-                      <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
-                      <ul>
-                        {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
-                      </ul>
-                    </div>}
-                </body>
+                  {failedLandlordUploads.length > 0 && <div className='row'>
+                    <p>A total of {failedLandlordUploads.length} could not be uploaded, including.. </p>
+                    <ul>
+                      {failedLandlordUploads.map((failed, index) => <li className=' alert danger danger-alert alert-danger danger-alert'> {failed.name + " => " + failed.failureReason}</li>)}
+                    </ul>
+                  </div>}
+                </body> */}
 
                 <div class="card-body">
                   {/*{error.color !== "" &&*/}
