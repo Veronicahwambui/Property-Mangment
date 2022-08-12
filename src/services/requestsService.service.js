@@ -211,8 +211,8 @@ class RequestsService {
   }
 
   // premise
-  getAllpremises() {
-    return axiosInstance.get(baseUrl + "/premises");
+  getAllpremises(page,size ,data) {
+    return axiosInstance.post(baseUrl + "/premises/list?page=" + page +"&size=" + size  , data);
   }
 
   createPremise(data) {
@@ -389,8 +389,8 @@ class RequestsService {
     return axiosInstance.get(baseUrl + `/clients/${id}`);
   }
 
-  getAllTenants() {
-    return axiosInstance.get(baseUrl + "/tenants");
+  getAllTenants(page,size ,data) {
+    return axiosInstance.post(baseUrl + "/tenants/list?page=" + page +"&size=" + size  , data);
   }
   updateTenant(data) {
     return axiosInstance.post(baseUrl + "/tenants/tenancy/update", data);
@@ -496,8 +496,8 @@ class RequestsService {
   updateLandLordAccounts(data) {
     return axiosInstance.post(baseUrl + "/landlord/accounts/update", data);
   }
-  getLandLords() {
-    return axiosInstance.get(baseUrl + "/landlord");
+  getLandLords(page,size ,data) {
+    return axiosInstance.post(baseUrl + "/landlord/list?page=" + page +"&size=" + size  , data);
   }
   getLandlord(id) {
     return axiosInstance.get(baseUrl + "/landlord/" + id);

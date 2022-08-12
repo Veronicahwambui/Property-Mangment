@@ -1,23 +1,55 @@
 /* global $*/
+import moment from 'moment'
+import DatePicker from "react-datepicker";
+import ReactPaginate from 'react-paginate';
+
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import requestsServiceService from '../../services/requestsService.service'
+import authService from '../../services/auth.service';
 
 
 function PremisesRegister() {
     const [premises, setPremises] = useState([])
     const [activeId, setActiveId] = useState('')
 
+    const [size, setSize] = useState(10);
+    const [pageCount, setPageCount] = useState(0);
+    const [page, setPage] = useState(0);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
     useEffect(() => {
+        $("#spinner").addClass("d-none")
+
         fetchAll()
-    }, [])
+    }, [page, size, pageCount])
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        // $("#spinner").removeClass("d-none")
+
+        fetchAll()
+    }
+
+    const handlePageClick = (data) => {
+        setPage(() => data.selected);
+    };
 
     const fetchAll = () => {
-        requestsServiceService.getAllpremises().then((res) => {
-            setPremises(res.data.data);
+
+        let data = {
+            // "clientId": authService.getClientId(),
+            "dateCreatedEnd": moment(endDate).format("YYYY-MM-DD"),
+            "dateCreatedStart": moment(startDate).format("YYYY-MM-DD")
+        }
+        requestsServiceService.getAllpremises(page, size, data).then((res) => {
+            setPremises(res.data.data)
+            setPage(res.data.page)
+            setSize(res.data.size)
+            setPageCount(res.data.totalPages)
             $("#spinner").addClass("d-none");
             $(".table").bootstrapTable();
 
@@ -118,6 +150,62 @@ function PremisesRegister() {
                                 </div>
 
                             </div>
+                            <div className="col-12 d-flex justify-content-between align-items-center">
+                                <select className="btn btn-md btn-primary" title="Select A range" onChange={(e) => setSize(e.target.value)}>
+                                    <option className="bs-title-option" value="">Select A range</option>
+                                    <option value="5">10 Rows</option>
+                                    <option value="30">30 Rows</option>
+                                    <option value="50">50 Rows</option>
+                                    <option value="150">150 Rows</option>
+                                </select>
+                                <div class="page-title-right">
+                                    <form className="d-flex align-items-center">
+                                        <div className="d-flex justify-content-end align-items-center">
+                                            <div className="d-flex">
+                                                <label className="">
+                                                    Start Date
+                                                </label>
+                                                <DatePicker
+                                                    selected={startDate}
+                                                    onChange={(date) => setStartDate(date)}
+                                                    selectsStart
+                                                    className="form-control mouse-pointer sdate"
+
+                                                    startDate={startDate}
+                                                    endDate={endDate}
+                                                    maxDate={new Date()}
+                                                />
+                                            </div>
+                                            <div className="d-flex">
+                                                <label className="">
+                                                    End Date
+                                                </label>
+                                                <DatePicker
+                                                    selected={endDate}
+                                                    onChange={(date) => setEndDate(date)}
+                                                    selectsEnd
+                                                    className="form-control mouse-pointer sdate"
+
+                                                    startDate={startDate}
+                                                    endDate={endDate}
+                                                    minDate={startDate}
+                                                    maxDate={new Date()}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="d-flex mb-2">
+                                            <input
+                                                type="submit"
+                                                className="btn btn-primary"
+                                                onClick={handleSubmit}
+                                                value="filter"
+                                            />
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                            </div>
                             <div class="card-body">
                                 <div className="table-responsive">
                                     <table class="table  table-nowrap table-hover overflow-visible contacts-table">
@@ -192,6 +280,39 @@ function PremisesRegister() {
                                             {/* <tr></tr> */}
                                         </tbody>
                                     </table>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <h5 className="font-medium  text-muted mt-2">
+                                            showing page <span className="text-primary">{pageCount === 0 ? page : page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
+                                        </h5>
+
+                                        {pageCount !== 0 && pageCount > 1 && (
+                                            <nav aria-label="Page navigation comments" className="mt-4">
+                                                <ReactPaginate
+                                                    previousLabel="<"
+                                                    nextLabel=">"
+                                                    breakLabel="..."
+                                                    breakClassName="page-item"
+                                                    breakLinkClassName="page-link"
+                                                    pageCount={pageCount}
+                                                    pageRangeDisplayed={4}
+                                                    marginPagesDisplayed={2}
+                                                    containerClassName="pagination justify-content-center"
+                                                    pageClassName="page-item"
+                                                    pageLinkClassName="page-link"
+                                                    previousClassName="page-item"
+                                                    previousLinkClassName="page-link"
+                                                    nextClassName="page-item"
+                                                    nextLinkClassName="page-link"
+                                                    activeClassName="active"
+                                                    onPageChange={() => handlePageClick}
+                                                    hrefBuilder={(page, pageCount, selected) =>
+                                                        page >= 1 && page <= pageCount ? `/page/${page}` : '#'
+                                                    }
+                                                    hrefAllControls
+                                                />
+                                            </nav>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>

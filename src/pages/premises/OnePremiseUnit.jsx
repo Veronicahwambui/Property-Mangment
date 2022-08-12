@@ -3,17 +3,17 @@ import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import moment from 'moment'
 import requestsServiceService from '../../services/requestsService.service'
+import useTabs from '../../hooks/useTabs'
 
 
 
 function OnePremiseUnit() {
-    const [activeTab, setActiveTab] = useState(1)
+    const [activeLink, setActiveLink] = useTabs()
     const [unitDetails, setUnitDetails] = useState({})
     const [tenancy, setTenancy] = useState([])
     const [premiseCharges, setPremiseCharges] = useState([])
     const[newStatus,setNewStatus]=useState("")
     const[premiseStatuses,setPremiseStatuses]=useState([])
-
 
     const { id, one } = useParams()
     let premId = id
@@ -71,9 +71,9 @@ function OnePremiseUnit() {
                             </button> */}
                   
                             <div class="mail-list mt-4">
-                                <a onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-home-outline me-2"></i> Unit Details</a>
-                                <a onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-account-clock me-2"></i>Occupation History</a>
-                                <a onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-tools me-2"></i> Default Charges </a>
+                                <a onClick={() => setActiveLink(1)} className={activeLink === 1 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-home-outline me-2"></i> Unit Details</a>
+                                <a onClick={() => setActiveLink(2)} className={activeLink === 2 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-account-clock me-2"></i>Occupation History</a>
+                                <a onClick={() => setActiveLink(3)} className={activeLink === 3 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-tools me-2"></i> Default Charges </a>
                             </div>
                             <div>
                             <button type="button" class="btn btn-primary waves-effect btn-label waves-light me-3" data-bs-toggle="modal" data-bs-target="#updateStatus-modal"  
@@ -161,7 +161,7 @@ function OnePremiseUnit() {
 
 
                         {/* <!-- Right Sidebar --> */}
-                        {activeTab === 1 && <div class="email-rightbar mb-3">
+                        {activeLink === 1 && <div class="email-rightbar mb-3">
 
                             <div class="card">
                                 <div class="card-body">
@@ -389,12 +389,12 @@ function OnePremiseUnit() {
 
                         </div>}
                         {/* <!-- end Col-9 --> */}
-                        {activeTab === 2 &&
+                        {activeLink === 2 &&
                             <div className='email-rightbar mb-3'>
                                 <div className="card">
                                     <div className="card-body">
-                                        <div class="table-responsive table-responsive-md overflow-visible">
-                                            <table class="table table-editable align-middle table-edits" >
+                                        <div class="table-responsive table-responsive-md ">
+                                            <table class="table table-editable align-middle table-edits overflow-visible" >
                                                 <thead class="table-light" >
                                                     <tr class=" text-uppercase ">
                                                         <th>#</th>
@@ -447,7 +447,7 @@ function OnePremiseUnit() {
                                 </div>
                             </div>
                         }
-                        {activeTab === 3 && 
+                        {activeLink === 3 && 
                             <div class="row">
                             <div class="col-12">
                               <div class="card">
@@ -458,7 +458,7 @@ function OnePremiseUnit() {
 
                                   </div>
               
-                                  <div class="table-responsive table-responsive-md overflow-visible">
+                                  <div class="table-responsive table-responsive-md">
                                     <table class="table table-editable align-middle table-edits" >
                                       <thead class="table-light" >
                                         <tr class=" text-uppercase ">

@@ -6,6 +6,10 @@ function Header() {
         localStorage.clear();
         window.location.reload();
     }
+
+    
+
+    
   return (
     <header id="page-topbar">
             <div class="navbar-header">
