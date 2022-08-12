@@ -33,7 +33,7 @@ function Invoices() {
 
   useEffect(() => {
     getInvoices();
-  }, [page, size, pageCount, searchTerm]);
+  }, [page, size, pageCount ]);
 
   const sort = (event) => {
     event.preventDefault();
@@ -42,15 +42,14 @@ function Invoices() {
       endDate: endDate,
       size: size,
       page: page,
-      search: searchTerm,
+      search: searchTerm?.toLowerCase(),
     };
-    requestsServiceService
-      .getInvoices(data)
-      .then((res) => {
-        setPageCount(res.data.totalPages);
-        setinvoices(res.data.data);
-      })
-      .then(() => {});
+    requestsServiceService.getInvoices(data).then((res) => {
+      setPageCount(res.data.totalPages);
+      setinvoices(res.data.data);
+      setSearchTerm('')
+    }).then(() => {
+    });
   };
   const sortSize = (e) => {
     setSize(e.target.value);
@@ -187,6 +186,7 @@ function Invoices() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       All rent and Bills invoices
                     </h4>
+                    
                     <div className="d-flex justify-content-end align-items-center">
                       <div>
                         <div>
@@ -204,6 +204,7 @@ function Invoices() {
                         </div>
                       </div>
                       <div>
+
                         <select
                           className={"btn btn-primary"}
                           name=""
