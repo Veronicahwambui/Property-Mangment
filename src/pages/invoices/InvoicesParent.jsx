@@ -413,141 +413,73 @@ function InvoicesParent() {
             </div>
           </div>
           <div className="col-12">
-            <div className="table-responsive">
-              <table className="table table-nowrap">
-                <thead>
-                  <tr>
-                    <th style={{ width: "70px" }}>No.</th>
-                    <th>Charge name</th>
-                    <th>Quantity</th>
-                    <th>Unit Cost</th>
-                    <th>Paid Amount</th>
-                    <th></th>
-                    <th className={"text-end"}>Bill Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paymentItems?.length > 0 &&
-                    paymentItems?.map((item, index) => (
-                      <tr data-id={index} key={index}>
-                        <td>{index + 1}</td>
-                        <td>{item.applicableChargeName}</td>
-                        <td>{item.quantity}</td>
-                        <td>{formatCurrency.format(item.unitCost)}</td>
-                        <td>{formatCurrency.format(item.billPaidAmount)}</td>
-                        <td></td>
-                        <td className="text-end">
-                          {formatCurrency.format(item.billAmount)}
-                        </td>
-                      </tr>
-                    ))}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td colSpan="2" className="text-end">
-                      Total
-                    </td>
-                    <td className="text-end fw-bold">
-                      {formatCurrency.format(total().sum)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td colSpan="2" className="text-end">
-                      Paid
-                    </td>
-                    <td className="text-end fw-bold">
-                      {formatCurrency.format(total().paid)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td colSpan="2" className="text-end">
-                      <strong>Balance</strong>
-                    </td>
-                    <td className="text-end fw-bold">
-                      {formatCurrency.format(total().balance)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <table className="table table-nowrap">
+              <thead>
+                <tr>
+                  <th style={{ width: "70px" }}>No.</th>
+                  <th>Charge name</th>
+                  <th>Quantity</th>
+                  <th>Unit Cost</th>
+                  <th>Paid Amount</th>
+                  <th></th>
+                  <th className={"text-end"}>Bill Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paymentItems?.length > 0 &&
+                  paymentItems?.map((item, index) => (
+                    <tr data-id={index} key={index}>
+                      <td>{index + 1}</td>
+                      <td>{item.applicableChargeName}</td>
+                      <td>{item.quantity}</td>
+                      <td>{formatCurrency.format(item.unitCost)}</td>
+                      <td>{formatCurrency.format(item.billPaidAmount)}</td>
+                      <td></td>
+                      <td className="text-end">
+                        {formatCurrency.format(item.billAmount)}
+                      </td>
+                    </tr>
+                  ))}
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Total
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency.format(total().sum)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Paid
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency.format(total().paid)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    <strong>Balance</strong>
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency.format(total().balance)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          {/*<div className="col-12">*/}
-          {/*  <div className="table-resposive p-4 px-2 pt-2 overflow-visible">*/}
-          {/*    <table className="w-100">*/}
-          {/*      <tbody>*/}
-          {/*        <tr data-id="1">*/}
-          {/*          <td>*/}
-          {/*            <label htmlFor="" className="">*/}
-          {/*              Payment Method*/}
-          {/*            </label>*/}
-          {/*            <select*/}
-          {/*              className="form-control selectpicker w-100 payment-method"*/}
-          {/*              data-style="btn-secondary w-100"*/}
-          {/*              data-live-search="true"*/}
-          {/*              title="Select payment Method"*/}
-          {/*            >*/}
-          {/*              <option value="Mpesa">MPESA</option>*/}
-          {/*              <option value="Cash">CASH</option>*/}
-          {/*            </select>*/}
-          {/*          </td>*/}
-          {/*          <td className="px-3 ">*/}
-          {/*            <div className="phone-num d-none">*/}
-          {/*              <label htmlFor="">Phone No.</label>*/}
-          {/*              <input*/}
-          {/*                type="text "*/}
-          {/*                className="form-control w-100 d-flex "*/}
-          {/*                placeholder="Phone No."*/}
-          {/*                spellCheck="false"*/}
-          {/*                data-ms-editor="true"*/}
-          {/*              />*/}
-          {/*            </div>*/}
-          {/*          </td>*/}
-          {/*          <td className="px-3">*/}
-          {/*            <label htmlFor="">Amount To Be Paid</label>*/}
-          {/*            <input*/}
-          {/*              type="text "*/}
-          {/*              className="form-control w-100 d-flex"*/}
-          {/*              placeholder="KES"*/}
-          {/*              spellCheck="false"*/}
-          {/*              data-ms-editor="true"*/}
-          {/*            />*/}
-          {/*          </td>*/}
-          {/*          <td className="text-right float-right">*/}
-          {/*            <div className="d-flex flex-column">*/}
-          {/*              <label className="opacity-0">Something</label>*/}
-          {/*              <a*/}
-          {/*                href="#"*/}
-          {/*                className="btn btn-primary w-md waves-effect waves-light"*/}
-          {/*              >*/}
-          {/*                Submit*/}
-          {/*              </a>*/}
-          {/*            </div>*/}
-          {/*          </td>*/}
-          {/*        </tr>*/}
-          {/*      </tbody>*/}
-          {/*    </table>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
-          {/*<div className="float-end">*/}
-          {/*  <a href="javascript:window.print()"*/}
-          {/*     className="btn btn-success waves-effect waves-light me-1"><i*/}
-          {/*    className="mdi mdi-printer font-16px"></i></a>*/}
-          {/*  <a href="javascript: void(0);"*/}
-          {/*     className="btn btn-primary w-md waves-effect waves-light">Receive Payment</a>*/}
-          {/*</div>*/}
-        </Modal.Footer>
       </Modal>
     </>
   );
