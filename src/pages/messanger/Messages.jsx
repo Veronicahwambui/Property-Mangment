@@ -3,6 +3,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
+import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 
 function Messages() {
@@ -24,7 +25,7 @@ function Messages() {
     useEffect(() => {
         setLoading(!false)
 
-        requestsServiceService.getSMS(page, perPage, type).then((res) => {
+        requestsServiceService.getSMS(page, perPage, type, authService.getClientId()).then((res) => {
             setPage(res.data.page)
             setPerPage(res.data.size)
             setPageCount(res.data.totalPages)

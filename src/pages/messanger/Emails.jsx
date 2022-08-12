@@ -24,7 +24,7 @@ function Emails() {
     useEffect(() => {
         setLoading(!false)
 
-        requestsServiceService.getEmails(page, perPage, type).then((res) => {
+        requestsServiceService.getEmails(page, perPage, type, authService.getClientId()).then((res) => {
             setLoading(false)
             setPage(res.data.page)
             setPerPage(res.data.size)
