@@ -3,54 +3,110 @@ import React, { useState, useEffect } from "react";
 import requestsServiceService from "../services/requestsService.service";
 
 export default function Message(props) {
-  const [mode, setmode] = useState("Email");
+  const [mode, setmode] = useState("");
   const [mes, setmes] = useState(props.details?.message);
   const [messageBody, setmessageBody] = useState({
-    attachments: [
-      {
-        code: "string",
-        name: "string",
-        value: "string",
-      },
-    ],
     to: props.contact,
     message: props.details?.message,
-    subject: "",
-    templateName: "GREETING",
-    from: "LANDLORD",
-    model: {},
-    portalName: "string",
+    subject: props.details?.subject,
   });
 
   const handleChange = (e) => {
     setmessageBody({ ...messageBody, [e.target.name]: e.target.value });
   };
-  const handleModeChange = (e) => {
-    setmode(e.target.value);
-    if (e.target.value === "SMS") {
-      setmessageBody({
-        ...messageBody,
-        to: "",
-        subject: "",
-      });
-    }
-  };
+  const [error, setError] = useState({
+    message: "",
+    color: "",
+  });
+  const [loading, setloading] = useState(false);
+
   const submit = (e) => {
     e.preventDefault();
-    let data = {
-      contact:messageBody.to,entity: props.details.entity, client: props.details.client, entityType: props.details.entityType, createdBy: props.details.createdBy,
+    setloading(true);
+    var data = {
+      contact: messageBody.to,
+      entity: props.details.entity,
+      client: props.details.clientId,
+      entityType: props.details.entityType,
+      createdBy: props.details.createdBy,
+    };
+    if (props.mode === "Email") {
+      let m = {
+        templateName: "mail/email-template",
+        portalName: `${props.details.clientName} PORTAL`,
+        from: null,
+        to: messageBody.to,
+        subject: messageBody.subject,
+        model: {
+          signature: `${props.details.clientName} Admin`,
+          name: props.details.recipientName,
+          message: messageBody.message,
+          token: "",
+        },
+        attachments: [],
+      };
+      requestsServiceService
+        .sendEmail(m, data)
+        .then((res) => {
+          console.log(res);
+          setloading(false);
+          if (res.message === "Success") {
+            setError({
+              ...error,
+              message: res.message,
+              color: "success",
+            });
+          } else {
+            setError({
+              ...error,
+              message: res.message,
+              color: "danger",
+            });
+          }
+        })
+        .catch((err) => {
+          setloading(false);
+          setError({
+            ...error,
+            message: err?.message,
+            color: "danger",
+          });
+        });
+    } else if (props.mode === "SMS") {
+      let m = {
+        model: {},
+        senderId: props.details.senderId,
+        templateName: null,
+        text: messageBody.message,
+      };
+      requestsServiceService
+        .sendSms(m, data)
+        .then((res) => {
+          setloading(false);
+          console.log(res.data.message);
+          if (res.data.message === "Success") {
+            setError({
+              ...error,
+              message: res.data.message,
+              color: "success",
+            });
+          } else {
+            setError({
+              ...error,
+              message: res.data.message,
+              color: "danger",
+            });
+          }
+        })
+        .catch((err) => {
+          setloading(false);
+          setError({
+            ...error,
+            message: err?.message,
+            color: "danger",
+          });
+        });
     }
-    requestsServiceService.sendEmail(messageBody,data).then((res) => {
-      console.log(res)
-    }).catch((err) => {
-      console.log(err)
-    })
-    setmessageBody({
-      ...messageBody,
-      to: "",
-      message: "",
-      subject: "",
-    });
   };
 
   useEffect(() => {
@@ -59,16 +115,26 @@ export default function Message(props) {
       to: props.details?.contact,
       message: props.details?.message,
     });
-  }, [mes, props]);
+  }, [props]);
+  useEffect(() => {}, [messageBody, loading]);
+
   $("body").on("click", ".close-message-maker", function () {
-    setmessageBody({
-      ...messageBody,
-      to: "",
-      message: "",
-      subject: "",
-    });
+    props.clear();
+
     $(".the-message-maker").removeClass("email-overlay-transform");
     setTimeout(function () {
+      setmode("");
+      setmessageBody({
+        ...messageBody,
+        to: props.contact,
+        message: props.details?.message,
+        subject: props.details?.subject,
+      });
+      setError({
+        ...error,
+        message: "",
+        color: "",
+      });
       $(".email-overlay").addClass("d-none");
     }, 200);
   });
@@ -87,13 +153,13 @@ export default function Message(props) {
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
-            <div className="modal-header bg-primary text-white">
-              <h5 className="modal-title text-white" id="composemodalTitle">
+            <div className="modal-header bg-primary message-white">
+              <h5 className="modal-title message-white" id="composemodalTitle">
                 Upload New Contacts
               </h5>
               <button
                 type="button"
-                className="btn-close text-white"
+                className="btn-close message-white"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
@@ -123,7 +189,7 @@ export default function Message(props) {
                         </div>
                         <div className="dz-message needsclick">
                           <div className="mb-3">
-                            <i className="display-4 text-muted bx bxs-cloud-upload"></i>
+                            <i className="display-4 message-muted bx bxs-cloud-upload"></i>
                           </div>
 
                           <h6>Contacts excel file</h6>
@@ -155,9 +221,9 @@ export default function Message(props) {
       </div>
       <div className="email-overlay d-none">
         <div className="card the-message-maker">
-          <div className="card-header bg-primary text-white py-0">
-            <div className="d-flex justify-content-between align-items-center text-white">
-              <h4 className="mb-0 p-0 m-0">New message</h4>
+          <div className="card-header bg-primary message-white py-0">
+            <div className="d-flex justify-content-between align-items-center message-white">
+              <h4 className="mb-0 p-0 m-0">New {props.mode} </h4>
               <div className="control-btns">
                 <div className="dropdownd-lg-inline-block ms-1">
                   <button
@@ -176,22 +242,10 @@ export default function Message(props) {
                 <div className="col-12 d-non selected-contacts-message">
                   <div className="row flex-nowrap">
                     <div className="col-12">
-                      <div>
-                        <label htmlFor="">Send as?</label>
-                        <select
-                          name=""
-                          id=""
-                          value={mode}
-                          onChange={(e) => handleModeChange(e)}
-                        >
-                          <option value="Email">Email</option>
-                          <option value="SMS">sms</option>
-                        </select>
-                      </div>
                       <span className=" ">
                         <strong>To:</strong>
                       </span>
-                      {mode === "Email" ? (
+                      {props.mode === "Email" ? (
                         <>
                           <input
                             className="form-control w-100 d-flex"
@@ -240,7 +294,7 @@ export default function Message(props) {
                 {/*    </button>*/}
                 {/*  </div>*/}
                 {/*</div>*/}
-                {mode === "Email" ? (
+                {props.mode === "Email" ? (
                   <>
                     <div className="col-12">
                       <br />
@@ -249,6 +303,7 @@ export default function Message(props) {
                         <input
                           type="text"
                           placeholder="Subject"
+                          value={messageBody.subject}
                           name={"subject"}
                           className="form-control mb-3"
                           onChange={(e) => handleChange(e)}
@@ -273,16 +328,40 @@ export default function Message(props) {
                   ></textarea>
                 </div>
               </div>
+              <span className={"text-" + error.color}>{error.message}</span>
             </div>
             <div className="card-footer">
               <div className="d-flex justify-content-between">
                 <div className="d-flex align-items-end">
                   <button
+                    disabled={loading}
                     type="submit"
                     className="btn btn-primary btn-rounded chat-send w-md waves-effect waves-light"
                   >
-                    <span className="d-none d-sm-inline-block me-2">Send</span>{" "}
-                    <i className="mdi mdi-send"></i>
+                    {loading && (
+                      <i
+                        className="fa fa-refresh fa-spin"
+                        style={{ marginRight: "5px" }}
+                      />
+                    )}
+                    {loading && (
+                      <>
+                        {" "}
+                        <span className="d-none d-sm-inline-block me-2">
+                          Sending...
+                        </span>{" "}
+                        <i className="mdi mdi-send"></i>
+                      </>
+                    )}
+                    {!loading && (
+                      <>
+                        {" "}
+                        <span className="d-none d-sm-inline-block me-2">
+                          Send
+                        </span>{" "}
+                        <i className="mdi mdi-send"></i>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

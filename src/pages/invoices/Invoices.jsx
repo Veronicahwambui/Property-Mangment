@@ -157,39 +157,72 @@ function Invoices() {
   };
 
   // MESSAGE TEST
-  const [entity, setentity] = useState(null);
-  const [entitytype, setentitytype] = useState("COMMON");
   const [details, setDetails] = useState({
-    contact: "",
-    entity: 1,
-    client: parseInt(AuthService.getClientId()),
-    entityType: "TENANCY",
-    createdBy: JSON.parse(AuthService.getCurrentUserName()).createdBy,
     message: "",
+    contact: "",
+    recipientName: "",
+    entity: null,
+    clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+    clientId: parseInt(AuthService.getClientId()),
+    entityType: "TENANCY",
+    createdBy: "",
+    senderId: "",
+    subject: "Invoice Payment",
   });
-
-  const handleClicked = (i, n, m, b) => {
-    let mes = `Dear ${n}, your invoice ${i} balance is KES ${formatCurrency.format(
-      b
-    )}. Click <a>here</a> to pay for it`;
+  const [mode, setmode] = useState("");
+  const handleModeChange = (mode) => {
+    setmode(mode);
+  };
+  const handleClicked = (inv, mod) => {
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${
+      inv.billerBillNo
+    } balance is ${formatCurrency.format(
+      inv.billAmount - inv.billPaidAmount
+    )}. Click <a href="#">here</a> to pay for it`;
+    let senderId =
+      JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
+        ? "REVENUESURE"
+        : JSON.parse(AuthService.getCurrentUserName()).client?.senderId;
     setDetails({
       ...details,
       message: mes,
-      contact: m,
+      contact:
+        mod === "Email"
+          ? inv.transactionCustomerEmail
+          : inv.transaction?.tenancy?.tenant?.phoneNumber,
+      entity: inv.transaction?.tenancy?.id,
+      recipientName: inv.transactionCustomerName,
+      createdBy: inv.createdBy,
+      senderId: senderId,
+      subject: "Invoice Payment",
     });
     $(".email-overlay").removeClass("d-none");
     setTimeout(function () {
       $(".the-message-maker").addClass("email-overlay-transform");
     }, 0);
   };
-  useEffect(() => {
-    console.log(details);
-  }, [details]);
+  useEffect(() => {}, [details, mode]);
+
+  const clear = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+      clientId: parseInt(AuthService.getClientId()),
+      entityType: "TENANCY",
+      createdBy: "",
+      senderId: "",
+      subject: "Invoice Payment",
+    });
+  };
 
   return (
     <>
       <div className="page-content">
-        <Message details={details} />
+        <Message details={details} mode={mode} clear={clear} />
 
         <div className="container-fluid">
           <div className="row">
@@ -369,11 +402,11 @@ function Invoices() {
                                     <div className="dropdown-menu dropdown-menu-end ">
                                       <a
                                         className="dropdown-item cursor-pointer"
-                                        onClick={() =>
+                                        onClick={() => {
                                           getOneInvoice(
                                             invoice.transactionItemId
-                                          )
-                                        }
+                                          );
+                                        }}
                                       >
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
@@ -384,20 +417,21 @@ function Invoices() {
                                       </a>
                                       <a
                                         className="dropdown-item cursor-pointer"
-                                        onClick={() =>
-                                          handleClicked(
-                                            invoice.transactionItemId,
-                                            invoice.transactionCustomerName,
-                                            invoice.transactionCustomerEmail,
-                                            invoice.billAmount -
-                                              invoice.billPaidAmount
-                                          )
-                                        }
+                                        onClick={() => {
+                                          handleModeChange("Email");
+                                          handleClicked(invoice, "Email");
+                                        }}
                                       >
                                         <i className="font-size-15 mdi mdi-email me-3 "></i>
                                         Email Tenant
                                       </a>
-                                      <a className="dropdown-item ">
+                                      <a
+                                        className="dropdown-item cursor-pointer"
+                                        onClick={() => {
+                                          handleModeChange("SMS");
+                                          handleClicked(invoice, "SMS");
+                                        }}
+                                      >
                                         <i className="font-size-15 mdi mdi-chat me-3"></i>
                                         Send as SMS
                                       </a>
