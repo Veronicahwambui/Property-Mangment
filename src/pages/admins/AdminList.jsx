@@ -266,7 +266,7 @@ function AdminList() {
                                           </a>
                                         </Link>
 
-                                        {list.authAccount.correlator != undefined ? (
+                                        {list.authAccount && list.authAccount.correlator != undefined ? (
                                           <button
                                             data-id={list.user.id}
                                             className="dropdown-item disableUser"
@@ -282,7 +282,7 @@ function AdminList() {
                                           </button>
                                         )}
 
-                                        {list.authAccount.blocked && (
+                                        {list.authAccount && list.authAccount.blocked && (
                                           <button
                                             data-id={list.user.id}
                                             className="dropdown-item unlockUser"
