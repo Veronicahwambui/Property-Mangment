@@ -3,12 +3,14 @@ import React from "react";
 export default function StatusBadge(props) {
   switch (props.type) {
     case "Paid":
+    case "True":
       return (
         <span className="badge badge-pill badge-soft-success px-3">
           {props.type}
         </span>
       );
     case "PENDING":
+      case "False":
       return (
         <span className="badge badge-pill badge-soft-danger px-3">
           {props.type}

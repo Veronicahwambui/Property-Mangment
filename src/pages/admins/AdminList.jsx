@@ -41,6 +41,8 @@ function AdminList() {
             requestsServiceService
               .deactivateUser(id)
               .then((res) => {
+
+    getData();
                 confirmAlert({
                   message: res.data.message,
                   buttons: [
@@ -79,6 +81,7 @@ function AdminList() {
             requestsServiceService
               .activateUser(id)
               .then((res) => {
+                getData();
                 confirmAlert({
                   message: res.data.message,
                   buttons: [
@@ -118,6 +121,7 @@ function AdminList() {
             requestsServiceService
               .unlockUserAccount(id)
               .then((res) => {
+                getData();
                 confirmAlert({
                   message: res.data.message,
                   buttons: [
@@ -208,24 +212,24 @@ function AdminList() {
 
                                   <td>
                                     <p className="mb-0">
-                                      {list.firstName + "  " + list.lastName}
+                                      {list.user.firstName + "  " + list.user.lastName}
                                     </p>
                                   </td>
                                   <td>
-                                    <p className="mb-0">{list.userName}</p>
+                                    <p className="mb-0">{list.user.userName}</p>
                                   </td>
                                   <td>
-                                    <p className="mb-0">{list.email}</p>
+                                    <p className="mb-0">{list.user.email}</p>
                                   </td>
                                   <td>
-                                    <p className="mb-0">{list.phoneNumber}</p>
+                                    <p className="mb-0">{list.user.phoneNumber}</p>
                                   </td>
                                   <td>
-                                    <p className="mb-0">{list.role.name}</p>
+                                    <p className="mb-0">{list.user.role.name}</p>
                                   </td>
 
                                   <td>
-                                    {list.enabled ? (
+                                    {(list.authAccount && list.authAccount.correlator!=undefined )? (
                                       <StatusBadge type="True" />
                                     ) : (
                                       <StatusBadge type="False" />
@@ -233,7 +237,7 @@ function AdminList() {
                                   </td>
 
                                   <td>
-                                    {list.blocked ? (
+                                    {(list.authAccount && list.authAccount.blocked) ? (
                                       <StatusBadge type="True" />
                                     ) : (
                                       <StatusBadge type="False" />
@@ -253,7 +257,7 @@ function AdminList() {
                                       </a>
 
                                       <div className="dropdown-menu dropdown-menu-end text-capitalize">
-                                        <Link to={"/adminlist/edit/" + list.id}>
+                                        <Link to={"/adminlist/edit/" + list.user.id}>
                                           <a
                                             className="dropdown-item"
                                             href="tenant-new.html"
@@ -262,32 +266,32 @@ function AdminList() {
                                           </a>
                                         </Link>
 
-                                        {list.enabled ? (
+                                        {list.authAccount.correlator != undefined ? (
                                           <button
-                                            data-id={list.id}
+                                            data-id={list.user.id}
                                             className="dropdown-item disableUser"
                                           >
                                             Deactivate User
                                           </button>
                                         ) : (
                                           <button
-                                            data-id={list.userName}
+                                            data-id={list.user.userName}
                                             className="dropdown-item enableUser"
                                           >
                                             Activate User
                                           </button>
                                         )}
 
-                                        {list.blocked && (
+                                        {list.authAccount.blocked && (
                                           <button
-                                            data-id={list.id}
+                                            data-id={list.user.id}
                                             className="dropdown-item unlockUser"
                                           >
                                             UnBlock User Account
                                           </button>
                                         )}
                                         
-                                        <Link    class="dropdown-item" to={"/adminlist/view/"+ list.id}>
+                                        <Link    class="dropdown-item" to={"/adminlist/view/"+ list.user.id}>
                                           View user
                                         </Link>
                                       </div>
