@@ -77,6 +77,7 @@ function Messages() {
 
                             <select className=" m-3 btn btn-md btn-primary" title="Select A range" onChange={(e) => setType(e.target.value)}>
                                 <option value="TENANT">Tenant</option>
+                                <option value="TENANCY">Tenancy </option>
                                 <option value="LANDLORD">Landlord </option>
                                 <option value="USER">User </option>
                             </select>
