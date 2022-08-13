@@ -4,8 +4,8 @@ import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import useTabs from '../../hooks/useTabs'
-import AuthService from "../../services/authLogin.service"
 import requestsServiceService from '../../services/requestsService.service'
+import AuthService from "../../services/auth.service";
 
 const docArr = []
 
@@ -43,6 +43,7 @@ function PremiseTenancy() {
     useEffect(() => {
         fetchAll()
         getIssueTypes()
+        fetchCommunication()
         requestsServiceService.getDocumentTypes().then((res) => {
             setdocumentTypes(res.data.data);
         })
@@ -54,6 +55,7 @@ function PremiseTenancy() {
     const [constraintTypeChargeId, setConstraintTypeChargeId] = useState('')
     const [rateCharge, setRateCharge] = useState('')
     // const [chargeConstraintName ,setChargeConstraintName]=useState('')
+
 
     const handleChargeChange = (e) => {
         let stat = e.target.value.split(":")
@@ -317,6 +319,22 @@ function PremiseTenancy() {
 
         })
     }
+       //communication
+
+ const[communication, setCommunication]=useState([])
+
+ let clientId=AuthService.getClientId()
+
+   const fetchCommunication=()=>{
+   
+    requestsServiceService.getEntityCommunication(tenantId, 0, 5, "TENANCY", clientId).then((res)=>{
+      setCommunication(res.data.data)
+
+    })
+
+   }
+
+
 
     return (
         <div>
@@ -334,6 +352,8 @@ function PremiseTenancy() {
                                     <a onClick={() => setActiveLink(2)} className={activeLink === 2 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-account-clock me-2"></i>Transactions History</a>
                                     <a onClick={() => setActiveLink(3)} className={activeLink === 3 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-tools me-2"></i>Charges</a>
                                     <a onClick={() => setActiveLink(4)} className={activeLink === 4 ? "active cursor-pointer" : 'cursor-pointer'}><i class="mdi mdi-bug me-2"></i>Issues</a>
+                                    <a onClick={() => setActiveLink(5)} className={activeLink === 5 ? "active cursor-pointer" : 'cursor-pointer'}> <i class="bx bx-chat"></i>Communication</a>
+
                                 </div>
 
                             </div>
@@ -716,7 +736,7 @@ function PremiseTenancy() {
                                 </div>
                             }
 
-                            {activeLink === 4 &&
+                            {activeLink ===4 &&
                                 <div>
 
                                     <div class="row">
@@ -911,6 +931,143 @@ function PremiseTenancy() {
                                     </div>
                                 </div>
                             }
+
+{activeLink===5 &&(
+  <div>
+ 
+
+
+    <div class="container-fluid">
+
+        {/* <!-- start page title --> */}
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0 font-size-18">All Messages</h4>
+
+               
+                </div>
+            </div>
+        </div>
+        {/* <!-- end page title --> */}
+
+        <div class="row">
+            <div class="col-12">
+
+                {/* <!-- Right Sidebar --> */}
+                <div class="mb-3">
+
+                    <div class="card">
+                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                            <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
+
+                                <div class="d-flex align-items-center flex-grow-1">
+                                 
+                                
+                                 
+
+                                </div>
+
+                           
+
+                            </div>
+                        </div>
+                        <div class="card-body the-inbox">
+                            <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
+                                <thead>
+                                    <tr class="d-none">
+                                        <th>Mode</th>
+                                        <th>
+                                            {/* <!-- this is where the index is stored --> */}
+                                        </th>
+                                        <th>Status</th>
+                                        <th>Name</th>
+                                        <th>Message Content</th>
+                                        <th>Date</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody class="table-hover">
+                                  {communication?.map((com, index) => (
+                                      
+                                
+                                      <tr data-id="1">
+                                    <td>{index + 1}</td>
+                                    {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                        <td class="">
+                                            {/* <!-- put the index here --> */}
+
+                                            <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
+                                                <div class="avatar-xs m-0">
+                                                    <span class="avatar-title rounded-circle bg-success bg-orange text-white">
+                                                        AW
+                                                    </span>
+                                                </div>
+
+                                            </div>
+
+
+                                            <span class=" font-size-18 d-none d-md-flex">
+                                                <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
+                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>
+
+                                            </span>
+                                            <span class=" font-size-18 d-flex d-md-none">
+                                                <br/>
+                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                            {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
+
+                                            </span>
+
+
+
+                                        </td>
+
+                                        <td class="d-none"><span class="d-none">0</span></td>
+                                        
+                                        <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
+                                        <td class="the-msg the-msg-2">
+                                           
+                                            
+                                        </td>
+                                        <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+                                        </tr>
+                                       ) 
+                              )}
+                              
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                    </div>
+                 
+
+
+                </div>
+                {/* <!-- end Col-9 --> */}
+
+            </div>
+
+        </div>
+        {/* <!-- End row --> */}
+
+    </div>
+    {/* <!-- container-fluid --> */}
+
+
+
+
+
+
+</div>
+
+
+    )
+    }
                         </div>
 
                     </div>
