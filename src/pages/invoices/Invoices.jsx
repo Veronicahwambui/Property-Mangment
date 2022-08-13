@@ -8,6 +8,7 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import StatusBadge from "../../components/StatusBadge";
 import Message from "../../components/Message";
+import AuthService from "../../services/auth.service";
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -158,24 +159,23 @@ function Invoices() {
   // MESSAGE TEST
   const [entity, setentity] = useState(null);
   const [entitytype, setentitytype] = useState("COMMON");
-  const [det, setdet] = useState({
+  const [details, setDetails] = useState({
+    contact: "",
+    entity: 1,
+    client: parseInt(AuthService.getClientId()),
+    entityType: "TENANCY",
+    createdBy: JSON.parse(AuthService.getCurrentUserName()).createdBy,
     message: "",
-    email: "",
   });
-  const handleCallback = (det) => {
-    setdet({
-      ...det,
-      message: det.message,
-      email: det.email,
-    });
-  };
 
   const handleClicked = (i, n, m, b) => {
-    let mes = `Dear ${n}, your invoice ${i} balance is KES ${b}. Click <a>here</a> to pay for it`;
-    setdet({
-      ...det,
+    let mes = `Dear ${n}, your invoice ${i} balance is KES ${formatCurrency.format(
+      b
+    )}. Click <a>here</a> to pay for it`;
+    setDetails({
+      ...details,
       message: mes,
-      email: m,
+      contact: m,
     });
     $(".email-overlay").removeClass("d-none");
     setTimeout(function () {
@@ -183,13 +183,13 @@ function Invoices() {
     }, 0);
   };
   useEffect(() => {
-    console.log(det);
-  }, [det]);
+    console.log(details);
+  }, [details]);
 
   return (
     <>
       <div className="page-content">
-        <Message onCallback={handleCallback} contact={det} />
+        <Message details={details} />
 
         <div className="container-fluid">
           <div className="row">

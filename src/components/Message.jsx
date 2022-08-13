@@ -1,9 +1,10 @@
 /* global $*/
 import React, { useState, useEffect } from "react";
+import requestsServiceService from "../services/requestsService.service";
 
 export default function Message(props) {
   const [mode, setmode] = useState("Email");
-  const [mes, setmes] = useState(props.contact?.message);
+  const [mes, setmes] = useState(props.details?.message);
   const [messageBody, setmessageBody] = useState({
     attachments: [
       {
@@ -12,8 +13,8 @@ export default function Message(props) {
         value: "string",
       },
     ],
-    to: props.contact?.email,
-    message: props.contact?.message,
+    to: props.contact,
+    message: props.details?.message,
     subject: "",
     templateName: "GREETING",
     from: "LANDLORD",
@@ -24,14 +25,30 @@ export default function Message(props) {
   const handleChange = (e) => {
     setmessageBody({ ...messageBody, [e.target.name]: e.target.value });
   };
+  const handleModeChange = (e) => {
+    setmode(e.target.value);
+    if (e.target.value === "SMS") {
+      setmessageBody({
+        ...messageBody,
+        to: "",
+        subject: "",
+      });
+    }
+  };
   const submit = (e) => {
     e.preventDefault();
-    console.log(messageBody);
+    let data = {
+      contact:messageBody.to,entity: props.details.entity, client: props.details.client, entityType: props.details.entityType, createdBy: props.details.createdBy,
+    }
+    requestsServiceService.sendEmail(messageBody,data).then((res) => {
+      console.log(res)
+    }).catch((err) => {
+      console.log(err)
+    })
     setmessageBody({
       ...messageBody,
       to: "",
       message: "",
-      contact: "",
       subject: "",
     });
   };
@@ -39,8 +56,8 @@ export default function Message(props) {
   useEffect(() => {
     setmessageBody({
       ...messageBody,
-      to: props.contact?.email,
-      message: props.contact?.message,
+      to: props.details?.contact,
+      message: props.details?.message,
     });
   }, [mes, props]);
   $("body").on("click", ".close-message-maker", function () {
@@ -48,7 +65,6 @@ export default function Message(props) {
       ...messageBody,
       to: "",
       message: "",
-      contact: "",
       subject: "",
     });
     $(".the-message-maker").removeClass("email-overlay-transform");
@@ -166,7 +182,7 @@ export default function Message(props) {
                           name=""
                           id=""
                           value={mode}
-                          onChange={(e) => setmode(e.target.value)}
+                          onChange={(e) => handleModeChange(e)}
                         >
                           <option value="Email">Email</option>
                           <option value="SMS">sms</option>
