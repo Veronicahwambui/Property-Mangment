@@ -684,6 +684,9 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/premiseUnits");
   }
 
+  viewTransactionItem(id){
+    return axiosInstance.get(baseUrl + "/payments/parents/item/" + id)
+  }
   // TENANCY ISSUES
 
   createTenancyIssue(data) {

@@ -5,7 +5,6 @@ import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
-import axios from "axios";
 import { confirmAlert } from "react-confirm-alert";
 
 function Statements() {
@@ -17,6 +16,13 @@ function Statements() {
     style: "currency",
     currency: "KES",
   });
+
+  const [show, setShow] = useState(false);
+  // const [billNo, setBillNo] = useState('');
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+
   useEffect(() => {
     getStatements();
   }, []);
@@ -40,14 +46,50 @@ function Statements() {
     message: "",
     color: "",
   });
-  const utilize = (e, a, b, c) => {
-    e.preventDefault();
-    let data = {
-      newBillNo: a,
-      statementId: b,
-      tenantId: c,
-    };
-    requestsServiceService.utilize(data).then((res) => {
+
+const [utilData,setUtilData] = useState( {
+  newBillNo: '',
+  statementId: '',
+  tenantId: '',
+})
+
+const setUtilizeValues = (statementId,tenantId)=>{
+  setUtilData({
+    ...utilData ,
+    newBillNo: '',
+    statementId: statementId,
+    tenantId: tenantId,
+  })
+}
+
+const searchBillNo = async (e)=>{
+  e.preventDefault();
+  handleClose()
+
+await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=>{
+   console.log(res.data);
+   if( res.data.paymentStatus !== "PAID"){
+     utilize();
+  }else {
+    setError({
+      ...error,
+      message: 'ERROR: Bill is already paid',
+      color: "danger",
+    });
+  }
+  setTimeout(() => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+  }, 2000);
+  
+})
+}
+
+  const utilize = () => {
+    requestsServiceService.utilize(utilData).then((res) => {
       if (res.data.status === true) {
         setError({
           ...error,
@@ -70,6 +112,8 @@ function Statements() {
       }, 2000);
     });
   };
+
+
   return (
     <>
       <div className="page-content">
@@ -209,7 +253,7 @@ function Statements() {
                                 <div className="d-flex justify-content-end">
                                   <div className="dropdown">
                                     <a
-                                      className="text-muted font-size-16"
+                                      className="text-muted font-size-16 cursor-pinter"
                                       role="button"
                                       data-bs-toggle="dropdown"
                                       aria-haspopup="true"
@@ -218,8 +262,8 @@ function Statements() {
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end ">
                                       <span
-                                        className="dropdown-item"
-                                        href="#"
+                                        className="dropdown-item cursor-pinter"
+                                        
                                         onClick={() =>
                                           getOneInvoice(statement.billNo)
                                         }
@@ -227,31 +271,12 @@ function Statements() {
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
                                       </span>
-                                      <a className="dropdown-item " href="# ">
-                                        <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                        Print
-                                      </a>
-                                      <a className="dropdown-item " href="# ">
-                                        <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                        Email Tenant
-                                      </a>
-                                      <a className="dropdown-item " href="# ">
-                                        <i className="font-size-15 mdi mdi-chat me-3 "></i>
-                                        Send as SMS
-                                      </a>
+                                   
                                       {statement.utilisedAmount <
                                         statement.receiptAmount && (
                                         <a
-                                          className="dropdown-item "
-                                          href="# "
-                                          onClick={(e) =>
-                                            utilize(
-                                              e,
-                                              statement.billNo,
-                                              statement.id,
-                                              statement.tenant?.id
-                                            )
-                                          }
+                                          className="dropdown-item  cursor-pointer"
+                                          onClick={()=>{ handleShow();setUtilizeValues(  statement?.id, statement?.tenant?.id)}}
                                         >
                                           <i className="font-size-15 mdi mdi-account-check me-3 "></i>
                                           Utilize
@@ -281,44 +306,7 @@ function Statements() {
                       </tfoot>
                     </table>
                   </div>
-                  {/*<div className="mt-4 mb-0 flex justify-between px-8">*/}
-                  {/*  {pageCount !== 0 && (*/}
-                  {/*    <p className=" font-medium text-xs text-gray-700">*/}
-                  {/*      {" "}*/}
-                  {/*      showing page{" "}*/}
-                  {/*      <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
-                  {/*        {page + 1}*/}
-                  {/*      </span>{" "}*/}
-                  {/*      of{" "}*/}
-                  {/*      <span className="text-sm font-bold text-black">*/}
-                  {/*        {pageCount}*/}
-                  {/*      </span>{" "}*/}
-                  {/*      pages*/}
-                  {/*    </p>*/}
-                  {/*  )}*/}
-
-                  {/*  {pageCount !== 0 && (*/}
-                  {/*    <ReactPaginate*/}
-                  {/*      previousLabel={"prev"}*/}
-                  {/*      nextLabel={"next"}*/}
-                  {/*      breakLabel={"..."}*/}
-                  {/*      pageCount={pageCount} // total number of pages needed*/}
-                  {/*      marginPagesDisplayed={2}*/}
-                  {/*      pageRangeDisplayed={1}*/}
-                  {/*      onPageChange={handlePageClick}*/}
-                  {/*      breakClassName={"page-item"}*/}
-                  {/*      breakLinkClassName={"page-link"}*/}
-                  {/*      containerClassName={"pagination"}*/}
-                  {/*      pageClassName={"page-item"}*/}
-                  {/*      pageLinkClassName={"page-link"}*/}
-                  {/*      previousClassName={"page-item"}*/}
-                  {/*      previousLinkClassName={"page-link"}*/}
-                  {/*      nextClassName={"page-item"}*/}
-                  {/*      nextLinkClassName={"page-link"}*/}
-                  {/*      activeClassName={"active"}*/}
-                  {/*    />*/}
-                  {/*  )}*/}
-                  {/*</div>*/}
+              
                 </div>
               </div>
             </div>
@@ -412,6 +400,28 @@ function Statements() {
             </div>
           </div>
         </Modal.Body>
+      </Modal>
+      {/* LOOK FOR BILL */}
+
+      <Modal show={show} onHide={handleClose} size="md" centered>
+        <Modal.Header closeButton>
+          <h5 className="modal-title" id="myLargeModalLabel">
+            Search for Bill to utilize
+          </h5>
+        </Modal.Header>
+        <form onSubmit={ (e) => searchBillNo(e)}>
+        <Modal.Body>
+           <div className="form-group  justify-content-center d-flex flex-column">
+             <label htmlFor="">BILL NO</label>
+             <input type="text" className="form-control"  value={utilData.newBillNo} onChange={e => setUtilData({...utilData ,newBillNo: e.target.value})} placeholder='Enter Bill No ' required/>
+           </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <div>
+           <button className="btn btn-sm btn-primary" type="submit">Search</button>
+          </div>
+        </Modal.Footer>
+        </form>
       </Modal>
     </>
   );
