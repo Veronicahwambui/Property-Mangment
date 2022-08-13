@@ -160,26 +160,13 @@ function Receipts() {
                     >
                       <thead className="table-light">
                         <tr className="table-dark">
-                          <th scope="col">
-                            <div className="the-mail-checkbox pr-4">
-                              <label htmlFor="selectAll" className="d-none">
-                                Select All
-                              </label>
-                              <input
-                                className="form-check-input mt-0 pt-0 form-check-dark"
-                                type="checkbox"
-                                id="selectAll"
-                              />
-                            </div>
-                          </th>
-                          <th>Receipt No</th>
-                          <th>Paid By</th>
-                          <th>Tenant Name</th>
-
-                          <th>Bill Amount</th>
-                          <th>Bill Balance</th>
-                          <th>Payment Mode</th>
-                          <th>Payment Ref</th>
+                         
+                          <th>receiptNo</th>
+                          <th>paid by</th>
+                          <th>bill amount</th>
+                          <th>bill balance</th>
+                          <th>payment mode</th>
+                          <th>payment ref</th>
                           <th className="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -188,17 +175,6 @@ function Receipts() {
                           statements?.length > 0 &&
                           statements?.map((statement, index) => (
                             <tr data-id={index} key={index}>
-                              <td>
-                                <div className="d-flex  align-items-center">
-                                  <div className="the-mail-checkbox pr-4">
-                                    <input
-                                      className="form-check-input mt-0 pt-0 form-check-dark"
-                                      type="checkbox"
-                                      id="formCheck1"
-                                    />
-                                  </div>
-                                </div>
-                              </td>
                               <td>{statement.receiptNo}</td>
                               <td>{statement.paidBy}</td>
                               <td>

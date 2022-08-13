@@ -139,18 +139,7 @@ function Statements() {
                     >
                       <thead className="table-light">
                         <tr className="table-dark">
-                          <th scope="col">
-                            <div className="the-mail-checkbox pr-4">
-                              <label htmlFor="selectAll" className="d-none">
-                                Select All
-                              </label>
-                              <input
-                                className="form-check-input mt-0 pt-0 form-check-dark"
-                                type="checkbox"
-                                id="selectAll"
-                              />
-                            </div>
-                          </th>
+                      
                           <th>Bill No</th>
                           <th>Receipt Amount</th>
                           <th>Pay Reference No</th>
@@ -166,17 +155,7 @@ function Statements() {
                           statements?.length > 0 &&
                           statements?.map((statement, index) => (
                             <tr data-id={index} key={index}>
-                              <td>
-                                <div className="d-flex  align-items-center">
-                                  <div className="the-mail-checkbox pr-4">
-                                    <input
-                                      className="form-check-input mt-0 pt-0 form-check-dark"
-                                      type="checkbox"
-                                      id="formCheck1"
-                                    />
-                                  </div>
-                                </div>
-                              </td>
+                            
                               <td>
                                 {
                                   JSON.parse(statement.response).receiptInfo
