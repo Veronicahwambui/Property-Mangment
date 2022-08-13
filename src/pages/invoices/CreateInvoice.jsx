@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import requestsServiceService from "../../services/requestsService.service";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 function CreateInvoice() {
   const [tenants, setTenants] = useState([]);
@@ -48,7 +49,14 @@ function CreateInvoice() {
   };
 
   const getTenants = () => {
-    requestsServiceService.getAllTenants().then((res) => {
+    let page = 0,
+      size = 100;
+    let data = {
+      dateCreatedStart: moment().startOf("year").format("YYYY-MM-DD"),
+      dateCreatedEnd: moment(new Date()).format("YYYY-MM-DD"),
+    };
+    requestsServiceService.getAllTenants(page, size, data).then((res) => {
+      console.log(res);
       setTenants(res.data.data);
     });
   };
