@@ -392,7 +392,7 @@ class RequestsService {
     return axiosInstance.get(baseUrl + `/clients/${id}`);
   }
 
-  getAllTenants(page, size, data) {
+  getAllTenants(searchTerm, page, size, data) {
     return axiosInstance.post(
       baseUrl + "/tenants/list?page=" + page + "&size=" + size,
       data
@@ -697,8 +697,8 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/premiseUnits");
   }
 
-  viewTransactionItem(id){
-    return axiosInstance.get(baseUrl + "/payments/parents/item/" + id)
+  viewTransactionItem(id) {
+    return axiosInstance.get(baseUrl + "/payments/parents/item/" + id);
   }
   // TENANCY ISSUES
 
