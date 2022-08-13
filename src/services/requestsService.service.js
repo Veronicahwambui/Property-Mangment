@@ -211,8 +211,11 @@ class RequestsService {
   }
 
   // premise
-  getAllpremises(page,size ,data) {
-    return axiosInstance.post(baseUrl + "/premises/list?page=" + page +"&size=" + size  , data);
+  getAllpremises(page, size, data) {
+    return axiosInstance.post(
+      baseUrl + "/premises/list?page=" + page + "&size=" + size,
+      data
+    );
   }
 
   createPremise(data) {
@@ -231,7 +234,7 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/premises/toogleStatus/" + id);
   }
   getCaretakerTypes() {
-    return axiosInstance.get(baseUrl + "/setup/caretakerTypes")
+    return axiosInstance.get(baseUrl + "/setup/caretakerTypes");
   }
   //    one premise things  caretaker
 
@@ -242,22 +245,22 @@ class RequestsService {
   toggleCaretaker(premiseId, caretakerId) {
     return axiosInstance.get(
       baseUrl +
-      "/premises/" +
-      premiseId +
-      "/caretaker/" +
-      caretakerId +
-      "/deactivate"
+        "/premises/" +
+        premiseId +
+        "/caretaker/" +
+        caretakerId +
+        "/deactivate"
     );
   }
 
   updateCaretaker(premiseId, caretakerId, data) {
     return axiosInstance.post(
       baseUrl +
-      "/premises/" +
-      premiseId +
-      "/caretaker/" +
-      caretakerId +
-      "/update",
+        "/premises/" +
+        premiseId +
+        "/caretaker/" +
+        caretakerId +
+        "/update",
       data
     );
   }
@@ -389,8 +392,11 @@ class RequestsService {
     return axiosInstance.get(baseUrl + `/clients/${id}`);
   }
 
-  getAllTenants(page,size ,data) {
-    return axiosInstance.post(baseUrl + "/tenants/list?page=" + page +"&size=" + size  , data);
+  getAllTenants(page, size, data) {
+    return axiosInstance.post(
+      baseUrl + "/tenants/list?page=" + page + "&size=" + size,
+      data
+    );
   }
   updateTenant(data) {
     return axiosInstance.post(baseUrl + "/tenants/tenancy/update", data);
@@ -398,9 +404,13 @@ class RequestsService {
   createTenancies(data) {
     return axiosInstance.post(baseUrl + "/tenants/tenancy/create", data);
   }
-  deactivateTenancies(tenantId,endReason) {
+  deactivateTenancies(tenantId, endReason) {
     return axiosInstance.get(
-      baseUrl + "/tenants/tenancy/" + tenantId + "/deactivate?endReason="+endReason
+      baseUrl +
+        "/tenants/tenancy/" +
+        tenantId +
+        "/deactivate?endReason=" +
+        endReason
     );
   }
   updateTenantsDetails(data) {
@@ -496,8 +506,11 @@ class RequestsService {
   updateLandLordAccounts(data) {
     return axiosInstance.post(baseUrl + "/landlord/accounts/update", data);
   }
-  getLandLords(page,size ,data) {
-    return axiosInstance.post(baseUrl + "/landlord/list?page=" + page +"&size=" + size  , data);
+  getLandLords(page, size, data) {
+    return axiosInstance.post(
+      baseUrl + "/landlord/list?page=" + page + "&size=" + size,
+      data
+    );
   }
   getLandlord(id) {
     return axiosInstance.get(baseUrl + "/landlord/" + id);
@@ -622,7 +635,7 @@ class RequestsService {
   getInvoices(data) {
     return axiosInstance.post(
       baseUrl +
-      `/payments/invoice/transactions?page=${data.page}&size=${data.size}`,
+        `/payments/invoice/transactions?page=${data.page}&size=${data.size}`,
       data
     );
   }
@@ -640,9 +653,9 @@ class RequestsService {
   toggleChargeunitStatuses(premiseUnitTypeChargeId) {
     return axiosInstance.get(
       baseUrl +
-      "/premiseUnitTypeCharges/" +
-      premiseUnitTypeChargeId +
-      "/toogleStatus"
+        "/premiseUnitTypeCharges/" +
+        premiseUnitTypeChargeId +
+        "/toogleStatus"
     );
   }
   createTenancyCharges(tenancyId, data) {
@@ -666,14 +679,14 @@ class RequestsService {
   getInvoices(data) {
     return axiosInstance.post(
       baseUrl +
-      `/payments/invoice/transactions?page=${data.page}&size=${data.size}`,
+        `/payments/invoice/transactions?page=${data.page}&size=${data.size}`,
       data
     );
   }
   getParentInvoices(data) {
     return axiosInstance.post(
       baseUrl +
-      `/payments/parents/transactions?page=${data.page}&size=${data.size}`,
+        `/payments/parents/transactions?page=${data.page}&size=${data.size}`,
       data
     );
   }
@@ -687,45 +700,66 @@ class RequestsService {
   // TENANCY ISSUES
 
   createTenancyIssue(data) {
-    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/create", data)
+    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/create", data);
   }
 
   findAllTenancyIssueTypes() {
-    return axiosInstance.get(baseUrl + "/setup/tenancyIssueTypes")
+    return axiosInstance.get(baseUrl + "/setup/tenancyIssueTypes");
   }
-
-
 
   //   DASHBOARD
 
   getClientDashboardGraphs(startDate, endDate) {
-    return axiosInstance.get(baseUrl + "/reports/dashboard/graphs?startDate=" + startDate + "&endDate=" + endDate)
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard/graphs?startDate=" +
+        startDate +
+        "&endDate=" +
+        endDate
+    );
   }
   getClientDashboard(startDate, endDate) {
-    return axiosInstance.get(baseUrl + "/reports/dashboard?startDate=" + startDate + "&endDate=" + endDate)
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard?startDate=" +
+        startDate +
+        "&endDate=" +
+        endDate
+    );
   }
 
   //start of statements
   getStatements(data) {
-    return axiosInstance.get(baseUrl + `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`);
+    return axiosInstance.get(
+      baseUrl +
+        `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`
+    );
   }
 
   moveTenancyIssueToNextState(tenancyIssueId, data) {
-    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/" + tenancyIssueId + "/moveToNextState", data)
+    return axiosInstance.post(
+      baseUrl + "/tenants/tenancyIssue/" + tenancyIssueId + "/moveToNextState",
+      data
+    );
   }
 
   fetchDocuments(docOwnerType, entity) {
-    return axiosInstance.get(baseUrl + "/documents/" + docOwnerType + "/entity/" + entity)
-
+    return axiosInstance.get(
+      baseUrl + "/documents/" + docOwnerType + "/entity/" + entity
+    );
   }
 
   updateStatus(premiseId, data) {
-    return axiosInstance.post(baseUrl + "/premiseUnits/" + premiseId + "/units/updateStatus", data)
+    return axiosInstance.post(
+      baseUrl + "/premiseUnits/" + premiseId + "/units/updateStatus",
+      data
+    );
   }
 
   findVacatPremise(premiseId) {
-    return axiosInstance.get(baseUrl + "/premiseUnits/" + premiseId + "/units/vacant")
-
+    return axiosInstance.get(
+      baseUrl + "/premiseUnits/" + premiseId + "/units/vacant"
+    );
   }
 
   //tenancy issues
@@ -744,7 +778,7 @@ class RequestsService {
   getIssueStates(id) {
     return axiosInstance.get(baseUrl + `/setup/tenancyIssueTypes/${id}/states`);
   }
-  updateTenancyIssueStates(data,id) {
+  updateTenancyIssueStates(data, id) {
     return axiosInstance.post(
       baseUrl + `/setup/tenancyIssueTypes/${id}/state/update`,
       data
@@ -769,35 +803,99 @@ class RequestsService {
 
   // communication
 
-  getEntityCommunication(entityId, page, size ,type,client) {
-    return communicationService.get(communicationBaseUrl + "/comm/v1/communication/" + entityId + "?page=" + page + "&size=" + size + "&type=" + type+"&client="+client )
+  getEntityCommunication(entityId, page, size, type, client) {
+    return communicationService.get(
+      communicationBaseUrl +
+        "/comm/v1/communication/" +
+        entityId +
+        "?page=" +
+        page +
+        "&size=" +
+        size +
+        "&type=" +
+        type +
+        "&client=" +
+        client
+    );
   }
 
   // MESSANGER API
   createMessageTemplate(data) {
-    return communicationService.post(communicationBaseUrl + "/comm/templates", data)
+    return communicationService.post(
+      communicationBaseUrl + "/comm/templates",
+      data
+    );
   }
   getMessageTemplate(clientId) {
-    return communicationService.get(communicationBaseUrl + "/comm/templates/" + clientId)
+    return communicationService.get(
+      communicationBaseUrl + "/comm/templates/" + clientId
+    );
   }
-  getSMS(page, size, type,client) {
-    return communicationService.get(communicationBaseUrl + "/comm/v1/sms?page=" + page + "&size=" + size + "&type=" + type+"&client="+client)
+  getSMS(page, size, type, client) {
+    return communicationService.get(
+      communicationBaseUrl +
+        "/comm/v1/sms?page=" +
+        page +
+        "&size=" +
+        size +
+        "&type=" +
+        type +
+        "&client=" +
+        client
+    );
   }
 
   getEmails(page, size, type, client) {
-    return communicationService.get(communicationBaseUrl + "/comm/v1/emails?page=" + page + "&size=" + size + "&type=" + type+"&client="+client)
+    return communicationService.get(
+      communicationBaseUrl +
+        "/comm/v1/emails?page=" +
+        page +
+        "&size=" +
+        size +
+        "&type=" +
+        type +
+        "&client=" +
+        client
+    );
   }
 
   utilize(data) {
-    return axiosInstance.post(baseUrl + "/payments/statements/utilize", data)
+    return axiosInstance.post(baseUrl + "/payments/statements/utilize", data);
   }
 
   //SEND EMAILS
   sendEmail(m, data) {
-    return communicationService.post(communicationBaseUrl + "/comm/v1/email?contact="+data.contact+"&entity="+data.entity+"&client="+data.client+"&entityType="+data.entityType+"&createdBy="+data.createdBy, m)
+    return communicationService.post(
+      communicationBaseUrl +
+        "/comm/v1/email?contact=" +
+        data.contact +
+        "&entity=" +
+        data.entity +
+        "&client=" +
+        data.client +
+        "&entityType=" +
+        data.entityType +
+        "&createdBy=" +
+        data.createdBy,
+      m
+    );
   }
-
-
+  sendSms(m, data) {
+    return communicationService.post(
+      communicationBaseUrl +
+        "/comm/v1/sms?contact=" +
+        data.contact +
+        "&entity=" +
+        data.entity +
+        "&client=" +
+        data.client +
+        "&entityType=" +
+        data.entityType +
+        "&createdBy=" +
+        data.createdBy,
+      m
+    );
+  }
 }
 
 export default new RequestsService();
