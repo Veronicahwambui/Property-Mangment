@@ -135,7 +135,18 @@ function UserDetails() {
                                         </div>
                                         <div>
                                             <h5>                           {adminlistData.user && adminlistData.user.firstName} {adminlistData.user && adminlistData.user.lastName}
-<span class="badge badge-pill badge-soft-success font-size-11">Active</span></h5>
+{/* <span class="badge badge-pill badge-soft-success font-size-11">Active</span> */}
+
+{adminlistData.user && adminlistData.user.active ? (
+                                            <span class="badge-soft-success badge">
+                                              Active
+                                            </span>
+                                          ) : (
+                                            <span class="badge-soft-danger badge">
+                                              Inactive
+                                            </span>
+                                          )}
+</h5>
                                             <p class="text-muted mb-0">
                                                 <span> {adminlistData.user && adminlistData.user.role.name}</span>
                                             </p>
@@ -161,19 +172,19 @@ function UserDetails() {
                                                     <tbody>
                                                         <tr>
                                                             <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Last edited</td>
-                                                            <td class="pb-0"><span class="text-black">22 Feb 2022</span></td>
+                                                            <td class="pb-0"><span class="text-black">{ moment(adminlistData.user && adminlistData.user.lastModifiedDate).format("DD/MM/YYYY") }</span></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Last edited by</td>
-                                                            <td class="pb-0"><span class="text-black">Edwin Shanikwa</span></td>
+                                                            <td class="pb-0"><span class="text-black">{adminlistData.user && adminlistData.user.lastModifiedBy}</span></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Date registered</td>
-                                                            <td class="pb-0"><span class="text-black">22 Mar 2021</span></td>
+                                                            <td class="pb-0"><span class="text-black">{ moment(adminlistData.user && adminlistData.user.dateTimeCreated).format("DD/MM/YYYY") }</span></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Registered By</td>
-                                                            <td class="pb-0"><span class="text-black">Mabata Mapengo</span></td>
+                                                            <td class="pb-0"><span class="text-black">{adminlistData.user && adminlistData.user.createdBy}</span></td>
                                                         </tr>
 
                                                          <tr class="bg-white d-none">
