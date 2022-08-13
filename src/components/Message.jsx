@@ -307,6 +307,7 @@ export default function Message(props) {
                           name={"subject"}
                           className="form-control mb-3"
                           onChange={(e) => handleChange(e)}
+                          required={true}
                         />
                       </div>
                     </div>
@@ -325,6 +326,7 @@ export default function Message(props) {
                     rows="10"
                     className="form-control"
                     onChange={(e) => handleChange(e)}
+                    required={true}
                   ></textarea>
                 </div>
               </div>
