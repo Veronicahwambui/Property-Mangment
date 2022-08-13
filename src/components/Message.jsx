@@ -34,7 +34,7 @@ export default function Message(props) {
       let m = {
         templateName: "mail/email-template",
         portalName: `${props.details.clientName} PORTAL`,
-        from: null,
+        from: "nouveta.tech@outlook.com",
         to: messageBody.to,
         subject: messageBody.subject,
         model: {

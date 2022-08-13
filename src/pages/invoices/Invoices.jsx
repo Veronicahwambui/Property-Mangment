@@ -178,7 +178,7 @@ function Invoices() {
       inv.billerBillNo
     } balance is ${formatCurrency.format(
       inv.billAmount - inv.billPaidAmount
-    )}. Click <a href="#">here</a> to pay for it`;
+    )}. Click here to pay for it`;
     let senderId =
       JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
