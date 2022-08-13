@@ -792,6 +792,11 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/payments/statements/utilize", data)
   }
 
+  //SEND EMAILS
+  sendEmail(m, data) {
+    return communicationService.post(communicationBaseUrl + "/comm/v1/email?contact="+data.contact+"&entity="+data.entity+"&client="+data.client+"&entityType="+data.entityType+"&createdBy="+data.createdBy, m)
+  }
+
 
 }
 
