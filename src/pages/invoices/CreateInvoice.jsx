@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import requestsServiceService from "../../services/requestsService.service";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { Modal } from "react-bootstrap";
 
 function CreateInvoice() {
   const [tenants, setTenants] = useState([]);
@@ -28,16 +29,17 @@ function CreateInvoice() {
   });
   const navigate = useNavigate();
 
-  setTimeout(function() {
-    $("#subscribeModal").modal("show")
-}, 0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   useEffect(() => {
     getTenants();
     requestsServiceService.allApplicableCharges().then((res) => {
       setapplicableCharges(res.data.data);
     });
-  }, [tenancyId]);
+  }, [tenancyId, searchTerm]);
   useEffect(() => {
     getTotalKsh();
   }, [quantity, unitcost]);
@@ -54,25 +56,52 @@ function CreateInvoice() {
     let data = {
       dateCreatedStart: moment().startOf("year").format("YYYY-MM-DD"),
       dateCreatedEnd: moment(new Date()).format("YYYY-MM-DD"),
+      search: searchTerm?.toLowerCase().trim(),
     };
-    requestsServiceService.getAllTenants(page, size, data).then((res) => {
-      console.log(res);
-      setTenants(res.data.data);
-    });
+    requestsServiceService
+      .getAllTenants(searchTerm, page, size, data)
+      .then((res) => {
+        console.log(res.data?.data?.length);
+        setTenants(res.data.data);
+      });
   };
+
+  const [show, setshow] = useState(true);
+  const showTenantModal = () => setshow(true);
+  const closeTenantModal = () => setshow(false);
+  const [loading, setloading] = useState(false);
+  const [loaded, setloaded] = useState(false);
+
   const getId = (y) => {
     requestsServiceService.getTenant(y).then((res) => {
       let temp = res.data.data.tenancies;
-      settenancies(temp);
+      if (res.data?.data?.tenancies?.length > 0) {
+        settenancies(temp);
+        setloading(false);
+        setloaded(true);
+      } else {
+        setloading(false);
+        setError({
+          ...error,
+          message: "Tenant has no tenancies!",
+          color: "danger",
+        });
+      }
     });
   };
 
   const autofill = (x) => {
+    setloaded(false);
+    setloading(true);
+    console.log(x);
     getId(x);
     let sel = tenants.find((tenant) => tenant.id === parseInt(x));
     let email = sel?.email;
     let phone = sel?.phoneNumber;
-    let name = sel?.firstName;
+    let name =
+      sel.tenantType === "INDIVIDUAL"
+        ? sel?.firstName + sel?.lastName
+        : sel?.companyName;
     settenantId(x);
     settenantEmail(email);
     settenantPhone(phone);
@@ -146,181 +175,195 @@ function CreateInvoice() {
 
   return (
     <>
-      <div>
-      {/* the tenant modal */}
-      <div className="modal fade" id="subscribeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div className="modal-dialog modal-dialog-centered modal-lg">
-        <div className="modal-content">
-            <div className="modal-header border-bottom-0 d-none">
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body ">
-                <div className="text-center mb-4 pt-2">
-                    <div className="avatar-md mx-auto mb-4 ">
-                        <div className="avatar-title bg-light rounded-circle text-primary h1 ">
-                            <i className="mdi mdi-account-details "></i>
-                        </div>
-                    </div>
-
-                    <div className="row justify-content-center ">
-                        <div className="col-xl-10 ">
-                            <h4 className="text-primary ">Search for Tenant</h4>
-                            <p className="text-muted font-size-14 mb-4 ">
-                              Search for the tenant and procede with creating the invoice                           
-                            </p>
-
-                            <form>
-                                <div className="row text-capitalize">
-                                    <div className="col-12">
-                                        <div className="mb-3 ">
-                                            <label for="digit1-input " className="visually-hidden ">First Name.</label>
-                                            <input type="text " className="form-control form-control-lg  text-center two-step " placeholder="Enter first Name"/>
-                                        </div>
-                                    </div>
-
-                                    <div className="col-12">
-                                        <div className="mb-3 ">
-                                            <label for="digit1-input " className="visually-hidden ">Other Names.</label>
-                                            <input type="text " className="form-control form-control-lg  text-center two-step " placeholder="Enter the other names"/>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                <button className="btn btn-primary btn-block mt-3 text-center w-100 d-flex  align-items-center justify-content-center">
-                                    <i className="mdi mdi-account-search font-size-20 align-middle me-2 "></i>
-                                    Search
-                                </button>
-
-
-                            </form>
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="modal-body d-none">
-            <h4 className="pb-4 pt-2">Seacrh Results</h4>
-            <table className="table align-middle table-nowrap table-hover dt-responsive contacts-table" id="datatable-buttons">
-              <thead className="table-light">
-                  <tr>
-
-                      <th width="8px" scope="col">
-                          
-                      </th>
-                      <th scope="col">#</th>
-                      <th scope="col">Tenant</th>
-                      <th scope="col">Premises</th>
-                      <th scope="col">Hse/Unit No.</th>           
-                  </tr>
-              </thead>
-                <tbody>
-                    <tr>
-
-                      <td>
-                          <div className="d-flex  align-items-center">
-                              <div className="the-mail-checkbox pr-4">
-                                  <input className="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
-                              </div>
-
-                          </div>
-                      </td>
-                      <td className="text-capitalize">1</td>
-                      <td className="text-capitalize">
-                          <a href="property-details.html" title="View Details">Kelvin Thuku</a>
-                      </td>
-                      <td>
-                          <h5 className="font-size-14 mb-1"><a href="landlord-details.html" className="text-dark">Mania Apartments</a></h5>
-
-                      </td>
-                      <td>
-                          410
-                      </td>
-                      
-                      
-                    </tr>
-                    <tr>
-
-                      <td>
-                          <div className="d-flex  align-items-center">
-                              <div className="the-mail-checkbox pr-4">
-                                  <input className="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
-                              </div>
-
-                          </div>
-                      </td>
-                      <td className="text-capitalize">2</td>
-                      <td className="text-capitalize">
-                          <a href="property-details.html" title="View Details">Kelvin Thuku</a>
-                      </td>
-                      <td>
-                          <h5 className="font-size-14 mb-1"><a href="landlord-details.html" className="text-dark">Mania Apartments</a></h5>
-
-                      </td>
-                      <td>
-                          410
-                      </td>
-                      
-                      
-                    </tr>
-                    <tr>
-
-                      <td>
-                          <div className="d-flex  align-items-center">
-                              <div className="the-mail-checkbox pr-4">
-                                  <input className="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
-                              </div>
-
-                          </div>
-                      </td>
-                      <td className="text-capitalize">3</td>
-                      <td className="text-capitalize">
-                          <a href="property-details.html" title="View Details">Kelvin Thuku</a>
-                      </td>
-                      <td>
-                          <h5 className="font-size-14 mb-1"><a href="landlord-details.html" className="text-dark">Mania Apartments</a></h5>
-
-                      </td>
-                      <td>
-                          410
-                      </td>
-                      
-                      
-                    </tr>
-                    <tr>
-
-                      <td>
-                          <div className="d-flex  align-items-center">
-                              <div className="the-mail-checkbox pr-4">
-                                  <input className="form-check-input mt-0 pt-0 form-check-dark" type="checkbox" id="formCheck1"/>
-                              </div>
-
-                          </div>
-                      </td>
-                      <td className="text-capitalize">4</td>
-                      <td className="text-capitalize">
-                          <a href="property-details.html" title="View Details">Kelvin Thuku</a>
-                      </td>
-                      <td>
-                          <h5 className="font-size-14 mb-1"><a href="landlord-details.html" className="text-dark">Mania Apartments</a></h5>
-
-                      </td>
-                      <td>
-                          410
-                      </td>
-                      
-                      
-                    </tr>
-                </tbody>
-                </table>
-                <div className="col-12 d-flex justify-content-end">
-                  <button className="btn btn-primary">Continue</button>
-                </div>
+      <Modal show={show} onHide={closeTenantModal} size="lg" centered>
+        <Modal.Header></Modal.Header>
+        <Modal.Body>
+          <div className="text-center mb-4 pt-2">
+            <div className="avatar-md mx-auto mb-4 ">
+              <div className="avatar-title bg-light rounded-circle text-primary h1 ">
+                <i className="mdi mdi-account-details "></i>
               </div>
-          </div>
-      </div>
-  </div>
+            </div>
 
+            <div className="row justify-content-center ">
+              <div className="col-xl-10 ">
+                <h4 className="text-primary ">
+                  Search for Tenant{" "}
+                  <span style={{ marginLeft: "10px" }}>
+                    {loading && <i className="fa fa-refresh fa-spin" />}
+                    {loaded && (
+                      <>
+                        <i className="fa fa-check" />
+                      </>
+                    )}
+                  </span>
+                </h4>
+                <p className="text-muted font-size-14 mb-4 ">
+                  Search for the tenant and procede with creating the invoice
+                </p>
+
+                <form>
+                  <div className="row text-capitalize">
+                    <div className="col-12">
+                      <div className="mb-3 ">
+                        <label
+                          htmlFor="digit1-input "
+                          className="visually-hidden "
+                        >
+                          Full Names.
+                        </label>
+                        <input
+                          type="text "
+                          onChange={(e) => handleSearch(e)}
+                          className="form-control form-control-lg  text-center two-step "
+                          placeholder="Enter first Name"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      {tenants.length > 0 && tenants.length <= 5 ? (
+                        <>
+                          {tenants?.map((tenant) => (
+                            <div
+                              key={tenant.id}
+                              className="cursor-pointer text-left"
+                            >
+                              <a
+                                href="javascript:void(0)"
+                                onClick={() => autofill(tenant.id)}
+                              >
+                                {tenant?.tenantType === "INDIVIDUAL" ? (
+                                  <>
+                                    <p>
+                                      {tenant.firstName}
+                                      {tenant.lastName} - {tenant.otherName} -{" "}
+                                      {tenant.email}
+                                    </p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <p>
+                                      {tenant.companyName + " "} -
+                                      {tenant.companyIncorporationNumber}-{" "}
+                                      {tenant.otherName} - {tenant.email}
+                                    </p>
+                                  </>
+                                )}
+                              </a>
+                            </div>
+                          ))}
+                          {loaded && (
+                            <div className="col-12 d-flex justify-content-end">
+                              <button
+                                className="btn btn-primary cursor-pointer"
+                                type={"button"}
+                                onClick={closeTenantModal}
+                              >
+                                Continue
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <p>Searching.....</p>
+                        </>
+                      )}
+                    </div>
+                    {/*<div className="table-responsive overflow-visible">*/}
+                    {/*  <table*/}
+                    {/*    className="table align-middle table-hover  contacts-table table-striped "*/}
+                    {/*    id="datatable-buttons"*/}
+                    {/*  >*/}
+                    {/*    <thead className="table-light">*/}
+                    {/*      <tr>*/}
+                    {/*        <th width="8px"></th>*/}
+                    {/*        <th span={"col"}>Tenant Type</th>*/}
+                    {/*        <th span={"col"}>Name</th>*/}
+                    {/*        <th>Email</th>*/}
+                    {/*      </tr>*/}
+                    {/*    </thead>*/}
+                    {/*    <tbody>*/}
+                    {/*      {tenants?.map((tenant) => (*/}
+                    {/*        <tr key={tenant.id}>*/}
+                    {/*          <td>*/}
+                    {/*            <div className="d-flex  align-items-center">*/}
+                    {/*              <div className="the-mail-checkbox pr-4">*/}
+                    {/*                <input*/}
+                    {/*                  className="form-check-input mt-0 pt-0 form-check-dark"*/}
+                    {/*                  type="checkbox"*/}
+                    {/*                  id="formCheck1"*/}
+                    {/*                />*/}
+                    {/*              </div>*/}
+                    {/*            </div>*/}
+                    {/*          </td>*/}
+                    {/*          <td>{tenant.tenantType}</td>*/}
+                    {/*          <td className="text-capitalize">*/}
+                    {/*            <a*/}
+                    {/*              href="property-details.html"*/}
+                    {/*              title="View Details"*/}
+                    {/*            >*/}
+                    {/*              {tenant?.tenantType === "INDIVIDUAL" ? (*/}
+                    {/*                <>*/}
+                    {/*                  <span>*/}
+                    {/*                    {tenant.firstName + " "} -*/}
+                    {/*                    {tenant.lastName} - {tenant.otherName}*/}
+                    {/*                  </span>*/}
+                    {/*                </>*/}
+                    {/*              ) : (*/}
+                    {/*                <>*/}
+                    {/*                  <p>{tenant.companyName + " "} -</p>*/}
+                    {/*                </>*/}
+                    {/*              )}*/}
+                    {/*            </a>*/}
+                    {/*          </td>*/}
+                    {/*          <td>{tenant.email}</td>*/}
+                    {/*        </tr>*/}
+                    {/*      ))}*/}
+                    {/*      <tr>*/}
+                    {/*        <td>*/}
+                    {/*          <div className="d-flex  align-items-center">*/}
+                    {/*            <div className="the-mail-checkbox pr-4">*/}
+                    {/*              <input*/}
+                    {/*                className="form-check-input mt-0 pt-0 form-check-dark"*/}
+                    {/*                type="checkbox"*/}
+                    {/*                id="formCheck1"*/}
+                    {/*              />*/}
+                    {/*            </div>*/}
+                    {/*          </div>*/}
+                    {/*        </td>*/}
+                    {/*        <td className="text-capitalize">1</td>*/}
+                    {/*        <td></td>*/}
+                    {/*        <td className="text-capitalize">*/}
+                    {/*          <a*/}
+                    {/*            href="property-details.html"*/}
+                    {/*            title="View Details"*/}
+                    {/*          >*/}
+                    {/*            Kelvin Thuku*/}
+                    {/*          </a>*/}
+                    {/*        </td>*/}
+                    {/*        <td>*/}
+                    {/*          <h5 className="font-size-14 mb-1">*/}
+                    {/*            <a*/}
+                    {/*              href="landlord-details.html"*/}
+                    {/*              className="text-dark"*/}
+                    {/*            >*/}
+                    {/*              Mania Apartments*/}
+                    {/*            </a>*/}
+                    {/*          </h5>*/}
+                    {/*        </td>*/}
+                    {/*      </tr>*/}
+                    {/*    </tbody>*/}
+                    {/*  </table>*/}
+                    {/*</div>*/}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+      <div>
         <div className="page-content">
           <div className="container-fluid">
             <div className="row">
@@ -388,29 +431,14 @@ function CreateInvoice() {
                                       Tenant.{" "}
                                       <strong className="text-danger">*</strong>
                                     </label>
-                                    {tenants && (
-                                      <div className="form-group mb-4">
-                                        <select
-                                          class="form-control"
-                                          title="Select tenant"
-                                          data-live-search="true"
-                                          value={tenantId}
-                                          onChange={(e) =>
-                                            autofill(e.target.value)
-                                          }
-                                          required={true}
-                                        >
-                                          <option className="text-black font-semibold ">
-                                            select tenant...
-                                          </option>
-                                          {tenants.map((item, index) => (
-                                            <option value={parseInt(item.id)}>
-                                              {check(item)}
-                                            </option>
-                                          ))}
-                                        </select>
-                                      </div>
-                                    )}
+                                    <div className="form-group mb-4">
+                                      <input
+                                        type="text"
+                                        disabled={true}
+                                        className="form-control"
+                                        value={custname}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="col-md-6">
