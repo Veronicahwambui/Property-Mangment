@@ -90,6 +90,7 @@ function CreateInvoice() {
     });
   };
 
+  useEffect(() => {}, [tenants]);
   const autofill = (x) => {
     setloaded(false);
     setloading(true);
@@ -265,10 +266,15 @@ function CreateInvoice() {
                           )}
                         </>
                       ) : (
-                        <>
-                          <p>Searching.....</p>
-                        </>
+                        <></>
                       )}
+                      <p>
+                        {tenants?.length >= 5 ? (
+                          <span>Searching....</span>
+                        ) : (
+                          <></>
+                        )}
+                      </p>
                     </div>
                     {/*<div className="table-responsive overflow-visible">*/}
                     {/*  <table*/}
