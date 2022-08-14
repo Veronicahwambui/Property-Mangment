@@ -31,16 +31,17 @@ function CreateInvoice() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
     setloaded(false);
     setError({
       ...error,
       message: "",
       color: "",
     });
-    setSearchTerm(e.target.value);
   };
   useEffect(() => {
     getTenants();
+    console.log(searchTerm);
   }, [searchTerm]);
 
   useEffect(() => {
