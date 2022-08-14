@@ -1,4 +1,6 @@
 import React, {useEffect} from 'react'
+import { Link } from 'react-router-dom';
+import authLoginService from '../services/authLogin.service';
 import AuthService from "../services/authLogin.service"
 
 function Header() {
@@ -87,6 +89,7 @@ function Header() {
                             </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             {/* <!-- item--> */}
+                            <Link class="dropdown-item" to={"/adminlist/view/"+authLoginService.getCurrentUserId()}>My Profile</Link>
                             <a class="dropdown-item" href="myprofile.html"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">My Profile</span></a>
                             <a class="dropdown-item" href="my-logs.html"><i class="bx bx-time font-size-16 align-middle me-1"></i> <span key="t-profile">My Logs</span></a>
                             {/* <a class="dropdown-item" href="auth-lock-screen.html"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock screen</span></a> */}

@@ -56,7 +56,7 @@ function AllTenants() {
       "search": searchTerm.trim()
     }
 
-    requestsServiceService.getAllTenants(page, size, data).then((res) => {
+    requestsServiceService.getAllTenants(searchTerm,page, size, data).then((res) => {
       setPremises(res.data.data)
       setPage(res.data.page)
       setSize(res.data.size)
