@@ -13,7 +13,7 @@ import requestsServiceService from '../services/requestsService.service'
 import { Link } from 'react-router-dom';
 
 function Dashboard() {
-   const colors = [ '#3399ff','#ff7f50' ,'#00ff00', '#00a591', '#ecdb54' ,'#6b5b95','#944743' ,'#dc4c46', '#034f84', '#edf1ff']
+    const colors = ['#3399ff', '#ff7f50', '#00ff00', '#00a591', '#ecdb54', '#6b5b95', '#944743', '#dc4c46', '#034f84', '#edf1ff']
 
     const [dashboardData, setDashboardData] = useState({})
     const [radioBarData, setRadioBarData] = useState([])
@@ -349,7 +349,7 @@ function Dashboard() {
     let formatCurrency = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "KES",
-      });
+    });
 
 
     return (
@@ -378,37 +378,39 @@ function Dashboard() {
 
                             <div class="page-title-right">
                                 <form className="d-flex align-items-center">
-                                    <div className="d-flex justify-content-end align-items-center">
-                                        <div className="d-flex">
-                                            <label className="">
-                                                Start Date
-                                            </label>
+                                    
+                                <div className="d-flex justify-content-center align-items-center">
+                                        <div className="flex p-2">
+                                            <span class="input-group-text"><i class="mdi mdi-calendar">Start Date:</i></span>
                                             <DatePicker
                                                 selected={startDate}
                                                 onChange={(date) => setStartDate(date)}
                                                 selectsStart
-                                                className="form-control mouse-pointer sdate"
-
+                                                className="form-control cursor-pointer"
                                                 startDate={startDate}
                                                 endDate={endDate}
                                                 maxDate={new Date()}
                                             />
                                         </div>
-                                        <div className="d-flex">
-                                            <label className="">
-                                                End Date
-                                            </label>
+                                        <div className="flex p-2" id='datepicker1'>
+
+                                            <span class="input-group-text"><i class="mdi mdi-calendar">End Date:</i></span>
                                             <DatePicker
                                                 selected={endDate}
                                                 onChange={(date) => setEndDate(date)}
                                                 selectsEnd
-                                                className="form-control mouse-pointer sdate"
-
+                                                showMonthDropdown
+                                                showYearDropdown
+                                                className="form-control cursor-pointer"
+                                                calendarClassName="form-group"
                                                 startDate={startDate}
                                                 endDate={endDate}
                                                 minDate={startDate}
                                                 maxDate={new Date()}
+                                                type="text"
+
                                             />
+
                                         </div>
                                     </div>
                                     <div className="d-flex mb-2">
@@ -644,10 +646,10 @@ function Dashboard() {
 
                                         <div class="text-center text-muted">
                                             <div class="row">
-                                                {pieChartData?.map((item , index) => (
+                                                {pieChartData?.map((item, index) => (
                                                     <div class="col-4">
                                                         <div class="mt-4 text-left">
-                                                            <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle me-1" style={{color: "" + colors[index] + "" }}></i>{item.item}</p>
+                                                            <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle me-1" style={{ color: "" + colors[index] + "" }}></i>{item.item}</p>
                                                             <h5>{formatCurrency.format(item.value)}</h5>
                                                         </div>
                                                     </div>
@@ -682,10 +684,10 @@ function Dashboard() {
                                         </div>
                                     </div>
                                     <div class="col-sm-5 align-self-center">
-                                        {radioBarData?.map((item ,index) => (
+                                        {radioBarData?.map((item, index) => (
                                             <div class="">
                                                 <div class="mt-4 text-left">
-                                                    <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle me-1 " style={{color: "" + colors[index] + "" }}></i>{item.item}</p>
+                                                    <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle me-1 " style={{ color: "" + colors[index] + "" }}></i>{item.item}</p>
                                                     <h5>{formatCurrency.format(item.value)}</h5>
                                                 </div>
                                             </div>
@@ -717,9 +719,9 @@ function Dashboard() {
                                         </div>
                                     </div>
                                     <div class="col-sm-5 align-self-center">
-                                        {radioBarData2?.map((item,index) => (
+                                        {radioBarData2?.map((item, index) => (
                                             <div>
-                                                <p class="mb-2 text-capitalize"><i class="mdi mdi-circle align-middle font-size-10 me-2 " style={{color: "" + colors[index] + "" }}></i> {item.item}</p>
+                                                <p class="mb-2 text-capitalize"><i class="mdi mdi-circle align-middle font-size-10 me-2 " style={{ color: "" + colors[index] + "" }}></i> {item.item}</p>
                                                 <h5>{formatCurrency.format(item.value)} <br /><span class="text-muted font-size-12 d-none"> Contacts</span></h5>
                                             </div>
                                         ))}

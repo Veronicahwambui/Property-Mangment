@@ -52,6 +52,7 @@ import Messages from "./pages/messanger/Messages";
 import MessageTemplates from "./pages/messanger/MessageTemplates";
 import Emails from "./pages/messanger/Emails";
 import Uploads from "./pages/Uploads";
+import CustomMessage from "./pages/messanger/CustomMessage";
 
 function Main() {
   useEffect(() => {
@@ -192,6 +193,7 @@ function Main() {
                 <Route path='/messages' element={<Messages />} />
                 <Route path='/createTemplate' element={<MessageTemplates />} />
                 <Route path='/emails' element={<Emails />} />
+                <Route path='/custommessages' element={<CustomMessage />} />
 
 
 

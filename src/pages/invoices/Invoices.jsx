@@ -35,7 +35,7 @@ function Invoices() {
 
   useEffect(() => {
     getInvoices();
-  }, [page, size, pageCount ]);
+  }, [page, size, pageCount]);
 
   const sort = (event) => {
     event.preventDefault();
@@ -173,11 +173,10 @@ function Invoices() {
     setmode(mode);
   };
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${
-      inv.billerBillNo
-    } balance is ${formatCurrency.format(
-      inv.billAmount - inv.billPaidAmount
-    )}. Click here to pay for it`;
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
+      } balance is ${formatCurrency.format(
+        inv.billAmount - inv.billPaidAmount
+      )}. Click here to pay for it`;
     let senderId =
       JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
@@ -200,7 +199,7 @@ function Invoices() {
       $(".the-message-maker").addClass("email-overlay-transform");
     }, 0);
   };
-  useEffect(() => {}, [details, mode]);
+  useEffect(() => { }, [details, mode]);
 
   const clear = () => {
     setDetails({
@@ -253,40 +252,26 @@ function Invoices() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       All rent and Bills invoices
                     </h4>
-                    
-                    <div className="d-flex justify-content-end align-items-center">
-                      <div>
-                        <div>
-                          <form className="app-search d-none d-lg-block">
-                            <div className="position-relative">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search..."
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                              />
-                              <span className="bx bx-search-alt"></span>
-                            </div>
-                          </form>
-                        </div>
-                      </div>
-                      <div>
 
-                        <select
-                          className={"btn btn-primary"}
-                          name=""
-                          id=""
-                          value={size}
-                          onChange={(e) => sortSize(e)}
-                        >
-                          <option value={parseInt(100)}>100</option>
-                          <option value={parseInt(20)}>20</option>
-                          <option value={parseInt(10)}>10</option>
-                          <option value={parseInt(5)}>5</option>
-                        </select>
+                    <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                      <div>
+                        <form className="app-search d-none d-lg-block p-2">
+                          <div className="position-relative">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search..."
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <span className="bx bx-search-alt"></span>
+                          </div>
+                        </form>
                       </div>
-                      <div className="col-6">
-                        <div className="input-group" id="datepicker1">
+                      <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
+                        <div className=" p-2">
+                          <span className="input-group-text">
+                            <i className="mdi mdi-calendar">Start Date</i>
+                          </span>
                           <input
                             type="text"
                             className="form-control mouse-pointer sdate"
@@ -299,8 +284,10 @@ function Invoices() {
                             data-date-autoclose="true"
                             data-date-end-date="+0d"
                           />
+                        </div>
+                        <div className=" p-2">
                           <span className="input-group-text">
-                            <i className="mdi mdi-calendar"></i>
+                            <i className="mdi mdi-calendar">End Date: </i>
                           </span>
                           <input
                             type="text"
@@ -313,14 +300,12 @@ function Invoices() {
                             data-provide="datepicker"
                             data-date-autoclose="true"
                           />
-                          <span className="input-group-text">
-                            <i className="mdi mdi-calendar"></i>
-                          </span>
-                          <button className="btn btn-primary" onClick={sort}>
-                            filter
-                          </button>
                         </div>
+
                       </div>
+                      <button className="btn btn-primary" onClick={sort}>
+                        filter
+                      </button>
                     </div>
                   </div>
                   {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
@@ -332,7 +317,7 @@ function Invoices() {
                   {/*</div>*/}
                 </div>
                 <div className="card-body">
-                  <div className="table-responsive overflow-visible">
+                  <div className="table-responsive">
                     <table
                       className="table align-middle table-hover  contacts-table table-striped "
                       id="datatable-buttons"
@@ -464,6 +449,21 @@ function Invoices() {
                     </table>
                   </div>
                   <div className="mt-4 mb-0 flex justify-between px-8">
+
+                    <div>
+
+                      <select
+                        className={"btn btn-primary"}
+                        name=""
+                        id=""
+                        value={size}
+                        onChange={(e) => sortSize(e)}
+                      >
+                        <option value={parseInt(10)}>10</option>
+                        <option value={parseInt(30)}>30</option>
+                        <option value={parseInt(50)}>50</option>
+                      </select>
+                    </div>
                     {pageCount !== 0 && (
                       <p className=" font-medium text-xs text-gray-700">
                         {" "}
@@ -603,7 +603,7 @@ function Invoices() {
                       {" "}
                       {formatCurrency.format(
                         activeInvoice?.billAmount -
-                          activeInvoice?.billPaidAmount
+                        activeInvoice?.billPaidAmount
                       )}
                     </h5>
                   </td>

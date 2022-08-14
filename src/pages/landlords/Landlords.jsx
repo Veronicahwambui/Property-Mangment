@@ -124,84 +124,69 @@ function Landlords() {
 
 
                 <div class="card-body">
-                  {/*{error.color !== "" &&*/}
-                  {/*<div className={"alert alert-" + error.color} role="alert">*/}
-                  {/*  {error.message}*/}
-                  {/*</div>*/}
-                  {/*}*/}
-
-
-                  <div className="col-11 mx-auto  d-flex justify-content-between align-items-center">
-                    <select className="btn btn-md btn-primary" title="Select A range" onChange={(e) => handleRangeChange(e)}>
-                      <option className="bs-title-option" value="">Select A range</option>
-                      <option value="5">10 Rows</option>
-                      <option value="30">30 Rows</option>
-                      <option value="50">50 Rows</option>
-                      <option value="150">150 Rows</option>
-                    </select>
-                    <div class="page-title-right">
-                      <form className="d-flex align-items-center justify-content-end">
+                  <div className="d-flex justify-content-between align-items-center pr-3">
+                    <div></div>
+                    <form className="d-flex justify-content-between align-items-center">
+                      <div>
                         <div>
-                          <div>
-                            <form className="app-search d-none d-lg-block mr-15px">
-                              <div className="position-relative">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Search..."
-                                  value={searchTerm}
-                                  onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                                <span className="bx bx-search-alt"></span>
-                              </div>
-                            </form>
-                          </div>
+                          <form className="app-search d-none d-lg-block mr-15px  p-2">
+                            <div className="position-relative">
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Search..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                              />
+                              <span className="bx bx-search-alt"></span>
+                            </div>
+                          </form>
                         </div>
-                        <div className="d-flex justify-content-end align-items-center">
-                          <div className="d-flex">
-                            <DatePicker
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              selectsStart
-                              className="form-control cursor-pointer"
-                              startDate={startDate}
-                              endDate={endDate}
-                              maxDate={new Date()}
-                            />
-                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                          </div>
-                          <div className="d-flex" id='datepicker1'>
-                      
-                            <DatePicker
-                              selected={endDate}
-                              onChange={(date) => setEndDate(date)}
-                              selectsEnd
-                              showMonthDropdown
-                              showYearDropdown
-                              className="form-control cursor-pointer"
-                              calendarClassName="form-group"
-                              startDate={startDate}
-                              endDate={endDate}
-                              minDate={startDate}
-                              maxDate={new Date()}
-                              type="text"
-                           
-                            />
-                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-
-                          </div>
-                        </div>
-                        <div className="d-flex">
-                          <input
-                            type="submit"
-                            className="btn btn-primary"
-                            onClick={handleSubmit}
-                            value="filter"
+                      </div>
+                      <div className="d-flex justify-content-center align-items-center">
+                        <div className="flex p-2">
+                          <span class="input-group-text"><i class="mdi mdi-calendar">Start Date:</i></span>
+                          <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            selectsStart
+                            className="form-control cursor-pointer"
+                            startDate={startDate}
+                            endDate={endDate}
+                            maxDate={new Date()}
                           />
                         </div>
+                        <div className="flex p-2" id='datepicker1'>
 
-                      </form>
-                    </div>
+                          <span class="input-group-text"><i class="mdi mdi-calendar">End Date:</i></span>
+                          <DatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            selectsEnd
+                            showMonthDropdown
+                            showYearDropdown
+                            className="form-control cursor-pointer"
+                            calendarClassName="form-group"
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                            maxDate={new Date()}
+                            type="text"
+
+                          />
+
+                        </div>
+                      </div>
+                      <div >
+                        <input
+                          type="submit"
+                          className="btn btn-primary"
+                          onClick={handleSubmit}
+                          value="filter"
+                        />
+                      </div>
+
+                    </form>
 
                   </div>
                   <div class="table-responsive table-responsive-md">
@@ -276,9 +261,13 @@ function Landlords() {
                       </tbody>
                     </table>
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="font-medium  text-muted mt-2">
-                        showing page <span className="text-primary">{pageCount === 0 ? page : page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
-                      </h5>
+                      <select className="btn btn-md btn-primary" title="Select A range" onChange={(e) => handleRangeChange(e)} value={size}>
+                        <option className="bs-title-option" value="">Select A range</option>
+                        <option value="10">10 Rows</option>
+                        <option value="30">30 Rows</option>
+                        <option value="50">50 Rows</option>
+                        <option value="150">150 Rows</option>
+                      </select>
 
                       {pageCount !== 0 && pageCount > 1 && (
                         <nav aria-label="Page navigation comments" className="mt-4">
@@ -304,6 +293,9 @@ function Landlords() {
                         </nav>
                       )}
                     </div>
+                      <h5 className="font-medium  text-muted mt-2">
+                        showing page <span className="text-primary">{pageCount === 0 ? page : page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
+                      </h5>
                   </div>
 
                 </div>

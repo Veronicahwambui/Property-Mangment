@@ -143,9 +143,10 @@ function InvoicesParent() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       Monthly Invoices
                     </h4>
-                    <div className="d-flex justify-content-end align-items-center">
+                   
+                    <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
                       <div>
-                        <form className="app-search d-none d-lg-block">
+                        <form className="app-search d-none d-lg-block p-2">
                           <div className="position-relative">
                             <input
                               type="text"
@@ -157,22 +158,11 @@ function InvoicesParent() {
                           </div>
                         </form>
                       </div>
-                      <div>
-                        <select
-                          className={"btn btn-primary"}
-                          name=""
-                          id=""
-                          value={size}
-                          onChange={(e) => sortSize(e)}
-                        >
-                          <option value={parseInt(100)}>100</option>
-                          <option value={parseInt(20)}>20</option>
-                          <option value={parseInt(10)}>10</option>
-                          <option value={parseInt(5)}>5</option>
-                        </select>
-                      </div>
-                      <div className="col-6">
-                        <div className="input-group" id="datepicker1">
+                      <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
+                        <div className=" p-2">
+                          <span className="input-group-text">
+                            <i className="mdi mdi-calendar">Start Date</i>
+                          </span>
                           <input
                             type="text"
                             className="form-control mouse-pointer sdate"
@@ -185,8 +175,10 @@ function InvoicesParent() {
                             data-date-autoclose="true"
                             data-date-end-date="+0d"
                           />
+                        </div>
+                        <div className=" p-2">
                           <span className="input-group-text">
-                            <i className="mdi mdi-calendar"></i>
+                            <i className="mdi mdi-calendar">End Date: </i>
                           </span>
                           <input
                             type="text"
@@ -199,14 +191,12 @@ function InvoicesParent() {
                             data-provide="datepicker"
                             data-date-autoclose="true"
                           />
-                          <span className="input-group-text">
-                            <i className="mdi mdi-calendar"></i>
-                          </span>
-                          <button className="btn btn-primary" onClick={sort}>
-                            filter
-                          </button>
                         </div>
+
                       </div>
+                      <button className="btn btn-primary" onClick={sort}>
+                        filter
+                      </button>
                     </div>
                   </div>
                   {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
@@ -317,6 +307,16 @@ function InvoicesParent() {
                     </table>
                   </div>
                   <div className="mt-4 mb-0 flex justify-between px-8">
+                   <select className="btn btn-md btn-primary" title="Select A range"
+                          onChange={(e) => sortSize(e)}
+                    value={size}
+                   >
+                  <option className="bs-title-option" value="">Select A range</option>
+                  <option value="10">10 Rows</option>
+                  <option value="30">30 Rows</option>
+                  <option value="50">50 Rows</option>
+                </select>
+                    
                     {pageCount !== 0 && (
                       <p className=" font-medium text-xs text-gray-700">
                         {" "}
