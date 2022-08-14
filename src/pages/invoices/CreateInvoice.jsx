@@ -31,6 +31,7 @@ function CreateInvoice() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = (e) => {
+    setloaded(false);
     setSearchTerm(e.target.value);
   };
 
@@ -61,7 +62,6 @@ function CreateInvoice() {
     requestsServiceService
       .getAllTenants(searchTerm, page, size, data)
       .then((res) => {
-        console.log(res.data?.data?.length);
         setTenants(res.data.data);
       });
   };
@@ -176,8 +176,364 @@ function CreateInvoice() {
 
   return (
     <>
-      <Modal show={show} onHide={closeTenantModal} size="lg" centered>
-        <Modal.Header></Modal.Header>
+      <div className="page-content">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-12">
+              <div className="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 className="mb-sm-0 font-size-18 text-capitalize">
+                  New Invoice
+                </h4>
+
+                <div className="page-title-right">
+                  <ol className="breadcrumb m-0">
+                    <li className="breadcrumb-item">
+                      <a href="/">Home</a>
+                    </li>
+                    <li className="breadcrumb-item">
+                      <a href="/">Invoices</a>
+                    </li>
+                    <li className="breadcrumb-item active">Create Invoice</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-lg-12 ">
+              <div className="card p-5">
+                <div className="card-body ">
+                  <div className="row d-flex align-items-center justify-content-center ">
+                    <div className="col-sm-12 col-md-7 col-lg-6">
+                      <div className="d-flex justify-items-center align-items-center">
+                        <div className="card-body border-1 invoice-form p-5">
+                          <h4 className="card-title mb-4">
+                            Enter the invoice details below
+                          </h4>
+                          <form onSubmit={submitInvoice}>
+                            {/*<div className="row">*/}
+                            {/*  <div className=" col-12 ">*/}
+                            {/*    <div className="mb-4 ">*/}
+                            {/*      <label className="text-capitalize ">Whose is this*/}
+                            {/*        invoice for?</label>*/}
+                            {/*      <div className="row ">*/}
+                            {/*        <div className="col-auto ">*/}
+                            {/*          <div className="form-check mb-3">*/}
+                            {/*            <input className="form-check-input"*/}
+                            {/*                   value="tenant" type="radio"*/}
+                            {/*                   name="invoice-for"*/}
+                            {/*                   id="tenant-invoice"/>*/}
+                            {/*              <label className="form-check-label"*/}
+                            {/*                     htmlFor="tenant-invoice">*/}
+                            {/*                A Tenant*/}
+                            {/*              </label>*/}
+                            {/*          </div>*/}
+                            {/*        </div>*/}
+                            {/*      </div>*/}
+                            {/*    </div>*/}
+                            {/*  </div>*/}
+                            {/*</div>*/}
+                            <div className="row tenant-invoice-container invoice-options">
+                              <div className="col-12">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-firstname-input"
+                                    className="form-label"
+                                  >
+                                    Tenant.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  <div className="form-group mb-4">
+                                    <input
+                                      type="text"
+                                      disabled={true}
+                                      className="form-control"
+                                      value={custname}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-md-6">
+                                <div className="mb-3">
+                                  <label htmlFor="" className="form-label">
+                                    Tenant's Email
+                                  </label>
+                                  <input
+                                    type={"text"}
+                                    className="form-control"
+                                    value={tenantEmail}
+                                    placeholder={`${tenantEmail}`}
+                                    readOnly
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-md-6">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-password-input"
+                                    className="form-label"
+                                  >
+                                    Tenant's Phone
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    id="formrow-password-input"
+                                    value={tenantPhone}
+                                    placeholder={`${tenantPhone}`}
+                                    readOnly
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-12">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-firstname-input"
+                                    className="form-label"
+                                  >
+                                    Tenancy.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  {tenancies && (
+                                    <div className="form-group mb-4">
+                                      <select
+                                        class="form-control"
+                                        title="Select tenant"
+                                        data-live-search="true"
+                                        value={tenancyId}
+                                        onChange={(e) =>
+                                          settenancyId(e.target.value)
+                                        }
+                                        required={true}
+                                      >
+                                        <option className="text-black font-semibold ">
+                                          select tenancy
+                                        </option>
+                                        {tenancies.map((item, index) => (
+                                          <option
+                                            value={parseInt(item.id)}
+                                            key={item.id}
+                                          >
+                                            {item.premiseUnit?.unitName +
+                                              " - " +
+                                              item.premiseUnit?.unitType.name}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="col-12">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-firstname-input"
+                                    className="form-label"
+                                  >
+                                    Applicable charge.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  {applicableCharges && (
+                                    <div className="form-group mb-4">
+                                      <select
+                                        class="form-control"
+                                        title="Select tenant"
+                                        data-live-search="true"
+                                        value={applicableChargeName}
+                                        onChange={(e) =>
+                                          setapplicableChargeName(
+                                            e.target.value
+                                          )
+                                        }
+                                        required={true}
+                                      >
+                                        <option className="text-black font-semibold ">
+                                          select applicable charge
+                                        </option>
+                                        {applicableCharges.map(
+                                          (item, index) => (
+                                            <option
+                                              value={item.name}
+                                              key={index}
+                                            >
+                                              {item.name}
+                                            </option>
+                                          )
+                                        )}
+                                      </select>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-12">
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="formrow-email-input"
+                                  className="form-label"
+                                >
+                                  Title.{" "}
+                                  <strong className="text-danger">*</strong>
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  id="formrow-email-input"
+                                  value={chargetitle}
+                                  onChange={(e) =>
+                                    setchargetitle(e.target.value)
+                                  }
+                                  placeholder="Enter invoice title"
+                                  required={true}
+                                />
+                              </div>
+                            </div>
+                            <div className="mb-3">
+                              <label
+                                htmlFor="formrow-firstname-input tenant-description"
+                                className="form-label"
+                              >
+                                Description.{" "}
+                                <strong className="text-danger">*</strong>
+                              </label>
+                              <textarea
+                                name=""
+                                id=""
+                                cols="30"
+                                rows="5"
+                                placeholder="Enter description"
+                                value={description}
+                                onChange={(e) => setdescription(e.target.value)}
+                                className="form-control"
+                                required={true}
+                              />
+                            </div>
+                            <div className="row">
+                              <div className="col-md-6">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-email-input"
+                                    className="form-label"
+                                  >
+                                    Quantity.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    value={quantity}
+                                    min="1"
+                                    onChange={(e) =>
+                                      setquantity(e.target.value)
+                                    }
+                                    placeholder="Enter quantity"
+                                    required={true}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-md-6">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-password-input"
+                                    className="form-label"
+                                  >
+                                    Unit cost.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    value={unitcost}
+                                    min="1"
+                                    onChange={(e) =>
+                                      setunitcost(e.target.value)
+                                    }
+                                    placeholder="Enter cost"
+                                    required={true}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-md-6">
+                                <div className="mb-4">
+                                  <label htmlFor="" className="">
+                                    Due date
+                                  </label>
+                                  <div className="input-group" id="datepicker1">
+                                    <input
+                                      type="text"
+                                      className="form-control mouse-pointer enddate"
+                                      name="dob"
+                                      placeholder="Select Date"
+                                      readOnly
+                                      data-date-format="dd M, yyyy"
+                                      data-date-container="#datepicker1"
+                                      data-provide="datepicker"
+                                      data-date-autoclose="true"
+                                    />
+                                    <span className="input-group-text">
+                                      <i className="mdi mdi-calendar"></i>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-md-6">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-password-input"
+                                    className="form-label"
+                                  >
+                                    Invoice amount.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control invoice-amount"
+                                    value={"KES " + total}
+                                    onChange={(e) => settotal(e.target.value)}
+                                    id="formrow-password-input"
+                                    placeholder="KES"
+                                    required={true}
+                                    disabled={true}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <button
+                                type="submit"
+                                className="btn btn-primary w-md invoice-btn"
+                              >
+                                Submit
+                              </button>
+                            </div>
+                            <br />
+                            {error.color !== "" && (
+                              <div
+                                className={"alert alert-" + error.color}
+                                role="alert"
+                              >
+                                {error.message}
+                              </div>
+                            )}
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Modal
+        show={show}
+        onHide={closeTenantModal}
+        backdrop="static"
+        keyboard={false}
+        size="lg"
+        centered
+      >
         <Modal.Body>
           <div className="text-center mb-4 pt-2">
             <div className="avatar-md mx-auto mb-4 ">
@@ -185,7 +541,6 @@ function CreateInvoice() {
                 <i className="mdi mdi-account-details "></i>
               </div>
             </div>
-
             <div className="row justify-content-center ">
               <div className="col-xl-10 ">
                 <h4 className="text-primary ">
@@ -200,9 +555,8 @@ function CreateInvoice() {
                   </span>
                 </h4>
                 <p className="text-muted font-size-14 mb-4 ">
-                  Search for the tenant and procede with creating the invoice
+                  Search for the tenant and proceed with creating the invoice
                 </p>
-
                 <form>
                   <div className="row text-capitalize">
                     <div className="col-12">
@@ -217,524 +571,119 @@ function CreateInvoice() {
                           type="text "
                           onChange={(e) => handleSearch(e)}
                           className="form-control form-control-lg  text-center two-step "
-                          placeholder="Enter first Name"
+                          placeholder="Enter tenant name"
                         />
                       </div>
-                    </div>
-                    <div className="col-12">
-                      {tenants.length > 0 && tenants.length <= 5 ? (
-                        <>
-                          {tenants?.map((tenant) => (
-                            <div
-                              key={tenant.id}
-                              className="cursor-pointer text-left"
-                            >
-                              <a
-                                href="javascript:void(0)"
-                                onClick={() => autofill(tenant.id)}
-                              >
-                                {tenant?.tenantType === "INDIVIDUAL" ? (
-                                  <>
-                                    <p>
-                                      {tenant.firstName}
-                                      {tenant.lastName} - {tenant.otherName} -{" "}
-                                      {tenant.email}
-                                    </p>
-                                  </>
-                                ) : (
-                                  <>
-                                    <p>
-                                      {tenant.companyName + " "} -
-                                      {tenant.companyIncorporationNumber}-{" "}
-                                      {tenant.otherName} - {tenant.email}
-                                    </p>
-                                  </>
-                                )}
-                              </a>
-                            </div>
-                          ))}
-                          {loaded && (
-                            <div className="col-12 d-flex justify-content-end">
-                              <button
-                                className="btn btn-primary cursor-pointer"
-                                type={"button"}
-                                onClick={closeTenantModal}
-                              >
-                                Continue
-                              </button>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <></>
-                      )}
                       <p>
                         {tenants?.length >= 5 ? (
-                          <span>Searching....</span>
+                          <span>search a tenant name....</span>
                         ) : (
                           <></>
                         )}
                       </p>
                     </div>
-                    {/*<div className="table-responsive overflow-visible">*/}
-                    {/*  <table*/}
-                    {/*    className="table align-middle table-hover  contacts-table table-striped "*/}
-                    {/*    id="datatable-buttons"*/}
-                    {/*  >*/}
-                    {/*    <thead className="table-light">*/}
-                    {/*      <tr>*/}
-                    {/*        <th width="8px"></th>*/}
-                    {/*        <th span={"col"}>Tenant Type</th>*/}
-                    {/*        <th span={"col"}>Name</th>*/}
-                    {/*        <th>Email</th>*/}
-                    {/*      </tr>*/}
-                    {/*    </thead>*/}
-                    {/*    <tbody>*/}
-                    {/*      {tenants?.map((tenant) => (*/}
-                    {/*        <tr key={tenant.id}>*/}
-                    {/*          <td>*/}
-                    {/*            <div className="d-flex  align-items-center">*/}
-                    {/*              <div className="the-mail-checkbox pr-4">*/}
-                    {/*                <input*/}
-                    {/*                  className="form-check-input mt-0 pt-0 form-check-dark"*/}
-                    {/*                  type="checkbox"*/}
-                    {/*                  id="formCheck1"*/}
-                    {/*                />*/}
-                    {/*              </div>*/}
-                    {/*            </div>*/}
-                    {/*          </td>*/}
-                    {/*          <td>{tenant.tenantType}</td>*/}
-                    {/*          <td className="text-capitalize">*/}
-                    {/*            <a*/}
-                    {/*              href="property-details.html"*/}
-                    {/*              title="View Details"*/}
-                    {/*            >*/}
-                    {/*              {tenant?.tenantType === "INDIVIDUAL" ? (*/}
-                    {/*                <>*/}
-                    {/*                  <span>*/}
-                    {/*                    {tenant.firstName + " "} -*/}
-                    {/*                    {tenant.lastName} - {tenant.otherName}*/}
-                    {/*                  </span>*/}
-                    {/*                </>*/}
-                    {/*              ) : (*/}
-                    {/*                <>*/}
-                    {/*                  <p>{tenant.companyName + " "} -</p>*/}
-                    {/*                </>*/}
-                    {/*              )}*/}
-                    {/*            </a>*/}
-                    {/*          </td>*/}
-                    {/*          <td>{tenant.email}</td>*/}
-                    {/*        </tr>*/}
-                    {/*      ))}*/}
-                    {/*      <tr>*/}
-                    {/*        <td>*/}
-                    {/*          <div className="d-flex  align-items-center">*/}
-                    {/*            <div className="the-mail-checkbox pr-4">*/}
-                    {/*              <input*/}
-                    {/*                className="form-check-input mt-0 pt-0 form-check-dark"*/}
-                    {/*                type="checkbox"*/}
-                    {/*                id="formCheck1"*/}
-                    {/*              />*/}
-                    {/*            </div>*/}
-                    {/*          </div>*/}
-                    {/*        </td>*/}
-                    {/*        <td className="text-capitalize">1</td>*/}
-                    {/*        <td></td>*/}
-                    {/*        <td className="text-capitalize">*/}
-                    {/*          <a*/}
-                    {/*            href="property-details.html"*/}
-                    {/*            title="View Details"*/}
-                    {/*          >*/}
-                    {/*            Kelvin Thuku*/}
-                    {/*          </a>*/}
-                    {/*        </td>*/}
-                    {/*        <td>*/}
-                    {/*          <h5 className="font-size-14 mb-1">*/}
-                    {/*            <a*/}
-                    {/*              href="landlord-details.html"*/}
-                    {/*              className="text-dark"*/}
-                    {/*            >*/}
-                    {/*              Mania Apartments*/}
-                    {/*            </a>*/}
-                    {/*          </h5>*/}
-                    {/*        </td>*/}
-                    {/*      </tr>*/}
-                    {/*    </tbody>*/}
-                    {/*  </table>*/}
-                    {/*</div>*/}
                   </div>
                 </form>
               </div>
             </div>
           </div>
+          <div className="row">
+            <div className="overflow-visible">
+              <table
+                className="table align-middle table-hover contacts-table table-striped "
+                id="datatable-buttons"
+              >
+                <thead className="table-light">
+                  {tenants.length > 0 && tenants.length <= 5 && (
+                    <tr>
+                      <th width="8px"></th>
+                      <th></th>
+                      <th span={"col-6"}>Tenant Type</th>
+                      <th span={"col-3"}>Name</th>
+                      <th span={"col-3"}>Email</th>
+                    </tr>
+                  )}
+                </thead>
+                <tbody>
+                  {tenants.length > 0 ? (
+                    <>
+                      {tenants.length <= 5 ? (
+                        <>
+                          {tenants?.map((tenant) => (
+                            <tr key={tenant.id}>
+                              <td>
+                                <div className="d-flex  align-items-center">
+                                  <div
+                                    className="the-mail-checkbox pr-4"
+                                    onClick={() => autofill(tenant.id)}
+                                  >
+                                    <input
+                                      className="form-check-input mt-0 pt-0 form-check-dark"
+                                      type="checkbox"
+                                      id="formCheck1"
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                              <td></td>
+                              <td>{tenant.tenantType}</td>
+                              <td className="text-capitalize">
+                                <a href="javascript:void(0)">
+                                  {tenant?.tenantType === "INDIVIDUAL" ? (
+                                    <>
+                                      {tenant.firstName + " "}
+                                      {tenant.lastName + " "} {tenant.otherName}
+                                    </>
+                                  ) : (
+                                    <>{tenant.companyName + " "}</>
+                                  )}
+                                </a>
+                              </td>
+                              <td>{tenant.email}</td>
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <p>No records found</p>
+                    </>
+                  )}
+                </tbody>
+              </table>
+              {loaded && (
+                <div className="col-12 d-flex justify-content-end">
+                  <button
+                    className="btn btn-primary cursor-pointer"
+                    type={"button"}
+                    onClick={closeTenantModal}
+                  >
+                    Continue
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </Modal.Body>
       </Modal>
-      <div>
-        <div className="page-content">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-12">
-                <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                  <h4 className="mb-sm-0 font-size-18 text-capitalize">
-                    New Invoice
-                  </h4>
-
-                  <div className="page-title-right">
-                    <ol className="breadcrumb m-0">
-                      <li className="breadcrumb-item">
-                        <a href="/">Home</a>
-                      </li>
-                      <li className="breadcrumb-item">
-                        <a href="/">Invoices</a>
-                      </li>
-                      <li className="breadcrumb-item active">Create Invoice</li>
-                    </ol>
-                  </div>
-                </div>
-              </div>
+      <footer className="footer ">
+        <div className="container-fluid ">
+          <div className="row ">
+            <div className="col-sm-6 ">
+              <script>document.write(new Date().getFullYear())</script>©
+              RevenueSure
             </div>
-            <div className="row">
-              <div className="col-lg-12 ">
-                <div className="card p-5">
-                  <div className="card-body ">
-                    <div className="row d-flex align-items-center justify-content-center ">
-                      <div className="col-sm-12 col-md-7 col-lg-6">
-                        <div className="d-flex justify-items-center align-items-center">
-                          <div className="card-body border-1 invoice-form p-5">
-                            <h4 className="card-title mb-4">
-                              Enter the invoice details below
-                            </h4>
-                            <form onSubmit={submitInvoice}>
-                              {/*<div className="row">*/}
-                              {/*  <div className=" col-12 ">*/}
-                              {/*    <div className="mb-4 ">*/}
-                              {/*      <label className="text-capitalize ">Whose is this*/}
-                              {/*        invoice for?</label>*/}
-                              {/*      <div className="row ">*/}
-                              {/*        <div className="col-auto ">*/}
-                              {/*          <div className="form-check mb-3">*/}
-                              {/*            <input className="form-check-input"*/}
-                              {/*                   value="tenant" type="radio"*/}
-                              {/*                   name="invoice-for"*/}
-                              {/*                   id="tenant-invoice"/>*/}
-                              {/*              <label className="form-check-label"*/}
-                              {/*                     htmlFor="tenant-invoice">*/}
-                              {/*                A Tenant*/}
-                              {/*              </label>*/}
-                              {/*          </div>*/}
-                              {/*        </div>*/}
-                              {/*      </div>*/}
-                              {/*    </div>*/}
-                              {/*  </div>*/}
-                              {/*</div>*/}
-                              <div className="row tenant-invoice-container invoice-options">
-                                <div className="col-12">
-                                  <div className="mb-3">
-                                    <label
-                                      htmlFor="formrow-firstname-input"
-                                      className="form-label"
-                                    >
-                                      Tenant.{" "}
-                                      <strong className="text-danger">*</strong>
-                                    </label>
-                                    <div className="form-group mb-4">
-                                      <input
-                                        type="text"
-                                        disabled={true}
-                                        className="form-control"
-                                        value={custname}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-md-6">
-                                  <div className="mb-3">
-                                    <label htmlFor="" className="form-label">
-                                      Tenant's Email
-                                    </label>
-                                    <input
-                                      type={"text"}
-                                      className="form-control"
-                                      value={tenantEmail}
-                                      placeholder={`${tenantEmail}`}
-                                      readOnly
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-md-6">
-                                  <div className="mb-3">
-                                    <label
-                                      htmlFor="formrow-password-input"
-                                      className="form-label"
-                                    >
-                                      Tenant's Phone
-                                    </label>
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      id="formrow-password-input"
-                                      value={tenantPhone}
-                                      placeholder={`${tenantPhone}`}
-                                      readOnly
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-12">
-                                  <div className="mb-3">
-                                    <label
-                                      htmlFor="formrow-firstname-input"
-                                      className="form-label"
-                                    >
-                                      Tenancy.{" "}
-                                      <strong className="text-danger">*</strong>
-                                    </label>
-                                    {tenancies && (
-                                      <div className="form-group mb-4">
-                                        <select
-                                          class="form-control"
-                                          title="Select tenant"
-                                          data-live-search="true"
-                                          value={tenancyId}
-                                          onChange={(e) =>
-                                            settenancyId(e.target.value)
-                                          }
-                                          required={true}
-                                        >
-                                          <option className="text-black font-semibold ">
-                                            select tenancy
-                                          </option>
-                                          {tenancies.map((item, index) => (
-                                            <option value={parseInt(item.id)}>
-                                              {item.premiseUnit?.unitName +
-                                                " - " +
-                                                item.premiseUnit?.unitType.name}
-                                            </option>
-                                          ))}
-                                        </select>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="col-12">
-                                  <div className="mb-3">
-                                    <label
-                                      htmlFor="formrow-firstname-input"
-                                      className="form-label"
-                                    >
-                                      Applicable charge.{" "}
-                                      <strong className="text-danger">*</strong>
-                                    </label>
-                                    {applicableCharges && (
-                                      <div className="form-group mb-4">
-                                        <select
-                                          class="form-control"
-                                          title="Select tenant"
-                                          data-live-search="true"
-                                          value={applicableChargeName}
-                                          onChange={(e) =>
-                                            setapplicableChargeName(
-                                              e.target.value
-                                            )
-                                          }
-                                          required={true}
-                                        >
-                                          <option className="text-black font-semibold ">
-                                            select applicable charge
-                                          </option>
-                                          {applicableCharges.map(
-                                            (item, index) => (
-                                              <option value={item.name}>
-                                                {item.name}
-                                              </option>
-                                            )
-                                          )}
-                                        </select>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-12">
-                                <div className="mb-3">
-                                  <label
-                                    htmlFor="formrow-email-input"
-                                    className="form-label"
-                                  >
-                                    Title.{" "}
-                                    <strong className="text-danger">*</strong>
-                                  </label>
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    id="formrow-email-input"
-                                    value={chargetitle}
-                                    onChange={(e) =>
-                                      setchargetitle(e.target.value)
-                                    }
-                                    placeholder="Enter invoice title"
-                                    required={true}
-                                  />
-                                </div>
-                              </div>
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="formrow-firstname-input tenant-description"
-                                  className="form-label"
-                                >
-                                  Description.{" "}
-                                  <strong className="text-danger">*</strong>
-                                </label>
-                                <textarea
-                                  name=""
-                                  id=""
-                                  cols="30"
-                                  rows="5"
-                                  placeholder="Enter description"
-                                  value={description}
-                                  onChange={(e) =>
-                                    setdescription(e.target.value)
-                                  }
-                                  className="form-control"
-                                  required={true}
-                                />
-                              </div>
-                              <div className="row">
-                                <div className="col-md-6">
-                                  <div className="mb-3">
-                                    <label
-                                      htmlFor="formrow-email-input"
-                                      className="form-label"
-                                    >
-                                      Quantity.{" "}
-                                      <strong className="text-danger">*</strong>
-                                    </label>
-                                    <input
-                                      type="number"
-                                      className="form-control"
-                                      value={quantity}
-                                      min="1"
-                                      onChange={(e) =>
-                                        setquantity(e.target.value)
-                                      }
-                                      placeholder="Enter quantity"
-                                      required={true}
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-md-6">
-                                  <div className="mb-3">
-                                    <label
-                                      htmlFor="formrow-password-input"
-                                      className="form-label"
-                                    >
-                                      Unit cost.{" "}
-                                      <strong className="text-danger">*</strong>
-                                    </label>
-                                    <input
-                                      type="number"
-                                      className="form-control"
-                                      value={unitcost}
-                                      min="1"
-                                      onChange={(e) =>
-                                        setunitcost(e.target.value)
-                                      }
-                                      placeholder="Enter cost"
-                                      required={true}
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-md-6">
-                                  <div className="mb-4">
-                                    <label htmlFor="" className="">
-                                      Due date
-                                    </label>
-                                    <div
-                                      className="input-group"
-                                      id="datepicker1"
-                                    >
-                                      <input
-                                        type="text"
-                                        className="form-control mouse-pointer enddate"
-                                        name="dob"
-                                        placeholder="Select Date"
-                                        readOnly
-                                        data-date-format="dd M, yyyy"
-                                        data-date-container="#datepicker1"
-                                        data-provide="datepicker"
-                                        data-date-autoclose="true"
-                                      />
-                                      <span className="input-group-text">
-                                        <i className="mdi mdi-calendar"></i>
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-md-6">
-                                  <div className="mb-3">
-                                    <label
-                                      htmlFor="formrow-password-input"
-                                      className="form-label"
-                                    >
-                                      Invoice amount.{" "}
-                                      <strong className="text-danger">*</strong>
-                                    </label>
-                                    <input
-                                      type="text"
-                                      className="form-control invoice-amount"
-                                      value={"KES " + total}
-                                      onChange={(e) => settotal(e.target.value)}
-                                      id="formrow-password-input"
-                                      placeholder="KES"
-                                      required={true}
-                                      disabled={true}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                              <div>
-                                <button
-                                  type="submit"
-                                  className="btn btn-primary w-md invoice-btn"
-                                >
-                                  Submit
-                                </button>
-                              </div>
-                              <br />
-                              {error.color !== "" && (
-                                <div
-                                  className={"alert alert-" + error.color}
-                                  role="alert"
-                                >
-                                  {error.message}
-                                </div>
-                              )}
-                            </form>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div className="col-sm-6 ">
+              <div className="text-sm-end d-sm-block ">
+                A product of Nouveta LTD
               </div>
             </div>
           </div>
         </div>
-        <footer className="footer ">
-          <div className="container-fluid ">
-            <div className="row ">
-              <div className="col-sm-6 ">
-                <script>document.write(new Date().getFullYear())</script>©
-                RevenueSure
-              </div>
-              <div className="col-sm-6 ">
-                <div className="text-sm-end d-sm-block ">
-                  A product of Nouveta LTD
-                </div>
-              </div>
-            </div>
-          </div>
-        </footer>
-      </div>
+      </footer>
     </>
   );
 }
