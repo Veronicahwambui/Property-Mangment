@@ -620,8 +620,7 @@ function CreateInvoice() {
                 <thead className="table-light">
                   {tenants.length > 0 && tenants.length <= 5 && (
                     <tr>
-                      <th width="8px"></th>
-                      <th></th>
+                      <th width="8px">Select</th>
                       <th span={"col-6"}>Tenant Type</th>
                       <th span={"col-3"}>Name</th>
                       <th span={"col-3"}>Email</th>
@@ -650,7 +649,6 @@ function CreateInvoice() {
                                   </div>
                                 </div>
                               </td>
-                              <td></td>
                               <td>{tenant.tenantType}</td>
                               <td className="text-capitalize">
                                 <a href="javascript:void(0)">
