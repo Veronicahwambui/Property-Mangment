@@ -41,8 +41,7 @@ function CreateInvoice() {
   };
   useEffect(() => {
     getTenants();
-    console.log(searchTerm);
-  }, [searchTerm]);
+  }, [custname]);
 
   useEffect(() => {
     requestsServiceService.allApplicableCharges().then((res) => {
@@ -65,12 +64,13 @@ function CreateInvoice() {
     let data = {
       dateCreatedStart: moment().startOf("year").format("YYYY-MM-DD"),
       dateCreatedEnd: moment(new Date()).format("YYYY-MM-DD"),
-      search: searchTerm?.toLowerCase().trim(),
+      search: tenantName?.toLowerCase().trim(),
     };
     requestsServiceService
-      .getAllTenants(searchTerm, page, size, data)
+      .getAllTenants(tenantName, page, size, data)
       .then((res) => {
         setTenants(res.data.data);
+        setloading2(false);
       });
   };
 
@@ -78,6 +78,7 @@ function CreateInvoice() {
   const showTenantModal = () => setshow(true);
   const closeTenantModal = () => setshow(false);
   const [loading, setloading] = useState(false);
+  const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
 
   const getId = (y) => {
@@ -113,10 +114,22 @@ function CreateInvoice() {
         });
       });
   };
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+    setloaded(false);
+    setloading2(true);
+    getTenants();
+  };
+  const [tenantName, setTenantName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   useEffect(() => {}, [tenants, isChecked, custname]);
   const autofill = (x) => {
+    getTenants();
     setloaded(false);
     setloading(true);
     getId(x);
@@ -148,7 +161,6 @@ function CreateInvoice() {
       transactionTitle: chargetitle,
       unitCost: unitcost,
     };
-    console.log(data);
     requestsServiceService
       .createInvoice(data)
       .then((res) => {
@@ -581,116 +593,145 @@ function CreateInvoice() {
                 <p className="text-muted font-size-14 mb-4 ">
                   Search for the tenant and proceed with creating the invoice
                 </p>
-                <form>
-                  <div className="row text-capitalize">
-                    <div className="col-12">
-                      <div className="mb-3 ">
-                        <label
-                          htmlFor="digit1-input "
-                          className="visually-hidden "
-                        >
-                          Full Names.
-                        </label>
-                        <input
-                          type="text "
-                          onChange={(e) => handleSearch(e)}
-                          className="form-control form-control-lg  text-center two-step "
-                          placeholder="Enter tenant name"
-                          autoFocus
-                        />
+                <div className="row text-capitalize">
+                  <div className="col-12">
+                    <div>
+                      <form
+                        id={"invoice-tenant-form"}
+                        onSubmit={handleSubmit}
+                        className="app-search d-none d-lg-block p-2 d-flex"
+                      >
+                        <div className="position-relative">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search..."
+                            onChange={(e) => setTenantName(e.target.value)}
+                          />
+                          <span className="bx bx-search-alt"></span>
+                        </div>
+                      </form>
+                    </div>
+                    <div className="form-group">
+                      <div className="d-flex align-items-center justify-content-center">
+                        <div className="text-end">
+                          <button
+                            form={"invoice-tenant-form"}
+                            disabled={loading2}
+                            className="btn btn-primary btn-rounded"
+                            type="submit"
+                          >
+                            {loading2 && (
+                              <i
+                                className="fa fa-refresh fa-spin"
+                                style={{ marginRight: "5px" }}
+                              />
+                            )}
+                            {loading2 && (
+                              <>
+                                <span className="d-none d-sm-inline-block me-2">
+                                  Searching...
+                                </span>
+                              </>
+                            )}
+                            {!loading2 && (
+                              <>
+                                <span className="d-none d-sm-inline-block me-2">
+                                  Search
+                                </span>
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
-                      <p>
-                        {tenants?.length >= 5 ? (
-                          <span>Specify a tenant name....</span>
-                        ) : (
-                          <></>
-                        )}
-                        {searchTerm !== "" && tenants.length < 1 && (
-                          <span className={"text-danger"}>
-                            Tenant not found!
-                          </span>
-                        )}
-                      </p>
+                    </div>
+                    <div className={"mt-2 mb-2"}>
+                      {tenantName !== "" && tenants.length < 1 && (
+                        <span className={"text-danger"}>Tenant not found!</span>
+                      )}
+                      <span className={"text-" + error.color}>
+                        {error.message}
+                      </span>
                     </div>
                   </div>
-                  <span className={"text-" + error.color}>{error.message}</span>
-                </form>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="overflow-visible">
-              <table
-                className="table align-middle table-hover contacts-table table-striped "
-                id="datatable-buttons"
-              >
-                <thead className="table-light">
-                  {tenants.length > 0 && tenants.length <= 5 && (
-                    <tr>
-                      <th width="8px">Select</th>
-                      <th span={"col-6"}>Tenant Type</th>
-                      <th span={"col-3"}>Name</th>
-                      <th span={"col-3"}>Email</th>
-                    </tr>
-                  )}
-                </thead>
-                <tbody>
-                  {tenants.length > 0 && (
-                    <>
-                      {tenants.length <= 5 && (
-                        <>
-                          {tenants?.map((tenant) => (
-                            <tr key={tenant.id}>
-                              <td>
-                                <div className="d-flex  align-items-center">
-                                  <div className="the-mail-checkbox pr-4">
-                                    <input
-                                      className="form-check-input mt-0 pt-0 form-check-dark"
-                                      type="checkbox"
-                                      id="formCheck1"
-                                      onChange={() => {
-                                        autofill(tenant.id);
-                                      }}
-                                      checked={loaded && tenant.id === tenantId}
-                                    />
+              <div className="overflow-visible">
+                <table
+                  className="table align-middle table-hover contacts-table table-striped "
+                  id="datatable-buttons"
+                >
+                  <thead className="table-light">
+                    {tenants.length > 0 && tenants.length <= 5 && (
+                      <tr>
+                        <th width="8px">Select</th>
+                        <th span={"col-6"}>Tenant Type</th>
+                        <th span={"col-3"}>Name</th>
+                        <th span={"col-3"}>Email</th>
+                      </tr>
+                    )}
+                  </thead>
+                  <tbody>
+                    {tenants.length > 0 && (
+                      <>
+                        {tenants.length <= 5 && (
+                          <>
+                            {tenants?.map((tenant) => (
+                              <tr key={tenant.id}>
+                                <td>
+                                  <div className="d-flex  align-items-center">
+                                    <div className="the-mail-checkbox pr-4">
+                                      <input
+                                        className="form-check-input mt-0 pt-0 form-check-dark"
+                                        type="checkbox"
+                                        id="formCheck1"
+                                        onChange={() => {
+                                          autofill(tenant.id);
+                                        }}
+                                        checked={
+                                          loaded && tenant.id === tenantId
+                                        }
+                                      />
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td>{tenant.tenantType}</td>
-                              <td className="text-capitalize">
-                                <a href="javascript:void(0)">
-                                  {tenant?.tenantType === "INDIVIDUAL" ? (
-                                    <>
-                                      {tenant.firstName + " "}
-                                      {tenant.lastName + " "} {tenant.otherName}
-                                    </>
-                                  ) : (
-                                    <>{tenant.companyName + " "}</>
-                                  )}
-                                </a>
-                              </td>
-                              <td>{tenant.email}</td>
-                            </tr>
-                          ))}
-                        </>
-                      )}
-                    </>
+                                </td>
+                                <td>{tenant.tenantType}</td>
+                                <td className="text-capitalize">
+                                  <a href="javascript:void(0)">
+                                    {tenant?.tenantType === "INDIVIDUAL" ? (
+                                      <>
+                                        {tenant.firstName + " "}
+                                        {tenant.lastName + " "}{" "}
+                                        {tenant.otherName}
+                                      </>
+                                    ) : (
+                                      <>{tenant.companyName + " "}</>
+                                    )}
+                                  </a>
+                                </td>
+                                <td>{tenant.email}</td>
+                              </tr>
+                            ))}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </tbody>
+                </table>
+                <div
+                  className="col-12 d-flex justify-content-end"
+                  style={{ minHeight: "40px", maxHeight: "50px" }}
+                >
+                  {loaded && (
+                    <button
+                      className="btn btn-primary cursor-pointer"
+                      type={"button"}
+                      onClick={closeTenantModal}
+                    >
+                      Continue
+                    </button>
                   )}
-                </tbody>
-              </table>
-              <div
-                className="col-12 d-flex justify-content-end"
-                style={{ minHeight: "40px", maxHeight: "50px" }}
-              >
-                {loaded && (
-                  <button
-                    className="btn btn-primary cursor-pointer"
-                    type={"button"}
-                    onClick={closeTenantModal}
-                  >
-                    Continue
-                  </button>
-                )}
+                </div>
               </div>
             </div>
           </div>
