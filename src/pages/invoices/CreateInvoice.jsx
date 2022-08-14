@@ -129,7 +129,6 @@ function CreateInvoice() {
   const [isChecked, setIsChecked] = useState(false);
   useEffect(() => {}, [tenants, isChecked, custname]);
   const autofill = (x) => {
-    getTenants();
     setloaded(false);
     setloading(true);
     getId(x);
