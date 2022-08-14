@@ -18,17 +18,42 @@ function CustomMessage() {
     message: "",
     paramValues: "",
     parameterValues: "",
-    recipients: []
+    recipients: [],
+    parameters: []
   });
 
   useEffect(() => {
     onFileChange();
   }, [selectedFile]);
 
+  useEffect(() => {
+    let data = formData;
+    let templateString = data.message
+    var params = templateString.match(/{{(.*?)}}/g);
+
+    if (params != null && params.length > 0) {
+
+      var paramsText = params.toString();
+      var paramsWithoutBraces = paramsText.replace(/{{|}}/gi, "");
+
+      data.paramValues = paramsWithoutBraces;
+      data.parameterValues = paramsWithoutBraces.split(",")
+
+    } else {
+
+
+      data.paramValues = "";
+      data.parameterValues = []
+    }
+
+    setformData(data);
+    setMessages([]);
+
+  }, [formData.message]);
+
 
   const onFileChange = (event) => {
 
-    let objects = [];
     readXlsxFile(selectedFile).then((rows) => {
 
       let columns = rows.shift();
@@ -45,19 +70,23 @@ function CustomMessage() {
           buttons: [
             {
               label: 'ok',
+              onClick: window.location.reload()
             }
           ]
         });
+
       } else {
         // each row being an array of cells.
+
+        let objects = [];
+
         rows.forEach((row) => {
           const obj = {};
           row.forEach((cell, i) => {
-            obj[columnNames[i]] = cell;
+            obj[columns[i]] = cell;
           });
           objects.push(obj);
         });
-        console.log(objects);
 
         setUploading(false);
         setdataObjects(objects);
@@ -149,22 +178,6 @@ function CustomMessage() {
 
         setformData(...formData, ["message"], inputValue);
 
-      } else {
-        var params = templateString.match(/{{(.*?)}}/g);
-
-        if (params != null && params.length > 0) {
-
-          var paramsText = params.toString();
-          var paramsWithoutBraces = paramsText.replace(/{{|}}/gi, "");
-
-
-          setformData({ ...formData, [inputName]: inputValue });
-          setformData({ ...formData, ["message"]: inputValue });
-          setformData({ ...formData, ["parameterValues"]: paramsWithoutBraces.split(",") });
-
-        } else {
-          setformData({ ...formData, ["message"]: inputValue });
-        }
       }
 
       setformData({ ...formData, ["message"]: inputValue });
@@ -173,136 +186,145 @@ function CustomMessage() {
       setformData({ ...formData, [inputName]: inputValue });
   }
 
-
   const submit = (event) => {
 
     event.preventDefault();
-    let send = false;
 
-    if (formData.parameterValues.length < 1) {
-      send = false;
-      alert("Please set the value of the parameter you want to send");
+    requestsServiceService.createCustomMessage(formData.parameters).then(response => {
+      console.log(response.data.data);
 
-    }
+      if (response.data.successStatus == "success") {
 
+        setSentMessages(response.data.body != null ? response.data.body : []);
 
-    let founAllParams = true;
-    let notFoundParams = "";
+        // moveNext();
 
-    var data = dataObjects[0];
-    var keys = Object.keys(data);
-
-    for (var m = 0; m < keys.length; m++) {
-      keys[m] = keys[m].toLowerCase();
-    }
-
-    for (var i = 0; i < formData.parameterValues.length; i++) {
-
-      if (!keys.includes(formData.parameterValues[i].toLowerCase())) {
-
-        if (notFoundParams.indexOf(formData.parameterValues[i]) < 0)
-          notFoundParams += formData.parameterValues[i] + ",";
-        founAllParams = false;
-      }
-    }
-
-    if (!founAllParams) {
-      send = false;
-      confirmAlert({
-        title: 'Error',
-        message: "Sorry. Some of the params on the message could not be found in your uploaded data. Params : " + notFoundParams,
-        buttons: [
-          {
-            label: 'ok',
-          }
-        ]
-      });
-
-    }
-
-    if (founAllParams)
-      send = true;
-
-    if (send) {
-      var values = [];
-      for (var i = 0; i < formData.parameterValues.length; i++) {
-
-        var paramValues = [];
-
-        for (var m = 0; m < dataObjects.length; m++) {
-          var data = dataObjects[m];
-          Object.keys(data).map(key => {
-            // if (data.hasOwnProperty(key)) {
-            if (key.toLowerCase() == formData.parameterValues[i].toLowerCase())
-              paramValues.push(data[key])
-            // }
-          });
-        }
-        var obj = {
-          parameter: formData.parameterValues[i],
-          values: paramValues
-        };
-        values.push(obj);
-      }
-
-      formData.parameters = values;
-
-      var numbers = [];
-      for (var m = 0; m < dataObjects.length; m++) {
-        var data = dataObjects[m];
-        Object.keys(data).map(key => {
-          if (data.hasOwnProperty(key)) {
-            if (key == "Phone") {
-              console.log(data[key]);
-              numbers.push(data[key]);
-            }
-          }
-        });
-      }
-
-
-      console.log("formData => " + JSON.stringify(formData));
-
-
-      requestsServiceService.createCustomMessage(formData).then(response => {
-        console.log(response.data.data);
-
-        if (response.data.successStatus == "success") {
-
-          setSentMessages(response.data.body != null ? response.data.body : []);
-
-          // moveNext();
-
-        } else {
-          confirmAlert({
-            title: 'Error sending messages',
-            message: response.data.message,
-            buttons: [
-              {
-                label: 'ok',
-              }
-            ]
-          });
-        }
-
-      }).catch(error => {
+      } else {
         confirmAlert({
-          title: 'Error occurred',
-          message: error.message,
+          title: 'Error sending messages',
+          message: response.data.message,
           buttons: [
             {
               label: 'ok',
             }
           ]
         });
+      }
+
+    }).catch(error => {
+      confirmAlert({
+        title: 'Error occurred',
+        message: error.message,
+        buttons: [
+          {
+            label: 'ok',
+          }
+        ]
       });
+    });
+
+  }
+
+
+
+  $('.kev-nxt').unbind().on('click', function (evt) {
+    var theSubmitClass = $('#kev-step-form .active-step').hasClass('step-sub')
+    var nextOfKinCont = $('#kev-step-form .active-step').hasClass('next-of-kin-conatiner')
+    var educationContainer = $('#kev-step-form .active-step').hasClass('education-table-container')
+    var workContainer = $('#kev-step-form .active-step').hasClass('work-experience-container')
+    var programeContainer = $('#kev-step-form .active-step').hasClass('program-container')
+    // alert(theSubmitClass)
+
+    if (theSubmitClass === true) {
+      $('.kev-prev').addClass('d-none');
+      submit(evt);
+    }
+
+    if (educationContainer === true) {
+      let send = false;
+
+
+      if (formData.parameterValues.length < 1) {
+        send = false;
+        alert("Please set the value of the parameter you want to send");
+
+      } else console.log(dataObjects);
+
+
+      let founAllParams = true;
+      let notFoundParams = "";
+
+      var data = dataObjects[0];
+      var keys = Object.keys(data);
+
+      for (var m = 0; m < keys.length; m++) {
+        keys[m] = keys[m].toLowerCase();
+      }
+
+      for (var i = 0; i < formData.parameterValues.length; i++) {
+
+        if (!keys.includes(formData.parameterValues[i].toLowerCase())) {
+
+          if (notFoundParams.indexOf(formData.parameterValues[i]) < 0)
+            notFoundParams += formData.parameterValues[i] + ",";
+          founAllParams = false;
+        }
+      }
+
+      if (!founAllParams) {
+        send = false;
+        confirmAlert({
+          title: 'Error',
+          message: "Sorry. Some of the params on the message could not be found in your uploaded data. Params : " + notFoundParams,
+          buttons: [
+            {
+              label: 'ok',
+            }
+          ]
+        });
+
+      }
+    }
+
+    if (workContainer === true) {
+
+
+    }
+
+    if (programeContainer === true) {
+
 
     }
 
 
+  })
+
+  const getPreviews = () => {
+
+    let messageList = []
+
+    for (var m = 0; m < dataObjects.length; m++) {
+      var messageData = { recipient: "", message: "" };
+      let messagee = formData.message;
+      var data = dataObjects[m];
+      Object.keys(data).map(key => {
+
+        if (key == "Phone") {
+          messageData.recipient = data[key].toString();
+        } else
+          messagee = messagee.replace('{{' + key + '}}', data[key]);
+
+      });
+      messageData.message = messagee;
+      console.log("pusing mess")
+      messageList.push(messageData);
+
+
+    }
+    console.log("pusingss mess")
+    setMessages(messageList);
   }
 
-  
 
   return (
     <>
@@ -365,16 +387,13 @@ function CustomMessage() {
                           <li className="nav-item">
                             <a className="nav-link">3. Preview</a>
                           </li>
-                          <li className="nav-item">
-                            <a className="nav-link">4. Results</a>
-                          </li>
                         </ul>
 
                       </div>
                     </nav>
 
                     {/* <!-- Excel File Upload --> */}
-                    <section className="step-cont active-step">
+                    <section className="step-cont active-step next-of-kin-conatiner">
                       <h3>Excel File Upload</h3>
                       <div className="tab-pane active" id="tab1">
 
@@ -414,7 +433,7 @@ function CustomMessage() {
                     </section>
 
                     {/* <!-- Message --> */}
-                    <section className="step-cont d-none">
+                    <section className="step-cont d-none education-table-container">
                       <h3>Message</h3>
                       <div className=" padding pt-0 pb-0">
                         <p>The fields we have gotten on your document include:
@@ -449,15 +468,31 @@ function CustomMessage() {
                     </section>
 
                     {/* <!-- Document attachments --> */}
-                    <section className="step-cont d-none">
-                      <h3>Preview</h3>
+                    <section className="step-cont d-none work-experience-container step-sub">
+                      <button className="btn btn-primary" type="button" onClick={getPreviews}>Get Previews</button>
+                      <div className="row">
+                        <div className="col-sm form-group">
+                          <h3>Phone Number</h3>
+                        </div>
+                        <div className="col-sm form-group">
+                          <h3>Message</h3>
+                        </div>
+                        <div className="col-sm-2 form-group">
 
+                        </div>
+                      </div>
+                      {messages.length > 0 && messages.map((mess, index) =>
+                        <div className="row p-3 m-3 border border-light">
+                          <div className="col-sm-3 form-group">
+                            <input disabled value={mess.recipient} className="form-control"></input>
+                          </div>
+                          <div className="col-sm form-group">
+                            <textarea rows="2" disabled value={mess.message} className="form-control" />
+                          </div>
+                        </div>
+                      )}
                     </section>
 
-                    <section className="step-cont d-none">
-                      <h3>Results</h3>
-
-                    </section>
 
                     <div className="button-navigators">
                       <button disabled className="btn btn-primary waves-effect kev-prev me-2"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>

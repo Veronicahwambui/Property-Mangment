@@ -7,6 +7,8 @@ import React, { useState, useEffect } from 'react'
 import { confirmAlert } from 'react-confirm-alert';
 import { Link } from 'react-router-dom';
 import requestsServiceService from '../../services/requestsService.service'
+import authService from '../../services/auth.service';
+import Message from '../../components/Message';
 
 function Landlords() {
   const [landlords, setLandlords] = useState([])
@@ -65,6 +67,66 @@ function Landlords() {
       getlandlords();
     })
   }
+
+
+  // MESSAGE TEST
+  const [details, setDetails] = useState({
+    message: "",
+    contact: "",
+    recipientName: "",
+    entity: null,
+    clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+    clientId: parseInt(authService.getClientId()),
+    entityType: "LANDLORD",
+    createdBy: "",
+    senderId: "",
+    subject: "Landlord Communication",
+  });
+
+  const [mode, setmode] = useState("");
+  const handleModeChange = (mode) => {
+    setmode(mode);
+  };
+  const handleClicked = (inv, mod) => {
+    let mes = `Dear ${inv.firstName}, `;
+    let senderId =
+      JSON.parse(authService.getCurrentUserName()).client?.senderId === null
+        ? "REVENUESURE"
+        : JSON.parse(authService.getCurrentUserName()).client?.senderId;
+    setDetails({
+      ...details,
+      message: mes,
+      contact:
+        mod === "Email"
+          ? inv?.email
+          : inv?.phoneNumber,
+      entity: inv?.id,
+      recipientName: inv?.firstName,
+      createdBy: authService.getCurrentUserName(),
+      senderId: senderId,
+      subject: "Landlord Communication",
+    });
+    $(".email-overlay").removeClass("d-none");
+    setTimeout(function () {
+      $(".the-message-maker").addClass("email-overlay-transform");
+    }, 0);
+  };
+
+  const clear = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+      clientId: parseInt(authService.getClientId()),
+      entityType: "LANDLORD",
+      createdBy: "",
+      senderId: "",
+      subject: "Invoice Payment",
+    });
+  };
 
 
   return (
@@ -217,40 +279,59 @@ function Landlords() {
                             </td>
                             <td data-field="unit-num ">{l.agreementPeriod + " months"}</td>
                             <td className="text-right cell-change text-nowrap">
-                              <div className="d-flex align-items-center">
-                                {l.active ? <button
-                                  class="btn btn-danger btn-sm btn-rounded waves-effect waves-light"
-                                  title="deactivate"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#confirm-deactivate"
-                                  onClick={() => setActiveId(l.id)}
-                                >
-                                  Deactivate
-                                </button> : <button
-                                  class="btn btn-success btn-sm btn-rounded waves-effect waves-light"
-                                  title="deactivate"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#confirm-activate"
-                                  onClick={() => setActiveId(l.id)}
-                                >
-                                  Activate
-                                </button>
-                                }
-                                <button className="btn btn-primary btn-sm text-uppercase px-3 save-tbl-btn mx-3 d-none "
-                                  title="save ">Save
-                                </button>
-                                <a
-                                  className="btn btn-light btn-circle waves-effect font-18px btn-transparent cancel-changes d-none "
-                                  title="Cancel "><i className="bx bx-x "></i></a>
-                                <Link to={"/landlord/" + l.id}> <button type="button"
-                                  className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                  data-bs-toggle="modal" data-bs-target="#edit"
-                                  onClick={() => { }}
-                                  style={{ marginLeft: "8px" }}
-                                >
-                                  View Details
-                                </button>
-                                </Link>
+
+                              <div className="d-flex justify-content-end">
+                                <div className="dropdown">
+                                  <a
+                                    className="text-muted font-size-16"
+                                    role="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-haspopup="true"
+                                  >
+                                    <i className="bx bx-dots-vertical-rounded"></i>
+                                  </a>
+                                  <div className="dropdown-menu dropdown-menu-end ">
+                                    {l.active ? <button
+                                      class="btn btn-danger dropdown-item border border-danger"
+                                      title="deactivate"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#confirm-deactivate"
+                                      onClick={() => setActiveId(l.id)}
+                                    >
+                                      Deactivate
+                                    </button> : <button
+                                      class="btn btn-success dropdown-item border border-success"
+                                      title="deactivate"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#confirm-activate"
+                                      onClick={() => setActiveId(l.id)}
+                                    >
+                                      Activate
+                                    </button>
+                                    }
+
+                                    <Link to={"/landlord/" + l.id} class="dropdown-item">
+                                        View LandLord
+                                    </Link>
+
+                                    <a className="dropdown-item "
+                                      onClick={() => {
+                                        handleModeChange("Email");
+                                        handleClicked(l, "Email");
+                                      }}>
+                                      <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                      Email Landlord
+                                    </a>
+                                    <a className="dropdown-item "
+                                      onClick={() => {
+                                        handleModeChange("SMS");
+                                        handleClicked(l, "SMS");
+                                      }}>
+                                      <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                      SMS Landlord
+                                    </a>
+                                  </div>
+                                </div>
                               </div>
                             </td>
                             <td>
@@ -293,9 +374,9 @@ function Landlords() {
                         </nav>
                       )}
                     </div>
-                      <h5 className="font-medium  text-muted mt-2">
-                        showing page <span className="text-primary">{pageCount === 0 ? page : page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
-                      </h5>
+                    <h5 className="font-medium  text-muted mt-2">
+                      showing page <span className="text-primary">{pageCount === 0 ? page : page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
+                    </h5>
                   </div>
 
                 </div>
@@ -341,6 +422,8 @@ function Landlords() {
         </div>
       </div>
       {/* confirm dactivate  */}
+
+      <Message details={details} mode={mode} clear={clear} />
       <div
         className="modal fade"
         id="confirm-activate"

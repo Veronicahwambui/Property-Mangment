@@ -1,5 +1,6 @@
 /* global $*/
 import React, { useState, useEffect } from "react";
+import authLoginService from "../services/authLogin.service";
 import requestsServiceService from "../services/requestsService.service";
 
 export default function Message(props) {
@@ -28,23 +29,37 @@ export default function Message(props) {
       entity: props.details.entity,
       client: props.details.clientId,
       entityType: props.details.entityType,
-      createdBy: props.details.createdBy,
+      createdBy: authLoginService.getCurrentUser(),
     };
     if (props.mode === "Email") {
       let m = {
-        templateName: "mail/email-template",
-        portalName: `${props.details.clientName} PORTAL`,
-        from: "nouveta.tech@outlook.com",
-        to: messageBody.to,
-        subject: messageBody.subject,
-        model: {
-          signature: `${props.details.clientName} Admin`,
-          name: props.details.recipientName,
-          message: messageBody.message,
-          token: "",
+        "templateName": "mail/email-template",
+        "portalName": "CLIENT NAME PORTAL",
+        "from": "developers@nouveta.tech",
+        "to": "kelvinthuku@nouveta.tech",
+        "subject": "SUBJECT",
+        "model": {
+          "signature": "CLIENT NAME Admin",
+          "name": "RECEPIENT NAME",
+          "message": "MESSAGE kelvinthuku@nouveta.tech",
+          "token": ""
         },
-        attachments: [],
-      };
+        "attachments": [ ]
+      }
+      // {
+      //   templateName: "mail/email-template",
+      //   portalName: `${props.details.clientName} PORTAL`,
+      //   from: "nouveta.tech@outlook.com",
+      //   to: messageBody.to,
+      //   subject: messageBody.subject,
+      //   model: {
+      //     signature: `${props.details.clientName} Admin`,
+      //     name: props.details.recipientName,
+      //     message: messageBody.message,
+      //     token: "",
+      //   },
+      //   attachments: [],
+      // };
       requestsServiceService
         .sendEmail(m, data)
         .then((res) => {

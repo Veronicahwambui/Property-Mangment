@@ -7,6 +7,9 @@ class AuthService {
         return username
         // return JSON.parse(localStorage.getItem("user"));
     }
+    getCurrentUser() {
+        return JSON.parse(localStorage.getItem("user")).userName;
+    }
     getInitials(){
         let x = this.getCurrentUserName().split(" ");
         let y = x[0].charAt(0);

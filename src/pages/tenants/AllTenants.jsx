@@ -11,6 +11,8 @@ import HelmetExport, { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
+import Message from '../../components/Message';
+import authLoginService from '../../services/authLogin.service';
 
 
 function AllTenants() {
@@ -68,6 +70,67 @@ function AllTenants() {
       fetchAll()
     })
   }
+
+  // MESSAGE TEST
+  const [details, setDetails] = useState({
+    message: "",
+    contact: "",
+    recipientName: "",
+    entity: null,
+    clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+    clientId: parseInt(authService.getClientId()),
+    entityType: "TENANT",
+    createdBy: "",
+    senderId: "",
+    subject: "Invoice Payment",
+  });
+
+  const [mode, setmode] = useState("");
+  const handleModeChange = (mode) => {
+    setmode(mode);
+  };
+
+  const handleClicked = (inv, mod) => {
+    let mes = `Dear ${inv.tenantType === "COMPANY" ? inv.companyName : inv.firstName}, `;
+    let senderId =
+      JSON.parse(authService.getCurrentUserName()).client?.senderId === null
+        ? "REVENUESURE"
+        : JSON.parse(authService.getCurrentUserName()).client?.senderId;
+    setDetails({
+      ...details,
+      message: mes,
+      contact:
+        mod === "Email"
+          ? inv?.email
+          : inv?.phoneNumber,
+      entity: inv.id,
+      recipientName: inv.tenantType === "COMPANY" ? inv.companyName : inv.firstName,
+      createdBy: authLoginService.getCurrentUser(),
+      senderId: senderId,
+      subject: ""
+    });
+
+    $(".email-overlay").removeClass("d-none");
+    setTimeout(function () {
+      $(".the-message-maker").addClass("email-overlay-transform");
+    }, 0);
+  };
+
+  const clear = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+      clientId: parseInt(authService.getClientId()),
+      entityType: "TENANT",
+      createdBy: authLoginService.getCurrentUser(),
+      senderId: "",
+      subject: "",
+    });
+  };
 
 
   return (
@@ -246,6 +309,23 @@ function AllTenants() {
                                     <i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed View
                                   </Link>
 
+
+                                  <a className="dropdown-item "
+                                          onClick={() => {
+                                            handleModeChange("Email");
+                                            handleClicked(premise, "Email");
+                                          }}>
+                                          <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                          Email Tenant
+                                        </a>
+                                        <a className="dropdown-item "
+                                          onClick={() => {
+                                            handleModeChange("SMS");
+                                            handleClicked(premise, "SMS");
+                                          }}>
+                                          <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                          SMS Tenant
+                                        </a>
                                   {/* <a className="dropdown-item" href="property-details.html"><i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>Detailed view</a> */}
                                   {/* <a className="dropdown-item" href="property-units.html"><i className="font-size-15 mdi mdi-home-variant me-3"></i>Units</a>
                                     <a className="dropdown-item" href="#"><i className="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a>
@@ -301,6 +381,8 @@ function AllTenants() {
                     </h5>
                 </div>
               </div>
+
+              <Message details={details} mode={mode} clear={clear} />
             </div>
           </div>
         </div>

@@ -6,6 +6,8 @@ import moment from "moment";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 import StatusBadge from "../../components/StatusBadge";
+import authService from "../../services/auth.service";
+import Message from "../../components/Message";
 
 function InvoicesParent() {
   const [invoices, setinvoices] = useState([]);
@@ -24,13 +26,16 @@ function InvoicesParent() {
   const showInvoice = () => setinvoice_show(true);
   const [transaction, settransaction] = useState({});
   const [paymentItems, setpaymentItems] = useState([]);
-  useEffect(() => {}, [transaction]);
-  useEffect(() => {}, [paymentItems]);
+  useEffect(() => { }, [transaction]);
+  useEffect(() => { }, [paymentItems]);
   const closeInvoice = () => {
     setpaymentItems([]);
     settransaction({});
     setinvoice_show(false);
   };
+
+
+
   useEffect(() => {
     getInvoices();
   }, [size, page, activeInvoice, transaction, paymentItems]);
@@ -109,6 +114,67 @@ function InvoicesParent() {
   $(document).on("change", ".sdate", addDate);
   $(document).on("change", ".edate", addDate2);
 
+
+  // MESSAGE TEST
+  const [details, setDetails] = useState({
+    message: "",
+    contact: "",
+    recipientName: "",
+    entity: null,
+    clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+    clientId: parseInt(authService.getClientId()),
+    entityType: "TENANCY",
+    createdBy: "",
+    senderId: "",
+    subject: "Invoice Payment",
+  });
+
+  const [mode, setmode] = useState("");
+  const handleModeChange = (mode) => {
+    setmode(mode);
+  };
+  const handleClicked = (inv, mod) => {
+    let mes = `Dear ${inv.tenantName}, your monthly invoice ${inv.transactionId
+      } has been generated . Click here to pay for it`;
+    let senderId =
+      JSON.parse(authService.getCurrentUserName()).client?.senderId === null
+        ? "REVENUESURE"
+        : JSON.parse(authService.getCurrentUserName()).client?.senderId;
+    setDetails({
+      ...details,
+      message: mes,
+      contact:
+        mod === "Email"
+          ? inv?.tenancy?.tenant?.email
+          : inv?.tenancy?.tenant?.phoneNumber,
+      entity: inv?.tenancy?.id,
+      recipientName: inv?.tenantName,
+      createdBy: authService.getCurrentUserName(),
+      senderId: senderId,
+      subject: "Invoice Payment",
+    });
+    $(".email-overlay").removeClass("d-none");
+    setTimeout(function () {
+      $(".the-message-maker").addClass("email-overlay-transform");
+    }, 0);
+  };
+
+  const clear = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+      clientId: parseInt(authService.getClientId()),
+      entityType: "TENANCY",
+      createdBy: "",
+      senderId: "",
+      subject: "Invoice Payment",
+    });
+  };
+
   return (
     <>
       <div className="page-content">
@@ -143,7 +209,7 @@ function InvoicesParent() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       Monthly Invoices
                     </h4>
-                   
+
                     <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
                       <div>
                         <form className="app-search d-none d-lg-block p-2">
@@ -199,6 +265,8 @@ function InvoicesParent() {
                       </button>
                     </div>
                   </div>
+
+                  <Message details={details} mode={mode} clear={clear} />
                   {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
                   {/*     role="toolbar">*/}
                   {/*  <button type="button"*/}
@@ -215,7 +283,7 @@ function InvoicesParent() {
                     >
                       <thead className="table-light">
                         <tr className="table-dark">
-                    
+
                           <th>Invoice Number</th>
                           <th>Tenant</th>
                           <th>Premises</th>
@@ -229,7 +297,7 @@ function InvoicesParent() {
                         {invoices.length > 0 &&
                           invoices?.map((invoice, index) => (
                             <tr data-id={index} key={index}>
-                              
+
                               <td
                               >
                                 {invoice.transactionId}
@@ -279,13 +347,21 @@ function InvoicesParent() {
                                         <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                         Print
                                       </a>
-                                      <a className="dropdown-item " href="# ">
+                                      <a className="dropdown-item "
+                                        onClick={() => {
+                                          handleModeChange("Email");
+                                          handleClicked(invoice, "Email");
+                                        }}>
                                         <i className="font-size-15 mdi mdi-email me-3 "></i>
                                         Email Tenant
                                       </a>
-                                      <a className="dropdown-item " href="# ">
+                                      <a className="dropdown-item "
+                                        onClick={() => {
+                                          handleModeChange("SMS");
+                                          handleClicked(invoice, "SMS");
+                                        }}>
                                         <i className="font-size-15 mdi mdi-chat me-3 "></i>
-                                        Send as SMS
+                                        SMS Tenant
                                       </a>
                                     </div>
                                   </div>
@@ -307,16 +383,16 @@ function InvoicesParent() {
                     </table>
                   </div>
                   <div className="mt-4 mb-0 flex justify-between px-8">
-                   <select className="btn btn-md btn-primary" title="Select A range"
-                          onChange={(e) => sortSize(e)}
-                    value={size}
-                   >
-                  <option className="bs-title-option" value="">Select A range</option>
-                  <option value="10">10 Rows</option>
-                  <option value="30">30 Rows</option>
-                  <option value="50">50 Rows</option>
-                </select>
-                    
+                    <select className="btn btn-md btn-primary" title="Select A range"
+                      onChange={(e) => sortSize(e)}
+                      value={size}
+                    >
+                      <option className="bs-title-option" value="">Select A range</option>
+                      <option value="10">10 Rows</option>
+                      <option value="30">30 Rows</option>
+                      <option value="50">50 Rows</option>
+                    </select>
+
                     {pageCount !== 0 && (
                       <p className=" font-medium text-xs text-gray-700">
                         {" "}

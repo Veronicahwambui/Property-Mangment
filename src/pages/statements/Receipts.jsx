@@ -7,6 +7,8 @@ import moment from "moment";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { confirmAlert } from "react-confirm-alert";
+import authService from "../../services/auth.service";
+import Message from "../../components/Message";
 
 function Receipts() {
   const [statements, setstatements] = useState([]);
@@ -36,6 +38,74 @@ function Receipts() {
     setactiveInvoice(acc);
     showInvoice();
   };
+
+
+
+  // MESSAGE TEST
+  const [details, setDetails] = useState({
+    message: "",
+    contact: "",
+    recipientName: "",
+    entity: null,
+    clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+    clientId: parseInt(authService.getClientId()),
+    entityType: "TENANCY",
+    createdBy: "",
+    senderId: "",
+    subject: "Invoice Payment",
+  });
+
+  const [mode, setmode] = useState("");
+  const handleModeChange = (mode) => {
+    setmode(mode);
+  };
+
+  const handleClicked = (inv, mod) => {
+    let mes = `Dear ${inv.paidBy}, your payment for invoice ${inv.billNo
+      } for KES ${formatCurrency.format(
+        inv.receiptAmount
+      )} has been received. Thank you`;
+    let senderId =
+      JSON.parse(authService.getCurrentUserName()).client?.senderId === null
+        ? "REVENUESURE"
+        : JSON.parse(authService.getCurrentUserName()).client?.senderId;
+    setDetails({
+      ...details,
+      message: mes,
+      contact:
+        mod === "Email"
+          ? inv?.tenant?.email
+          : inv?.tenant?.phoneNumber,
+      entity: inv.tenant !=undefined ? inv.tenant.id : inv.id,
+      recipientName: inv?.tenantName,
+      createdBy: authService.getCurrentUserName(),
+      senderId: senderId,
+      subject: "Invoice Payment"
+    });
+
+    $(".email-overlay").removeClass("d-none");
+    setTimeout(function () {
+      $(".the-message-maker").addClass("email-overlay-transform");
+    }, 0);
+  };
+
+  const clear = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+      clientId: parseInt(authService.getClientId()),
+      entityType: "TENANT",
+      createdBy: "",
+      senderId: "",
+      subject: "Customer Receipt",
+    });
+  };
+
+
   return (
     <>
       <div className="page-content">
@@ -152,6 +222,8 @@ function Receipts() {
                   {/*  </button>*/}
                   {/*</div>*/}
                 </div>
+
+                <Message details={details} mode={mode} clear={clear} />
                 <div className="card-body">
                   <div className="table-responsive overflow-visible">
                     <table
@@ -160,7 +232,7 @@ function Receipts() {
                     >
                       <thead className="table-light">
                         <tr className="table-dark">
-                         
+
                           <th>receiptNo</th>
                           <th>paid by</th>
                           <th>bill amount</th>
@@ -179,7 +251,7 @@ function Receipts() {
                               <td>{statement.paidBy}</td>
                               <td>
                                 {statement?.tenant?.tenantType ===
-                                "INDIVIDUAL" ? (
+                                  "INDIVIDUAL" ? (
                                   <>
                                     {statement?.tenant?.firstName}{" "}
                                     {statement?.tenant?.lastName}
@@ -204,11 +276,6 @@ function Receipts() {
                               <td>{statement.payReferenceNo}</td>
                               <td>
                                 <div className="d-flex justify-content-end">
-                                  {/*<button type="button"*/}
-                                  {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                  {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
-                                  {/*        >Receive Payment*/}
-                                  {/*</button>*/}
                                   <div className="dropdown">
                                     <a
                                       className="text-muted font-size-16"
@@ -233,11 +300,19 @@ function Receipts() {
                                         <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                         Print
                                       </a>
-                                      <a className="dropdown-item " href="# ">
+                                      <a className="dropdown-item "
+                                        onClick={() => {
+                                          handleModeChange("Email");
+                                          handleClicked(statement, "Email");
+                                        }}>
                                         <i className="font-size-15 mdi mdi-email me-3 "></i>
                                         Email Tenant
                                       </a>
-                                      <a className="dropdown-item " href="# ">
+                                      <a className="dropdown-item "
+                                        onClick={() => {
+                                          handleModeChange("SMS");
+                                          handleClicked(statement, "SMS");
+                                        }}>
                                         <i className="font-size-15 mdi mdi-chat me-3 "></i>
                                         Send as SMS
                                       </a>

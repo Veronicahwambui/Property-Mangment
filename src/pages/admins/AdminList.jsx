@@ -8,6 +8,9 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 
 import requestsServiceService from "../../services/requestsService.service";
 import StatusBadge from "../../components/StatusBadge";
+import authService from "../../services/auth.service";
+import Message from "../../components/Message";
+import authLoginService from "../../services/authLogin.service";
 
 function AdminList() {
   const [userList, setUserList] = useState([]);
@@ -19,7 +22,7 @@ function AdminList() {
     });
   };
 
-  
+
 
   useEffect(() => {
     getData();
@@ -42,7 +45,7 @@ function AdminList() {
               .deactivateUser(id)
               .then((res) => {
 
-    getData();
+                getData();
                 confirmAlert({
                   message: res.data.message,
                   buttons: [
@@ -150,6 +153,68 @@ function AdminList() {
   $("body").on("click", ".enableUser", confirmActivateUser);
   $("body").on("click", ".unlockUser", confirmUnlockUserAccount);
 
+
+  // MESSAGE TEST
+  const [details, setDetails] = useState({
+    message: "",
+    contact: "",
+    recipientName: "",
+    entity: null,
+    clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+    clientId: parseInt(authService.getClientId()),
+    entityType: "USER",
+    createdBy:  authLoginService.getCurrentUser(),
+    senderId: "",
+    subject: "I",
+  });
+
+  const [mode, setmode] = useState("");
+  const handleModeChange = (mode) => {
+    setmode(mode);
+  };
+
+  const handleClicked = (inv, mod) => {
+    let mes = `Dear ${inv.firstName}, `;
+    let senderId =
+      JSON.parse(authService.getCurrentUserName()).client?.senderId === null
+        ? "REVENUESURE"
+        : JSON.parse(authService.getCurrentUserName()).client?.senderId;
+    setDetails({
+      ...details,
+      message: mes,
+      contact:
+        mod === "Email"
+          ? inv?.email
+          : inv?.phoneNumber,
+      entity: inv.id,
+      recipientName: inv?.firstName,
+      createdBy: authService.getCurrentUserName(),
+      senderId: senderId,
+      subject: "Invoice Payment"
+    });
+
+    $(".email-overlay").removeClass("d-none");
+    setTimeout(function () {
+      $(".the-message-maker").addClass("email-overlay-transform");
+    }, 0);
+  };
+
+  const clear = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+      clientId: parseInt(authService.getClientId()),
+      entityType: "USER",
+      createdBy: authLoginService.getCurrentUser(),
+      senderId: "",
+      subject: "",
+    });
+  };
+
   return (
     <div className="">
       <div className="page-content">
@@ -163,10 +228,10 @@ function AdminList() {
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
-                    <Link to='/'>Dashboard </Link>
+                      <Link to='/'>Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">
-                    <Link to='/adminlist'> System Users</Link>
+                      <Link to='/adminlist'> System Users</Link>
                     </li>
                   </ol>
                 </div>
@@ -181,7 +246,7 @@ function AdminList() {
             <div class="col-12">
               <div class="card">
                 <div class="card-body">
-                  <div className= "" >
+                  <div className="" >
                     <table
                       className="table no-wrap nowrap w-100 table-striped"
                       id="datatable-buttons"
@@ -229,7 +294,7 @@ function AdminList() {
                                   </td>
 
                                   <td>
-                                    {(list.authAccount && list.authAccount.correlator!=undefined )? (
+                                    {(list.authAccount && list.authAccount.correlator != undefined) ? (
                                       <StatusBadge type="True" />
                                     ) : (
                                       <StatusBadge type="False" />
@@ -290,10 +355,27 @@ function AdminList() {
                                             UnBlock User Account
                                           </button>
                                         )}
-                                        
-                                        <Link    class="dropdown-item" to={"/adminlist/view/"+ list.user.id}>
+
+                                        <Link class="dropdown-item" to={"/adminlist/view/" + list.user.id}>
                                           View user
                                         </Link>
+
+                                        <a className="dropdown-item "
+                                          onClick={() => {
+                                            handleModeChange("Email");
+                                            handleClicked(list.user, "Email");
+                                          }}>
+                                          <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                          Email User
+                                        </a>
+                                        <a className="dropdown-item "
+                                          onClick={() => {
+                                            handleModeChange("SMS");
+                                            handleClicked(list.user, "SMS");
+                                          }}>
+                                          <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                          SMS User
+                                        </a>
                                       </div>
                                     </div>
                                   </td>
@@ -303,6 +385,8 @@ function AdminList() {
                           })}
                       </tbody>
                     </table>
+
+                    <Message details={details} mode={mode} clear={clear} />
                   </div>
                 </div>
               </div>
