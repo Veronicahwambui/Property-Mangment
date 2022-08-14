@@ -12,6 +12,7 @@ function CustomMessage() {
   const [selectedFile, setselectedFile] = useState('');
   const [columnNames, setcolumnNames] = useState([]);
   const [dataObjects, setdataObjects] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [sentMessages, setSentMessages] = useState([]);
   const [formData, setformData] = useState({
     message: "",
@@ -301,6 +302,7 @@ function CustomMessage() {
 
   }
 
+  
 
   return (
     <>
