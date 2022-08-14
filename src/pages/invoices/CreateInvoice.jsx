@@ -4,7 +4,7 @@ import requestsServiceService from "../../services/requestsService.service";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { Modal, ModalFooter } from "react-bootstrap";
-
+import CloseButton from "react-bootstrap/CloseButton";
 function CreateInvoice() {
   const [tenants, setTenants] = useState([]);
 
@@ -125,13 +125,12 @@ function CreateInvoice() {
     setloading2(true);
     getTenants();
   };
-  const redirectToInvoices=()=>{
-
-    window.location.href = "/#/invoices"
-  }
+  const redirectToInvoices = () => {
+    window.location.href = "/#/invoices";
+  };
   const [tenantName, setTenantName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  useEffect(() => { }, [tenants, isChecked, custname]);
+  useEffect(() => {}, [tenants, isChecked, custname]);
   const autofill = (x) => {
     setloaded(false);
     setloading(true);
@@ -573,6 +572,9 @@ function CreateInvoice() {
         size="lg"
         centered
       >
+        <Modal.Header>
+          <CloseButton aria-label="Hide" onClick={redirectToInvoices} />
+        </Modal.Header>
         <Modal.Body>
           <div className="text-center mb-4 pt-2">
             <div className="avatar-md mx-auto mb-4 ">
@@ -739,12 +741,6 @@ function CreateInvoice() {
             </div>
           </div>
         </Modal.Body>
-        <ModalFooter>
-
-          <button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToInvoices}>
-            Cancel
-          </button>
-        </ModalFooter>
       </Modal>
       <footer className="footer ">
         <div className="container-fluid ">
