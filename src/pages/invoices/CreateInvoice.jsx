@@ -125,6 +125,10 @@ function CreateInvoice() {
     setloading2(true);
     getTenants();
   };
+  const redirectToInvoices=()=>{
+
+    window.location.href = "/#/invoices"
+  }
   const [tenantName, setTenantName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   useEffect(() => { }, [tenants, isChecked, custname]);
