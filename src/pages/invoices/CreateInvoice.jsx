@@ -594,9 +594,14 @@ function CreateInvoice() {
                       </div>
                       <p>
                         {tenants?.length >= 5 ? (
-                          <span>search a tenant name....</span>
+                          <span>Specify a tenant name....</span>
                         ) : (
                           <></>
+                        )}
+                        {searchTerm !== "" && tenants.length < 1 && (
+                          <span className={"text-danger"}>
+                            Tenant not found!
+                          </span>
                         )}
                       </p>
                     </div>
@@ -624,9 +629,9 @@ function CreateInvoice() {
                   )}
                 </thead>
                 <tbody>
-                  {tenants.length > 0 ? (
+                  {tenants.length > 0 && (
                     <>
-                      {tenants.length <= 5 ? (
+                      {tenants.length <= 5 && (
                         <>
                           {tenants?.map((tenant) => (
                             <tr key={tenant.id}>
@@ -663,12 +668,8 @@ function CreateInvoice() {
                             </tr>
                           ))}
                         </>
-                      ) : (
-                        <></>
                       )}
                     </>
-                  ) : (
-                    <>No records found</>
                   )}
                 </tbody>
               </table>
