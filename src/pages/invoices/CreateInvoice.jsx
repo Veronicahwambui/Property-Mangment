@@ -32,6 +32,11 @@ function CreateInvoice() {
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = (e) => {
     setloaded(false);
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
     setSearchTerm(e.target.value);
   };
   useEffect(() => {
