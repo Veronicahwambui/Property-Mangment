@@ -9,7 +9,7 @@ function CreateInvoice() {
   const [tenants, setTenants] = useState([]);
 
   // tenant details
-  const [tenantId, settenantId] = useState(null);
+  const [tenantId, settenantId] = useState(undefined);
   const [tenantEmail, settenantEmail] = useState("");
   const [tenantPhone, settenantPhone] = useState("");
   const [description, setdescription] = useState("");
@@ -20,7 +20,7 @@ function CreateInvoice() {
   const [quantity, setquantity] = useState(0);
   const [custname, setcustname] = useState("");
   const [tenancies, settenancies] = useState([]);
-  const [tenancyId, settenancyId] = useState(null);
+  const [tenancyId, settenancyId] = useState(undefined);
   const [applicableChargeName, setapplicableChargeName] = useState("");
   const [applicableCharges, setapplicableCharges] = useState([]);
   const [error, setError] = useState({
@@ -34,13 +34,15 @@ function CreateInvoice() {
     setloaded(false);
     setSearchTerm(e.target.value);
   };
-
   useEffect(() => {
     getTenants();
+  }, [searchTerm]);
+
+  useEffect(() => {
     requestsServiceService.allApplicableCharges().then((res) => {
       setapplicableCharges(res.data.data);
     });
-  }, [tenancyId, searchTerm]);
+  }, []);
   useEffect(() => {
     getTotalKsh();
   }, [quantity, unitcost]);
@@ -73,28 +75,44 @@ function CreateInvoice() {
   const [loaded, setloaded] = useState(false);
 
   const getId = (y) => {
-    requestsServiceService.getTenant(y).then((res) => {
-      let temp = res.data.data.tenancies;
-      if (res.data?.data?.tenancies?.length > 0) {
-        settenancies(temp);
-        setloading(false);
-        setloaded(true);
-      } else {
+    requestsServiceService
+      .getTenant(y)
+      .then((res) => {
+        let temp = res.data.data.tenancies;
+        if (res.data?.data?.tenancies?.length > 0) {
+          settenancies(temp);
+          setloading(false);
+          setloaded(true);
+          setIsChecked(true);
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        } else {
+          setloading(false);
+          setError({
+            ...error,
+            message: "Tenant has no tenancies!",
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
         setloading(false);
         setError({
           ...error,
           message: "Tenant has no tenancies!",
           color: "danger",
         });
-      }
-    });
+      });
   };
 
-  useEffect(() => {}, [tenants]);
+  const [isChecked, setIsChecked] = useState(false);
+  useEffect(() => {}, [tenants, isChecked, custname]);
   const autofill = (x) => {
     setloaded(false);
     setloading(true);
-    console.log(x);
     getId(x);
     let sel = tenants.find((tenant) => tenant.id === parseInt(x));
     let email = sel?.email;
@@ -583,6 +601,7 @@ function CreateInvoice() {
                       </p>
                     </div>
                   </div>
+                  <span className={"text-" + error.color}>{error.message}</span>
                 </form>
               </div>
             </div>
@@ -613,14 +632,15 @@ function CreateInvoice() {
                             <tr key={tenant.id}>
                               <td>
                                 <div className="d-flex  align-items-center">
-                                  <div
-                                    className="the-mail-checkbox pr-4"
-                                    onClick={() => autofill(tenant.id)}
-                                  >
+                                  <div className="the-mail-checkbox pr-4">
                                     <input
                                       className="form-check-input mt-0 pt-0 form-check-dark"
                                       type="checkbox"
                                       id="formCheck1"
+                                      onChange={() => {
+                                        autofill(tenant.id);
+                                      }}
+                                      checked={loaded && tenant.id === tenantId}
                                     />
                                   </div>
                                 </div>
@@ -648,14 +668,15 @@ function CreateInvoice() {
                       )}
                     </>
                   ) : (
-                    <>
-                      <p>No records found</p>
-                    </>
+                    <>No records found</>
                   )}
                 </tbody>
               </table>
-              {loaded && (
-                <div className="col-12 d-flex justify-content-end">
+              <div
+                className="col-12 d-flex justify-content-end"
+                style={{ minHeight: "40px", maxHeight: "50px" }}
+              >
+                {loaded && (
                   <button
                     className="btn btn-primary cursor-pointer"
                     type={"button"}
@@ -663,8 +684,8 @@ function CreateInvoice() {
                   >
                     Continue
                   </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </Modal.Body>
