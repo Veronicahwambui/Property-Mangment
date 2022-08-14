@@ -269,7 +269,12 @@ function Landlords() {
                         {landlords?.map((l, index) => (
                           <tr data-id={index} key={index}>
                             <td style={{ width: "80px" }}>{index + 1}</td>
-                            <td className="text-capitalize" data-field="estate">{l.firstName + " " + l.lastName}</td>
+
+                            <td className="text-capitalize" data-field="estate">
+                              <Link to={"/landlord/" + l.id} class="dropdown-item">
+                                {l.firstName + " " + l.lastName}
+                              </Link>
+                            </td>
                             <td className="text-capitalize" >{l.phoneNumber}</td>
                             <td className="text-capitalize" >{l.landLordAgreementType.name?.toLowerCase()?.replace(/_/g, " ")}</td>
                             <td  >{l.fileNumber}</td>
@@ -311,7 +316,7 @@ function Landlords() {
                                     }
 
                                     <Link to={"/landlord/" + l.id} class="dropdown-item">
-                                        View LandLord
+                                      View LandLord
                                     </Link>
 
                                     <a className="dropdown-item "

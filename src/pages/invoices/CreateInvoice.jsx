@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import requestsServiceService from "../../services/requestsService.service";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { Modal } from "react-bootstrap";
+import { Modal, ModalFooter } from "react-bootstrap";
 
 function CreateInvoice() {
   const [tenants, setTenants] = useState([]);
@@ -127,7 +127,7 @@ function CreateInvoice() {
   };
   const [tenantName, setTenantName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  useEffect(() => {}, [tenants, isChecked, custname]);
+  useEffect(() => { }, [tenants, isChecked, custname]);
   const autofill = (x) => {
     setloaded(false);
     setloading(true);
@@ -735,6 +735,12 @@ function CreateInvoice() {
             </div>
           </div>
         </Modal.Body>
+        <ModalFooter>
+
+          <button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToInvoices}>
+            Cancel
+          </button>
+        </ModalFooter>
       </Modal>
       <footer className="footer ">
         <div className="container-fluid ">
