@@ -596,6 +596,7 @@ function CreateInvoice() {
                           onChange={(e) => handleSearch(e)}
                           className="form-control form-control-lg  text-center two-step "
                           placeholder="Enter tenant name"
+                          autoFocus
                         />
                       </div>
                       <p>
