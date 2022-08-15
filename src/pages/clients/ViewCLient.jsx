@@ -1,7 +1,7 @@
 /* global $ */
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
@@ -13,6 +13,8 @@ import authLoginService from "../../services/authLogin.service";
 import useTabs from "../../hooks/useTabs";
 
 function ViewClient() {
+  const location = useLocation();
+  const clientId = useParams().id;
   const [clientTypes, setClientTypes] = useState([]);
   const [client, setClient] = useState([]);
   const [tenancyStatuses, setTenancyStatuses] = useState([]);
@@ -20,12 +22,11 @@ function ViewClient() {
     name: "",
     id: "",
   });
+  const [clientUsers, setclientUsers] = useState([]);
+
   const [activeLink, setActiveLink] = useTabs();
   const [accountsData, setAccountsData] = useState([]);
   const [banks, setBanks] = useState([]);
-
-  const { id } = useParams();
-  const clientId = id;
 
   //accounts edit
   const [editBankId, setEditBankId] = useState(null);
@@ -93,7 +94,8 @@ function ViewClient() {
         name: ct.name,
         id: ct.id,
       });
-      console.log(clientType);
+      console.log(res.data.data.users);
+      setclientUsers(res.data.data.users);
       setAccountsData(res.data.data.allByClient);
     });
   };
@@ -260,21 +262,6 @@ function ViewClient() {
       });
     }, 2000);
   };
-  const [allUsers, setAllUsers] = useState([]);
-  const [clientUsers, setclientUsers] = useState([]);
-  const getData = () => {
-    // e.preventDefault()
-    requestsServiceService.getData().then((res) => {
-      setclientUsers(res.data.data);
-    });
-  };
-  useEffect(() => {
-    getData();
-    // setclientUsers(
-    //   requestsServiceService.getClientUsers(AuthService.getClientId())
-    // );
-  }, [activeLink]);
-
   //messages
   const [details, setDetails] = useState({
     message: "",
@@ -671,29 +658,29 @@ function ViewClient() {
 
                                                   <td>
                                                     <p className="mb-0">
-                                                      {list.user.firstName +
+                                                      {list.firstName +
                                                         "  " +
-                                                        list.user.lastName}
+                                                        list.lastName}
                                                     </p>
                                                   </td>
                                                   <td>
                                                     <p className="mb-0">
-                                                      {list.user.userName}
+                                                      {list.userName}
                                                     </p>
                                                   </td>
                                                   <td>
                                                     <p className="mb-0">
-                                                      {list.user.email}
+                                                      {list.email}
                                                     </p>
                                                   </td>
                                                   <td>
                                                     <p className="mb-0">
-                                                      {list.user.phoneNumber}
+                                                      {list.phoneNumber}
                                                     </p>
                                                   </td>
                                                   <td>
                                                     <p className="mb-0">
-                                                      {list.user.role.name}
+                                                      {list.role.name}
                                                     </p>
                                                   </td>
 
@@ -733,15 +720,11 @@ function ViewClient() {
                                                         <Link
                                                           to={
                                                             "/adminlist/edit/" +
-                                                            list.user.id
+                                                            list.id
                                                           }
+                                                          className="dropdown-item"
                                                         >
-                                                          <a
-                                                            className="dropdown-item"
-                                                            href="#"
-                                                          >
-                                                            edit user
-                                                          </a>
+                                                          edit user
                                                         </Link>
 
                                                         {list.authAccount &&
@@ -749,9 +732,7 @@ function ViewClient() {
                                                           .correlator !==
                                                           undefined ? (
                                                           <button
-                                                            data-id={
-                                                              list.user.id
-                                                            }
+                                                            data-id={list.id}
                                                             className="dropdown-item disableUser"
                                                           >
                                                             Deactivate User
@@ -759,7 +740,7 @@ function ViewClient() {
                                                         ) : (
                                                           <button
                                                             data-id={
-                                                              list.user.userName
+                                                              list.userName
                                                             }
                                                             className="dropdown-item enableUser"
                                                           >
@@ -771,9 +752,7 @@ function ViewClient() {
                                                           list.authAccount
                                                             .blocked && (
                                                             <button
-                                                              data-id={
-                                                                list.user.id
-                                                              }
+                                                              data-id={list.id}
                                                               className="dropdown-item unlockUser"
                                                             >
                                                               UnBlock User
@@ -785,7 +764,7 @@ function ViewClient() {
                                                           class="dropdown-item"
                                                           to={
                                                             "/adminlist/view/" +
-                                                            list.user.id
+                                                            list.id
                                                           }
                                                         >
                                                           View user
@@ -798,7 +777,7 @@ function ViewClient() {
                                                               "Email"
                                                             );
                                                             handleClicked(
-                                                              list.user,
+                                                              list,
                                                               "Email"
                                                             );
                                                           }}
@@ -813,7 +792,7 @@ function ViewClient() {
                                                               "SMS"
                                                             );
                                                             handleClicked(
-                                                              list.user,
+                                                              list,
                                                               "SMS"
                                                             );
                                                           }}
