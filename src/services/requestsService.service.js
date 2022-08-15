@@ -899,8 +899,32 @@ class RequestsService {
       m
     );
   }
+
+  // LANDLORD PREMISES / DASHBOARD
   getLandLordPremises(data) {
     return axiosInstance.post(baseUrl + "/premises/list/", data);
+  }
+  getLandlordDashboard(landlordId, sdate, edate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard?startDate=" +
+        sdate +
+        "&endDate=" +
+        edate +
+        "&landlord=" +
+        landlordId
+    );
+  }
+  getLandlordGraph(landlordId, sdate, edate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard/graphs?landlord=" +
+        landlordId +
+        "&startDate=" +
+        sdate +
+        "&endDate=" +
+        edate
+    );
   }
 }
 
