@@ -12,6 +12,9 @@ import AuthService from "../../services/auth.service";
 import StatusBadge from "../../components/StatusBadge";
 import ReactPaginate from "react-paginate";
 import useTabs from "../../hooks/useTabs";
+import { Helmet } from "react-helmet";
+import Chart from "react-apexcharts";
+import numeral from "numeral";
 
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useTabs();
@@ -155,12 +158,8 @@ function ViewLandlord() {
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const [startDate, setStartDate] = useState(
-    moment().startOf("month").format("YYYY-MM-DD")
-  );
-  const [endDate, setEndDate] = useState(
-    moment(new Date()).add(3, "M").format("YYYY-MM-DD")
-  );
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [premises, setPremises] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const getPremises = () => {
@@ -434,12 +433,240 @@ function ViewLandlord() {
       });
   };
 
+  // LANDLORD DASHBOARD
+  const colors = [
+    "#3399ff",
+    "#ff7f50",
+    "#00ff00",
+    "#00a591",
+    "#ecdb54",
+    "#6b5b95",
+    "#944743",
+    "#dc4c46",
+    "#034f84",
+    "#edf1ff",
+  ];
+
+  const [dashboardData, setDashboardData] = useState({});
+  const [radioBarData, setRadioBarData] = useState([]);
+  const [radioBarData2, setRadioBarData2] = useState([]);
+  const [transactionModesData, setTransactionModesData] = useState([]);
+  const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] =
+    useState([]);
+  useEffect(() => {
+    fetchDashData();
+  }, []);
+  // fetch data
+  const fetchDashData = () => {
+    requestsServiceService
+      .getLandlordDashboard(userId, "2022/06/01", "2022/08/15")
+      .then((res) => {
+        console.log(res);
+        $("#spinner").addClass("d-none");
+        setDashboardData(res.data.data);
+      });
+    requestsServiceService
+      .getClientDashboardGraphs("2022/06/01", "2022/08/15")
+      .then((res) => {
+        setRadioBarData(res.data.data.collectionSummaryByPremiseUseType);
+        setRadioBarData2(res.data.data.collectionSummaryByUnitType);
+        // setPieChartData(res.data.data.collectionSummaryByApplicableCharge);
+        setTransactionModesData(res.data.data.collectionSummaryByPaymentMode);
+        setMonthlyCollectionSummaryRevenue(
+          res.data.data.monthlyCollectionSummaryRevenue
+        );
+      });
+  };
+  let formatCurrency = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "KES",
+  });
+  useEffect(() => {
+    console.log(dashboardData);
+  }, [dashboardData]);
+
+  // line graph
+  var options = {
+    chart: {
+      height: 360,
+      type: "bar",
+      stacked: !1,
+      toolbar: {
+        show: !1,
+      },
+      zoom: {
+        enabled: !0,
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: !1,
+        columnWidth: "40%",
+        // endingShape: "rounded"
+      },
+    },
+    dataLabels: {
+      enabled: !1,
+    },
+    stroke: { show: !0, width: 2, colors: ["transparent"] },
+
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          // return "KES " + value;
+          return numeral(value).format("0,0 a");
+        },
+        // formatter: function(val, index) {
+
+        //     return numeral(val).format('0,0')
+        // },
+      },
+      title: {
+        text: "Amount in KES",
+      },
+    },
+    series: [
+      {
+        name: "Amount Invoiced",
+        data: monthlyCollectionSummaryRevenue?.map((x) => x.variance),
+      },
+      {
+        name: "Amount Paid",
+        data: monthlyCollectionSummaryRevenue?.map((x) => x.value),
+      },
+    ],
+    xaxis: {
+      categories: monthlyCollectionSummaryRevenue?.map((x) => x.item),
+    },
+    colors: ["#f46a6a", "#556ee6"],
+    legend: {
+      position: "bottom",
+    },
+    fill: {
+      opacity: 1,
+    },
+
+    tooltip: {
+      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
+
+        return (
+          "<ul>" +
+          "<li><b>Price</b>: " +
+          data.x +
+          "</li>" +
+          "<li><b>Number</b>: " +
+          data.y +
+          "</li>" +
+          "<li><b>Product</b>: '" +
+          data.product +
+          "'</li>" +
+          "<li><b>Info</b>: '" +
+          data.info +
+          "'</li>" +
+          "<li><b>Site</b>: '" +
+          data.site +
+          "'</li>" +
+          "</ul>"
+        );
+      },
+    },
+
+    tooltip: {
+      y: {
+        formatter: function (
+          value,
+          { series, seriesIndex, dataPointIndex, w }
+        ) {
+          return "KES " + numeral(value).format("0,0");
+        },
+      },
+    },
+    tooltip: {
+      y: [
+        {
+          title: {
+            formatter: function (e) {
+              return e + " (mins)";
+            },
+          },
+        },
+        {
+          title: {
+            formatter: function (e) {
+              return e + " per session";
+            },
+          },
+        },
+        {
+          title: {
+            formatter: function (e) {
+              return e;
+            },
+          },
+        },
+      ],
+    },
+    tooltip: {
+      enabled: true,
+      enabledOnSeries: undefined,
+      shared: true,
+      followCursor: false,
+      intersect: false,
+      inverseOrder: false,
+      custom: undefined,
+      fillSeriesColor: false,
+      theme: false,
+      style: {
+        fontSize: "12px",
+        fontFamily: undefined,
+      },
+      fillSeriesColor: false,
+      theme: "light",
+
+      marker: {
+        show: true,
+      },
+      onDatasetHover: {
+        highlightDataSeries: true,
+      },
+
+      y: {
+        formatter: function (
+          value,
+          { series, seriesIndex, dataPointIndex, w }
+        ) {
+          let currentTotal = 0;
+          series.forEach((s) => {
+            currentTotal += s[dataPointIndex];
+          });
+          return (
+            "<span class='text-right w-100 d-flex' > KES " +
+            numeral(value).format("0,0") +
+            "</span> "
+          );
+        },
+      },
+    },
+  };
   return (
     <>
       <div className="page-content">
         <div className="content-fluid">
           {/* <!-- start page title --> */}
           <div class="row">
+            <div id="spinner">
+              <div id="status">
+                <div className="spinner-chase">
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18"></h4>
@@ -463,8 +690,8 @@ function ViewLandlord() {
           <div className="row">
             <div className="col-12">
               <div className="card">
-                <div className="card-body pt-2 pb-3">
-                  <nav className="navbar navbar-expand-md navbar-white bg-white py-2">
+                <div className="card-body pt-2 pb-3 align-items-center d-flex">
+                  <nav className="navbar navbar-expand-md navbar-white bg-white py-2 w-100">
                     <button
                       className="navbar-toggler btn btn-sm px-3 font-size-16 header-item waves-effect h-auto text-primary"
                       type="button"
@@ -534,163 +761,329 @@ function ViewLandlord() {
                       </div>
                     </div>
                   </nav>
+                  <div className="text-end">
+                    <button
+                      type="button"
+                      onClick={() => landlordshow()}
+                      className="btn btn-primary dropdown-toggle option-selector"
+                    >
+                      <i className="dripicons-plus font-size-16"></i>{" "}
+                      <span className="pl-1 d-md-inline">
+                        Edit Landlord details
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
+            {error.color !== "" && (
+              <div className={"alert alert-" + error.color} role="alert">
+                {error.message}
+              </div>
+            )}
 
             {/*LANDLORD DETAILS*/}
           </div>
-          {
-            activeLink === 1 && (
-              <div className="row">
-                <div className="col-12">
-                  {error.color !== "" && (
-                    <div className={"alert alert-" + error.color} role="alert">
-                      {error.message}
-                    </div>
-                  )}
-                  <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <div className="d-flex align-items-center flex-grow-1">
-                        <h4 className="mb-0  bg-transparent  p-0 m-0">
-                          Landlord Details
-                        </h4>
+          {activeLink === 1 && (
+            <div className="row">
+              <div className="col-xl-4">
+                <div className="card calc-h-3px">
+                  <div className="card-body pb-1">
+                    <div>
+                      <div className="mb-4 me-3">
+                        <i className="mdi mdi-account-circle text-primary h1"></i>
                       </div>
-                      <div className="d-flex align-items-center flex-grow-1"></div>
-                      <div className="d-flex">
-                        <button
-                          type="button"
-                          onClick={() => landlordshow()}
-                          className="btn btn-primary dropdown-toggle option-selector"
-                        >
-                          <i className="dripicons-plus font-size-16"></i>{" "}
-                          <span className="pl-1 d-md-inline">
-                            Edit Landlord details
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card calc-h-3px">
-                    <div className="card-body pb-5">
                       <div>
-                        <div className="mb-4 me-3">
-                          <i className="mdi mdi-account-circle text-primary h1"></i>
-                        </div>
-                        <div>
-                          <h5 className="text-capitalize">
-                            {landlord?.firstName} {landlord?.lastName}{" "}
-                            {landlord?.otherName}
-                            {landlord.active ? (
-                              <span className="badge-soft-success badge">
-                                Active
-                              </span>
-                            ) : (
-                              <span className="badge-soft-danger badge">
-                                Inactive
-                              </span>
-                            )}
-                          </h5>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="card-body border-top">
-                      <p className="text-muted mb-0 d-flex align-items-center">
-                        <a
-                          href="tel:0704549859"
-                          className="d-flex align-items-center"
-                        >
-                          <i className="mdi mdi-phone me-2 font-size-18" />{" "}
-                          {landlord.phoneNumber}
-                        </a>{" "}
-                        <span className="px-3 px-3">|</span>
-                        <a
-                          className="d-flex align-items-center"
-                          href={"mailto:" + landlord.email}
-                        >
-                          <i className="mdi mdi-email-outline font-size-18 me-2" />
-                          {landlord.email}
-                        </a>
-                      </p>
-                    </div>
-                    <div className={"d-flex"}>
-                      <div className="card-body border-top">
-                        <p className="p-0 m-0">
-                          <span className="text-muted">National ID No. </span>
-                          {landlord.idNumber}
-                        </p>
-                      </div>
-                      <div className="card-body">
-                        <p className="p-0 m-0">
-                          <span className="text-muted">File Number. </span>
-                          {landlord.fileNumber}
-                        </p>
-                      </div>
-                      <div className="card-body border-top text-capitalize">
-                        <p className="p-0 m-0">
-                          <span className="text-muted">Landlord Type. </span>
-                          {landlord.landLordType
-                            ?.toLowerCase()
-                            ?.replace(/_/g, " ")}
-                        </p>
-                      </div>
-                      <div className="card-body border-top">
-                        <p className="p-0 m-0">
-                          <span className="text-muted">Other Name. </span>
-                          {landlord.otherName}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="d-flex">
-                      <div className="card-body border-top">
-                        <p className="p-0 m-0">
-                          <span className="text-muted">Remuneration. </span>
-                          {landlord.remunerationPercentage} %
-                        </p>
-                      </div>
-                      <div className="card-body border-top">
-                        <p className="p-0 m-0">
-                          <span className="text-muted">Gender. </span>
-                          {landlord.gender}
-                        </p>
-                      </div>
-                      <div className="card-body border-top">
-                        <p className="p-0 m-0">
-                          <span className="text-muted">Agreement Period. </span>
-                          {landlord.agreementPeriod} months
-                        </p>
-                      </div>
-                      <div className="card-body border-top text-capitalize">
-                        <p className="p-0 m-0">
-                          <span className="text-muted">Agreement Type. </span>
-                          {landlord?.landLordAgreementType?.name
-                            ?.toLowerCase()
-                            ?.replace(/_/g, " ")}
-                        </p>
+                        <h5 className="text-capitalize">
+                          {landlord?.firstName} {landlord?.lastName}
+                          {landlord?.otherName}
+                          {landlord.active ? (
+                            <span className="badge badge-pill badge-soft-success font-size-11">
+                              Active
+                            </span>
+                          ) : (
+                            <span className="badge badge-pill badge-soft-success font-size-11">
+                              Inactive
+                            </span>
+                          )}
+                        </h5>
                       </div>
                     </div>
                   </div>
-                  {/*<div className="row">*/}
-                  {/*  <div className="col-12 float-end">*/}
-                  {/*    <button type={"submit"} className={"btn btn-primary float-end"} form={"my-form"}>Update</button>*/}
-                  {/*    <button onClick={() => setActiveLink(1)}>Back</button>*/}
-                  {/*    <button onClick={() => setActiveLink(2)}>Next</button>*/}
-                  {/*  </div>*/}
-                  {/*</div>*/}
+                  <div className="card-body border-top">
+                    <p className="text-muted mb-0 d-flex align-items-center">
+                      <a
+                        href={`tel:${landlord?.phoneNumber}`}
+                        className="d-flex align-items-center"
+                      >
+                        <i className="mdi mdi-phone me-2 font-size-18"></i>{" "}
+                        {landlord?.phoneNumber}
+                      </a>
+                      <span className="px-3 px-3">|</span>
+                      <a
+                        className="d-flex align-items-center"
+                        href={"mailto:" + landlord?.email}
+                      >
+                        <i className="mdi mdi-email-outline font-size-18 me-2" />
+                        {landlord?.email}
+                      </a>
+                    </p>
+                  </div>
+                  <div className="card-body border-top">
+                    <p className="p-2 m-0">
+                      <span className="text-muted">National ID No.</span>{" "}
+                      {landlord.idNumber}
+                    </p>
+                    <p className="p-2 m-0">
+                      <span className="text-muted">File Number. </span>
+                      {landlord.fileNumber}
+                    </p>
+                    <p className="p-2 m-0">
+                      <span className="text-muted">Landlord Type. </span>
+                      {landlord.landLordType?.toLowerCase()?.replace(/_/g, " ")}
+                    </p>
+                    <p className="p-2 m-0">
+                      <span className="text-muted">Remuneration. </span>
+                      {landlord.remunerationPercentage} %
+                    </p>
+                    <p className="p-2 m-0">
+                      <span className="text-muted">Agreement Period. </span>
+                      {landlord.agreementPeriod} months
+                    </p>
+                    <p className="p-2 m-0">
+                      <span className="text-muted">Agreement Type. </span>
+                      {landlord?.landLordAgreementType?.name
+                        ?.toLowerCase()
+                        ?.replace(/_/g, " ")}
+                    </p>
+                  </div>
+                  <div className="card-body border-top pb-2 pt-3">
+                    <div className="row">
+                      <div className="col-sm-12">
+                        <div className="text-muted">
+                          <table className="table table-borderless mb-0 table-sm table-striped">
+                            <tbody>
+                              <tr>
+                                <td className="pl-0 pb-0 text-muted">
+                                  <i className="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                                  Gender
+                                </td>
+                                <td className="pb-0">
+                                  <span className="text-black">
+                                    {landlord.gender}
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="pl-0 pb-0 text-muted">
+                                  <i className="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                                  Date of Registration
+                                </td>
+                                <td className="pb-0">
+                                  <span className="text-black">
+                                    {moment(landlord.dateTimeCreated).format(
+                                      "YYYY-MM-DD"
+                                    )}
+                                  </span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <br />
+                      <br />
+                    </div>
+                  </div>
                 </div>
               </div>
-            )
-            // <div className="row">
-            //   <div className="row">
-            //     <div className="col-12 float-end">
-            //     </div>
-            //   </div>
-            //
-            // </div>
-          }
+
+              <div className="col-xl-8">
+                <div className="row">
+                  <div className="col-xl-8">
+                    <div className="row">
+                      <div className="col-lg-12 px-sm-30px">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-lg-12 align-self-center">
+                                <div className="text-lg-left mt-4 mt-lg-0">
+                                  <div className="row ">
+                                    <div className="col-4 col-sm-3 col-md-2">
+                                      <div>
+                                        <div className="avatar-xs mb-3">
+                                          <span className="avatar-title rounded-circle bg-secondary font-size-16">
+                                            <i className="mdi mdi-office-building-outline text-white"></i>
+                                          </span>
+                                        </div>
+                                        <p className="text-muted text-truncate mb-2">
+                                          Premises
+                                        </p>
+                                        <h5 className="mb-0">
+                                          {dashboardData?.premiseCount}
+                                        </h5>
+                                      </div>
+                                    </div>
+                                    <div className="col-4 col-sm-3 col-md-2 d-none">
+                                      <div>
+                                        <div className="avatar-xs mb-3">
+                                          <span className="avatar-title bg-secondary rounded-circle font-size-16">
+                                            <i className="mdi mdi-chat-outline text-white"></i>
+                                          </span>
+                                        </div>
+                                        <p className="text-muted text-truncate mb-2 ">
+                                          Units
+                                        </p>
+                                        <h5 className="mb-0">
+                                          {dashboardData?.premiseCount}
+                                        </h5>
+                                      </div>
+                                    </div>
+                                    <div className="col-4 col-sm-3 col-md-2">
+                                      <div>
+                                        <div className="avatar-xs mb-3">
+                                          <span className="avatar-title rounded-circle bg-secondary font-size-16">
+                                            <i className="mdi mdi-shield-home text-white"></i>
+                                          </span>
+                                        </div>
+                                        <p className="text-muted text-truncate mb-2">
+                                          Landlords
+                                        </p>
+                                        <h5 className="mb-0">
+                                          {dashboardData?.landlordsCount}
+                                        </h5>
+                                      </div>
+                                    </div>
+                                    <div className="col-4 col-sm-3 col-md-2">
+                                      <div>
+                                        <div className="avatar-xs mb-3">
+                                          <span className="avatar-title rounded-circle bg-secondary font-size-16">
+                                            <i className="mdi mdi-account-key text-white"></i>
+                                          </span>
+                                        </div>
+                                        <p className="text-muted text-truncate mb-2">
+                                          Tenants
+                                        </p>
+                                        <h5 className="mb-0">
+                                          {dashboardData?.tenantsCount}
+                                        </h5>
+                                      </div>
+                                    </div>
+                                    {dashboardData?.premiseUnitsSummary?.map(
+                                      (item) => (
+                                        <div className="col-4 col-sm-3 col-md-2">
+                                          <div>
+                                            <div className="avatar-xs mb-3">
+                                              <span className="avatar-title rounded-circle bg-danger font-size-16">
+                                                <i className="mdi mdi-home-export-outline  text-white"></i>
+                                              </span>
+                                            </div>
+                                            <p className="text-muted text-truncate mb-2 text-capitalize">
+                                              {item.item
+                                                ?.toLowerCase()
+                                                ?.replace(/-/g, " ")}{" "}
+                                              Units
+                                            </p>
+                                            <h5 className="mb-0">
+                                              {item.count}
+                                            </h5>
+                                          </div>
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {/* <!-- end row --> */}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-xl-12">
+                        <div className="row">
+                          {dashboardData?.collectionSummaryByPaymentStatus?.map(
+                            (item) => (
+                              <div className="col-sm-4">
+                                <div className="card">
+                                  <div className="card-body">
+                                    <div className="d-flex align-items-center mb-3">
+                                      <div className="avatar-xs-2 me-3">
+                                        <span className="avatar-title rounded-circle bg-danger bg-soft text-danger  font-size-18">
+                                          <i className="mdi  mdi-cash-remove h2 mb-0 pb-0 text-danger"></i>
+                                        </span>
+                                      </div>
+                                      <div className="d-flex flex-column">
+                                        <span className="text-capitalize">
+                                          {item.item
+                                            ?.toLowerCase()
+                                            ?.replace(/-/g, " ")}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="text-muted mt-4">
+                                      <h4>
+                                        {formatCurrency.format(item.value)}
+                                        <i className="mdi mdi-chevron-up ms-1 text-success"></i>
+                                      </h4>
+                                      <div className="d-flex">
+                                        <span className="text-truncate text-capitalize">
+                                          From {item.count}{" "}
+                                          {item.item
+                                            ?.toLowerCase()
+                                            ?.replace(/-/g, " ")}{" "}
+                                          Invoices
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                        {/* <!-- end row --> */}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="p-4">
+                          <h5 className="text-primary mb-0 pb-0">
+                            Rent collection summary
+                          </h5>
+                          <span>Rent collection summary for tenant </span>
+                          <div className="row">
+                            <div className="col-12">
+                              <div
+                                id="revenue-chart"
+                                className="apex-charts"
+                                dir="ltr"
+                              >
+                                <Chart
+                                  class="apex-charts revenue-type"
+                                  options={options}
+                                  plotOptions={options.plotOptions}
+                                  series={options.series}
+                                  type="bar"
+                                  height="360"
+                                  xaxis={options.xaxis}
+                                />
+                              </div>{" "}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           {activeLink === 2 && (
             <div className={"row"}>
               <div className="col-12">
