@@ -1,3 +1,5 @@
+/* global $ */
+
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -9,9 +11,10 @@ import moment from "moment";
 import AuthService from "../../services/auth.service";
 import StatusBadge from "../../components/StatusBadge";
 import ReactPaginate from "react-paginate";
+import useTabs from "../../hooks/useTabs";
 
 function ViewLandlord() {
-  const [activeLink, setActiveLink] = useState(1);
+  const [activeLink, setActiveLink] = useTabs();
   const [landlord, setLandlord] = useState([]);
   const [accountsData, setAccountsData] = useState([]);
   const [documents, setDocuments] = useState([]);
@@ -159,11 +162,13 @@ function ViewLandlord() {
     moment(new Date()).add(3, "M").format("YYYY-MM-DD")
   );
   const [premises, setPremises] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const getPremises = () => {
     let data = {
       dateCreatedEnd: endDate,
       dateCreatedStart: startDate,
       landlordEmail: landlord?.email,
+      search: searchTerm,
     };
     requestsServiceService.getLandLordPremises(data).then((res) => {
       setPremises(res.data.data);
@@ -171,7 +176,7 @@ function ViewLandlord() {
   };
   useEffect(() => {
     getPremises();
-  }, [size, page]);
+  }, [size, page, searchTerm]);
   const handlePageClick = (data) => {
     let d = data.selected;
     setPage(d);
@@ -189,7 +194,32 @@ function ViewLandlord() {
       getPremises();
     });
   };
+  const sort = (event) => {
+    event.preventDefault();
+    let data = {
+      dateCreatedEnd: endDate,
+      dateCreatedStart: startDate,
+      landlordEmail: landlord?.email,
+    };
+    requestsServiceService.getAllpremises(page, size, data).then((res) => {
+      setPremises(res.data.data);
+    });
+  };
+  const sortSize = (e) => {
+    setSize(e.target.value);
+    setPage(0);
+  };
+  const addDate = (date) => {
+    console.log(date);
+    setStartDate(new Date(date.target.value));
+  };
+  const addDate2 = (date) => {
+    console.log(date);
+    setEndDate(new Date(date.target.value));
+  };
 
+  $(document).on("change", ".sdate", addDate);
+  $(document).on("change", ".edate", addDate2);
   // PREMISES END
 
   const download = (x) => {
@@ -1085,64 +1115,64 @@ function ViewLandlord() {
                           Landlord Premises
                         </h4>
 
-                        {/*<div className="d-flex justify-content-end align-items-center align-items-center pr-3">*/}
-                        {/*  <div>*/}
-                        {/*    <form className="app-search d-none d-lg-block p-2">*/}
-                        {/*      <div className="position-relative">*/}
-                        {/*        <input*/}
-                        {/*          type="text"*/}
-                        {/*          className="form-control"*/}
-                        {/*          placeholder="Search..."*/}
-                        {/*          // onChange={(e) =>*/}
-                        {/*          //   setSearchTerm(e.target.value)*/}
-                        {/*          // }*/}
-                        {/*        />*/}
-                        {/*        <span className="bx bx-search-alt"></span>*/}
-                        {/*      </div>*/}
-                        {/*    </form>*/}
-                        {/*  </div>*/}
-                        {/*  <div*/}
-                        {/*    className="input-group d-flex justify-content-end align-items-center"*/}
-                        {/*    id="datepicker1"*/}
-                        {/*  >*/}
-                        {/*    <div className=" p-2">*/}
-                        {/*      <span className="input-group-text">*/}
-                        {/*        <i className="mdi mdi-calendar">Start Date</i>*/}
-                        {/*      </span>*/}
-                        {/*      <input*/}
-                        {/*        type="text"*/}
-                        {/*        className="form-control mouse-pointer sdate"*/}
-                        {/*        placeholder={`${startDate}`}*/}
-                        {/*        name="dob"*/}
-                        {/*        readOnly*/}
-                        {/*        data-date-format="dd M, yyyy"*/}
-                        {/*        data-date-container="#datepicker1"*/}
-                        {/*        data-provide="datepicker"*/}
-                        {/*        data-date-autoclose="true"*/}
-                        {/*        data-date-end-date="+0d"*/}
-                        {/*      />*/}
-                        {/*    </div>*/}
-                        {/*    <div className=" p-2">*/}
-                        {/*      <span className="input-group-text">*/}
-                        {/*        <i className="mdi mdi-calendar">End Date: </i>*/}
-                        {/*      </span>*/}
-                        {/*      <input*/}
-                        {/*        type="text"*/}
-                        {/*        className="form-control mouse-pointer edate"*/}
-                        {/*        name="dob"*/}
-                        {/*        placeholder={`${endDate}`}*/}
-                        {/*        readOnly*/}
-                        {/*        data-date-format="dd M, yyyy"*/}
-                        {/*        data-date-container="#datepicker1"*/}
-                        {/*        data-provide="datepicker"*/}
-                        {/*        data-date-autoclose="true"*/}
-                        {/*      />*/}
-                        {/*    </div>*/}
-                        {/*  </div>*/}
-                        {/*  <button className="btn btn-primary" onClick={sort}>*/}
-                        {/*    filter*/}
-                        {/*  </button>*/}
-                        {/*</div>*/}
+                        <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                          <div>
+                            <form className="app-search d-none d-lg-block p-2">
+                              <div className="position-relative">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Search..."
+                                  onChange={(e) =>
+                                    setSearchTerm(e.target.value)
+                                  }
+                                />
+                                <span className="bx bx-search-alt"></span>
+                              </div>
+                            </form>
+                          </div>
+                          <div
+                            className="input-group d-flex justify-content-end align-items-center"
+                            id="datepicker1"
+                          >
+                            <div className=" p-2">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">Start Date</i>
+                              </span>
+                              <input
+                                type="text"
+                                className="form-control mouse-pointer sdate"
+                                placeholder={`${startDate}`}
+                                name="dob"
+                                readOnly
+                                data-date-format="dd M, yyyy"
+                                data-date-container="#datepicker1"
+                                data-provide="datepicker"
+                                data-date-autoclose="true"
+                                data-date-end-date="+0d"
+                              />
+                            </div>
+                            <div className=" p-2">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">End Date: </i>
+                              </span>
+                              <input
+                                type="text"
+                                className="form-control mouse-pointer edate"
+                                name="dob"
+                                placeholder={`${endDate}`}
+                                readOnly
+                                data-date-format="dd M, yyyy"
+                                data-date-container="#datepicker1"
+                                data-provide="datepicker"
+                                data-date-autoclose="true"
+                              />
+                            </div>
+                          </div>
+                          <button className="btn btn-primary" onClick={sort}>
+                            filter
+                          </button>
+                        </div>
                       </div>
                       {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
                       {/*     role="toolbar">*/}
@@ -1261,7 +1291,7 @@ function ViewLandlord() {
                                             setActiveId(premise.id);
                                             deactivate2();
                                           }}
-                                          className="dropdown-item"
+                                          className="dropdown-item cursor-pointer"
                                         >
                                           <i className="font-size-15  dripicons-wrong me-3 text-danger"></i>
                                           {premise.active
