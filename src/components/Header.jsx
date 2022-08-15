@@ -1,5 +1,9 @@
 import React, {useEffect} from 'react'
 import AuthService from "../services/authLogin.service"
+import { Link} from "react-router-dom";
+
+
+
 
 function Header() {
     const Logout = () => {
@@ -87,7 +91,7 @@ function Header() {
                             </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             {/* <!-- item--> */}
-                            <a class="dropdown-item" href="myprofile.html"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">My Profile</span></a>
+                            <Link class="dropdown-item"  to="/Profile"></Link><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">My Profile </span>
                             <a class="dropdown-item" href="my-logs.html"><i class="bx bx-time font-size-16 align-middle me-1"></i> <span key="t-profile">My Logs</span></a>
                             {/* <a class="dropdown-item" href="auth-lock-screen.html"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock screen</span></a> */}
                             <div class="dropdown-divider"></div>
