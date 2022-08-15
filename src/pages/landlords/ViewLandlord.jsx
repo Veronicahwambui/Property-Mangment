@@ -158,8 +158,12 @@ function ViewLandlord() {
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    moment().startOf("month").format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = useState(
+    moment().endOf("month").format("YYYY-MM-DD")
+  );
   const [premises, setPremises] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const getPremises = () => {
@@ -449,6 +453,7 @@ function ViewLandlord() {
 
   const [dashboardData, setDashboardData] = useState({});
   const [radioBarData, setRadioBarData] = useState([]);
+  const [pieChartData, setPieChartData] = useState([]);
   const [radioBarData2, setRadioBarData2] = useState([]);
   const [transactionModesData, setTransactionModesData] = useState([]);
   const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] =
@@ -470,7 +475,7 @@ function ViewLandlord() {
       .then((res) => {
         setRadioBarData(res.data.data.collectionSummaryByPremiseUseType);
         setRadioBarData2(res.data.data.collectionSummaryByUnitType);
-        // setPieChartData(res.data.data.collectionSummaryByApplicableCharge);
+        setPieChartData(res.data.data.collectionSummaryByApplicableCharge);
         setTransactionModesData(res.data.data.collectionSummaryByPaymentMode);
         setMonthlyCollectionSummaryRevenue(
           res.data.data.monthlyCollectionSummaryRevenue
@@ -649,6 +654,184 @@ function ViewLandlord() {
       },
     },
   };
+  //pie chart
+  var walletOptions = {
+    series: radioBarData?.map((x) => x.variance),
+    chart: { height: 250, type: "radialBar" },
+    plotOptions: {
+      radialBar: {
+        offsetY: 0,
+        startAngle: 0,
+        endAngle: 270,
+        hollow: {
+          margin: 5,
+          size: "35%",
+          background: "transparent",
+          image: void 0,
+        },
+        track: {
+          show: !0,
+          startAngle: void 0,
+          endAngle: void 0,
+          background: "#f2f2f2",
+          strokeWidth: "98%",
+          opacity: 1,
+          margin: 12,
+          dropShadow: {
+            enabled: !1,
+            top: 0,
+            left: 0,
+            blur: 3,
+            opacity: 0.5,
+          },
+        },
+        dataLabels: {
+          name: {
+            show: !0,
+            fontSize: "16px",
+            fontWeight: 600,
+            offsetY: -10,
+          },
+          value: {
+            show: !0,
+            fontSize: "14px",
+            offsetY: 4,
+            formatter: function (e) {
+              return e + "%";
+            },
+          },
+          total: {
+            show: !0,
+            label: "Total",
+            color: "#373d3f",
+            fontSize: "16px",
+            fontFamily: void 0,
+            fontWeight: 600,
+            formatter: function (e) {
+              return (
+                e.globals.seriesTotals.reduce(function (e, t) {
+                  return e + t;
+                }, 0) + "%"
+              );
+            },
+          },
+        },
+      },
+    },
+    stroke: { lineCap: "round" },
+    colors: colors,
+    labels: radioBarData.map((x) => x.item),
+    legend: { show: !1 },
+  };
+  // premise type
+  var walletOptions2 = {
+    series: radioBarData2?.map((x) => x.variance),
+    chart: { height: 250, type: "radialBar" },
+    plotOptions: {
+      radialBar: {
+        offsetY: 0,
+        startAngle: 0,
+        endAngle: 270,
+        hollow: {
+          margin: 5,
+          size: "18%",
+          background: "transparent",
+          image: void 0,
+        },
+        track: {
+          show: !0,
+          startAngle: void 0,
+          endAngle: void 0,
+          background: "#f2f2f2",
+          strokeWidth: "92%",
+          opacity: 1,
+          margin: 12,
+          dropShadow: {
+            enabled: !1,
+            top: 0,
+            left: 0,
+            blur: 3,
+            opacity: 0.5,
+          },
+        },
+        dataLabels: {
+          name: {
+            show: !0,
+            fontSize: "16px",
+            fontWeight: 600,
+            offsetY: -10,
+          },
+          value: {
+            show: !0,
+            fontSize: "14px",
+            offsetY: 4,
+            formatter: function (e) {
+              return e + "%";
+            },
+          },
+          total: {
+            show: !0,
+            label: "Total",
+            color: "#373d3f",
+            fontSize: "14px",
+            fontFamily: void 0,
+            fontWeight: 600,
+            formatter: function (e) {
+              return (
+                e.globals.seriesTotals.reduce(function (e, t) {
+                  return e + t;
+                }, 0) + "%"
+              );
+            },
+          },
+        },
+      },
+    },
+    stroke: { lineCap: "round" },
+    colors: colors,
+    labels: radioBarData2.map((x) => x.item),
+    legend: { show: !1 },
+  };
+  const pieChart = {
+    series: pieChartData.map((x) => x.variance),
+    chart: { type: "donut", height: 250 },
+    labels: pieChartData.map((x) => x.item),
+    colors: colors,
+    legend: { show: !1 },
+    plotOptions: { pie: { donut: { size: "40%" } } },
+  };
+  // small chart
+  var radialoptions1 = {
+    series: [99],
+    chart: {
+      type: "radialBar",
+      width: 60,
+      height: 60,
+      sparkline: {
+        enabled: !0,
+      },
+    },
+    dataLabels: {
+      enabled: !1,
+    },
+    colors: ["#556ee6"],
+    labels: ["ngbfds"],
+    plotOptions: {
+      radialBar: {
+        hollow: {
+          margin: 0,
+          size: "60%",
+        },
+        track: {
+          margin: 0,
+        },
+        dataLabels: {
+          show: !1,
+        },
+      },
+    },
+  };
+
   return (
     <>
       <div className="page-content">
@@ -767,10 +950,8 @@ function ViewLandlord() {
                       onClick={() => landlordshow()}
                       className="btn btn-primary dropdown-toggle option-selector"
                     >
-                      <i className="dripicons-plus font-size-16"></i>{" "}
-                      <span className="pl-1 d-md-inline">
-                        Edit Landlord details
-                      </span>
+                      <i class="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
+                      Edit Details
                     </button>
                   </div>
                 </div>
