@@ -899,6 +899,9 @@ class RequestsService {
       m
     );
   }
+  getLandLordPremises(data) {
+    return axiosInstance.post(baseUrl + "/premises/list/", data);
+  }
 }
 
 export default new RequestsService();
