@@ -5,8 +5,10 @@ import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { baseUrl } from "../../services/API";
-import moment from 'moment'
+import moment from "moment";
 import AuthService from "../../services/auth.service";
+import StatusBadge from "../../components/StatusBadge";
+import ReactPaginate from "react-paginate";
 
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useState(1);
@@ -42,13 +44,10 @@ function ViewLandlord() {
   const [editdocumenttypeid, seteditdocumenttypeid] = useState(null);
   const [editdocument, seteditdocument] = useState("");
 
+  //communication
 
-
-
-    //communication
-
- const[ communication, setCommunication]=useState([])
- //  const [typeMes, setTypeMes] = useState("TENANT");  const[message,setMessage]=useState([]);
+  const [communication, setCommunication] = useState([]);
+  //  const [typeMes, setTypeMes] = useState("TENANT");  const[message,setMessage]=useState([]);
 
   //documents create
   const [docName, setdocName] = useState("");
@@ -121,6 +120,7 @@ function ViewLandlord() {
 
   useEffect(() => {
     getlandlords();
+    getPremises();
     requestsServiceService.getAllAgreementTypes().then((res) => {
       setAgreementTypes(res.data.data);
     });
@@ -147,7 +147,51 @@ function ViewLandlord() {
       }
     });
   };
-  // console.log(landlord)
+
+  // PREMISES UPDATE
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [startDate, setStartDate] = useState(
+    moment().startOf("month").format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = useState(
+    moment(new Date()).add(3, "M").format("YYYY-MM-DD")
+  );
+  const [premises, setPremises] = useState([]);
+  const getPremises = () => {
+    let data = {
+      dateCreatedEnd: endDate,
+      dateCreatedStart: startDate,
+      landlordEmail: landlord?.email,
+    };
+    requestsServiceService.getLandLordPremises(data).then((res) => {
+      setPremises(res.data.data);
+    });
+  };
+  useEffect(() => {
+    getPremises();
+  }, [size, page]);
+  const handlePageClick = (data) => {
+    let d = data.selected;
+    setPage(d);
+    // setPage(() => data.selected);
+    // console.log(page)
+  };
+  const handleRangeChange = (e) => {
+    console.log(e.target.value);
+    setSize(e.target.value);
+    setPageCount(0);
+    setPage(0);
+  };
+  const deactivate2 = () => {
+    requestsServiceService.togglePremiseStatus(activeId).then(() => {
+      getPremises();
+    });
+  };
+
+  // PREMISES END
+
   const download = (x) => {
     requestsServiceService.downloadDocuments(x).then((res) => {
       console.log(res);
@@ -350,18 +394,15 @@ function ViewLandlord() {
     });
   };
 
+  let clientId = AuthService.getClientId();
 
-
-  let clientId=AuthService.getClientId()
-
-   const fetchCommunication=()=>{
-   
-    requestsServiceService.getEntityCommunication(userId,0,5,"LANDLORD", clientId).then((res)=>{
-      setCommunication(res.data.data)
-
-    })
-
-   }
+  const fetchCommunication = () => {
+    requestsServiceService
+      .getEntityCommunication(userId, 0, 5, "LANDLORD", clientId)
+      .then((res) => {
+        setCommunication(res.data.data);
+      });
+  };
 
   return (
     <>
@@ -448,7 +489,17 @@ function ViewLandlord() {
                               : "nav-item cursor-pointer nav-link"
                           }
                         >
-                       Communication
+                          Communication
+                        </a>
+                        <a
+                          onClick={() => setActiveLink(5)}
+                          className={
+                            activeLink === 5
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
+                          Premises
                         </a>
                       </div>
                     </div>
@@ -912,144 +963,377 @@ function ViewLandlord() {
             </div>
           )}
 
-
-
-    {activeLink===4 &&(
-  <div>
- 
-
-
-    <div class="container-fluid">
-
-        {/* <!-- start page title --> */}
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">All Messages</h4>
-
-               
+          {activeLink === 4 && (
+            <div>
+              <div class="container-fluid">
+                {/* <!-- start page title --> */}
+                <div class="row">
+                  <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                      <h4 class="mb-sm-0 font-size-18">All Messages</h4>
+                    </div>
+                  </div>
                 </div>
-            </div>
-        </div>
-        {/* <!-- end page title --> */}
+                {/* <!-- end page title --> */}
 
-        <div class="row">
-            <div class="col-12">
-
-                {/* <!-- Right Sidebar --> */}
-                <div class="mb-3">
-
-                    <div class="card">
+                <div class="row">
+                  <div class="col-12">
+                    {/* <!-- Right Sidebar --> */}
+                    <div class="mb-3">
+                      <div class="card">
                         <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                            <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
-
-                                <div class="d-flex align-items-center flex-grow-1">
-                                 
-                                
-                                 
-
-                                </div>
-
-                           
-
-                            </div>
+                          <div
+                            class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <div class="d-flex align-items-center flex-grow-1"></div>
+                          </div>
                         </div>
                         <div class="card-body the-inbox">
-                            <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
-                                <thead>
-                                    <tr class="d-none">
-                                        <th>Mode</th>
-                                        <th>
-                                            {/* <!-- this is where the index is stored --> */}
-                                        </th>
-                                        <th>Status</th>
-                                        <th>Name</th>
-                                        <th>Message Content</th>
-                                        <th>Date</th>
+                          <table
+                            id="emailDataTable-btns"
+                            class="table   nowrap w-100 table-hover mt-0 mb-0"
+                          >
+                            <thead>
+                              <tr class="d-none">
+                                <th>Mode</th>
+                                <th>
+                                  {/* <!-- this is where the index is stored --> */}
+                                </th>
+                                <th>Status</th>
+                                <th>Name</th>
+                                <th>Message Content</th>
+                                <th>Date</th>
+                              </tr>
+                            </thead>
 
-                                    </tr>
-                                </thead>
+                            <tbody class="table-hover">
+                              {communication?.map((com, index) => (
+                                <tr data-id="1">
+                                  <td>{index + 1}</td>
+                                  {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                  <td class="">
+                                    {/* <!-- put the index here --> */}
 
-                                <tbody class="table-hover">
-                                  {communication?.map((com, index) => (
-                                      
-                                
-                                      <tr data-id="1">
-                                    <td>{index + 1}</td>
-                                    {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
-                                        <td class="">
-                                            {/* <!-- put the index here --> */}
+                                    <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
+                                      <div class="avatar-xs m-0">
+                                        <span class="avatar-title rounded-circle bg-success bg-orange text-white">
+                                          AW
+                                        </span>
+                                      </div>
+                                    </div>
 
-                                            <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
-                                                <div class="avatar-xs m-0">
-                                                    <span class="avatar-title rounded-circle bg-success bg-orange text-white">
-                                                        AW
-                                                    </span>
-                                                </div>
+                                    <span class=" font-size-18 d-none d-md-flex">
+                                      <i class="mdi mdi-chat-outline text-info pr-2">
+                                        <span class="d-none">Email</span>
+                                      </i>
+                                      <i class="mdi mdi-email-check-outline text-info pr-2">
+                                        <span class="d-none">Sms</span>
+                                      </i>
+                                    </span>
+                                    <span class=" font-size-18 d-flex d-md-none">
+                                      <br />
+                                      <i class="mdi mdi-chat-outline text-info pr-2">
+                                        <span class="d-none">
+                                          {com.communicationType}
+                                        </span>
+                                      </i>
+                                      {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
+                                    </span>
+                                  </td>
 
-                                            </div>
+                                  <td class="d-none">
+                                    <span class="d-none">0</span>
+                                  </td>
 
-
-                                            <span class=" font-size-18 d-none d-md-flex">
-                                                <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
-                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>
-
-                                            </span>
-                                            <span class=" font-size-18 d-flex d-md-none">
-                                                <br/>
-                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
-                                            {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-
-                                            </span>
-
-
-
-                                        </td>
-
-                                        <td class="d-none"><span class="d-none">0</span></td>
-                                        
-                                        <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-                                        <td class="the-msg the-msg-2">
-                                           
-                                            
-                                        </td>
-                                        <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
-                                        </tr>
-                                       ) 
-                              )}
-                              
-                                </tbody>
-
-                            </table>
-
+                                  <td class="text-capitalize d-none d-md-table-cell">
+                                    {com.createdBy}
+                                  </td>
+                                  <td class="the-msg the-msg-2"></td>
+                                  <td class="text-capitalize d-none d-md-table-cell">
+                                    {moment(com.dateTimeCreated).format(
+                                      "ddd MMM DD"
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
                         </div>
-
-
+                      </div>
                     </div>
-                 
-
-
+                    {/* <!-- end Col-9 --> */}
+                  </div>
                 </div>
-                {/* <!-- end Col-9 --> */}
-
+                {/* <!-- End row --> */}
+              </div>
+              {/* <!-- container-fluid --> */}
             </div>
+          )}
 
-        </div>
-        {/* <!-- End row --> */}
+          {activeLink === 5 && (
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-12">
+                  <div className="card">
+                    <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                      <div
+                        className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                        role="toolbar"
+                      >
+                        <h4 className="card-title text-capitalize mb-0 ">
+                          Landlord Premises
+                        </h4>
 
-    </div>
-    {/* <!-- container-fluid --> */}
+                        {/*<div className="d-flex justify-content-end align-items-center align-items-center pr-3">*/}
+                        {/*  <div>*/}
+                        {/*    <form className="app-search d-none d-lg-block p-2">*/}
+                        {/*      <div className="position-relative">*/}
+                        {/*        <input*/}
+                        {/*          type="text"*/}
+                        {/*          className="form-control"*/}
+                        {/*          placeholder="Search..."*/}
+                        {/*          // onChange={(e) =>*/}
+                        {/*          //   setSearchTerm(e.target.value)*/}
+                        {/*          // }*/}
+                        {/*        />*/}
+                        {/*        <span className="bx bx-search-alt"></span>*/}
+                        {/*      </div>*/}
+                        {/*    </form>*/}
+                        {/*  </div>*/}
+                        {/*  <div*/}
+                        {/*    className="input-group d-flex justify-content-end align-items-center"*/}
+                        {/*    id="datepicker1"*/}
+                        {/*  >*/}
+                        {/*    <div className=" p-2">*/}
+                        {/*      <span className="input-group-text">*/}
+                        {/*        <i className="mdi mdi-calendar">Start Date</i>*/}
+                        {/*      </span>*/}
+                        {/*      <input*/}
+                        {/*        type="text"*/}
+                        {/*        className="form-control mouse-pointer sdate"*/}
+                        {/*        placeholder={`${startDate}`}*/}
+                        {/*        name="dob"*/}
+                        {/*        readOnly*/}
+                        {/*        data-date-format="dd M, yyyy"*/}
+                        {/*        data-date-container="#datepicker1"*/}
+                        {/*        data-provide="datepicker"*/}
+                        {/*        data-date-autoclose="true"*/}
+                        {/*        data-date-end-date="+0d"*/}
+                        {/*      />*/}
+                        {/*    </div>*/}
+                        {/*    <div className=" p-2">*/}
+                        {/*      <span className="input-group-text">*/}
+                        {/*        <i className="mdi mdi-calendar">End Date: </i>*/}
+                        {/*      </span>*/}
+                        {/*      <input*/}
+                        {/*        type="text"*/}
+                        {/*        className="form-control mouse-pointer edate"*/}
+                        {/*        name="dob"*/}
+                        {/*        placeholder={`${endDate}`}*/}
+                        {/*        readOnly*/}
+                        {/*        data-date-format="dd M, yyyy"*/}
+                        {/*        data-date-container="#datepicker1"*/}
+                        {/*        data-provide="datepicker"*/}
+                        {/*        data-date-autoclose="true"*/}
+                        {/*      />*/}
+                        {/*    </div>*/}
+                        {/*  </div>*/}
+                        {/*  <button className="btn btn-primary" onClick={sort}>*/}
+                        {/*    filter*/}
+                        {/*  </button>*/}
+                        {/*</div>*/}
+                      </div>
+                      {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
+                      {/*     role="toolbar">*/}
+                      {/*  <button type="button"*/}
+                      {/*          className="btn btn-primary waves-effect btn-label waves-light me-3"><i*/}
+                      {/*    className="mdi mdi-printer label-icon"></i> Print Selected Invoices*/}
+                      {/*  </button>*/}
+                      {/*</div>*/}
+                    </div>
+                    <div className="card-body">
+                      <div className="table-responsive">
+                        <table className="table  table-nowrap table-hover overflow-visible contacts-table">
+                          <thead className="table-light">
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Premises</th>
+                              <th scope="col">Premises type</th>
+                              <th scope="col">Premises use type</th>
+                              <th scope="col">Address</th>
+                              <th scope="col">Estate</th>
+                              <th scope="col">Zone</th>
+                              <th scope="col">County</th>
+                              <th scope="col">File No</th>
+                              <th scope="col">Status</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {premises?.map((premise, index) => {
+                              let premiseType = premise.premiseType;
+                              let premiseUseType = premise.premiseUseType;
+                              let estate = premise.estate;
+                              let zone = premise.estate.zone;
+                              let county =
+                                premise.estate.zone.clientCounty.county;
 
+                              return (
+                                <tr key={index}>
+                                  <td className="text-capitalize">
+                                    {index + 1}
+                                  </td>
+                                  <td className="text-capitalize">
+                                    <Link
+                                      to={`/premise/${premise.id}`}
+                                      title="View Details"
+                                    >
+                                      {premise.premiseName}
+                                    </Link>
+                                  </td>
+                                  <td className="text-capitalize">
+                                    <h5 className="font-size-14 mb-1">
+                                      <a
+                                        href="landlord-details.html"
+                                        className="text-dark"
+                                      >
+                                        {premiseType.name}
+                                      </a>
+                                    </h5>
+                                  </td>
+                                  <td className="text-capitalize">
+                                    <span className="badge badge-soft-warning font-size-11 m-1 text-capitalize">
+                                      {premiseUseType.name}
+                                    </span>
+                                  </td>
+                                  <td className="text-capitalize">
+                                    {premise.address}
+                                  </td>
+                                  <td className="text-capitalize">
+                                    {estate.name}
+                                  </td>
+                                  <td className="text-capitalize">
+                                    {zone.name}
+                                  </td>
+                                  <td className="text-capitalize">
+                                    {county.name.toLowerCase()}
+                                  </td>
+                                  <td className="text-danger">
+                                    {premise.fileNumber}
+                                  </td>
+                                  <td>
+                                    {premise.active ? (
+                                      <span className="badge-soft-success badge">
+                                        Active
+                                      </span>
+                                    ) : (
+                                      <span className="badge-soft-danger badge">
+                                        Inactive
+                                      </span>
+                                    )}
+                                  </td>
 
+                                  <td>
+                                    <div className="dropdown">
+                                      <a
+                                        className="text-muted font-size-16"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-haspopup="true"
+                                      >
+                                        <i className="bx bx-dots-vertical-rounded"></i>
+                                      </a>
 
+                                      <div className="dropdown-menu dropdown-menu-end">
+                                        <Link
+                                          class="dropdown-item"
+                                          to={`/premise/${premise.id}`}
+                                        >
+                                          <i className="font-size-15 mdi mdi-eye-plus-outline me-3"></i>
+                                          Detailed view
+                                        </Link>
+                                        {/* <a class="dropdown-item" href="property-units.html"><i class="font-size-15 mdi mdi-home-variant me-3"></i>Units</a> */}
+                                        {/* <a class="dropdown-item" href="#"><i class="font-size-15 mdi mdi-home-edit me-3"></i>Edit property</a> */}
+                                        {/* <a class="dropdown-item" href="#"> <i class="font-size-15  mdi-file-document-multiple mdi me-3 text-info"> </i> Change ownership</a> */}
+                                        <a
+                                          onClick={() => {
+                                            setActiveId(premise.id);
+                                            deactivate2();
+                                          }}
+                                          className="dropdown-item"
+                                        >
+                                          <i className="font-size-15  dripicons-wrong me-3 text-danger"></i>
+                                          {premise.active
+                                            ? "Deactivate"
+                                            : "Activate"}
+                                        </a>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                            {/* <tr></tr> */}
+                          </tbody>
+                        </table>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <select
+                            className="btn btn-md btn-primary"
+                            title="Select A range"
+                            onChange={(e) => handleRangeChange(e)}
+                            value={size}
+                          >
+                            <option className="bs-title-option" value="">
+                              Select A range
+                            </option>
+                            <option value="10">10 Rows</option>
+                            <option value="30">30 Rows</option>
+                            <option value="50">50 Rows</option>
+                          </select>
 
-
-
-</div>
-
-
-    )
-    }
+                          {pageCount !== 0 && pageCount > 1 && (
+                            <nav
+                              aria-label="Page navigation comments"
+                              className="mt-4"
+                            >
+                              <ReactPaginate
+                                previousLabel="<"
+                                nextLabel=">"
+                                breakLabel="..."
+                                breakClassName="page-item"
+                                breakLinkClassName="page-link"
+                                pageCount={pageCount}
+                                pageRangeDisplayed={4}
+                                marginPagesDisplayed={2}
+                                containerClassName="pagination justify-content-center"
+                                pageClassName="page-item"
+                                pageLinkClassName="page-link"
+                                previousClassName="page-item"
+                                previousLinkClassName="page-link"
+                                nextClassName="page-item"
+                                nextLinkClassName="page-link"
+                                activeClassName="active"
+                                onPageChange={(data) => handlePageClick(data)}
+                              />
+                            </nav>
+                          )}
+                        </div>
+                        <h5 className="font-medium  text-muted mt-2">
+                          showing page{" "}
+                          <span className="text-primary">
+                            {pageCount === 0 ? page : page + 1}
+                          </span>{" "}
+                          of<span className="text-primary"> {pageCount}</span>{" "}
+                          pages
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           {/*edit landlord modals*/}
           <Modal
             show={show_landlord}
