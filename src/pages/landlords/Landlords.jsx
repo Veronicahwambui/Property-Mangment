@@ -266,10 +266,7 @@ function Landlords() {
                             <td style={{ width: "80px" }}>{index + 1}</td>
 
                             <td className="text-capitalize" data-field="estate">
-                              <Link
-                                to={"/landlord/" + l.id}
-                                class="dropdown-item"
-                              >
+                              <Link to={"/landlord/" + l.id}>
                                 {l.firstName + " " + l.lastName}
                               </Link>
                             </td>
