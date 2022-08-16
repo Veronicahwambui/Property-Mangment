@@ -10,6 +10,8 @@ import { Modal, Button } from "react-bootstrap";
 import { baseUrl } from "../../services/API";
 import AuthService from "../../services/auth.service";
 import Message from "../../components/Message";
+import Chart from "react-apexcharts";
+import numeral from "numeral";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -412,12 +414,8 @@ function OneTenant() {
     });
   };
   const getPremises = () => {
-    let data = {
-      dateCreatedEnd: "2022-08-16T17:13:44.912Z",
-      dateCreatedStart: "2022-08-16T17:13:44.912Z",
-    };
     requestsServiceService
-      .allPremises(data)
+      .allPremises()
       .then((res) => setPremises(res.data.data));
   };
 
@@ -713,7 +711,398 @@ function OneTenant() {
       subject: "Customer Receipt",
     });
   };
-  // end tenant updates===========================
+  // end tenant updates=============================================
+
+  // Tenant graphs =================================================
+  const colors = [
+    "#3399ff",
+    "#ff7f50",
+    "#00ff00",
+    "#00a591",
+    "#ecdb54",
+    "#6b5b95",
+    "#944743",
+    "#dc4c46",
+    "#034f84",
+    "#edf1ff",
+  ];
+
+  const [dashboardData, setDashboardData] = useState({});
+  const [radioBarData, setRadioBarData] = useState([]);
+  const [pieChartData, setPieChartData] = useState([]);
+  const [radioBarData2, setRadioBarData2] = useState([]);
+  const [transactionModesData, setTransactionModesData] = useState([]);
+  const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] =
+    useState([]);
+  useEffect(() => {
+    fetchDashData();
+  }, [userId, tenantData]);
+  // fetch data
+  const fetchDashData = () => {
+    let startdate = moment(new Date()).startOf("month").format("YYYY/MM/DD");
+    let enddate = moment(new Date()).format("YYYY/MM/DD");
+    requestsServiceService
+      .getTenantDashboard(userId, startdate, enddate)
+      .then((res) => {
+        console.log(res);
+        // $("#spinner").addClass("d-none");
+        setDashboardData(res.data.data);
+      });
+    requestsServiceService
+      .getTenantGraph(userId, startdate, enddate)
+      .then((res) => {
+        console.log(res);
+        setRadioBarData(res.data.data.collectionSummaryByPremiseUseType);
+        setRadioBarData2(res.data.data.collectionSummaryByUnitType);
+        setPieChartData(res.data.data.collectionSummaryByApplicableCharge);
+        setTransactionModesData(res.data.data.collectionSummaryByPaymentMode);
+        setMonthlyCollectionSummaryRevenue(
+          res.data.data.monthlyCollectionSummaryRevenue
+        );
+      });
+  };
+
+  // graphs
+  var options = {
+    chart: {
+      height: 360,
+      type: "bar",
+      stacked: !1,
+      toolbar: {
+        show: !1,
+      },
+      zoom: {
+        enabled: !0,
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: !1,
+        columnWidth: "40%",
+        // endingShape: "rounded"
+      },
+    },
+    dataLabels: {
+      enabled: !1,
+    },
+    stroke: { show: !0, width: 2, colors: ["transparent"] },
+
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          // return "KES " + value;
+          return numeral(value).format("0,0 a");
+        },
+        // formatter: function(val, index) {
+
+        //     return numeral(val).format('0,0')
+        // },
+      },
+      title: {
+        text: "Amount in KES",
+      },
+    },
+    series: [
+      {
+        name: "Amount Invoiced",
+        data: monthlyCollectionSummaryRevenue?.map((x) => x.variance),
+      },
+      {
+        name: "Amount Paid",
+        data: monthlyCollectionSummaryRevenue?.map((x) => x.value),
+      },
+    ],
+    xaxis: {
+      categories: monthlyCollectionSummaryRevenue?.map((x) => x.item),
+    },
+    colors: ["#f46a6a", "#556ee6"],
+    legend: {
+      position: "bottom",
+    },
+    fill: {
+      opacity: 1,
+    },
+
+    tooltip: {
+      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
+
+        return (
+          "<ul>" +
+          "<li><b>Price</b>: " +
+          data.x +
+          "</li>" +
+          "<li><b>Number</b>: " +
+          data.y +
+          "</li>" +
+          "<li><b>Product</b>: '" +
+          data.product +
+          "'</li>" +
+          "<li><b>Info</b>: '" +
+          data.info +
+          "'</li>" +
+          "<li><b>Site</b>: '" +
+          data.site +
+          "'</li>" +
+          "</ul>"
+        );
+      },
+    },
+
+    tooltip: {
+      y: {
+        formatter: function (
+          value,
+          { series, seriesIndex, dataPointIndex, w }
+        ) {
+          return "KES " + numeral(value).format("0,0");
+        },
+      },
+    },
+    tooltip: {
+      y: [
+        {
+          title: {
+            formatter: function (e) {
+              return e + " (mins)";
+            },
+          },
+        },
+        {
+          title: {
+            formatter: function (e) {
+              return e + " per session";
+            },
+          },
+        },
+        {
+          title: {
+            formatter: function (e) {
+              return e;
+            },
+          },
+        },
+      ],
+    },
+    tooltip: {
+      enabled: true,
+      enabledOnSeries: undefined,
+      shared: true,
+      followCursor: false,
+      intersect: false,
+      inverseOrder: false,
+      custom: undefined,
+      fillSeriesColor: false,
+      theme: false,
+      style: {
+        fontSize: "12px",
+        fontFamily: undefined,
+      },
+      fillSeriesColor: false,
+      theme: "light",
+      marker: {
+        show: true,
+      },
+      onDatasetHover: {
+        highlightDataSeries: true,
+      },
+      y: {
+        formatter: function (
+          value,
+          { series, seriesIndex, dataPointIndex, w }
+        ) {
+          let currentTotal = 0;
+          series.forEach((s) => {
+            currentTotal += s[dataPointIndex];
+          });
+          return (
+            "<span class='text-right w-100 d-flex' > KES " +
+            numeral(value).format("0,0") +
+            "</span> "
+          );
+        },
+      },
+    },
+  };
+
+  // pie chart
+  var walletOptions = {
+    series: radioBarData?.map((x) => x.variance),
+    chart: { height: 250, type: "radialBar" },
+    plotOptions: {
+      radialBar: {
+        offsetY: 0,
+        startAngle: 0,
+        endAngle: 270,
+        hollow: {
+          margin: 5,
+          size: "35%",
+          background: "transparent",
+          image: void 0,
+        },
+        track: {
+          show: !0,
+          startAngle: void 0,
+          endAngle: void 0,
+          background: "#f2f2f2",
+          strokeWidth: "98%",
+          opacity: 1,
+          margin: 12,
+          dropShadow: {
+            enabled: !1,
+            top: 0,
+            left: 0,
+            blur: 3,
+            opacity: 0.5,
+          },
+        },
+        dataLabels: {
+          name: {
+            show: !0,
+            fontSize: "16px",
+            fontWeight: 600,
+            offsetY: -10,
+          },
+          value: {
+            show: !0,
+            fontSize: "14px",
+            offsetY: 4,
+            formatter: function (e) {
+              return e + "%";
+            },
+          },
+          total: {
+            show: !0,
+            label: "Total",
+            color: "#373d3f",
+            fontSize: "16px",
+            fontFamily: void 0,
+            fontWeight: 600,
+            formatter: function (e) {
+              return (
+                e.globals.seriesTotals.reduce(function (e, t) {
+                  return e + t;
+                }, 0) + "%"
+              );
+            },
+          },
+        },
+      },
+    },
+    stroke: { lineCap: "round" },
+    colors: colors,
+    labels: radioBarData.map((x) => x.item),
+    legend: { show: !1 },
+  };
+  // premise type
+  var walletOptions2 = {
+    series: radioBarData2?.map((x) => x.variance),
+    chart: { height: 250, type: "radialBar" },
+    plotOptions: {
+      radialBar: {
+        offsetY: 0,
+        startAngle: 0,
+        endAngle: 270,
+        hollow: {
+          margin: 5,
+          size: "18%",
+          background: "transparent",
+          image: void 0,
+        },
+        track: {
+          show: !0,
+          startAngle: void 0,
+          endAngle: void 0,
+          background: "#f2f2f2",
+          strokeWidth: "92%",
+          opacity: 1,
+          margin: 12,
+          dropShadow: {
+            enabled: !1,
+            top: 0,
+            left: 0,
+            blur: 3,
+            opacity: 0.5,
+          },
+        },
+        dataLabels: {
+          name: {
+            show: !0,
+            fontSize: "16px",
+            fontWeight: 600,
+            offsetY: -10,
+          },
+          value: {
+            show: !0,
+            fontSize: "14px",
+            offsetY: 4,
+            formatter: function (e) {
+              return e + "%";
+            },
+          },
+          total: {
+            show: !0,
+            label: "Total",
+            color: "#373d3f",
+            fontSize: "14px",
+            fontFamily: void 0,
+            fontWeight: 600,
+            formatter: function (e) {
+              return (
+                e.globals.seriesTotals.reduce(function (e, t) {
+                  return e + t;
+                }, 0) + "%"
+              );
+            },
+          },
+        },
+      },
+    },
+    stroke: { lineCap: "round" },
+    colors: colors,
+    labels: radioBarData2.map((x) => x.item),
+    legend: { show: !1 },
+  };
+  const pieChart = {
+    series: pieChartData.map((x) => x.variance),
+    chart: { type: "donut", height: 250 },
+    labels: pieChartData.map((x) => x.item),
+    colors: colors,
+    legend: { show: !1 },
+    plotOptions: { pie: { donut: { size: "40%" } } },
+  };
+  // small chart
+  var radialoptions1 = {
+    series: [99],
+    chart: {
+      type: "radialBar",
+      width: 60,
+      height: 60,
+      sparkline: {
+        enabled: !0,
+      },
+    },
+    dataLabels: {
+      enabled: !1,
+    },
+    colors: ["#556ee6"],
+    labels: ["ngbfds"],
+    plotOptions: {
+      radialBar: {
+        hollow: {
+          margin: 0,
+          size: "60%",
+        },
+        track: {
+          margin: 0,
+        },
+        dataLabels: {
+          show: !1,
+        },
+      },
+    },
+  };
+  // Tenant graphs end =============================================
   return (
     <div className="page-content">
       <div className="content-fluid">
@@ -845,154 +1234,391 @@ function OneTenant() {
         {/* <!-- end of tool bar --> */}
 
         {activeLink === 1 && (
-          <div>
+          <>
             <div className="row">
-              <div className="col-xl-12">
+              <div className="col-xl-4">
                 <div className="card calc-h-3px">
-                  <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <div class="d-flex align-items-center flex-grow-1">
-                        <h4 class="mb-0 m-0 bg-transparent">
-                          Quick Stats on {tenantData?.tenant?.firstName}
-                        </h4>
+                  <div className="card-body pb-1">
+                    <div>
+                      <div className="mb-4 me-3">
+                        <i className="mdi mdi-account-circle text-primary h1"></i>
                       </div>
-                      <div className="d-flex">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleChangeTenantsDetails(
-                              tenantData.tenant.id,
-                              tenantData.tenant.tenantType,
-                              tenantData.tenant.firstName,
-                              tenantData.tenant.lastName,
-                              tenantData.tenant.otherName,
-                              tenantData.tenant.phoneNumber,
-                              tenantData.tenant.email,
-                              tenantData.tenant.idNumber,
-                              tenantData.tenant.companyName,
-                              tenantData.tenant.nationality,
-                              tenantData.tenant.companyAddress,
-                              tenantData.tenant.companyDateOfRegistration
-                            )
-                          }
-                          data-bs-toggle="modal"
-                          data-bs-target="#edit-tenant-detail"
-                          className="btn btn-primary dropdown-toggle option-selector"
-                        >
-                          <i className="dripicons-plus font-size-16"></i>{" "}
-                          <span className="pl-1 d-md-inline">
-                            Edit Tenants details
-                          </span>
-                        </button>
+                      <div>
+                        <h5 className="text-capitalize">
+                          {dashboardData?.clientName}
+                          {tenantData?.tenant?.active ? (
+                            <span className="badge badge-pill badge-soft-success font-size-11 mr-7px">
+                              Active
+                            </span>
+                          ) : (
+                            <span className="badge badge-pill badge-soft-success font-size-11 mr-7px">
+                              Inactive
+                            </span>
+                          )}
+                        </h5>
                       </div>
                     </div>
                   </div>
-                  <div className="card-body">
-                    <div className="col-12">
-                      <div className="row">
-                        <div className="col-3">
-                          <label htmlFor="">Type</label>
-                          <div>
-                            <span>{tenantData?.tenant?.tenantType}</span>
+                  <div className="card-body border-top">
+                    {tenantTypeName === "INDIVIDUAL" ? (
+                      <>
+                        <p className="text-muted mb-0 d-flex align-items-center">
+                          <a
+                            href={`tel:${tenantData?.tenant?.phoneNumber}`}
+                            className="d-flex align-items-center"
+                          >
+                            <i className="mdi mdi-phone me-2 font-size-18"></i>{" "}
+                            {tenantData?.tenant?.phoneNumber}
+                          </a>
+                          <span className="px-3 px-3">|</span>
+                          <a
+                            className="d-flex align-items-center"
+                            href={"mailto:" + tenantData?.tenant?.email}
+                          >
+                            <i className="mdi mdi-email-outline font-size-18 me-2" />
+                            {tenantData?.tenant?.email}
+                          </a>
+                        </p>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div className="card-body border-top">
+                    {tenantTypeName === "INDIVIDUAL" ? (
+                      <>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">National ID No.</span>
+                          {tenantData?.tenant?.idNumber}
+                        </p>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">Nationality. </span>
+                          {tenantData?.tenant?.nationality}
+                        </p>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">Tenant Type. </span>
+                          {tenantData?.tenant?.tenantType
+                            ?.toLowerCase()
+                            ?.replace(/_/g, " ")}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">
+                            Company Incorporation Number
+                          </span>
+                          {tenantData?.tenant?.companyIncorporationNumber}
+                        </p>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">Company Address </span>
+                          {tenantData?.tenant?.companyAddress}
+                        </p>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">
+                            Company Date Of Registration
+                          </span>
+                          {moment(
+                            tenantData?.tenant?.companyDateOfRegistration
+                          ).format("DD /MM /YYYY")}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-8">
+                <div className="row">
+                  <div className="col-xl-8">
+                    <div className="row">
+                      <div className="col-lg-12 px-sm-30px">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-lg-12 align-self-center">
+                                <div className="text-lg-left mt-4 mt-lg-0">
+                                  <div className="row ">
+                                    <div className="col-4 col-sm-3 col-md-2">
+                                      <div>
+                                        <div className="avatar-xs mb-3">
+                                          <span className="avatar-title rounded-circle bg-secondary font-size-16">
+                                            <i className="mdi mdi-office-building-outline text-white"></i>
+                                          </span>
+                                        </div>
+                                        <p className="text-muted text-truncate mb-2">
+                                          Premises
+                                        </p>
+                                        <h5 className="mb-0">
+                                          {dashboardData?.premiseCount}
+                                        </h5>
+                                      </div>
+                                    </div>
+                                    <div className="col-4 col-sm-3 col-md-2">
+                                      {/*<div>*/}
+                                      {/*  <div className="avatar-xs mb-3">*/}
+                                      {/*    <span className="avatar-title rounded-circle bg-secondary font-size-16">*/}
+                                      {/*      <i className="mdi mdi-account-key text-white"></i>*/}
+                                      {/*    </span>*/}
+                                      {/*  </div>*/}
+                                      {/*  <p className="text-muted text-truncate mb-2">*/}
+                                      {/*    Tenants*/}
+                                      {/*  </p>*/}
+                                      {/*  <h5 className="mb-0">*/}
+                                      {/*    {dashboardData?.tenantsCount}*/}
+                                      {/*  </h5>*/}
+                                      {/*</div>*/}
+                                    </div>
+                                    {dashboardData?.premiseUnitsSummary?.map(
+                                      (item) => (
+                                        <div className="col-4 col-sm-3 col-md-2">
+                                          <div>
+                                            <div className="avatar-xs mb-3">
+                                              <span className="avatar-title rounded-circle bg-danger font-size-16">
+                                                <i className="mdi mdi-home-export-outline  text-white"></i>
+                                              </span>
+                                            </div>
+                                            <p className="text-muted text-truncate mb-2 text-capitalize">
+                                              {item.item
+                                                ?.toLowerCase()
+                                                ?.replace(/-/g, " ")}{" "}
+                                              Units
+                                            </p>
+                                            <h5 className="mb-0">
+                                              {item.count}
+                                            </h5>
+                                          </div>
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {/* <!-- end row --> */}
                           </div>
                         </div>
-                        {tenantTypeName === "INDIVIDUAL" && (
-                          <div className="row mt-5">
-                            <div className="col-3">
-                              <label htmlFor="">First Name</label>
-                              <div>
-                                <span>{tenantData?.tenant?.firstName}</span>
-                              </div>
-                            </div>
-                            <div className="col-3">
-                              <label htmlFor="">Last Name</label>
-                              <div>
-                                <span>{tenantData?.tenant?.lastName}</span>
-                              </div>
-                            </div>
-                            <div className="col-3">
-                              <label htmlFor="">Email</label>
-                              <div>
-                                <span>{tenantData?.tenant?.email}</span>
-                              </div>
-                            </div>
-                            <div className="col-3">
-                              <label htmlFor="">Id Number</label>
-                              <div>
-                                <span>{tenantData?.tenant?.idNumber}</span>
-                              </div>
-                            </div>
-
-                            <div className="row mt-5">
-                              <div className="col-3">
-                                <label htmlFor="">PhoneNumber</label>
-                                <div>
-                                  <span>{tenantData?.tenant?.phoneNumber}</span>
-                                </div>
-                              </div>
-                              <div className="col-3">
-                                <label htmlFor="">Nationality</label>
-                                <div>
-                                  <span>{tenantData?.tenant?.nationality}</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
                       </div>
-
-                      {tenantTypeName === "COMPANY" && (
-                        <div className="row mt-5">
-                          <div className="col-3">
-                            <label htmlFor="">Company Name</label>
-                            <div>
-                              <span>{tenantData?.tenant?.companyName}</span>
-                            </div>
-                          </div>
-                          <div className="col-3">
-                            <label htmlFor="">
-                              Company Incorporation Number
-                            </label>
-                            <div>
-                              <span>
-                                {tenantData?.tenant?.companyIncorporationNumber}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="col-3">
-                            <label htmlFor="">Company Address</label>
-                            <div>
-                              <span>{tenantData?.tenant?.companyAddress}</span>
-                            </div>
-                          </div>
-
-                          <div className="row mt-5">
-                            <div className="col-3">
-                              <label htmlFor="">
-                                CompanyDateOfRegistration
-                              </label>
-                              <div>
-                                <span>
-                                  {moment(
-                                    tenantData?.tenant
-                                      ?.companyDateOfRegistration
-                                  ).format("DD /MM /YYYY")}
-                                </span>
+                    </div>
+                    <div className="row">
+                      <div className="col-xl-12">
+                        <div className="row">
+                          {dashboardData?.collectionSummaryByPaymentStatus?.map(
+                            (item) => (
+                              <div className="col-sm-4">
+                                <div className="card">
+                                  <div className="card-body">
+                                    <div className="d-flex align-items-center mb-3">
+                                      <div className="avatar-xs-2 me-3">
+                                        <span className="avatar-title rounded-circle bg-danger bg-soft text-danger  font-size-18">
+                                          <i className="mdi  mdi-cash-remove h2 mb-0 pb-0 text-danger"></i>
+                                        </span>
+                                      </div>
+                                      <div className="d-flex flex-column">
+                                        <span className="text-capitalize">
+                                          {item.item
+                                            ?.toLowerCase()
+                                            ?.replace(/-/g, " ")}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="text-muted mt-4">
+                                      <h4>
+                                        {formatCurrency.format(item.value)}
+                                        <i className="mdi mdi-chevron-up ms-1 text-success"></i>
+                                      </h4>
+                                      <div className="d-flex">
+                                        <span className="text-truncate text-capitalize">
+                                          From {item.count}{" "}
+                                          {item.item
+                                            ?.toLowerCase()
+                                            ?.replace(/-/g, " ")}{" "}
+                                          Invoices
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
+                            )
+                          )}
+                        </div>
+                        {/* <!-- end row --> */}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="p-4">
+                          <h5 className="text-primary mb-0 pb-0">
+                            Rent collection summary
+                          </h5>
+                          <span>Rent collection summary for tenant </span>
+                          <div className="row">
+                            <div className="col-12">
+                              <div
+                                id="revenue-chart"
+                                className="apex-charts"
+                                dir="ltr"
+                              >
+                                <Chart
+                                  class="apex-charts revenue-type"
+                                  options={options}
+                                  plotOptions={options.plotOptions}
+                                  series={options.series}
+                                  type="bar"
+                                  height="360"
+                                  xaxis={options.xaxis}
+                                />
+                              </div>{" "}
                             </div>
                           </div>
                         </div>
-                      )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+            <div className="row">
+              <div className="col-xl-4">
+                <div className="card">
+                  <div className="card-body">
+                    <h4 className="card-title mb-0">
+                      Collections by Premise Use Type
+                    </h4>
+                    <div className="row">
+                      <div className="col-sm-7">
+                        <div>
+                          <div id="unit-types">
+                            <Chart
+                              class="apex-charts"
+                              options={walletOptions}
+                              plotOptions={walletOptions.plotOptions}
+                              series={walletOptions.series}
+                              type="radialBar"
+                              height="300"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-sm-5 align-self-center">
+                        {radioBarData?.map((item, index) => (
+                          <div className="">
+                            <div className="mt-4 text-left">
+                              <p className="mb-2 text-truncate text-left text-capitalize">
+                                <i
+                                  className="mdi mdi-circle me-1 "
+                                  style={{ color: "" + colors[index] + "" }}
+                                ></i>
+                                {item.item}
+                              </p>
+                              <h5>{formatCurrency.format(item.value)}</h5>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-4">
+                <div className="card">
+                  <div className="card-body">
+                    <h4 className="card-title mb-0">
+                      Collections by Unit Type
+                    </h4>
+                    <div className="row">
+                      <div className="col-sm-7">
+                        <div>
+                          <div id="unit-types">
+                            <Chart
+                              class="apex-charts"
+                              options={walletOptions2}
+                              plotOptions={walletOptions2.plotOptions}
+                              series={walletOptions2.series}
+                              type="radialBar"
+                              height="400"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-sm-5 align-self-center">
+                        {radioBarData2?.map((item, index) => (
+                          <div>
+                            <p className="mb-2 text-capitalize">
+                              <i
+                                className="mdi mdi-circle align-middle font-size-10 me-2 "
+                                style={{ color: "" + colors[index] + "" }}
+                              ></i>{" "}
+                              {item.item}
+                            </p>
+                            <h5>
+                              {formatCurrency.format(item.value)} <br />
+                              <span className="text-muted font-size-12 d-none">
+                                {" "}
+                                Contacts
+                              </span>
+                            </h5>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-4">
+                {" "}
+                <div className="card">
+                  <div className="card-body">
+                    <h4 className="card-title mb-4">
+                      Revenue Transaction Modes comparison
+                    </h4>
+
+                    <div className="table-responsive mt-4">
+                      <table className="table align-middle mb-0">
+                        <tbody>
+                          {transactionModesData?.map((item) => (
+                            <tr>
+                              <td>
+                                <h5 className="font-size-14 mb-1">
+                                  {item.item}
+                                </h5>
+                                <p className="text-muted mb-0">
+                                  {formatCurrency.format(item.value)}
+                                </p>
+                              </td>
+
+                              <td>
+                                <div id="radialchart-1" className="apex-charts">
+                                  <Chart
+                                    class="apex-charts"
+                                    options={radialoptions1}
+                                    plotOptions={radialoptions1.plotOptions}
+                                    series={[item.variance]}
+                                    labels={radialoptions1.labels}
+                                    type="radialBar"
+                                    height="60"
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <p className="text-muted mb-1">Transactions</p>
+                                <h5 className="mb-0">{item.variance} %</h5>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-5 px-sm-30px"></div>
+            </div>
+          </>
         )}
 
         {activeLink === 2 && (

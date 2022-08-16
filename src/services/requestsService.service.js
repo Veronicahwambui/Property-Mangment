@@ -926,7 +926,29 @@ class RequestsService {
         edate
     );
   }
-  // TENANT STATEMENTS AND RECEIPTS
+  // TENANT DASHBOARD, STATEMENTS AND RECEIPTS
+  getTenantDashboard(tenantId, sdate, edate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard?startDate=" +
+        sdate +
+        "&endDate=" +
+        edate +
+        "&tenant=" +
+        tenantId
+    );
+  }
+  getTenantGraph(tenantId, sdate, edate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard/graphs?tenant=" +
+        tenantId +
+        "&startDate=" +
+        sdate +
+        "&endDate=" +
+        edate
+    );
+  }
   getTenantStatements(id, sD, eD) {
     return axiosInstance.get(
       baseUrl +
