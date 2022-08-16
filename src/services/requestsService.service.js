@@ -710,6 +710,10 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/setup/tenancyIssueTypes");
   }
 
+  createUnitTenancyIssue(data) {
+    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/group/create", data);
+  }
+
   //   DASHBOARD
 
   getClientDashboardGraphs(startDate, endDate) {

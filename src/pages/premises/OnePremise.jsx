@@ -8,9 +8,16 @@ import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
 import { Modal, Button } from "react-bootstrap";
 import { baseUrl } from "../../services/API";
+import useTabs from "../../hooks/useTabs";
+import StatusBadge from "../../components/StatusBadge";
+import Message from "../../components/Message";
+import AuthService from "../../services/auth.service";
+import moment from "moment";
+import ReactPaginate from "react-paginate";
+import axios from "axios";
 
 function OnePremise() {
-  const [activeLink, setActiveLink] = useState(JSON.parse(sessionStorage.getItem('activeId')));
+  const [activeLink, setActiveLink] = useTabs();
   const [failedLandlordUploads, setFailedLandlordUploads] = useState([])
   const [premiseData, setPremiseData] = useState({});
   const [premiseUnits, setPremiseUnits] = useState([])
@@ -676,6 +683,212 @@ function OnePremise() {
 
   }
 
+  // * ==============================
+  // invoice stuff   
+  // * ==============================
+  const [invoices, setinvoices] = useState([]);
+  const [activeInvoice, setactiveInvoice] = useState({});
+  const [transaction, setTransaction] = useState({});
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  // MODAL
+  const [invoice_show, setinvoice_show] = useState(false);
+  const showInvoice = () => setinvoice_show(true);
+  const closeInvoice = () => setinvoice_show(false);
+  const [startDate, setStartDate] = useState(
+    moment().startOf("month").format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = useState(
+    moment(new Date()).add(3, "M").format("YYYY-MM-DD")
+  );
+
+
+  useEffect(() => {
+    getInvoices();
+  }, [page, size, pageCount]);
+
+  const sort = (event) => {
+    event.preventDefault();
+    let data = {
+      startDate: startDate,
+      endDate: endDate,
+      size: size,
+      page: page,
+      search: searchTerm?.toLowerCase().trim(),
+    };
+    requestsServiceService.getInvoices(data).then((res) => {
+      setPageCount(res.data.totalPages);
+      setinvoices(res.data.data);
+      setSearchTerm('')
+    }).then(() => {
+    });
+  };
+  const sortSize = (e) => {
+    setSize(e.target.value);
+    setPage(0);
+  };
+  const reset = () => {
+    setSize(10);
+    setPage(1);
+  };
+
+  const getInvoices = () => {
+    let data = {
+      startDate: startDate,
+      endDate: endDate,
+      size: size,
+      page: page,
+      applicableChargeName: searchTerm,
+    };
+    requestsServiceService.getInvoices(data).then((res) => {
+      setPageCount(res.data.totalPages);
+      setinvoices(res.data.data);
+      window.scrollTo(0, 0);
+    });
+  };
+  const handlePageClick = (data) => {
+    let d = data.selected;
+    setPage(d);
+    // setPage(() => data.selected);
+    // console.log(page)
+  };
+
+  const total = () => {
+    let sum = 0;
+    let paid = 0;
+    invoices.map((item) => {
+      sum += item.billAmount;
+      paid += item.billPaidAmount;
+    });
+    return sum - paid;
+  };
+  const getOneInvoice = (id) => {
+    console.log(id);
+    let acc = invoices.find((invoice) => invoice.transactionItemId === id);
+    setactiveInvoice(acc);
+    showInvoice();
+  };
+  let formatCurrency = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "KES",
+  });
+  const addDate = (date) => {
+    setStartDate(new Date(date.target.value));
+  };
+  const addDate2 = (date) => {
+    setEndDate(new Date(date.target.value));
+  };
+
+  $(document).on("change", ".sdate", addDate);
+  $(document).on("change", ".edate", addDate2);
+  const [phonenumber, setphonenumber] = useState("");
+
+  const sendSTK = (event) => {
+    event.preventDefault();
+    let invoiceNoo = activeInvoice;
+    let formData = new FormData();
+    formData.append("PayBillNumber", "4081125");
+    formData.append("Amount", parseInt(activeInvoice.billAmount));
+    formData.append("PhoneNumber", phonenumber);
+    formData.append("AccountReference", invoiceNoo.billerBillNo);
+    formData.append("TransactionDesc", invoiceNoo.transactionDescription);
+    formData.append("FullNames", `${invoiceNoo.transactionCustomerName}`);
+    formData.append("function", "CustomerPayBillOnline");
+
+    let config = {
+      method: "post",
+      url: "https://payme.revenuesure.co.ke/index.php",
+      data: formData,
+    };
+    axios(config).then((res) => {
+      if (typeof res.data === "string") {
+        setError({
+          ...error,
+          message: "Invalid Phone Number",
+          color: "danger",
+        });
+      } else {
+        let message = res.data.CustomerMessage;
+        setError({
+          ...error,
+          message: message,
+          color: "success",
+        });
+      }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: "",
+        });
+      }, 4000);
+    });
+  };
+
+  // MESSAGE TEST
+  const [details, setDetails] = useState({
+    message: "",
+    contact: "",
+    recipientName: "",
+    entity: null,
+    clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+    clientId: parseInt(AuthService.getClientId()),
+    entityType: "TENANCY",
+    createdBy: "",
+    senderId: "",
+    subject: "Invoice Payment",
+  });
+  const [mode, setmode] = useState("");
+  const handleModeChange = (mode) => {
+    setmode(mode);
+  };
+  const handleClicked = (inv, mod) => {
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
+      } balance is ${formatCurrency.format(
+        inv.billAmount - inv.billPaidAmount
+      )}. Click here to pay for it`;
+    let senderId =
+      JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
+        ? "REVENUESURE"
+        : JSON.parse(AuthService.getCurrentUserName()).client?.senderId;
+    setDetails({
+      ...details,
+      message: mes,
+      contact:
+        mod === "Email"
+          ? inv.transactionCustomerEmail
+          : inv.transaction?.tenancy?.tenant?.phoneNumber,
+      entity: inv.transaction?.tenancy?.id,
+      recipientName: inv.transactionCustomerName,
+      createdBy: inv.createdBy,
+      senderId: senderId,
+      subject: "Invoice Payment",
+    });
+    $(".email-overlay").removeClass("d-none");
+    setTimeout(function () {
+      $(".the-message-maker").addClass("email-overlay-transform");
+    }, 0);
+  };
+  useEffect(() => { }, [details, mode]);
+
+  const clearmodal = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+      clientId: parseInt(AuthService.getClientId()),
+      entityType: "TENANCY",
+      createdBy: "",
+      senderId: "",
+      subject: "Invoice Payment",
+    });
+  };
+
 
   return (
     <div className="page-content">
@@ -789,6 +1002,16 @@ function OnePremise() {
                       >
                         Caretakers
                       </a>
+                      <a
+                        onClick={() => setActiveLink(7)}
+                        class={
+                          activeLink === 7
+                            ? "nav-item nav-link active cursor-pointer"
+                            : "nav-item cursor-pointer nav-link"
+                        }
+                      >
+                        invoices
+                      </a>
                     </div>
                     <div class="navbar-nav">
                       {premiseData.premise && premiseData.premise.active ?
@@ -864,124 +1087,346 @@ function OnePremise() {
         }
         {activeLink === 1 && (
           <div>
-            <div className="row">
-              <div className="col-xl-12">
-                <div className="card calc-h-3px">
-                  <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <div class="d-flex align-items-center flex-grow-1">
-                        <h4 class="mb-0 m-0 bg-transparent">
-                          Quick Stats on{" "}
-                          {premiseData.premise &&
-                            premiseData.premise.premiseName}
+    {/* <!-- property stats --> */}
+                    <div class="row">
+                        <div class="col-lg-12 px-sm-30px">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <div class="d-flex">
 
-                          {premiseData.premise && premiseData.premise.active ? <span className="badge-soft-success badge m-3">Active</span> : <span class="badge-soft-danger badge m-3">Inactive</span>}
+                                                <div class="flex-grow-1 align-self-center">
+                                                    <div class="text-muted">
+                                                        <h5 class="mb-3">Quick Overview on 90 Degrees</h5>
+                                                        <p class="d-none">Quick stats on the registered Tenants.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                        </h4>
+
+                                        <div class="col-lg-12 col-md-12 align-self-center">
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <div class="text-lg-left mt-4 mt-lg-0">
+                                                        <div class="row">
+                                                            <div class="col-sm-3 col-md-2 text-capitalize">
+                                                                <div>
+                                                                    <div class="avatar-xs-2 mb-3">
+                                                                        <span class="avatar-title rounded-circle bg-info font-size-24">
+                                                                                <i class="mdi mdi mdi-home-outline  text-white"></i>
+                                                                            </span>
+                                                                    </div>
+                                                                    <p class="text-muted text-truncate mb-2">Units</p>
+                                                                    <h5 class="mb-0">64</h5>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3 col-md-2 d-md-flex text-capitalize">
+                                                                <div>
+                                                                    <div class="avatar-xs-2 mb-3">
+                                                                        <span class="avatar-title rounded-circle bg-danger font-size-24">
+                                                                                <i class="mdi  mdi mdi-home-export-outline  text-white"></i>
+                                                                            </span>
+                                                                    </div>
+                                                                    <p class="text-muted text-truncate mb-2">Vacated Units</p>
+                                                                    {/* <!-- the new tenants who moved in march --> */}
+                                                                    <h5 class="mb-0">23 <small class="text-muted fw-light d-none">In Mar</small></h5>
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3 col-md-2 d-md-flex text-capitalize">
+                                                                <div>
+                                                                    <div class="avatar-xs-2 mb-3">
+                                                                        <span class="avatar-title rounded-circle bg-warning font-size-24">
+                                                                                <i class="mdi  mdi-account-clock text-white"></i>
+                                                                            </span>
+                                                                    </div>
+                                                                    <p class="text-muted text-truncate mb-2">Serving Notice</p>
+                                                                    {/* <!-- the new tenants who moved in march --> */}
+                                                                    <h5 class="mb-0">10 </h5>
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3 col-md-2 text-capitalize">
+                                                                <div>
+                                                                    <div class="avatar-xs-2 mb-3">
+                                                                        <span class="avatar-title bg-info rounded-circle font-size-24">
+                                                                                <i class="mdi mdi-account-group text-white"></i>
+                                                                            </span>
+                                                                    </div>
+                                                                    <p class="text-muted text-truncate  mb-2">Tenants</p>
+                                                                    <h5 class="mb-0">46</h5>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-3 col-md-2 text-capitalize">
+                                                                <div>
+                                                                    <div class="avatar-xs-2 mb-3">
+                                                                        <span class="avatar-title rounded-circle bg-danger font-size-24">
+                                                                                <i class="mdi mdi-account-cash text-white"></i>
+                                                                            </span>
+                                                                    </div>
+                                                                    <p class="text-muted text-truncate mb-2">Tenants with arrears</p>
+                                                                    <h5 class="mb-0">5</h5>
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3 col-md-2 text-capitalize">
+                                                                <div>
+                                                                    <div class="avatar-xs-2 mb-3">
+                                                                        <span class="avatar-title rounded-circle bg-danger font-size-24">
+                                                                                <i class="mdi mdi-account-cancel text-white"></i>
+                                                                            </span>
+                                                                    </div>
+                                                                    <p class="text-muted text-truncate mb-2">Reported to auctioneers</p>
+                                                                    <h5 class="mb-0">2</h5>
+
+                                                                </div>
+                                                            </div>
+
+
+
+
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 text-capitalize">
+                                                    <div>
+                                                        <div class="avatar-xs-2 mb-3">
+                                                            <span class="avatar-title rounded-circle bg-info font-size-24">
+                                                                    <i class="mdi mdi-account-check text-white"></i>
+                                                                </span>
+                                                        </div>
+                                                        <p class="text-muted text-truncate mb-2">Compliant Tenants</p>
+                                                        <h5 class="mb-0">41</h5>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    {/* <!-- end row --> */}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            <div class="row">
+              <div class="col-xl-4">
+                <div class="card calc-h-3px">
+                  <div class="card-body">
+
+                    <div class="d-flex align-items-center text-capitalize">
+                      <div class="mb-0 me-3 font-35px">
+                        <i class="mdi mdi-home-city-outline  text-primary h1"></i>
                       </div>
-                      <div className="d-flex align-items-center flex-grow-1"></div>
-                      <div className="d-flex">
-                        <button
-                          type="button"
-                          onClick={fetchUpdateData}
-                          data-bs-toggle="modal"
-                          data-bs-target="#edit-premise-detail"
-                          className="btn btn-primary dropdown-toggle option-selector"
-                        >
-                          <i className="dripicons-plus font-size-16"></i>{" "}
-                          <span className="pl-1 d-md-inline">
-                            Edit Premise Details
-                          </span>
-                        </button>
+                      <div className="d-flex justify-content-between col-10">
+                        <div>
+                        <h5 class="text-capitalize mb-0 pb-0"> {premiseData?.premise?.premiseName}  {premiseData.premise && premiseData?.premise?.active ? <span className="badge-soft-success badge m-3">Active</span> : <span class="badge-soft-danger badge m-3">Inactive</span>} </h5>
+                        <p class="text-muted mb-0 pb-0">{premiseData?.premise?.premiseType?.name}</p>
+                        </div>
+                        <div className="">
+                          <button
+                            type="button"
+                            onClick={fetchUpdateData}
+                            data-bs-toggle="modal"
+                            data-bs-target="#edit-premise-detail"
+                            className="btn btn-primary dropdown-toggle option-selector"
+                          >
+                            <i className="dripicons-plus font-size-16"></i>{" "}
+                            <span className="pl-1 d-md-inline">
+                              Edit Premise Details
+                            </span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="card-body">
+                  <div class="card-body border-top">
+                    <p class="p-0 m-0"><span class="text-muted">Plot No.</span>{premiseData?.premise?.plotNumber}</p>
+                  </div>
+                  <div class="card-body border-top">
+                    <p class="p-0 m-0"><span class="mdi mdi-map-marker me-2 font-18px"></span> {premiseData?.premise?.estate?.name}</p>
+                  </div>
+                  <div class="card-body border-top">
+                    <h4 class="text-capitalize font-14px">
+                      {/* <a> {premiseData?.landLords[0]?.landLord?.firstName} {premiseData?.landLords[0]?.landlord?.lastName} {premiseData?.landLords[0]?.landlord?.otherName} (Landlord)</a> */}
+                    </h4>
+                    <p class="text-muted mb-0 d-flex align-items-center">
+                      {/* <a class="d-flex align-items-center"><i class="mdi mdi-phone me-2 font-size-18"></i>{ premiseData?.landLords[0].landLord?.phoneNumber}</a> <span class="px-3 px-3">|</span> */}
+                      {/* <a class="d-flex align-items-center" ><i class="mdi mdi-email-outline font-size-18 me-2"></i> {premiseData?.landLords[0]?.landLord?.email}</a> */}
+                    </p>
+                  </div>
 
-                    <div className="col-12">
-                      <div className="row">
+                  {/* <div class="card-body border-top text-success">
+                                    <h4 class="text-capitalize font-14px">
+                                        <a href="" class="text-success">Casemiro Kamavinga (Caretaker)</a>
+                                    </h4>
+                                    <p class="text-muted mb-0 d-flex align-items-center">
+                                        <a href="tel:0704549859" class="d-flex align-items-center text-success"><i class="mdi mdi-phone me-2 font-size-18"></i> 0712 345 678</a> <span class="px-3 px-3">|</span>
+                                        <a class="d-flex align-items-center text-success" href="mailto:email@email.com"><i class="mdi mdi-email-outline font-size-18 me-2"></i> care@taker.com</a>
+                                    </p>
+                                </div> */}
+                  {/* <div class="card-footer bg-transparent border-top pt-4 pb-4 pb-4">
+                                    <div class="text-left">
 
-                        <div className="col-3">
-                          <label htmlFor="">Type</label>
-                          <div>
-                            <span className="text-capitalize">
-                              {premiseData.premise &&
-                                premiseData.premise.premiseType.name}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="col-3">
-                          <label htmlFor="">Use Type</label>
-                          <div>
-                            <span className="text-capitalize">
-                              {premiseData.premise &&
-                                premiseData.premise.premiseUseType.name}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="col-3">
-                          <label htmlFor="">Estate</label>
-                          <div>
-                            <span className="text-capitalize">
-                              {premiseData.premise &&
-                                premiseData.premise.estate.name}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="col-3">
-                          <label htmlFor="">Zone</label>
-                          <div>
-                            <span className="text-capitalize">
-                              {premiseData.premise &&
-                                premiseData.premise.estate.zone.name}
-                            </span>
-                          </div>
+
+                                        <a type="button" class="btn btn-outline-secondary waves-effect waves-light me-2 w-md btn-sm">
+                                            <i class="mdi mdi-home-export-outline  font-size-16 align-middle me-2"></i> Custom tenant(s) SMS
+                                        </a>
+
+                                        <a type="button" class="btn btn-primary waves-effect waves-light me-2 w-md btn-sm">
+                                            <i class="mdi mdi-file-clock-outline  font-size-16 align-middle me-2"></i> Rent Reminder
+                                        </a>
+                                    </div>
+                                </div> */}
+
+
+
+                  <div class="card-body border-top pb-2 pt-3">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="text-muted">
+                          <table class="table table-borderless mb-0 table-sm table-striped">
+                            <tbody>
+                              <tr>
+                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Premises Type</td>
+                                <td class="pb-0"><span class="text-black">Residential/Commercial</span></td>
+                              </tr>
+
+
+                              <tr>
+                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Agreement type</td>
+                                <td class="pb-0"><span class="text-black">Management</span></td>
+                              </tr>
+                              <tr>
+                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>MCA Commision</td>
+                                <td class="pb-0"><span class="text-black">30%</span></td>
+                              </tr>
+                              <tr>
+                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Commercial units</td>
+                                <td class="pb-0"><span class="text-black">2</span></td>
+                              </tr>
+                              <tr>
+                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Residential units</td>
+                                <td class="pb-0"><span class="text-black">62</span></td>
+                              </tr>
+                              <tr>
+                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Bed sitters</td>
+                                <td class="pb-0"><span class="text-black">32</span></td>
+                              </tr>
+
+                              <tr>
+                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>One Bedrooms</td>
+                                <td class="pb-0"><span class="text-black">30</span></td>
+                              </tr>
+                              <tr>
+                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Date registered</td>
+                                <td class="pb-0"><span class="text-black">30 Apr 2009</span></td>
+                              </tr>
+
+
+                            </tbody>
+                          </table>
+
                         </div>
                       </div>
-                      <div className="row mt-5">
-                        <div className="col-3">
-                          <label htmlFor="">County</label>
-                          <div>
-                            <span className="text-capitalize">
-                              {premiseData.premise &&
-                                premiseData.premise.estate.zone.clientCounty.county.name.toLowerCase()}
-                            </span>
+                      <br /><br />
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+
+              <div class="col-xl-8">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="text-muted mb-4 d-flex align-items-center">
+                          <i class="mdi mdi-home-account h2 text-success align-middle mb-0 me-3 font-size-30"></i>
+                          <div class="d-flex flex-column">
+                            <span>Rent Balances</span>
                           </div>
                         </div>
-                        <div className="col-3">
-                          <label htmlFor="">File Number</label>
-                          <div>
-                            <span>
-                              {premiseData.premise &&
-                                premiseData.premise.fileNumber}
-                            </span>
+                        <div class="text-success mt-4">
+                          <h4 class="text-danger">KES 302,000<i class="mdi mdi-chevron-up ms-1 text-success d-none"></i></h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="text-muted mb-4 d-flex align-items-center">
+                          <i class="mdi mdi-home-currency-usd h2 text-info align-middle mb-0 me-3 font-size-30"></i>
+                          <div class="d-flex flex-column">
+                            <span>Utility Bills</span>
+
                           </div>
                         </div>
-                        <div className="col-3">
-                          <label htmlFor="">Plot Number </label>
-                          <div>
-                            <span>
-                              {premiseData.premise &&
-                                premiseData.premise.plotNumber}
-                            </span>
+
+                        <div class="text-muted mt-4 text-uppercase">
+                          <h4>kes 20,326<i class="mdi mdi-currency-usd-off ms-1 text-success d-none"></i></h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="text-muted mb-4 d-flex align-items-center">
+                          <i class="mdi mdi-currency-usd-off h2 text-danger align-middle mb-0 me-3 font-size-30"></i>
+                          <div class="d-flex flex-column ">
+                            <span>Accumulated penalties</span>
+
                           </div>
                         </div>
-                        <div className="col-3">
-                          <label htmlFor="">Physical Address</label>
-                          <div>
-                            <span className="text-capitalize">
-                              {premiseData.premise &&
-                                premiseData.premise.address}
-                            </span>
-                          </div>
+
+                        <div class="text-muted mt-4 text-uppercase">
+                          <h4>kes 5,500<i class="mdi mdi-chevron-up ms-1 text-success d-none"></i></h4>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+                <div class="card">
+                  <div>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="p-4">
+                          <h5 class="text-primary mb-0 pb-0">Rent collection summary</h5>
+                          <span>Rent collection summary for the last 12 Months</span>
+                          <div class="row">
+
+                            <div class="col-12">
+                              <div id="property-chart"></div>
+                            </div>
+                          </div>
+
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="card-body border-top d-flex">
+                    <h6 class="text-muted fw-lighter me-3">Rent Revenue <span class="fw-semibold">KES 58,956,360 (92%)</span></h6>
+                    <h6 class="text-muted fw-lighter">Penalty Revenue <span class="fw-semibold">KES 122,659 (8%)</span></h6>
+                  </div>
+                </div>
+
+
+
               </div>
             </div>
 
@@ -2191,6 +2636,448 @@ function OnePremise() {
             </div>
           </div>
         )}
+  
+     {activeLink === 7 &&
+     <>
+     <div className="row">
+       <Message details={details} mode={mode} clear={clearmodal} />
+       <div className="container-fluid">
+      
+         <div className="row">
+           <div className="col-12">
+             <div className="card">
+               <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                 <div
+                   className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                   role="toolbar"
+                 >
+                   <h4 className="card-title text-capitalize mb-0 ">
+                     All rent and Bills invoices
+                   </h4>
+
+                   <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                     <div>
+                       <form className="app-search d-none d-lg-block p-2">
+                         <div className="position-relative">
+                           <input
+                             type="text"
+                             className="form-control"
+                             placeholder="Search..."
+                             onChange={(e) => setSearchTerm(e.target.value)}
+                           />
+                           <span className="bx bx-search-alt"></span>
+                         </div>
+                       </form>
+                     </div>
+                     <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
+                       <div className=" p-2">
+                         <span className="input-group-text">
+                           <i className="mdi mdi-calendar">Start Date</i>
+                         </span>
+                         <input
+                           type="text"
+                           className="form-control mouse-pointer sdate"
+                           placeholder={`${startDate}`}
+                           name="dob"
+                           readOnly
+                           data-date-format="dd M, yyyy"
+                           data-date-container="#datepicker1"
+                           data-provide="datepicker"
+                           data-date-autoclose="true"
+                           data-date-end-date="+0d"
+                         />
+                       </div>
+                       <div className=" p-2">
+                         <span className="input-group-text">
+                           <i className="mdi mdi-calendar">End Date: </i>
+                         </span>
+                         <input
+                           type="text"
+                           className="form-control mouse-pointer edate"
+                           name="dob"
+                           placeholder={`${endDate}`}
+                           readOnly
+                           data-date-format="dd M, yyyy"
+                           data-date-container="#datepicker1"
+                           data-provide="datepicker"
+                           data-date-autoclose="true"
+                         />
+                       </div>
+
+                     </div>
+                     <button className="btn btn-primary" onClick={sort}>
+                       filter
+                     </button>
+                   </div>
+                 </div>
+                 {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
+                 {/*     role="toolbar">*/}
+                 {/*  <button type="button"*/}
+                 {/*          className="btn btn-primary waves-effect btn-label waves-light me-3"><i*/}
+                 {/*    className="mdi mdi-printer label-icon"></i> Print Selected Invoices*/}
+                 {/*  </button>*/}
+                 {/*</div>*/}
+               </div>
+               <div className="card-body">
+                 <div className="table-responsive">
+                   <table
+                     className="table align-middle table-hover  contacts-table table-striped "
+                     id="datatable-buttons"
+                   >
+                     <thead className="table-light">
+                       <tr className="table-light">
+                         <th>Invoice Number</th>
+                         <th>Bill Reference No</th>
+                         <th>Tenant</th>
+                         <th>Premises</th>
+                         <th>Hse/Unit</th>
+                         <th>Charge Name</th>
+                         <th>Bill Amount</th>
+                         <th>Paid Amount</th>
+                         <th>Total Balance</th>
+                         <th>Due Date</th>
+                         <th>Payment Status</th>
+                         <th className="text-right">Actions</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       {invoices.length > 0 &&
+                         invoices?.map((invoice, index) => (
+                           <tr data-id={index} key={index}>
+                             <td>{invoice.transactionItemId}</td>
+                             <td>{invoice.billerBillNo}</td>
+                             <td>{invoice.transaction?.tenantName}</td>
+                             <td>{invoice.transaction.premiseName}</td>
+                             <td>{invoice.transaction.premiseUnitName}</td>
+                             <td>{invoice.applicableChargeName}</td>
+                             <td>
+                               {formatCurrency.format(invoice.billAmount)}
+                             </td>
+                             <td>
+                               {formatCurrency.format(invoice.billPaidAmount)}
+                             </td>
+                             <td>
+                               <span className="fw-semibold ">
+                                 {formatCurrency.format(
+                                   invoice.billAmount - invoice.billPaidAmount
+                                 )}
+                               </span>
+                             </td>
+                             <td>
+                               {moment(invoice?.invoiceDate).format(
+                                 "DD-MM-YYYY"
+                               )}
+                             </td>
+                             <td>
+                               <StatusBadge type={invoice?.paymentStatus} />
+                             </td>
+                             <td>
+                               <div className="d-flex justify-content-end">
+                                 {/*<button type="button"*/}
+                                 {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
+                                 {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
+                                 {/*        >Receive Payment*/}
+                                 {/*</button>*/}
+                                 <div className="dropdown">
+                                   <a
+                                     className="text-muted font-size-16"
+                                     role="button"
+                                     data-bs-toggle="dropdown"
+                                     aria-haspopup="true"
+                                   >
+                                     <i className="bx bx-dots-vertical-rounded"></i>
+                                   </a>
+                                   <div className="dropdown-menu dropdown-menu-end ">
+                                     <a
+                                       className="dropdown-item cursor-pointer"
+                                       onClick={() => {
+                                         getOneInvoice(
+                                           invoice.transactionItemId
+                                         );
+                                       }}
+                                     >
+                                       <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                       View
+                                     </a>
+                                     <a className="dropdown-item">
+                                       <i className="font-size-15 mdi mdi-printer me-3 "></i>
+                                       Print
+                                     </a>
+                                     <a
+                                       className="dropdown-item cursor-pointer"
+                                       onClick={() => {
+                                         handleModeChange("Email");
+                                         handleClicked(invoice, "Email");
+                                       }}
+                                     >
+                                       <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                       Email Tenant
+                                     </a>
+                                     <a
+                                       className="dropdown-item cursor-pointer"
+                                       onClick={() => {
+                                         handleModeChange("SMS");
+                                         handleClicked(invoice, "SMS");
+                                       }}
+                                     >
+                                       <i className="font-size-15 mdi mdi-chat me-3"></i>
+                                       Send as SMS
+                                     </a>
+                                   </div>
+                                 </div>
+                               </div>
+                             </td>
+                           </tr>
+                         ))}
+                     </tbody>
+                     <tfoot className="table-dark">
+                       <tr>
+                         <th
+                           className="text-capitalize text-nowrap"
+                           colSpan="3"
+                         >
+                           {invoices && invoices.length} Invoices
+                         </th>
+                         <td className="text-nowrap text-right" colSpan="6">
+                           <span className="fw-semibold">
+                             {formatCurrency.format(total())}
+                           </span>
+                         </td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                       </tr>
+                     </tfoot>
+                   </table>
+                 </div>
+                 <div className="mt-4 mb-0 flex justify-between px-8">
+
+                   <div>
+
+                     <select
+                       className={"btn btn-primary"}
+                       name=""
+                       id=""
+                       value={size}
+                       onChange={(e) => sortSize(e)}
+                     >
+                       <option value={parseInt(10)}>10</option>
+                       <option value={parseInt(30)}>30</option>
+                       <option value={parseInt(50)}>50</option>
+                     </select>
+                   </div>
+                   {pageCount !== 0 && (
+                     <p className=" font-medium text-xs text-gray-700">
+                       {" "}
+                       showing page{" "}
+                       <span className="text-green-700 text-opacity-100 font-bold text-sm">
+                         {page + 1}
+                       </span>{" "}
+                       of{" "}
+                       <span className="text-sm font-bold text-black">
+                         {pageCount}
+                       </span>{" "}
+                       pages
+                     </p>
+                   )}
+
+                   {pageCount !== 0 && (
+                     <ReactPaginate
+                       previousLabel={"prev"}
+                       nextLabel={"next"}
+                       breakLabel={"..."}
+                       pageCount={pageCount} // total number of pages needed
+                       marginPagesDisplayed={2}
+                       pageRangeDisplayed={1}
+                       onPageChange={handlePageClick}
+                       breakClassName={"page-item"}
+                       breakLinkClassName={"page-link"}
+                       containerClassName={"pagination"}
+                       pageClassName={"page-item"}
+                       pageLinkClassName={"page-link"}
+                       previousClassName={"page-item"}
+                       previousLinkClassName={"page-link"}
+                       nextClassName={"page-item"}
+                       nextLinkClassName={"page-link"}
+                       activeClassName={"active"}
+                     />
+                   )}
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+
+     {/*VIEW INVOICE*/}
+     <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
+       <Modal.Header closeButton>
+         <h5 className="modal-title" id="myLargeModalLabel">
+           Invoice Details
+         </h5>
+       </Modal.Header>
+       <Modal.Body>
+         <StatusBadge type={activeInvoice?.transaction?.paymentStatus} />
+         <div className="col-12">
+           <address>
+             <strong>Billed To:</strong>
+             <br />
+             {activeInvoice?.transaction?.tenantName} <br />
+             {activeInvoice?.transactionCustomerEmail}
+             <br />
+             {activeInvoice?.transaction?.premiseName + " , "}
+             {activeInvoice?.transaction?.premiseUnitName}
+             <br />
+             <br />
+             <p>
+               Issue date:{" "}
+               {moment(activeInvoice.dateTimeCreated).format("DD-MM-YYYY")}
+             </p>
+             <p>
+               Due date:{" "}
+               {moment(activeInvoice.invoiceDate).format("DD-MM-YYYY")}
+             </p>
+           </address>
+           <p>Title: {activeInvoice?.transactionTitle}</p>
+           <p>Description: {activeInvoice?.transactionDescription}</p>
+         </div>
+         <div className="col-12">
+           <div className="py-2 mt-3">
+             <h3 className="font-size-15 fw-bold">
+               Invoice Details ({" "}
+               <span className="text-primary fw-medium">
+                 {activeInvoice?.transactionItemId}
+               </span>{" "}
+               )
+             </h3>
+           </div>
+         </div>
+         <div className="col-12">
+           <table className="table table-nowrap">
+             <thead>
+               <tr>
+                 <th style={{ width: "70px" }}>No.</th>
+                 <th>Item</th>
+                 <th>Quantity</th>
+                 <th>Unit Cost</th>
+                 <th className="text-end">Amount</th>
+               </tr>
+             </thead>
+             <tbody>
+               <tr>
+                 <td>01</td>
+                 <td>{activeInvoice?.applicableChargeName}</td>
+                 <td>{formatCurrency.format(activeInvoice.quantity)}</td>
+                 <td>{formatCurrency.format(activeInvoice?.unitCost)}</td>
+                 <td className="text-end">
+                   KES. {formatCurrency.format(activeInvoice?.billAmount)}
+                 </td>
+               </tr>
+               <tr>
+                 <td></td>
+                 <td></td>
+                 <td colSpan="2" className="text-end">
+                   Total
+                 </td>
+                 <td className="text-end fw-bold">
+                   {formatCurrency.format(activeInvoice?.billAmount)}
+                 </td>
+               </tr>
+               <tr>
+                 <td></td>
+                 <td></td>
+                 <td colSpan="2" className="text-end">
+                   Paid
+                 </td>
+                 <td className="text-end  fw-bold">
+                   {formatCurrency.format(activeInvoice?.billPaidAmount)}
+                 </td>
+               </tr>
+               <tr>
+                 <td></td>
+                 <td></td>
+                 <td colSpan="2" className="border-0 text-end">
+                   <strong>Balance</strong>
+                 </td>
+                 <td className="border-0 text-end">
+                   <h5 className="m-0 text-uppercase fw-bold">
+                     {" "}
+                     {formatCurrency.format(
+                       activeInvoice?.billAmount -
+                       activeInvoice?.billPaidAmount
+                     )}
+                   </h5>
+                 </td>
+               </tr>
+             </tbody>
+           </table>
+         </div>
+       </Modal.Body>
+       <Modal.Footer>
+         <div className="col-12">
+           <form onSubmit={sendSTK}>
+             <table className="w-100">
+               <tbody>
+                 <tr data-id="1">
+                   <td>
+                     <label htmlFor="" className="">
+                       Payment Method
+                     </label>
+                     <select
+                       className="form-control"
+                       title="Select payment Method"
+                       disabled={true}
+                     >
+                       <option value="Mpesa">MPESA</option>
+                       <option value="Cash">CASH</option>
+                     </select>
+                   </td>
+                   <td className="px-3">
+                     <div className="phone-num">
+                       <label htmlFor="">Phone No.</label>
+                       <input
+                         className="form-control w-100 d-flex"
+                         spellCheck="false"
+                         onChange={(event) =>
+                           setphonenumber(event.target.value)
+                         }
+                         data-ms-editor="true"
+                         type="tel"
+                         id="phone"
+                         name="phone"
+                         placeholder="07XXXXXXXX"
+                         pattern="[0]{1}[0-9]{9}"
+                         required={true}
+                       />
+                     </div>
+                   </td>
+                   <td className="text-right float-right">
+                     <div className="d-flex flex-column">
+                       <label className="opacity-0">Something</label>
+                       <button
+                         type="submit"
+                         className="btn btn-primary w-md waves-effect waves-light"
+                       >
+                         Submit
+                       </button>
+                     </div>
+                   </td>
+                 </tr>
+               </tbody>
+             </table>
+             <br />
+             {error.color !== "" && (
+               <div className={"alert alert-" + error.color} role="alert">
+                 {error.message}
+               </div>
+             )}
+           </form>
+         </div>
+       </Modal.Footer>
+     </Modal>
+     </>
+} 
 
       </div>
       <Helmet>
