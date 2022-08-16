@@ -5,12 +5,11 @@ import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
 import { Link } from "react-router-dom";
-import moment from 'moment'
+import moment from "moment";
 import { Modal, Button } from "react-bootstrap";
 import { baseUrl } from "../../services/API";
 import AuthService from "../../services/auth.service";
-
-
+import Message from "../../components/Message";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -26,42 +25,37 @@ function OneTenant() {
   const [email, setEmail] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [nationality, setNationality] = useState("");
-  const [companyIncorporationNumber, setCompanyIncorporationNumber] = useState("");
+  const [companyIncorporationNumber, setCompanyIncorporationNumber] =
+    useState("");
   const [detailsId, setDetailsId] = useState("");
   const [companyAddress, setCompanyAddress] = useState("");
-  const [companyDateOfRegistration, setCompanyDateOfRegistration] = useState("");
+  const [companyDateOfRegistration, setCompanyDateOfRegistration] =
+    useState("");
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
   const [occupation, setOccupation] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [tenantTypeName, setTenantTypeName] = useState("");
-  const [premiseData, setPremiseData] = useState([])
-
+  const [premiseData, setPremiseData] = useState([]);
 
   //company details
 
+  const [premises, setPremises] = useState([]);
+  const [units, setUnits] = useState([]);
+  const [premId, setPremId] = useState("");
 
-  const [premises, setPremises] = useState([])
-  const [units, setUnits] = useState([])
-  const [premId, setPremId] = useState("")
-
-
-
-
-  const [companyLocation, setCompanyLocation] = useState("")
+  const [companyLocation, setCompanyLocation] = useState("");
   //documents
 
-  const [docName, setDocName] = useState("")
-  const [docs, setDocs] = useState("")
-  const [documentTypeId, setDocumentTypeId] = useState(null)
-  const [documentTypes, setDocumentTypes] = useState([])
-  const [tenantDocs, setTenantDocs] = useState([])
+  const [docName, setDocName] = useState("");
+  const [docs, setDocs] = useState("");
+  const [documentTypeId, setDocumentTypeId] = useState(null);
+  const [documentTypes, setDocumentTypes] = useState([]);
+  const [tenantDocs, setTenantDocs] = useState([]);
   //modals
   const [show, setShow] = useState(false);
   const [docShow, setdocShow] = useState(true);
-
-
 
   const [editAccountShow, seteditAccountShow] = useState(false);
   const [editDocShow, seteditDocShow] = useState(false);
@@ -75,35 +69,32 @@ function OneTenant() {
   const handleEditShow = () => seteditDocShow(true);
   const handleEditClose = () => seteditDocShow(false);
 
-  // doc 
+  // doc
 
   const handleDocumentSubmit = (event) => {
     event.preventDefault();
 
     handleDocClose();
-  }
+  };
 
   const handleFileRead = async (event) => {
-    const file = event.target.files[0]
-    const base64 = await convertBase64(file)
+    const file = event.target.files[0];
+    const base64 = await convertBase64(file);
     setDocs(base64);
-  }
+  };
 
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const fileReader = new FileReader();
-      fileReader.readAsDataURL(file)
+      fileReader.readAsDataURL(file);
       fileReader.onload = () => {
         resolve(fileReader.result);
-      }
+      };
       fileReader.onerror = (error) => {
         reject(error);
-      }
-    })
-  }
-
-
-
+      };
+    });
+  };
 
   // edit tenants
   const [unitTypeName, setUnitTypeName] = useState("");
@@ -114,9 +105,9 @@ function OneTenant() {
   const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] =
     useState("");
   const [premiseUnitId, setPremiseUnitId] = useState("");
-  const [tenantStatuses, setTenantStatuses] = useState([])
+  const [tenantStatuses, setTenantStatuses] = useState([]);
   const [unitId, setUnitId] = useState("");
-  const [endReason, setEndReason] = useState("")
+  const [endReason, setEndReason] = useState("");
 
   //edit ContactPersons
 
@@ -131,26 +122,22 @@ function OneTenant() {
   const [contactPersonType, setContactPersonType] = useState("");
   const [error, setError] = useState({
     message: "",
-    color: ""
+    color: "",
   });
 
   const { id } = useParams();
   const userId = id;
 
-
-
   //communication
 
-  const [communication, setCommunication] = useState([])
+  const [communication, setCommunication] = useState([]);
   //  const [typeMes, setTypeMes] = useState("TENANT");
   const [message, setMessage] = useState([]);
-
 
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
       setTenantTypeName(res.data.data.tenant.tenantType);
-
     });
   };
 
@@ -175,12 +162,10 @@ function OneTenant() {
       otherName: otherName,
       phoneNumber: phoneNumber,
       tenantTypeName: tenantTypeName,
-
     });
     //  console.log(id)
     requestsServiceService.updateTenantsDetails(details).then((res) => {
-      fetchAll()
-
+      fetchAll();
     });
 
     // console.log(details)
@@ -198,15 +183,14 @@ function OneTenant() {
     companyName,
     nationality,
     companyAddress,
-    companyDateOfRegistration,
-
+    companyDateOfRegistration
   ) => {
     setDetailsId(detailsId);
     setTenantTypeName(tenantTypeName);
     setFirstName(firstName);
     setLastName(lastName);
     setOtherName(otherName);
-    setPhoneNumber(phoneNumber)
+    setPhoneNumber(phoneNumber);
     setEmail(email);
     setIdNumber(idNumber);
     setCompanyName(companyName);
@@ -231,7 +215,6 @@ function OneTenant() {
       unitCondition: unitCondition,
     });
     requestsServiceService.updateTenant(data).then((res) => {
-
       fetchAll();
     });
   };
@@ -325,56 +308,52 @@ function OneTenant() {
     // console.log(contactPerson);
     // console.log(id)
 
-    requestsServiceService.createContactPerson(contactPerson).then((res) => {
-      console.log(res);
-      fetchAll();
+    requestsServiceService
+      .createContactPerson(contactPerson)
+      .then((res) => {
+        console.log(res);
+        fetchAll();
 
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success"
-        })
-      } else {
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning"
-        })
-      }
-
-
-      setTimeout(() => {
-        clear()
-      }, 3000)
-    }).catch((res) => {
-
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger"
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        }, 3000);
       })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
 
-      setTimeout(() => {
-        clear()
-      }, 3000)
-
-
-    })
-  }
-
-  const clear = () => {
-    setError({
-      ...error,
-      message: "",
-      color: ""
-    });
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        }, 3000);
+      });
   };
 
-
   const addTenancies = () => {
-
     let data = JSON.stringify({
       active: true,
       // id:0,
@@ -386,85 +365,82 @@ function OneTenant() {
       tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
       tenancyStatusName: tenancyStatus,
       tenantId: tenantData.tenant.id,
-      unitCondition: unitCondition
+      unitCondition: unitCondition,
+    });
 
-    })
+    requestsServiceService
+      .createTenancies(data)
+      .then((res) => {
+        console.log(res);
+        fetchAll();
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-    requestsServiceService.createTenancies(data).then((res) => {
-      console.log(res)
-      fetchAll()
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success"
-        })
-      } else {
-
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning"
-        })
-      }
-
-
-      setTimeout(() => {
-        cleared()
-      }, 3000)
-    }).catch((res) => {
-
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger"
+        setTimeout(() => {
+          cleared();
+        }, 3000);
       })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
 
-      setTimeout(() => {
-        cleared()
-      }, 3000)
-
-
-    })
-  }
+        setTimeout(() => {
+          cleared();
+        }, 3000);
+      });
+  };
 
   const cleared = () => {
     setError({
       ...error,
       message: "",
-      color: ""
-
-    })
-
-  }
+      color: "",
+    });
+  };
   const getPremises = () => {
-    requestsServiceService.allPremises().then((res) =>
-      setPremises(res.data.data)
-    )
-  }
+    let data = {
+      dateCreatedEnd: "2022-08-16T17:13:44.912Z",
+      dateCreatedStart: "2022-08-16T17:13:44.912Z",
+    };
+    requestsServiceService
+      .allPremises(data)
+      .then((res) => setPremises(res.data.data));
+  };
 
   const onPremiseChange = (event) => {
+    let vals = event.target.value.split(":");
 
-    let vals = event.target.value.split(':');
-
-    requestsServiceService.findVacatPremise(vals[0]).then((res) =>
-      setUnits(res.data.data)
-    )
-  }
+    requestsServiceService
+      .findVacatPremise(vals[0])
+      .then((res) => setUnits(res.data.data));
+  };
   const premiseUnitChange = (event) => {
-    setPremiseUnitId(event.target.value)
-  }
+    setPremiseUnitId(event.target.value);
+  };
 
   const getStatus = () => {
     requestsServiceService.getTenantStatus().then((res) => {
-      setTenantStatuses(res.data.data)
-    })
-  }
+      setTenantStatuses(res.data.data);
+    });
+  };
 
   //documents create
   const createDoc = () => {
-
-    setdocShow(!docShow)
+    setdocShow(!docShow);
 
     let data = JSON.stringify({
       docName: docName,
@@ -472,97 +448,82 @@ function OneTenant() {
       documentOwnerTypeName: "TENANT",
       documentTypeId: documentTypeId,
       id: null,
-      ownerEntityId: userId
-    })
+      ownerEntityId: userId,
+    });
 
     requestsServiceService.createDocuments(data).then((res) => {
       // setTenantDocs(res.data.data)
-      getDocument()
-
-
-    })
-  }
+      getDocument();
+    });
+  };
 
   const getDocument = () => {
     requestsServiceService.fetchDocuments("TENANT", id).then((res) => {
-      setTenantDocs(res.data.data)
-
-
-    }
-    )
-  }
+      setTenantDocs(res.data.data);
+    });
+  };
   useEffect(() => {
     fetchAll();
     getContactTypeName();
     getPremises();
-    getStatus()
+    getStatus();
     createDoc();
-    createDocumentTypes()
-    getDocument()
+    createDocumentTypes();
+    getDocument();
     fetchCommunication();
     // fetchMessages()
-
-
-
   }, []);
 
   const createDocumentTypes = (id) => {
     requestsServiceService.getDocumentTypes(id).then((res) => {
       setDocumentTypes(res.data.data);
-
-    })
-  }
-
+    });
+  };
 
   const deleteDeactivate = () => {
-    requestsServiceService.deactivateTenancies(id, endReason).then((res) => {
-      console.log(res.data)
-      fetchAll()
+    requestsServiceService
+      .deactivateTenancies(id, endReason)
+      .then((res) => {
+        console.log(res.data);
+        fetchAll();
 
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success"
-        })
-      } else {
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning"
-        })
-      }
-
-
-      setTimeout(() => {
-        clearTenant()
-      }, 3000)
-    }).catch((res) => {
-
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger"
+        setTimeout(() => {
+          clearTenant();
+        }, 3000);
       })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
 
-      setTimeout(() => {
-        clearTenant()
-      }, 3000)
-
-
-    })
-  }
+        setTimeout(() => {
+          clearTenant();
+        }, 3000);
+      });
+  };
 
   const clearTenant = () => {
     setError({
       ...error,
       message: "",
-      color: ""
-
-    })
-
-
+      color: "",
+    });
   };
 
   // const vacantTenant =(premiseId)=>{
@@ -573,36 +534,186 @@ function OneTenant() {
   // }
   // console.log(tenancyRenewalDate)
 
-
   //communication
 
-  let clientId = AuthService.getClientId()
+  let clientId = AuthService.getClientId();
 
   const fetchCommunication = () => {
-
-    requestsServiceService.getEntityCommunication(userId, 0, 5, "TENANT", clientId).then((res) => {
-      setCommunication(res.data.data)
-
-    })
-
-  }
-
-
-
-
+    requestsServiceService
+      .getEntityCommunication(userId, 0, 5, "TENANT", clientId)
+      .then((res) => {
+        setCommunication(res.data.data);
+      });
+  };
 
   const date2 = (date) => {
     setTenancyRenewalNotificationDate(new Date(date.target.value));
-  }
+  };
   const date3 = (date) => {
     setTenancyRenewalDate(new Date(date.target.value));
-  }
-  $(document).on("change", ".date2", date2)
-  $(document).on("change", ".date3", date3)
+  };
+  $(document).on("change", ".date2", date2);
+  $(document).on("change", ".date3", date3);
 
+  // tenant updates=============================
+  let formatCurrency = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "KES",
+  });
+  const [statements, setStatements] = useState([]);
+  const [activeInvoice, setactiveInvoice] = useState({});
+  const [invoice_show, setinvoice_show] = useState(false);
+  const showInvoice = () => setinvoice_show(true);
+  const [activeModal, setActiveModal] = useState(0);
+  const closeInvoice = () => {
+    setActiveModal(0);
+    setinvoice_show(false);
+  };
+  const getTenantStatements = () => {
+    let startdate = "01/12/2022";
+    let enddate = "12/12/2022";
+    requestsServiceService
+      .getTenantStatements(userId, startdate, enddate)
+      .then((res) => {
+        setStatements(res.data.data);
+      });
+  };
+  useEffect(() => {
+    getTenantStatements();
+  }, []);
+  const getOneInvoice = (bill) => {
+    let acc = statements.find((statement) => statement.billNo === bill);
+    setactiveInvoice(acc);
+    showInvoice();
+  };
 
+  const [utilData, setUtilData] = useState({
+    newBillNo: "",
+    statementId: "",
+    tenantId: "",
+  });
 
+  const setUtilizeValues = (statementId, tenantId) => {
+    setUtilData({
+      ...utilData,
+      newBillNo: "",
+      statementId: statementId,
+      tenantId: tenantId,
+    });
+  };
 
+  const searchBillNo = async (e) => {
+    e.preventDefault();
+    handleClose();
+
+    await requestsServiceService
+      .viewTransactionItem(utilData.newBillNo)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.paymentStatus !== "PAID") {
+          utilize();
+        } else {
+          setError({
+            ...error,
+            message: "ERROR: Bill is already paid",
+            color: "danger",
+          });
+        }
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        }, 2000);
+      });
+  };
+
+  const utilize = () => {
+    requestsServiceService.utilize(utilData).then((res) => {
+      if (res.data.status === true) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success",
+        });
+      } else {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: "",
+        });
+      }, 2000);
+    });
+  };
+
+  // MESSAGE TEST
+  const [details, setDetails] = useState({
+    message: "",
+    contact: "",
+    recipientName: "",
+    entity: null,
+    clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+    clientId: parseInt(authService.getClientId()),
+    entityType: "TENANCY",
+    createdBy: "",
+    senderId: "",
+    subject: "Invoice Payment",
+  });
+
+  const [mode, setmode] = useState("");
+  const handleModeChange = (mode) => {
+    setmode(mode);
+  };
+  const handleClicked = (inv, mod) => {
+    let mes = `Dear ${inv.paidBy}, your payment for invoice ${
+      inv.billNo
+    } for KES ${formatCurrency.format(
+      inv.receiptAmount
+    )} has been received. Thank you`;
+    let senderId =
+      JSON.parse(authService.getCurrentUserName()).client?.senderId === null
+        ? "REVENUESURE"
+        : JSON.parse(authService.getCurrentUserName()).client?.senderId;
+    setDetails({
+      ...details,
+      message: mes,
+      contact: mod === "Email" ? inv?.tenant?.email : inv?.tenant?.phoneNumber,
+      entity: inv.tenant != undefined ? inv.tenant.id : inv.id,
+      recipientName: inv?.tenantName,
+      createdBy: authService.getCurrentUserName(),
+      senderId: senderId,
+      subject: "Invoice Payment",
+    });
+
+    $(".email-overlay").removeClass("d-none");
+    setTimeout(function () {
+      $(".the-message-maker").addClass("email-overlay-transform");
+    }, 0);
+  };
+  const clear = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+      clientId: parseInt(authService.getClientId()),
+      entityType: "TENANT",
+      createdBy: "",
+      senderId: "",
+      subject: "Customer Receipt",
+    });
+  };
+  // end tenant updates===========================
   return (
     <div className="page-content">
       <div className="content-fluid">
@@ -617,10 +728,10 @@ function OneTenant() {
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <li class="breadcrumb-item">
-                    <Link to='/'>Dashboard </Link>
+                    <Link to="/">Dashboard </Link>
                   </li>
                   <li class="breadcrumb-item">
-                    <Link to='/alltenants'>All Tenants</Link>
+                    <Link to="/alltenants">All Tenants</Link>
                   </li>
                   <li class="breadcrumb-item active">
                     {tenantData?.tenant?.firstName}
@@ -704,7 +815,26 @@ function OneTenant() {
                       >
                         Communication
                       </a>
-
+                      <a
+                        onClick={() => setActiveLink(6)}
+                        className={
+                          activeLink === 6
+                            ? "nav-item nav-link active cursor-pointer"
+                            : "nav-item cursor-pointer nav-link"
+                        }
+                      >
+                        Statements
+                      </a>
+                      <a
+                        onClick={() => setActiveLink(7)}
+                        className={
+                          activeLink === 7
+                            ? "nav-item nav-link active cursor-pointer"
+                            : "nav-item cursor-pointer nav-link"
+                        }
+                      >
+                        Receipts
+                      </a>
                     </div>
                   </div>
                 </nav>
@@ -726,8 +856,7 @@ function OneTenant() {
                     >
                       <div class="d-flex align-items-center flex-grow-1">
                         <h4 class="mb-0 m-0 bg-transparent">
-                          Quick Stats on{" "}
-                          {tenantData?.tenant?.firstName}
+                          Quick Stats on {tenantData?.tenant?.firstName}
                         </h4>
                       </div>
                       <div className="d-flex">
@@ -763,97 +892,73 @@ function OneTenant() {
                   </div>
                   <div className="card-body">
                     <div className="col-12">
-
                       <div className="row">
                         <div className="col-3">
                           <label htmlFor="">Type</label>
                           <div>
-                            <span>
-                              {
-                                tenantData?.tenant?.tenantType}
-                            </span>
+                            <span>{tenantData?.tenant?.tenantType}</span>
                           </div>
                         </div>
-                        {tenantTypeName === "INDIVIDUAL" &&
+                        {tenantTypeName === "INDIVIDUAL" && (
                           <div className="row mt-5">
-
                             <div className="col-3">
                               <label htmlFor="">First Name</label>
                               <div>
-                                <span>
-                                  {tenantData?.tenant?.firstName}
-                                </span>
+                                <span>{tenantData?.tenant?.firstName}</span>
                               </div>
                             </div>
                             <div className="col-3">
                               <label htmlFor="">Last Name</label>
                               <div>
-                                <span>
-                                  {tenantData?.tenant?.lastName}
-                                </span>
+                                <span>{tenantData?.tenant?.lastName}</span>
                               </div>
                             </div>
                             <div className="col-3">
                               <label htmlFor="">Email</label>
                               <div>
-                                <span>
-                                  {tenantData?.tenant?.email}
-                                </span>
+                                <span>{tenantData?.tenant?.email}</span>
                               </div>
                             </div>
                             <div className="col-3">
                               <label htmlFor="">Id Number</label>
                               <div>
-                                <span>
-                                  {tenantData?.tenant?.idNumber}
-                                </span>
+                                <span>{tenantData?.tenant?.idNumber}</span>
                               </div>
                             </div>
-
-
 
                             <div className="row mt-5">
                               <div className="col-3">
                                 <label htmlFor="">PhoneNumber</label>
                                 <div>
-                                  <span>
-                                    {tenantData?.tenant?.phoneNumber}
-                                  </span>
+                                  <span>{tenantData?.tenant?.phoneNumber}</span>
                                 </div>
                               </div>
                               <div className="col-3">
                                 <label htmlFor="">Nationality</label>
                                 <div>
-                                  <span>
-                                    {
-                                      tenantData?.tenant?.nationality}
-                                  </span>
+                                  <span>{tenantData?.tenant?.nationality}</span>
                                 </div>
                               </div>
                             </div>
-
-
-                          </div>}
+                          </div>
+                        )}
                       </div>
 
-                      {tenantTypeName === "COMPANY" &&
+                      {tenantTypeName === "COMPANY" && (
                         <div className="row mt-5">
-
                           <div className="col-3">
                             <label htmlFor="">Company Name</label>
                             <div>
-                              <span>
-                                {
-                                  tenantData?.tenant?.companyName}
-                              </span>
+                              <span>{tenantData?.tenant?.companyName}</span>
                             </div>
                           </div>
                           <div className="col-3">
-                            <label htmlFor="">Company Incorporation Number</label>
+                            <label htmlFor="">
+                              Company Incorporation Number
+                            </label>
                             <div>
                               <span>
-                                {
-                                  tenantData?.tenant?.companyIncorporationNumber}
+                                {tenantData?.tenant?.companyIncorporationNumber}
                               </span>
                             </div>
                           </div>
@@ -861,31 +966,27 @@ function OneTenant() {
                           <div className="col-3">
                             <label htmlFor="">Company Address</label>
                             <div>
-                              <span>
-                                {
-                                  tenantData?.tenant?.companyAddress}
-                              </span>
+                              <span>{tenantData?.tenant?.companyAddress}</span>
                             </div>
                           </div>
 
-
                           <div className="row mt-5">
-
-
                             <div className="col-3">
-                              <label htmlFor="">CompanyDateOfRegistration</label>
+                              <label htmlFor="">
+                                CompanyDateOfRegistration
+                              </label>
                               <div>
                                 <span>
                                   {moment(
-                                    tenantData?.tenant?.companyDateOfRegistration).format("DD /MM /YYYY")}
+                                    tenantData?.tenant
+                                      ?.companyDateOfRegistration
+                                  ).format("DD /MM /YYYY")}
                                 </span>
                               </div>
                             </div>
                           </div>
-
-                        </div>}
-
-
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -928,15 +1029,19 @@ function OneTenant() {
 
                         <div>
                           <div className="card-body">
-
-
-                            {error.color !== "" &&
-                              <div className={"alert alert-" + error.color} role="alert">
+                            {error.color !== "" && (
+                              <div
+                                className={"alert alert-" + error.color}
+                                role="alert"
+                              >
                                 {error.message}
                               </div>
-                            }
+                            )}
                             <div className="table-responsive table-responsive-vontainer">
-                              <table className="table align-middle table-nowrap table-hover" id="datatable-buttons">
+                              <table
+                                className="table align-middle table-nowrap table-hover"
+                                id="datatable-buttons"
+                              >
                                 <thead>
                                   <tr class="text-uppercase table-dark">
                                     <th>#</th>
@@ -958,26 +1063,40 @@ function OneTenant() {
                                       <tr data-id="1">
                                         <td>{index + 1}</td>
                                         <td>{unit.premiseUnit.unitName}</td>
-                                        <td>{unit.premiseUnit.premise.premiseName}</td>
+                                        <td>
+                                          {unit.premiseUnit.premise.premiseName}
+                                        </td>
 
                                         <td className="text-capitalize">
                                           {unit.premiseUnit.unitType.name}
                                         </td>
                                         <td>
-                                          {moment(unit.startDate && unit.startDate.replace(/[TZ]/g, " ")).format("DD /MM /YYYY")}
+                                          {moment(
+                                            unit.startDate &&
+                                              unit.startDate.replace(
+                                                /[TZ]/g,
+                                                " "
+                                              )
+                                          ).format("DD /MM /YYYY")}
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
-                                          <span className="badge-soft-success badge">  {unit.tenancyStatus.toLowerCase()
-
-
-                                          }</span>
+                                          <span className="badge-soft-success badge">
+                                            {" "}
+                                            {unit.tenancyStatus.toLowerCase()}
+                                          </span>
                                         </td>
-                                        <td>{unit.tenancyRenewalDate && moment(unit.tenancyRenewalDate).format
-                                          ("DD/ MM/ YYYY")
-                                        }</td>
                                         <td>
-                                          {unit.tenancyRenewalNotificationDate && moment(unit.tenancyRenewalNotificationDate).format("DD /MM/ YYYY")}
+                                          {unit.tenancyRenewalDate &&
+                                            moment(
+                                              unit.tenancyRenewalDate
+                                            ).format("DD/ MM/ YYYY")}
+                                        </td>
+                                        <td>
+                                          {unit.tenancyRenewalNotificationDate &&
+                                            moment(
+                                              unit.tenancyRenewalNotificationDate
+                                            ).format("DD /MM/ YYYY")}
                                         </td>
 
                                         <td>
@@ -1020,8 +1139,6 @@ function OneTenant() {
                                                     unit.tenancyRenewalDate,
                                                     unit.tenancyRenewalNotificationDate,
                                                     unit.id
-
-
                                                   )
                                                 }
                                               >
@@ -1029,15 +1146,20 @@ function OneTenant() {
                                                 Edit
                                               </p>
                                               <p>
-                                                <Link class="dropdown-item" to={`/premise/tenant/${unit.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
+                                                <Link
+                                                  class="dropdown-item"
+                                                  to={`/premise/tenant/${unit.id}`}
+                                                >
+                                                  <i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>
+                                                  view
+                                                </Link>
                                               </p>
 
                                               <button
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#vacate-modal"
                                                 class="dropdown-item "
-                                                onClick={() => setEndReason('')}
-
+                                                onClick={() => setEndReason("")}
                                               >
                                                 <i class="font-size-8 mdi mdi-close-circle me-3">
                                                   Vacate Tenant
@@ -1095,10 +1217,11 @@ function OneTenant() {
                         </div>
                         <div className="p-4">
                           <div className="row">
-
-
                             <div className="col-12">
-                              <div className={"alert alert-" + error.color} role="alert">
+                              <div
+                                className={"alert alert-" + error.color}
+                                role="alert"
+                              >
                                 {error.message}
                               </div>
                               <div className="table-responsive">
@@ -1202,9 +1325,7 @@ function OneTenant() {
                           className="btn align-items-center d-flex btn-primary dropdown-toggle option-selector mb-3 mt-0"
                         >
                           <i className="dripicons-plus font-size-16 mt-1"></i>{" "}
-                          <span className="pl-1 d-md-inline">
-                            New document
-                          </span>
+                          <span className="pl-1 d-md-inline">New document</span>
                         </button>
                       </div>
                     </div>
@@ -1228,29 +1349,34 @@ function OneTenant() {
                           </thead>
                           <tbody>
                             {tenantDocs &&
-                              tenantDocs.map(
-                                (unit, index) => (
-                                  <tr data-id="1">
-                                    <td>{index + 1}</td>
-                                    <td className="active nav-link cursor-pointer">
-                                      <a onClick={() => download}>
-                                        {" "}
-                                        {unit.docName}
-                                      </a>
-                                    </td>
-                                    <td>{unit.documentType.name}</td>
-                                    <td className="text-capitalize">
-                                      {unit.documentOwnerType.toLowerCase()}
-                                    </td>
-                                    <td>
-                                      <a href={baseUrl + "/documents/download?docName=" + `${unit.docName}`}
-                                        className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                        target="_blank"><i className="bx bx-download" />
-                                      </a>
-                                    </td>
-                                  </tr>
-                                )
-                              )}
+                              tenantDocs.map((unit, index) => (
+                                <tr data-id="1">
+                                  <td>{index + 1}</td>
+                                  <td className="active nav-link cursor-pointer">
+                                    <a onClick={() => download}>
+                                      {" "}
+                                      {unit.docName}
+                                    </a>
+                                  </td>
+                                  <td>{unit.documentType.name}</td>
+                                  <td className="text-capitalize">
+                                    {unit.documentOwnerType.toLowerCase()}
+                                  </td>
+                                  <td>
+                                    <a
+                                      href={
+                                        baseUrl +
+                                        "/documents/download?docName=" +
+                                        `${unit.docName}`
+                                      }
+                                      className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                      target="_blank"
+                                    >
+                                      <i className="bx bx-download" />
+                                    </a>
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>
@@ -1263,7 +1389,12 @@ function OneTenant() {
             {/*document attachment modal*/}
 
             <div>
-              <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
+              <Modal
+                show={docShow}
+                onHide={handleDocClose}
+                className={"modal fade"}
+                centered
+              >
                 <form onSubmit={createDoc}>
                   <Modal.Header closeButton>
                     <Modal.Title>Add Documents</Modal.Title>
@@ -1272,7 +1403,10 @@ function OneTenant() {
                     <div className="row">
                       <div className="col-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
+                          <label htmlFor="">
+                            Select Document Type.{" "}
+                            <strong className="text-danger ">*</strong>
+                          </label>
                           <select
                             className="form-control text-capitalize"
                             onChange={(e) => {
@@ -1284,71 +1418,89 @@ function OneTenant() {
                             <option className="text-black font-semibold ">
                               select..
                             </option>
-                            {documentTypes && documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
-                              return (
-                                <option
-                                  key={dT.id}
-                                  value={dT.id}
-                                >
-                                  {dT.name?.toLowerCase().replace(/_/g, " ")}
-                                </option>
-                              );
-                            })}
+                            {documentTypes &&
+                              documentTypes
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                ?.map((dT) => {
+                                  return (
+                                    <option key={dT.id} value={dT.id}>
+                                      {dT.name
+                                        ?.toLowerCase()
+                                        .replace(/_/g, " ")}
+                                    </option>
+                                  );
+                                })}
                           </select>
                         </div>
                         <div className="form-group mb-4">
-                          <label htmlFor="">Document Name. <strong className="text-danger ">*</strong></label>
-                          <input type="text" className="form-control" value={docName} onChange={(e) => setDocName(e.target.value)} placeholder="Enter document name" required={true} />
+                          <label htmlFor="">
+                            Document Name.{" "}
+                            <strong className="text-danger ">*</strong>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={docName}
+                            onChange={(e) => setDocName(e.target.value)}
+                            placeholder="Enter document name"
+                            required={true}
+                          />
                         </div>
                         <div className="form-group mb-4">
-                          <label htmlFor="">Document Upload. <strong className="text-danger ">*</strong></label>
+                          <label htmlFor="">
+                            Document Upload.{" "}
+                            <strong className="text-danger ">*</strong>
+                          </label>
                           <div className="input-group mb-0">
-                            <label className="input-group-text bg-info text-white cursor-pointer"
-                              htmlFor="document1-1">
-                              <i className="font-14px mdi mdi-paperclip"></i> Attach File
+                            <label
+                              className="input-group-text bg-info text-white cursor-pointer"
+                              htmlFor="document1-1"
+                            >
+                              <i className="font-14px mdi mdi-paperclip"></i>{" "}
+                              Attach File
                             </label>
-                            <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true} />
+                            <input
+                              type="file"
+                              className="form-control"
+                              id="document1-1"
+                              onChange={(e) => handleFileRead(e)}
+                              required={true}
+                            />
                           </div>
                         </div>
                       </div>
                     </div>
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button variant="secondary" className={"btn btn-grey"} onClick={handleDocClose}>
+                    <Button
+                      variant="secondary"
+                      className={"btn btn-grey"}
+                      onClick={handleDocClose}
+                    >
                       Close
                     </Button>
-                    <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                    <Button
+                      variant="primary"
+                      className={"btn btn-primary"}
+                      type={"submit"}
+                    >
                       Add Document
                     </Button>
                   </Modal.Footer>
                 </form>
               </Modal>
-
             </div>
-
           </div>
-
-
-
-
-
         )}
-
 
         {activeLink === 5 && (
           <div>
-
-
-
             <div class="container-fluid">
-
               {/* <!-- start page title --> */}
               <div class="row">
                 <div class="col-12">
                   <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <h4 class="mb-sm-0 font-size-18">All Messages</h4>
-
-
                   </div>
                 </div>
               </div>
@@ -1356,27 +1508,22 @@ function OneTenant() {
 
               <div class="row">
                 <div class="col-12">
-
                   {/* <!-- Right Sidebar --> */}
                   <div class="mb-3">
-
                     <div class="card">
                       <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                        <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
-
-                          <div class="d-flex align-items-center flex-grow-1">
-
-
-
-
-                          </div>
-
-
-
+                        <div
+                          class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                          role="toolbar"
+                        >
+                          <div class="d-flex align-items-center flex-grow-1"></div>
                         </div>
                       </div>
                       <div class="card-body the-inbox">
-                        <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
+                        <table
+                          id="emailDataTable-btns"
+                          class="table   nowrap w-100 table-hover mt-0 mb-0"
+                        >
                           <thead>
                             <tr class="d-none">
                               <th>Mode</th>
@@ -1387,14 +1534,11 @@ function OneTenant() {
                               <th>Name</th>
                               <th>Message Content</th>
                               <th>Date</th>
-
                             </tr>
                           </thead>
 
                           <tbody class="table-hover">
                             {communication?.map((com, index) => (
-
-
                               <tr data-id="1">
                                 <td>{index + 1}</td>
                                 {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
@@ -1407,71 +1551,450 @@ function OneTenant() {
                                         AW
                                       </span>
                                     </div>
-
                                   </div>
 
-
                                   <span class=" font-size-18 d-none d-md-flex">
-                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
-                                    <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">sms</span></i>
-
+                                    <i class="mdi mdi-chat-outline text-info pr-2">
+                                      <span class="d-none">Email</span>
+                                    </i>
+                                    <i class="mdi mdi-email-check-outline text-info pr-2">
+                                      <span class="d-none">sms</span>
+                                    </i>
                                   </span>
                                   <span class=" font-size-18 d-flex d-md-none">
                                     <br />
-                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                    <i class="mdi mdi-chat-outline text-info pr-2">
+                                      <span class="d-none">
+                                        {com.communicationType}
+                                      </span>
+                                    </i>
                                     {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-
                                   </span>
-
-
-
                                 </td>
 
-                                <td class="d-none"><span class="d-none">0</span></td>
-
-                                <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-                                <td class="the-msg the-msg-2">
-
-
+                                <td class="d-none">
+                                  <span class="d-none">0</span>
                                 </td>
-                                <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+
+                                <td class="text-capitalize d-none d-md-table-cell">
+                                  {com.createdBy}
+                                </td>
+                                <td class="the-msg the-msg-2"></td>
+                                <td class="text-capitalize d-none d-md-table-cell">
+                                  {moment(com.dateTimeCreated).format(
+                                    "ddd MMM DD"
+                                  )}
+                                </td>
                               </tr>
-                            )
-                            )}
-
+                            ))}
                           </tbody>
-
                         </table>
-
                       </div>
-
-
                     </div>
-
-
-
                   </div>
                   {/* <!-- end Col-9 --> */}
-
                 </div>
-
               </div>
               {/* <!-- End row --> */}
-
             </div>
             {/* <!-- container-fluid --> */}
-
-
-
-
-
-
           </div>
+        )}
 
+        {activeLink === 6 && (
+          <div>
+            <div className="row">
+              <div className="col-12">
+                <div className="card">
+                  <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                    <div
+                      className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                      role="toolbar"
+                    >
+                      <h4 className="card-title text-capitalize mb-0 ">
+                        Tenant Statements
+                      </h4>
+                      <div className="d-flex justify-content-end align-items-center">
+                        <div>
+                          <div></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    <div className="table-responsive overflow-visible">
+                      {error.color !== "" && (
+                        <div
+                          className={"alert alert-" + error.color}
+                          role="alert"
+                        >
+                          {error.message}
+                        </div>
+                      )}
+                      <table
+                        className="table align-middle table-hover  contacts-table table-striped "
+                        id="datatable-buttons"
+                      >
+                        <thead className="table-light">
+                          <tr className="table-dark">
+                            <th>Bill No</th>
+                            <th>Receipt Amount</th>
+                            <th>Pay Reference No</th>
+                            <th>Payment Mode</th>
+                            <th>Paid By</th>
+                            <th>Tenant Name</th>
+                            <th>Utilized Amount</th>
+                            <th className="text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {statements &&
+                            statements?.length > 0 &&
+                            statements?.map((statement, index) => (
+                              <tr data-id={index} key={statement.id}>
+                                <td>{statement.billNo}</td>
+                                <td>
+                                  {formatCurrency.format(
+                                    statement.receiptAmount
+                                  )}
+                                </td>
+                                <td>{statement.payReferenceNo}</td>
+                                <td>{statement.paymentMode}</td>
+                                <td>{statement.paidBy}</td>
+                                <td>
+                                  {statement?.tenant?.tenantType ===
+                                  "INDIVIDUAL" ? (
+                                    <>
+                                      {statement?.tenant?.firstName}{" "}
+                                      {statement?.tenant?.lastName}
+                                    </>
+                                  ) : (
+                                    <>{statement?.tenant?.companyName}</>
+                                  )}
+                                </td>
+                                <td>
+                                  {formatCurrency.format(
+                                    statement.utilisedAmount
+                                  )}
+                                </td>
+                                <td>
+                                  <div className="d-flex justify-content-end">
+                                    <div className="dropdown">
+                                      <a
+                                        className="text-muted font-size-16 cursor-pinter"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-haspopup="true"
+                                      >
+                                        <i className="bx bx-dots-vertical-rounded"></i>
+                                      </a>
+                                      <div className="dropdown-menu dropdown-menu-end ">
+                                        <span
+                                          className="dropdown-item cursor-pinter"
+                                          onClick={() => {
+                                            setActiveModal(1);
+                                            getOneInvoice(statement.billNo);
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                          View
+                                        </span>
 
-        )
-        }
+                                        {statement.utilisedAmount <
+                                          statement.receiptAmount && (
+                                          <a
+                                            className="dropdown-item  cursor-pointer"
+                                            onClick={() => {
+                                              handleShow();
+                                              setUtilizeValues(
+                                                statement?.id,
+                                                statement?.tenant?.id
+                                              );
+                                            }}
+                                          >
+                                            <i className="font-size-15 mdi mdi-account-check me-3 "></i>
+                                            Utilize
+                                          </a>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                        <tfoot className="table-light">
+                          <tr>
+                            <th
+                              className="text-capitalize text-nowrap"
+                              colSpan="3"
+                            >
+                              {statements && statements?.length} Statements
+                            </th>
+                            <td className="text-nowrap text-right" colSpan="7">
+                              <span className="fw-semibold">
+                                {/*{formatCurrency.format(total())}*/}
+                              </span>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {activeLink === 7 && (
+          <div>
+            <div className="row">
+              <div className="col-12">
+                <div className="card">
+                  <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                    <div
+                      className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                      role="toolbar"
+                    >
+                      <h4 className="card-title text-capitalize mb-0 ">
+                        Receipts
+                      </h4>
+                      <div className="d-flex justify-content-end align-items-center">
+                        <div>
+                          <div>
+                            {/*<form className="app-search d-none d-lg-block">*/}
+                            {/*  <div className="position-relative">*/}
+                            {/*    <input*/}
+                            {/*      type="text"*/}
+                            {/*      className="form-control"*/}
+                            {/*      placeholder="Search..."*/}
+                            {/*      // onChange={(e) => setSearchTerm(e.target.value)}*/}
+                            {/*    />*/}
+                            {/*    <span className="bx bx-search-alt"></span>*/}
+                            {/*  </div>*/}
+                            {/*</form>*/}
+                          </div>
+                        </div>
+                        {/*<div>*/}
+                        {/*  <select className={"btn btn-primary"} name="" id="">*/}
+                        {/*    <option value={parseInt(100)}>100</option>*/}
+                        {/*    <option value={parseInt(20)}>20</option>*/}
+                        {/*    <option value={parseInt(10)}>10</option>*/}
+                        {/*    <option value={parseInt(5)}>5</option>*/}
+                        {/*  </select>*/}
+                        {/*</div>*/}
+                        {/*<div className="col-6">*/}
+                        {/*  <div className="input-group" id="datepicker1">*/}
+                        {/*    <input*/}
+                        {/*      type="text"*/}
+                        {/*      className="form-control mouse-pointer sdate"*/}
+                        {/*      placeholder={`${startDate}`}*/}
+                        {/*      name="dob"*/}
+                        {/*      readOnly*/}
+                        {/*      data-date-format="dd M, yyyy"*/}
+                        {/*      data-date-container="#datepicker1"*/}
+                        {/*      data-provide="datepicker"*/}
+                        {/*      data-date-autoclose="true"*/}
+                        {/*      data-date-end-date="+0d"*/}
+                        {/*    />*/}
+                        {/*    <span className="input-group-text">*/}
+                        {/*      <i className="mdi mdi-calendar"></i>*/}
+                        {/*    </span>*/}
+                        {/*    <input*/}
+                        {/*      type="text"*/}
+                        {/*      className="form-control mouse-pointer edate"*/}
+                        {/*      name="dob"*/}
+                        {/*      placeholder={`${endDate}`}*/}
+                        {/*      readOnly*/}
+                        {/*      data-date-format="dd M, yyyy"*/}
+                        {/*      data-date-container="#datepicker1"*/}
+                        {/*      data-provide="datepicker"*/}
+                        {/*      data-date-autoclose="true"*/}
+                        {/*    />*/}
+                        {/*    <span className="input-group-text">*/}
+                        {/*      <i className="mdi mdi-calendar"></i>*/}
+                        {/*    </span>*/}
+                        {/*    <button className="btn btn-primary" onClick={sort}>*/}
+                        {/*      filter*/}
+                        {/*    </button>*/}
+                        {/*  </div>*/}
+                        {/*</div>*/}
+                      </div>
+                    </div>
+                    {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
+                    {/*     role="toolbar">*/}
+                    {/*  <button type="button"*/}
+                    {/*          className="btn btn-primary waves-effect btn-label waves-light me-3"><i*/}
+                    {/*    className="mdi mdi-printer label-icon"></i> Print Selected Invoices*/}
+                    {/*  </button>*/}
+                    {/*</div>*/}
+                  </div>
 
+                  <Message details={details} mode={mode} clear={clear} />
+                  <div className="card-body">
+                    <div className="table-responsive overflow-visible">
+                      <table
+                        className="table align-middle table-hover  contacts-table table-striped "
+                        id="datatable-buttons"
+                      >
+                        <thead className="table-light">
+                          <tr className="table-dark">
+                            <th>receiptNo</th>
+                            <th>paid by</th>
+                            <th>Tenant</th>
+                            <th>bill amount</th>
+                            <th>bill balance</th>
+                            <th>payment mode</th>
+                            <th>payment ref</th>
+                            <th className="text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {statements &&
+                            statements?.length > 0 &&
+                            statements?.map((statement, index) => (
+                              <tr data-id={index} key={index}>
+                                <td>{statement.receiptNo}</td>
+                                <td>{statement.paidBy}</td>
+                                <td>
+                                  {statement?.tenant?.tenantType ===
+                                  "INDIVIDUAL" ? (
+                                    <>
+                                      {statement?.tenant?.firstName}{" "}
+                                      {statement?.tenant?.lastName}
+                                    </>
+                                  ) : (
+                                    <>{statement?.tenant?.companyName}</>
+                                  )}
+                                </td>
+                                <td>
+                                  {formatCurrency.format(
+                                    JSON.parse(statement.response).receiptInfo
+                                      .billAmount
+                                  )}
+                                </td>
+                                <td>
+                                  {formatCurrency.format(
+                                    JSON.parse(statement.response).receiptInfo
+                                      .billBalance
+                                  )}
+                                </td>
+                                <td>{statement.paymentMode}</td>
+                                <td>{statement.payReferenceNo}</td>
+                                <td>
+                                  <div className="d-flex justify-content-end">
+                                    <div className="dropdown">
+                                      <a
+                                        className="text-muted font-size-16"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-haspopup="true"
+                                      >
+                                        <i className="bx bx-dots-vertical-rounded"></i>
+                                      </a>
+                                      <div className="dropdown-menu dropdown-menu-end ">
+                                        <span
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            setActiveModal(2);
+                                            getOneInvoice(statement.billNo);
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                          View
+                                        </span>
+                                        <a className="dropdown-item " href="# ">
+                                          <i className="font-size-15 mdi mdi-printer me-3 "></i>
+                                          Print
+                                        </a>
+                                        <a
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            handleModeChange("Email");
+                                            handleClicked(statement, "Email");
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                          Email Tenant
+                                        </a>
+                                        <a
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            handleModeChange("SMS");
+                                            handleClicked(statement, "SMS");
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                          Send as SMS
+                                        </a>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                        <tfoot className="table-light">
+                          <tr>
+                            <th
+                              className="text-capitalize text-nowrap"
+                              colSpan="3"
+                            >
+                              {statements && statements?.length} Receipts
+                            </th>
+                            <td className="text-nowrap text-right" colSpan="7">
+                              <span className="fw-semibold">
+                                {/*{formatCurrency.format(total())}*/}
+                              </span>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                    {/*<div className="mt-4 mb-0 flex justify-between px-8">*/}
+                    {/*  {pageCount !== 0 && (*/}
+                    {/*    <p className=" font-medium text-xs text-gray-700">*/}
+                    {/*      {" "}*/}
+                    {/*      showing page{" "}*/}
+                    {/*      <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
+                    {/*        {page + 1}*/}
+                    {/*      </span>{" "}*/}
+                    {/*      of{" "}*/}
+                    {/*      <span className="text-sm font-bold text-black">*/}
+                    {/*        {pageCount}*/}
+                    {/*      </span>{" "}*/}
+                    {/*      pages*/}
+                    {/*    </p>*/}
+                    {/*  )}*/}
+
+                    {/*  {pageCount !== 0 && (*/}
+                    {/*    <ReactPaginate*/}
+                    {/*      previousLabel={"prev"}*/}
+                    {/*      nextLabel={"next"}*/}
+                    {/*      breakLabel={"..."}*/}
+                    {/*      pageCount={pageCount} // total number of pages needed*/}
+                    {/*      marginPagesDisplayed={2}*/}
+                    {/*      pageRangeDisplayed={1}*/}
+                    {/*      onPageChange={handlePageClick}*/}
+                    {/*      breakClassName={"page-item"}*/}
+                    {/*      breakLinkClassName={"page-link"}*/}
+                    {/*      containerClassName={"pagination"}*/}
+                    {/*      pageClassName={"page-item"}*/}
+                    {/*      pageLinkClassName={"page-link"}*/}
+                    {/*      previousClassName={"page-item"}*/}
+                    {/*      previousLinkClassName={"page-link"}*/}
+                    {/*      nextClassName={"page-item"}*/}
+                    {/*      nextLinkClassName={"page-link"}*/}
+                    {/*      activeClassName={"active"}*/}
+                    {/*    />*/}
+                    {/*  )}*/}
+                    {/*</div>*/}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <div
           class="modal fade"
           id="edit-tenant"
@@ -1516,7 +2039,11 @@ function OneTenant() {
                         type="text"
                         class="form-control mouse-pointer enddate"
                         placeholder="Enter StartDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker12' data-provide="datepicker" data-date-autoclose="true"
+                        readOnly
+                        data-date-format="dd M, yyyy"
+                        data-date-container="#datepicker12"
+                        data-provide="datepicker"
+                        data-date-autoclose="true"
                         onChange={(event) => setStartDate(event.target.value)}
                         value={startDate}
                       />
@@ -1538,15 +2065,10 @@ function OneTenant() {
                         type="text"
                         class="form-control"
                         placeholder="Enter TenancyStatus"
-
-
                         onChange={(e) => setTenancyStatus(e.target.value)}
                         value={tenancyStatus}
-
                       />
-
                     </div>
-
 
                     <div className="form-group mb-4" id="datepicker14">
                       <label htmlFor="">TenancyRenewalDate</label>
@@ -1556,8 +2078,11 @@ function OneTenant() {
                         value={tenancyRenewalDate}
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker14' data-provide="datepicker" data-date-autoclose="true"
-
+                        readOnly
+                        data-date-format="dd M, yyyy"
+                        data-date-container="#datepicker14"
+                        data-provide="datepicker"
+                        data-date-autoclose="true"
                         required={true}
                       />
                     </div>
@@ -1572,8 +2097,11 @@ function OneTenant() {
                           setTenancyRenewalNotificationDate(e.target.value)
                         }
                         placeholder="TenancyRenewalNotificationDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker151' data-provide="datepicker" data-date-autoclose="true"
-
+                        readOnly
+                        data-date-format="dd M, yyyy"
+                        data-date-container="#datepicker151"
+                        data-provide="datepicker"
+                        data-date-autoclose="true"
                         required={true}
                       />
                     </div>
@@ -1741,9 +2269,7 @@ function OneTenant() {
           >
             <div class="modal-content">
               <div class="modal-body">
-
                 {/* //Company */}
-
 
                 <div className="row">
                   <div className="form-group">
@@ -1754,27 +2280,23 @@ function OneTenant() {
                         name="tenantTypeName"
                         className="form-control"
                       >
-
-
-                        <option value="INDIVIDUAL" >Individual</option>
+                        <option value="INDIVIDUAL">Individual</option>
                         <option value="COMPANY">Company</option>
                       </select>
                     </div>
                   </div>
 
-
-
-                  {tenantTypeName === "INDIVIDUAL" &&
-
+                  {tenantTypeName === "INDIVIDUAL" && (
                     <div className="row">
-
                       <div className="col-6">
                         <div className="form-group">
                           <label htmlFor="">FirstName</label>
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setFirstName(event.target.value)}
+                            onChange={(event) =>
+                              setFirstName(event.target.value)
+                            }
                             value={firstName}
                             placeholder="Enter FirstName"
                           />
@@ -1784,7 +2306,9 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setLastName(event.target.value)}
+                            onChange={(event) =>
+                              setLastName(event.target.value)
+                            }
                             value={lastName}
                             placeholder="Enter LastName"
                           />
@@ -1795,7 +2319,9 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setOtherName(event.target.value)}
+                            onChange={(event) =>
+                              setOtherName(event.target.value)
+                            }
                             value={otherName}
                             placeholder="Enter OtherName"
                           />
@@ -1805,12 +2331,13 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setPhoneNumber(event.target.value)}
+                            onChange={(event) =>
+                              setPhoneNumber(event.target.value)
+                            }
                             value={phoneNumber}
                             placeholder="Enter Phone Number"
                           />
                         </div>
-
                       </div>
                       <div className="col-6">
                         <div className="form-group">
@@ -1818,7 +2345,9 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setIdNumber(event.target.value)}
+                            onChange={(event) =>
+                              setIdNumber(event.target.value)
+                            }
                             value={idNumber}
                             placeholder="Enter Id Number"
                           />
@@ -1826,12 +2355,15 @@ function OneTenant() {
 
                         <div className="form-group">
                           <label htmlFor="">Nationality</label>
-                          <select className="form-control" data-live-search="true" title="Select nationality"
-                            onChange={(e) => setNationality(e.target.value)} value={nationality}>
-
+                          <select
+                            className="form-control"
+                            data-live-search="true"
+                            title="Select nationality"
+                            onChange={(e) => setNationality(e.target.value)}
+                            value={nationality}
+                          >
                             <option></option>
                             <option value="Kenya">Kenyan</option>
-
                           </select>
                         </div>
 
@@ -1845,15 +2377,11 @@ function OneTenant() {
                             placeholder="Enter Email"
                           />
                         </div>
-
-
-
                       </div>
-                    </div>}
+                    </div>
+                  )}
 
-
-
-                  {tenantTypeName !== "INDIVIDUAL" &&
+                  {tenantTypeName !== "INDIVIDUAL" && (
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">
@@ -1861,7 +2389,9 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setCompanyName(event.target.value)}
+                            onChange={(event) =>
+                              setCompanyName(event.target.value)
+                            }
                             value={companyName}
                             placeholder="Enter CompanyName"
                           />
@@ -1871,14 +2401,13 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setCompanyIncorporationNumber(event.target.value)}
+                            onChange={(event) =>
+                              setCompanyIncorporationNumber(event.target.value)
+                            }
                             value={companyIncorporationNumber}
                             placeholder="Enter CompanyIncorporationNumber"
                           />
                         </div>
-
-
-
                       </div>
                       <div className="col-6">
                         <div className="form-group">
@@ -1886,26 +2415,29 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setCompanyAddress(event.target.value)}
+                            onChange={(event) =>
+                              setCompanyAddress(event.target.value)
+                            }
                             value={companyAddress}
                             placeholder="EnterCompanyAddress"
                           />
                         </div>
-                        <div className="form-group" >
+                        <div className="form-group">
                           <label htmlFor="">CompanyDateOfRegistration </label>
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setCompanyDateOfRegistration(event.target.value)}
+                            onChange={(event) =>
+                              setCompanyDateOfRegistration(event.target.value)
+                            }
                             value={companyDateOfRegistration}
                             placeholder="Enter CompanyDateOfRegistration "
                           />
                         </div>
                       </div>
-
-                    </div>}
+                    </div>
+                  )}
                 </div>
-
 
                 <div class="modal-footer">
                   <button
@@ -1930,7 +2462,6 @@ function OneTenant() {
         </div>
 
         {/* // create ContactPerson */}
-
 
         <div
           class="modal fade"
@@ -2061,10 +2592,7 @@ function OneTenant() {
           </div>
         </div>
 
-
         {/* //add Tenant */}
-
-
 
         <div
           class="modal fade"
@@ -2093,19 +2621,32 @@ function OneTenant() {
                   <div class="col-12">
                     <div class="form-group mb-4">
                       <label for="">Premises</label>
-                      <select className='form-control' onChange={onPremiseChange} name="premise">
+                      <select
+                        className="form-control"
+                        onChange={onPremiseChange}
+                        name="premise"
+                      >
                         <option> --Select Premises--</option>
-                        {premises?.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
+                        {premises?.map((prem, index) => (
+                          <option value={prem.id + ":" + prem.premiseName}>
+                            {prem.premiseName}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div class="form-group mb-4">
                       <label for="">Unit</label>
-                      <select className='form-control' onChange={premiseUnitChange} name="premiseUnitId">
+                      <select
+                        className="form-control"
+                        onChange={premiseUnitChange}
+                        name="premiseUnitId"
+                      >
                         <option> --Select Unit--</option>
-                        {units?.map((prem, index) => <option value={prem.id}>{prem?.unitName}</option>)}
+                        {units?.map((prem, index) => (
+                          <option value={prem.id}>{prem?.unitName}</option>
+                        ))}
                       </select>
                     </div>
-
 
                     <div class="form-group mb-4">
                       <label for="">Unit Condition</label>
@@ -2113,7 +2654,9 @@ function OneTenant() {
                         type="text"
                         class="form-control"
                         placeholder="Enter UnitCondition"
-                        onChange={(event) => setUnitCondition(event.target.value)}
+                        onChange={(event) =>
+                          setUnitCondition(event.target.value)
+                        }
                         value={unitCondition}
                       />
                     </div>
@@ -2126,11 +2669,14 @@ function OneTenant() {
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         placeholder="Enter StartDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-provide="datepicker" data-date-autoclose="true" data-date-start-date="+0d"
+                        readOnly
+                        data-date-format="dd M, yyyy"
+                        data-date-container="#datepicker198"
+                        data-provide="datepicker"
+                        data-date-autoclose="true"
+                        data-date-start-date="+0d"
                         required={true}
-
                       />
-
                     </div>
 
                     <div className="form-group mb-4 " id="datepicker1">
@@ -2141,7 +2687,11 @@ function OneTenant() {
                         value={tenancyRenewalDate}
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate "
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
+                        readOnly
+                        data-date-format="dd M, yyyy"
+                        data-date-container="#datepicker1"
+                        data-provide="datepicker"
+                        data-date-autoclose="true"
                         required={true}
                       />
                     </div>
@@ -2151,10 +2701,15 @@ function OneTenant() {
                         type="text"
                         className="form-control mouse-pointer date2"
                         value={tenancyRenewalNotificationDate}
-                        onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
+                        onChange={(e) =>
+                          setTenancyRenewalNotificationDate(e.target.value)
+                        }
                         placeholder="Enter TenancyRenewalNotificationDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
-
+                        readOnly
+                        data-date-format="dd M, yyyy"
+                        data-date-container="#datepicker1"
+                        data-provide="datepicker"
+                        data-date-autoclose="true"
                         required={true}
                       />
                     </div>
@@ -2180,8 +2735,6 @@ function OneTenant() {
                           })}
                       </select>
                     </div>
-
-
                   </div>
                 </div>
               </div>
@@ -2209,7 +2762,6 @@ function OneTenant() {
 
         {/* //vacantTenant */}
 
-
         <div
           class="modal fade"
           id="vacate-modal"
@@ -2219,7 +2771,6 @@ function OneTenant() {
           aria-labelledby="staticBackdropLabel"
           aria-hidden="true"
           centered="true"
-
         >
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -2240,21 +2791,14 @@ function OneTenant() {
                     <div class="form-group mb-4">
                       <label for="">Reason</label>
                       <input
-
                         type="text"
                         class="form-control"
                         placeholder="Enter name"
                         onChange={(event) => setEndReason(event.target.value)}
                         value={endReason}
-
-
                       />
-
-
                     </div>
                   </div>
-
-
                 </div>
               </div>
 
@@ -2266,24 +2810,247 @@ function OneTenant() {
                 >
                   Close
                 </button>
-                <button type="button" class="btn btn-primary"
-                  data-bs-dismiss="modal" onClick={() =>
-                    deleteDeactivate()
-                  } >
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => deleteDeactivate()}
+                >
                   Save
                 </button>
               </div>
             </div>
           </div>
         </div>
-
-
-
-
-
-
-
       </div>
+      {/*VIEW INVOICE*/}
+      <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
+        {activeModal === 1 && (
+          <>
+            <Modal.Header closeButton>
+              <h5 className="modal-title" id="myLargeModalLabel">
+                Statement Details
+              </h5>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="col-12">
+                <address>
+                  <strong>Billed To:</strong>
+                  {activeInvoice.tenant?.tenantType === "INDIVIDUAL" ? (
+                    <>
+                      <div>
+                        <br />
+                        {activeInvoice?.tenant?.firstName}{" "}
+                        {activeInvoice?.tenant?.lastName}
+                        {activeInvoice?.tenant?.otherName}
+                        <br />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <br />
+                        {activeInvoice?.tenant?.companyName}{" "}
+                        {activeInvoice?.tenant?.companyIncorporationNumber}{" "}
+                        {activeInvoice?.tenant?.companyAddress}
+                        <br />
+                      </div>
+                    </>
+                  )}
+                  <br />
+                  {activeInvoice?.tenant?.email}
+                  <br />
+                  <p>
+                    Issue date:{" "}
+                    {moment(activeInvoice?.dateTimeCreated).format(
+                      "DD-MM-YYYY"
+                    )}
+                  </p>
+                  <p>
+                    Due date:{" "}
+                    {moment(activeInvoice?.invoiceDate).format("DD-MM-YYYY")}
+                  </p>
+                </address>
+              </div>
+              <div className="col-12">
+                <div className="py-2 mt-3">
+                  <h3 className="font-size-15 fw-bold">
+                    Statement Details ({" "}
+                    <span className="text-primary fw-medium">
+                      {activeInvoice?.receiptNo}
+                    </span>{" "}
+                    )
+                  </h3>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="table-responsive">
+                  <table className="table table-nowrap">
+                    <thead>
+                      <tr>
+                        <th>Bill No</th>
+                        <th>Receipt Amount</th>
+                        <th>Pay Reference No</th>
+                        <th>Payment Mode</th>
+                        <th>Paid By</th>
+                        <th>Utilized Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{activeInvoice?.billNo}</td>
+                        <td>
+                          {formatCurrency.format(activeInvoice?.receiptAmount)}
+                        </td>
+                        <td>{activeInvoice?.payReferenceNo}</td>
+                        <td>{activeInvoice?.paymentMode}</td>
+                        <td>{activeInvoice?.paidBy}</td>
+                        <td>
+                          {formatCurrency.format(activeInvoice?.utilisedAmount)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </Modal.Body>
+          </>
+        )}
+        {activeModal === 2 && (
+          <>
+            <Modal.Header closeButton>
+              <h5 className="modal-title" id="myLargeModalLabel">
+                Receipt Details
+              </h5>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="col-12">
+                <address>
+                  <strong>Billed To:</strong>
+                  {activeInvoice.tenant?.tenantType === "INDIVIDUAL" ? (
+                    <>
+                      <div>
+                        <br />
+                        {activeInvoice?.tenant?.firstName}{" "}
+                        {activeInvoice?.tenant?.lastName}
+                        {activeInvoice?.tenant?.otherName}
+                        <br />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <br />
+                        {activeInvoice?.tenant?.companyName}{" "}
+                        {activeInvoice?.tenant?.companyIncorporationNumber}{" "}
+                        {activeInvoice?.tenant?.companyAddress}
+                        <br />
+                      </div>
+                    </>
+                  )}
+                  <br />
+                  {activeInvoice?.tenant?.email}
+                  <br />
+                  <p>
+                    Issue date:{" "}
+                    {moment(activeInvoice.dateTimeCreated).format("DD-MM-YYYY")}
+                  </p>
+                  <p>
+                    Due date:{" "}
+                    {moment(activeInvoice.invoiceDate).format("DD-MM-YYYY")}
+                  </p>
+                </address>
+              </div>
+              <div className="col-12">
+                <div className="py-2 mt-3">
+                  <h3 className="font-size-15 fw-bold">
+                    Statement Details ({" "}
+                    <span className="text-primary fw-medium">
+                      {activeInvoice?.receiptNo}
+                    </span>{" "}
+                    )
+                  </h3>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="table-responsive">
+                  <table className="table table-nowrap">
+                    <thead>
+                      <tr>
+                        <th>Receipt No</th>
+                        <th>Paid By</th>
+                        <th>Bill Amount</th>
+                        <th>Bill Balance</th>
+                        <th>Payment Mode</th>
+                        <th>Payment Ref</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{activeInvoice?.receiptNo}</td>
+                        <td>{activeInvoice?.paidBy}</td>
+                        {Object.keys(activeInvoice).length > 0 ? (
+                          <>
+                            <td>
+                              {formatCurrency.format(
+                                JSON.parse(activeInvoice?.response).receiptInfo
+                                  .billAmount
+                              )}
+                            </td>
+                            <td>
+                              {formatCurrency.format(
+                                JSON.parse(activeInvoice?.response).receiptInfo
+                                  .billBalance
+                              )}
+                            </td>
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                        <td>{activeInvoice?.paymentMode}</td>
+                        <td>{activeInvoice?.payReferenceNo}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </Modal.Body>
+          </>
+        )}
+      </Modal>
+      {/* LOOK FOR BILL */}
+
+      <Modal show={show} onHide={handleClose} size="md" centered>
+        <Modal.Header closeButton>
+          <h5 className="modal-title" id="myLargeModalLabel">
+            Search for Bill to utilize
+          </h5>
+        </Modal.Header>
+        <form onSubmit={(e) => searchBillNo(e)}>
+          <Modal.Body>
+            <div className="form-group  justify-content-center d-flex flex-column">
+              <label htmlFor="">BILL NO</label>
+              <input
+                type="text"
+                className="form-control"
+                value={utilData.newBillNo}
+                onChange={(e) =>
+                  setUtilData({ ...utilData, newBillNo: e.target.value })
+                }
+                placeholder="Enter Bill No "
+                required
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <div>
+              <button className="btn btn-sm btn-primary" type="submit">
+                Search
+              </button>
+            </div>
+          </Modal.Footer>
+        </form>
+      </Modal>
       <footer class="footer">
         <div class="container-fluid">
           <div class="row">
