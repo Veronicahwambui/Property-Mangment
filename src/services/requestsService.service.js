@@ -32,8 +32,8 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/users/create", data);
   }
 
-  getData(data) {
-    return axiosInstance.get(baseUrl + "/users", data);
+  getData( type,data) {
+    return axiosInstance.get(baseUrl + "/users?type="+type, data);
   }
   getUserRoles() {
     return axiosInstance.get(baseUrl + "/roles");
@@ -66,6 +66,10 @@ class RequestsService {
   updateUserType(data) {
     return axiosInstance.post(baseUrl + "/user-types/update", data);
   }
+  getUserTypes(){
+    return axiosInstance.get(baseUrl +"/users/user-types");
+  }
+
 
   getUser(id) {
     return axiosInstance.get(baseUrl + "/users/view/" + id);

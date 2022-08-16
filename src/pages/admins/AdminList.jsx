@@ -15,9 +15,17 @@ import authLoginService from "../../services/authLogin.service";
 function AdminList() {
   const [userList, setUserList] = useState([]);
 
+
+
+
+
+
+
+  
+
   const getData = () => {
     // e.preventDefault()
-    requestsServiceService.getData().then((res) => {
+    requestsServiceService.getData("ADMIN").then((res) => {
       setUserList(res.data.data);
     });
   };
