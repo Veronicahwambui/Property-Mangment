@@ -426,8 +426,8 @@ class RequestsService {
     // return axiosInstance.get(baseUrl + "/client-types");
   }
 
-  allPremises() {
-    return axiosInstance.get(baseUrl + "/premises");
+  allPremises(data) {
+    return axiosInstance.post(baseUrl + "/premises",data);
   }
   getPremise(id) {
     return axiosInstance.get(baseUrl + "/premises/" + id);

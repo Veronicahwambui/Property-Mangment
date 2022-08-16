@@ -7,6 +7,8 @@ import authService from "../../services/auth.service";
 import { Link } from "react-router-dom";
 import moment from 'moment'
 import { Modal, Button } from "react-bootstrap";
+import {  ModalBody } from 'react-bootstrap';
+
 import { baseUrl } from "../../services/API";
 import AuthService from "../../services/auth.service";
 
@@ -102,7 +104,7 @@ function OneTenant() {
     })
   }
 
-
+  const [searchTerm, setSearchTerm] = useState("");
 
 
   // edit tenants
@@ -392,6 +394,7 @@ function OneTenant() {
 
     requestsServiceService.createTenancies(data).then((res) => {
       console.log(res)
+     
       fetchAll()
       if (res.data.status) {
         setError({
@@ -437,10 +440,33 @@ function OneTenant() {
     })
 
   }
+
+  let searchDate =new Date()
+  const startingDate= new Date('2022-01-17T03:24:00')
+
   const getPremises = () => {
-    requestsServiceService.allPremises().then((res) =>
+
+
+  }
+
+  const handleSubmit =(e)=>{
+    e.preventDefault()
+    let page = 0,
+      size = 100;
+    let data = {
+      "dateCreatedEnd": moment(searchDate).format("YYYY-MM-DD"),
+      "dateCreatedStart": moment(startingDate).format("YYYY-MM-DD"),
+      "premiseName": searchTerm?.trim()
+  }
+
+
+    requestsServiceService.getAllpremises(page,size,data).then((res) =>{
+   
       setPremises(res.data.data)
-    )
+     } )
+  
+    
+
   }
 
   const onPremiseChange = (event) => {
@@ -494,13 +520,14 @@ function OneTenant() {
   useEffect(() => {
     fetchAll();
     getContactTypeName();
-    getPremises();
+    //  getAllpremises()
     getStatus()
     createDoc();
     createDocumentTypes()
     getDocument()
     fetchCommunication();
     // fetchMessages()
+   
 
 
 
@@ -919,7 +946,7 @@ function OneTenant() {
                                 data-bs-toggle="modal"
                                 data-bs-target="#create-tenancies"
                               >
-                                <i className="mdi mdi-plus label-icon"></i> Add
+                                <i className="mdi mdi-plus label-icon" onClick={() => setSearchTerm("")}></i> Add
                                 Tenancies
                               </button>
                             </div>
@@ -1029,7 +1056,7 @@ function OneTenant() {
                                                 Edit
                                               </p>
                                               <p>
-                                                <Link class="dropdown-item" to={`/premise/tenant/${unit.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
+                                                <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
                                               </p>
 
                                               <button
@@ -2091,6 +2118,25 @@ function OneTenant() {
               <div class="modal-body">
                 <div class="row">
                   <div class="col-12">
+                    <form
+                     onSubmit={handleSubmit}
+                    >
+                     
+<div className="form-group mb-4"> 
+<label htmlFor=""> Premise Name</label>
+<input type="text" className="form-control" 
+placeholder="Search..."
+value={searchTerm}
+onChange={(e)=>setSearchTerm(e.target.value)}
+         />
+</div>
+<div class="col-3 ">
+                      <button class="btn btn-primary btn-block w-100 btn-lg"  >
+                        <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
+                        <div class="d-none">Search</div>
+                      </button>
+                    </div>
+</form>
                     <div class="form-group mb-4">
                       <label for="">Premises</label>
                       <select className='form-control' onChange={onPremiseChange} name="premise">
@@ -2098,16 +2144,17 @@ function OneTenant() {
                         {premises?.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
                       </select>
                     </div>
-                    <div class="form-group mb-4">
+
+               { units?.length > 0 &&   <div class="form-group mb-4">
                       <label for="">Unit</label>
                       <select className='form-control' onChange={premiseUnitChange} name="premiseUnitId">
                         <option> --Select Unit--</option>
                         {units?.map((prem, index) => <option value={prem.id}>{prem?.unitName}</option>)}
                       </select>
-                    </div>
+                    </div>}
 
 
-                    <div class="form-group mb-4">
+                    { units?.length > 0 &&       <div class="form-group mb-4">
                       <label for="">Unit Condition</label>
                       <input
                         type="text"
@@ -2116,9 +2163,9 @@ function OneTenant() {
                         onChange={(event) => setUnitCondition(event.target.value)}
                         value={unitCondition}
                       />
-                    </div>
+                    </div>}
 
-                    <div className="form-group mb-4" id="datepicker198">
+                    { units?.length > 0 &&    <div className="form-group mb-4" id="datepicker198">
                       <label htmlFor="">StartDate</label>
                       <input
                         type="text"
@@ -2131,9 +2178,9 @@ function OneTenant() {
 
                       />
 
-                    </div>
+                    </div>}
 
-                    <div className="form-group mb-4 " id="datepicker1">
+                    { units?.length > 0 &&       <div className="form-group mb-4 " id="datepicker1">
                       <label htmlFor="">TenancyRenewalDate</label>
                       <input
                         type="text"
@@ -2144,8 +2191,9 @@ function OneTenant() {
                         readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
                         required={true}
                       />
-                    </div>
-                    <div className="form-group mb-4" id="datepicker1">
+                    </div>}
+
+                { units?.length > 0 &&      <div className="form-group mb-4" id="datepicker1">
                       <label htmlFor="">TenancyRenewalNotificationDate</label>
                       <input
                         type="text"
@@ -2157,9 +2205,9 @@ function OneTenant() {
 
                         required={true}
                       />
-                    </div>
+                    </div>}
 
-                    <div className="form-group mb-4">
+                    { units?.length > 0 &&    <div className="form-group mb-4">
                       <label htmlFor="">TenancyStatus</label>
                       <select
                         class="form-control"
@@ -2179,7 +2227,7 @@ function OneTenant() {
                             );
                           })}
                       </select>
-                    </div>
+                    </div>}
 
 
                   </div>
@@ -2276,6 +2324,16 @@ function OneTenant() {
             </div>
           </div>
         </div>
+
+
+
+{/* premise Search */}
+
+
+
+
+
+
 
 
 
