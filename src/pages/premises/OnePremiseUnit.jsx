@@ -32,6 +32,10 @@ function OnePremiseUnit() {
             setUnitDetails(res.data.data)
             setIssues(res.data.data.issues)
             setPremiseCharges(res.data.data.defaultPremiseUnitTypeCharges)
+        });
+        requestsServiceService.findAllTenancyGroupIssueTypes(unitId).then((res)=>{
+            setIssues(res.data.data)
+            
         })
     }
 
@@ -103,6 +107,7 @@ function OnePremiseUnit() {
             setIssueTypes(res.data.data)
         })
     }
+//   const  
 
     const submitIssue = (e) => {
         e.preventDefault()
@@ -738,12 +743,12 @@ function OnePremiseUnit() {
                                                                 return (
                                                                     <tr>
                                                                         <td>{index + 1}</td>
-                                                                        <td className="text-capitalize">{issue.issue.createdBy}</td>
-                                                                        <td className="">{moment(issue.issue.dateTimeCreated).format("MMM Do YY [at] h:mm a")}</td>
-                                                                        <td className="text-capitalize">{issue.issue.description}</td>
-                                                                        <td className="text-capitalize">{issue.issue.tenancyIssueType.name}</td>
-                                                                        <td className="text-capitalize">{issue.issue?.status?.toLowerCase()?.replace(/_/g, " ")}</td>
-                                                                        <td className="">{issue.issue.endDate && moment(issue.issue.endDate).format("MMM Do YY [at] h:mm a")}</td>
+                                                                        <td className="text-capitalize">{issue?.createdBy}</td>
+                                                                        <td className="">{moment(issue.dateTimeCreated).format("MMM Do YY [at] h:mm a")}</td>
+                                                                        <td className="text-capitalize">{issue.description}</td>
+                                                                        <td className="text-capitalize">{issue.tenancyIssueType.name}</td>
+                                                                        <td className="text-capitalize">{issue?.status?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                                                        <td className="">{issue.endDate && moment(issue.endDate).format("MMM Do YY [at] h:mm a")}</td>
                                                                         {/* <td className=''> {issue.nextState?.status && <button className="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                                             disabled>
                                                                             {issue.nextState?.status?.toLowerCase()?.replace(/_/g, " ")}

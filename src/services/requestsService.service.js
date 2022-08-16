@@ -716,6 +716,9 @@ class RequestsService {
   findAllTenancyIssueTypes() {
     return axiosInstance.get(baseUrl + "/setup/tenancyIssueTypes");
   }
+  findAllTenancyGroupIssueTypes(premiseUnitId) {
+    return axiosInstance.get(baseUrl + "/tenants/tenancyIssue/group/" + premiseUnitId );
+  }
 
   createUnitTenancyIssue(data) {
     return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/group/create", data);
