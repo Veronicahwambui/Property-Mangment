@@ -15,6 +15,7 @@ import useTabs from "../../hooks/useTabs";
 import { Helmet } from "react-helmet";
 import Chart from "react-apexcharts";
 import numeral from "numeral";
+import DatePicker from "react-datepicker";
 
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useState(1);
@@ -155,30 +156,25 @@ function ViewLandlord() {
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const [startDate, setStartDate] = useState(
-    moment().startOf("month").format("YYYY/MM/DD")
-  );
-  const [endDate, setEndDate] = useState(
-    moment().endOf("month").format("YYYY/MM/DD")
-  );
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [premises, setPremises] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const getPremises = () => {
-    console.log("FETCHING");
+    let startdate = moment(new Date()).startOf("year").format("YYYY/MM/DD");
+    let enddate = moment(endDate).format("YYYY/MM/DD");
     let data = {
       dateCreatedEnd: moment(endDate).format(),
       dateCreatedStart: moment(startDate).format(),
       landlordEmail: landlord?.email,
     };
     requestsServiceService.getLandLordPremises(data).then((res) => {
-      console.log(res);
       setPremises(res.data.data);
     });
   };
   useEffect(() => {
     getPremises();
-    console.log(premises);
-  }, [size, page, searchTerm, landlord]);
+  }, []);
   const handlePageClick = (data) => {
     let d = data.selected;
     setPage(d);
@@ -197,16 +193,38 @@ function ViewLandlord() {
     });
   };
   const sort = (event) => {
-    console.log("cliecked");
+    console.log(startDate, endDate);
     event.preventDefault();
-    let data = {
-      dateCreatedEnd: "2022-07-01",
-      dateCreatedStart: "2022-08-15",
-      landlordEmail: landlord?.email,
-    };
-    requestsServiceService.getAllpremises(page, size, data).then((res) => {
-      setPremises(res.data.data);
-    });
+
+    let startdate = moment(startDate).format("YYYY/MM/DD");
+    let enddate = moment(endDate).format("YYYY/MM/DD");
+    requestsServiceService
+      .getLandlordDashboard(userId, startdate, enddate)
+      .then((res) => {
+        console.log(res);
+        // $("#spinner").addClass("d-none");
+        setDashboardData(res.data.data);
+      });
+    requestsServiceService
+      .getLandlordGraph(userId, startdate, enddate)
+      .then((res) => {
+        console.log(res);
+        setRadioBarData(res.data.data.collectionSummaryByPremiseUseType);
+        setRadioBarData2(res.data.data.collectionSummaryByUnitType);
+        setPieChartData(res.data.data.collectionSummaryByApplicableCharge);
+        setTransactionModesData(res.data.data.collectionSummaryByPaymentMode);
+        setMonthlyCollectionSummaryRevenue(
+          res.data.data.monthlyCollectionSummaryRevenue
+        );
+      });
+    // let data = {
+    //   dateCreatedEnd: "2022-07-01",
+    //   dateCreatedStart: "2022-08-15",
+    //   landlordEmail: landlord?.email,
+    // };
+    // requestsServiceService.getAllpremises(page, size, data).then((res) => {
+    //   setPremises(res.data.data);
+    // });
   };
   const sortSize = (e) => {
     setSize(e.target.value);
@@ -463,15 +481,17 @@ function ViewLandlord() {
   }, [userId, landlord]);
   // fetch data
   const fetchDashData = () => {
+    let startdate = moment(new Date()).startOf("month").format("YYYY/MM/DD");
+    let enddate = moment(endDate).format("YYYY/MM/DD");
     requestsServiceService
-      .getLandlordDashboard(userId, startDate, endDate)
+      .getLandlordDashboard(userId, startdate, enddate)
       .then((res) => {
         console.log(res);
         // $("#spinner").addClass("d-none");
         setDashboardData(res.data.data);
       });
     requestsServiceService
-      .getLandlordGraph(userId, startDate, endDate)
+      .getLandlordGraph(userId, startdate, enddate)
       .then((res) => {
         console.log(res);
         setRadioBarData(res.data.data.collectionSummaryByPremiseUseType);
@@ -832,7 +852,6 @@ function ViewLandlord() {
       },
     },
   };
-
   return (
     <>
       <div className="page-content">
@@ -945,6 +964,40 @@ function ViewLandlord() {
                       </div>
                     </div>
                   </nav>
+                  {activeLink === 1 && (
+                    <div className="input-group d-flex" id="datepicker1">
+                      <div>
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          selectsEnd
+                          className="form-control w-50 cursor-pointer"
+                          calendarClassName="form-group"
+                          startDate={startDate}
+                          endDate={endDate}
+                          // minDate={startDate}
+                          maxDate={endDate}
+                          type="text"
+                        />
+                      </div>
+                      <div>
+                        <DatePicker
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          selectsEnd
+                          className="form-control cursor-pointer w-50"
+                          calendarClassName="form-group"
+                          startDate={startDate}
+                          endDate={endDate}
+                          maxDate={new Date()}
+                          type="text"
+                        />
+                      </div>
+                      <button className="btn btn-primary" onClick={sort}>
+                        Filter
+                      </button>
+                    </div>
+                  )}
                   <div className="text-end">
                     <button
                       type="button"
@@ -1120,21 +1173,6 @@ function ViewLandlord() {
                                           </p>
                                           <h5 className="mb-0">
                                             {dashboardData?.premiseCount}
-                                          </h5>
-                                        </div>
-                                      </div>
-                                      <div className="col-4 col-sm-3 col-md-2">
-                                        <div>
-                                          <div className="avatar-xs mb-3">
-                                            <span className="avatar-title rounded-circle bg-secondary font-size-16">
-                                              <i className="mdi mdi-shield-home text-white"></i>
-                                            </span>
-                                          </div>
-                                          <p className="text-muted text-truncate mb-2">
-                                            Landlords
-                                          </p>
-                                          <h5 className="mb-0">
-                                            {dashboardData?.landlordsCount}
                                           </h5>
                                         </div>
                                       </div>
@@ -1850,47 +1888,6 @@ function ViewLandlord() {
                               </div>
                             </form>
                           </div>
-                          <div
-                            className="input-group d-flex justify-content-end align-items-center"
-                            id="datepicker1"
-                          >
-                            <div className=" p-2">
-                              <span className="input-group-text">
-                                <i className="mdi mdi-calendar">Start Date</i>
-                              </span>
-                              <input
-                                type="text"
-                                className="form-control mouse-pointer sdate"
-                                placeholder={`${startDate}`}
-                                name="dob"
-                                readOnly
-                                data-date-format="dd M, yyyy"
-                                data-date-container="#datepicker1"
-                                data-provide="datepicker"
-                                data-date-autoclose="true"
-                                data-date-end-date="+0d"
-                              />
-                            </div>
-                            <div className=" p-2">
-                              <span className="input-group-text">
-                                <i className="mdi mdi-calendar">End Date: </i>
-                              </span>
-                              <input
-                                type="text"
-                                className="form-control mouse-pointer edate"
-                                name="dob"
-                                placeholder={`${endDate}`}
-                                readOnly
-                                data-date-format="dd M, yyyy"
-                                data-date-container="#datepicker1"
-                                data-provide="datepicker"
-                                data-date-autoclose="true"
-                              />
-                            </div>
-                          </div>
-                          <button className="btn btn-primary" onClick={sort}>
-                            filter
-                          </button>
                         </div>
                       </div>
                       {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
