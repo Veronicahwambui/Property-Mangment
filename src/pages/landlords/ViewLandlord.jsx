@@ -17,7 +17,7 @@ import Chart from "react-apexcharts";
 import numeral from "numeral";
 
 function ViewLandlord() {
-  const [activeLink, setActiveLink] = useTabs();
+  const [activeLink, setActiveLink] = useState(1);
   const [landlord, setLandlord] = useState([]);
   const [accountsData, setAccountsData] = useState([]);
   const [documents, setDocuments] = useState([]);
@@ -144,13 +144,10 @@ function ViewLandlord() {
 
   const getlandlords = () => {
     requestsServiceService.getLandlord(userId).then((res) => {
-      if (res.status) {
-        let data = res.data.data;
-        setLandlord(data.landLord);
-        setAccountsData(data.accounts);
-        console.log(accountsData);
-        setDocuments(data.documents);
-      }
+      console.log(res.data.data);
+      setLandlord(res.data.data.landLord);
+      setAccountsData(res.data.data.accounts);
+      setDocuments(res.data.data.documents);
     });
   };
 
@@ -159,27 +156,29 @@ function ViewLandlord() {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [startDate, setStartDate] = useState(
-    moment().startOf("month").format("YYYY-MM-DD")
+    moment().startOf("month").format("YYYY/MM/DD")
   );
   const [endDate, setEndDate] = useState(
-    moment().endOf("month").format("YYYY-MM-DD")
+    moment().endOf("month").format("YYYY/MM/DD")
   );
   const [premises, setPremises] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const getPremises = () => {
+    console.log("FETCHING");
     let data = {
-      dateCreatedEnd: endDate,
-      dateCreatedStart: startDate,
+      dateCreatedEnd: moment(endDate).format(),
+      dateCreatedStart: moment(startDate).format(),
       landlordEmail: landlord?.email,
-      search: searchTerm,
     };
     requestsServiceService.getLandLordPremises(data).then((res) => {
+      console.log(res);
       setPremises(res.data.data);
     });
   };
   useEffect(() => {
     getPremises();
-  }, [size, page, searchTerm]);
+    console.log(premises);
+  }, [size, page, searchTerm, landlord]);
   const handlePageClick = (data) => {
     let d = data.selected;
     setPage(d);
@@ -198,10 +197,11 @@ function ViewLandlord() {
     });
   };
   const sort = (event) => {
+    console.log("cliecked");
     event.preventDefault();
     let data = {
-      dateCreatedEnd: endDate,
-      dateCreatedStart: startDate,
+      dateCreatedEnd: "2022-07-01",
+      dateCreatedStart: "2022-08-15",
       landlordEmail: landlord?.email,
     };
     requestsServiceService.getAllpremises(page, size, data).then((res) => {
@@ -460,19 +460,20 @@ function ViewLandlord() {
     useState([]);
   useEffect(() => {
     fetchDashData();
-  }, []);
+  }, [userId, landlord]);
   // fetch data
   const fetchDashData = () => {
     requestsServiceService
-      .getLandlordDashboard(userId, "2022/06/01", "2022/08/15")
+      .getLandlordDashboard(userId, startDate, endDate)
       .then((res) => {
         console.log(res);
-        $("#spinner").addClass("d-none");
+        // $("#spinner").addClass("d-none");
         setDashboardData(res.data.data);
       });
     requestsServiceService
-      .getClientDashboardGraphs("2022/06/01", "2022/08/15")
+      .getLandlordGraph(userId, startDate, endDate)
       .then((res) => {
+        console.log(res);
         setRadioBarData(res.data.data.collectionSummaryByPremiseUseType);
         setRadioBarData2(res.data.data.collectionSummaryByUnitType);
         setPieChartData(res.data.data.collectionSummaryByApplicableCharge);
@@ -838,18 +839,18 @@ function ViewLandlord() {
         <div className="content-fluid">
           {/* <!-- start page title --> */}
           <div class="row">
-            <div id="spinner">
-              <div id="status">
-                <div className="spinner-chase">
-                  <div className="chase-dot"></div>
-                  <div className="chase-dot"></div>
-                  <div className="chase-dot"></div>
-                  <div className="chase-dot"></div>
-                  <div className="chase-dot"></div>
-                  <div className="chase-dot"></div>
-                </div>
-              </div>
-            </div>
+            {/*<div id="spinner">*/}
+            {/*  <div id="status">*/}
+            {/*    <div className="spinner-chase">*/}
+            {/*      <div className="chase-dot"></div>*/}
+            {/*      <div className="chase-dot"></div>*/}
+            {/*      <div className="chase-dot"></div>*/}
+            {/*      <div className="chase-dot"></div>*/}
+            {/*      <div className="chase-dot"></div>*/}
+            {/*      <div className="chase-dot"></div>*/}
+            {/*    </div>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18"></h4>
@@ -966,295 +967,298 @@ function ViewLandlord() {
             {/*LANDLORD DETAILS*/}
           </div>
           {activeLink === 1 && (
-            <div className="row">
-              <div className="col-xl-4">
-                <div className="card calc-h-3px">
-                  <div className="card-body pb-1">
-                    <div>
-                      <div className="mb-4 me-3">
-                        <i className="mdi mdi-account-circle text-primary h1"></i>
-                      </div>
+            <>
+              <div className="row">
+                <div className="col-xl-4">
+                  <div className="card calc-h-3px">
+                    <div className="card-body pb-1">
                       <div>
-                        <h5 className="text-capitalize">
-                          {landlord?.firstName} {landlord?.lastName}
-                          {landlord?.otherName}
-                          {landlord.active ? (
-                            <span className="badge badge-pill badge-soft-success font-size-11">
-                              Active
-                            </span>
-                          ) : (
-                            <span className="badge badge-pill badge-soft-success font-size-11">
-                              Inactive
-                            </span>
-                          )}
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-body border-top">
-                    <p className="text-muted mb-0 d-flex align-items-center">
-                      <a
-                        href={`tel:${landlord?.phoneNumber}`}
-                        className="d-flex align-items-center"
-                      >
-                        <i className="mdi mdi-phone me-2 font-size-18"></i>{" "}
-                        {landlord?.phoneNumber}
-                      </a>
-                      <span className="px-3 px-3">|</span>
-                      <a
-                        className="d-flex align-items-center"
-                        href={"mailto:" + landlord?.email}
-                      >
-                        <i className="mdi mdi-email-outline font-size-18 me-2" />
-                        {landlord?.email}
-                      </a>
-                    </p>
-                  </div>
-                  <div className="card-body border-top">
-                    <p className="p-2 m-0">
-                      <span className="text-muted">National ID No.</span>{" "}
-                      {landlord.idNumber}
-                    </p>
-                    <p className="p-2 m-0">
-                      <span className="text-muted">File Number. </span>
-                      {landlord.fileNumber}
-                    </p>
-                    <p className="p-2 m-0">
-                      <span className="text-muted">Landlord Type. </span>
-                      {landlord.landLordType?.toLowerCase()?.replace(/_/g, " ")}
-                    </p>
-                    <p className="p-2 m-0">
-                      <span className="text-muted">Remuneration. </span>
-                      {landlord.remunerationPercentage} %
-                    </p>
-                    <p className="p-2 m-0">
-                      <span className="text-muted">Agreement Period. </span>
-                      {landlord.agreementPeriod} months
-                    </p>
-                    <p className="p-2 m-0">
-                      <span className="text-muted">Agreement Type. </span>
-                      {landlord?.landLordAgreementType?.name
-                        ?.toLowerCase()
-                        ?.replace(/_/g, " ")}
-                    </p>
-                  </div>
-                  <div className="card-body border-top pb-2 pt-3">
-                    <div className="row">
-                      <div className="col-sm-12">
-                        <div className="text-muted">
-                          <table className="table table-borderless mb-0 table-sm table-striped">
-                            <tbody>
-                              <tr>
-                                <td className="pl-0 pb-0 text-muted">
-                                  <i className="mdi mdi-circle-medium align-middle text-primary me-1"></i>
-                                  Gender
-                                </td>
-                                <td className="pb-0">
-                                  <span className="text-black">
-                                    {landlord.gender}
-                                  </span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td className="pl-0 pb-0 text-muted">
-                                  <i className="mdi mdi-circle-medium align-middle text-primary me-1"></i>
-                                  Date of Registration
-                                </td>
-                                <td className="pb-0">
-                                  <span className="text-black">
-                                    {moment(landlord.dateTimeCreated).format(
-                                      "YYYY-MM-DD"
-                                    )}
-                                  </span>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                        <div className="mb-4 me-3">
+                          <i className="mdi mdi-account-circle text-primary h1"></i>
                         </div>
-                      </div>
-                      <br />
-                      <br />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-xl-8">
-                <div className="row">
-                  <div className="col-xl-8">
-                    <div className="row">
-                      <div className="col-lg-12 px-sm-30px">
-                        <div className="card">
-                          <div className="card-body">
-                            <div className="row">
-                              <div className="col-lg-12 align-self-center">
-                                <div className="text-lg-left mt-4 mt-lg-0">
-                                  <div className="row ">
-                                    <div className="col-4 col-sm-3 col-md-2">
-                                      <div>
-                                        <div className="avatar-xs mb-3">
-                                          <span className="avatar-title rounded-circle bg-secondary font-size-16">
-                                            <i className="mdi mdi-office-building-outline text-white"></i>
-                                          </span>
-                                        </div>
-                                        <p className="text-muted text-truncate mb-2">
-                                          Premises
-                                        </p>
-                                        <h5 className="mb-0">
-                                          {dashboardData?.premiseCount}
-                                        </h5>
-                                      </div>
-                                    </div>
-                                    <div className="col-4 col-sm-3 col-md-2 d-none">
-                                      <div>
-                                        <div className="avatar-xs mb-3">
-                                          <span className="avatar-title bg-secondary rounded-circle font-size-16">
-                                            <i className="mdi mdi-chat-outline text-white"></i>
-                                          </span>
-                                        </div>
-                                        <p className="text-muted text-truncate mb-2 ">
-                                          Units
-                                        </p>
-                                        <h5 className="mb-0">
-                                          {dashboardData?.premiseCount}
-                                        </h5>
-                                      </div>
-                                    </div>
-                                    <div className="col-4 col-sm-3 col-md-2">
-                                      <div>
-                                        <div className="avatar-xs mb-3">
-                                          <span className="avatar-title rounded-circle bg-secondary font-size-16">
-                                            <i className="mdi mdi-shield-home text-white"></i>
-                                          </span>
-                                        </div>
-                                        <p className="text-muted text-truncate mb-2">
-                                          Landlords
-                                        </p>
-                                        <h5 className="mb-0">
-                                          {dashboardData?.landlordsCount}
-                                        </h5>
-                                      </div>
-                                    </div>
-                                    <div className="col-4 col-sm-3 col-md-2">
-                                      <div>
-                                        <div className="avatar-xs mb-3">
-                                          <span className="avatar-title rounded-circle bg-secondary font-size-16">
-                                            <i className="mdi mdi-account-key text-white"></i>
-                                          </span>
-                                        </div>
-                                        <p className="text-muted text-truncate mb-2">
-                                          Tenants
-                                        </p>
-                                        <h5 className="mb-0">
-                                          {dashboardData?.tenantsCount}
-                                        </h5>
-                                      </div>
-                                    </div>
-                                    {dashboardData?.premiseUnitsSummary?.map(
-                                      (item) => (
-                                        <div className="col-4 col-sm-3 col-md-2">
-                                          <div>
-                                            <div className="avatar-xs mb-3">
-                                              <span className="avatar-title rounded-circle bg-danger font-size-16">
-                                                <i className="mdi mdi-home-export-outline  text-white"></i>
-                                              </span>
-                                            </div>
-                                            <p className="text-muted text-truncate mb-2 text-capitalize">
-                                              {item.item
-                                                ?.toLowerCase()
-                                                ?.replace(/-/g, " ")}{" "}
-                                              Units
-                                            </p>
-                                            <h5 className="mb-0">
-                                              {item.count}
-                                            </h5>
-                                          </div>
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            {/* <!-- end row --> */}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-xl-12">
-                        <div className="row">
-                          {dashboardData?.collectionSummaryByPaymentStatus?.map(
-                            (item) => (
-                              <div className="col-sm-4">
-                                <div className="card">
-                                  <div className="card-body">
-                                    <div className="d-flex align-items-center mb-3">
-                                      <div className="avatar-xs-2 me-3">
-                                        <span className="avatar-title rounded-circle bg-danger bg-soft text-danger  font-size-18">
-                                          <i className="mdi  mdi-cash-remove h2 mb-0 pb-0 text-danger"></i>
-                                        </span>
-                                      </div>
-                                      <div className="d-flex flex-column">
-                                        <span className="text-capitalize">
-                                          {item.item
-                                            ?.toLowerCase()
-                                            ?.replace(/-/g, " ")}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="text-muted mt-4">
-                                      <h4>
-                                        {formatCurrency.format(item.value)}
-                                        <i className="mdi mdi-chevron-up ms-1 text-success"></i>
-                                      </h4>
-                                      <div className="d-flex">
-                                        <span className="text-truncate text-capitalize">
-                                          From {item.count}{" "}
-                                          {item.item
-                                            ?.toLowerCase()
-                                            ?.replace(/-/g, " ")}{" "}
-                                          Invoices
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          )}
-                        </div>
-                        {/* <!-- end row --> */}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="card">
-                  <div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="p-4">
-                          <h5 className="text-primary mb-0 pb-0">
-                            Rent collection summary
+                        <div>
+                          <h5 className="text-capitalize">
+                            {landlord?.firstName} {landlord?.lastName}
+                            {landlord?.otherName}
+                            {landlord.active ? (
+                              <span className="badge badge-pill badge-soft-success font-size-11">
+                                Active
+                              </span>
+                            ) : (
+                              <span className="badge badge-pill badge-soft-success font-size-11">
+                                Inactive
+                              </span>
+                            )}
                           </h5>
-                          <span>Rent collection summary for tenant </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-body border-top">
+                      <p className="text-muted mb-0 d-flex align-items-center">
+                        <a
+                          href={`tel:${landlord?.phoneNumber}`}
+                          className="d-flex align-items-center"
+                        >
+                          <i className="mdi mdi-phone me-2 font-size-18"></i>{" "}
+                          {landlord?.phoneNumber}
+                        </a>
+                        <span className="px-3 px-3">|</span>
+                        <a
+                          className="d-flex align-items-center"
+                          href={"mailto:" + landlord?.email}
+                        >
+                          <i className="mdi mdi-email-outline font-size-18 me-2" />
+                          {landlord?.email}
+                        </a>
+                      </p>
+                    </div>
+                    <div className="card-body border-top">
+                      <p className="p-2 m-0">
+                        <span className="text-muted">National ID No.</span>{" "}
+                        {landlord.idNumber}
+                      </p>
+                      <p className="p-2 m-0">
+                        <span className="text-muted">File Number. </span>
+                        {landlord.fileNumber}
+                      </p>
+                      <p className="p-2 m-0">
+                        <span className="text-muted">Landlord Type. </span>
+                        {landlord.landLordType
+                          ?.toLowerCase()
+                          ?.replace(/_/g, " ")}
+                      </p>
+                      <p className="p-2 m-0">
+                        <span className="text-muted">Remuneration. </span>
+                        {landlord.remunerationPercentage} %
+                      </p>
+                      <p className="p-2 m-0">
+                        <span className="text-muted">Agreement Period. </span>
+                        {landlord.agreementPeriod} months
+                      </p>
+                      <p className="p-2 m-0">
+                        <span className="text-muted">Agreement Type. </span>
+                        {landlord?.landLordAgreementType?.name
+                          ?.toLowerCase()
+                          ?.replace(/_/g, " ")}
+                      </p>
+                    </div>
+                    <div className="card-body border-top pb-2 pt-3">
+                      <div className="row">
+                        <div className="col-sm-12">
+                          <div className="text-muted">
+                            <table className="table table-borderless mb-0 table-sm table-striped">
+                              <tbody>
+                                <tr>
+                                  <td className="pl-0 pb-0 text-muted">
+                                    <i className="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                                    Gender
+                                  </td>
+                                  <td className="pb-0">
+                                    <span className="text-black">
+                                      {landlord.gender}
+                                    </span>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td className="pl-0 pb-0 text-muted">
+                                    <i className="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                                    Date of Registration
+                                  </td>
+                                  <td className="pb-0">
+                                    <span className="text-black">
+                                      {moment(landlord.dateTimeCreated).format(
+                                        "YYYY-MM-DD"
+                                      )}
+                                    </span>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                        <br />
+                        <br />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-xl-8">
+                  <div className="row">
+                    <div className="col-xl-8">
+                      <div className="row">
+                        <div className="col-lg-12 px-sm-30px">
+                          <div className="card">
+                            <div className="card-body">
+                              <div className="row">
+                                <div className="col-lg-12 align-self-center">
+                                  <div className="text-lg-left mt-4 mt-lg-0">
+                                    <div className="row ">
+                                      <div className="col-4 col-sm-3 col-md-2">
+                                        <div>
+                                          <div className="avatar-xs mb-3">
+                                            <span className="avatar-title rounded-circle bg-secondary font-size-16">
+                                              <i className="mdi mdi-office-building-outline text-white"></i>
+                                            </span>
+                                          </div>
+                                          <p className="text-muted text-truncate mb-2">
+                                            Premises
+                                          </p>
+                                          <h5 className="mb-0">
+                                            {dashboardData?.premiseCount}
+                                          </h5>
+                                        </div>
+                                      </div>
+                                      <div className="col-4 col-sm-3 col-md-2 d-none">
+                                        <div>
+                                          <div className="avatar-xs mb-3">
+                                            <span className="avatar-title bg-secondary rounded-circle font-size-16">
+                                              <i className="mdi mdi-chat-outline text-white"></i>
+                                            </span>
+                                          </div>
+                                          <p className="text-muted text-truncate mb-2 ">
+                                            Units
+                                          </p>
+                                          <h5 className="mb-0">
+                                            {dashboardData?.premiseCount}
+                                          </h5>
+                                        </div>
+                                      </div>
+                                      <div className="col-4 col-sm-3 col-md-2">
+                                        <div>
+                                          <div className="avatar-xs mb-3">
+                                            <span className="avatar-title rounded-circle bg-secondary font-size-16">
+                                              <i className="mdi mdi-shield-home text-white"></i>
+                                            </span>
+                                          </div>
+                                          <p className="text-muted text-truncate mb-2">
+                                            Landlords
+                                          </p>
+                                          <h5 className="mb-0">
+                                            {dashboardData?.landlordsCount}
+                                          </h5>
+                                        </div>
+                                      </div>
+                                      <div className="col-4 col-sm-3 col-md-2">
+                                        <div>
+                                          <div className="avatar-xs mb-3">
+                                            <span className="avatar-title rounded-circle bg-secondary font-size-16">
+                                              <i className="mdi mdi-account-key text-white"></i>
+                                            </span>
+                                          </div>
+                                          <p className="text-muted text-truncate mb-2">
+                                            Tenants
+                                          </p>
+                                          <h5 className="mb-0">
+                                            {dashboardData?.tenantsCount}
+                                          </h5>
+                                        </div>
+                                      </div>
+                                      {dashboardData?.premiseUnitsSummary?.map(
+                                        (item) => (
+                                          <div className="col-4 col-sm-3 col-md-2">
+                                            <div>
+                                              <div className="avatar-xs mb-3">
+                                                <span className="avatar-title rounded-circle bg-danger font-size-16">
+                                                  <i className="mdi mdi-home-export-outline  text-white"></i>
+                                                </span>
+                                              </div>
+                                              <p className="text-muted text-truncate mb-2 text-capitalize">
+                                                {item.item
+                                                  ?.toLowerCase()
+                                                  ?.replace(/-/g, " ")}{" "}
+                                                Units
+                                              </p>
+                                              <h5 className="mb-0">
+                                                {item.count}
+                                              </h5>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              {/* <!-- end row --> */}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-xl-12">
                           <div className="row">
-                            <div className="col-12">
-                              <div
-                                id="revenue-chart"
-                                className="apex-charts"
-                                dir="ltr"
-                              >
-                                <Chart
-                                  class="apex-charts revenue-type"
-                                  options={options}
-                                  plotOptions={options.plotOptions}
-                                  series={options.series}
-                                  type="bar"
-                                  height="360"
-                                  xaxis={options.xaxis}
-                                />
-                              </div>{" "}
+                            {dashboardData?.collectionSummaryByPaymentStatus?.map(
+                              (item) => (
+                                <div className="col-sm-4">
+                                  <div className="card">
+                                    <div className="card-body">
+                                      <div className="d-flex align-items-center mb-3">
+                                        <div className="avatar-xs-2 me-3">
+                                          <span className="avatar-title rounded-circle bg-danger bg-soft text-danger  font-size-18">
+                                            <i className="mdi  mdi-cash-remove h2 mb-0 pb-0 text-danger"></i>
+                                          </span>
+                                        </div>
+                                        <div className="d-flex flex-column">
+                                          <span className="text-capitalize">
+                                            {item.item
+                                              ?.toLowerCase()
+                                              ?.replace(/-/g, " ")}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="text-muted mt-4">
+                                        <h4>
+                                          {formatCurrency.format(item.value)}
+                                          <i className="mdi mdi-chevron-up ms-1 text-success"></i>
+                                        </h4>
+                                        <div className="d-flex">
+                                          <span className="text-truncate text-capitalize">
+                                            From {item.count}{" "}
+                                            {item.item
+                                              ?.toLowerCase()
+                                              ?.replace(/-/g, " ")}{" "}
+                                            Invoices
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </div>
+                          {/* <!-- end row --> */}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card">
+                    <div>
+                      <div className="row">
+                        <div className="col-12">
+                          <div className="p-4">
+                            <h5 className="text-primary mb-0 pb-0">
+                              Rent collection summary
+                            </h5>
+                            <span>Rent collection summary for tenant </span>
+                            <div className="row">
+                              <div className="col-12">
+                                <div
+                                  id="revenue-chart"
+                                  className="apex-charts"
+                                  dir="ltr"
+                                >
+                                  <Chart
+                                    class="apex-charts revenue-type"
+                                    options={options}
+                                    plotOptions={options.plotOptions}
+                                    series={options.series}
+                                    type="bar"
+                                    height="360"
+                                    xaxis={options.xaxis}
+                                  />
+                                </div>{" "}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1263,7 +1267,148 @@ function ViewLandlord() {
                   </div>
                 </div>
               </div>
-            </div>
+              <div className="row">
+                <div className="col-xl-4">
+                  <div className="card">
+                    <div className="card-body">
+                      <h4 className="card-title mb-0">
+                        Collections by Premise Use Type
+                      </h4>
+                      <div className="row">
+                        <div className="col-sm-7">
+                          <div>
+                            <div id="unit-types">
+                              <Chart
+                                class="apex-charts"
+                                options={walletOptions}
+                                plotOptions={walletOptions.plotOptions}
+                                series={walletOptions.series}
+                                type="radialBar"
+                                height="300"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-sm-5 align-self-center">
+                          {radioBarData?.map((item, index) => (
+                            <div className="">
+                              <div className="mt-4 text-left">
+                                <p className="mb-2 text-truncate text-left text-capitalize">
+                                  <i
+                                    className="mdi mdi-circle me-1 "
+                                    style={{ color: "" + colors[index] + "" }}
+                                  ></i>
+                                  {item.item}
+                                </p>
+                                <h5>{formatCurrency.format(item.value)}</h5>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-xl-4">
+                  <div className="card">
+                    <div className="card-body">
+                      <h4 className="card-title mb-0">
+                        Collections by Premise Type
+                      </h4>
+                      <div className="row">
+                        <div className="col-sm-7">
+                          <div>
+                            <div id="unit-types">
+                              <Chart
+                                class="apex-charts"
+                                options={walletOptions2}
+                                plotOptions={walletOptions2.plotOptions}
+                                series={walletOptions2.series}
+                                type="radialBar"
+                                height="400"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-sm-5 align-self-center">
+                          {radioBarData2?.map((item, index) => (
+                            <div>
+                              <p className="mb-2 text-capitalize">
+                                <i
+                                  className="mdi mdi-circle align-middle font-size-10 me-2 "
+                                  style={{ color: "" + colors[index] + "" }}
+                                ></i>{" "}
+                                {item.item}
+                              </p>
+                              <h5>
+                                {formatCurrency.format(item.value)} <br />
+                                <span className="text-muted font-size-12 d-none">
+                                  {" "}
+                                  Contacts
+                                </span>
+                              </h5>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-xl-4">
+                  {" "}
+                  <div className="card">
+                    <div className="card-body">
+                      <h4 className="card-title mb-4">
+                        Revenue Transaction Modes comparison
+                      </h4>
+
+                      <div className="table-responsive mt-4">
+                        <table className="table align-middle mb-0">
+                          <tbody>
+                            {transactionModesData?.map((item) => (
+                              <tr>
+                                <td>
+                                  <h5 className="font-size-14 mb-1">
+                                    {item.item}
+                                  </h5>
+                                  <p className="text-muted mb-0">
+                                    {formatCurrency.format(item.value)}
+                                  </p>
+                                </td>
+
+                                <td>
+                                  <div
+                                    id="radialchart-1"
+                                    className="apex-charts"
+                                  >
+                                    <Chart
+                                      class="apex-charts"
+                                      options={radialoptions1}
+                                      plotOptions={radialoptions1.plotOptions}
+                                      series={[item.variance]}
+                                      labels={radialoptions1.labels}
+                                      type="radialBar"
+                                      height="60"
+                                    />
+                                  </div>
+                                </td>
+                                <td>
+                                  <p className="text-muted mb-1">
+                                    Transactions
+                                  </p>
+                                  <h5 className="mb-0">{item.variance} %</h5>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-xl-5 px-sm-30px"></div>
+              </div>
+            </>
           )}
           {activeLink === 2 && (
             <div className={"row"}>
@@ -2636,6 +2781,15 @@ function ViewLandlord() {
           </div>
         </div>
       </div>
+      <Helmet>
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <script src="https://cdn.jsdelivr.net/npm/react-apexcharts"></script>
+        {/* <!-- numerals number formater --> */}
+        <script src="./assets/libs/numeral/numeral.js "></script>
+
+        {/* <!-- apexcharts --> */}
+        <script src="./assets/libs/apexcharts/apexcharts.min.js "></script>
+      </Helmet>
     </>
   );
 }
