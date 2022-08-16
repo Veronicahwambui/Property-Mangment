@@ -964,40 +964,6 @@ function ViewLandlord() {
                       </div>
                     </div>
                   </nav>
-                  {activeLink === 1 && (
-                    <div className="input-group d-flex" id="datepicker1">
-                      <div>
-                        <DatePicker
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          selectsEnd
-                          className="form-control w-50 cursor-pointer"
-                          calendarClassName="form-group"
-                          startDate={startDate}
-                          endDate={endDate}
-                          // minDate={startDate}
-                          maxDate={endDate}
-                          type="text"
-                        />
-                      </div>
-                      <div>
-                        <DatePicker
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
-                          selectsEnd
-                          className="form-control cursor-pointer w-50"
-                          calendarClassName="form-group"
-                          startDate={startDate}
-                          endDate={endDate}
-                          maxDate={new Date()}
-                          type="text"
-                        />
-                      </div>
-                      <button className="btn btn-primary" onClick={sort}>
-                        Filter
-                      </button>
-                    </div>
-                  )}
                   <div className="text-end">
                     <button
                       type="button"
