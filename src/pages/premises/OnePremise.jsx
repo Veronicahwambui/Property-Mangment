@@ -1297,7 +1297,20 @@ function OnePremise() {
                                                                 </div>
                                                             </div>
 
-                                                        
+                                                            {dashboardData?.premiseUnitsSummary?.map((item) => (
+                                                            <div class="col-4 col-sm-3 col-md-2">
+                                                                <div>
+                                                                    <div class="avatar-xs-2 mb-3">
+                                                                        <span class="avatar-title rounded-circle bg-danger font-size-24">
+                                                                            <i class="mdi mdi-home-export-outline  text-white"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <p class="text-muted text-truncate mb-2 text-capitalize">{item.item?.toLowerCase()?.replace(/-/g, " ")} Units</p>
+                                                                    <h5 class="mb-0">{item.count}</h5>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                      
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1422,55 +1435,30 @@ function OnePremise() {
 
               <div class="col-xl-8">
                 <div class="row">
-                  <div class="col-sm-4">
-                    <div class="card">
-                      <div class="card-body">
-                        <div class="text-muted mb-4 d-flex align-items-center">
-                          <i class="mdi mdi-home-account h2 text-success align-middle mb-0 me-3 font-size-30"></i>
-                          <div class="d-flex flex-column">
-                            <span>Rent Balances</span>
-                          </div>
-                        </div>
-                        <div class="text-success mt-4">
-                          <h4 class="text-danger">KES 302,000<i class="mdi mdi-chevron-up ms-1 text-success d-none"></i></h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="card">
-                      <div class="card-body">
-                        <div class="text-muted mb-4 d-flex align-items-center">
-                          <i class="mdi mdi-home-currency-usd h2 text-info align-middle mb-0 me-3 font-size-30"></i>
-                          <div class="d-flex flex-column">
-                            <span>Utility Bills</span>
-
-                          </div>
-                        </div>
-
-                        <div class="text-muted mt-4 text-uppercase">
-                          <h4>kes 20,326<i class="mdi mdi-currency-usd-off ms-1 text-success d-none"></i></h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="card">
-                      <div class="card-body">
-                        <div class="text-muted mb-4 d-flex align-items-center">
-                          <i class="mdi mdi-currency-usd-off h2 text-danger align-middle mb-0 me-3 font-size-30"></i>
-                          <div class="d-flex flex-column ">
-                            <span>Accumulated penalties</span>
-
-                          </div>
-                        </div>
-
-                        <div class="text-muted mt-4 text-uppercase">
-                          <h4>kes 5,500<i class="mdi mdi-chevron-up ms-1 text-success d-none"></i></h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                {dashboardData?.collectionSummaryByPaymentStatus?.map((item) => (
+                                        <div class="col-sm-4">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <div class="avatar-xs-2 me-3">
+                                                            <span class="avatar-title rounded-circle bg-danger bg-soft text-danger  font-size-18">
+                                                                <i class="mdi  mdi-cash-remove h2 mb-0 pb-0 text-danger"></i>
+                                                            </span>
+                                                        </div>
+                                                        <div class="d-flex flex-column">
+                                                            <span className='text-capitalize'>{item.item?.toLowerCase()?.replace(/-/g, " ")}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-muted mt-4">
+                                                        <h4>{formatCurrency.format(item.value)}<i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
+                                                        <div class="d-flex">
+                                                            <span class="text-truncate text-capitalize">From {item.count} {item.item?.toLowerCase()?.replace(/-/g, " ")} Invoices</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                 </div>
                 <div class="card">
                   <div>
@@ -2722,27 +2710,9 @@ function OnePremise() {
   
      {activeLink === 7 &&
      <>
-     <div className="page-content">
+     <div className="">
        <div className="container-fluid">
-         <div className="row">
-           <div className="col-12">
-             <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-               <h4 className="mb-sm-0 font-size-18">Rent & Bills invoices</h4>
-
-               <div className="page-title-right">
-                 <ol className="breadcrumb m-0">
-                   <li className="breadcrumb-item">
-                     <Link to="/">Dashboard </Link>
-                   </li>
-                   <li className="breadcrumb-item">
-                     <Link to="/invoices"> All Invoices </Link>
-                   </li>
-                   <li className="breadcrumb-item active">Monthly Invoices</li>
-                 </ol>
-               </div>
-             </div>
-           </div>
-         </div>
+      
          <div className="row">
            <div className="col-12">
              <div className="card">
