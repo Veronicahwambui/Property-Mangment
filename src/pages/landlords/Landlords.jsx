@@ -18,11 +18,9 @@ function Landlords() {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [startDate, setStartDate] = useState(
-    new Date(moment().startOf("month").format("YYYY-MM-DD"))
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1)
   );
-  const [endDate, setEndDate] = useState(
-    new Date(moment().endOf("month").format("YYYY-MM-DD"))
-  );
+  const [endDate, setEndDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
