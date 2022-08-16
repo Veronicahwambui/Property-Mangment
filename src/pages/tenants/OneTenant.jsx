@@ -5,14 +5,12 @@ import { useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
 import { Link } from "react-router-dom";
-import moment from 'moment'
+import moment from "moment";
 import { Modal, Button } from "react-bootstrap";
-import {  ModalBody } from 'react-bootstrap';
+import { ModalBody } from "react-bootstrap";
 
 import { baseUrl } from "../../services/API";
 import AuthService from "../../services/auth.service";
-
-
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -28,42 +26,37 @@ function OneTenant() {
   const [email, setEmail] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [nationality, setNationality] = useState("");
-  const [companyIncorporationNumber, setCompanyIncorporationNumber] = useState("");
+  const [companyIncorporationNumber, setCompanyIncorporationNumber] =
+    useState("");
   const [detailsId, setDetailsId] = useState("");
   const [companyAddress, setCompanyAddress] = useState("");
-  const [companyDateOfRegistration, setCompanyDateOfRegistration] = useState("");
+  const [companyDateOfRegistration, setCompanyDateOfRegistration] =
+    useState("");
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
   const [occupation, setOccupation] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [tenantTypeName, setTenantTypeName] = useState("");
-  const [premiseData, setPremiseData] = useState([])
-
+  const [premiseData, setPremiseData] = useState([]);
 
   //company details
 
+  const [premises, setPremises] = useState([]);
+  const [units, setUnits] = useState([]);
+  const [premId, setPremId] = useState("");
 
-  const [premises, setPremises] = useState([])
-  const [units, setUnits] = useState([])
-  const [premId, setPremId] = useState("")
-
-
-
-
-  const [companyLocation, setCompanyLocation] = useState("")
+  const [companyLocation, setCompanyLocation] = useState("");
   //documents
 
-  const [docName, setDocName] = useState("")
-  const [docs, setDocs] = useState("")
-  const [documentTypeId, setDocumentTypeId] = useState(null)
-  const [documentTypes, setDocumentTypes] = useState([])
-  const [tenantDocs, setTenantDocs] = useState([])
+  const [docName, setDocName] = useState("");
+  const [docs, setDocs] = useState("");
+  const [documentTypeId, setDocumentTypeId] = useState(null);
+  const [documentTypes, setDocumentTypes] = useState([]);
+  const [tenantDocs, setTenantDocs] = useState([]);
   //modals
   const [show, setShow] = useState(false);
   const [docShow, setdocShow] = useState(true);
-
-
 
   const [editAccountShow, seteditAccountShow] = useState(false);
   const [editDocShow, seteditDocShow] = useState(false);
@@ -77,35 +70,34 @@ function OneTenant() {
   const handleEditShow = () => seteditDocShow(true);
   const handleEditClose = () => seteditDocShow(false);
 
-  // doc 
+  // doc
 
   const handleDocumentSubmit = (event) => {
     event.preventDefault();
 
     handleDocClose();
-  }
+  };
 
   const handleFileRead = async (event) => {
-    const file = event.target.files[0]
-    const base64 = await convertBase64(file)
+    const file = event.target.files[0];
+    const base64 = await convertBase64(file);
     setDocs(base64);
-  }
+  };
 
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const fileReader = new FileReader();
-      fileReader.readAsDataURL(file)
+      fileReader.readAsDataURL(file);
       fileReader.onload = () => {
         resolve(fileReader.result);
-      }
+      };
       fileReader.onerror = (error) => {
         reject(error);
-      }
-    })
-  }
+      };
+    });
+  };
 
   const [searchTerm, setSearchTerm] = useState("");
-
 
   // edit tenants
   const [unitTypeName, setUnitTypeName] = useState("");
@@ -116,9 +108,9 @@ function OneTenant() {
   const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] =
     useState("");
   const [premiseUnitId, setPremiseUnitId] = useState("");
-  const [tenantStatuses, setTenantStatuses] = useState([])
+  const [tenantStatuses, setTenantStatuses] = useState([]);
   const [unitId, setUnitId] = useState("");
-  const [endReason, setEndReason] = useState("")
+  const [endReason, setEndReason] = useState("");
 
   //edit ContactPersons
 
@@ -133,26 +125,22 @@ function OneTenant() {
   const [contactPersonType, setContactPersonType] = useState("");
   const [error, setError] = useState({
     message: "",
-    color: ""
+    color: "",
   });
 
   const { id } = useParams();
   const userId = id;
 
-
-
   //communication
 
-  const [communication, setCommunication] = useState([])
+  const [communication, setCommunication] = useState([]);
   //  const [typeMes, setTypeMes] = useState("TENANT");
   const [message, setMessage] = useState([]);
-
 
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
       setTenantTypeName(res.data.data.tenant.tenantType);
-
     });
   };
 
@@ -177,12 +165,10 @@ function OneTenant() {
       otherName: otherName,
       phoneNumber: phoneNumber,
       tenantTypeName: tenantTypeName,
-
     });
     //  console.log(id)
     requestsServiceService.updateTenantsDetails(details).then((res) => {
-      fetchAll()
-
+      fetchAll();
     });
 
     // console.log(details)
@@ -200,15 +186,14 @@ function OneTenant() {
     companyName,
     nationality,
     companyAddress,
-    companyDateOfRegistration,
-
+    companyDateOfRegistration
   ) => {
     setDetailsId(detailsId);
     setTenantTypeName(tenantTypeName);
     setFirstName(firstName);
     setLastName(lastName);
     setOtherName(otherName);
-    setPhoneNumber(phoneNumber)
+    setPhoneNumber(phoneNumber);
     setEmail(email);
     setIdNumber(idNumber);
     setCompanyName(companyName);
@@ -233,7 +218,6 @@ function OneTenant() {
       unitCondition: unitCondition,
     });
     requestsServiceService.updateTenant(data).then((res) => {
-
       fetchAll();
     });
   };
@@ -327,56 +311,52 @@ function OneTenant() {
     // console.log(contactPerson);
     // console.log(id)
 
-    requestsServiceService.createContactPerson(contactPerson).then((res) => {
-      console.log(res);
-      fetchAll();
+    requestsServiceService
+      .createContactPerson(contactPerson)
+      .then((res) => {
+        console.log(res);
+        fetchAll();
 
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success"
-        })
-      } else {
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning"
-        })
-      }
-
-
-      setTimeout(() => {
-        clear()
-      }, 3000)
-    }).catch((res) => {
-
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger"
+        setTimeout(() => {
+          clear();
+        }, 3000);
       })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
 
-      setTimeout(() => {
-        clear()
-      }, 3000)
-
-
-    })
-  }
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      });
+  };
 
   const clear = () => {
     setError({
       ...error,
       message: "",
-      color: ""
+      color: "",
     });
   };
 
-
   const addTenancies = () => {
-
     let data = JSON.stringify({
       active: true,
       // id:0,
@@ -386,111 +366,96 @@ function OneTenant() {
       tenancyDocuments: [],
       tenancyRenewalDate: tenancyRenewalDate,
       tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
-      tenancyStatusName: tenancyStatus,
+      tenancyStatusName: "CURRENT",
       tenantId: tenantData.tenant.id,
-      unitCondition: unitCondition
+      unitCondition: unitCondition,
+    });
 
-    })
+    requestsServiceService
+      .createTenancies(data)
+      .then((res) => {
+        console.log(res);
 
-    requestsServiceService.createTenancies(data).then((res) => {
-      console.log(res)
-     
-      fetchAll()
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success"
-        })
-      } else {
+        fetchAll();
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning"
-        })
-      }
-
-
-      setTimeout(() => {
-        cleared()
-      }, 3000)
-    }).catch((res) => {
-
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger"
+        setTimeout(() => {
+          cleared();
+        }, 3000);
       })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
 
-      setTimeout(() => {
-        cleared()
-      }, 3000)
-
-
-    })
-  }
+        setTimeout(() => {
+          cleared();
+        }, 3000);
+      });
+  };
 
   const cleared = () => {
     setError({
       ...error,
       message: "",
-      color: ""
+      color: "",
+    });
+  };
 
-    })
+  let searchDate = new Date();
+  const startingDate = new Date("2022-01-17T03:24:00");
 
-  }
+  const getPremises = () => {};
 
-  let searchDate =new Date()
-  const startingDate= new Date('2022-01-17T03:24:00')
-
-  const getPremises = () => {
-
-
-  }
-
-  const handleSubmit =(e)=>{
-    e.preventDefault()
+  const handleSubmit = (e) => {
+    e.preventDefault();
     let page = 0,
-      size = 100;
+      size = 10;
     let data = {
-      "dateCreatedEnd": moment(searchDate).format("YYYY-MM-DD"),
-      "dateCreatedStart": moment(startingDate).format("YYYY-MM-DD"),
-      "premiseName": searchTerm?.trim()
-  }
+      dateCreatedEnd: moment(searchDate).format("YYYY-MM-DD"),
+      dateCreatedStart: moment(startingDate).format("YYYY-MM-DD"),
+      premiseName: searchTerm?.trim(),
+    };
 
-
-    requestsServiceService.getAllpremises(page,size,data).then((res) =>{
-   
-      setPremises(res.data.data)
-     } )
-  
-    
-
-  }
+    requestsServiceService.getAllpremises(page, size, data).then((res) => {
+      setPremises(res.data.data);
+    });
+  };
 
   const onPremiseChange = (event) => {
+    let vals = event.target.value.split(":");
 
-    let vals = event.target.value.split(':');
-
-    requestsServiceService.findVacatPremise(vals[0]).then((res) =>
-      setUnits(res.data.data)
-    )
-  }
+    requestsServiceService
+      .findVacatPremise(vals[0])
+      .then((res) => setUnits(res.data.data));
+  };
   const premiseUnitChange = (event) => {
-    setPremiseUnitId(event.target.value)
-  }
+    setPremiseUnitId(event.target.value);
+  };
 
   const getStatus = () => {
     requestsServiceService.getTenantStatus().then((res) => {
-      setTenantStatuses(res.data.data)
-    })
-  }
+      setTenantStatuses(res.data.data);
+    });
+  };
 
   //documents create
   const createDoc = () => {
-
-    setdocShow(!docShow)
+    setdocShow(!docShow);
 
     let data = JSON.stringify({
       docName: docName,
@@ -498,98 +463,82 @@ function OneTenant() {
       documentOwnerTypeName: "TENANT",
       documentTypeId: documentTypeId,
       id: null,
-      ownerEntityId: userId
-    })
+      ownerEntityId: userId,
+    });
 
     requestsServiceService.createDocuments(data).then((res) => {
       // setTenantDocs(res.data.data)
-      getDocument()
-
-
-    })
-  }
+      getDocument();
+    });
+  };
 
   const getDocument = () => {
     requestsServiceService.fetchDocuments("TENANT", id).then((res) => {
-      setTenantDocs(res.data.data)
-
-
-    }
-    )
-  }
+      setTenantDocs(res.data.data);
+    });
+  };
   useEffect(() => {
     fetchAll();
     getContactTypeName();
     //  getAllpremises()
-    getStatus()
+    getStatus();
     createDoc();
-    createDocumentTypes()
-    getDocument()
+    createDocumentTypes();
+    getDocument();
     fetchCommunication();
     // fetchMessages()
-   
-
-
-
   }, []);
 
   const createDocumentTypes = (id) => {
     requestsServiceService.getDocumentTypes(id).then((res) => {
       setDocumentTypes(res.data.data);
-
-    })
-  }
-
+    });
+  };
 
   const deleteDeactivate = () => {
-    requestsServiceService.deactivateTenancies(id, endReason).then((res) => {
-      console.log(res.data)
-      fetchAll()
+    requestsServiceService
+      .deactivateTenancies(id, endReason)
+      .then((res) => {
+        console.log(res.data);
+        fetchAll();
 
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success"
-        })
-      } else {
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning"
-        })
-      }
-
-
-      setTimeout(() => {
-        clearTenant()
-      }, 3000)
-    }).catch((res) => {
-
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger"
+        setTimeout(() => {
+          clearTenant();
+        }, 3000);
       })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
 
-      setTimeout(() => {
-        clearTenant()
-      }, 3000)
-
-
-    })
-  }
+        setTimeout(() => {
+          clearTenant();
+        }, 3000);
+      });
+  };
 
   const clearTenant = () => {
     setError({
       ...error,
       message: "",
-      color: ""
-
-    })
-
-
+      color: "",
+    });
   };
 
   // const vacantTenant =(premiseId)=>{
@@ -600,35 +549,26 @@ function OneTenant() {
   // }
   // console.log(tenancyRenewalDate)
 
-
   //communication
 
-  let clientId = AuthService.getClientId()
+  let clientId = AuthService.getClientId();
 
   const fetchCommunication = () => {
-
-    requestsServiceService.getEntityCommunication(userId, 0, 5, "TENANT", clientId).then((res) => {
-      setCommunication(res.data.data)
-
-    })
-
-  }
-
-
-
-
+    requestsServiceService
+      .getEntityCommunication(userId, 0, 5, "TENANT", clientId)
+      .then((res) => {
+        setCommunication(res.data.data);
+      });
+  };
 
   const date2 = (date) => {
     setTenancyRenewalNotificationDate(new Date(date.target.value));
-  }
+  };
   const date3 = (date) => {
     setTenancyRenewalDate(new Date(date.target.value));
-  }
-  $(document).on("change", ".date2", date2)
-  $(document).on("change", ".date3", date3)
-
-
-
+  };
+  $(document).on("change", ".date2", date2);
+  $(document).on("change", ".date3", date3);
 
   return (
     <div className="page-content">
@@ -644,10 +584,10 @@ function OneTenant() {
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <li class="breadcrumb-item">
-                    <Link to='/'>Dashboard </Link>
+                    <Link to="/">Dashboard </Link>
                   </li>
                   <li class="breadcrumb-item">
-                    <Link to='/alltenants'>All Tenants</Link>
+                    <Link to="/alltenants">All Tenants</Link>
                   </li>
                   <li class="breadcrumb-item active">
                     {tenantData?.tenant?.firstName}
@@ -731,7 +671,6 @@ function OneTenant() {
                       >
                         Communication
                       </a>
-
                     </div>
                   </div>
                 </nav>
@@ -753,8 +692,7 @@ function OneTenant() {
                     >
                       <div class="d-flex align-items-center flex-grow-1">
                         <h4 class="mb-0 m-0 bg-transparent">
-                          Quick Stats on{" "}
-                          {tenantData?.tenant?.firstName}
+                          Quick Stats on {tenantData?.tenant?.firstName}
                         </h4>
                       </div>
                       <div className="d-flex">
@@ -790,97 +728,73 @@ function OneTenant() {
                   </div>
                   <div className="card-body">
                     <div className="col-12">
-
                       <div className="row">
                         <div className="col-3">
                           <label htmlFor="">Type</label>
                           <div>
-                            <span>
-                              {
-                                tenantData?.tenant?.tenantType}
-                            </span>
+                            <span>{tenantData?.tenant?.tenantType}</span>
                           </div>
                         </div>
-                        {tenantTypeName === "INDIVIDUAL" &&
+                        {tenantTypeName === "INDIVIDUAL" && (
                           <div className="row mt-5">
-
                             <div className="col-3">
                               <label htmlFor="">First Name</label>
                               <div>
-                                <span>
-                                  {tenantData?.tenant?.firstName}
-                                </span>
+                                <span>{tenantData?.tenant?.firstName}</span>
                               </div>
                             </div>
                             <div className="col-3">
                               <label htmlFor="">Last Name</label>
                               <div>
-                                <span>
-                                  {tenantData?.tenant?.lastName}
-                                </span>
+                                <span>{tenantData?.tenant?.lastName}</span>
                               </div>
                             </div>
                             <div className="col-3">
                               <label htmlFor="">Email</label>
                               <div>
-                                <span>
-                                  {tenantData?.tenant?.email}
-                                </span>
+                                <span>{tenantData?.tenant?.email}</span>
                               </div>
                             </div>
                             <div className="col-3">
                               <label htmlFor="">Id Number</label>
                               <div>
-                                <span>
-                                  {tenantData?.tenant?.idNumber}
-                                </span>
+                                <span>{tenantData?.tenant?.idNumber}</span>
                               </div>
                             </div>
-
-
 
                             <div className="row mt-5">
                               <div className="col-3">
                                 <label htmlFor="">PhoneNumber</label>
                                 <div>
-                                  <span>
-                                    {tenantData?.tenant?.phoneNumber}
-                                  </span>
+                                  <span>{tenantData?.tenant?.phoneNumber}</span>
                                 </div>
                               </div>
                               <div className="col-3">
                                 <label htmlFor="">Nationality</label>
                                 <div>
-                                  <span>
-                                    {
-                                      tenantData?.tenant?.nationality}
-                                  </span>
+                                  <span>{tenantData?.tenant?.nationality}</span>
                                 </div>
                               </div>
                             </div>
-
-
-                          </div>}
+                          </div>
+                        )}
                       </div>
 
-                      {tenantTypeName === "COMPANY" &&
+                      {tenantTypeName === "COMPANY" && (
                         <div className="row mt-5">
-
                           <div className="col-3">
                             <label htmlFor="">Company Name</label>
                             <div>
-                              <span>
-                                {
-                                  tenantData?.tenant?.companyName}
-                              </span>
+                              <span>{tenantData?.tenant?.companyName}</span>
                             </div>
                           </div>
                           <div className="col-3">
-                            <label htmlFor="">Company Incorporation Number</label>
+                            <label htmlFor="">
+                              Company Incorporation Number
+                            </label>
                             <div>
                               <span>
-                                {
-                                  tenantData?.tenant?.companyIncorporationNumber}
+                                {tenantData?.tenant?.companyIncorporationNumber}
                               </span>
                             </div>
                           </div>
@@ -888,31 +802,27 @@ function OneTenant() {
                           <div className="col-3">
                             <label htmlFor="">Company Address</label>
                             <div>
-                              <span>
-                                {
-                                  tenantData?.tenant?.companyAddress}
-                              </span>
+                              <span>{tenantData?.tenant?.companyAddress}</span>
                             </div>
                           </div>
 
-
                           <div className="row mt-5">
-
-
                             <div className="col-3">
-                              <label htmlFor="">CompanyDateOfRegistration</label>
+                              <label htmlFor="">
+                                CompanyDateOfRegistration
+                              </label>
                               <div>
                                 <span>
                                   {moment(
-                                    tenantData?.tenant?.companyDateOfRegistration).format("DD /MM /YYYY")}
+                                    tenantData?.tenant
+                                      ?.companyDateOfRegistration
+                                  ).format("DD /MM /YYYY")}
                                 </span>
                               </div>
                             </div>
                           </div>
-
-                        </div>}
-
-
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -946,8 +856,11 @@ function OneTenant() {
                                 data-bs-toggle="modal"
                                 data-bs-target="#create-tenancies"
                               >
-                                <i className="mdi mdi-plus label-icon" onClick={() => setSearchTerm("")}></i> Add
-                                Tenancies
+                                <i
+                                  className="mdi mdi-plus label-icon"
+                                  onClick={() => setSearchTerm("")}
+                                ></i>{" "}
+                                Add Tenancies
                               </button>
                             </div>
                           </div>
@@ -955,15 +868,19 @@ function OneTenant() {
 
                         <div>
                           <div className="card-body">
-
-
-                            {error.color !== "" &&
-                              <div className={"alert alert-" + error.color} role="alert">
+                            {error.color !== "" && (
+                              <div
+                                className={"alert alert-" + error.color}
+                                role="alert"
+                              >
                                 {error.message}
                               </div>
-                            }
+                            )}
                             <div className="table-responsive table-responsive-vontainer">
-                              <table className="table align-middle table-nowrap table-hover" id="datatable-buttons">
+                              <table
+                                className="table align-middle table-nowrap table-hover"
+                                id="datatable-buttons"
+                              >
                                 <thead>
                                   <tr class="text-uppercase table-dark">
                                     <th>#</th>
@@ -985,26 +902,40 @@ function OneTenant() {
                                       <tr data-id="1">
                                         <td>{index + 1}</td>
                                         <td>{unit.premiseUnit.unitName}</td>
-                                        <td>{unit.premiseUnit.premise.premiseName}</td>
+                                        <td>
+                                          {unit.premiseUnit.premise.premiseName}
+                                        </td>
 
                                         <td className="text-capitalize">
                                           {unit.premiseUnit.unitType.name}
                                         </td>
                                         <td>
-                                          {moment(unit.startDate && unit.startDate.replace(/[TZ]/g, " ")).format("DD /MM /YYYY")}
+                                          {moment(
+                                            unit.startDate &&
+                                              unit.startDate.replace(
+                                                /[TZ]/g,
+                                                " "
+                                              )
+                                          ).format("DD /MM /YYYY")}
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
-                                          <span className="badge-soft-success badge">  {unit.tenancyStatus.toLowerCase()
-
-
-                                          }</span>
+                                          <span className="badge-soft-success badge">
+                                            {" "}
+                                            {unit.tenancyStatus.toLowerCase()}
+                                          </span>
                                         </td>
-                                        <td>{unit.tenancyRenewalDate && moment(unit.tenancyRenewalDate).format
-                                          ("DD/ MM/ YYYY")
-                                        }</td>
                                         <td>
-                                          {unit.tenancyRenewalNotificationDate && moment(unit.tenancyRenewalNotificationDate).format("DD /MM/ YYYY")}
+                                          {unit.tenancyRenewalDate &&
+                                            moment(
+                                              unit.tenancyRenewalDate
+                                            ).format("DD/ MM/ YYYY")}
+                                        </td>
+                                        <td>
+                                          {unit.tenancyRenewalNotificationDate &&
+                                            moment(
+                                              unit.tenancyRenewalNotificationDate
+                                            ).format("DD /MM/ YYYY")}
                                         </td>
 
                                         <td>
@@ -1047,8 +978,6 @@ function OneTenant() {
                                                     unit.tenancyRenewalDate,
                                                     unit.tenancyRenewalNotificationDate,
                                                     unit.id
-
-
                                                   )
                                                 }
                                               >
@@ -1056,15 +985,20 @@ function OneTenant() {
                                                 Edit
                                               </p>
                                               <p>
-                                                <Link class="dropdown-item" to={`/premise/tenant/${unit.tenant.id}`}><i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>view</Link>
+                                                <Link
+                                                  class="dropdown-item"
+                                                  to={`/premise/tenant/${unit.tenant.id}`}
+                                                >
+                                                  <i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>
+                                                  view
+                                                </Link>
                                               </p>
 
                                               <button
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#vacate-modal"
                                                 class="dropdown-item "
-                                                onClick={() => setEndReason('')}
-
+                                                onClick={() => setEndReason("")}
                                               >
                                                 <i class="font-size-8 mdi mdi-close-circle me-3">
                                                   Vacate Tenant
@@ -1122,10 +1056,11 @@ function OneTenant() {
                         </div>
                         <div className="p-4">
                           <div className="row">
-
-
                             <div className="col-12">
-                              <div className={"alert alert-" + error.color} role="alert">
+                              <div
+                                className={"alert alert-" + error.color}
+                                role="alert"
+                              >
                                 {error.message}
                               </div>
                               <div className="table-responsive">
@@ -1229,9 +1164,7 @@ function OneTenant() {
                           className="btn align-items-center d-flex btn-primary dropdown-toggle option-selector mb-3 mt-0"
                         >
                           <i className="dripicons-plus font-size-16 mt-1"></i>{" "}
-                          <span className="pl-1 d-md-inline">
-                            New document
-                          </span>
+                          <span className="pl-1 d-md-inline">New document</span>
                         </button>
                       </div>
                     </div>
@@ -1255,29 +1188,34 @@ function OneTenant() {
                           </thead>
                           <tbody>
                             {tenantDocs &&
-                              tenantDocs.map(
-                                (unit, index) => (
-                                  <tr data-id="1">
-                                    <td>{index + 1}</td>
-                                    <td className="active nav-link cursor-pointer">
-                                      <a onClick={() => download}>
-                                        {" "}
-                                        {unit.docName}
-                                      </a>
-                                    </td>
-                                    <td>{unit.documentType.name}</td>
-                                    <td className="text-capitalize">
-                                      {unit.documentOwnerType.toLowerCase()}
-                                    </td>
-                                    <td>
-                                      <a href={baseUrl + "/documents/download?docName=" + `${unit.docName}`}
-                                        className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                        target="_blank"><i className="bx bx-download" />
-                                      </a>
-                                    </td>
-                                  </tr>
-                                )
-                              )}
+                              tenantDocs.map((unit, index) => (
+                                <tr data-id="1">
+                                  <td>{index + 1}</td>
+                                  <td className="active nav-link cursor-pointer">
+                                    <a onClick={() => download}>
+                                      {" "}
+                                      {unit.docName}
+                                    </a>
+                                  </td>
+                                  <td>{unit.documentType.name}</td>
+                                  <td className="text-capitalize">
+                                    {unit.documentOwnerType.toLowerCase()}
+                                  </td>
+                                  <td>
+                                    <a
+                                      href={
+                                        baseUrl +
+                                        "/documents/download?docName=" +
+                                        `${unit.docName}`
+                                      }
+                                      className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                      target="_blank"
+                                    >
+                                      <i className="bx bx-download" />
+                                    </a>
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>
@@ -1290,7 +1228,12 @@ function OneTenant() {
             {/*document attachment modal*/}
 
             <div>
-              <Modal show={docShow} onHide={handleDocClose} className={"modal fade"} centered>
+              <Modal
+                show={docShow}
+                onHide={handleDocClose}
+                className={"modal fade"}
+                centered
+              >
                 <form onSubmit={createDoc}>
                   <Modal.Header closeButton>
                     <Modal.Title>Add Documents</Modal.Title>
@@ -1299,7 +1242,10 @@ function OneTenant() {
                     <div className="row">
                       <div className="col-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="">Select Document Type. <strong className="text-danger ">*</strong></label>
+                          <label htmlFor="">
+                            Select Document Type.{" "}
+                            <strong className="text-danger ">*</strong>
+                          </label>
                           <select
                             className="form-control text-capitalize"
                             onChange={(e) => {
@@ -1311,71 +1257,89 @@ function OneTenant() {
                             <option className="text-black font-semibold ">
                               select..
                             </option>
-                            {documentTypes && documentTypes.sort((a, b) => a.name.localeCompare(b.name))?.map((dT) => {
-                              return (
-                                <option
-                                  key={dT.id}
-                                  value={dT.id}
-                                >
-                                  {dT.name?.toLowerCase().replace(/_/g, " ")}
-                                </option>
-                              );
-                            })}
+                            {documentTypes &&
+                              documentTypes
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                ?.map((dT) => {
+                                  return (
+                                    <option key={dT.id} value={dT.id}>
+                                      {dT.name
+                                        ?.toLowerCase()
+                                        .replace(/_/g, " ")}
+                                    </option>
+                                  );
+                                })}
                           </select>
                         </div>
                         <div className="form-group mb-4">
-                          <label htmlFor="">Document Name. <strong className="text-danger ">*</strong></label>
-                          <input type="text" className="form-control" value={docName} onChange={(e) => setDocName(e.target.value)} placeholder="Enter document name" required={true} />
+                          <label htmlFor="">
+                            Document Name.{" "}
+                            <strong className="text-danger ">*</strong>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={docName}
+                            onChange={(e) => setDocName(e.target.value)}
+                            placeholder="Enter document name"
+                            required={true}
+                          />
                         </div>
                         <div className="form-group mb-4">
-                          <label htmlFor="">Document Upload. <strong className="text-danger ">*</strong></label>
+                          <label htmlFor="">
+                            Document Upload.{" "}
+                            <strong className="text-danger ">*</strong>
+                          </label>
                           <div className="input-group mb-0">
-                            <label className="input-group-text bg-info text-white cursor-pointer"
-                              htmlFor="document1-1">
-                              <i className="font-14px mdi mdi-paperclip"></i> Attach File
+                            <label
+                              className="input-group-text bg-info text-white cursor-pointer"
+                              htmlFor="document1-1"
+                            >
+                              <i className="font-14px mdi mdi-paperclip"></i>{" "}
+                              Attach File
                             </label>
-                            <input type="file" className="form-control" id="document1-1" onChange={e => handleFileRead(e)} required={true} />
+                            <input
+                              type="file"
+                              className="form-control"
+                              id="document1-1"
+                              onChange={(e) => handleFileRead(e)}
+                              required={true}
+                            />
                           </div>
                         </div>
                       </div>
                     </div>
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button variant="secondary" className={"btn btn-grey"} onClick={handleDocClose}>
+                    <Button
+                      variant="secondary"
+                      className={"btn btn-grey"}
+                      onClick={handleDocClose}
+                    >
                       Close
                     </Button>
-                    <Button variant="primary" className={"btn btn-primary"} type={"submit"}>
+                    <Button
+                      variant="primary"
+                      className={"btn btn-primary"}
+                      type={"submit"}
+                    >
                       Add Document
                     </Button>
                   </Modal.Footer>
                 </form>
               </Modal>
-
             </div>
-
           </div>
-
-
-
-
-
         )}
-
 
         {activeLink === 5 && (
           <div>
-
-
-
             <div class="container-fluid">
-
               {/* <!-- start page title --> */}
               <div class="row">
                 <div class="col-12">
                   <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <h4 class="mb-sm-0 font-size-18">All Messages</h4>
-
-
                   </div>
                 </div>
               </div>
@@ -1383,27 +1347,22 @@ function OneTenant() {
 
               <div class="row">
                 <div class="col-12">
-
                   {/* <!-- Right Sidebar --> */}
                   <div class="mb-3">
-
                     <div class="card">
                       <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                        <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
-
-                          <div class="d-flex align-items-center flex-grow-1">
-
-
-
-
-                          </div>
-
-
-
+                        <div
+                          class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                          role="toolbar"
+                        >
+                          <div class="d-flex align-items-center flex-grow-1"></div>
                         </div>
                       </div>
                       <div class="card-body the-inbox">
-                        <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
+                        <table
+                          id="emailDataTable-btns"
+                          class="table   nowrap w-100 table-hover mt-0 mb-0"
+                        >
                           <thead>
                             <tr class="d-none">
                               <th>Mode</th>
@@ -1414,14 +1373,11 @@ function OneTenant() {
                               <th>Name</th>
                               <th>Message Content</th>
                               <th>Date</th>
-
                             </tr>
                           </thead>
 
                           <tbody class="table-hover">
                             {communication?.map((com, index) => (
-
-
                               <tr data-id="1">
                                 <td>{index + 1}</td>
                                 {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
@@ -1434,70 +1390,55 @@ function OneTenant() {
                                         AW
                                       </span>
                                     </div>
-
                                   </div>
 
-
                                   <span class=" font-size-18 d-none d-md-flex">
-                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
-                                    <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">sms</span></i>
-
+                                    <i class="mdi mdi-chat-outline text-info pr-2">
+                                      <span class="d-none">Email</span>
+                                    </i>
+                                    <i class="mdi mdi-email-check-outline text-info pr-2">
+                                      <span class="d-none">sms</span>
+                                    </i>
                                   </span>
                                   <span class=" font-size-18 d-flex d-md-none">
                                     <br />
-                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                    <i class="mdi mdi-chat-outline text-info pr-2">
+                                      <span class="d-none">
+                                        {com.communicationType}
+                                      </span>
+                                    </i>
                                     {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-
                                   </span>
-
-
-
                                 </td>
 
-                                <td class="d-none"><span class="d-none">0</span></td>
-
-                                <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-                                <td class="the-msg the-msg-2">
-
-
+                                <td class="d-none">
+                                  <span class="d-none">0</span>
                                 </td>
-                                <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+
+                                <td class="text-capitalize d-none d-md-table-cell">
+                                  {com.createdBy}
+                                </td>
+                                <td class="the-msg the-msg-2"></td>
+                                <td class="text-capitalize d-none d-md-table-cell">
+                                  {moment(com.dateTimeCreated).format(
+                                    "ddd MMM DD"
+                                  )}
+                                </td>
                               </tr>
-                            )
-                            )}
-
+                            ))}
                           </tbody>
-
                         </table>
-
                       </div>
-
-
                     </div>
-
-
-
                   </div>
                   {/* <!-- end Col-9 --> */}
-
                 </div>
-
               </div>
               {/* <!-- End row --> */}
-
             </div>
             {/* <!-- container-fluid --> */}
-
-
-
-
-
-
           </div>
-
-
-        )
-        }
+        )}
 
         <div
           class="modal fade"
@@ -1543,7 +1484,11 @@ function OneTenant() {
                         type="text"
                         class="form-control mouse-pointer enddate"
                         placeholder="Enter StartDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker12' data-provide="datepicker" data-date-autoclose="true"
+                        readOnly
+                        data-date-format="dd M, yyyy"
+                        data-date-container="#datepicker12"
+                        data-provide="datepicker"
+                        data-date-autoclose="true"
                         onChange={(event) => setStartDate(event.target.value)}
                         value={startDate}
                       />
@@ -1565,15 +1510,10 @@ function OneTenant() {
                         type="text"
                         class="form-control"
                         placeholder="Enter TenancyStatus"
-
-
                         onChange={(e) => setTenancyStatus(e.target.value)}
                         value={tenancyStatus}
-
                       />
-
                     </div>
-
 
                     <div className="form-group mb-4" id="datepicker14">
                       <label htmlFor="">TenancyRenewalDate</label>
@@ -1583,8 +1523,11 @@ function OneTenant() {
                         value={tenancyRenewalDate}
                         onChange={(e) => setTenancyRenewalDate(e.target.value)}
                         placeholder="Enter TenancyRenewalDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker14' data-provide="datepicker" data-date-autoclose="true"
-
+                        readOnly
+                        data-date-format="dd M, yyyy"
+                        data-date-container="#datepicker14"
+                        data-provide="datepicker"
+                        data-date-autoclose="true"
                         required={true}
                       />
                     </div>
@@ -1599,8 +1542,11 @@ function OneTenant() {
                           setTenancyRenewalNotificationDate(e.target.value)
                         }
                         placeholder="TenancyRenewalNotificationDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker151' data-provide="datepicker" data-date-autoclose="true"
-
+                        readOnly
+                        data-date-format="dd M, yyyy"
+                        data-date-container="#datepicker151"
+                        data-provide="datepicker"
+                        data-date-autoclose="true"
                         required={true}
                       />
                     </div>
@@ -1768,9 +1714,7 @@ function OneTenant() {
           >
             <div class="modal-content">
               <div class="modal-body">
-
                 {/* //Company */}
-
 
                 <div className="row">
                   <div className="form-group">
@@ -1781,27 +1725,23 @@ function OneTenant() {
                         name="tenantTypeName"
                         className="form-control"
                       >
-
-
-                        <option value="INDIVIDUAL" >Individual</option>
+                        <option value="INDIVIDUAL">Individual</option>
                         <option value="COMPANY">Company</option>
                       </select>
                     </div>
                   </div>
 
-
-
-                  {tenantTypeName === "INDIVIDUAL" &&
-
+                  {tenantTypeName === "INDIVIDUAL" && (
                     <div className="row">
-
                       <div className="col-6">
                         <div className="form-group">
                           <label htmlFor="">FirstName</label>
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setFirstName(event.target.value)}
+                            onChange={(event) =>
+                              setFirstName(event.target.value)
+                            }
                             value={firstName}
                             placeholder="Enter FirstName"
                           />
@@ -1811,7 +1751,9 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setLastName(event.target.value)}
+                            onChange={(event) =>
+                              setLastName(event.target.value)
+                            }
                             value={lastName}
                             placeholder="Enter LastName"
                           />
@@ -1822,7 +1764,9 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setOtherName(event.target.value)}
+                            onChange={(event) =>
+                              setOtherName(event.target.value)
+                            }
                             value={otherName}
                             placeholder="Enter OtherName"
                           />
@@ -1832,12 +1776,13 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setPhoneNumber(event.target.value)}
+                            onChange={(event) =>
+                              setPhoneNumber(event.target.value)
+                            }
                             value={phoneNumber}
                             placeholder="Enter Phone Number"
                           />
                         </div>
-
                       </div>
                       <div className="col-6">
                         <div className="form-group">
@@ -1845,7 +1790,9 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setIdNumber(event.target.value)}
+                            onChange={(event) =>
+                              setIdNumber(event.target.value)
+                            }
                             value={idNumber}
                             placeholder="Enter Id Number"
                           />
@@ -1853,12 +1800,15 @@ function OneTenant() {
 
                         <div className="form-group">
                           <label htmlFor="">Nationality</label>
-                          <select className="form-control" data-live-search="true" title="Select nationality"
-                            onChange={(e) => setNationality(e.target.value)} value={nationality}>
-
+                          <select
+                            className="form-control"
+                            data-live-search="true"
+                            title="Select nationality"
+                            onChange={(e) => setNationality(e.target.value)}
+                            value={nationality}
+                          >
                             <option></option>
                             <option value="Kenya">Kenyan</option>
-
                           </select>
                         </div>
 
@@ -1872,15 +1822,11 @@ function OneTenant() {
                             placeholder="Enter Email"
                           />
                         </div>
-
-
-
                       </div>
-                    </div>}
+                    </div>
+                  )}
 
-
-
-                  {tenantTypeName !== "INDIVIDUAL" &&
+                  {tenantTypeName !== "INDIVIDUAL" && (
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">
@@ -1888,7 +1834,9 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setCompanyName(event.target.value)}
+                            onChange={(event) =>
+                              setCompanyName(event.target.value)
+                            }
                             value={companyName}
                             placeholder="Enter CompanyName"
                           />
@@ -1898,14 +1846,13 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setCompanyIncorporationNumber(event.target.value)}
+                            onChange={(event) =>
+                              setCompanyIncorporationNumber(event.target.value)
+                            }
                             value={companyIncorporationNumber}
                             placeholder="Enter CompanyIncorporationNumber"
                           />
                         </div>
-
-
-
                       </div>
                       <div className="col-6">
                         <div className="form-group">
@@ -1913,26 +1860,29 @@ function OneTenant() {
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setCompanyAddress(event.target.value)}
+                            onChange={(event) =>
+                              setCompanyAddress(event.target.value)
+                            }
                             value={companyAddress}
                             placeholder="EnterCompanyAddress"
                           />
                         </div>
-                        <div className="form-group" >
+                        <div className="form-group">
                           <label htmlFor="">CompanyDateOfRegistration </label>
                           <input
                             type="text"
                             className="form-control"
-                            onChange={(event) => setCompanyDateOfRegistration(event.target.value)}
+                            onChange={(event) =>
+                              setCompanyDateOfRegistration(event.target.value)
+                            }
                             value={companyDateOfRegistration}
                             placeholder="Enter CompanyDateOfRegistration "
                           />
                         </div>
                       </div>
-
-                    </div>}
+                    </div>
+                  )}
                 </div>
-
 
                 <div class="modal-footer">
                   <button
@@ -1957,7 +1907,6 @@ function OneTenant() {
         </div>
 
         {/* // create ContactPerson */}
-
 
         <div
           class="modal fade"
@@ -2088,10 +2037,7 @@ function OneTenant() {
           </div>
         </div>
 
-
         {/* //add Tenant */}
-
-
 
         <div
           class="modal fade"
@@ -2118,118 +2064,171 @@ function OneTenant() {
               <div class="modal-body">
                 <div class="row">
                   <div class="col-12">
-                    <form
-                     onSubmit={handleSubmit}
-                    >
-                     
-<div className="form-group mb-4"> 
-<label htmlFor=""> Premise Name</label>
-<input type="text" className="form-control" 
-placeholder="Search..."
-value={searchTerm}
-onChange={(e)=>setSearchTerm(e.target.value)}
-         />
-</div>
-<div class="col-3 ">
-                      <button class="btn btn-primary btn-block w-100 btn-lg"  >
-                        <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
-                        <div class="d-none">Search</div>
-                      </button>
-                    </div>
-</form>
+                    <form onSubmit={handleSubmit}>
+                      <div className="form-group mb-4">
+                        <label htmlFor=""> Premise Name</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Search..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                      </div>
+                      <div class="col-3 ">
+                        <button class="btn btn-primary btn-block w-100 btn-lg">
+                          <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
+                          <div class="d-none">Search</div>
+                        </button>
+                      </div>
+                    </form>
                     <div class="form-group mb-4">
                       <label for="">Premises</label>
-                      <select className='form-control' onChange={onPremiseChange} name="premise">
+                      <select
+                        className="form-control"
+                        onChange={onPremiseChange}
+                        name="premise"
+                      >
                         <option> --Select Premises--</option>
-                        {premises?.map((prem, index) => <option value={prem.id + ':' + prem.premiseName}>{prem.premiseName}</option>)}
+                        {premises?.map((prem, index) => (
+                          <option value={prem.id + ":" + prem.premiseName}>
+                            {prem.premiseName}
+                          </option>
+                        ))}
                       </select>
                     </div>
 
-               { units?.length > 0 &&   <div class="form-group mb-4">
-                      <label for="">Unit</label>
-                      <select className='form-control' onChange={premiseUnitChange} name="premiseUnitId">
-                        <option> --Select Unit--</option>
-                        {units?.map((prem, index) => <option value={prem.id}>{prem?.unitName}</option>)}
-                      </select>
-                    </div>}
+                    {units?.length > 0 && (
+                      <div class="form-group mb-4">
+                        <label for="">Unit</label>
+                        <select
+                          className="form-control"
+                          onChange={premiseUnitChange}
+                          name="premiseUnitId"
+                        >
+                          <option> --Select Unit--</option>
+                          {units?.map((prem, index) => (
+                            <option value={prem.id}>{prem?.unitName}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
 
+                    {units?.length > 0 && (
+                      <div class="form-group mb-4">
+                        <label for="">Unit Condition</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="Enter UnitCondition"
+                          onChange={(event) =>
+                            setUnitCondition(event.target.value)
+                          }
+                          value={unitCondition}
+                        />
+                      </div>
+                    )}
 
-                    { units?.length > 0 &&       <div class="form-group mb-4">
-                      <label for="">Unit Condition</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter UnitCondition"
-                        onChange={(event) => setUnitCondition(event.target.value)}
-                        value={unitCondition}
-                      />
-                    </div>}
+                    {units?.length > 0 && (
+                      <div className="form-group mb-4" id="datepicker198">
+                        <label htmlFor="">StartDate</label>
+                        <input
+                          type="text"
+                          className="form-control mouse-pointer enddate"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          placeholder="Enter StartDate"
+                          readOnly
+                          data-date-format="dd M, yyyy"
+                          data-date-container="#datepicker198"
+                          data-provide="datepicker"
+                          data-date-autoclose="true"
+                          data-date-start-date="+0d"
+                          required={true}
+                        />
+                      </div>
+                    )}
 
-                    { units?.length > 0 &&    <div className="form-group mb-4" id="datepicker198">
-                      <label htmlFor="">StartDate</label>
-                      <input
-                        type="text"
-                        className="form-control mouse-pointer enddate"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        placeholder="Enter StartDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker198' data-provide="datepicker" data-date-autoclose="true" data-date-start-date="+0d"
-                        required={true}
+                    {units?.length > 0 && (
+                      <div className="form-group mb-4 " id="datepicker1">
+                        <label htmlFor="">TenancyRenewalDate</label>
+                        <input
+                          type="text"
+                          className="form-control mouse-pointer date3"
+                          value={tenancyRenewalDate}
+                          onChange={(e) =>
+                            setTenancyRenewalDate(e.target.value)
+                          }
+                          placeholder="Enter TenancyRenewalDate "
+                          readOnly
+                          data-date-format="dd M, yyyy"
+                          data-date-container="#datepicker1"
+                          data-provide="datepicker"
+                          data-date-autoclose="true"
+                          required={true}
+                        />
+                      </div>
+                    )}
 
-                      />
+                    {units?.length > 0 && (
+                      <div className="form-group mb-4" id="datepicker1">
+                        <label htmlFor="">TenancyRenewalNotificationDate</label>
+                        <input
+                          type="text"
+                          className="form-control mouse-pointer date2"
+                          value={tenancyRenewalNotificationDate}
+                          onChange={(e) =>
+                            setTenancyRenewalNotificationDate(e.target.value)
+                          }
+                          placeholder="Enter TenancyRenewalNotificationDate"
+                          readOnly
+                          data-date-format="dd M, yyyy"
+                          data-date-container="#datepicker1"
+                          data-provide="datepicker"
+                          data-date-autoclose="true"
+                          required={true}
+                        />
+                      </div>
+                    )}
 
-                    </div>}
+                    {
+                      units?.length > 0 && (
+                        <div class="form-group mb-4">
+                          <label for="">TenancyStatus</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter TenancyStatus"
+                            onChange={(event) =>
+                              setTenancyStatus(event.target.value)
+                            }
+                            value={tenancyStatus}
+                          />
+                        </div>
+                      )
 
-                    { units?.length > 0 &&       <div className="form-group mb-4 " id="datepicker1">
-                      <label htmlFor="">TenancyRenewalDate</label>
-                      <input
-                        type="text"
-                        className="form-control mouse-pointer date3"
-                        value={tenancyRenewalDate}
-                        onChange={(e) => setTenancyRenewalDate(e.target.value)}
-                        placeholder="Enter TenancyRenewalDate "
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
-                        required={true}
-                      />
-                    </div>}
-
-                { units?.length > 0 &&      <div className="form-group mb-4" id="datepicker1">
-                      <label htmlFor="">TenancyRenewalNotificationDate</label>
-                      <input
-                        type="text"
-                        className="form-control mouse-pointer date2"
-                        value={tenancyRenewalNotificationDate}
-                        onChange={(e) => setTenancyRenewalNotificationDate(e.target.value)}
-                        placeholder="Enter TenancyRenewalNotificationDate"
-                        readOnly data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-provide="datepicker" data-date-autoclose="true"
-
-                        required={true}
-                      />
-                    </div>}
-
-                    { units?.length > 0 &&    <div className="form-group mb-4">
-                      <label htmlFor="">TenancyStatus</label>
-                      <select
-                        class="form-control"
-                        data-live-search="true"
-                        title="Select TenancyStatus"
-                        onChange={(e) => setTenancyStatus(e.target.value)}
-                      >
-                        <option className="text-black font-semibold ">
-                          --Select TenancyStatus--
-                        </option>
-                        {tenantStatuses &&
-                          tenantStatuses.map((tenant, index) => {
-                            return (
-                              <option key={index} value={tenant}>
-                                {tenant}
-                              </option>
-                            );
-                          })}
-                      </select>
-                    </div>}
-
-
+                      // <div className="form-group mb-4">
+                      //   <label htmlFor="">TenancyStatus</label>
+                      //   <select
+                      //     class="form-control"
+                      //     data-live-search="true"
+                      //     title="Select TenancyStatus"
+                      //     onChange={(e) => setTenancyStatus(e.target.value)}
+                      //   >
+                      //     <option className="text-black font-semibold ">
+                      //       --Select TenancyStatus--
+                      //     </option>
+                      //     {tenantStatuses &&
+                      //       tenantStatuses.map((tenant, index) => {
+                      //         return (
+                      //           <option key={index} value={tenant}>
+                      //             {tenant}
+                      //           </option>
+                      //         );
+                      //       })}
+                      //   </select>
+                      // </div>
+                    }
                   </div>
                 </div>
               </div>
@@ -2257,7 +2256,6 @@ onChange={(e)=>setSearchTerm(e.target.value)}
 
         {/* //vacantTenant */}
 
-
         <div
           class="modal fade"
           id="vacate-modal"
@@ -2267,7 +2265,6 @@ onChange={(e)=>setSearchTerm(e.target.value)}
           aria-labelledby="staticBackdropLabel"
           aria-hidden="true"
           centered="true"
-
         >
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -2288,21 +2285,14 @@ onChange={(e)=>setSearchTerm(e.target.value)}
                     <div class="form-group mb-4">
                       <label for="">Reason</label>
                       <input
-
                         type="text"
                         class="form-control"
                         placeholder="Enter name"
                         onChange={(event) => setEndReason(event.target.value)}
                         value={endReason}
-
-
                       />
-
-
                     </div>
                   </div>
-
-
                 </div>
               </div>
 
@@ -2314,10 +2304,12 @@ onChange={(e)=>setSearchTerm(e.target.value)}
                 >
                   Close
                 </button>
-                <button type="button" class="btn btn-primary"
-                  data-bs-dismiss="modal" onClick={() =>
-                    deleteDeactivate()
-                  } >
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => deleteDeactivate()}
+                >
                   Save
                 </button>
               </div>
@@ -2325,22 +2317,7 @@ onChange={(e)=>setSearchTerm(e.target.value)}
           </div>
         </div>
 
-
-
-{/* premise Search */}
-
-
-
-
-
-
-
-
-
-
-
-
-
+        {/* premise Search */}
       </div>
       <footer class="footer">
         <div class="container-fluid">
