@@ -24,7 +24,7 @@ function ViewClient() {
   });
   const [clientUsers, setclientUsers] = useState([]);
 
-  const [activeLink, setActiveLink] = useTabs();
+  const [activeLink, setActiveLink] = useTabs(1);
   const [accountsData, setAccountsData] = useState([]);
   const [banks, setBanks] = useState([]);
 
