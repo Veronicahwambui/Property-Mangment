@@ -12,6 +12,7 @@ import AuthService from "../../services/auth.service";
 import Message from "../../components/Message";
 import Chart from "react-apexcharts";
 import numeral from "numeral";
+import DatePicker from "react-datepicker";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -100,7 +101,8 @@ function OneTenant() {
 
   // edit tenants
   const [unitTypeName, setUnitTypeName] = useState("");
-  const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [unitCondition, setUnitCondition] = useState("");
   const [tenancyStatus, setTenancyStatus] = useState("");
   const [tenancyRenewalDate, setTenancyRenewalDate] = useState("");
@@ -257,7 +259,7 @@ function OneTenant() {
     // console.log(contacts);
 
     requestsServiceService.updateContactPersons(contacts).then((res) => {
-      console.log(res);
+      // console.log(res);
 
       fetchAll();
     });
@@ -283,7 +285,7 @@ function OneTenant() {
 
   const download = () => {
     requestsServiceService.download(docName).then((res) => {
-      console.log(res);
+      // console.log(res);
     });
   };
 
@@ -313,7 +315,7 @@ function OneTenant() {
     requestsServiceService
       .createContactPerson(contactPerson)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         fetchAll();
 
         if (res.data.status) {
@@ -568,8 +570,8 @@ function OneTenant() {
     setinvoice_show(false);
   };
   const getTenantStatements = () => {
-    let startdate = "01/12/2022";
-    let enddate = "12/12/2022";
+    let startdate = moment(startDate).format("YYYY/MM/DD");
+    let enddate = moment(endDate).format("YYYY/MM/DD");
     requestsServiceService
       .getTenantStatements(userId, startdate, enddate)
       .then((res) => {
@@ -744,14 +746,12 @@ function OneTenant() {
     requestsServiceService
       .getTenantDashboard(userId, startdate, enddate)
       .then((res) => {
-        console.log(res);
         // $("#spinner").addClass("d-none");
         setDashboardData(res.data.data);
       });
     requestsServiceService
       .getTenantGraph(userId, startdate, enddate)
       .then((res) => {
-        console.log(res);
         setRadioBarData(res.data.data.collectionSummaryByPremiseUseType);
         setRadioBarData2(res.data.data.collectionSummaryByUnitType);
         setPieChartData(res.data.data.collectionSummaryByApplicableCharge);
@@ -1103,6 +1103,10 @@ function OneTenant() {
     },
   };
   // Tenant graphs end =============================================
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    getTenantStatements();
+  };
   return (
     <div className="page-content">
       <div className="content-fluid">
@@ -1484,97 +1488,11 @@ function OneTenant() {
             </div>
             <div className="row">
               <div className="col-xl-4">
-                <div className="card">
-                  <div className="card-body">
-                    <h4 className="card-title mb-0">
-                      Collections by Premise Use Type
-                    </h4>
-                    <div className="row">
-                      <div className="col-sm-7">
-                        <div>
-                          <div id="unit-types">
-                            <Chart
-                              class="apex-charts"
-                              options={walletOptions}
-                              plotOptions={walletOptions.plotOptions}
-                              series={walletOptions.series}
-                              type="radialBar"
-                              height="300"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-sm-5 align-self-center">
-                        {radioBarData?.map((item, index) => (
-                          <div className="">
-                            <div className="mt-4 text-left">
-                              <p className="mb-2 text-truncate text-left text-capitalize">
-                                <i
-                                  className="mdi mdi-circle me-1 "
-                                  style={{ color: "" + colors[index] + "" }}
-                                ></i>
-                                {item.item}
-                              </p>
-                              <h5>{formatCurrency.format(item.value)}</h5>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xl-4">
-                <div className="card">
-                  <div className="card-body">
-                    <h4 className="card-title mb-0">
-                      Collections by Unit Type
-                    </h4>
-                    <div className="row">
-                      <div className="col-sm-7">
-                        <div>
-                          <div id="unit-types">
-                            <Chart
-                              class="apex-charts"
-                              options={walletOptions2}
-                              plotOptions={walletOptions2.plotOptions}
-                              series={walletOptions2.series}
-                              type="radialBar"
-                              height="400"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-sm-5 align-self-center">
-                        {radioBarData2?.map((item, index) => (
-                          <div>
-                            <p className="mb-2 text-capitalize">
-                              <i
-                                className="mdi mdi-circle align-middle font-size-10 me-2 "
-                                style={{ color: "" + colors[index] + "" }}
-                              ></i>{" "}
-                              {item.item}
-                            </p>
-                            <h5>
-                              {formatCurrency.format(item.value)} <br />
-                              <span className="text-muted font-size-12 d-none">
-                                {" "}
-                                Contacts
-                              </span>
-                            </h5>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xl-4">
                 {" "}
                 <div className="card">
                   <div className="card-body">
                     <h4 className="card-title mb-4">
-                      Revenue Transaction Modes comparison
+                      Bill Payment Mode Comparison
                     </h4>
 
                     <div className="table-responsive mt-4">
@@ -2240,10 +2158,51 @@ function OneTenant() {
                       <h4 className="card-title text-capitalize mb-0 ">
                         Tenant Statements
                       </h4>
-                      <div className="d-flex justify-content-end align-items-center">
-                        <div>
-                          <div></div>
-                        </div>
+                      <div className=" d-flex justify-content-between align-items-center pr-3">
+                        <form className="d-flex align-items-center">
+                          <div className="d-flex justify-content-center align-items-center">
+                            <div className="flex p-2">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">Start Date:</i>
+                              </span>
+                              <DatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                selectsStart
+                                className="form-control cursor-pointer"
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
+                              />
+                            </div>
+                            <div className="flex p-2" id="datepicker1">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">End Date:</i>
+                              </span>
+                              <DatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                selectsEnd
+                                showMonthDropdown
+                                showYearDropdown
+                                className="form-control cursor-pointer"
+                                calendarClassName="form-group"
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
+                                type="text"
+                              />
+                            </div>
+                          </div>
+                          <div className="d-flex mb-2">
+                            <input
+                              type="submit"
+                              className="btn btn-primary"
+                              onClick={handleSubmit}
+                              value="filter"
+                            />
+                          </div>
+                        </form>
                       </div>
                     </div>
                   </div>
@@ -2355,7 +2314,7 @@ function OneTenant() {
                               className="text-capitalize text-nowrap"
                               colSpan="3"
                             >
-                              {statements && statements?.length} Statements
+                              {statements?.length} Statements
                             </th>
                             <td className="text-nowrap text-right" colSpan="7">
                               <span className="fw-semibold">
@@ -2385,75 +2344,53 @@ function OneTenant() {
                       <h4 className="card-title text-capitalize mb-0 ">
                         Receipts
                       </h4>
-                      <div className="d-flex justify-content-end align-items-center">
-                        <div>
-                          <div>
-                            {/*<form className="app-search d-none d-lg-block">*/}
-                            {/*  <div className="position-relative">*/}
-                            {/*    <input*/}
-                            {/*      type="text"*/}
-                            {/*      className="form-control"*/}
-                            {/*      placeholder="Search..."*/}
-                            {/*      // onChange={(e) => setSearchTerm(e.target.value)}*/}
-                            {/*    />*/}
-                            {/*    <span className="bx bx-search-alt"></span>*/}
-                            {/*  </div>*/}
-                            {/*</form>*/}
+                      <div className=" d-flex justify-content-between align-items-center pr-3">
+                        <form className="d-flex align-items-center">
+                          <div className="d-flex justify-content-center align-items-center">
+                            <div className="flex p-2">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">Start Date:</i>
+                              </span>
+                              <DatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                selectsStart
+                                className="form-control cursor-pointer"
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
+                              />
+                            </div>
+                            <div className="flex p-2" id="datepicker1">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">End Date:</i>
+                              </span>
+                              <DatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                selectsEnd
+                                showMonthDropdown
+                                showYearDropdown
+                                className="form-control cursor-pointer"
+                                calendarClassName="form-group"
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
+                                type="text"
+                              />
+                            </div>
                           </div>
-                        </div>
-                        {/*<div>*/}
-                        {/*  <select className={"btn btn-primary"} name="" id="">*/}
-                        {/*    <option value={parseInt(100)}>100</option>*/}
-                        {/*    <option value={parseInt(20)}>20</option>*/}
-                        {/*    <option value={parseInt(10)}>10</option>*/}
-                        {/*    <option value={parseInt(5)}>5</option>*/}
-                        {/*  </select>*/}
-                        {/*</div>*/}
-                        {/*<div className="col-6">*/}
-                        {/*  <div className="input-group" id="datepicker1">*/}
-                        {/*    <input*/}
-                        {/*      type="text"*/}
-                        {/*      className="form-control mouse-pointer sdate"*/}
-                        {/*      placeholder={`${startDate}`}*/}
-                        {/*      name="dob"*/}
-                        {/*      readOnly*/}
-                        {/*      data-date-format="dd M, yyyy"*/}
-                        {/*      data-date-container="#datepicker1"*/}
-                        {/*      data-provide="datepicker"*/}
-                        {/*      data-date-autoclose="true"*/}
-                        {/*      data-date-end-date="+0d"*/}
-                        {/*    />*/}
-                        {/*    <span className="input-group-text">*/}
-                        {/*      <i className="mdi mdi-calendar"></i>*/}
-                        {/*    </span>*/}
-                        {/*    <input*/}
-                        {/*      type="text"*/}
-                        {/*      className="form-control mouse-pointer edate"*/}
-                        {/*      name="dob"*/}
-                        {/*      placeholder={`${endDate}`}*/}
-                        {/*      readOnly*/}
-                        {/*      data-date-format="dd M, yyyy"*/}
-                        {/*      data-date-container="#datepicker1"*/}
-                        {/*      data-provide="datepicker"*/}
-                        {/*      data-date-autoclose="true"*/}
-                        {/*    />*/}
-                        {/*    <span className="input-group-text">*/}
-                        {/*      <i className="mdi mdi-calendar"></i>*/}
-                        {/*    </span>*/}
-                        {/*    <button className="btn btn-primary" onClick={sort}>*/}
-                        {/*      filter*/}
-                        {/*    </button>*/}
-                        {/*  </div>*/}
-                        {/*</div>*/}
+                          <div className="d-flex mb-2">
+                            <input
+                              type="submit"
+                              className="btn btn-primary"
+                              onClick={handleSubmit}
+                              value="filter"
+                            />
+                          </div>
+                        </form>
                       </div>
                     </div>
-                    {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
-                    {/*     role="toolbar">*/}
-                    {/*  <button type="button"*/}
-                    {/*          className="btn btn-primary waves-effect btn-label waves-light me-3"><i*/}
-                    {/*    className="mdi mdi-printer label-icon"></i> Print Selected Invoices*/}
-                    {/*  </button>*/}
-                    {/*</div>*/}
                   </div>
 
                   <Message details={details} mode={mode} clear={clear} />
@@ -2566,7 +2503,7 @@ function OneTenant() {
                               className="text-capitalize text-nowrap"
                               colSpan="3"
                             >
-                              {statements && statements?.length} Receipts
+                              {statements?.length} Receipts
                             </th>
                             <td className="text-nowrap text-right" colSpan="7">
                               <span className="fw-semibold">
