@@ -15,10 +15,17 @@ import AuthService from "../../services/auth.service";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
+import Chart from "react-apexcharts";
+import numeral from "numeral"
+
+
 
 function OnePremise() {
   const [activeLink, setActiveLink] = useTabs();
   const [failedLandlordUploads, setFailedLandlordUploads] = useState([])
+  const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] = useState([])
+  const [dashboardData, setDashboardData] = useState({})
+
   const [premiseData, setPremiseData] = useState({});
   const [premiseUnits, setPremiseUnits] = useState([])
   const [landlordData, setLandlordData] = useState('')
@@ -40,6 +47,7 @@ function OnePremise() {
     message: "",
     color: ""
   });
+
 
   // document details
   const [docName, setdocName] = useState("")
@@ -138,6 +146,7 @@ function OnePremise() {
     getchargeConstraint();
     fetchApplicableCharges();
     getClientAccounts();
+    fetchDashData();
     requestsServiceService.getTenancyStatuses().then((res) => {
       setStatuses(res.data.data)
     })
@@ -147,6 +156,145 @@ function OnePremise() {
     })
 
   }, []);
+
+  const fetchDashData = () => {
+
+        requestsServiceService.getPremDashboardGraphs(moment(startDate2).format("YYYY/MM/DD"), moment(endDate2).format("YYYY/MM/DD"), userId ).then((res) => {
+            setMonthlyCollectionSummaryRevenue(res.data.data.monthlyCollectionSummaryRevenue)
+        })
+        requestsServiceService.getPremDashboard(moment(startDate2).format("YYYY/MM/DD"), moment(endDate2).format("YYYY/MM/DD"), userId).then((res) => {
+            setDashboardData(res.data.data)
+        })
+    }
+
+        // line graph 
+        var options = {
+          chart: {
+              height: 360,
+              type: "bar",
+              stacked: !1,
+              toolbar: {
+                  show: !1
+              },
+              zoom: {
+                  enabled: !0
+              },
+  
+          },
+          plotOptions: {
+              bar: {
+                  horizontal: !1,
+                  columnWidth: "40%",
+                  // endingShape: "rounded"
+              }
+          },
+          dataLabels: {
+              enabled: !1,
+          },
+          stroke: { show: !0, width: 2, colors: ["transparent"] },
+  
+          yaxis: {
+              labels: {
+                  formatter: function (value) {
+                      // return "KES " + value;
+                      return numeral(value).format('0,0 a')
+                  },
+                  // formatter: function(val, index) {
+  
+                  //     return numeral(val).format('0,0')
+                  // },
+  
+  
+  
+              },
+              title: {
+                  text: "Amount in KES",
+              }
+          },
+          series: [{
+              name: "Amount Invoiced",
+              data: monthlyCollectionSummaryRevenue?.map(x => x.variance)
+          }, {
+              name: "Amount Paid",
+              data: monthlyCollectionSummaryRevenue?.map(x => x.value)
+          }],
+          xaxis: {
+              categories: monthlyCollectionSummaryRevenue?.map(x => x.item)
+          },
+          colors: ["#f46a6a", "#556ee6"],
+          legend: {
+              position: "bottom"
+          },
+          fill: {
+              opacity: 1
+          },
+  
+          tooltip: {
+              custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                  var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
+  
+                  return '<ul>' +
+                      '<li><b>Price</b>: ' + data.x + '</li>' +
+                      '<li><b>Number</b>: ' + data.y + '</li>' +
+                      '<li><b>Product</b>: \'' + data.product + '\'</li>' +
+                      '<li><b>Info</b>: \'' + data.info + '\'</li>' +
+                      '<li><b>Site</b>: \'' + data.site + '\'</li>' +
+                      '</ul>';
+              }
+          },
+  
+          tooltip: {
+              y: {
+                  formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+                      return "KES " + numeral(value).format('0,0')
+  
+                  }
+              }
+          },
+          tooltip: {
+              y: [{ title: { formatter: function (e) { return e + " (mins)" } } },
+              { title: { formatter: function (e) { return e + " per session" } } },
+              { title: { formatter: function (e) { return e } } }
+              ]
+          },
+          tooltip: {
+              enabled: true,
+              enabledOnSeries: undefined,
+              shared: true,
+              followCursor: false,
+              intersect: false,
+              inverseOrder: false,
+              custom: undefined,
+              fillSeriesColor: false,
+              theme: false,
+              style: {
+                  fontSize: '12px',
+                  fontFamily: undefined
+  
+              },
+              fillSeriesColor: false,
+              theme: "light",
+  
+              marker: {
+                  show: true,
+              },
+              onDatasetHover: {
+                  highlightDataSeries: true,
+              },
+  
+              y: {
+                  formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+                      let currentTotal = 0
+                      series.forEach((s) => {
+                          currentTotal += s[dataPointIndex]
+                      })
+                      return "<span class='text-right w-100 d-flex' > KES " + numeral(value).format('0,0') + "</span> "
+  
+                  }
+              }
+          }
+  
+      }
 
   const fetchAll = () => {
     requestsServiceService.viewPremise(userId).then((res) => {
@@ -687,16 +835,11 @@ function OnePremise() {
   // invoice stuff   
   // * ==============================
   const [invoices, setinvoices] = useState([]);
-  const [activeInvoice, setactiveInvoice] = useState({});
-  const [transaction, setTransaction] = useState({});
+  const [activeInvoice] = useState({});
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
-  // MODAL
-  const [invoice_show, setinvoice_show] = useState(false);
-  const showInvoice = () => setinvoice_show(true);
-  const closeInvoice = () => setinvoice_show(false);
+  const [status, setStatus] = useState("");
   const [startDate, setStartDate] = useState(
     moment().startOf("month").format("YYYY-MM-DD")
   );
@@ -704,71 +847,91 @@ function OnePremise() {
     moment(new Date()).add(3, "M").format("YYYY-MM-DD")
   );
 
+  const [startDate2, setStartDate2] = useState(
+    moment().startOf("month").format("YYYY-MM-DD")
+  );
+  const [endDate2, setEndDate2] = useState(
+    moment(new Date()).add(3, "M").format("YYYY-MM-DD")
+  );
+  const [invoice_show, setinvoice_show] = useState(false);
+  const showInvoice = () => setinvoice_show(true);
+  const [transaction, settransaction] = useState({});
+  const [paymentItems, setpaymentItems] = useState([]);
+  useEffect(() => { }, [transaction]);
+  useEffect(() => { }, [paymentItems]);
+  const closeInvoice = () => {
+    setpaymentItems([]);
+    settransaction({});
+    setinvoice_show(false);
+  };
+
+
 
   useEffect(() => {
     getInvoices();
-  }, [page, size, pageCount]);
-
+  }, [size, page, activeInvoice, transaction, paymentItems]);
   const sort = (event) => {
     event.preventDefault();
     let data = {
       startDate: startDate,
       endDate: endDate,
-      size: size,
-      page: page,
-      search: searchTerm?.toLowerCase().trim(),
+      // size: size,
+      // page: page,
+      premiseId: userId,
+      search: status,
     };
-    requestsServiceService.getInvoices(data).then((res) => {
+    requestsServiceService.getParentInvoicesPrem( page,size,data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
-      setSearchTerm('')
-    }).then(() => {
     });
   };
   const sortSize = (e) => {
     setSize(e.target.value);
     setPage(0);
   };
-  const reset = () => {
-    setSize(10);
-    setPage(1);
-  };
-
   const getInvoices = () => {
     let data = {
-      startDate: startDate,
-      endDate: endDate,
-      size: size,
-      page: page,
-      applicableChargeName: searchTerm,
+      startDate: startDate2,
+      endDate: endDate2,
+      // size: size,
+      // page: page,
+      premiseId: userId,
+      search: status.trim(),
     };
-    requestsServiceService.getInvoices(data).then((res) => {
+    requestsServiceService.getParentInvoicesPrem(page,size,data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
+      setStatus('')
       window.scrollTo(0, 0);
     });
   };
   const handlePageClick = (data) => {
+    console.log(data);
     let d = data.selected;
     setPage(d);
-    // setPage(() => data.selected);
-    // console.log(page)
   };
 
   const total = () => {
     let sum = 0;
     let paid = 0;
-    invoices.map((item) => {
+    paymentItems.map((item) => {
       sum += item.billAmount;
       paid += item.billPaidAmount;
     });
-    return sum - paid;
+    return { sum: sum, paid: paid, balance: sum - paid };
+  };
+  const reset = () => {
+    setSize(100);
+    setPage(1);
   };
   const getOneInvoice = (id) => {
-    console.log(id);
-    let acc = invoices.find((invoice) => invoice.transactionItemId === id);
-    setactiveInvoice(acc);
-    showInvoice();
+    requestsServiceService.getParentInvoice(id).then((res) => {
+      settransaction(res.data.data.transaction);
+      setpaymentItems(res.data.data.transactionItems);
+    });
+    setTimeout(() => {
+      showInvoice();
+    }, 800);
   };
   let formatCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -783,49 +946,7 @@ function OnePremise() {
 
   $(document).on("change", ".sdate", addDate);
   $(document).on("change", ".edate", addDate2);
-  const [phonenumber, setphonenumber] = useState("");
 
-  const sendSTK = (event) => {
-    event.preventDefault();
-    let invoiceNoo = activeInvoice;
-    let formData = new FormData();
-    formData.append("PayBillNumber", "4081125");
-    formData.append("Amount", parseInt(activeInvoice.billAmount));
-    formData.append("PhoneNumber", phonenumber);
-    formData.append("AccountReference", invoiceNoo.billerBillNo);
-    formData.append("TransactionDesc", invoiceNoo.transactionDescription);
-    formData.append("FullNames", `${invoiceNoo.transactionCustomerName}`);
-    formData.append("function", "CustomerPayBillOnline");
-
-    let config = {
-      method: "post",
-      url: "https://payme.revenuesure.co.ke/index.php",
-      data: formData,
-    };
-    axios(config).then((res) => {
-      if (typeof res.data === "string") {
-        setError({
-          ...error,
-          message: "Invalid Phone Number",
-          color: "danger",
-        });
-      } else {
-        let message = res.data.CustomerMessage;
-        setError({
-          ...error,
-          message: message,
-          color: "success",
-        });
-      }
-      setTimeout(() => {
-        setError({
-          ...error,
-          message: "",
-          color: "",
-        });
-      }, 4000);
-    });
-  };
 
   // MESSAGE TEST
   const [details, setDetails] = useState({
@@ -833,36 +954,35 @@ function OnePremise() {
     contact: "",
     recipientName: "",
     entity: null,
-    clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
-    clientId: parseInt(AuthService.getClientId()),
+    clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+    clientId: parseInt(authService.getClientId()),
     entityType: "TENANCY",
     createdBy: "",
     senderId: "",
     subject: "Invoice Payment",
   });
+
   const [mode, setmode] = useState("");
   const handleModeChange = (mode) => {
     setmode(mode);
   };
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
-      } balance is ${formatCurrency.format(
-        inv.billAmount - inv.billPaidAmount
-      )}. Click here to pay for it`;
+    let mes = `Dear ${inv.tenantName}, your monthly invoice ${inv.transactionId
+      } has been generated . Click here to pay for it`;
     let senderId =
-      JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
+      JSON.parse(authService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
-        : JSON.parse(AuthService.getCurrentUserName()).client?.senderId;
+        : JSON.parse(authService.getCurrentUserName()).client?.senderId;
     setDetails({
       ...details,
       message: mes,
       contact:
         mod === "Email"
-          ? inv.transactionCustomerEmail
-          : inv.transaction?.tenancy?.tenant?.phoneNumber,
-      entity: inv.transaction?.tenancy?.id,
-      recipientName: inv.transactionCustomerName,
-      createdBy: inv.createdBy,
+          ? inv?.tenancy?.tenant?.email
+          : inv?.tenancy?.tenant?.phoneNumber,
+      entity: inv?.tenancy?.id,
+      recipientName: inv?.tenantName,
+      createdBy: authService.getCurrentUserName(),
       senderId: senderId,
       subject: "Invoice Payment",
     });
@@ -871,24 +991,22 @@ function OnePremise() {
       $(".the-message-maker").addClass("email-overlay-transform");
     }, 0);
   };
-  useEffect(() => { }, [details, mode]);
 
-  const clearmodal = () => {
+  const clearDetails = () => {
     setDetails({
       ...details,
       message: "",
       contact: "",
       recipientName: "",
       entity: null,
-      clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
-      clientId: parseInt(AuthService.getClientId()),
+      clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
+      clientId: parseInt(authService.getClientId()),
       entityType: "TENANCY",
       createdBy: "",
       senderId: "",
       subject: "Invoice Payment",
     });
   };
-
 
   return (
     <div className="page-content">
@@ -1098,10 +1216,54 @@ function OnePremise() {
 
                                                 <div class="flex-grow-1 align-self-center">
                                                     <div class="text-muted">
-                                                        <h5 class="mb-3">Quick Overview on 90 Degrees</h5>
-                                                        <p class="d-none">Quick stats on the registered Tenants.</p>
+                                                        <h5 class="mb-3">Quick Overview on {premiseData?.premise?.premiseName}</h5>
                                                     </div>
                                                 </div>
+                                                <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                   
+                     <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
+                       <div className=" p-2">
+                         <span className="input-group-text">
+                           <i className="mdi mdi-calendar">Start Date</i>
+                         </span>
+                         <input
+                           type="text"
+                           className="form-control mouse-pointer sdate"
+                           placeholder={`${startDate2}`}
+                           name="dob"
+                           readOnly
+                           onChange={(e)=>setStartDate2(e.target.value)}
+                           data-date-format="dd M, yyyy"
+                           data-date-container="#datepicker1"
+                           data-provide="datepicker"
+                           data-date-autoclose="true"
+                           data-date-end-date="+0d"
+                         />
+                       </div>
+                       <div className=" p-2">
+                         <span className="input-group-text">
+                           <i className="mdi mdi-calendar">End Date: </i>
+                         </span>
+                         <input
+                           type="text"
+                           className="form-control mouse-pointer edate"
+                           name="dob"
+                           placeholder={`${endDate2 }`}
+                           onChange={(e)=>setEndDate2(e.target.value)}
+
+                           readOnly
+                           data-date-format="dd M, yyyy"
+                           data-date-container="#datepicker1"
+                           data-provide="datepicker"
+                           data-date-autoclose="true"
+                         />
+                       </div>
+
+                     </div>
+                     <button className="btn btn-primary" onClick={sort}>
+                       filter
+                     </button>
+                   </div>
                                             </div>
                                         </div>
 
@@ -1111,46 +1273,7 @@ function OnePremise() {
                                                 <div class="col-10">
                                                     <div class="text-lg-left mt-4 mt-lg-0">
                                                         <div class="row">
-                                                            <div class="col-sm-3 col-md-2 text-capitalize">
-                                                                <div>
-                                                                    <div class="avatar-xs-2 mb-3">
-                                                                        <span class="avatar-title rounded-circle bg-info font-size-24">
-                                                                                <i class="mdi mdi mdi-home-outline  text-white"></i>
-                                                                            </span>
-                                                                    </div>
-                                                                    <p class="text-muted text-truncate mb-2">Units</p>
-                                                                    <h5 class="mb-0">64</h5>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-sm-3 col-md-2 d-md-flex text-capitalize">
-                                                                <div>
-                                                                    <div class="avatar-xs-2 mb-3">
-                                                                        <span class="avatar-title rounded-circle bg-danger font-size-24">
-                                                                                <i class="mdi  mdi mdi-home-export-outline  text-white"></i>
-                                                                            </span>
-                                                                    </div>
-                                                                    <p class="text-muted text-truncate mb-2">Vacated Units</p>
-                                                                    {/* <!-- the new tenants who moved in march --> */}
-                                                                    <h5 class="mb-0">23 <small class="text-muted fw-light d-none">In Mar</small></h5>
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-sm-3 col-md-2 d-md-flex text-capitalize">
-                                                                <div>
-                                                                    <div class="avatar-xs-2 mb-3">
-                                                                        <span class="avatar-title rounded-circle bg-warning font-size-24">
-                                                                                <i class="mdi  mdi-account-clock text-white"></i>
-                                                                            </span>
-                                                                    </div>
-                                                                    <p class="text-muted text-truncate mb-2">Serving Notice</p>
-                                                                    {/* <!-- the new tenants who moved in march --> */}
-                                                                    <h5 class="mb-0">10 </h5>
-
-                                                                </div>
-                                                            </div>
-
+                                                    
                                                             <div class="col-sm-3 col-md-2 text-capitalize">
                                                                 <div>
                                                                     <div class="avatar-xs-2 mb-3">
@@ -1159,7 +1282,7 @@ function OnePremise() {
                                                                             </span>
                                                                     </div>
                                                                     <p class="text-muted text-truncate  mb-2">Tenants</p>
-                                                                    <h5 class="mb-0">46</h5>
+                                                                    <h5 class="mb-0">{dashboardData?.tenantsCount}</h5>
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-3 col-md-2 text-capitalize">
@@ -1169,45 +1292,16 @@ function OnePremise() {
                                                                                 <i class="mdi mdi-account-cash text-white"></i>
                                                                             </span>
                                                                     </div>
-                                                                    <p class="text-muted text-truncate mb-2">Tenants with arrears</p>
-                                                                    <h5 class="mb-0">5</h5>
-
+                                                                    <p class="text-muted text-truncate mb-2">LandLords</p>
+                                                                    <h5 class="mb-0">{dashboardData?.landlordsCount}</h5>
                                                                 </div>
                                                             </div>
 
-                                                            <div class="col-sm-3 col-md-2 text-capitalize">
-                                                                <div>
-                                                                    <div class="avatar-xs-2 mb-3">
-                                                                        <span class="avatar-title rounded-circle bg-danger font-size-24">
-                                                                                <i class="mdi mdi-account-cancel text-white"></i>
-                                                                            </span>
-                                                                    </div>
-                                                                    <p class="text-muted text-truncate mb-2">Reported to auctioneers</p>
-                                                                    <h5 class="mb-0">2</h5>
-
-                                                                </div>
-                                                            </div>
-
-
-
-
-
-
+                                                        
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 text-capitalize">
-                                                    <div>
-                                                        <div class="avatar-xs-2 mb-3">
-                                                            <span class="avatar-title rounded-circle bg-info font-size-24">
-                                                                    <i class="mdi mdi-account-check text-white"></i>
-                                                                </span>
-                                                        </div>
-                                                        <p class="text-muted text-truncate mb-2">Compliant Tenants</p>
-                                                        <h5 class="mb-0">41</h5>
-
-                                                    </div>
-                                                </div>
+                                             
                                             </div>
                                         </div>
 
@@ -1266,28 +1360,7 @@ function OnePremise() {
                     </p>
                   </div>
 
-                  {/* <div class="card-body border-top text-success">
-                                    <h4 class="text-capitalize font-14px">
-                                        <a href="" class="text-success">Casemiro Kamavinga (Caretaker)</a>
-                                    </h4>
-                                    <p class="text-muted mb-0 d-flex align-items-center">
-                                        <a href="tel:0704549859" class="d-flex align-items-center text-success"><i class="mdi mdi-phone me-2 font-size-18"></i> 0712 345 678</a> <span class="px-3 px-3">|</span>
-                                        <a class="d-flex align-items-center text-success" href="mailto:email@email.com"><i class="mdi mdi-email-outline font-size-18 me-2"></i> care@taker.com</a>
-                                    </p>
-                                </div> */}
-                  {/* <div class="card-footer bg-transparent border-top pt-4 pb-4 pb-4">
-                                    <div class="text-left">
-
-
-                                        <a type="button" class="btn btn-outline-secondary waves-effect waves-light me-2 w-md btn-sm">
-                                            <i class="mdi mdi-home-export-outline  font-size-16 align-middle me-2"></i> Custom tenant(s) SMS
-                                        </a>
-
-                                        <a type="button" class="btn btn-primary waves-effect waves-light me-2 w-md btn-sm">
-                                            <i class="mdi mdi-file-clock-outline  font-size-16 align-middle me-2"></i> Rent Reminder
-                                        </a>
-                                    </div>
-                                </div> */}
+         
 
 
 
@@ -1409,7 +1482,20 @@ function OnePremise() {
                           <div class="row">
 
                             <div class="col-12">
-                              <div id="property-chart"></div>
+                              <div id="property-chart">
+                              <div id="revenue-chart" class="apex-charts" dir="ltr">
+                                            <Chart
+                                                class="apex-charts revenue-type"
+                                                options={options}
+                                                plotOptions={options.plotOptions}
+                                                series={options.series}
+                                                type="bar"
+                                                height="360"
+                                                xaxis={options.xaxis}
+
+                                            />
+                                        </div>
+                              </div>
                             </div>
                           </div>
 
@@ -1419,10 +1505,7 @@ function OnePremise() {
 
                     </div>
                   </div>
-                  <div class="card-body border-top d-flex">
-                    <h6 class="text-muted fw-lighter me-3">Rent Revenue <span class="fw-semibold">KES 58,956,360 (92%)</span></h6>
-                    <h6 class="text-muted fw-lighter">Penalty Revenue <span class="fw-semibold">KES 122,659 (8%)</span></h6>
-                  </div>
+                
                 </div>
 
 
@@ -2639,10 +2722,27 @@ function OnePremise() {
   
      {activeLink === 7 &&
      <>
-     <div className="row">
-       <Message details={details} mode={mode} clear={clearmodal} />
+     <div className="page-content">
        <div className="container-fluid">
-      
+         <div className="row">
+           <div className="col-12">
+             <div className="page-title-box d-sm-flex align-items-center justify-content-between">
+               <h4 className="mb-sm-0 font-size-18">Rent & Bills invoices</h4>
+
+               <div className="page-title-right">
+                 <ol className="breadcrumb m-0">
+                   <li className="breadcrumb-item">
+                     <Link to="/">Dashboard </Link>
+                   </li>
+                   <li className="breadcrumb-item">
+                     <Link to="/invoices"> All Invoices </Link>
+                   </li>
+                   <li className="breadcrumb-item active">Monthly Invoices</li>
+                 </ol>
+               </div>
+             </div>
+           </div>
+         </div>
          <div className="row">
            <div className="col-12">
              <div className="card">
@@ -2652,7 +2752,7 @@ function OnePremise() {
                    role="toolbar"
                  >
                    <h4 className="card-title text-capitalize mb-0 ">
-                     All rent and Bills invoices
+                     Monthly Invoices
                    </h4>
 
                    <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
@@ -2663,7 +2763,7 @@ function OnePremise() {
                              type="text"
                              className="form-control"
                              placeholder="Search..."
-                             onChange={(e) => setSearchTerm(e.target.value)}
+                             onChange={(e) => setStatus(e.target.value)}
                            />
                            <span className="bx bx-search-alt"></span>
                          </div>
@@ -2705,37 +2805,29 @@ function OnePremise() {
                        </div>
 
                      </div>
-                     <button className="btn btn-primary" onClick={sort}>
+                     <button className="btn btn-primary" onClick={fetchDashData}>
                        filter
                      </button>
                    </div>
                  </div>
-                 {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
-                 {/*     role="toolbar">*/}
-                 {/*  <button type="button"*/}
-                 {/*          className="btn btn-primary waves-effect btn-label waves-light me-3"><i*/}
-                 {/*    className="mdi mdi-printer label-icon"></i> Print Selected Invoices*/}
-                 {/*  </button>*/}
-                 {/*</div>*/}
+
+                 <Message details={details} mode={mode} clear={clearDetails} />
+             
                </div>
                <div className="card-body">
-                 <div className="table-responsive">
+                 <div className="table-responsive overflow-visible">
                    <table
                      className="table align-middle table-hover  contacts-table table-striped "
                      id="datatable-buttons"
                    >
                      <thead className="table-light">
-                       <tr className="table-light">
+                       <tr className="table-dark">
+
                          <th>Invoice Number</th>
-                         <th>Bill Reference No</th>
                          <th>Tenant</th>
                          <th>Premises</th>
                          <th>Hse/Unit</th>
-                         <th>Charge Name</th>
-                         <th>Bill Amount</th>
-                         <th>Paid Amount</th>
-                         <th>Total Balance</th>
-                         <th>Due Date</th>
+                         <th>Date Issued</th>
                          <th>Payment Status</th>
                          <th className="text-right">Actions</th>
                        </tr>
@@ -2744,28 +2836,17 @@ function OnePremise() {
                        {invoices.length > 0 &&
                          invoices?.map((invoice, index) => (
                            <tr data-id={index} key={index}>
-                             <td>{invoice.transactionItemId}</td>
-                             <td>{invoice.billerBillNo}</td>
-                             <td>{invoice.transaction?.tenantName}</td>
-                             <td>{invoice.transaction.premiseName}</td>
-                             <td>{invoice.transaction.premiseUnitName}</td>
-                             <td>{invoice.applicableChargeName}</td>
-                             <td>
-                               {formatCurrency.format(invoice.billAmount)}
+
+                             <td
+                             >
+                               {invoice.transactionId}
                              </td>
+                             <td>{invoice.tenantName}</td>
+                             <td>{invoice.premiseName}</td>
+                             <td>{invoice.premiseUnitName}</td>
                              <td>
-                               {formatCurrency.format(invoice.billPaidAmount)}
-                             </td>
-                             <td>
-                               <span className="fw-semibold ">
-                                 {formatCurrency.format(
-                                   invoice.billAmount - invoice.billPaidAmount
-                                 )}
-                               </span>
-                             </td>
-                             <td>
-                               {moment(invoice?.invoiceDate).format(
-                                 "DD-MM-YYYY"
+                               {moment(invoice.invoiceDate).format(
+                                 "MMMM Do YYYY"
                                )}
                              </td>
                              <td>
@@ -2788,40 +2869,38 @@ function OnePremise() {
                                      <i className="bx bx-dots-vertical-rounded"></i>
                                    </a>
                                    <div className="dropdown-menu dropdown-menu-end ">
-                                     <a
-                                       className="dropdown-item cursor-pointer"
-                                       onClick={() => {
-                                         getOneInvoice(
-                                           invoice.transactionItemId
-                                         );
-                                       }}
+                                     <span
+                                       className="dropdown-item"
+                                       href="#"
+                                       onClick={() =>
+                                         getOneInvoice(invoice.transactionId)
+                                       }
                                      >
-                                       <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                       <i
+                                         className="font-size-15 mdi mdi-eye me-3 "
+                                         href="# "
+                                       ></i>
                                        View
-                                     </a>
-                                     <a className="dropdown-item">
+                                     </span>
+                                     <a className="dropdown-item " href="# ">
                                        <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                        Print
                                      </a>
-                                     <a
-                                       className="dropdown-item cursor-pointer"
+                                     <a className="dropdown-item "
                                        onClick={() => {
                                          handleModeChange("Email");
                                          handleClicked(invoice, "Email");
-                                       }}
-                                     >
+                                       }}>
                                        <i className="font-size-15 mdi mdi-email me-3 "></i>
                                        Email Tenant
                                      </a>
-                                     <a
-                                       className="dropdown-item cursor-pointer"
+                                     <a className="dropdown-item "
                                        onClick={() => {
                                          handleModeChange("SMS");
                                          handleClicked(invoice, "SMS");
-                                       }}
-                                     >
-                                       <i className="font-size-15 mdi mdi-chat me-3"></i>
-                                       Send as SMS
+                                       }}>
+                                       <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                       SMS Tenant
                                      </a>
                                    </div>
                                  </div>
@@ -2834,38 +2913,25 @@ function OnePremise() {
                        <tr>
                          <th
                            className="text-capitalize text-nowrap"
-                           colSpan="3"
+                           colSpan="12"
                          >
                            {invoices && invoices.length} Invoices
                          </th>
-                         <td className="text-nowrap text-right" colSpan="6">
-                           <span className="fw-semibold">
-                             {formatCurrency.format(total())}
-                           </span>
-                         </td>
-                         <td></td>
-                         <td></td>
-                         <td></td>
                        </tr>
                      </tfoot>
                    </table>
                  </div>
                  <div className="mt-4 mb-0 flex justify-between px-8">
+                   <select className="btn btn-md btn-primary" title="Select A range"
+                     onChange={(e) => sortSize(e)}
+                     value={size}
+                   >
+                     <option className="bs-title-option" value="">Select A range</option>
+                     <option value="10">10 Rows</option>
+                     <option value="30">30 Rows</option>
+                     <option value="50">50 Rows</option>
+                   </select>
 
-                   <div>
-
-                     <select
-                       className={"btn btn-primary"}
-                       name=""
-                       id=""
-                       value={size}
-                       onChange={(e) => sortSize(e)}
-                     >
-                       <option value={parseInt(10)}>10</option>
-                       <option value={parseInt(30)}>30</option>
-                       <option value={parseInt(50)}>50</option>
-                     </select>
-                   </div>
                    {pageCount !== 0 && (
                      <p className=" font-medium text-xs text-gray-700">
                        {" "}
@@ -2910,7 +2976,6 @@ function OnePremise() {
        </div>
      </div>
 
-     {/*VIEW INVOICE*/}
      <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
        <Modal.Header closeButton>
          <h5 className="modal-title" id="myLargeModalLabel">
@@ -2918,36 +2983,29 @@ function OnePremise() {
          </h5>
        </Modal.Header>
        <Modal.Body>
-         <StatusBadge type={activeInvoice?.transaction?.paymentStatus} />
+         <StatusBadge type={transaction?.paymentStatus} />
          <div className="col-12">
            <address>
              <strong>Billed To:</strong>
              <br />
-             {activeInvoice?.transaction?.tenantName} <br />
-             {activeInvoice?.transactionCustomerEmail}
-             <br />
-             {activeInvoice?.transaction?.premiseName + " , "}
-             {activeInvoice?.transaction?.premiseUnitName}
+             {transaction?.tenantName} <br />
+             {/*{activeInvoice?.transactionCustomerEmail}<br/>*/}
+             {transaction?.premiseName} - {transaction?.premiseUnitName}
              <br />
              <br />
-             <p>
-               Issue date:{" "}
-               {moment(activeInvoice.dateTimeCreated).format("DD-MM-YYYY")}
-             </p>
-             <p>
-               Due date:{" "}
-               {moment(activeInvoice.invoiceDate).format("DD-MM-YYYY")}
-             </p>
+             {moment(transaction?.transaction?.invoiceDate).format(
+               "dddd, MMMM Do YYYY, h:mm a"
+             )}
            </address>
-           <p>Title: {activeInvoice?.transactionTitle}</p>
-           <p>Description: {activeInvoice?.transactionDescription}</p>
+           {/*<p>Title: {activeInvoice?.transactionTitle}</p>*/}
+           <p>Description: {transaction?.invoicePeriodDescription}</p>
          </div>
          <div className="col-12">
            <div className="py-2 mt-3">
              <h3 className="font-size-15 fw-bold">
-               Invoice Details ({" "}
+               Charges Breakdown ({" "}
                <span className="text-primary fw-medium">
-                 {activeInvoice?.transactionItemId}
+                 {transaction?.transactionId}
                </span>{" "}
                )
              </h3>
@@ -2958,125 +3016,71 @@ function OnePremise() {
              <thead>
                <tr>
                  <th style={{ width: "70px" }}>No.</th>
-                 <th>Item</th>
+                 <th>Charge name</th>
                  <th>Quantity</th>
                  <th>Unit Cost</th>
-                 <th className="text-end">Amount</th>
+                 <th>Paid Amount</th>
+                 <th></th>
+                 <th className={"text-end"}>Bill Amount</th>
                </tr>
              </thead>
              <tbody>
+               {paymentItems?.length > 0 &&
+                 paymentItems?.map((item, index) => (
+                   <tr data-id={index} key={index}>
+                     <td>{index + 1}</td>
+                     <td>{item.applicableChargeName}</td>
+                     <td>{item.quantity}</td>
+                     <td>{formatCurrency.format(item.unitCost)}</td>
+                     <td>{formatCurrency.format(item.billPaidAmount)}</td>
+                     <td></td>
+                     <td className="text-end">
+                       {formatCurrency.format(item.billAmount)}
+                     </td>
+                   </tr>
+                 ))}
                <tr>
-                 <td>01</td>
-                 <td>{activeInvoice?.applicableChargeName}</td>
-                 <td>{formatCurrency.format(activeInvoice.quantity)}</td>
-                 <td>{formatCurrency.format(activeInvoice?.unitCost)}</td>
-                 <td className="text-end">
-                   KES. {formatCurrency.format(activeInvoice?.billAmount)}
-                 </td>
-               </tr>
-               <tr>
+                 <td></td>
+                 <td></td>
                  <td></td>
                  <td></td>
                  <td colSpan="2" className="text-end">
                    Total
                  </td>
                  <td className="text-end fw-bold">
-                   {formatCurrency.format(activeInvoice?.billAmount)}
+                   {formatCurrency.format(total().sum)}
                  </td>
                </tr>
                <tr>
+                 <td></td>
+                 <td></td>
                  <td></td>
                  <td></td>
                  <td colSpan="2" className="text-end">
                    Paid
                  </td>
-                 <td className="text-end  fw-bold">
-                   {formatCurrency.format(activeInvoice?.billPaidAmount)}
+                 <td className="text-end fw-bold">
+                   {formatCurrency.format(total().paid)}
                  </td>
                </tr>
                <tr>
                  <td></td>
                  <td></td>
-                 <td colSpan="2" className="border-0 text-end">
+                 <td></td>
+                 <td></td>
+                 <td colSpan="2" className="text-end">
                    <strong>Balance</strong>
                  </td>
-                 <td className="border-0 text-end">
-                   <h5 className="m-0 text-uppercase fw-bold">
-                     {" "}
-                     {formatCurrency.format(
-                       activeInvoice?.billAmount -
-                       activeInvoice?.billPaidAmount
-                     )}
-                   </h5>
+                 <td className="text-end fw-bold">
+                   {formatCurrency.format(total().balance)}
                  </td>
                </tr>
              </tbody>
            </table>
          </div>
        </Modal.Body>
-       <Modal.Footer>
-         <div className="col-12">
-           <form onSubmit={sendSTK}>
-             <table className="w-100">
-               <tbody>
-                 <tr data-id="1">
-                   <td>
-                     <label htmlFor="" className="">
-                       Payment Method
-                     </label>
-                     <select
-                       className="form-control"
-                       title="Select payment Method"
-                       disabled={true}
-                     >
-                       <option value="Mpesa">MPESA</option>
-                       <option value="Cash">CASH</option>
-                     </select>
-                   </td>
-                   <td className="px-3">
-                     <div className="phone-num">
-                       <label htmlFor="">Phone No.</label>
-                       <input
-                         className="form-control w-100 d-flex"
-                         spellCheck="false"
-                         onChange={(event) =>
-                           setphonenumber(event.target.value)
-                         }
-                         data-ms-editor="true"
-                         type="tel"
-                         id="phone"
-                         name="phone"
-                         placeholder="07XXXXXXXX"
-                         pattern="[0]{1}[0-9]{9}"
-                         required={true}
-                       />
-                     </div>
-                   </td>
-                   <td className="text-right float-right">
-                     <div className="d-flex flex-column">
-                       <label className="opacity-0">Something</label>
-                       <button
-                         type="submit"
-                         className="btn btn-primary w-md waves-effect waves-light"
-                       >
-                         Submit
-                       </button>
-                     </div>
-                   </td>
-                 </tr>
-               </tbody>
-             </table>
-             <br />
-             {error.color !== "" && (
-               <div className={"alert alert-" + error.color} role="alert">
-                 {error.message}
-               </div>
-             )}
-           </form>
-         </div>
-       </Modal.Footer>
      </Modal>
-     </>
+   </>
 } 
 
       </div>

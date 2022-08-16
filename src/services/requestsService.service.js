@@ -690,6 +690,13 @@ class RequestsService {
       data
     );
   }
+  getParentInvoicesPrem(page,size,data) {
+    return axiosInstance.post(
+      baseUrl +
+        `/payments/parents/transactions?page=${page}&size=${size}`,
+      data
+    );
+  }
   getParentInvoice(id) {
     return axiosInstance.get(baseUrl + `/payments/parents/${id}`);
   }
@@ -722,7 +729,7 @@ class RequestsService {
         "/reports/dashboard/graphs?startDate=" +
         startDate +
         "&endDate=" +
-        endDate
+        endDate 
     );
   }
   getClientDashboard(startDate, endDate) {
@@ -732,6 +739,25 @@ class RequestsService {
         startDate +
         "&endDate=" +
         endDate
+    );
+  }
+
+  getPremDashboardGraphs(startDate, endDate, premise) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard/graphs?startDate=" +
+        startDate +
+        "&endDate=" +
+        endDate + "&premise=" + premise
+    );
+  }
+  getPremDashboard(startDate, endDate, premise) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard?startDate=" +
+        startDate +
+        "&endDate=" +
+        endDate + "&premise=" + premise
     );
   }
 
