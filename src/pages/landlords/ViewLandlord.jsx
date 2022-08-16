@@ -1871,24 +1871,6 @@ function ViewLandlord() {
                         <h4 className="card-title text-capitalize mb-0 ">
                           Landlord Premises
                         </h4>
-
-                        <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
-                          <div>
-                            <form className="app-search d-none d-lg-block p-2">
-                              <div className="position-relative">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Search..."
-                                  onChange={(e) =>
-                                    setSearchTerm(e.target.value)
-                                  }
-                                />
-                                <span className="bx bx-search-alt"></span>
-                              </div>
-                            </form>
-                          </div>
-                        </div>
                       </div>
                       {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
                       {/*     role="toolbar">*/}
