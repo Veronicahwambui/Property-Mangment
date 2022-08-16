@@ -926,6 +926,18 @@ class RequestsService {
         edate
     );
   }
+  // TENANT STATEMENTS AND RECEIPTS
+  getTenantStatements(id, sD, eD) {
+    return axiosInstance.get(
+      baseUrl +
+        "/payments/statements/" +
+        id +
+        "?startDate=" +
+        sD +
+        "&endDate=" +
+        eD
+    );
+  }
 }
 
 export default new RequestsService();
