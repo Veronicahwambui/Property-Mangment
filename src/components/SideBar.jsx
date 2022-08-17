@@ -63,6 +63,7 @@ function SideBar() {
                                 <li><NavLink to="/createinvoice">Create an Invoice</NavLink></li>
                                 <li><NavLink to="/invoices">Invoices</NavLink></li>
                                 <li><NavLink to="/monthly-invoices">Monthly Invoices</NavLink></li>
+                                <li><NavLink to="/bulk-invoicing">Bulk Invoices</NavLink></li>
                             </ul>
                         </li>
 
