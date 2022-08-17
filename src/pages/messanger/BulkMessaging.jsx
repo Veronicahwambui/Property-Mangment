@@ -20,7 +20,7 @@ function BulkMessaging() {
     message: "",
     color: "",
   });
-  const [show, setshow] = useState(true);
+  const [show, setshow] = useState(false);
   const showTenantModal = () => setshow(true);
   const closeTenantModal = () => setshow(false);
   const [loading2, setloading2] = useState(false);
