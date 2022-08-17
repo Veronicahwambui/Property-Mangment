@@ -25,10 +25,13 @@ function OnePremise() {
   const [failedLandlordUploads, setFailedLandlordUploads] = useState([])
   const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] = useState([])
   const [dashboardData, setDashboardData] = useState({})
+  const [pieChartData, setPieChartData] = useState([])
+  const [radioBarData, setRadioBarData] = useState([])
 
   const [premiseData, setPremiseData] = useState({});
   const [premiseUnits, setPremiseUnits] = useState([])
   const [landlordData, setLandlordData] = useState('')
+  const [landlordDetail, setLandlordDetail] = useState('')
   const [premiseCharges, setPremiseCharges] = useState([])
   const [caretakers, setCaretakers] = useState([])
   const [caretakerId, setCaretakerId] = useState('')
@@ -48,6 +51,7 @@ function OnePremise() {
     color: ""
   });
 
+  const colors = ['#3399ff', '#ff7f50', '#00ff00', '#00a591', '#ecdb54', '#6b5b95', '#944743', '#dc4c46', '#034f84', '#edf1ff']
 
   // document details
   const [docName, setdocName] = useState("")
@@ -160,142 +164,214 @@ function OnePremise() {
 
   const fetchDashData = () => {
 
-        requestsServiceService.getPremDashboardGraphs(moment(startDate2).format("YYYY/MM/DD"), moment(endDate2).format("YYYY/MM/DD"), userId ).then((res) => {
-            setMonthlyCollectionSummaryRevenue(res.data.data.monthlyCollectionSummaryRevenue)
-        })
-        requestsServiceService.getPremDashboard(moment(startDate2).format("YYYY/MM/DD"), moment(endDate2).format("YYYY/MM/DD"), userId).then((res) => {
-            setDashboardData(res.data.data)
-        })
+    requestsServiceService.getPremDashboardGraphs(moment(startDate2).format("YYYY/MM/DD"), moment(endDate2).format("YYYY/MM/DD"), userId).then((res) => {
+      setMonthlyCollectionSummaryRevenue(res.data.data.monthlyCollectionSummaryRevenue)
+      setPieChartData(res.data.data.collectionSummaryByApplicableCharge)
+      setRadioBarData(res.data.data.collectionSummaryByPremiseUseType)
+
+    })
+    requestsServiceService.getPremDashboard(moment(startDate2).format("YYYY/MM/DD"), moment(endDate2).format("YYYY/MM/DD"), userId).then((res) => {
+      setDashboardData(res.data.data)
+    })
+  }
+
+  // line graph 
+  var walletOptions = {
+    series: radioBarData?.map(x => x.variance),
+    chart: { height: 250, type: "radialBar" },
+    plotOptions: {
+        radialBar: {
+            offsetY: 0,
+            startAngle: 0,
+            endAngle: 270,
+            hollow: {
+                margin: 5,
+                size: "35%",
+                background: "transparent",
+                image: void 0
+            },
+            track: {
+                show: !0,
+                startAngle: void 0,
+                endAngle: void 0,
+                background: "#f2f2f2",
+                strokeWidth: "98%",
+                opacity: 1,
+                margin: 12,
+                dropShadow: {
+                    enabled: !1,
+                    top: 0,
+                    left: 0,
+                    blur: 3,
+                    opacity: .5
+                }
+            },
+            dataLabels: {
+                name: {
+                    show: !0,
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    offsetY: -10
+                },
+                value: { show: !0, fontSize: "14px", offsetY: 4, formatter: function (e) { return e + "%" } },
+                total: {
+                    show: !0,
+                    label: "Total",
+                    color: "#373d3f",
+                    fontSize: "16px",
+                    fontFamily: void 0,
+                    fontWeight: 600,
+                    formatter: function (e) {
+                        return e.globals.seriesTotals.reduce(function (e, t) {
+                            return e + t
+                        }, 0) + "%"
+                    }
+                }
+            }
+        }
+    },
+    stroke: { lineCap: "round" },
+    colors: colors,
+    labels: radioBarData.map(x => x.item),
+    legend: { show: !1 }
+}; 
+
+const pieChart = {
+  series: pieChartData.map(x => x.variance),
+  chart: { type: "donut", height: 250 },
+  labels: pieChartData.map(x => x.item),
+  colors: colors,
+  legend: { show: !1 },
+  plotOptions: { pie: { donut: { size: "40%" } } }
+};
+
+  var options = {
+    chart: {
+      height: 360,
+      type: "bar",
+      stacked: !1,
+      toolbar: {
+        show: !1
+      },
+      zoom: {
+        enabled: !0
+      },
+
+    },
+    plotOptions: {
+      bar: {
+        horizontal: !1,
+        columnWidth: "40%",
+        // endingShape: "rounded"
+      }
+    },
+    dataLabels: {
+      enabled: !1,
+    },
+    stroke: { show: !0, width: 2, colors: ["transparent"] },
+
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          // return "KES " + value;
+          return numeral(value).format('0,0 a')
+        },
+        // formatter: function(val, index) {
+
+        //     return numeral(val).format('0,0')
+        // },
+
+
+
+      },
+      title: {
+        text: "Amount in KES",
+      }
+    },
+    series: [{
+      name: "Amount Invoiced",
+      data: monthlyCollectionSummaryRevenue?.map(x => x.variance)
+    }, {
+      name: "Amount Paid",
+      data: monthlyCollectionSummaryRevenue?.map(x => x.value)
+    }],
+    xaxis: {
+      categories: monthlyCollectionSummaryRevenue?.map(x => x.item)
+    },
+    colors: ["#f46a6a", "#556ee6"],
+    legend: {
+      position: "bottom"
+    },
+    fill: {
+      opacity: 1
+    },
+
+    tooltip: {
+      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
+
+        return '<ul>' +
+          '<li><b>Price</b>: ' + data.x + '</li>' +
+          '<li><b>Number</b>: ' + data.y + '</li>' +
+          '<li><b>Product</b>: \'' + data.product + '\'</li>' +
+          '<li><b>Info</b>: \'' + data.info + '\'</li>' +
+          '<li><b>Site</b>: \'' + data.site + '\'</li>' +
+          '</ul>';
+      }
+    },
+
+    tooltip: {
+      y: {
+        formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+          return "KES " + numeral(value).format('0,0')
+
+        }
+      }
+    },
+    tooltip: {
+      y: [{ title: { formatter: function (e) { return e + " (mins)" } } },
+      { title: { formatter: function (e) { return e + " per session" } } },
+      { title: { formatter: function (e) { return e } } }
+      ]
+    },
+    tooltip: {
+      enabled: true,
+      enabledOnSeries: undefined,
+      shared: true,
+      followCursor: false,
+      intersect: false,
+      inverseOrder: false,
+      custom: undefined,
+      fillSeriesColor: false,
+      theme: false,
+      style: {
+        fontSize: '12px',
+        fontFamily: undefined
+
+      },
+      fillSeriesColor: false,
+      theme: "light",
+
+      marker: {
+        show: true,
+      },
+      onDatasetHover: {
+        highlightDataSeries: true,
+      },
+
+      y: {
+        formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+          let currentTotal = 0
+          series.forEach((s) => {
+            currentTotal += s[dataPointIndex]
+          })
+          return "<span class='text-right w-100 d-flex' > KES " + numeral(value).format('0,0') + "</span> "
+
+        }
+      }
     }
 
-        // line graph 
-        var options = {
-          chart: {
-              height: 360,
-              type: "bar",
-              stacked: !1,
-              toolbar: {
-                  show: !1
-              },
-              zoom: {
-                  enabled: !0
-              },
-  
-          },
-          plotOptions: {
-              bar: {
-                  horizontal: !1,
-                  columnWidth: "40%",
-                  // endingShape: "rounded"
-              }
-          },
-          dataLabels: {
-              enabled: !1,
-          },
-          stroke: { show: !0, width: 2, colors: ["transparent"] },
-  
-          yaxis: {
-              labels: {
-                  formatter: function (value) {
-                      // return "KES " + value;
-                      return numeral(value).format('0,0 a')
-                  },
-                  // formatter: function(val, index) {
-  
-                  //     return numeral(val).format('0,0')
-                  // },
-  
-  
-  
-              },
-              title: {
-                  text: "Amount in KES",
-              }
-          },
-          series: [{
-              name: "Amount Invoiced",
-              data: monthlyCollectionSummaryRevenue?.map(x => x.variance)
-          }, {
-              name: "Amount Paid",
-              data: monthlyCollectionSummaryRevenue?.map(x => x.value)
-          }],
-          xaxis: {
-              categories: monthlyCollectionSummaryRevenue?.map(x => x.item)
-          },
-          colors: ["#f46a6a", "#556ee6"],
-          legend: {
-              position: "bottom"
-          },
-          fill: {
-              opacity: 1
-          },
-  
-          tooltip: {
-              custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-                  var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
-  
-                  return '<ul>' +
-                      '<li><b>Price</b>: ' + data.x + '</li>' +
-                      '<li><b>Number</b>: ' + data.y + '</li>' +
-                      '<li><b>Product</b>: \'' + data.product + '\'</li>' +
-                      '<li><b>Info</b>: \'' + data.info + '\'</li>' +
-                      '<li><b>Site</b>: \'' + data.site + '\'</li>' +
-                      '</ul>';
-              }
-          },
-  
-          tooltip: {
-              y: {
-                  formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
-                      return "KES " + numeral(value).format('0,0')
-  
-                  }
-              }
-          },
-          tooltip: {
-              y: [{ title: { formatter: function (e) { return e + " (mins)" } } },
-              { title: { formatter: function (e) { return e + " per session" } } },
-              { title: { formatter: function (e) { return e } } }
-              ]
-          },
-          tooltip: {
-              enabled: true,
-              enabledOnSeries: undefined,
-              shared: true,
-              followCursor: false,
-              intersect: false,
-              inverseOrder: false,
-              custom: undefined,
-              fillSeriesColor: false,
-              theme: false,
-              style: {
-                  fontSize: '12px',
-                  fontFamily: undefined
-  
-              },
-              fillSeriesColor: false,
-              theme: "light",
-  
-              marker: {
-                  show: true,
-              },
-              onDatasetHover: {
-                  highlightDataSeries: true,
-              },
-  
-              y: {
-                  formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
-                      let currentTotal = 0
-                      series.forEach((s) => {
-                          currentTotal += s[dataPointIndex]
-                      })
-                      return "<span class='text-right w-100 d-flex' > KES " + numeral(value).format('0,0') + "</span> "
-  
-                  }
-              }
-          }
-  
-      }
+  }
 
   const fetchAll = () => {
     requestsServiceService.viewPremise(userId).then((res) => {
@@ -313,6 +389,7 @@ function OnePremise() {
         address: res.data.data.premise.address,
         premNmae: res.data.data.premise.premiseName,
       })
+      setLandlordDetail(res.data.data.landLords[0].landLord)
       setLandlordData(res.data.data.landLords[0].landLord.fileNumber)
     })
   };
@@ -881,7 +958,7 @@ function OnePremise() {
       premiseId: userId,
       search: status,
     };
-    requestsServiceService.getParentInvoicesPrem( page,size,data).then((res) => {
+    requestsServiceService.getParentInvoicesPrem(page, size, data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
     });
@@ -899,7 +976,7 @@ function OnePremise() {
       premiseId: userId,
       search: status.trim(),
     };
-    requestsServiceService.getParentInvoicesPrem(page,size,data).then((res) => {
+    requestsServiceService.getParentInvoicesPrem(page, size, data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
       setStatus('')
@@ -1206,130 +1283,130 @@ function OnePremise() {
         }
         {activeLink === 1 && (
           <div>
-    {/* <!-- property stats --> */}
+            {/* <!-- property stats --> */}
+            <div class="row">
+              <div class="col-lg-12 px-sm-30px">
+                <div class="card">
+                  <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-12 px-sm-30px">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-10">
-                                            <div class="d-flex">
+                      <div class="col-10">
+                        <div class="d-flex">
 
-                                                <div class="flex-grow-1 align-self-center">
-                                                    <div class="text-muted">
-                                                        <h5 class="mb-3">Quick Overview on {premiseData?.premise?.premiseName}</h5>
-                                                    </div>
-                                                </div>
-                                                <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
-                   
-                     <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
-                       <div className=" p-2">
-                         <span className="input-group-text">
-                           <i className="mdi mdi-calendar">Start Date</i>
-                         </span>
-                         <input
-                           type="text"
-                           className="form-control mouse-pointer sdate"
-                           placeholder={`${startDate2}`}
-                           name="dob"
-                           readOnly
-                           onChange={(e)=>setStartDate2(e.target.value)}
-                           data-date-format="dd M, yyyy"
-                           data-date-container="#datepicker1"
-                           data-provide="datepicker"
-                           data-date-autoclose="true"
-                           data-date-end-date="+0d"
-                         />
-                       </div>
-                       <div className=" p-2">
-                         <span className="input-group-text">
-                           <i className="mdi mdi-calendar">End Date: </i>
-                         </span>
-                         <input
-                           type="text"
-                           className="form-control mouse-pointer edate"
-                           name="dob"
-                           placeholder={`${endDate2 }`}
-                           onChange={(e)=>setEndDate2(e.target.value)}
-
-                           readOnly
-                           data-date-format="dd M, yyyy"
-                           data-date-container="#datepicker1"
-                           data-provide="datepicker"
-                           data-date-autoclose="true"
-                         />
-                       </div>
-
-                     </div>
-                     <button className="btn btn-primary" onClick={sort}>
-                       filter
-                     </button>
-                   </div>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-lg-12 col-md-12 align-self-center">
-                                            <div class="row">
-                                                <div class="col-10">
-                                                    <div class="text-lg-left mt-4 mt-lg-0">
-                                                        <div class="row">
-                                                    
-                                                            <div class="col-sm-3 col-md-2 text-capitalize">
-                                                                <div>
-                                                                    <div class="avatar-xs-2 mb-3">
-                                                                        <span class="avatar-title bg-info rounded-circle font-size-24">
-                                                                                <i class="mdi mdi-account-group text-white"></i>
-                                                                            </span>
-                                                                    </div>
-                                                                    <p class="text-muted text-truncate  mb-2">Tenants</p>
-                                                                    <h5 class="mb-0">{dashboardData?.tenantsCount}</h5>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-3 col-md-2 text-capitalize">
-                                                                <div>
-                                                                    <div class="avatar-xs-2 mb-3">
-                                                                        <span class="avatar-title rounded-circle bg-danger font-size-24">
-                                                                                <i class="mdi mdi-account-cash text-white"></i>
-                                                                            </span>
-                                                                    </div>
-                                                                    <p class="text-muted text-truncate mb-2">LandLords</p>
-                                                                    <h5 class="mb-0">{dashboardData?.landlordsCount}</h5>
-                                                                </div>
-                                                            </div>
-
-                                                            {dashboardData?.premiseUnitsSummary?.map((item) => (
-                                                            <div class="col-4 col-sm-3 col-md-2">
-                                                                <div>
-                                                                    <div class="avatar-xs-2 mb-3">
-                                                                        <span class="avatar-title rounded-circle bg-danger font-size-24">
-                                                                            <i class="mdi mdi-home-export-outline  text-white"></i>
-                                                                        </span>
-                                                                    </div>
-                                                                    <p class="text-muted text-truncate mb-2 text-capitalize">{item.item?.toLowerCase()?.replace(/-/g, " ")} Units</p>
-                                                                    <h5 class="mb-0">{item.count}</h5>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                      
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                             
-                                            </div>
-                                        </div>
-
-
-
-                                    </div>
-                                    {/* <!-- end row --> */}
-                                </div>
+                          <div class="flex-grow-1 align-self-center">
+                            <div class="text-muted">
+                              <h5 class="mb-3">Quick Overview on {premiseData?.premise?.premiseName}</h5>
                             </div>
+                          </div>
+                          <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+
+                            <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
+                              <div className=" p-2">
+                                <span className="input-group-text">
+                                  <i className="mdi mdi-calendar">Start Date</i>
+                                </span>
+                                <input
+                                  type="text"
+                                  className="form-control mouse-pointer sdate"
+                                  placeholder={`${startDate2}`}
+                                  name="dob"
+                                  readOnly
+                                  onChange={(e) => setStartDate2(e.target.value)}
+                                  data-date-format="dd M, yyyy"
+                                  data-date-container="#datepicker1"
+                                  data-provide="datepicker"
+                                  data-date-autoclose="true"
+                                  data-date-end-date="+0d"
+                                />
+                              </div>
+                              <div className=" p-2">
+                                <span className="input-group-text">
+                                  <i className="mdi mdi-calendar">End Date: </i>
+                                </span>
+                                <input
+                                  type="text"
+                                  className="form-control mouse-pointer edate"
+                                  name="dob"
+                                  placeholder={`${endDate2}`}
+                                  onChange={(e) => setEndDate2(e.target.value)}
+
+                                  readOnly
+                                  data-date-format="dd M, yyyy"
+                                  data-date-container="#datepicker1"
+                                  data-provide="datepicker"
+                                  data-date-autoclose="true"
+                                />
+                              </div>
+
+                            </div>
+                            <button className="btn btn-primary" onClick={sort}>
+                              filter
+                            </button>
+                          </div>
                         </div>
+                      </div>
+
+
+                      <div class="col-lg-12 col-md-12 align-self-center">
+                        <div class="row">
+                          <div class="col-10">
+                            <div class="text-lg-left mt-4 mt-lg-0">
+                              <div class="row">
+
+                                <div class="col-sm-3 col-md-2 text-capitalize">
+                                  <div>
+                                    <div class="avatar-xs-2 mb-3">
+                                      <span class="avatar-title bg-info rounded-circle font-size-24">
+                                        <i class="mdi mdi-account-group text-white"></i>
+                                      </span>
+                                    </div>
+                                    <p class="text-muted text-truncate  mb-2">Tenants</p>
+                                    <h5 class="mb-0">{dashboardData?.tenantsCount}</h5>
+                                  </div>
+                                </div>
+                                <div class="col-sm-3 col-md-2 text-capitalize">
+                                  <div>
+                                    <div class="avatar-xs-2 mb-3">
+                                      <span class="avatar-title rounded-circle bg-danger font-size-24">
+                                        <i class="mdi mdi-account-cash text-white"></i>
+                                      </span>
+                                    </div>
+                                    <p class="text-muted text-truncate mb-2">LandLords</p>
+                                    <h5 class="mb-0">{dashboardData?.landlordsCount}</h5>
+                                  </div>
+                                </div>
+
+                                {dashboardData?.premiseUnitsSummary?.map((item) => (
+                                  <div class="col-4 col-sm-3 col-md-2">
+                                    <div>
+                                      <div class="avatar-xs-2 mb-3">
+                                        <span class="avatar-title rounded-circle bg-danger font-size-24">
+                                          <i class="mdi mdi-home-export-outline  text-white"></i>
+                                        </span>
+                                      </div>
+                                      <p class="text-muted text-truncate mb-2 text-capitalize">{item.item?.toLowerCase()?.replace(/-/g, " ")} Units</p>
+                                      <h5 class="mb-0">{item.count}</h5>
+                                    </div>
+                                  </div>
+                                ))}
+
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+
+
                     </div>
+                    {/* <!-- end row --> */}
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-xl-4">
-                <div class="card calc-h-3px">
+                <div class="card">
                   <div class="card-body">
 
                     <div class="d-flex align-items-center text-capitalize">
@@ -1338,8 +1415,8 @@ function OnePremise() {
                       </div>
                       <div className="d-flex justify-content-between col-10">
                         <div>
-                        <h5 class="text-capitalize mb-0 pb-0"> {premiseData?.premise?.premiseName}  {premiseData.premise && premiseData?.premise?.active ? <span className="badge-soft-success badge m-3">Active</span> : <span class="badge-soft-danger badge m-3">Inactive</span>} </h5>
-                        <p class="text-muted mb-0 pb-0">{premiseData?.premise?.premiseType?.name}</p>
+                          <h5 class="text-capitalize mb-0 pb-0"> {premiseData?.premise?.premiseName}  {premiseData.premise && premiseData?.premise?.active ? <span className="badge-soft-success badge m-3">Active</span> : <span class="badge-soft-danger badge m-3">Inactive</span>} </h5>
+                          <p class="text-muted mb-0 pb-0">{premiseData?.premise?.premiseType?.name}</p>
                         </div>
                         <div className="">
                           <button
@@ -1358,75 +1435,59 @@ function OnePremise() {
                       </div>
                     </div>
                   </div>
-                  <div class="card-body border-top">
-                    <p class="p-0 m-0"><span class="text-muted">Plot No.</span>{premiseData?.premise?.plotNumber}</p>
+                  <div class="card-body d-flex gap-4">
+                    <p class="p-0 m-0"><strong class="text-muted">Plot No. </strong>{premiseData?.premise?.plotNumber}</p>
+                    <p class="p-0 m-0"><strong class="text-muted">File No.</strong>{premiseData?.premise?.plotNumber}</p>
                   </div>
-                  <div class="card-body border-top">
+                  <div class="card-body d-flex gap-4 align-items-center">
                     <p class="p-0 m-0"><span class="mdi mdi-map-marker me-2 font-18px"></span> {premiseData?.premise?.estate?.name}</p>
+                    <p class="p-0 m-0"><strong class="text-muted">County </strong>     {premiseData.premise &&
+                      premiseData.premise.estate.zone.clientCounty.county.name.toLowerCase()}</p>
+                    <p class="p-0 m-0"><strong class="text-muted">Estate </strong> {premiseData.premise &&
+                      premiseData.premise.estate.name}</p>
+                    <p class="p-0 m-0"><strong class="text-muted">Zone </strong> {premiseData.premise &&
+                      premiseData.premise.estate.zone.name}</p>
+
                   </div>
-                  <div class="card-body border-top">
+                  <div class="card-body">
                     <h4 class="text-capitalize font-14px">
-                      {/* <a> {premiseData?.landLords[0]?.landLord?.firstName} {premiseData?.landLords[0]?.landlord?.lastName} {premiseData?.landLords[0]?.landlord?.otherName} (Landlord)</a> */}
+                      <a> {landlordDetail?.firstName} {landlordDetail?.lastName} {landlordDetail?.otherName} (Landlord)</a>
                     </h4>
                     <p class="text-muted mb-0 d-flex align-items-center">
-                      {/* <a class="d-flex align-items-center"><i class="mdi mdi-phone me-2 font-size-18"></i>{ premiseData?.landLords[0].landLord?.phoneNumber}</a> <span class="px-3 px-3">|</span> */}
-                      {/* <a class="d-flex align-items-center" ><i class="mdi mdi-email-outline font-size-18 me-2"></i> {premiseData?.landLords[0]?.landLord?.email}</a> */}
+                      <a class="d-flex align-items-center"><i class="mdi mdi-phone me-2 font-size-18"></i>{landlordDetail?.phoneNumber}</a> <span class="px-3 px-3">|</span>
+                      <a class="d-flex align-items-center" ><i class="mdi mdi-email-outline font-size-18 me-2"></i> {landlordDetail?.email}</a>
                     </p>
                   </div>
 
-         
-
-
-
                   <div class="card-body border-top pb-2 pt-3">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="text-muted">
-                          <table class="table table-borderless mb-0 table-sm table-striped">
-                            <tbody>
-                              <tr>
-                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Premises Type</td>
-                                <td class="pb-0"><span class="text-black">Residential/Commercial</span></td>
-                              </tr>
+                    <h4 class="card-title mb-4">Collection By Applicable Charge</h4>
 
+                    <div>
+                      <div id="agrement-type" class="apex-charts revenue-type">
+                        <Chart
+                          class="apex-charts revenue-type"
+                          options={pieChart}
+                          plotOptions={walletOptions.plotOptions}
+                          series={pieChart.series}
+                          type="donut"
+                          height="250"
+                          labels={pieChart.labels}
 
-                              <tr>
-                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Agreement type</td>
-                                <td class="pb-0"><span class="text-black">Management</span></td>
-                              </tr>
-                              <tr>
-                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>MCA Commision</td>
-                                <td class="pb-0"><span class="text-black">30%</span></td>
-                              </tr>
-                              <tr>
-                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Commercial units</td>
-                                <td class="pb-0"><span class="text-black">2</span></td>
-                              </tr>
-                              <tr>
-                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Residential units</td>
-                                <td class="pb-0"><span class="text-black">62</span></td>
-                              </tr>
-                              <tr>
-                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Bed sitters</td>
-                                <td class="pb-0"><span class="text-black">32</span></td>
-                              </tr>
-
-                              <tr>
-                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>One Bedrooms</td>
-                                <td class="pb-0"><span class="text-black">30</span></td>
-                              </tr>
-                              <tr>
-                                <td class="pl-0 pb-0 text-muted"><i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>Date registered</td>
-                                <td class="pb-0"><span class="text-black">30 Apr 2009</span></td>
-                              </tr>
-
-
-                            </tbody>
-                          </table>
-
-                        </div>
+                        />
                       </div>
-                      <br /><br />
+                    </div>
+
+                    <div class="text-center text-muted">
+                      <div class="row">
+                        {pieChartData?.map((item, index) => (
+                          <div class="col-4">
+                            <div class="mt-4 text-left">
+                              <p class="mb-2 text-truncate text-left text-capitalize"><i class="mdi mdi-circle me-1" style={{ color: "" + colors[index] + "" }}></i>{item.item}</p>
+                              <h5>{formatCurrency.format(item.value)}</h5>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
@@ -1436,30 +1497,30 @@ function OnePremise() {
 
               <div class="col-xl-8">
                 <div class="row">
-                {dashboardData?.collectionSummaryByPaymentStatus?.map((item) => (
-                                        <div class="col-sm-4">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="d-flex align-items-center mb-3">
-                                                        <div class="avatar-xs-2 me-3">
-                                                            <span class="avatar-title rounded-circle bg-danger bg-soft text-danger  font-size-18">
-                                                                <i class="mdi  mdi-cash-remove h2 mb-0 pb-0 text-danger"></i>
-                                                            </span>
-                                                        </div>
-                                                        <div class="d-flex flex-column">
-                                                            <span className='text-capitalize'>{item.item?.toLowerCase()?.replace(/-/g, " ")}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-muted mt-4">
-                                                        <h4>{formatCurrency.format(item.value)}<i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
-                                                        <div class="d-flex">
-                                                            <span class="text-truncate text-capitalize">From {item.count} {item.item?.toLowerCase()?.replace(/-/g, " ")} Invoices</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
+                  {dashboardData?.collectionSummaryByPaymentStatus?.map((item) => (
+                    <div class="col-sm-4">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="d-flex align-items-center mb-3">
+                            <div class="avatar-xs-2 me-3">
+                              <span class="avatar-title rounded-circle bg-danger bg-soft text-danger  font-size-18">
+                                <i class="mdi  mdi-cash-remove h2 mb-0 pb-0 text-danger"></i>
+                              </span>
+                            </div>
+                            <div class="d-flex flex-column">
+                              <span className='text-capitalize'>{item.item?.toLowerCase()?.replace(/-/g, " ")}</span>
+                            </div>
+                          </div>
+                          <div class="text-muted mt-4">
+                            <h4>{formatCurrency.format(item.value)}<i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
+                            <div class="d-flex">
+                              <span class="text-truncate text-capitalize">From {item.count} {item.item?.toLowerCase()?.replace(/-/g, " ")} Invoices</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
                 <div class="card">
                   <div>
@@ -1472,18 +1533,18 @@ function OnePremise() {
 
                             <div class="col-12">
                               <div id="property-chart">
-                              <div id="revenue-chart" class="apex-charts" dir="ltr">
-                                            <Chart
-                                                class="apex-charts revenue-type"
-                                                options={options}
-                                                plotOptions={options.plotOptions}
-                                                series={options.series}
-                                                type="bar"
-                                                height="360"
-                                                xaxis={options.xaxis}
+                                <div id="revenue-chart" class="apex-charts" dir="ltr">
+                                  <Chart
+                                    class="apex-charts revenue-type"
+                                    options={options}
+                                    plotOptions={options.plotOptions}
+                                    series={options.series}
+                                    type="bar"
+                                    height="360"
+                                    xaxis={options.xaxis}
 
-                                            />
-                                        </div>
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -1494,7 +1555,7 @@ function OnePremise() {
 
                     </div>
                   </div>
-                
+
                 </div>
 
 
@@ -2708,351 +2769,351 @@ function OnePremise() {
             </div>
           </div>
         )}
-  
-     {activeLink === 7 &&
-     <>
-     <div className="">
-       <div className="container-fluid">
-      
-         <div className="row">
-           <div className="col-12">
-             <div className="card">
-               <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                 <div
-                   className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                   role="toolbar"
-                 >
-                   <h4 className="card-title text-capitalize mb-0 ">
-                     Monthly Invoices
-                   </h4>
 
-                   <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
-                     <div>
-                       <form className="app-search d-none d-lg-block p-2">
-                         <div className="position-relative">
-                           <input
-                             type="text"
-                             className="form-control"
-                             placeholder="Search..."
-                             onChange={(e) => setStatus(e.target.value)}
-                           />
-                           <span className="bx bx-search-alt"></span>
-                         </div>
-                       </form>
-                     </div>
-                     <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
-                       <div className=" p-2">
-                         <span className="input-group-text">
-                           <i className="mdi mdi-calendar">Start Date</i>
-                         </span>
-                         <input
-                           type="text"
-                           className="form-control mouse-pointer sdate"
-                           placeholder={`${startDate}`}
-                           name="dob"
-                           readOnly
-                           data-date-format="dd M, yyyy"
-                           data-date-container="#datepicker1"
-                           data-provide="datepicker"
-                           data-date-autoclose="true"
-                           data-date-end-date="+0d"
-                         />
-                       </div>
-                       <div className=" p-2">
-                         <span className="input-group-text">
-                           <i className="mdi mdi-calendar">End Date: </i>
-                         </span>
-                         <input
-                           type="text"
-                           className="form-control mouse-pointer edate"
-                           name="dob"
-                           placeholder={`${endDate}`}
-                           readOnly
-                           data-date-format="dd M, yyyy"
-                           data-date-container="#datepicker1"
-                           data-provide="datepicker"
-                           data-date-autoclose="true"
-                         />
-                       </div>
+        {activeLink === 7 &&
+          <>
+            <div className="">
+              <div className="container-fluid">
 
-                     </div>
-                     <button className="btn btn-primary" onClick={fetchDashData}>
-                       filter
-                     </button>
-                   </div>
-                 </div>
+                <div className="row">
+                  <div className="col-12">
+                    <div className="card">
+                      <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                        <div
+                          className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                          role="toolbar"
+                        >
+                          <h4 className="card-title text-capitalize mb-0 ">
+                            Monthly Invoices
+                          </h4>
 
-                 <Message details={details} mode={mode} clear={clearDetails} />
-             
-               </div>
-               <div className="card-body">
-                 <div className="table-responsive overflow-visible">
-                   <table
-                     className="table align-middle table-hover  contacts-table table-striped "
-                     id="datatable-buttons"
-                   >
-                     <thead className="table-light">
-                       <tr className="table-dark">
+                          <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                            <div>
+                              <form className="app-search d-none d-lg-block p-2">
+                                <div className="position-relative">
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search..."
+                                    onChange={(e) => setStatus(e.target.value)}
+                                  />
+                                  <span className="bx bx-search-alt"></span>
+                                </div>
+                              </form>
+                            </div>
+                            <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
+                              <div className=" p-2">
+                                <span className="input-group-text">
+                                  <i className="mdi mdi-calendar">Start Date</i>
+                                </span>
+                                <input
+                                  type="text"
+                                  className="form-control mouse-pointer sdate"
+                                  placeholder={`${startDate}`}
+                                  name="dob"
+                                  readOnly
+                                  data-date-format="dd M, yyyy"
+                                  data-date-container="#datepicker1"
+                                  data-provide="datepicker"
+                                  data-date-autoclose="true"
+                                  data-date-end-date="+0d"
+                                />
+                              </div>
+                              <div className=" p-2">
+                                <span className="input-group-text">
+                                  <i className="mdi mdi-calendar">End Date: </i>
+                                </span>
+                                <input
+                                  type="text"
+                                  className="form-control mouse-pointer edate"
+                                  name="dob"
+                                  placeholder={`${endDate}`}
+                                  readOnly
+                                  data-date-format="dd M, yyyy"
+                                  data-date-container="#datepicker1"
+                                  data-provide="datepicker"
+                                  data-date-autoclose="true"
+                                />
+                              </div>
 
-                         <th>Invoice Number</th>
-                         <th>Tenant</th>
-                         <th>Premises</th>
-                         <th>Hse/Unit</th>
-                         <th>Date Issued</th>
-                         <th>Payment Status</th>
-                         <th className="text-right">Actions</th>
-                       </tr>
-                     </thead>
-                     <tbody>
-                       {invoices.length > 0 &&
-                         invoices?.map((invoice, index) => (
-                           <tr data-id={index} key={index}>
+                            </div>
+                            <button className="btn btn-primary" onClick={fetchDashData}>
+                              filter
+                            </button>
+                          </div>
+                        </div>
 
-                             <td
-                             >
-                               {invoice.transactionId}
-                             </td>
-                             <td>{invoice.tenantName}</td>
-                             <td>{invoice.premiseName}</td>
-                             <td>{invoice.premiseUnitName}</td>
-                             <td>
-                               {moment(invoice.invoiceDate).format(
-                                 "MMMM Do YYYY"
-                               )}
-                             </td>
-                             <td>
-                               <StatusBadge type={invoice?.paymentStatus} />
-                             </td>
-                             <td>
-                               <div className="d-flex justify-content-end">
-                                 {/*<button type="button"*/}
-                                 {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                 {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
-                                 {/*        >Receive Payment*/}
-                                 {/*</button>*/}
-                                 <div className="dropdown">
-                                   <a
-                                     className="text-muted font-size-16"
-                                     role="button"
-                                     data-bs-toggle="dropdown"
-                                     aria-haspopup="true"
-                                   >
-                                     <i className="bx bx-dots-vertical-rounded"></i>
-                                   </a>
-                                   <div className="dropdown-menu dropdown-menu-end ">
-                                     <span
-                                       className="dropdown-item"
-                                       href="#"
-                                       onClick={() =>
-                                         getOneInvoice(invoice.transactionId)
-                                       }
-                                     >
-                                       <i
-                                         className="font-size-15 mdi mdi-eye me-3 "
-                                         href="# "
-                                       ></i>
-                                       View
-                                     </span>
-                                     <a className="dropdown-item " href="# ">
-                                       <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                       Print
-                                     </a>
-                                     <a className="dropdown-item "
-                                       onClick={() => {
-                                         handleModeChange("Email");
-                                         handleClicked(invoice, "Email");
-                                       }}>
-                                       <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                       Email Tenant
-                                     </a>
-                                     <a className="dropdown-item "
-                                       onClick={() => {
-                                         handleModeChange("SMS");
-                                         handleClicked(invoice, "SMS");
-                                       }}>
-                                       <i className="font-size-15 mdi mdi-chat me-3 "></i>
-                                       SMS Tenant
-                                     </a>
-                                   </div>
-                                 </div>
-                               </div>
-                             </td>
-                           </tr>
-                         ))}
-                     </tbody>
-                     <tfoot className="table-dark">
-                       <tr>
-                         <th
-                           className="text-capitalize text-nowrap"
-                           colSpan="12"
-                         >
-                           {invoices && invoices.length} Invoices
-                         </th>
-                       </tr>
-                     </tfoot>
-                   </table>
-                 </div>
-                 <div className="mt-4 mb-0 flex justify-between px-8">
-                   <select className="btn btn-md btn-primary" title="Select A range"
-                     onChange={(e) => sortSize(e)}
-                     value={size}
-                   >
-                     <option className="bs-title-option" value="">Select A range</option>
-                     <option value="10">10 Rows</option>
-                     <option value="30">30 Rows</option>
-                     <option value="50">50 Rows</option>
-                   </select>
+                        <Message details={details} mode={mode} clear={clearDetails} />
 
-                   {pageCount !== 0 && (
-                     <p className=" font-medium text-xs text-gray-700">
-                       {" "}
-                       showing page{" "}
-                       <span className="text-green-700 text-opacity-100 font-bold text-sm">
-                         {page + 1}
-                       </span>{" "}
-                       of{" "}
-                       <span className="text-sm font-bold text-black">
-                         {pageCount}
-                       </span>{" "}
-                       pages
-                     </p>
-                   )}
+                      </div>
+                      <div className="card-body">
+                        <div className="table-responsive overflow-visible">
+                          <table
+                            className="table align-middle table-hover  contacts-table table-striped "
+                            id="datatable-buttons"
+                          >
+                            <thead className="table-light">
+                              <tr className="table-dark">
 
-                   {pageCount !== 0 && (
-                     <ReactPaginate
-                       previousLabel={"prev"}
-                       nextLabel={"next"}
-                       breakLabel={"..."}
-                       pageCount={pageCount} // total number of pages needed
-                       marginPagesDisplayed={2}
-                       pageRangeDisplayed={1}
-                       onPageChange={handlePageClick}
-                       breakClassName={"page-item"}
-                       breakLinkClassName={"page-link"}
-                       containerClassName={"pagination"}
-                       pageClassName={"page-item"}
-                       pageLinkClassName={"page-link"}
-                       previousClassName={"page-item"}
-                       previousLinkClassName={"page-link"}
-                       nextClassName={"page-item"}
-                       nextLinkClassName={"page-link"}
-                       activeClassName={"active"}
-                     />
-                   )}
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-     </div>
+                                <th>Invoice Number</th>
+                                <th>Tenant</th>
+                                <th>Premises</th>
+                                <th>Hse/Unit</th>
+                                <th>Date Issued</th>
+                                <th>Payment Status</th>
+                                <th className="text-right">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {invoices.length > 0 &&
+                                invoices?.map((invoice, index) => (
+                                  <tr data-id={index} key={index}>
 
-     <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
-       <Modal.Header closeButton>
-         <h5 className="modal-title" id="myLargeModalLabel">
-           Invoice Details
-         </h5>
-       </Modal.Header>
-       <Modal.Body>
-         <StatusBadge type={transaction?.paymentStatus} />
-         <div className="col-12">
-           <address>
-             <strong>Billed To:</strong>
-             <br />
-             {transaction?.tenantName} <br />
-             {/*{activeInvoice?.transactionCustomerEmail}<br/>*/}
-             {transaction?.premiseName} - {transaction?.premiseUnitName}
-             <br />
-             <br />
-             {moment(transaction?.transaction?.invoiceDate).format(
-               "dddd, MMMM Do YYYY, h:mm a"
-             )}
-           </address>
-           {/*<p>Title: {activeInvoice?.transactionTitle}</p>*/}
-           <p>Description: {transaction?.invoicePeriodDescription}</p>
-         </div>
-         <div className="col-12">
-           <div className="py-2 mt-3">
-             <h3 className="font-size-15 fw-bold">
-               Charges Breakdown ({" "}
-               <span className="text-primary fw-medium">
-                 {transaction?.transactionId}
-               </span>{" "}
-               )
-             </h3>
-           </div>
-         </div>
-         <div className="col-12">
-           <table className="table table-nowrap">
-             <thead>
-               <tr>
-                 <th style={{ width: "70px" }}>No.</th>
-                 <th>Charge name</th>
-                 <th>Quantity</th>
-                 <th>Unit Cost</th>
-                 <th>Paid Amount</th>
-                 <th></th>
-                 <th className={"text-end"}>Bill Amount</th>
-               </tr>
-             </thead>
-             <tbody>
-               {paymentItems?.length > 0 &&
-                 paymentItems?.map((item, index) => (
-                   <tr data-id={index} key={index}>
-                     <td>{index + 1}</td>
-                     <td>{item.applicableChargeName}</td>
-                     <td>{item.quantity}</td>
-                     <td>{formatCurrency.format(item.unitCost)}</td>
-                     <td>{formatCurrency.format(item.billPaidAmount)}</td>
-                     <td></td>
-                     <td className="text-end">
-                       {formatCurrency.format(item.billAmount)}
-                     </td>
-                   </tr>
-                 ))}
-               <tr>
-                 <td></td>
-                 <td></td>
-                 <td></td>
-                 <td></td>
-                 <td colSpan="2" className="text-end">
-                   Total
-                 </td>
-                 <td className="text-end fw-bold">
-                   {formatCurrency.format(total().sum)}
-                 </td>
-               </tr>
-               <tr>
-                 <td></td>
-                 <td></td>
-                 <td></td>
-                 <td></td>
-                 <td colSpan="2" className="text-end">
-                   Paid
-                 </td>
-                 <td className="text-end fw-bold">
-                   {formatCurrency.format(total().paid)}
-                 </td>
-               </tr>
-               <tr>
-                 <td></td>
-                 <td></td>
-                 <td></td>
-                 <td></td>
-                 <td colSpan="2" className="text-end">
-                   <strong>Balance</strong>
-                 </td>
-                 <td className="text-end fw-bold">
-                   {formatCurrency.format(total().balance)}
-                 </td>
-               </tr>
-             </tbody>
-           </table>
-         </div>
-       </Modal.Body>
-     </Modal>
-   </>
-} 
+                                    <td
+                                    >
+                                      {invoice.transactionId}
+                                    </td>
+                                    <td>{invoice.tenantName}</td>
+                                    <td>{invoice.premiseName}</td>
+                                    <td>{invoice.premiseUnitName}</td>
+                                    <td>
+                                      {moment(invoice.invoiceDate).format(
+                                        "MMMM Do YYYY"
+                                      )}
+                                    </td>
+                                    <td>
+                                      <StatusBadge type={invoice?.paymentStatus} />
+                                    </td>
+                                    <td>
+                                      <div className="d-flex justify-content-end">
+                                        {/*<button type="button"*/}
+                                        {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
+                                        {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
+                                        {/*        >Receive Payment*/}
+                                        {/*</button>*/}
+                                        <div className="dropdown">
+                                          <a
+                                            className="text-muted font-size-16"
+                                            role="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-haspopup="true"
+                                          >
+                                            <i className="bx bx-dots-vertical-rounded"></i>
+                                          </a>
+                                          <div className="dropdown-menu dropdown-menu-end ">
+                                            <span
+                                              className="dropdown-item"
+                                              href="#"
+                                              onClick={() =>
+                                                getOneInvoice(invoice.transactionId)
+                                              }
+                                            >
+                                              <i
+                                                className="font-size-15 mdi mdi-eye me-3 "
+                                                href="# "
+                                              ></i>
+                                              View
+                                            </span>
+                                            <a className="dropdown-item " href="# ">
+                                              <i className="font-size-15 mdi mdi-printer me-3 "></i>
+                                              Print
+                                            </a>
+                                            <a className="dropdown-item "
+                                              onClick={() => {
+                                                handleModeChange("Email");
+                                                handleClicked(invoice, "Email");
+                                              }}>
+                                              <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                              Email Tenant
+                                            </a>
+                                            <a className="dropdown-item "
+                                              onClick={() => {
+                                                handleModeChange("SMS");
+                                                handleClicked(invoice, "SMS");
+                                              }}>
+                                              <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                              SMS Tenant
+                                            </a>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                            </tbody>
+                            <tfoot className="table-dark">
+                              <tr>
+                                <th
+                                  className="text-capitalize text-nowrap"
+                                  colSpan="12"
+                                >
+                                  {invoices && invoices.length} Invoices
+                                </th>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                        <div className="mt-4 mb-0 flex justify-between px-8">
+                          <select className="btn btn-md btn-primary" title="Select A range"
+                            onChange={(e) => sortSize(e)}
+                            value={size}
+                          >
+                            <option className="bs-title-option" value="">Select A range</option>
+                            <option value="10">10 Rows</option>
+                            <option value="30">30 Rows</option>
+                            <option value="50">50 Rows</option>
+                          </select>
+
+                          {pageCount !== 0 && (
+                            <p className=" font-medium text-xs text-gray-700">
+                              {" "}
+                              showing page{" "}
+                              <span className="text-green-700 text-opacity-100 font-bold text-sm">
+                                {page + 1}
+                              </span>{" "}
+                              of{" "}
+                              <span className="text-sm font-bold text-black">
+                                {pageCount}
+                              </span>{" "}
+                              pages
+                            </p>
+                          )}
+
+                          {pageCount !== 0 && (
+                            <ReactPaginate
+                              previousLabel={"prev"}
+                              nextLabel={"next"}
+                              breakLabel={"..."}
+                              pageCount={pageCount} // total number of pages needed
+                              marginPagesDisplayed={2}
+                              pageRangeDisplayed={1}
+                              onPageChange={handlePageClick}
+                              breakClassName={"page-item"}
+                              breakLinkClassName={"page-link"}
+                              containerClassName={"pagination"}
+                              pageClassName={"page-item"}
+                              pageLinkClassName={"page-link"}
+                              previousClassName={"page-item"}
+                              previousLinkClassName={"page-link"}
+                              nextClassName={"page-item"}
+                              nextLinkClassName={"page-link"}
+                              activeClassName={"active"}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
+              <Modal.Header closeButton>
+                <h5 className="modal-title" id="myLargeModalLabel">
+                  Invoice Details
+                </h5>
+              </Modal.Header>
+              <Modal.Body>
+                <StatusBadge type={transaction?.paymentStatus} />
+                <div className="col-12">
+                  <address>
+                    <strong>Billed To:</strong>
+                    <br />
+                    {transaction?.tenantName} <br />
+                    {/*{activeInvoice?.transactionCustomerEmail}<br/>*/}
+                    {transaction?.premiseName} - {transaction?.premiseUnitName}
+                    <br />
+                    <br />
+                    {moment(transaction?.transaction?.invoiceDate).format(
+                      "dddd, MMMM Do YYYY, h:mm a"
+                    )}
+                  </address>
+                  {/*<p>Title: {activeInvoice?.transactionTitle}</p>*/}
+                  <p>Description: {transaction?.invoicePeriodDescription}</p>
+                </div>
+                <div className="col-12">
+                  <div className="py-2 mt-3">
+                    <h3 className="font-size-15 fw-bold">
+                      Charges Breakdown ({" "}
+                      <span className="text-primary fw-medium">
+                        {transaction?.transactionId}
+                      </span>{" "}
+                      )
+                    </h3>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <table className="table table-nowrap">
+                    <thead>
+                      <tr>
+                        <th style={{ width: "70px" }}>No.</th>
+                        <th>Charge name</th>
+                        <th>Quantity</th>
+                        <th>Unit Cost</th>
+                        <th>Paid Amount</th>
+                        <th></th>
+                        <th className={"text-end"}>Bill Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paymentItems?.length > 0 &&
+                        paymentItems?.map((item, index) => (
+                          <tr data-id={index} key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item.applicableChargeName}</td>
+                            <td>{item.quantity}</td>
+                            <td>{formatCurrency.format(item.unitCost)}</td>
+                            <td>{formatCurrency.format(item.billPaidAmount)}</td>
+                            <td></td>
+                            <td className="text-end">
+                              {formatCurrency.format(item.billAmount)}
+                            </td>
+                          </tr>
+                        ))}
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td colSpan="2" className="text-end">
+                          Total
+                        </td>
+                        <td className="text-end fw-bold">
+                          {formatCurrency.format(total().sum)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td colSpan="2" className="text-end">
+                          Paid
+                        </td>
+                        <td className="text-end fw-bold">
+                          {formatCurrency.format(total().paid)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td colSpan="2" className="text-end">
+                          <strong>Balance</strong>
+                        </td>
+                        <td className="text-end fw-bold">
+                          {formatCurrency.format(total().balance)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </Modal.Body>
+            </Modal>
+          </>
+        }
 
       </div>
       <Helmet>

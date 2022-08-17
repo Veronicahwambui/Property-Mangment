@@ -274,7 +274,7 @@ const submitIssue = (e) => {
                                                 
                                                 <div class="col-12">
                                                     <div class="mb-4 ">
-                                                        <label for="agreement-typ">Issue Status<strong class="text-danger ">*</strong></label>
+                                                        <label for="agreement-typ">Raised For Premise Unit Status <strong class="text-danger ">*</strong></label>
                                                         <select class="form-control" title="Select critical level" onChange={(e) => handleIssues(e)} name="issueStatus">
                                                             <option></option>
                                                             {tenancyIssuesTypes?.map((item) => (
@@ -760,7 +760,35 @@ const submitIssue = (e) => {
                                                                 <th>Actions</th> */}
                                                             </tr>
                                                         </thead>
-                                                      
+                                                        <tbody>
+                                                            {issues && issues?.map((issue, index) => {
+                                                                return (
+                                                                    <tr>
+                                                                        <td>{index + 1}</td>
+                                                                        <td className="text-capitalize">{issue?.createdBy}</td>
+                                                                        <td className="">{moment(issue.dateTimeCreated).format("MMM Do YY [at] h:mm a")}</td>
+                                                                        <td className="text-capitalize">{issue.description}</td>
+                                                                        <td className="text-capitalize">{issue.tenancyIssueType.name}</td>
+                                                                        <td className="text-capitalize">{issue?.status?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                                                        <td className="">{issue.endDate && moment(issue.endDate).format("MMM Do YY [at] h:mm a")}</td>
+                                                                        {/* <td className=''> {issue.nextState?.status && <button className="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                                            disabled>
+                                                                            {issue.nextState?.status?.toLowerCase()?.replace(/_/g, " ")}
+                                                                        </button>}</td>
+                                                                        <td>
+                                                                            <td className='text-nowrap'>{issue.nextState?.status && issue.issue.endDate === null && <button className="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                                                data-bs-target=".update-issues">
+                                                                                next status
+                                                                            </button>}</td>
+                                                                        </td> */}
+
+                                                                    </tr>
+                                                                )
+                                                            })}
+                                                            <tr>
+
+                                                            </tr>
+                                                        </tbody>
 
                                                     </table>
                                                 </div>
