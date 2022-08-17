@@ -147,6 +147,7 @@ function OnePremise() {
     fetchApplicableCharges();
     getClientAccounts();
     fetchDashData();
+    fetchUpdateData();
     requestsServiceService.getTenancyStatuses().then((res) => {
       setStatuses(res.data.data)
     })

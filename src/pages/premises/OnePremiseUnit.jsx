@@ -10,7 +10,7 @@ import useTabs from '../../hooks/useTabs'
 
 
 function OnePremiseUnit() {
-    const [activeLink, setActiveLink] = useTabs()
+    const [activeLink, setActiveLink] = useState(1)
     const [unitDetails, setUnitDetails] = useState({})
     const [tenancy, setTenancy] = useState([])
     const [docArr, setdocArr] = useState([])
@@ -21,6 +21,7 @@ function OnePremiseUnit() {
         color: ""
     });
     const [premiseStatuses, setPremiseStatuses] = useState([])
+    const [tenancyIssuesTypes, setTenancyIssuesTypes] = useState([])
 
     const { id, one } = useParams()
     let premId = id
@@ -34,8 +35,10 @@ function OnePremiseUnit() {
             setPremiseCharges(res.data.data.defaultPremiseUnitTypeCharges)
         });
         requestsServiceService.findAllTenancyGroupIssueTypes(unitId).then((res)=>{
-            setIssues(res.data.data)
-            
+            setIssues(res.data.data)   
+        })
+        requestsServiceService.getTenancyIssuesStatuses().then((res)=>{
+            setTenancyIssuesTypes(res.data.data)
         })
     }
 
@@ -74,6 +77,7 @@ function OnePremiseUnit() {
     const [issueDetails, setIssueDetails] = useState({
         description: '',
         issueTypeId: '',
+        issueStatus: '',
     })
     const [issueTypes, setIssueTypes] = useState([])
     const [issues, setIssues] = useState([])
@@ -109,15 +113,18 @@ function OnePremiseUnit() {
     }
 //   const  
 
-    const submitIssue = (e) => {
+let raised = issueTypes.filter(issue => issue.id == issueDetails.issueTypeId )
+    
+const submitIssue = (e) => {
         e.preventDefault()
+        let date =  new Date()
         let data = JSON.stringify({
             "comments": issueDetails.description,
             "description": issueDetails.description,
-            "endDate": new Date(),
+            "endDate": moment(date).format("YYYY-MM-DD"),
             "premiseUnitId": unitId,
-            "raisedForPremiseUnitStatus": unitDetails.status,
-            "status": true,
+            "raisedForPremiseUnitStatus": issueDetails.issueStatus,
+            status: raised[0].initialStatus ,
             "tenancyIssueTypeId": issueDetails.issueTypeId
         })
 
@@ -129,6 +136,7 @@ function OnePremiseUnit() {
                 description: '',
                 issueTypeId: null,
             })
+
 
             if (res.data?.status) {
                 setError({
@@ -257,12 +265,26 @@ function OnePremiseUnit() {
                                                         <select class="form-control" title="Select critical level" onChange={(e) => handleIssues(e)} name="issueTypeId">
                                                             <option></option>
                                                             {issueTypes?.map((item) => (
-                                                                <option key={item.id} value={item.id}> {item.name}</option>
+                                                                <option key={item.id} value={item.id} > {item.name}</option>
                                                             ))}
 
                                                         </select>
                                                     </div>
                                                 </div>
+                                                
+                                                <div class="col-12">
+                                                    <div class="mb-4 ">
+                                                        <label for="agreement-typ">Issue Status<strong class="text-danger ">*</strong></label>
+                                                        <select class="form-control" title="Select critical level" onChange={(e) => handleIssues(e)} name="issueStatus">
+                                                            <option></option>
+                                                            {tenancyIssuesTypes?.map((item) => (
+                                                                <option key={item} value={item} > {item}</option>
+                                                            ))}
+
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-12">
                                                     <div class="mb-4 ">
                                                         <label for="basicpill-firstname-input ">Issue description <strong class="text-danger ">*</strong></label>
@@ -738,35 +760,7 @@ function OnePremiseUnit() {
                                                                 <th>Actions</th> */}
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
-                                                            {issues && issues?.map((issue, index) => {
-                                                                return (
-                                                                    <tr>
-                                                                        <td>{index + 1}</td>
-                                                                        <td className="text-capitalize">{issue?.createdBy}</td>
-                                                                        <td className="">{moment(issue.dateTimeCreated).format("MMM Do YY [at] h:mm a")}</td>
-                                                                        <td className="text-capitalize">{issue.description}</td>
-                                                                        <td className="text-capitalize">{issue.tenancyIssueType.name}</td>
-                                                                        <td className="text-capitalize">{issue?.status?.toLowerCase()?.replace(/_/g, " ")}</td>
-                                                                        <td className="">{issue.endDate && moment(issue.endDate).format("MMM Do YY [at] h:mm a")}</td>
-                                                                        {/* <td className=''> {issue.nextState?.status && <button className="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                                            disabled>
-                                                                            {issue.nextState?.status?.toLowerCase()?.replace(/_/g, " ")}
-                                                                        </button>}</td>
-                                                                        <td>
-                                                                            <td className='text-nowrap'>{issue.nextState?.status && issue.issue.endDate === null && <button className="btn btn-sm btn-warning" data-bs-toggle="modal"
-                                                                                data-bs-target=".update-issues">
-                                                                                next status
-                                                                            </button>}</td>
-                                                                        </td> */}
-
-                                                                    </tr>
-                                                                )
-                                                            })}
-                                                            <tr>
-
-                                                            </tr>
-                                                        </tbody>
+                                                      
 
                                                     </table>
                                                 </div>
