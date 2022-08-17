@@ -14,12 +14,12 @@ import { Link } from 'react-router-dom';
 
 function Dashboard() {
     const colors = ['#3399ff', '#ff7f50', '#00ff00', '#00a591', '#ecdb54', '#6b5b95', '#944743', '#dc4c46', '#034f84', '#edf1ff']
-
+    let date = new Date()
     const [dashboardData, setDashboardData] = useState({})
     const [radioBarData, setRadioBarData] = useState([])
     const [radioBarData2, setRadioBarData2] = useState([])
     const [pieChartData, setPieChartData] = useState([])
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date(date.getFullYear(), 0, 1));
     const [endDate, setEndDate] = useState(new Date());
     const [transactionModesData, setTransactionModesData] = useState([])
     const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] = useState([])
@@ -376,7 +376,7 @@ function Dashboard() {
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                             <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
 
-                            <div class="page-title-right">
+                            {/* <div class="page-title-right">
                                 <form className="d-flex align-items-center">
                                     
                                 <div className="d-flex justify-content-center align-items-center">
@@ -423,7 +423,7 @@ function Dashboard() {
                                     </div>
 
                                 </form>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>
@@ -437,7 +437,9 @@ function Dashboard() {
                             <div class="card-body">
                                 <div class="">
                                     <div class="flex-shrink-0 me-3">
-                                        <img src="assets/images/users/avatar-1.png" alt="your Logo" class="avatar-md rounded-circle img-thumbnail" />
+                                    <span class="logo-lg">
+                                    <img src="assets/images/logo-light.png" alt="" height="45" />
+                                  </span>
                                     </div>
                                     <div class="flex-grow-1 align-self-center">
                                         <div class="text-muted mt-2">
@@ -520,7 +522,7 @@ function Dashboard() {
                                                                             <i class="mdi mdi-home-export-outline  text-white"></i>
                                                                         </span>
                                                                     </div>
-                                                                    <p class="text-muted text-truncate mb-2 text-capitalize">{item.item?.toLowerCase()?.replace(/-/g, " ")} Units</p>
+                                                                    <p class="text-muted text-truncate mb-2 text-capitalize"> {item.item === "CLOSED" ? "Occupied" : item.item?.toLowerCase()?.replace(/-/g, " ")}  Units</p>
                                                                     <h5 class="mb-0">{item.count}</h5>
                                                                 </div>
                                                             </div>

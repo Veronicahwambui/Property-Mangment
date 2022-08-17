@@ -24,6 +24,7 @@ function AddPremises() {
   const [caretakerTypes, setCaretakerTypes] = useState([]);
   const [unitCharges, setUnitCharges] = useState([]);
   const [landLordAccounts, setLandLordAccounts] = useState([]);
+  const [landLordData, setLandLordData] = useState({});
   const [uniqueChargeId, setUniqueChargeIds] = useState([]);
   const [agreementTypes, setAgreementTypes] = useState([]);
   const [showDocumentModal, setShowDocumentModal] = useState(false)
@@ -61,11 +62,19 @@ function AddPremises() {
           })
         } else {
           setLandLordAccounts(res.data.data.accounts)
-
+          setLandLordData(res.data.data.landLord) 
           let data = landlordData;
           data.landLordId = res.data.data.landLord.id
-
           setLandlordData(data);
+          setLandlordData({
+            "active": true,
+            "agreementPeriod": res.data.data.landLord.agreementPeriod,
+            "landLordAgreementTypeId": res.data.data.landLord.landLordAgreementType.id,
+            "landLordId": res.data.data.landLord.id,
+            "premiseId": undefined,
+            "remunerationPercentage": res.data.data.landLord.remunerationPercentage
+          })
+
           setError({
             ...error,
             message: res.data.message,
@@ -294,9 +303,10 @@ function AddPremises() {
   }
 
   const getAllDocumentTypes = () => {
-    requestsServiceService.allDocumentTypes().then((res) =>
+    requestsServiceService.allDocumentTypes().then((res) => {
+      let docs = res.data.data
       setDocumentTypes(res.data.data)
-    )
+  })
   }
 
   const getAllApplicableCharges = () => {
@@ -497,7 +507,6 @@ const getCaretakerType = ()=>{
     toogleShowNewDocumentModal();
   }
 
-
   return (
     <>
       <div className="page-content">
@@ -529,7 +538,27 @@ const getCaretakerType = ()=>{
           {/* <!-- end page title --> */}
 
           {/* <!-- eTransactions table --> */}
-
+         {Object.keys(landLordData)?.length > 0 && <div className="row">
+            <div className="col-lg-12">
+              <div className="card">
+                <div className="card-body">
+                  <h4 className="font-weight-bold">The landlord chosen for this premise is  </h4>
+                  <div className="row">
+                    <div className="col-5">
+                    <p><strong>Name :</strong> {landLordData?.firstName} {landLordData?.lastName} {landLordData?.otherName}</p>
+                    <p><strong >Phone Number :</strong> {landLordData?.phoneNumber}</p>
+                    <p><strong>File No :</strong> {landLordData?.fileNumber}</p>
+                    </div>
+                    <div className="col-5">
+                    <p><strong>Email :</strong> {landLordData?.email}</p>
+                    <p className="text-capitalize"><strong>File No :</strong> {landLordData?.landLordType?.toLowerCase()}</p>
+                    <p><strong>Agreement Period :</strong> {landLordData?.agreementPeriod}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> }
           <div className="row">
             <div className="col-lg-12">
               <div className="card">
@@ -1096,7 +1125,7 @@ const getCaretakerType = ()=>{
                             </div>
                           </div>
                         </div>
-                        <div className="row">
+                        {/* <div className="row">
                             <div class="col-lg-3 col-md-4 col-sm-12">
                               <label for="agreement-type">Landlord MCA Agreement Type<strong class="text-danger ">*</strong></label>
                               <select class="form-control text-capitalize" id="agreement-type" title="Landlord MCA agreement type" name="landLordAgreementTypeId" onChange={handlelandlordDataChange}>
@@ -1121,7 +1150,7 @@ const getCaretakerType = ()=>{
                                 <input type="number " name="remunerationPercentage" min="1" max="100" class="form-control " placeholder="Remuneration Percentage"  onChange={handlelandlordDataChange}/>
                               </div>
                           </div>
-                        </div>
+                        </div> */}
                       </form>
                     </section>
 

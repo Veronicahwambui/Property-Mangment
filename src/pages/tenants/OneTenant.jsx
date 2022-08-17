@@ -437,8 +437,18 @@ function OneTenant() {
     })
 
   }
+
   const getPremises = () => {
-    requestsServiceService.allPremises().then((res) =>
+    let page= 0
+    let size =10
+    let date = new Date() 
+
+    let data = {
+      "dateCreatedEnd": new Date(),
+      "dateCreatedStart": moment(new Date(date.getFullYear(), 0, 1)).format("YYYY-MM-DD"),
+      // "search": searchTerm.trim()
+  }
+    requestsServiceService.getAllpremises(page, size ,data).then((res) =>
       setPremises(res.data.data)
     )
   }

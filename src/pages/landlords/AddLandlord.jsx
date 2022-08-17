@@ -237,7 +237,7 @@ export default function AddLandlord() {
       bankId: bankId,
       id: null,
       landLordId: null,
-      percentageRemuneration: percentageRemuneration,
+      percentageRemuneration: remunerationPercentage,
     };
     setAccounts((accounts) => [...accounts, data]);
     setbankAccountNumber("");
@@ -278,6 +278,7 @@ export default function AddLandlord() {
                 {error.message}
               </div>
             )}
+          
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
@@ -317,11 +318,13 @@ export default function AddLandlord() {
                     {/*section add landlord details*/}
                     <form id="my-form" onSubmit={handleSubmit}>
                       <section className={"step-cont active-step"}>
+                    
                         <p>
                           Fill in the form correctly. Fields with an Asterisk{" "}
                           <strong className="text-danger">*</strong> are
                           mandatory fields.
                         </p>
+
                         <div className="col-12">
                           <div className="bg-primary border-2 bg-soft p-3 mb-4">
                             <p className="fw-semibold mb-0 pb-0 text-uppercase">
@@ -862,7 +865,7 @@ export default function AddLandlord() {
                           required={true}
                         />
                       </div>
-                      <div className="form-group mb-4">
+                      {/* <div className="form-group mb-4">
                         <label htmlFor="">
                           Percentage renumeration.{" "}
                           <strong className="text-danger ">*</strong>
@@ -877,7 +880,7 @@ export default function AddLandlord() {
                           placeholder="Enter % renumeration"
                           required={true}
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </Modal.Body>

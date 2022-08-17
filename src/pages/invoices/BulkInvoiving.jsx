@@ -1,3 +1,4 @@
+/* global $ */
 import moment from 'moment';
 import React from 'react'
 import { useEffect } from 'react';
@@ -14,8 +15,10 @@ function BulkInvoiving() {
   const [premisesId, setPremisesId] = useState([]);
   const [landlords, setLandlords] = useState([]);
   const [landlordsId, setLandlordsId] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const [tenants, setTenants] = useState([]);
   const [tenantsId, setTenantsID] = useState([]);
+  const [selected, setSelected] = useState([]);
   const [paid, setPaid] = useState('')
   const [percentage, setPercentage] = useState('')
   const [percentOf, setPercentOf] = useState('')
@@ -23,11 +26,11 @@ function BulkInvoiving() {
   const [aplicableChargeId, setAplicableChargeId] = useState('')
 
 
-useEffect(()=>{
-  requestsServiceService.allApplicableCharges().then((res)=>{
-    setAplicableCharges(res.data.data)
-  })
-},[])
+  useEffect(() => {
+    requestsServiceService.allApplicableCharges().then((res) => {
+      setAplicableCharges(res.data.data)
+    })
+  }, [])
 
   const handleInvoiceFor = (e) => {
     setInvoiceFor(e.target.value);
@@ -36,6 +39,12 @@ useEffect(()=>{
     setPremises([])
   }
 
+  if (invoiceFor !== "") {
+    $('#invoiceFor').attr('disabled', 'disabled');
+  } else {
+    $('#invoiceFor').removeAttr('disabled');
+
+  }
   const search = () => {
     let endDate = new Date()
     let startDate = "2022-01-01T23:50:21.817Z"
@@ -81,10 +90,14 @@ useEffect(()=>{
     const { checked, value } = event.target;
     if (checked) {
       setPremisesId([...premisesId, premises[index].id]);
+      setSelected([...selected, premises[index]])
     } else {
       setPremisesId(
         premisesId.filter((prem) => prem !== premises[index].id)
       );
+      setSelected(
+        selected.filter((select) => select.id !== premises[index].id)
+      )
     }
   };
   const handleTenantChange = (index, event) => {
@@ -92,32 +105,73 @@ useEffect(()=>{
 
     if (checked) {
       setTenantsID([...tenantsId, tenants[index].id]);
+      setSelected([...selected, tenants[index]])
     } else {
       setTenantsID(
         tenantsId.filter((prem) => prem !== tenants[index].id)
       );
+      setSelected(
+        selected.filter((select) => select.id !== tenants[index].id)
+      )
     }
   };
+
+  const filter = (id)=>{
+    setSelected(
+      selected.filter((select) => select.id !== id )
+    )
+   
+  
+  }
+
   const handleLandlordChange = (index, event) => {
     const { checked, value } = event.target;
 
     if (checked) {
       setLandlordsId([...landlordsId, landlords[index].id]);
+      setSelected([...selected, landlords[index]])
     } else {
       setLandlordsId(
         landlordsId.filter((prem) => prem !== landlords[index].id)
       );
+      setSelected(
+        selected.filter((select) => select.id !== landlords[index].id)
+      )
     }
   };
 
   const handleWhoToCharge = (e) => {
     setWhoToCharge(e.target.value);
 
-  if(e.target.value ==="CHARGECONSTRAINT" )
-  setPaid('');
-  setPercentage('');
-  setPercentOf('');
-  setAplicableChargeId('')
+    if (e.target.value === "CHARGECONSTRAINT")
+      setPaid('');
+    setPercentage('');
+    setPercentOf('');
+    setAplicableChargeId('')
+  }
+
+  const sendData = ()=> {
+     if(invoiceFor !== "" && invoices?.length < 0 ){
+      let data = JSON.stringify({
+        "aplicableChargeId": aplicableChargeId,
+        "invoiceFor": invoiceFor,
+        "landlordIds": landlordsId,
+        "paid": paid,
+        "percentOf": percentOf,
+        "percentage": percentage,
+        "premiseIds": premisesId,
+        "tenancyIds": [],
+        "tenantIds": tenantsId,
+        "whoToCharge": whoToCharge
+      })
+
+      requestsServiceService.createBulkInvoice(data).then((res)=>{
+         setInvoices(res.data.data);
+     })
+
+
+     }
+
   }
 
   return (
@@ -204,7 +258,7 @@ useEffect(()=>{
                             <label class="col-form-label">Create an invoice for <strong className="text-danger">*</strong> </label>
                           </div>
                           <div class="col-4">
-                            <select class="form-control" aria-label="Default select example" onChange={(e) => handleInvoiceFor(e)}>
+                            <select class="form-control" aria-label="Default select example" onChange={(e) => handleInvoiceFor(e)} id="invoiceFor">
                               <option ></option>
                               <option value="CURRENT">Current</option>
                               <option value="LANDLORD">Landlord</option>
@@ -213,12 +267,12 @@ useEffect(()=>{
                             </select>
                           </div>
                         </div>
-                        {invoiceFor !== "CURRENT" && invoiceFor !== "" && <div class="row g-3 align-items-center">
+                        { invoiceFor !== "CURRENT" && invoiceFor !== "" && <div class="row g-3 align-items-center">
                           <div class="col-3">
-                            <label class="col-form-label">Search for {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}  <strong className="text-danger">*</strong></label>
+                            <label class="col-form-label">Search for { invoiceFor?.toLowerCase()?.replace(/_/g, " ")}  <strong className="text-danger">*</strong></label>
                           </div>
                           <div class="col-auto">
-                            <form className="app-search d-lg-block mr-15px">
+                            <div className="app-search d-lg-block mr-15px">
                               <div className="position-relative">
                                 <input
                                   type="text"
@@ -229,7 +283,7 @@ useEffect(()=>{
                                 />
                                 <span className="bx bx-search-alt"></span>
                               </div>
-                            </form>
+                            </div>
                           </div>
                           {searchTerm !== "" && <div class="col-auto">
                             <button onClick={search} className="btn btn-md bg-primary text-white">
@@ -247,7 +301,8 @@ useEffect(()=>{
 
                         </div>}
 
-                        <div class="row g-3 mb-4 align-items-center">
+                        { invoiceFor !== "" && invoiceFor !== "CURRENT" && <div class="row g-3 mb-4 align-items-center">
+                          <strong> Select {invoiceFor?.toLowerCase()}s to invoice for <strong className='text-danger'>*</strong> </strong>
                           {invoiceFor === 'PREMISE' && premises?.length > 0 &&
                             premises?.map((prem, index) => (
                               <div class="col-4" key={prem.id}>
@@ -296,8 +351,40 @@ useEffect(()=>{
                             ))
                           }
 
-                        </div>
+                        </div>}
+                       { selected?.length > 0 && invoiceFor !== "PREMISE" &&
+                        <div class="row g-3 mb-4 align-items-center">
+                          <h4 className="text-center">Selected {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}s</h4>
+                          <div className="row">
+                           { selected && selected.map((one)=>(    
+                           <div className="col-4 d-flex align-items-baseline gap-4 ">
+                           <p><i class="bx bx-check text-primary font-18px"></i> {one.firstName}</p>
+                           <i class="bx bx-trash text-primary font-18px" onClick={()=> filter(one.id)}></i>
+                           </div>
+                           ))
+                         }
+
+                          </div>
+                        </div> 
+                        }
+
+                       { selected?.length > 0 && invoiceFor === "PREMISE" &&
+                        <div class="row g-3 mb-4 align-items-center">
+                          <h4 className="text-center">Selected {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}s</h4>
+                          <div className="row">
+                           { selected && selected.map((one)=>(    
+                           <div className="col-4 d-flex align-items-baseline gap-4 ">
+                           <p><i class="bx bx-check text-primary font-18px"></i> {one.firstName}</p>
+                           <i class="bx bx-trash text-primary font-18px" onClick={()=> filter(one.id)}></i>
+                           </div>
+                           ))
+                         }
+
+                          </div>
+                        </div> 
+                        }
                       </div>
+
                       <div className="card">
                         <div className="col-12">
                           <div className="bg-primary border-2 bg-soft p-3 mb-4">
@@ -320,39 +407,39 @@ useEffect(()=>{
                             </select>
                           </div>
                         </div>
-                       {whoToCharge ==="CHARGECONSTRAINT" && <div class="row g-3 align-items-center">
+                        {whoToCharge === "CHARGECONSTRAINT" && <div class="row g-3 align-items-center">
                           <div class="col-auto">
                             <label class="col-form-label">Have paid:</label>
                           </div>
                           <div class="col-auto">
-                              <select class="form-control" aria-label="Default select example" onChange={(e) => setPaid(e.target.value)}>
-                                <option>select..</option>
-                                <option value="over">Over</option>
-                                <option value="below">Below</option>
-                              </select>
+                            <select class="form-control" aria-label="Default select example" onChange={(e) => setPaid(e.target.value)}>
+                              <option>select..</option>
+                              <option value="over">Over</option>
+                              <option value="below">Below</option>
+                            </select>
                           </div>
                           <div class="col-3 d-flex align-items-center gap-1">
-                           <input type="number" className='form-control' max={100} min={1} placeholder="Enter number (1-100)" onChange={(e)=> setPercentage(e.target.value)}/>
-                           <strong>{" "} %</strong>
+                            <input type="number" className='form-control' max={100} min={1} placeholder="Enter number (1-100)" onChange={(e) => setPercentage(e.target.value)} />
+                            <strong>{" "} %</strong>
                           </div>
                           <div class="col-auto d-flex  align-items-center gap-1">
                             <strong>of</strong>
-                              <select class="form-control" aria-label="Default select example" onChange={(e) => setPercentOf(e.target.value)}>
-                                <option>select..</option>
-                                <option value="fullPeriod">Full Period</option>
-                                <option value="specificCharge">Specific Charge</option>
-                              </select>
+                            <select class="form-control" aria-label="Default select example" onChange={(e) => setPercentOf(e.target.value)}>
+                              <option>select..</option>
+                              <option value="fullPeriod">Full Period</option>
+                              <option value="specificCharge">Specific Charge</option>
+                            </select>
                           </div>
-                        </div> }
-                      {percentOf === "specificCharge" && whoToCharge ==="CHARGECONSTRAINT" && <div class="row g-3 mb-3 mt-2 align-items-center">
+                        </div>}
+                        {percentOf === "specificCharge" && whoToCharge === "CHARGECONSTRAINT" && <div class="row g-3 mb-3 mt-2 align-items-center">
                           <div class="col-auto">
                             <label for="inputPassword6" class="col-form-label">Charge : </label>
                           </div>
-                          
+
                           <div class="col-4">
                             <select class="form-control" aria-label="Default select example" onChange={(e) => setAplicableChargeId(e.target.value)}>
                               <option >Select a charge</option>
-                              {aplicableCharges.map((charge)=>(
+                              {aplicableCharges.map((charge) => (
                                 <option value={charge.id}> {charge.name}</option>
                               ))}
                             </select>
@@ -380,7 +467,7 @@ useEffect(()=>{
                       <div className="col-12">
                         <div className="bg-primary border-2 bg-soft p-3 mb-4">
                           <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                            Document Attachments{" "}
+                            {/* Document Attachments{" "} */}
                           </p>
                         </div>
                       </div>
@@ -394,12 +481,13 @@ useEffect(()=>{
                       <i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i>{" "}
                       Previous{" "}
                     </button>
-                    <button
+                   {invoiceFor !== "" && <button
                       className="btn btn-primary waves-effect kev-nxt me-3"
+                      onClick={()=> sendData()}
                     >
-                      Next{" "}
+                      Next
                       <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
-                    </button>
+                     </button>} 
                     <button
                       type="submit"
                       className="btn btn-success kev-submit me-3 d-none"
