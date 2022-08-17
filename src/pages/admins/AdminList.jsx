@@ -300,7 +300,7 @@ function AdminList() {
                                   <td>
                                     <p className="mb-0">{list.user.role.name}</p>
                                   </td>
-
+                                 
                                   <td>
                                     {(list.authAccount && list.authAccount.correlator != undefined) ? (
                                       <StatusBadge type="True" />

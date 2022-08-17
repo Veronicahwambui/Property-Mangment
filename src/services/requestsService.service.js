@@ -32,7 +32,7 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/users/create", data);
   }
 
-  getData( type,data) {
+  getData(type,data) {
     return axiosInstance.get(baseUrl + "/users?type="+type, data);
   }
   getUserRoles() {
