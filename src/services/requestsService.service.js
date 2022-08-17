@@ -899,6 +899,67 @@ class RequestsService {
       m
     );
   }
+
+  // LANDLORD PREMISES / DASHBOARD
+  getLandLordPremises(data) {
+    return axiosInstance.post(baseUrl + "/premises/list/", data);
+  }
+  getLandlordDashboard(landlordId, sdate, edate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard?startDate=" +
+        sdate +
+        "&endDate=" +
+        edate +
+        "&landlord=" +
+        landlordId
+    );
+  }
+  getLandlordGraph(landlordId, sdate, edate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard/graphs?landlord=" +
+        landlordId +
+        "&startDate=" +
+        sdate +
+        "&endDate=" +
+        edate
+    );
+  }
+  // TENANT DASHBOARD, STATEMENTS AND RECEIPTS
+  getTenantDashboard(tenantId, sdate, edate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard?startDate=" +
+        sdate +
+        "&endDate=" +
+        edate +
+        "&tenant=" +
+        tenantId
+    );
+  }
+  getTenantGraph(tenantId, sdate, edate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/dashboard/graphs?tenant=" +
+        tenantId +
+        "&startDate=" +
+        sdate +
+        "&endDate=" +
+        edate
+    );
+  }
+  getTenantStatements(id, sD, eD) {
+    return axiosInstance.get(
+      baseUrl +
+        "/payments/statements/" +
+        id +
+        "?startDate=" +
+        sD +
+        "&endDate=" +
+        eD
+    );
+  }
 }
 
 export default new RequestsService();
