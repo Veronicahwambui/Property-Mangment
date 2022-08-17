@@ -1236,39 +1236,6 @@ function ViewLandlord() {
                       </div>
                     </div>
                   </div>
-                  <div className="card">
-                    <div>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="p-4">
-                            <h5 className="text-primary mb-0 pb-0">
-                              Rent collection summary
-                            </h5>
-                            <span>Rent collection summary for tenant </span>
-                            <div className="row">
-                              <div className="col-12">
-                                <div
-                                  id="revenue-chart"
-                                  className="apex-charts"
-                                  dir="ltr"
-                                >
-                                  <Chart
-                                    class="apex-charts revenue-type"
-                                    options={options}
-                                    plotOptions={options.plotOptions}
-                                    series={options.series}
-                                    type="bar"
-                                    height="360"
-                                    xaxis={options.xaxis}
-                                  />
-                                </div>{" "}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div className="row">
@@ -1313,6 +1280,41 @@ function ViewLandlord() {
                     </div>
                   </div>
                 </div>
+                <div className="col-xl-8">
+                  <div className="card">
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="p-4">
+                          <h5 className="text-primary mb-0 pb-0">
+                            Rent collection summary
+                          </h5>
+                          <span>Rent collection summary for tenant </span>
+                          <div className="row">
+                            <div className="col-12">
+                              <div
+                                id="revenue-chart"
+                                className="apex-charts"
+                                dir="ltr"
+                              >
+                                <Chart
+                                  class="apex-charts revenue-type"
+                                  options={options}
+                                  plotOptions={options.plotOptions}
+                                  series={options.series}
+                                  type="bar"
+                                  height="360"
+                                  xaxis={options.xaxis}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
                 <div className="col-xl-4">
                   <div className="card">
                     <div className="card-body">
@@ -1410,7 +1412,6 @@ function ViewLandlord() {
                     </div>
                   </div>
                 </div>
-                <div className="col-xl-5 px-sm-30px"></div>
               </div>
             </>
           )}
