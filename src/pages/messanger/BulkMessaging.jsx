@@ -29,36 +29,59 @@ function BulkMessaging() {
   const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
   const [bulkMessage, setbulkMessage] = useState({
-    aplicableChargeId: 0,
+    aplicableChargeId: undefined,
     landlordIds: [],
     paid: "string",
     percentOf: "string",
-    percentage: 0,
+    percentage: undefined,
     premiseIds: [],
     sendTo: "string",
     templatedMessage: "string",
     tenantIds: [],
     whoToCharge: "string",
   });
-
-  let data = {
-    aplicableChargeId: 0,
-    landlordIds: [],
-    paid: "string",
-    percentOf: "string",
-    percentage: 0,
-    premiseIds: [],
-    sendTo: "string",
-    templatedMessage: "string",
-    tenantIds: [],
-    whoToCharge: "string",
-  };
+  useEffect(() => {
+    console.log(bulkMessage);
+  }, [selectedItems]);
   const handleSubmit = (e) => {
     e.preventDefault();
-    let data = {};
-    console.log(data);
+    let data = {
+      aplicableChargeId: bulkMessage.aplicableChargeId,
+      landlordIds: [],
+      paid: bulkMessage.paid,
+      percentOf: percentOf,
+      percentage: parseInt(bulkMessage.percentage),
+      premiseIds: [],
+      sendTo: recipient,
+      templatedMessage: "string",
+      tenantIds: [],
+      whoToCharge: wtc,
+    };
+    let result = selectedItems.map((a) => a.id);
+    if (recipient === "TENANT") {
+      Object.assign(data, { tenantIds: result });
+      createBulkMessage(data);
+    } else if (recipient === "LANDLORD") {
+      Object.assign(data, { landlordIds: result });
+      createBulkMessage(data);
+    } else if (recipient === "PREMISE") {
+      Object.assign(data, { premiseIds: result });
+      createBulkMessage(data);
+    }
   };
+  const createBulkMessage = (x) => {
+    requestsServiceService
+      .createBulkMessage(x)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const clearModal = () => {
+    setRecipient("");
     setloaded(false);
     setloading(false);
     setloading2(false);
@@ -70,6 +93,7 @@ function BulkMessaging() {
     });
     setSearchTerm("");
     setselectedItems([]);
+    setWtc("");
   };
   useEffect(() => {
     getApplicableCharges();
@@ -80,6 +104,7 @@ function BulkMessaging() {
     });
   };
   const selectItems = (e, x) => {
+    console.log(selectedItems.some((el) => el.id === x.id));
     if (e.target.checked) {
       setselectedItems((selectedItems) => [...selectedItems, x]);
     } else {
@@ -151,7 +176,14 @@ function BulkMessaging() {
   };
   useEffect(() => {}, [loaded]);
 
-  function handleChange(e) {}
+  function handleChange(e) {
+    setbulkMessage({
+      ...bulkMessage,
+      [e.target.name]: e.target.value,
+    });
+  }
+  const [wtc, setWtc] = useState("");
+  const [percentOf, setPercentOf] = useState("");
 
   return (
     <>
@@ -311,36 +343,30 @@ function BulkMessaging() {
                         <div className="col-xl-12">
                           <div className="row">
                             <div className="col-12">
-                              <div>
-                                <form
-                                  id={"bulk-form"}
-                                  onSubmit={searchItems}
-                                  className="app-search d-none d-lg-block d-flex"
-                                >
-                                  <div className="position-relative">
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      placeholder={
-                                        "Search " +
-                                        recipient.toLowerCase() +
-                                        " by name"
-                                      }
-                                      required={true}
-                                      onChange={(e) =>
-                                        setSearchTerm(e.target.value)
-                                      }
-                                    />
-                                    <span className="bx bx-search-alt"></span>
-                                  </div>
-                                </form>
+                              <div className="app-search d-none d-lg-block d-flex">
+                                <div className="position-relative">
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder={
+                                      "Search " +
+                                      recipient.toLowerCase() +
+                                      " by name"
+                                    }
+                                    required={true}
+                                    onChange={(e) =>
+                                      setSearchTerm(e.target.value)
+                                    }
+                                  />
+                                  <span className="bx bx-search-alt"></span>
+                                </div>
                               </div>
                               <div className="form-group">
                                 <div className="d-flex align-items-center justify-content-center">
                                   <div className="text-end">
                                     <button
-                                      type={"submit"}
-                                      form={"bulk-form"}
+                                      type="button"
+                                      onClick={searchItems}
                                       disabled={loading2 || recipient === ""}
                                       className="btn btn-primary btn-rounded"
                                     >
@@ -420,8 +446,8 @@ function BulkMessaging() {
                                 <>
                                   {recipient === "LANDLORD" && (
                                     <>
-                                      <div className="ml-7px">
-                                        <Badge bg="success" key={item.id}>
+                                      <div className="ml-7px" key={item.id}>
+                                        <Badge bg="success">
                                           {item.firstName + " " + item.lastName}
                                         </Badge>
                                       </div>
@@ -429,8 +455,8 @@ function BulkMessaging() {
                                   )}
                                   {recipient === "TENANT" && (
                                     <>
-                                      <div className="ml-7px">
-                                        <Badge bg="success" key={item.id}>
+                                      <div className="ml-7px" key={item.id}>
+                                        <Badge bg="success">
                                           {item.tenantType === "COMPANY" ? (
                                             <>{item.companyName}</>
                                           ) : (
@@ -446,8 +472,8 @@ function BulkMessaging() {
                                   )}
                                   {recipient === "PREMISE" && (
                                     <>
-                                      <div className="ml-7px">
-                                        <Badge bg="success" key={item.id}>
+                                      <div className="ml-7px" key={item.id}>
+                                        <Badge bg="success">
                                           {item.premiseName}
                                         </Badge>
                                       </div>
@@ -521,6 +547,10 @@ function BulkMessaging() {
                                                         onChange={(e) =>
                                                           selectItems(e, item)
                                                         }
+                                                        checked={selectedItems.some(
+                                                          (el) =>
+                                                            el.id === item.id
+                                                        )}
                                                       />
                                                     </div>
                                                   </div>
@@ -547,6 +577,10 @@ function BulkMessaging() {
                                                         onChange={(e) =>
                                                           selectItems(e, item)
                                                         }
+                                                        checked={selectedItems.some(
+                                                          (el) =>
+                                                            el.id === item.id
+                                                        )}
                                                       />
                                                     </div>
                                                   </div>
@@ -578,6 +612,10 @@ function BulkMessaging() {
                                                         onChange={(e) =>
                                                           selectItems(e, item)
                                                         }
+                                                        checked={selectedItems.some(
+                                                          (el) =>
+                                                            el.id === item.id
+                                                        )}
                                                       />
                                                     </div>
                                                   </div>
@@ -625,70 +663,106 @@ function BulkMessaging() {
                       </p>
                     </div>
                   </div>
-                  <div className="row g-3 align-items-center">
+                  <div className="row g-3 mb-3 align-items-center">
                     <div className="col-auto">
-                      <label className="col-form-label">Have paid:</label>
+                      <label
+                        htmlFor="inputPassword6"
+                        className="col-form-label"
+                      >
+                        Who to charge:
+                      </label>
                     </div>
-                    <div className="col-auto">
+                    <div className="col-4">
                       <select
                         className="form-control"
                         aria-label="Default select example"
-                        onClick={(e) => handleChange(e)}
+                        onChange={(e) => setWtc(e.target.value)}
                       >
-                        <option>Select..</option>
-                        {["Over", "Below"].map((item) => (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="col-4 d-flex align-items-center gap-1">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Enter number (1-100)"
-                      />
-                      <strong> % </strong>
-                    </div>
-                    <div className="col-4 d-flex align-items-center gap-1">
-                      <strong>of</strong>
-                      <select
-                        className="form-control"
-                        aria-label="Default select example"
-                      >
-                        <option>select..</option>
-                        <option value="fullPeriod">Full Period</option>
-                        <option value="specificCharge">Specific Charge</option>
+                        <option>Select who to charge</option>
+                        <option value="ALLCURRENT">All Current</option>
+                        <option value="CHARGECONSTRAINT">
+                          Charge Constraint
+                        </option>
                       </select>
                     </div>
                   </div>
-                  <div className="col-12 mt-3">
+                  {wtc === "CHARGECONSTRAINT" && (
                     <div className="row g-3 align-items-center">
                       <div className="col-auto">
-                        <label className="col-form-label">
-                          Charge <strong className="text-danger ">*</strong>
-                        </label>
+                        <label className="col-form-label">Have paid:</label>
                       </div>
                       <div className="col-auto">
                         <select
-                          className="form-control text-capitalize"
-                          required={true}
+                          className="form-control"
+                          name={"paid"}
+                          aria-label="Default select example"
+                          onChange={(e) => handleChange(e)}
                         >
-                          <option className="text-black font-semibold">
-                            select charge
-                          </option>
-                          {applicableCharges.map((aT) => {
-                            return (
-                              <option key={aT.id} value={aT.name}>
-                                {aT.name}
-                              </option>
-                            );
-                          })}
+                          <option>Select..</option>
+                          {["Over", "Below"].map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="col-4 d-flex align-items-center gap-1">
+                        <input
+                          type="text"
+                          name={"percentage"}
+                          className="form-control"
+                          placeholder="Enter number (1-100)"
+                          onChange={(e) => handleChange(e)}
+                        />
+                        <strong> % </strong>
+                      </div>
+                      <div className="col-4 d-flex align-items-center gap-1">
+                        <strong>of</strong>
+                        <select
+                          className="form-control"
+                          aria-label="Default select example"
+                          onChange={(e) => setPercentOf(e.target.value)}
+                        >
+                          <option>select..</option>
+                          {["Full Period", "Specific Charge"].map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
-                  </div>
+                  )}
+                  {percentOf === "Specific Charge" && (
+                    <div className="col-12 mt-3">
+                      <div className="row g-3 align-items-center">
+                        <div className="col-auto">
+                          <label className="col-form-label">
+                            Charge <strong className="text-danger ">*</strong>
+                          </label>
+                        </div>
+                        <div className="col-auto">
+                          <select
+                            className="form-control text-capitalize"
+                            required={true}
+                            name={"aplicableChargeId"}
+                            onChange={(e) => handleChange(e)}
+                          >
+                            <option className="text-black font-semibold">
+                              select charge
+                            </option>
+                            {applicableCharges.map((aT) => {
+                              return (
+                                <option key={aT.id} value={aT.id}>
+                                  {aT.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </section>
               <section className="step-cont d-none">
@@ -711,8 +785,9 @@ function BulkMessaging() {
                         id=""
                         cols="30"
                         rows="5"
+                        name={"templatedMessage"}
                         className="form-control"
-                        // onChange={(e) => handleChange(e)}
+                        onChange={(e) => handleChange(e)}
                         required={true}
                       ></textarea>
                     </div>
@@ -735,10 +810,10 @@ function BulkMessaging() {
                 Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
               </button>
               <button
-                type="submit"
+                type="button"
                 className="btn btn-success kev-submit me-2 d-none"
-                form={"my-form"}
-                disabled={true}
+                onClick={handleSubmit}
+                // form={"my-form"}
               >
                 Submit <i className="mdi mdi-check-all me-2 font-16px"></i>
               </button>
