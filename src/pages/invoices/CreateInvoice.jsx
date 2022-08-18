@@ -614,6 +614,7 @@ function CreateInvoice() {
                             className="form-control"
                             placeholder="Search..."
                             onChange={(e) => setTenantName(e.target.value)}
+                            required={true}
                           />
                           <span className="bx bx-search-alt"></span>
                         </div>
