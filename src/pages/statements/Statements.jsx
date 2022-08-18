@@ -68,7 +68,7 @@ const searchBillNo = async (e)=>{
 
 await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=>{
    console.log(res.data);
-   if( res.data.paymentStatus !== "PAID"){
+   if( res.data.paymentStatus !== "PAID" && res.data.status === true){
      utilize();
   }else {
     setError({

@@ -564,6 +564,8 @@ function CreateInvoice() {
           </div>
         </div>
       </div>
+
+      
       <Modal
         show={show}
         onHide={closeTenantModal}
@@ -742,6 +744,8 @@ function CreateInvoice() {
           </div>
         </Modal.Body>
       </Modal>
+
+      
       <footer className="footer ">
         <div className="container-fluid ">
           <div className="row ">
