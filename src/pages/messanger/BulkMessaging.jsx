@@ -20,9 +20,12 @@ function BulkMessaging() {
     message: "",
     color: "",
   });
-  const [show, setshow] = useState(false);
+  const [show, setshow] = useState(true);
   const showTenantModal = () => setshow(true);
-  const closeTenantModal = () => setshow(false);
+  const closeTenantModal = () => {
+    clearModal();
+    setshow(false);
+  };
   const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
   const [bulkMessage, setbulkMessage] = useState({});
@@ -32,6 +35,19 @@ function BulkMessaging() {
     let data = {};
     console.log(data);
   };
+  const clearModal = () => {
+    setloaded(false);
+    setloading(false);
+    setloading2(false);
+    setSearchResults([]);
+    setError({
+      error,
+      message: "",
+      color: "",
+    });
+    setSearchTerm("");
+    setselectedItems([]);
+  };
   useEffect(() => {
     getApplicableCharges();
   }, []);
@@ -40,7 +56,6 @@ function BulkMessaging() {
       setAc(res.data.data);
     });
   };
-
   const selectItems = (e, x) => {
     if (e.target.checked) {
       setselectedItems((selectedItems) => [...selectedItems, x]);
@@ -53,10 +68,10 @@ function BulkMessaging() {
   };
 
   const searchItems = (e) => {
+    $("#bulk-form").trigger("reset");
     setloaded(false);
     setSearchResults([]);
     e.preventDefault();
-    setselectedItems([]);
     setloading(true);
     let dates = {
       dateCreatedEnd: moment("12/12/2022").format(),
@@ -64,7 +79,7 @@ function BulkMessaging() {
     };
     if (recipient === "TENANT") {
       let s = {
-        tenantName: searchTerm,
+        search: searchTerm,
       };
       let data = Object.assign(dates, s);
       getTenants(data);
@@ -199,9 +214,6 @@ function BulkMessaging() {
                     <li className="nav-item">
                       <a className="nav-link">2. Account details</a>
                     </li>
-                    <li className="nav-item">
-                      <a className="nav-link">3. Document attachments</a>
-                    </li>
                   </ul>
                 </div>
               </nav>
@@ -247,32 +259,18 @@ function BulkMessaging() {
                         className="form-control text-capitalize"
                         onChange={(e) => {
                           setSearchResults([]);
-                          setselectedItems([]);
                           setRecipient(e.target.value);
                         }}
+                        disabled={recipient !== ""}
                       >
                         <option className="text-black font-semibold " value="">
-                          Select type
+                          Select..
                         </option>
-                        <option
-                          className="text-black font-semibold "
-                          value="TENANT"
-                          disabled={true}
-                        >
-                          TENANT
-                        </option>
-                        <option
-                          className="text-black font-semibold "
-                          value="LANDLORD"
-                        >
-                          LANDLORD
-                        </option>
-                        <option
-                          className="text-black font-semibold "
-                          value="PREMISE"
-                        >
-                          PREMISE
-                        </option>
+                        {["TENANT", "LANDLORD", "PREMISE"].map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="col-12">
@@ -381,40 +379,49 @@ function BulkMessaging() {
                               "alert alert-grey d-flex align-items-center"
                             }
                           >
-                            {searchResults.length > 0 &&
-                              searchResults.length <= 5 && (
-                                <>
-                                  <Button variant="primary">
-                                    Selected
-                                    <Badge bg="secondary" className="ml-7px">
-                                      ({selectedItems.length})
-                                    </Badge>
-                                  </Button>
-                                </>
-                              )}
+                            {selectedItems.length > 0 && (
+                              <>
+                                <Button variant="primary">
+                                  Selected
+                                  <Badge bg="light" className="ml-7px">
+                                    ({selectedItems.length})
+                                  </Badge>
+                                </Button>
+                              </>
+                            )}
                             {selectedItems.length > 0 &&
                               selectedItems?.map((item) => (
                                 <>
                                   {recipient === "LANDLORD" && (
                                     <>
                                       <div className="ml-7px">
-                                        <Badge bg="danger" key={item.id}>
-                                          {item.firstName}
+                                        <Badge bg="success" key={item.id}>
+                                          {item.firstName + " " + item.lastName}
                                         </Badge>
                                       </div>
                                     </>
                                   )}
                                   {recipient === "TENANT" && (
                                     <>
-                                      <span>
-                                        <i>{item.firstName + " , "}</i>
-                                      </span>
+                                      <div className="ml-7px">
+                                        <Badge bg="success" key={item.id}>
+                                          {item.tenantType === "COMPANY" ? (
+                                            <>{item.companyName}</>
+                                          ) : (
+                                            <>
+                                              {item.firstName +
+                                                " " +
+                                                item.lastName}
+                                            </>
+                                          )}
+                                        </Badge>
+                                      </div>
                                     </>
                                   )}
                                   {recipient === "PREMISE" && (
                                     <>
                                       <div className="ml-7px">
-                                        <Badge bg="danger" key={item.id}>
+                                        <Badge bg="success" key={item.id}>
                                           {item.premiseName}
                                         </Badge>
                                       </div>
@@ -533,6 +540,43 @@ function BulkMessaging() {
                                                 </td>
                                               </tr>
                                             )}
+                                            {recipient === "TENANT" && (
+                                              <tr key={item.id}>
+                                                <td>
+                                                  <div className="d-flex  align-items-center">
+                                                    <div className="the-mail-checkbox pr-4">
+                                                      <input
+                                                        className="form-check-input mt-0 pt-0 form-check-dark"
+                                                        type="checkbox"
+                                                        id="formCheck1"
+                                                        onChange={(e) =>
+                                                          selectItems(e, item)
+                                                        }
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                </td>
+                                                <td>{item.tenantType}</td>
+                                                <td className="text-capitalize">
+                                                  <a href="javascript:void(0)">
+                                                    {item?.tenantType ===
+                                                    "INDIVIDUAL" ? (
+                                                      <>
+                                                        {item.firstName + " "}
+                                                        {item.lastName +
+                                                          " "}{" "}
+                                                        {item.otherName}
+                                                      </>
+                                                    ) : (
+                                                      <>
+                                                        {item.companyName + " "}
+                                                      </>
+                                                    )}
+                                                  </a>
+                                                </td>
+                                                <td>{item.email}</td>
+                                              </tr>
+                                            )}
                                           </>
                                         ))}
                                       </>
@@ -575,95 +619,96 @@ function BulkMessaging() {
                     </div>
                   </div>
                 </div>
-              </section>
-              <section className="step-cont d-none">
-                <div className="col-12">
-                  <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                    <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                      Charging Rule
-                    </p>
+                <div className="row">
+                  <div className="col-12">
+                    <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                      <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                        Charging Rule
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="row g-3 align-items-center">
-                  <div className="col-auto">
-                    <label className="col-form-label">Have paid:</label>
-                  </div>
-                  <div className="col-auto">
-                    <select
-                      className="form-control"
-                      aria-label="Default select example"
-                    >
-                      <option>select..</option>
-                      <option value="over">Over</option>
-                      <option value="below">Below</option>
-                    </select>
-                  </div>
-                  <div className="col-4 d-flex align-items-center gap-1">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Enter number (1-100)"
-                    />
-                    <strong> % </strong>
-                  </div>
-                  <div className="col-4 d-flex align-items-center gap-1">
-                    <strong>of</strong>
-                    <select
-                      className="form-control"
-                      aria-label="Default select example"
-                    >
-                      <option>select..</option>
-                      <option value="fullPeriod">Full Period</option>
-                      <option value="specificCharge">Specific Charge</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="col-12 mt-3">
                   <div className="row g-3 align-items-center">
                     <div className="col-auto">
-                      <label className="col-form-label">
-                        Charge <strong className="text-danger ">*</strong>
-                      </label>
+                      <label className="col-form-label">Have paid:</label>
                     </div>
                     <div className="col-auto">
                       <select
-                        className="form-control text-capitalize"
-                        required={true}
+                        className="form-control"
+                        aria-label="Default select example"
                       >
-                        <option className="text-black font-semibold">
-                          select charge
-                        </option>
-                        {applicableCharges.map((aT) => {
-                          return (
-                            <option key={aT.id} value={aT.name}>
-                              {aT.name}
-                            </option>
-                          );
-                        })}
+                        <option>select..</option>
+                        <option value="over">Over</option>
+                        <option value="below">Below</option>
                       </select>
+                    </div>
+                    <div className="col-4 d-flex align-items-center gap-1">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter number (1-100)"
+                      />
+                      <strong> % </strong>
+                    </div>
+                    <div className="col-4 d-flex align-items-center gap-1">
+                      <strong>of</strong>
+                      <select
+                        className="form-control"
+                        aria-label="Default select example"
+                      >
+                        <option>select..</option>
+                        <option value="fullPeriod">Full Period</option>
+                        <option value="specificCharge">Specific Charge</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-12 mt-3">
+                    <div className="row g-3 align-items-center">
+                      <div className="col-auto">
+                        <label className="col-form-label">
+                          Charge <strong className="text-danger ">*</strong>
+                        </label>
+                      </div>
+                      <div className="col-auto">
+                        <select
+                          className="form-control text-capitalize"
+                          required={true}
+                        >
+                          <option className="text-black font-semibold">
+                            select charge
+                          </option>
+                          {applicableCharges.map((aT) => {
+                            return (
+                              <option key={aT.id} value={aT.name}>
+                                {aT.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
               </section>
             </div>
-            <div className="button-navigators">
+            <div className="button-navigators mt-3">
               <button
                 disabled
-                className="btn btn-primary waves-effect kev-prev me-3"
+                className="btn btn-primary waves-effect kev-prev me-2"
               >
                 <i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i>
                 Previous
               </button>
               <button
-                className="btn btn-primary waves-effect kev-nxt me-3"
+                className="btn btn-primary waves-effect kev-nxt me-2"
                 disabled={recipient === "" || selectedItems.length === 0}
               >
                 Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
               </button>
               <button
                 type="submit"
-                className="btn btn-success kev-submit me-3 d-none"
+                className="btn btn-success kev-submit me-2 d-none"
                 form={"my-form"}
+                disabled={true}
               >
                 Submit <i className="mdi mdi-check-all me-2 font-16px"></i>
               </button>
