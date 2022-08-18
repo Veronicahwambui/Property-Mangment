@@ -40,10 +40,6 @@ function CreateInvoice() {
     });
   };
   useEffect(() => {
-    getTenants();
-  }, [custname]);
-
-  useEffect(() => {
     requestsServiceService.allApplicableCharges().then((res) => {
       setapplicableCharges(res.data.data);
     });
@@ -71,6 +67,7 @@ function CreateInvoice() {
       .then((res) => {
         setTenants(res.data.data);
         setloading2(false);
+        setfetched(true);
       });
   };
 
@@ -80,6 +77,7 @@ function CreateInvoice() {
   const [loading, setloading] = useState(false);
   const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
+  const [fetched, setfetched] = useState(false);
 
   const getId = (y) => {
     requestsServiceService
@@ -115,6 +113,7 @@ function CreateInvoice() {
       });
   };
   const handleSubmit = (e) => {
+    setfetched(false);
     e.preventDefault();
     setError({
       ...error,
@@ -132,6 +131,7 @@ function CreateInvoice() {
   const [isChecked, setIsChecked] = useState(false);
   useEffect(() => {}, [tenants, isChecked, custname]);
   const autofill = (x) => {
+    setfetched(false);
     setloaded(false);
     setloading(true);
     getId(x);
@@ -211,7 +211,9 @@ function CreateInvoice() {
     }
   };
   $(document).on("change", ".enddate", addDate);
-
+  useEffect(() => {
+    console.log(fetched);
+  }, [fetched]);
   return (
     <>
       <div className="page-content">
@@ -612,6 +614,7 @@ function CreateInvoice() {
                             className="form-control"
                             placeholder="Search..."
                             onChange={(e) => setTenantName(e.target.value)}
+                            required={true}
                           />
                           <span className="bx bx-search-alt"></span>
                         </div>
@@ -651,8 +654,13 @@ function CreateInvoice() {
                       </div>
                     </div>
                     <div className={"mt-2 mb-2"}>
-                      {tenantName !== "" && tenants.length < 1 && (
+                      {fetched && tenants.length < 1 && (
                         <span className={"text-danger"}>Tenant not found!</span>
+                      )}
+                      {fetched && tenants.length > 5 && (
+                        <span className={"text-danger"}>
+                          Too many results. Specify a tenant name
+                        </span>
                       )}
                       <span className={"text-" + error.color}>
                         {error.message}
