@@ -960,6 +960,16 @@ class RequestsService {
         eD
     );
   }
+  // BULK MESSAGING
+  getMessagingLandlords(data) {
+    return axiosInstance.post(baseUrl + "/landlord/list", data);
+  }
+  getMessagingPremises(data) {
+    return axiosInstance.post(baseUrl + "/premises/list", data);
+  }
+  getMessagingTenants(data) {
+    return axiosInstance.post(baseUrl + "/tenants/list", data);
+  }
 }
 
 export default new RequestsService();
