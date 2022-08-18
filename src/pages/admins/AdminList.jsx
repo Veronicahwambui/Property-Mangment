@@ -281,7 +281,7 @@ function AdminList() {
                            {type?.map((use, index) => {
                               return (
                                 <option key={index} value={use.name}>
-                                  {use.name}
+                                  {use.name.toLowerCase()}
                                 </option>
                               );
                             })}

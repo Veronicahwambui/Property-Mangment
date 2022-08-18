@@ -387,7 +387,7 @@ function AddAdmin() {
                            {type?.map((use, index) => {
                               return (
                                 <option key={index} value={use.id}>
-                                  {use.name}
+                                  {use.name.toLowerCase()}
                                 </option>
                               );
                             })}
