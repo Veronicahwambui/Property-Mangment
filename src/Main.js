@@ -16,8 +16,7 @@ import Receipts from "./pages/statements/Receipts";
 import Transactions from "./pages/Transactions";
 import AdminList from "./pages/admins/AdminList";
 import AddAdmin from "./pages/admins/AddAdmin";
-import Auctioneers from "./pages/admins/Auctioneers";
-import AddAuctioneers from "./pages/admins/AddAuctioneers";
+
 import AllRoles from "./pages/setups/AllRoles";
 import ClientCounties from "./pages/setups/ClientCounties";
 import Login from "./pages/auth/Login";
@@ -155,8 +154,7 @@ function Main() {
                 />
                 <Route path="/addadmin" element={<AddAdmin />} />
                 <Route path="/usertypes" element={<UserTypes />} />
-                <Route path="/auctioneers" element={<Auctioneers />} />
-                <Route path="/addauctioneers" element={<AddAuctioneers />} />
+               
                 <Route path="/allroles" element={<AllRoles />} />
 
                 {/* setup */}

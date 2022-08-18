@@ -21,7 +21,7 @@ function AddAdmin() {
   
   const [role, setRole] = useState("");
   const[userType,setUserType] =useState("");
-  // const[type,setType]=useState([]);
+  const[type,setType]=useState([]);
   const [privileges, setPrivileges] = useState([]);
   const [priveledgeNames, setPrivilegeNames] = useState([]);
   const [error, setError] = useState({
@@ -75,7 +75,7 @@ function AddAdmin() {
           }, 3000)
       }).catch((err, res)=>{
             // console.log(err);
-           setErrors( err.response.data.data) 
+           setErrors( err.response.data.data.message) 
        
   
         setTimeout(() => {
@@ -96,11 +96,17 @@ function AddAdmin() {
      
   };
  
-  // const getType = () => {
-  //   requestsServiceService.getData("ADMIN").then((res) => {
-  //     setType(res.data.data);
-  //   });
-  // };
+  const getType = () => {
+    const data = JSON.stringify({
+      clientId: parseInt(authService.getClientId()),
+      id: null,
+      name: "string",
+    });
+
+    requestsServiceService.userTypeData(data).then((res) => {
+      setType(res.data);
+    });
+  };
   const getUserRoles = () => {
     requestsServiceService.getUserRoles().then((res) => {
       setUserRoles(res.data.data);
@@ -116,7 +122,7 @@ function AddAdmin() {
   useEffect(() => {
     getUserRoles();
     getAllPreviledges();
-    // getType();
+    getType();
   }, []);
 
   const handleRoleChange = (index, event) => {
@@ -356,33 +362,23 @@ function AddAdmin() {
                     </div>
 
                     <div className="col-sm-4">
-                      <div className="form-group">
-                        <label>
+                      
+
+
+ <div className="form-group">
+ <label>
                           <strong>
-                            UserType
+                         UserType
                             <strong className="text-danger">*</strong>
                           </strong>
                         </label>
-                         <input
-                          type="text"
-                          className="form-control"
-                          onChange={(event) => setUserType(event.target.value)}
-                          value={userType}
-                          placeholder="Enter userType"
-                          required
-                        />
-                       
-                      </div>
-
-
- {/* <div className="form-group">
-                       <label htmlFor="">UserType</label>
                          <select
                           class="form-control"
                           data-live-search="true"
                           title="Select TenancyStatus"
                           required
                           onChange={(e) => setUserType(e.target.value)}
+                     
                         >
                           <option className="text-black font-semibold ">
                             --Select UserType
@@ -390,13 +386,13 @@ function AddAdmin() {
                           
                            {type?.map((use, index) => {
                               return (
-                                <option key={index} value={use}>
-                                  {use}
+                                <option key={index} value={use.id}>
+                                  {use.name}
                                 </option>
                               );
                             })}
                         </select>
-                      </div> */}
+                      </div>
 
 
 
