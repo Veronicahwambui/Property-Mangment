@@ -1019,6 +1019,9 @@ class RequestsService {
   getMessagingTenants(data) {
     return axiosInstance.post(baseUrl + "/tenants/list", data);
   }
+  createBulkMessage(data) {
+    return axiosInstance.post(baseUrl + "/communication/new/bulk", data);
+  }
 }
 
 export default new RequestsService();
