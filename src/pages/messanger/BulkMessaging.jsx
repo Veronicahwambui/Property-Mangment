@@ -648,6 +648,8 @@ function BulkMessaging() {
                                                       " " +
                                                       item.lastName}
                                                   </Badge>
+                                                  <br/>
+                                                  <i className="fa fa-trash cursor-pointer text-danger mt-1" onClick={() => removeItems(item.id)}></i>
                                                 </h5>
                                               </>
                                             )}
@@ -669,6 +671,8 @@ function BulkMessaging() {
                                                       </>
                                                     )}
                                                   </Badge>
+                                                  <br/>
+                                                  <i className="fa fa-trash cursor-pointer text-danger mt-1" onClick={() => removeItems(item.id)}></i>
                                                 </h5>
                                               </>
                                             )}
@@ -681,6 +685,8 @@ function BulkMessaging() {
                                                   <Badge bg="primary">
                                                     {item.premiseName}
                                                   </Badge>
+                                                  <br/>
+                                                  <i className="fa fa-trash cursor-pointer text-danger mt-1" onClick={() => removeItems(item.id)}></i>
                                                 </h5>
                                               </>
                                             )}
