@@ -14,19 +14,35 @@ import authLoginService from "../../services/authLogin.service";
 
 function AdminList() {
   const [userList, setUserList] = useState([]);
+  const[userType,setUserType] =useState("");
+  const[type,setType]=useState([]);
 
-  const getData = () => {
+
+
+ const getData = () => {
     // e.preventDefault()
-    requestsServiceService.getData().then((res) => {
+    requestsServiceService.getData(userType).then((res) => {
       setUserList(res.data.data);
     });
   };
 
+  const getType = () => {
+    const data = JSON.stringify({
+      clientId: parseInt(authService.getClientId()),
+      id: null,
+      name: "string",
+    });
 
+    requestsServiceService.userTypeData(data).then((res) => {
+      setType(res.data);
+
+    });
+  };
 
   useEffect(() => {
     getData();
-  }, []);
+    getType();
+  }, [userType]);
 
   const confirmDeactivateUser = (el) => {
     el.preventDefault();
@@ -238,6 +254,46 @@ function AdminList() {
               </div>
             </div>
           </div>
+          <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                  <div
+                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                    role="toolbar"
+                  >
+                    <div class="d-flex align-items-center flex-grow-1">
+                      <h4 class="mb-0  bg-transparent  p-0 m-0">
+                     UserList
+                      </h4>
+                    </div>
+                    <div class="d-flex">
+                      
+                    <div className="form-group">
+                       <label htmlFor="">UserType</label>
+                         <select
+                          class="form-control"
+                          data-live-search="true"
+                          title="Select TenancyStatus"
+                           onChange={(e) => setUserType(e.target.value)}
+                        >
+                          <option className="text-black font-semibold ">
+                            --Select UserType
+                          </option>
+                          
+                           {type?.map((use, index) => {
+                              return (
+                                <option key={index} value={use.name}>
+                                  {use.name.toLowerCase()}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+
+
           {/* <!-- end page title -->
 
         <!-- eTransactions table --> */}
@@ -292,7 +348,7 @@ function AdminList() {
                                   <td>
                                     <p className="mb-0">{list.user.role.name}</p>
                                   </td>
-
+                                 
                                   <td>
                                     {(list.authAccount && list.authAccount.correlator != undefined) ? (
                                       <StatusBadge type="True" />

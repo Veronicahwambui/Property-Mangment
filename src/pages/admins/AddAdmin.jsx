@@ -18,8 +18,10 @@ function AddAdmin() {
   const [errors, setErrors] = useState([]);
 
   const [userName, setUserName] = useState("");
-
+  
   const [role, setRole] = useState("");
+  const[userType,setUserType] =useState("");
+  const[type,setType]=useState([]);
   const [privileges, setPrivileges] = useState([]);
   const [priveledgeNames, setPrivilegeNames] = useState([]);
   const [error, setError] = useState({
@@ -27,6 +29,7 @@ function AddAdmin() {
     color: ""
   });
   const navigate = useNavigate();
+
   const addUser = (ev) => {
     ev.preventDefault();
     const data = JSON.stringify({
@@ -43,12 +46,14 @@ function AddAdmin() {
       staffId: staffNo,
       userName: userName,
       userPermissions: priveledgeNames,
+      userType: userType,
     });
 
     requestsServiceService
       .addUser(data)
       .then((res) => {
         console.log(res.data);
+     
 
         if(res.data.status){
           setError({
@@ -70,7 +75,7 @@ function AddAdmin() {
           }, 3000)
       }).catch((err, res)=>{
             // console.log(err);
-           setErrors( err.response.data.data.messages) 
+           setErrors( err.response.data.data.message) 
        
   
         setTimeout(() => {
@@ -91,6 +96,17 @@ function AddAdmin() {
      
   };
  
+  const getType = () => {
+    const data = JSON.stringify({
+      clientId: parseInt(authService.getClientId()),
+      id: null,
+      name: "string",
+    });
+
+    requestsServiceService.userTypeData(data).then((res) => {
+      setType(res.data);
+    });
+  };
   const getUserRoles = () => {
     requestsServiceService.getUserRoles().then((res) => {
       setUserRoles(res.data.data);
@@ -106,6 +122,7 @@ function AddAdmin() {
   useEffect(() => {
     getUserRoles();
     getAllPreviledges();
+    getType();
   }, []);
 
   const handleRoleChange = (index, event) => {
@@ -312,7 +329,7 @@ function AddAdmin() {
                       </div>
                     </div>
                     {/* <!-- system roles --> */}
-
+                    <div className="row mb-4 pb-2 align-items-center">
                     <div className="col-sm-4">
                       <div className="form-group">
                         <label>
@@ -343,6 +360,54 @@ function AddAdmin() {
                         </select>
                       </div>
                     </div>
+
+                    <div className="col-sm-4">
+                      
+
+
+ <div className="form-group">
+ <label>
+                          <strong>
+                         UserType
+                            <strong className="text-danger">*</strong>
+                          </strong>
+                        </label>
+                         <select
+                          class="form-control"
+                          data-live-search="true"
+                          title="Select TenancyStatus"
+                          required
+                          onChange={(e) => setUserType(e.target.value)}
+                     
+                        >
+                          <option className="text-black font-semibold ">
+                            --Select UserType
+                          </option>
+                          
+                           {type?.map((use, index) => {
+                              return (
+                                <option key={index} value={use.id}>
+                                  {use.name.toLowerCase()}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </div>
+
+
+
+
+
+
+
+
+                    </div>
+</div>
+
+
+
+
+
 
                     <div className="">
                       <div className="col-form-label col-lg-3">

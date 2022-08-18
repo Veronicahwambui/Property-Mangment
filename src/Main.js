@@ -16,6 +16,7 @@ import Receipts from "./pages/statements/Receipts";
 import Transactions from "./pages/Transactions";
 import AdminList from "./pages/admins/AdminList";
 import AddAdmin from "./pages/admins/AddAdmin";
+
 import AllRoles from "./pages/setups/AllRoles";
 import ClientCounties from "./pages/setups/ClientCounties";
 import Login from "./pages/auth/Login";
@@ -156,7 +157,7 @@ function Main() {
                 />
                 <Route path="/addadmin" element={<AddAdmin />} />
                 <Route path="/usertypes" element={<UserTypes />} />
-
+               
                 <Route path="/allroles" element={<AllRoles />} />
 
                 {/* setup */}

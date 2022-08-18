@@ -105,11 +105,19 @@ const deactivateUser =(userId)=>{
       });
     
 }
+const getActioneer =()=>{
+   requestsServiceService.getUserTypes().then((res)=>{
+    console.log(res)
+
+   })
+
+}
 
 
   useEffect(() => {
  
     userTypesData();
+    getActioneer ();
   }, []);
 
   return (
@@ -266,6 +274,7 @@ const deactivateUser =(userId)=>{
                 aria-label="Close"
               ></button>
             </div>
+            <form onSubmit={(e)=> { e.preventDefault(); addUserType() }}>
             <div class="modal-body">
               <div class="row">
                 <div class="col-12">
@@ -296,11 +305,11 @@ const deactivateUser =(userId)=>{
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary" 
-                data-bs-dismiss="modal" onClick={addUserType }>
+              <button type="submit" class="btn btn-primary" >
                 Save
               </button>
             </div>
+            </form>
           </div>
         </div>
       </div>
