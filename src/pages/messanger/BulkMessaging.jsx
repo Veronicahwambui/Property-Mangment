@@ -28,8 +28,31 @@ function BulkMessaging() {
   };
   const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
-  const [bulkMessage, setbulkMessage] = useState({});
+  const [bulkMessage, setbulkMessage] = useState({
+    aplicableChargeId: 0,
+    landlordIds: [],
+    paid: "string",
+    percentOf: "string",
+    percentage: 0,
+    premiseIds: [],
+    sendTo: "string",
+    templatedMessage: "string",
+    tenantIds: [],
+    whoToCharge: "string",
+  });
 
+  let data = {
+    aplicableChargeId: 0,
+    landlordIds: [],
+    paid: "string",
+    percentOf: "string",
+    percentage: 0,
+    premiseIds: [],
+    sendTo: "string",
+    templatedMessage: "string",
+    tenantIds: [],
+    whoToCharge: "string",
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     let data = {};
@@ -127,6 +150,9 @@ function BulkMessaging() {
     });
   };
   useEffect(() => {}, [loaded]);
+
+  function handleChange(e) {}
+
   return (
     <>
       <div className="page-content">
@@ -591,37 +617,9 @@ function BulkMessaging() {
                     </div>
                   </div>
                 </div>
-              </section>
-              <section className="step-cont d-none">
-                <div className="col-12">
-                  <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                    <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                      Message Template
-                    </p>
-                  </div>
-                </div>
-                <div className="col-lg-12">
-                  <div className="mb3">
-                    <label htmlFor="landlord-type" className="form-label">
-                      Message Template.{" "}
-                      <strong className="text-danger">*</strong>
-                    </label>
-                    <div className="form-group mb-4">
-                      <textarea
-                        placeholder="Write your message"
-                        id=""
-                        cols="30"
-                        rows="5"
-                        className="form-control"
-                        // onChange={(e) => handleChange(e)}
-                        required={true}
-                      ></textarea>
-                    </div>
-                  </div>
-                </div>
                 <div className="row">
                   <div className="col-12">
-                    <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                    <div className="bg-primary border-2 bg-soft p-3 mb-2">
                       <p className="fw-semibold mb-0 pb-0 text-uppercase">
                         Charging Rule
                       </p>
@@ -635,10 +633,14 @@ function BulkMessaging() {
                       <select
                         className="form-control"
                         aria-label="Default select example"
+                        onClick={(e) => handleChange(e)}
                       >
-                        <option>select..</option>
-                        <option value="over">Over</option>
-                        <option value="below">Below</option>
+                        <option>Select..</option>
+                        {["Over", "Below"].map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="col-4 d-flex align-items-center gap-1">
@@ -685,6 +687,34 @@ function BulkMessaging() {
                           })}
                         </select>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section className="step-cont d-none">
+                <div className="col-12">
+                  <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                    <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                      Message Template
+                    </p>
+                  </div>
+                </div>
+                <div className="col-lg-12">
+                  <div className="mb3">
+                    <label htmlFor="landlord-type" className="form-label">
+                      Message Template.{" "}
+                      <strong className="text-danger">*</strong>
+                    </label>
+                    <div className="form-group mb-4">
+                      <textarea
+                        placeholder="Write your message"
+                        id=""
+                        cols="30"
+                        rows="5"
+                        className="form-control"
+                        // onChange={(e) => handleChange(e)}
+                        required={true}
+                      ></textarea>
                     </div>
                   </div>
                 </div>
