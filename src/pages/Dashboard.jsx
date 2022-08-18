@@ -560,7 +560,7 @@ function Dashboard() {
                                                     <div class="text-muted mt-4">
                                                         <h4>{formatCurrency.format(item.value)}<i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
                                                         <div class="d-flex">
-                                                            <span class="text-truncate text-capitalize">From {item.count} {item.item?.toLowerCase()?.replace(/-/g, " ")} Invoices</span>
+                                                            <span class="text-truncate text-capitalize">From {item.count?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {item.item?.toLowerCase()?.replace(/-/g, " ")} Invoices</span>
                                                         </div>
                                                     </div>
                                                 </div>
