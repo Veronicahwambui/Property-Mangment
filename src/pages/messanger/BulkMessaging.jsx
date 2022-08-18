@@ -213,7 +213,9 @@ function BulkMessaging() {
                     <li className="breadcrumb-item">
                       <a href="/">Messages</a>
                     </li>
-                    <li className="breadcrumb-item active">Bulk Messages</li>
+                    <li className="breadcrumb-item active">
+                      Create Bulk Messages
+                    </li>
                   </ol>
                 </div>
               </div>
