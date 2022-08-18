@@ -59,24 +59,24 @@ function BulkMessaging() {
     setselectedItems([]);
     setloading(true);
     let dates = {
-      dateCreatedEnd: moment("12/12/2022").format(),
-      dateCreatedStart: moment("07/07/2022").format(),
+      dateCreatedEnd: moment("12/12/2022").format("YYYY-MM-DD"),
+      dateCreatedStart: moment("01/01/2022").format("YYYY-MM-DD"),
     };
     if (recipient === "TENANT") {
       let s = {
-        tenantName: searchTerm,
+        search: searchTerm,
       };
       let data = Object.assign(dates, s);
       getTenants(data);
     } else if (recipient === "LANDLORD") {
       let s = {
-        landlordName: searchTerm,
+        search: searchTerm,
       };
       let data = Object.assign(dates, s);
       getLandlords(data);
     } else if (recipient === "PREMISE") {
       let s = {
-        premiseName: searchTerm,
+        search: searchTerm,
       };
       let data = Object.assign(dates, s);
       getPremises(data);
@@ -257,7 +257,6 @@ function BulkMessaging() {
                         <option
                           className="text-black font-semibold "
                           value="TENANT"
-                          disabled={true}
                         >
                           TENANT
                         </option>
