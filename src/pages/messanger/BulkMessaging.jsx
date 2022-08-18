@@ -613,74 +613,79 @@ function BulkMessaging() {
                                       )}
                                     </tbody>
                                   </table>
-                                  <div
-                                    className={
-                                      "alert alert-warning d-flex align-items-center"
-                                    }
-                                  >
-                                    {selectedItems.length > 0 && (
-                                      <>
-                                        <Button variant="primary">
-                                          Selected
-                                          <Badge bg="light" className="ml-7px">
-                                            <b>{selectedItems.length}</b>
-                                          </Badge>
-                                        </Button>
-                                      </>
-                                    )}
-                                    {selectedItems.length > 0 &&
-                                      selectedItems?.map((item) => (
+                                  {selectedItems.length > 0 && (
+                                    <div
+                                      className={
+                                        "alert alert-warning d-flex align-items-center"
+                                      }
+                                    >
+                                      {selectedItems.length > 0 && (
                                         <>
-                                          {recipient === "LANDLORD" && (
-                                            <>
-                                              <div
-                                                className="ml-7px"
-                                                key={item.id}
-                                              >
-                                                <Badge bg="success">
-                                                  {item.firstName +
-                                                    " " +
-                                                    item.lastName}
-                                                </Badge>
-                                              </div>
-                                            </>
-                                          )}
-                                          {recipient === "TENANT" && (
-                                            <>
-                                              <div
-                                                className="ml-7px"
-                                                key={item.id}
-                                              >
-                                                <Badge bg="success">
-                                                  {item.tenantType ===
-                                                  "COMPANY" ? (
-                                                    <>{item.companyName}</>
-                                                  ) : (
-                                                    <>
-                                                      {item.firstName +
-                                                        " " +
-                                                        item.lastName}
-                                                    </>
-                                                  )}
-                                                </Badge>
-                                              </div>
-                                            </>
-                                          )}
-                                          {recipient === "PREMISE" && (
-                                            <>
-                                              <h5
-                                                className="ml-7px"
-                                                key={item.id}
-                                              >
-                                                <Badge bg="primary">
-                                                  {item.premiseName}
-                                                </Badge>
-                                              </h5>
-                                            </>
-                                          )}
+                                          <Button variant="primary">
+                                            Selected
+                                            <Badge
+                                              bg="light"
+                                              className="ml-7px"
+                                            >
+                                              <b>{selectedItems.length}</b>
+                                            </Badge>
+                                          </Button>
                                         </>
-                                      ))}
-                                  </div>
+                                      )}
+                                      {selectedItems.length > 0 &&
+                                        selectedItems?.map((item) => (
+                                          <>
+                                            {recipient === "LANDLORD" && (
+                                              <>
+                                                <h5
+                                                  className="ml-7px"
+                                                  key={item.id}
+                                                >
+                                                  <Badge bg="success">
+                                                    {item.firstName +
+                                                      " " +
+                                                      item.lastName}
+                                                  </Badge>
+                                                </h5>
+                                              </>
+                                            )}
+                                            {recipient === "TENANT" && (
+                                              <>
+                                                <h5
+                                                  className="ml-7px"
+                                                  key={item.id}
+                                                >
+                                                  <Badge bg="success">
+                                                    {item.tenantType ===
+                                                    "COMPANY" ? (
+                                                      <>{item.companyName}</>
+                                                    ) : (
+                                                      <>
+                                                        {item.firstName +
+                                                          " " +
+                                                          item.lastName}
+                                                      </>
+                                                    )}
+                                                  </Badge>
+                                                </h5>
+                                              </>
+                                            )}
+                                            {recipient === "PREMISE" && (
+                                              <>
+                                                <h5
+                                                  className="ml-7px"
+                                                  key={item.id}
+                                                >
+                                                  <Badge bg="primary">
+                                                    {item.premiseName}
+                                                  </Badge>
+                                                </h5>
+                                              </>
+                                            )}
+                                          </>
+                                        ))}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
