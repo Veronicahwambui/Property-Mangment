@@ -18,8 +18,11 @@ function BulkInvoiving() {
   const [invoices, setInvoices] = useState([]);
   const [tenants, setTenants] = useState([]);
   const [tenantsId, setTenantsID] = useState([]);
+  const [tenancyList, setTenancyList] = useState([]);
+  const [tenancies, setTenancies] = useState([]);
   const [selected, setSelected] = useState([]);
   const [paid, setPaid] = useState('')
+  const [next, setNext] = useState(true)
   const [percentage, setPercentage] = useState('')
   const [percentOf, setPercentOf] = useState('')
   const [aplicableCharges, setAplicableCharges] = useState([])
@@ -116,12 +119,12 @@ function BulkInvoiving() {
     }
   };
 
-  const filter = (id)=>{
+  const filter = (id) => {
     setSelected(
-      selected.filter((select) => select.id !== id )
+      selected.filter((select) => select.id !== id)
     )
-   
-  
+
+
   }
 
   const handleLandlordChange = (index, event) => {
@@ -150,8 +153,10 @@ function BulkInvoiving() {
     setAplicableChargeId('')
   }
 
-  const sendData = ()=> {
-     if(invoiceFor !== "" && invoices?.length < 0 ){
+
+  const sendData = () => {
+    if (invoiceFor !== "" && invoices?.length <= 0) {
+      //  setNext(false)
       let data = JSON.stringify({
         "aplicableChargeId": aplicableChargeId,
         "invoiceFor": invoiceFor,
@@ -160,17 +165,32 @@ function BulkInvoiving() {
         "percentOf": percentOf,
         "percentage": percentage,
         "premiseIds": premisesId,
-        "tenancyIds": [],
+        "tenancyList": [],
         "tenantIds": tenantsId,
         "whoToCharge": whoToCharge
       })
+      requestsServiceService.createBulkInvoice(data).then((res) => {
+        setInvoices(res.data.data);
+      })
+    }
 
-      requestsServiceService.createBulkInvoice(data).then((res)=>{
-         setInvoices(res.data.data);
-     })
-
-
-     }
+    if (invoiceFor !== "" && invoices?.length > 0 && tenancyList?.length > 0) {
+      let data = JSON.stringify({
+        "aplicableChargeId": aplicableChargeId,
+        "invoiceFor": invoiceFor,
+        "landlordIds": landlordsId,
+        "paid": paid,
+        "percentOf": percentOf,
+        "percentage": percentage,
+        "premiseIds": premisesId,
+        "tenancyList": tenancyList,
+        "tenantIds": tenantsId,
+        "whoToCharge": whoToCharge
+      })
+      requestsServiceService.createBulkInvoice(data).then((res) => {
+        setInvoices(res.data.data);
+      })
+    }
 
   }
 
@@ -267,9 +287,9 @@ function BulkInvoiving() {
                             </select>
                           </div>
                         </div>
-                        { invoiceFor !== "CURRENT" && invoiceFor !== "" && <div class="row g-3 align-items-center">
+                        {invoiceFor !== "CURRENT" && invoiceFor !== "" && <div class="row g-3 align-items-center">
                           <div class="col-3">
-                            <label class="col-form-label">Search for { invoiceFor?.toLowerCase()?.replace(/_/g, " ")}  <strong className="text-danger">*</strong></label>
+                            <label class="col-form-label">Search for {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}  <strong className="text-danger">*</strong></label>
                           </div>
                           <div class="col-auto">
                             <div className="app-search d-lg-block mr-15px">
@@ -301,7 +321,7 @@ function BulkInvoiving() {
 
                         </div>}
 
-                        { invoiceFor !== "" && invoiceFor !== "CURRENT" && <div class="row g-3 mb-4 align-items-center">
+                        {invoiceFor !== "" && invoiceFor !== "CURRENT" && <div class="row g-3 mb-4 align-items-center">
                           <strong> Select {invoiceFor?.toLowerCase()}s to invoice for <strong className='text-danger'>*</strong> </strong>
                           {invoiceFor === 'PREMISE' && premises?.length > 0 &&
                             premises?.map((prem, index) => (
@@ -352,36 +372,36 @@ function BulkInvoiving() {
                           }
 
                         </div>}
-                       { selected?.length > 0 && invoiceFor !== "PREMISE" &&
-                        <div class="row g-3 mb-4 align-items-center">
-                          <h4 className="text-center">Selected {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}s</h4>
-                          <div className="row">
-                           { selected && selected.map((one)=>(    
-                           <div className="col-4 d-flex align-items-baseline gap-4 ">
-                           <p><i class="bx bx-check text-primary font-18px"></i> {one.firstName}</p>
-                           <i class="bx bx-trash text-primary font-18px" onClick={()=> filter(one.id)}></i>
-                           </div>
-                           ))
-                         }
+                        {selected?.length > 0 && invoiceFor !== "PREMISE" &&
+                          <div class="row g-3 mb-4 align-items-center">
+                            <h4 className="text-center">Selected {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}s</h4>
+                            <div className="row">
+                              {selected && selected.map((one) => (
+                                <div className="col-4 d-flex align-items-baseline gap-4 ">
+                                  <p><i class="bx bx-check text-primary font-18px"></i> {one.firstName}</p>
+                                  <i class="bx bx-trash text-primary font-18px" onClick={() => filter(one.id)}></i>
+                                </div>
+                              ))
+                              }
 
+                            </div>
                           </div>
-                        </div> 
                         }
 
-                       { selected?.length > 0 && invoiceFor === "PREMISE" &&
-                        <div class="row g-3 mb-4 align-items-center">
-                          <h4 className="text-center">Selected {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}s</h4>
-                          <div className="row">
-                           { selected && selected.map((one)=>(    
-                           <div className="col-4 d-flex align-items-baseline gap-4 ">
-                           <p><i class="bx bx-check text-primary font-18px"></i> {one.firstName}</p>
-                           <i class="bx bx-trash text-primary font-18px" onClick={()=> filter(one.id)}></i>
-                           </div>
-                           ))
-                         }
+                        {selected?.length > 0 && invoiceFor === "PREMISE" &&
+                          <div class="row g-3 mb-4 align-items-center">
+                            <h4 className="text-center">Selected {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}s</h4>
+                            <div className="row">
+                              {selected && selected.map((one) => (
+                                <div className="col-4 d-flex align-items-baseline gap-4 ">
+                                  <p><i class="bx bx-check text-primary font-18px"></i> {one.firstName}</p>
+                                  <i class="bx bx-trash text-primary font-18px" onClick={() => filter(one.id)}></i>
+                                </div>
+                              ))
+                              }
 
+                            </div>
                           </div>
-                        </div> 
                         }
                       </div>
 
@@ -457,7 +477,64 @@ function BulkInvoiving() {
                               invoice breakdown
                             </p>
                           </div>
-
+                          <table
+                            className="table align-middle table-hover contacts-table table-striped "
+                            id="datatable-buttons"
+                          >
+                            <thead className="table-light">
+                              {invoices?.length > 0 && invoices?.length > 0 && (
+                                <tr>
+                                  <th width="8px">Select</th>
+                                  <th span={"col-6"}>Tenant Type</th>
+                                  <th span={"col-3"}>Name</th>
+                                  <th span={"col-3"}>Email</th>
+                                </tr>
+                              )}
+                            </thead>
+                            <tbody>
+                              {invoices?.length > 0 && (
+                                <>
+                                  {invoices?.length > 0 && (
+                                    <>
+                                      {invoices?.map((tenant) => (
+                                        <tr key={tenant.id}>
+                                          <td>
+                                            <div className="d-flex  align-items-center">
+                                              <div className="the-mail-checkbox pr-4">
+                                                <input
+                                                  className="form-check-input mt-0 pt-0 form-check-dark"
+                                                  type="checkbox"
+                                                  id="formCheck1"
+                                                  // onChange={() => {
+                                                  //   autofill(tenant.id);
+                                                  // }}
+                                                />
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td>{tenant.tenantType}</td>
+                                          <td className="text-capitalize">
+                                            <a href="javascript:void(0)">
+                                              {tenant?.tenantType === "INDIVIDUAL" ? (
+                                                <>
+                                                  {tenant.firstName + " "}
+                                                  {tenant.lastName + " "}{" "}
+                                                  {tenant.otherName}
+                                                </>
+                                              ) : (
+                                                <>{tenant.companyName + " "}</>
+                                              )}
+                                            </a>
+                                          </td>
+                                          <td>{tenant.email}</td>
+                                        </tr>
+                                      ))}
+                                    </>
+                                  )}
+                                </>
+                              )}
+                            </tbody>
+                          </table>
                         </div>
                       </div>
                     </section>
@@ -476,18 +553,20 @@ function BulkInvoiving() {
                   <div className="button-navigators">
                     <button
                       disabled
+                      onClick={() => setNext(false)}
                       className="btn btn-primary waves-effect kev-prev me-3"
                     >
                       <i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i>{" "}
                       Previous{" "}
                     </button>
-                   {invoiceFor !== "" && <button
+                    {invoiceFor !== "" && <button
                       className="btn btn-primary waves-effect kev-nxt me-3"
-                      onClick={()=> sendData()}
+                      onClick={sendData}
+                    // disabled = { next ? "" : "disabled"}
                     >
                       Next
                       <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
-                     </button>} 
+                    </button>}
                     <button
                       type="submit"
                       className="btn btn-success kev-submit me-3 d-none"
