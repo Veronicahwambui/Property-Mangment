@@ -102,10 +102,6 @@ function Login() {
                               <div className="item">
                                 <div className="py-3">
                                   <p className="font-size-12 mb-4 d-none">Supporting revenue collection activities such as budgeting, collection, management and enforcement of toll collection.</p>
-
-                                  <div className="d-flex justify-content-center align-items-center flex-column">
-                                    <h4 className="font-size-12 text-white">RevenueSure A product of</h4>
-                                    <img src="assets/images/nouveta-white.png" alt="Nouveta Logo" className="img" style={{width: "170px"}}/></div>
                                 </div>
 
                               </div>
@@ -135,7 +131,6 @@ function Login() {
 
                         <div>
                           <h5 className="text-primary ">Welcome Back !</h5>
-                          <p className="text-muted ">Sign in to continue Using the <strong>Revenue Collection & Property Management System</strong></p>
                         </div>
                         {error.color !== "" &&
                         <div className={"alert alert-" + error.color} role="alert">
@@ -180,13 +175,13 @@ function Login() {
                         </div>
                       </div>
 
-                      <div className="mt-4 mt-md-5 text-center ">
+                      {/* <div className="mt-4 mt-md-5 text-center ">
                         <p className="mb-0 ">©
                           <script>
                             document.write(new Date().getFullYear())
-                          </script> RevenueSure <strong>Revenue Collection & Property Management System</strong>
+                          </script> <strong>Revenue Collection & Property Management System</strong>
                         </p>
-                      </div>
+                      </div> */}
                   </div>
                 </div>
               </div>

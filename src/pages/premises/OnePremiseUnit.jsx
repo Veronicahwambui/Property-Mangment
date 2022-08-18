@@ -113,7 +113,7 @@ function OnePremiseUnit() {
     }
 //   const  
 
-let raised = issueTypes.filter(issue => issue.id == issueDetails.issueTypeId )
+let raised = issueTypes?.filter(issue => issue.id == issueDetails.issueTypeId )
     
 const submitIssue = (e) => {
         e.preventDefault()
@@ -121,7 +121,6 @@ const submitIssue = (e) => {
         let data = JSON.stringify({
             "comments": issueDetails.description,
             "description": issueDetails.description,
-            "endDate": moment(date).format("YYYY-MM-DD"),
             "premiseUnitId": unitId,
             "raisedForPremiseUnitStatus": issueDetails.issueStatus,
             status: raised[0].initialStatus ,

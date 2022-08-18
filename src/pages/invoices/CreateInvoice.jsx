@@ -78,8 +78,8 @@ function CreateInvoice() {
   const showTenantModal = () => setshow(true);
   const closeTenantModal = () => setshow(false);
   const [loading, setloading] = useState(false);
-  const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
+  const [loading2, setloading2] = useState(false);
 
   const getId = (y) => {
     requestsServiceService

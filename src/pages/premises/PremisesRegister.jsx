@@ -12,15 +12,16 @@ import authService from '../../services/auth.service';
 
 
 function PremisesRegister() {
+    let date = new Date()
     const [premises, setPremises] = useState([])
     const [activeId, setActiveId] = useState('')
-
     const [size, setSize] = useState(10);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(0);
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date(date.getFullYear(), 0, 1));
     const [endDate, setEndDate] = useState(new Date());
     const [searchTerm, setSearchTerm] = useState("");
+
 
 
     useEffect(() => {
@@ -54,12 +55,10 @@ function PremisesRegister() {
             "search": searchTerm.trim()
         }
         requestsServiceService.getAllpremises(page, size, data).then((res) => {
-            setPremises(res.data.data)
-            setPage(res.data.page)
-            setSize(res.data.size)
+            setPremises(res.data.data);
+            setPage(res.data.page);
+            setSize(res.data.size);
             setPageCount(res.data.totalPages)
-            setSearchTerm(" ")
-
         })
     }
 

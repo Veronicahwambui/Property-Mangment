@@ -11,15 +11,13 @@ import authService from "../../services/auth.service";
 import Message from "../../components/Message";
 
 function Landlords() {
-  const [landlords, setLandlords] = useState([]);
-  const [failedLandlordUploads, setFailedLandlordUploads] = useState([]);
-  const [activeId, setActiveId] = useState("");
+  let date = new Date()
+  const [landlords, setLandlords] = useState([])
+  const [activeId, setActiveId] = useState('')
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const [startDate, setStartDate] = useState(
-    new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-  );
+  const [startDate, setStartDate] = useState(new Date(date.getFullYear(), 0, 1));
   const [endDate, setEndDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState("");
 

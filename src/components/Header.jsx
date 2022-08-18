@@ -12,7 +12,9 @@ function Header() {
         window.location.reload();
     }
 
-    
+    useEffect(()=>{
+        localStorage.setItem("activeLink", JSON.stringify(1))
+    },[])
 
     
   return (
