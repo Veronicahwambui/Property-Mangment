@@ -111,10 +111,7 @@ function SideBar() {
                             <ul className="sub-menu" aria-expanded="false">
                                 <li><NavLink to="/adminlist">Users List</NavLink></li>
                                 <li><NavLink to="/addadmin">Add a User</NavLink></li>
-                              
                                 <li><NavLink to="/usertypes"> UserTypes</NavLink></li>
-                                <li><NavLink to="/addauctioneers"> Add Auctioneers</NavLink></li>
-                                <li><NavLink to="/auctioneers">Auctioneers</NavLink></li>
                             </ul>
                         </li>
                         {/* <li>
