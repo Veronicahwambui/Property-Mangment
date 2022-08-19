@@ -7,7 +7,7 @@ import requestsServiceService from '../../services/requestsService.service';
 
 function BulkInvoiving() {
   const [invoiceFor, setInvoiceFor] = useState('')
-  const [whoToCharge, setWhoToCharge] = useState('')
+  const [whoToCharge, setWhoToCharge] = useState(undefined)
   const [loading, setloading] = useState(false);
   const [loaded, setloaded] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,12 +21,12 @@ function BulkInvoiving() {
   const [tenancyList, setTenancyList] = useState([]);
   const [tenancies, setTenancies] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [paid, setPaid] = useState('')
+  const [paid, setPaid] = useState(undefined)
   const [next, setNext] = useState(true)
-  const [percentage, setPercentage] = useState('')
-  const [percentOf, setPercentOf] = useState('')
+  const [percentage, setPercentage] = useState(undefined)
+  const [percentOf, setPercentOf] = useState(undefined)
   const [aplicableCharges, setAplicableCharges] = useState([])
-  const [aplicableChargeId, setAplicableChargeId] = useState('')
+  const [aplicableChargeId, setAplicableChargeId] = useState(undefined)
 
 
   useEffect(() => {
@@ -170,11 +170,14 @@ function BulkInvoiving() {
         "whoToCharge": whoToCharge
       })
       requestsServiceService.createBulkInvoice(data).then((res) => {
-        setInvoices(res.data.data);
+        setInvoices(res.data.data); 
+        setTenancyList(res.data.data?.map(invoice=>invoice.id))
       })
+ 
     }
 
-    if (invoiceFor !== "" && invoices?.length > 0 && tenancyList?.length > 0) {
+    if (invoiceFor !== "" && invoices?.length > 0) {
+      //  setNext(false)
       let data = JSON.stringify({
         "aplicableChargeId": aplicableChargeId,
         "invoiceFor": invoiceFor,
@@ -188,12 +191,27 @@ function BulkInvoiving() {
         "whoToCharge": whoToCharge
       })
       requestsServiceService.createBulkInvoice(data).then((res) => {
-        setInvoices(res.data.data);
+        // setInvoices(res.data.data);
+        console.log(res.data); 
+        // setTenancyList(res.data.data?.map(invoice=>invoice.id))
       })
+ 
     }
-
+  
   }
 
+  const filterList = (index, event)=> {
+    const { checked, value } = event.target;
+    if (checked) {
+      setTenancyList([...tenancyList, invoices[index].id])
+    } else {
+      setTenancyList(()=> tenancyList.filter((tenant)=> tenant !== invoices[index].id)
+      ) 
+    }
+  
+  }
+
+console.log(tenancyList);
   return (
     <div className='page-content'>
       <div className="content-fluid">
@@ -492,12 +510,13 @@ function BulkInvoiving() {
                               )}
                             </thead>
                             <tbody>
-                              {invoices?.length > 0 && (
+                              {invoices?.length > 0 &&  (
                                 <>
                                   {invoices?.length > 0 && (
                                     <>
-                                      {invoices?.map((tenant) => (
-                                        <tr key={tenant.id}>
+                                      {invoices?.map((tenant ,index) =>{ 
+                                        return(
+                                        <tr key={tenant.tenant.id}>
                                           <td>
                                             <div className="d-flex  align-items-center">
                                               <div className="the-mail-checkbox pr-4">
@@ -505,30 +524,33 @@ function BulkInvoiving() {
                                                   className="form-check-input mt-0 pt-0 form-check-dark"
                                                   type="checkbox"
                                                   id="formCheck1"
-                                                  // onChange={() => {
-                                                  //   autofill(tenant.id);
-                                                  // }}
+                                                  onChange={(e) => {
+                                                    filterList(index,e);
+                                                  }}
+                                                  checked={
+                                                     tenancyList.some((id)=> tenant.id == id )
+                                                  }
                                                 />
                                               </div>
                                             </div>
                                           </td>
-                                          <td>{tenant.tenantType}</td>
+                                          <td className="text-capitalize">{tenant.tenant?.tenantType?.toLowerCase()?.replace(/_/g , " ")}</td>
                                           <td className="text-capitalize">
                                             <a href="javascript:void(0)">
-                                              {tenant?.tenantType === "INDIVIDUAL" ? (
+                                              {tenant?.tenant?.tenantType === "INDIVIDUAL" ? (
                                                 <>
-                                                  {tenant.firstName + " "}
-                                                  {tenant.lastName + " "}{" "}
-                                                  {tenant.otherName}
+                                                  {tenant.tenant.firstName + " "}
+                                                  {tenant.tenant.lastName + " "}{" "}
+                                                  {tenant.tenant.otherName}
                                                 </>
                                               ) : (
-                                                <>{tenant.companyName + " "}</>
+                                                <>{tenant.tenant.companyName + " "}</>
                                               )}
                                             </a>
                                           </td>
-                                          <td>{tenant.email}</td>
+                                          <td>{tenant.tenant.email}</td>
                                         </tr>
-                                      ))}
+                                      )})}
                                     </>
                                   )}
                                 </>
@@ -553,10 +575,9 @@ function BulkInvoiving() {
                   <div className="button-navigators">
                     <button
                       disabled
-                      onClick={() => setNext(false)}
                       className="btn btn-primary waves-effect kev-prev me-3"
                     >
-                      <i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i>{" "}
+                      <i className="mdi-arrow-left mdi font-16px ms-2 me-3"></i>{" "}
                       Previous{" "}
                     </button>
                     {invoiceFor !== "" && <button
@@ -565,7 +586,7 @@ function BulkInvoiving() {
                     // disabled = { next ? "" : "disabled"}
                     >
                       Next
-                      <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
+                      <i className="mdi mdi-arrow-right font-16px ms-2 me-3"></i>
                     </button>}
                     <button
                       type="submit"
@@ -573,7 +594,7 @@ function BulkInvoiving() {
                       form={"my-form"}
                     >
                       Submit{" "}
-                      <i className="mdi mdi-check-all me-2 font-16px"></i>
+                      <i className="mdi mdi-check-all me-3 font-16px"></i>
                     </button>
                   </div>
                 </div>
