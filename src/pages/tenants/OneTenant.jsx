@@ -549,13 +549,16 @@ function OneTenant() {
   // }
   // console.log(tenancyRenewalDate)
 
+
   //communication
 
   let clientId = AuthService.getClientId();
 
   const fetchCommunication = () => {
+
+
     requestsServiceService
-      .getEntityCommunication(userId, 0, 5, "TENANT", clientId)
+      .getEntityCommunication(userId, 0, 10, "TENANT", clientId)
       .then((res) => {
         setCommunication(res.data.data);
       });
@@ -2094,6 +2097,8 @@ function OneTenant() {
 
                             <tbody class="table-hover">
                               {communication?.map((com, index) => (
+                                
+
                                 <tr data-id="1">
                                   <td>{index + 1}</td>
                                   {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
@@ -2134,7 +2139,11 @@ function OneTenant() {
                                   <td class="text-capitalize d-none d-md-table-cell">
                                     {com.createdBy}
                                   </td>
-                                  <td class="the-msg the-msg-2"></td>
+                                  <td class="the-msg the-msg-2">
+                                  <span>{JSON.parse(com.data).text}</span>
+                                           
+                                            </td>                                                
+
                                   <td class="text-capitalize d-none d-md-table-cell">
                                     {moment(com.dateTimeCreated).format(
                                       "ddd MMM DD"
