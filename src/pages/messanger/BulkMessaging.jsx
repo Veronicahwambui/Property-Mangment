@@ -24,6 +24,7 @@ function BulkMessaging() {
   const [percentOf, setPercentOf] = useState("");
   const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
+  const [responseData, setresponseData] = useState([]);
   const [bulkMessage, setbulkMessage] = useState({
     aplicableChargeId: undefined,
     landlordIds: [],
@@ -35,7 +36,10 @@ function BulkMessaging() {
     templatedMessage: "",
     tenantIds: [],
     whoToCharge: "",
+    messageKind: "",
+    messageType: "",
   });
+  let data = {};
   useEffect(() => {
     // console.log(/.*{.*}.*/.test(bulkMessage.templatedMessage));
   }, [bulkMessage.templatedMessage]);
@@ -53,7 +57,11 @@ function BulkMessaging() {
       sendTo: recipient,
       templatedMessage: bulkMessage.templatedMessage,
       tenantIds: [],
-      whoToCharge: wtc,
+      mailModels: [],
+      messageKind: bulkMessage.messageKind,
+      messageModels: [],
+      messageType: bulkMessage.messageType,
+      period: "",
     };
     let result = selectedItems.map((a) => a.id);
     if (recipient === "TENANT") {
@@ -72,6 +80,7 @@ function BulkMessaging() {
     requestsServiceService
       .createBulkMessage(x)
       .then((response) => {
+        setresponseData(response.data.data);
         if (response.status === true) {
           setError({
             ...error,
@@ -320,6 +329,66 @@ function BulkMessaging() {
                               ))}
                             </select>
                           </div>
+                          <div className="col-lg-3 col-md-6">
+                            <label htmlFor=" " className=" ">
+                              Message Type:{" "}
+                              <strong className="text-danger ">*</strong>
+                            </label>
+                            <div className="d-flex ">
+                              <div className="form-check me-3">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="messageType"
+                                  value={"SMS"}
+                                  onChange={(e) => handleChange(e)}
+                                />
+                                <label className="form-check-label">SMS</label>
+                              </div>
+                              <div className="form-check me-3">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="messageType"
+                                  value={"EMAIL"}
+                                  onChange={(e) => handleChange(e)}
+                                />
+                                <label className="form-check-label">
+                                  EMAIL
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="landlord-type"
+                              className="form-label"
+                            >
+                              Message Kind.{" "}
+                              <strong className="text-danger">*</strong>
+                            </label>
+                            <div className="form-group mb-4">
+                              <select
+                                name="messageKind"
+                                id=""
+                                className="form-control text-capitalize"
+                                onChange={(e) => handleChange(e)}
+                              >
+                                <option
+                                  className="text-black font-semibold "
+                                  value=""
+                                >
+                                  Select..
+                                </option>
+                                {["CUSTOM", "BALANCE_REMINDER"].map((item) => (
+                                  <option key={item} value={item}>
+                                    {item}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3">
                               <p className="fw-semibold mb-0 pb-0 text-uppercase">
@@ -648,8 +717,13 @@ function BulkMessaging() {
                                                       " " +
                                                       item.lastName}
                                                   </Badge>
-                                                  <br/>
-                                                  <i className="fa fa-trash cursor-pointer text-danger mt-1" onClick={() => removeItems(item.id)}></i>
+                                                  <br />
+                                                  <i
+                                                    className="fa fa-trash cursor-pointer text-danger mt-1"
+                                                    onClick={() =>
+                                                      removeItems(item.id)
+                                                    }
+                                                  ></i>
                                                 </h5>
                                               </>
                                             )}
@@ -671,8 +745,13 @@ function BulkMessaging() {
                                                       </>
                                                     )}
                                                   </Badge>
-                                                  <br/>
-                                                  <i className="fa fa-trash cursor-pointer text-danger mt-1" onClick={() => removeItems(item.id)}></i>
+                                                  <br />
+                                                  <i
+                                                    className="fa fa-trash cursor-pointer text-danger mt-1"
+                                                    onClick={() =>
+                                                      removeItems(item.id)
+                                                    }
+                                                  ></i>
                                                 </h5>
                                               </>
                                             )}
@@ -685,8 +764,13 @@ function BulkMessaging() {
                                                   <Badge bg="primary">
                                                     {item.premiseName}
                                                   </Badge>
-                                                  <br/>
-                                                  <i className="fa fa-trash cursor-pointer text-danger mt-1" onClick={() => removeItems(item.id)}></i>
+                                                  <br />
+                                                  <i
+                                                    className="fa fa-trash cursor-pointer text-danger mt-1"
+                                                    onClick={() =>
+                                                      removeItems(item.id)
+                                                    }
+                                                  ></i>
                                                 </h5>
                                               </>
                                             )}
@@ -699,6 +783,7 @@ function BulkMessaging() {
                             </div>
                           </div>
                         </div>
+                        <button onClick={handleSubmit}>Confirm</button>
                       </div>
                       {selectedItems.length > 0 && (
                         <div className="row">
@@ -821,6 +906,178 @@ function BulkMessaging() {
                       )}
                     </section>
                     <section className="step-cont d-none">
+                      <div className="row">
+                        <div className="overflow-visible">
+                          <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                              Recipient List
+                            </p>
+                          </div>
+                          <table
+                            className="table align-middle table-hover contacts-table table-striped "
+                            id="datatable-buttons"
+                          >
+                            <thead className="table-light">
+                              {searchResults.length > 0 &&
+                                searchResults.length <= 5 && (
+                                  <>
+                                    {recipient === "PREMISE" && (
+                                      <>
+                                        <tr>
+                                          <th width="8px">Select</th>
+                                          <th span={"col-6"}>Premise Name</th>
+                                          <th span={"col-3"}>Premise Type</th>
+                                          <th span={"col-3"}>
+                                            Premise Use Type
+                                          </th>
+                                        </tr>
+                                      </>
+                                    )}
+                                    {recipient === "LANDLORD" && (
+                                      <>
+                                        <tr>
+                                          <th width="8px">Select</th>
+                                          <th span={"col-6"}>Landlord Type</th>
+                                          <th span={"col-3"}>Name</th>
+                                          <th span={"col-3"}>Email</th>
+                                        </tr>
+                                      </>
+                                    )}
+                                    {recipient === "TENANT" && (
+                                      <>
+                                        <tr>
+                                          <th width="8px">Select</th>
+                                          <th span={"col-6"}>Tenant Type</th>
+                                          <th span={"col-3"}>Name</th>
+                                          <th span={"col-3"}>Email</th>
+                                        </tr>
+                                      </>
+                                    )}
+                                  </>
+                                )}
+                            </thead>
+                            <tbody>
+                              {searchResults.length > 0 && (
+                                <>
+                                  {searchResults.length <= 5 && (
+                                    <>
+                                      {searchResults?.map((item) => (
+                                        <>
+                                          {recipient === "LANDLORD" && (
+                                            <tr key={item.id}>
+                                              <td>
+                                                <div className="d-flex  align-items-center">
+                                                  <div className="the-mail-checkbox pr-4">
+                                                    <input
+                                                      className="form-check-input mt-0 pt-0 form-check-dark"
+                                                      type="checkbox"
+                                                      id="formCheck1"
+                                                      onChange={(e) =>
+                                                        selectItems(e, item)
+                                                      }
+                                                      checked={selectedItems.some(
+                                                        (el) =>
+                                                          el.id === item.id
+                                                      )}
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </td>
+                                              <td>{item.landLordType}</td>
+                                              <td className="text-capitalize">
+                                                <a href="javascript:void(0)">
+                                                  {item.firstName}{" "}
+                                                  {item.lastName}
+                                                </a>
+                                              </td>
+                                              <td>{item.email}</td>
+                                            </tr>
+                                          )}
+                                          {recipient === "PREMISE" && (
+                                            <tr key={item.id}>
+                                              <td>
+                                                <div className="d-flex  align-items-center">
+                                                  <div className="the-mail-checkbox pr-4">
+                                                    <input
+                                                      className="form-check-input mt-0 pt-0 form-check-dark"
+                                                      type="checkbox"
+                                                      id="formCheck1"
+                                                      onChange={(e) =>
+                                                        selectItems(e, item)
+                                                      }
+                                                      checked={selectedItems.some(
+                                                        (el) =>
+                                                          el.id === item.id
+                                                      )}
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </td>
+                                              <td>
+                                                <a href="javascript:void(0)">
+                                                  {item.premiseName}
+                                                </a>
+                                              </td>
+                                              <td className="text-capitalize">
+                                                <a href="javascript:void(0)">
+                                                  {item.premiseType?.name}
+                                                </a>
+                                              </td>
+                                              <td>
+                                                {item.premiseUseType?.name}
+                                              </td>
+                                            </tr>
+                                          )}
+                                          {recipient === "TENANT" && (
+                                            <tr key={item.id}>
+                                              <td>
+                                                <div className="d-flex  align-items-center">
+                                                  <div className="the-mail-checkbox pr-4">
+                                                    <input
+                                                      className="form-check-input mt-0 pt-0 form-check-dark"
+                                                      type="checkbox"
+                                                      id="formCheck1"
+                                                      onChange={(e) =>
+                                                        selectItems(e, item)
+                                                      }
+                                                      checked={selectedItems.some(
+                                                        (el) =>
+                                                          el.id === item.id
+                                                      )}
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </td>
+                                              <td>{item.tenantType}</td>
+                                              <td className="text-capitalize">
+                                                <a href="javascript:void(0)">
+                                                  {item?.tenantType ===
+                                                  "INDIVIDUAL" ? (
+                                                    <>
+                                                      {item.firstName + " "}
+                                                      {item.lastName + " "}{" "}
+                                                      {item.otherName}
+                                                    </>
+                                                  ) : (
+                                                    <>
+                                                      {item.companyName + " "}
+                                                    </>
+                                                  )}
+                                                </a>
+                                              </td>
+                                              <td>{item.email}</td>
+                                            </tr>
+                                          )}
+                                        </>
+                                      ))}
+                                    </>
+                                  )}
+                                </>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                       <div className="col-12">
                         <div className="bg-primary border-2 bg-soft p-3 mb-4">
                           <p className="fw-semibold mb-0 pb-0 text-uppercase">
@@ -873,7 +1130,7 @@ function BulkMessaging() {
                       type="button"
                       className="btn btn-success kev-submit me-2 d-none"
                       disabled={!/.*{.*}.*/.test(bulkMessage.templatedMessage)}
-                      onClick={handleSubmit}
+                      // onClick={handleSubmit}
                     >
                       Submit
                       <i className="mdi mdi-check-all me-2 font-16px"></i>
