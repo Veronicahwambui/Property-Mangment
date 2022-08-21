@@ -7,6 +7,8 @@ import { Modal, ModalFooter } from "react-bootstrap";
 import CloseButton from "react-bootstrap/CloseButton";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
+import authService from "../../services/auth.service";
+import authLoginService from "../../services/authLogin.service";
 
 function BulkMessaging() {
   const [recipient, setRecipient] = useState("");
@@ -22,6 +24,7 @@ function BulkMessaging() {
   });
   const [wtc, setWtc] = useState("");
   const [percentOf, setPercentOf] = useState("");
+  const [subject, setSubject] = useState("");
   const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
   const [responseData, setresponseData] = useState([]);
@@ -47,6 +50,7 @@ function BulkMessaging() {
   // SUBMIT FORM
   const handleSubmit = (e) => {
     e.preventDefault();
+
     let data = {
       aplicableChargeId: bulkMessage.aplicableChargeId,
       landlordIds: [],
@@ -63,17 +67,56 @@ function BulkMessaging() {
       messageType: bulkMessage.messageType,
       period: "",
     };
-    let result = selectedItems.map((a) => a.id);
-    if (recipient === "TENANT") {
-      Object.assign(data, { tenantIds: result });
-      createBulkMessage(data);
-    } else if (recipient === "LANDLORD") {
-      Object.assign(data, { landlordIds: result });
-      createBulkMessage(data);
-    } else if (recipient === "PREMISE") {
-      Object.assign(data, { premiseIds: result });
-      createBulkMessage(data);
+
+
+    if (bulkMessage.templatedMessage != "") {
+
+
+      if (bulkMessage.messageType != 'SMS') {
+        Object.assign(data, {
+          mailModels: selectedItems.map((a) => ({
+            templateName: "mail/email-template",
+            portalName: JSON.parse(authService.getCurrentUserName()).client.name,
+            from: "nouveta.tech@outlook.com",
+            to: a.email,
+            subject: subject,
+            model: { name: a.firstName, message: bulkMessage.templatedMessage },
+            attachments: [],
+            entityType: bulkMessage.messageKind === "BALANCE_REMINDER" ? "TENANCY" : "TENANT",
+            createdBy: authLoginService.getCurrentUser(),
+            entityId: a.id
+          }))
+        });
+      } else {
+        Object.assign(data, {
+          messageModels: selectedItems.map((a) => ({
+            contact: a.phoneNumber,
+            entityType: bulkMessage.messageKind === "BALANCE_REMINDER" ? "TENANCY" : "TENANT",
+            createdBy: authLoginService.getCurrentUser(),
+            message: bulkMessage.templatedMessage,
+            templateName: undefined,
+            senderId: JSON.parse(authService.getCurrentUserName()).client.senderId,
+            model: { name: a.firstName, message: bulkMessage.templatedMessage },
+            entityId: a.id
+          }))
+        });
+      }
+
+      console.log("data");
+      console.log(JSON.stringify(data));
+
+      if (recipient === "TENANT") {
+        Object.assign(data, { tenantIds: selectedItems.map((a) => a.id) });
+        createBulkMessage(data);
+      } else if (recipient === "LANDLORD") {
+        Object.assign(data, { landlordIds: selectedItems.map((a) => a.id) });
+        createBulkMessage(data);
+      } else if (recipient === "PREMISE") {
+        Object.assign(data, { premiseIds: selectedItems.map((a) => a.id) });
+        createBulkMessage(data);
+      }
     }
+
   };
 
   const createBulkMessage = (x) => {
@@ -115,14 +158,17 @@ function BulkMessaging() {
     setselectedItems([]);
     setWtc("");
   };
+
   useEffect(() => {
     getApplicableCharges();
   }, []);
+
   const getApplicableCharges = () => {
     requestsServiceService.allApplicableCharges().then((res) => {
       setAc(res.data.data);
     });
   };
+
   const selectItems = (e, x) => {
     console.log(selectedItems.some((el) => el.id === x.id));
     if (e.target.checked) {
@@ -131,6 +177,7 @@ function BulkMessaging() {
       removeItems(x.id);
     }
   };
+
   const removeItems = (x) => {
     setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
   };
@@ -175,6 +222,7 @@ function BulkMessaging() {
       setloaded(true);
     });
   };
+
   const getPremises = (x) => {
     setloading2(true);
 
@@ -185,6 +233,7 @@ function BulkMessaging() {
       setloaded(true);
     });
   };
+
   const getTenants = (x) => {
     setloading2(true);
     requestsServiceService.getMessagingTenants(x).then((res) => {
@@ -194,7 +243,8 @@ function BulkMessaging() {
       setloaded(true);
     });
   };
-  useEffect(() => {}, [loaded]);
+
+  useEffect(() => { }, [loaded]);
 
   const handleChange = (e) => {
     setbulkMessage({
@@ -657,7 +707,7 @@ function BulkMessaging() {
                                                       <td className="text-capitalize">
                                                         <a href="javascript:void(0)">
                                                           {item?.tenantType ===
-                                                          "INDIVIDUAL" ? (
+                                                            "INDIVIDUAL" ? (
                                                             <>
                                                               {item.firstName +
                                                                 " "}
@@ -735,7 +785,7 @@ function BulkMessaging() {
                                                 >
                                                   <Badge bg="success">
                                                     {item.tenantType ===
-                                                    "COMPANY" ? (
+                                                      "COMPANY" ? (
                                                       <>{item.companyName}</>
                                                     ) : (
                                                       <>
@@ -783,7 +833,6 @@ function BulkMessaging() {
                             </div>
                           </div>
                         </div>
-                        <button onClick={handleSubmit}>Confirm</button>
                       </div>
                       {selectedItems.length > 0 && (
                         <div className="row">
@@ -1052,7 +1101,7 @@ function BulkMessaging() {
                                               <td className="text-capitalize">
                                                 <a href="javascript:void(0)">
                                                   {item?.tenantType ===
-                                                  "INDIVIDUAL" ? (
+                                                    "INDIVIDUAL" ? (
                                                     <>
                                                       {item.firstName + " "}
                                                       {item.lastName + " "}{" "}
@@ -1085,6 +1134,25 @@ function BulkMessaging() {
                           </p>
                         </div>
                       </div>
+                      {bulkMessage.messageType != "SMS" &&
+                        <div className="col-lg-12">
+                          <div className="mb3">
+                            <label htmlFor="landlord-type" className="form-label">
+                              Email Subject.{" "}
+                              <strong className="text-danger">*</strong>
+                            </label>
+                            <div className="form-group mb-4">
+                              <input
+                                placeholder="Write your subject"
+                                id={"subject"}
+                                name={"subject"}
+                                className="form-control"
+                                onChange={(e) => setSubject(e.target.value)}
+                                required={true}
+                              ></input>
+                            </div>
+                          </div>
+                        </div>}
                       <div className="col-lg-12">
                         <div className="mb3">
                           <label htmlFor="landlord-type" className="form-label">
@@ -1122,6 +1190,7 @@ function BulkMessaging() {
                         selectedItems.length === 0 ||
                         wtc === ""
                       }
+                      onClick={handleSubmit}
                     >
                       Next{" "}
                       <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
@@ -1130,7 +1199,7 @@ function BulkMessaging() {
                       type="button"
                       className="btn btn-success kev-submit me-2 d-none"
                       disabled={!/.*{.*}.*/.test(bulkMessage.templatedMessage)}
-                      // onClick={handleSubmit}
+                      onClick={handleSubmit}
                     >
                       Submit
                       <i className="mdi mdi-check-all me-2 font-16px"></i>
