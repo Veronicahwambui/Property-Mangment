@@ -1022,6 +1022,11 @@ class RequestsService {
   createBulkMessage(data) {
     return axiosInstance.post(baseUrl + "/communication/new/bulk", data);
   }
+  
+  getBulkInvoices(){
+    
+    return axiosInstance.get(baseUrl + "/payments/bulk");
+  }
 }
 
 export default new RequestsService();
