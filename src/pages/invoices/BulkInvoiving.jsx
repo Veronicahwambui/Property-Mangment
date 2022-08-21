@@ -6,6 +6,7 @@ import { useState } from 'react'
 import requestsServiceService from '../../services/requestsService.service';
 
 function BulkInvoiving() {
+  const [error, setError] = useState(undefined)
   const [invoiceFor, setInvoiceFor] = useState('')
   const [whoToCharge, setWhoToCharge] = useState(undefined)
   const [loading, setloading] = useState(false);
@@ -22,6 +23,8 @@ function BulkInvoiving() {
   const [tenancies, setTenancies] = useState([]);
   const [selected, setSelected] = useState([]);
   const [paid, setPaid] = useState(undefined)
+  const [periodStart, setPeriodStart] = useState(0)
+  const [periodEnd, setPeriodEnd] = useState(30)
   const [next, setNext] = useState(true)
   const [percentage, setPercentage] = useState(undefined)
   const [percentOf, setPercentOf] = useState(undefined)
@@ -29,11 +32,24 @@ function BulkInvoiving() {
   const [aplicableChargeId, setAplicableChargeId] = useState(undefined)
 
 
+  const [quantity, setquantity] = useState(0);
+  const [billAmount, setbillAmount] = useState('');
+  const [unitCost, setunitCost] = useState('');
+  const [invoiceDate, setinvoiceDate] = useState('');
+  const [invoiceTitle, setinvoiceTitle] = useState('');
+  const [applicableChargeName, setApplicableChargeName] = useState('');
+
+
   useEffect(() => {
     requestsServiceService.allApplicableCharges().then((res) => {
       setAplicableCharges(res.data.data)
     })
   }, [])
+
+
+  useEffect(() => {
+    setbillAmount(unitCost * quantity);
+  }, [unitCost, quantity])
 
   const handleInvoiceFor = (e) => {
     setInvoiceFor(e.target.value);
@@ -48,11 +64,12 @@ function BulkInvoiving() {
     $('#invoiceFor').removeAttr('disabled');
 
   }
+
   const search = () => {
     let endDate = new Date()
-    let startDate = "2022-01-01T23:50:21.817Z"
+    let startDate = "2022-01-01"
     let page = 0
-    let size = 9
+    let size = 10
 
     if (invoiceFor == "PREMISE") {
       // SEARCH PREMISE
@@ -155,8 +172,8 @@ function BulkInvoiving() {
 
 
   const sendData = () => {
-    if (invoiceFor !== "" && invoices?.length <= 0) {
-      //  setNext(false)
+    setError(undefined)
+    if (tenancies.length <= 0) {
       let data = JSON.stringify({
         "aplicableChargeId": aplicableChargeId,
         "invoiceFor": invoiceFor,
@@ -165,53 +182,78 @@ function BulkInvoiving() {
         "percentOf": percentOf,
         "percentage": percentage,
         "premiseIds": premisesId,
+        "period": periodStart + "-" + periodEnd,
         "tenancyList": [],
         "tenantIds": tenantsId,
         "whoToCharge": whoToCharge
       })
       requestsServiceService.createBulkInvoice(data).then((res) => {
-        setInvoices(res.data.data); 
-        setTenancyList(res.data.data?.map(invoice=>invoice.id))
-      })
- 
-    }
+        if (res.data.status == true) {
+          setInvoices(res.data.data);
+          setTenancyList(res.data.data?.map(invoice => invoice.id))
+        } else {
 
-    if (invoiceFor !== "" && invoices?.length > 0) {
-      //  setNext(false)
+          setError(res.data.message)
+        }
+      })
+
+    } else if (invoiceFor !== "" && invoices?.length > 0 && unitCost != "" && quantity >= 0 && invoiceDate != "" && applicableChargeName != "") {
+
       let data = JSON.stringify({
         "aplicableChargeId": aplicableChargeId,
         "invoiceFor": invoiceFor,
         "landlordIds": landlordsId,
         "paid": paid,
+        "period": periodStart + "-" + periodEnd,
         "percentOf": percentOf,
         "percentage": percentage,
         "premiseIds": premisesId,
-        "tenancyList": tenancyList,
+        "tenancyIds": tenancies,
         "tenantIds": tenantsId,
-        "whoToCharge": whoToCharge
+        "chargeId": applicableChargeName,
+        "whoToCharge": whoToCharge,
+        "quantity": quantity,
+        "billAmount": billAmount,
+        "unitCost": unitCost,
+        "invoiceDate": invoiceDate,
+        "invoiceTitle": invoiceTitle
       })
       requestsServiceService.createBulkInvoice(data).then((res) => {
-        // setInvoices(res.data.data);
-        console.log(res.data); 
-        // setTenancyList(res.data.data?.map(invoice=>invoice.id))
+        if (res.data.status == true)
+          redirectToInvoices();
+        else {
+          setError(res.data.message)
+        }
+      }).catch((err) => {
+        // setError(err.response.data.map(err.field + err.essage))}
       })
- 
+
     }
-  
+
   }
 
-  const filterList = (index, event)=> {
+  const redirectToInvoices = () => {
+    window.location.href = "/#/bulk-invoices";
+  };
+
+  const filterList = (index, event) => {
     const { checked, value } = event.target;
     if (checked) {
-      setTenancyList([...tenancyList, invoices[index].id])
+      setTenancyList([...tenancyList, invoices[index].tenancy])
+      setTenancies([...tenancies, invoices[index].tenancy.id])
     } else {
-      setTenancyList(()=> tenancyList.filter((tenant)=> tenant !== invoices[index].id)
-      ) 
+      setTenancyList(() => tenancyList.filter((tenant) => tenant !== invoices[index].tenancy));
+      setTenancies(() => tenancies.filter((tenant) => tenant !== invoices[index].tenancy.id));
     }
-  
+
   }
 
-console.log(tenancyList);
+  const addDate = (date) => {
+    setinvoiceDate(new Date(date.target.value).toISOString());
+  };
+
+  $(document).on("change", ".enddate", addDate);
+
   return (
     <div className='page-content'>
       <div className="content-fluid">
@@ -381,7 +423,9 @@ console.log(tenancyList);
                                     handleTenantChange(index, event)
                                   } type="checkbox" id="formCheck1" />
                                   <label class="form-check-label" for="formCheck1">
-                                    {tenant.firstName} {tenant.lastName}  {tenant.otherName}
+                                    {tenant.tenantType != 'COMPANY' ? <>{tenant.firstName} {tenant.lastName}  {tenant.otherName}</> :
+                                      <>{tenant.companyName}</>
+                                    }
                                   </label>
                                 </div>
                               </div>
@@ -389,14 +433,19 @@ console.log(tenancyList);
                             ))
                           }
 
-                        </div>}
+                        </div>
+                        }
+
                         {selected?.length > 0 && invoiceFor !== "PREMISE" &&
                           <div class="row g-3 mb-4 align-items-center">
                             <h4 className="text-center">Selected {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}s</h4>
                             <div className="row">
                               {selected && selected.map((one) => (
                                 <div className="col-4 d-flex align-items-baseline gap-4 ">
-                                  <p><i class="bx bx-check text-primary font-18px"></i> {one.firstName}</p>
+                                  <p><i class="bx bx-check text-primary font-18px"></i>{(one.tenantType != 'COMPANY' || one.tenantType == undefined) ?
+                                    <>{one.firstName} {one.lastName}  {one.otherName}</> :
+                                    <>{one.companyName}</>
+                                  }</p>
                                   <i class="bx bx-trash text-primary font-18px" onClick={() => filter(one.id)}></i>
                                 </div>
                               ))
@@ -412,7 +461,7 @@ console.log(tenancyList);
                             <div className="row">
                               {selected && selected.map((one) => (
                                 <div className="col-4 d-flex align-items-baseline gap-4 ">
-                                  <p><i class="bx bx-check text-primary font-18px"></i> {one.firstName}</p>
+                                  <p><i class="bx bx-check text-primary font-18px"></i> {one.premiseName}</p>
                                   <i class="bx bx-trash text-primary font-18px" onClick={() => filter(one.id)}></i>
                                 </div>
                               ))
@@ -449,32 +498,32 @@ console.log(tenancyList);
                           <div class="col-auto">
                             <label class="col-form-label">Have paid:</label>
                           </div>
-                          <div class="col-auto">
+                          <div class="col-3 col-auto">
                             <select class="form-control" aria-label="Default select example" onChange={(e) => setPaid(e.target.value)}>
                               <option>select..</option>
-                              <option value="over">Over</option>
+                              <option value="above">Over</option>
                               <option value="below">Below</option>
                             </select>
                           </div>
                           <div class="col-3 d-flex align-items-center gap-1">
-                            <input type="number" className='form-control' max={100} min={1} placeholder="Enter number (1-100)" onChange={(e) => setPercentage(e.target.value)} />
+                            <input type="number" className='form-control' maxLength={3} max={100} min={1} placeholder="Enter number (1-100)" onChange={(e) => setPercentage(e.target.value)} />
                             <strong>{" "} %</strong>
                           </div>
                           <div class="col-auto d-flex  align-items-center gap-1">
-                            <strong>of</strong>
+                            <strong> of </strong>
                             <select class="form-control" aria-label="Default select example" onChange={(e) => setPercentOf(e.target.value)}>
                               <option>select..</option>
-                              <option value="fullPeriod">Full Period</option>
-                              <option value="specificCharge">Specific Charge</option>
+                              <option value="FULL_PERIOD">Full Period</option>
+                              <option value="SPECIFIC_CHARGE">Specific Charge</option>
                             </select>
                           </div>
                         </div>}
-                        {percentOf === "specificCharge" && whoToCharge === "CHARGECONSTRAINT" && <div class="row g-3 mb-3 mt-2 align-items-center">
+                        {percentOf === "SPECIFIC_CHARGE" && whoToCharge === "CHARGECONSTRAINT" && <div class="row g-3 mb-3 mt-2 align-items-center">
                           <div class="col-auto">
                             <label for="inputPassword6" class="col-form-label">Charge : </label>
                           </div>
 
-                          <div class="col-4">
+                          <div class="col-3">
                             <select class="form-control" aria-label="Default select example" onChange={(e) => setAplicableChargeId(e.target.value)}>
                               <option >Select a charge</option>
                               {aplicableCharges.map((charge) => (
@@ -482,7 +531,26 @@ console.log(tenancyList);
                               ))}
                             </select>
                           </div>
-                        </div>}
+                        </div>
+                        }
+
+                        {whoToCharge === "CHARGECONSTRAINT" &&
+                          <div class="row g-3 mb-3 mt-2 align-items-center">
+                            <div class="col-auto">
+                              <label for="inputPassword6" class="col-form-label">Over the period : </label>
+                            </div>
+
+                            <div class="col-6 gap-1">
+                              <strong>{" "} Day </strong> <small>(Example: 0-30)</small>
+                              <input type="number" className='form-control' maxLength={3} max={100} min={1} value={periodStart} placeholder="Enter number (1-100)" onChange={(e) => setPeriodStart(e.target.value)} />
+
+                              <strong>{" "} - </strong>
+                              <strong>{" "} Day </strong>
+                              <input type="number" className='form-control' maxLength={3} max={100} min={1} value={periodEnd} placeholder="Enter number (1-100)" onChange={(e) => setPeriodEnd(e.target.value)} />
+                            </div>
+                          </div>
+                        }
+
                       </div>
                     </section>
 
@@ -505,52 +573,59 @@ console.log(tenancyList);
                                   <th width="8px">Select</th>
                                   <th span={"col-6"}>Tenant Type</th>
                                   <th span={"col-3"}>Name</th>
-                                  <th span={"col-3"}>Email</th>
+                                  <th span={"col-3"}>Total Invoices</th>
+                                  <th span={"col-3"}>Total Paid Invoices</th>
+                                  <th span={"col-3"}> Invoice Count</th>
+                                  <th span={"col-3"}> Outstanding Balance</th>
                                 </tr>
                               )}
                             </thead>
                             <tbody>
-                              {invoices?.length > 0 &&  (
+                              {invoices?.length > 0 && (
                                 <>
                                   {invoices?.length > 0 && (
                                     <>
-                                      {invoices?.map((tenant ,index) =>{ 
-                                        return(
-                                        <tr key={tenant.tenant.id}>
-                                          <td>
-                                            <div className="d-flex  align-items-center">
-                                              <div className="the-mail-checkbox pr-4">
-                                                <input
-                                                  className="form-check-input mt-0 pt-0 form-check-dark"
-                                                  type="checkbox"
-                                                  id="formCheck1"
-                                                  onChange={(e) => {
-                                                    filterList(index,e);
-                                                  }}
-                                                  checked={
-                                                     tenancyList.some((id)=> tenant.id == id )
-                                                  }
-                                                />
+                                      {invoices?.map((tenant, index) => {
+                                        return (
+                                          <tr key={tenant.tenancy.tenant.id}>
+                                            <td>
+                                              <div className="d-flex  align-items-center">
+                                                <div className="the-mail-checkbox pr-4">
+                                                  <input
+                                                    className="form-check-input mt-0 pt-0 form-check-dark"
+                                                    type="checkbox"
+                                                    id="formCheck1"
+                                                    onChange={(e) => {
+                                                      filterList(index, e);
+                                                    }}
+                                                    checked={
+                                                      tenancies.some((id) => tenant.tenancy.id === id)
+                                                    }
+                                                  />
+                                                </div>
                                               </div>
-                                            </div>
-                                          </td>
-                                          <td className="text-capitalize">{tenant.tenant?.tenantType?.toLowerCase()?.replace(/_/g , " ")}</td>
-                                          <td className="text-capitalize">
-                                            <a href="javascript:void(0)">
-                                              {tenant?.tenant?.tenantType === "INDIVIDUAL" ? (
-                                                <>
-                                                  {tenant.tenant.firstName + " "}
-                                                  {tenant.tenant.lastName + " "}{" "}
-                                                  {tenant.tenant.otherName}
-                                                </>
-                                              ) : (
-                                                <>{tenant.tenant.companyName + " "}</>
-                                              )}
-                                            </a>
-                                          </td>
-                                          <td>{tenant.tenant.email}</td>
-                                        </tr>
-                                      )})}
+                                            </td>
+                                            <td className="text-capitalize">{tenant.tenancy.tenant?.tenantType?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                            <td className="text-capitalize">
+                                              <a href="javascript:void(0)">
+                                                {tenant?.tenancy?.tenant?.tenantType === "INDIVIDUAL" ? (
+                                                  <>
+                                                    {tenant.tenancy.tenant.firstName + " "}
+                                                    {tenant.tenancy.tenant.lastName + " "}{" "}
+                                                    {tenant.tenancy.tenant.otherName}
+                                                  </>
+                                                ) : (
+                                                  <>{tenant.tenancy.tenant.companyName + " "}</>
+                                                )}
+                                              </a>
+                                            </td>
+                                            <td>{tenant.sum}</td>
+                                            <td>{tenant.paid}</td>
+                                            <td>{tenant.countAll}</td>
+                                            <td>{tenant.sum - tenant.paid}</td>
+                                          </tr>
+                                        )
+                                      })}
                                     </>
                                   )}
                                 </>
@@ -565,9 +640,167 @@ console.log(tenancyList);
                     <section className={"step-cont d-none"}>
                       <div className="col-12">
                         <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                          <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                            {/* Document Attachments{" "} */}
-                          </p>
+                          <h4>Create Invoice</h4>
+                          <div className='row'>
+
+                            <div className="row">
+                              <div className="col-md-12">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-email-input"
+                                    className="form-label"
+                                  >
+                                    Invoice Title.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    value={invoiceTitle}
+                                    min="1"
+                                    onChange={(e) =>
+                                      setinvoiceTitle(e.target.value)
+                                    }
+                                    placeholder="Enter title"
+                                    required={true}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="col-12">
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="formrow-firstname-input"
+                                  className="form-label"
+                                >
+                                  Applicable charge.{" "}
+                                  <strong className="text-danger">*</strong>
+                                </label>
+                                {aplicableCharges && (
+                                  <div className="form-group mb-4">
+                                    <select
+                                      class="form-control"
+                                      title="Select tenant"
+                                      data-live-search="true"
+                                      value={applicableChargeName}
+                                      onChange={(e) =>
+                                        setApplicableChargeName(
+                                          e.target.value
+                                        )
+                                      }
+                                      required={true}
+                                    >
+                                      <option className="text-black font-semibold ">
+                                        select applicable charge
+                                      </option>
+                                      {aplicableCharges.map(
+                                        (item, index) => (
+                                          <option
+                                            value={item.id}
+                                            key={index}
+                                          >
+                                            {item.name}
+                                          </option>
+                                        )
+                                      )}
+                                    </select>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                            <div className="col-md-6">
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="formrow-email-input"
+                                  className="form-label"
+                                >
+                                  Quantity.{" "}
+                                  <strong className="text-danger">*</strong>
+                                </label>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  value={quantity}
+                                  min="1"
+                                  onChange={(e) =>
+                                    setquantity(e.target.value)
+                                  }
+                                  placeholder="Enter quantity"
+                                  required={true}
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="formrow-password-input"
+                                  className="form-label"
+                                >
+                                  Unit cost.{" "}
+                                  <strong className="text-danger">*</strong>
+                                </label>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  value={unitCost}
+                                  min="1"
+                                  onChange={(e) =>
+                                    setunitCost(e.target.value)
+                                  }
+                                  placeholder="Enter cost"
+                                  required={true}
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="mb-4">
+                                <label htmlFor="" className="">
+                                  Due date
+                                </label>
+                                <div className="input-group" id="datepicker1">
+                                  <input
+                                    type="text"
+                                    className="form-control mouse-pointer enddate"
+                                    name="dob"
+                                    placeholder="Select Date"
+                                    readOnly
+                                    data-date-format="dd M, yyyy"
+                                    data-date-container="#datepicker1"
+                                    data-provide="datepicker"
+                                    data-date-autoclose="true"
+                                  />
+                                  <span className="input-group-text">
+                                    <i className="mdi mdi-calendar"></i>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="formrow-password-input"
+                                  className="form-label"
+                                >
+                                  Invoice amount.{" "}
+                                  <strong className="text-danger">*</strong>
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control invoice-amount"
+                                  value={"KES " + billAmount}
+                                  onChange={(e) => setbillAmount(e.target.value)}
+                                  id="formrow-password-input"
+                                  placeholder="KES"
+                                  required={true}
+                                  disabled={true}
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </section>
@@ -590,6 +823,7 @@ console.log(tenancyList);
                     </button>}
                     <button
                       type="submit"
+                      onClick={sendData}
                       className="btn btn-success kev-submit me-3 d-none"
                       form={"my-form"}
                     >
@@ -597,6 +831,12 @@ console.log(tenancyList);
                       <i className="mdi mdi-check-all me-3 font-16px"></i>
                     </button>
                   </div>
+
+                  {error != undefined &&
+                    <div className='alert alert-danger'>
+                      <span>{error}</span>
+                    </div>
+                  }
                 </div>
               </div>
             </div>

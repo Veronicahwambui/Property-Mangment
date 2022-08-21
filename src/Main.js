@@ -54,6 +54,7 @@ import Emails from "./pages/messanger/Emails";
 import Uploads from "./pages/Uploads";
 import CustomMessage from "./pages/messanger/CustomMessage";
 import BulkInvoiving from "./pages/invoices/BulkInvoiving";
+import BulkInvoices from "./pages/invoices/BulkInvoices";
 
 function Main() {
   useEffect(() => {
@@ -129,6 +130,7 @@ function Main() {
                 <Route path="/createinvoice" element={<CreateInvoice />} />
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/monthly-invoices" element={<InvoiceParent />} />
+                <Route path="/bulk-invoices" element={<BulkInvoices />} />
                 <Route path="/bulk-invoicing" element={<BulkInvoiving />} />
                 {/* receipts */}
                 <Route path="/receipts" element={<Receipts />} />

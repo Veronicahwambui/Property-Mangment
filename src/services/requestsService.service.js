@@ -903,6 +903,11 @@ class RequestsService {
       m
     );
   }
+  
+  getBulkInvoices(){
+    
+    return axiosInstance.get(baseUrl + "/payments/bulk");
+  }
 }
 
 export default new RequestsService();

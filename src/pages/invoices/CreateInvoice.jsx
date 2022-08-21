@@ -130,7 +130,7 @@ function CreateInvoice() {
   };
   const [tenantName, setTenantName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  useEffect(() => {}, [tenants, isChecked, custname]);
+  useEffect(() => { }, [tenants, isChecked, custname]);
   const autofill = (x) => {
     setloaded(false);
     setloading(true);
