@@ -11,6 +11,8 @@ import authService from "../../services/auth.service";
 import authLoginService from "../../services/authLogin.service";
 
 function BulkMessaging() {
+  const [periodStart, setPeriodStart] = useState('0');
+  const [periodEnd, setPeriodEnd] = useState('30');
   const [recipient, setRecipient] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -36,9 +38,11 @@ function BulkMessaging() {
     percentOf: "",
     percentage: undefined,
     mailModels: [],
+    whoToCharge:wtc,
     messageModels: [],
     premiseIds: [],
     sendTo: "",
+    period:periodStart+'-'+periodEnd,
     templatedMessage: "",
     tenantIds: [],
     whoToCharge: "",
@@ -67,10 +71,11 @@ function BulkMessaging() {
       templatedMessage: bulkMessage.templatedMessage,
       tenantIds: [],
       mailModels: [],
+      whoToCharge:wtc,
+      period:periodStart+'-'+periodEnd,
       messageKind: bulkMessage.messageKind,
       messageModels: [],
       messageType: bulkMessage.messageType,
-      period: "",
     };
 
     if (recipient === "TENANT") {
@@ -848,7 +853,7 @@ function BulkMessaging() {
                           </div>
                         </div>
                       </div>
-                      {(selectedItems.length > 0 && bulkMessage.messageKind  === 'BALANCE_REMINDER') && (
+                      {(selectedItems.length > 0 && bulkMessage.messageKind === 'BALANCE_REMINDER') && (
                         <div className="row">
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-2">
@@ -920,7 +925,7 @@ function BulkMessaging() {
                                   onChange={(e) => setPercentOf(e.target.value)}
                                 >
                                   <option>select..</option>
-                                  {["Full Period", "Specific Charge"].map(
+                                  {["SPECIFIC_CHARGE", "FULL_PERIOD"].map(
                                     (item) => (
                                       <option key={item} value={item}>
                                         {item}
@@ -932,7 +937,7 @@ function BulkMessaging() {
                             </div>
                           )}
                           {wtc === "CHARGECONSTRAINT" &&
-                            percentOf === "Specific Charge" && (
+                            percentOf === "SPECIFIC_CHARGE" && (
                               <div className="col-12 mt-3">
                                 <div className="row g-3 align-items-center">
                                   <div className="col-auto">
@@ -965,6 +970,24 @@ function BulkMessaging() {
                                 </div>
                               </div>
                             )}
+
+
+                          {wtc === "CHARGECONSTRAINT" &&
+                            <div class="row g-3 mb-3 mt-2 align-items-center">
+                              <div class="col-auto">
+                                <label for="inputPassword6" class="col-form-label">Over the period : </label>
+                              </div>
+
+                              <div class="col-6 gap-1">
+                                <strong>{" "} Day </strong> <small>(Example: 0-30)</small>
+                                <input type="number" className='form-control' maxLength={3} max={100} min={1} value={periodStart} placeholder="Enter number (1-100)" onChange={(e) => setPeriodStart(e.target.value)} />
+
+                                <strong>{" "} - </strong>
+                                <strong>{" "} Day </strong>
+                                <input type="number" className='form-control' maxLength={3} max={100} min={1} value={periodEnd} placeholder="Enter number (1-100)" onChange={(e) => setPeriodEnd(e.target.value)} />
+                              </div>
+                            </div>
+                          }
                         </div>
                       )}
                     </section>
