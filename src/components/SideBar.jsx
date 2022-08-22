@@ -89,7 +89,8 @@ function SideBar() {
                                 <li><NavLink to="/emails">Emails</NavLink></li>
                                 <li class=""><NavLink to="/createTemplate">Messages Templates</NavLink></li>
                                 <li class=""><NavLink to="/custommessages">Custom Messages</NavLink></li>
-                                <li class=""><NavLink to="/bulkmessaging">Bulk Messages</NavLink></li>
+                                <li class=""><NavLink to="/bulkmessaging">Create Bulk Messages</NavLink></li>
+                                <li class=""><NavLink to="/bulkmessages">Bulk Messages</NavLink></li>
                             </ul>
                         </li>
                         {/* <li>
