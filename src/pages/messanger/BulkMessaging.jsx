@@ -30,7 +30,7 @@ function BulkMessaging() {
   const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
   const [responseData, setresponseData] = useState([]);
-
+  const [validIds, setVID] = useState([]);
   const [bulkMessage, setbulkMessage] = useState({
     aplicableChargeId: undefined,
     landlordIds: [],
@@ -134,6 +134,7 @@ function BulkMessaging() {
       .createBulkMessage(x)
       .then((response) => {
         setresponseData(response.data.data);
+        setVID(response.data.data?.map((a) => a.id));
         if (response.status === true) {
           setError({
             ...error,
@@ -162,6 +163,10 @@ function BulkMessaging() {
       });
   };
 
+  useEffect(() => {
+    console.log(validIds);
+  }, [responseData]);
+
   const clearModal = () => {
     setRecipient("");
     setloaded(false);
@@ -189,14 +194,22 @@ function BulkMessaging() {
   };
 
   const selectItems = (e, x) => {
-    console.log(selectedItems.some((el) => el.id === x.id));
     if (e.target.checked) {
       setselectedItems((selectedItems) => [...selectedItems, x]);
     } else {
       removeItems(x.id);
     }
   };
-
+  const selectResponseItems = (e, x) => {
+    if (e.target.checked) {
+      setresponseData((responseData) => [...responseData, x]);
+    } else {
+      removeResponseItems(x.id);
+    }
+  };
+  const removeResponseItems = (x) => {
+    setresponseData([...responseData.filter((item) => item.id !== x)]);
+  };
   const removeItems = (x) => {
     setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
   };
@@ -781,7 +794,15 @@ function BulkMessaging() {
                                                   className="ml-7px"
                                                   key={item.id}
                                                 >
-                                                  <Badge bg="success">
+                                                  <Badge
+                                                    bg={
+                                                      validIds?.some(
+                                                        (el) => el === item.id
+                                                      )
+                                                        ? "success"
+                                                        : "danger"
+                                                    }
+                                                  >
                                                     {item.firstName +
                                                       " " +
                                                       item.lastName}
@@ -802,7 +823,15 @@ function BulkMessaging() {
                                                   className="ml-7px"
                                                   key={item.id}
                                                 >
-                                                  <Badge bg="success">
+                                                  <Badge
+                                                    bg={
+                                                      validIds?.some(
+                                                        (el) => el === item.id
+                                                      )
+                                                        ? "success"
+                                                        : "danger"
+                                                    }
+                                                  >
                                                     {item.tenantType ===
                                                       "COMPANY" ? (
                                                       <>{item.companyName}</>
@@ -830,7 +859,15 @@ function BulkMessaging() {
                                                   className="ml-7px"
                                                   key={item.id}
                                                 >
-                                                  <Badge bg="primary">
+                                                  <Badge
+                                                    bg={
+                                                      validIds?.some(
+                                                        (el) => el === item.id
+                                                      )
+                                                        ? "success"
+                                                        : "danger"
+                                                    }
+                                                  >
                                                     {item.premiseName}
                                                   </Badge>
                                                   <br />
@@ -1044,11 +1081,11 @@ function BulkMessaging() {
                                 )}
                             </thead>
                             <tbody>
-                              {searchResults.length > 0 && (
+                              {responseData.length > 0 && (
                                 <>
-                                  {searchResults.length <= 5 && (
+                                  {responseData.length <= 5 && (
                                     <>
-                                      {searchResults?.map((item) => (
+                                      {responseData?.map((item) => (
                                         <>
                                           {recipient === "LANDLORD" && (
                                             <tr key={item.id}>
@@ -1060,9 +1097,12 @@ function BulkMessaging() {
                                                       type="checkbox"
                                                       id="formCheck1"
                                                       onChange={(e) =>
-                                                        selectItems(e, item)
+                                                        selectResponseItems(
+                                                          e,
+                                                          item
+                                                        )
                                                       }
-                                                      checked={selectedItems.some(
+                                                      checked={responseData.some(
                                                         (el) =>
                                                           el.id === item.id
                                                       )}
@@ -1090,9 +1130,12 @@ function BulkMessaging() {
                                                       type="checkbox"
                                                       id="formCheck1"
                                                       onChange={(e) =>
-                                                        selectItems(e, item)
+                                                        selectResponseItems(
+                                                          e,
+                                                          item
+                                                        )
                                                       }
-                                                      checked={selectedItems.some(
+                                                      checked={responseData.some(
                                                         (el) =>
                                                           el.id === item.id
                                                       )}
@@ -1125,9 +1168,12 @@ function BulkMessaging() {
                                                       type="checkbox"
                                                       id="formCheck1"
                                                       onChange={(e) =>
-                                                        selectItems(e, item)
+                                                        selectResponseItems(
+                                                          e,
+                                                          item
+                                                        )
                                                       }
-                                                      checked={selectedItems.some(
+                                                      checked={responseData.some(
                                                         (el) =>
                                                           el.id === item.id
                                                       )}
