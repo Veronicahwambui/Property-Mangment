@@ -55,12 +55,9 @@ import Emails from "./pages/messanger/Emails";
 import Uploads from "./pages/Uploads";
 import CustomMessage from "./pages/messanger/CustomMessage";
 import BulkMessaging from "./pages/messanger/BulkMessaging";
-<<<<<<< HEAD
 import BulkInvoiving from "./pages/invoices/BulkInvoiving";
 import BulkInvoices from "./pages/invoices/BulkInvoices";
-=======
 import BulkMessagesList from "./pages/messanger/BulkMessagesList";
->>>>>>> feature/client-landlord
 
 function Main() {
   useEffect(() => {

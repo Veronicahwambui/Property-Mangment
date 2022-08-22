@@ -1013,15 +1013,14 @@ class RequestsService {
   createBulkMessage(data) {
     return axiosInstance.post(baseUrl + "/communication/new/bulk", data);
   }
-<<<<<<< HEAD
   
   getBulkInvoices(){
     
     return axiosInstance.get(baseUrl + "/payments/bulk");
-=======
+  }
+  
   getBulkMessages() {
     return axiosInstance.get(baseUrl + "/communication/bulk");
->>>>>>> feature/client-landlord
   }
 }
 
