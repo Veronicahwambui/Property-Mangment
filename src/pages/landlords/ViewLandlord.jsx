@@ -1803,7 +1803,10 @@ function ViewLandlord() {
                                   <td class="text-capitalize d-none d-md-table-cell">
                                     {com.createdBy}
                                   </td>
-                                  <td class="the-msg the-msg-2"></td>
+                                  <td class="the-msg the-msg-2">
+                                  <span>{JSON.parse(com.data).text}</span>
+                                           
+                                            </td>   
                                   <td class="text-capitalize d-none d-md-table-cell">
                                     {moment(com.dateTimeCreated).format(
                                       "ddd MMM DD"

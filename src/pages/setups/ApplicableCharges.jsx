@@ -23,6 +23,9 @@ function ApplicableCharges() {
   });
   const [manualVal ,setManualVal] = useState(false)
   const [ newManualVal ,setNewManualVal] = useState(false)
+  const[incomeType,setIncomeType]=useState("")
+  const[lineFeeId,setLineFeeId]=useState("")
+  const[lineChartAccountNo,setLineChartAccountNo]=useState("") 
   
 
 
@@ -52,6 +55,9 @@ function ApplicableCharges() {
     clientId: authService.getClientId(),
     expectManualValues: manualVal,
     id: null,
+    incomeType: incomeType,
+    lineChartAccountNo: lineChartAccountNo,
+    lineFeeId: lineFeeId,
     name: createName,
        refundable: isChecked,
   })
@@ -121,8 +127,11 @@ function ApplicableCharges() {
       clientId: authService.getClientId(),
       expectManualValues: newManualVal,
       id: activeId,
+      incomeType: incomeType,
+      lineChartAccountNo: lineChartAccountNo,
+      lineFeeId: lineFeeId,
       name: updateName,
-         refundable:updateCheck
+      refundable:updateCheck
     })
     requestsServiceService.updateApplicableCharges(data).then((res)=>{
      fetchAll()
@@ -252,7 +261,7 @@ function ApplicableCharges() {
                             <td class="text-center cell-change text-nowrap ">
                             <div class="d-flex align-items-center justify-content-between">
                            
-                            <a  onClick={()=> {setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType) ; setNewManualVal(val.expectManualValues)}}   data-bs-toggle="modal"
+                            <a  onClick={()=> {setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType) ;  setNewManualVal(val.expectManualValues);setIncomeType(val.incomeType);setLineFeeId(val.lineFeeId);setLineChartAccountNo(val.lineChartAccountNo)}}   data-bs-toggle="modal"
                                              data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
                             
                             {val.active ?  <button
@@ -328,6 +337,52 @@ function ApplicableCharges() {
                     <input required value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter applicable charge name" />
                   </div>
             </div>
+            <div class="col-12">
+<div class="form-group mb-4">
+                <label for="">IncomeType</label>
+                <input
+
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter IncomeType"
+                  onChange={(event) => setIncomeType(event.target.value)}
+                  value={incomeType}
+                
+                />
+              </div>
+
+</div>
+<div class="col-12">
+<div class="form-group mb-4">
+                <label for="">LineFeeId</label>
+                <input
+
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter LineFeeId"
+                  onChange={(event) => setLineFeeId(event.target.value)}
+                  value={lineFeeId}
+                
+                />
+              </div>
+</div>
+
+<div class="col-12">
+<div class="form-group mb-4">
+                <label for="">LineChartAccountNo</label>
+                <input
+
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter LineChartAccountNo"
+                  onChange={(event) => setLineChartAccountNo(event.target.value)}
+                  value={lineChartAccountNo}
+                
+                />
+              </div>
+
+</div>
+
                 <div class="col-12">
                
                     <label for="">Accept Manual charges </label>
@@ -415,6 +470,54 @@ function ApplicableCharges() {
                     <input value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" required />
                   </div>
             </div>
+
+            <div class="col-12">
+<div class="form-group mb-4">
+                <label for="">IncomeType</label>
+                <input
+
+                  type="text"
+                  class="form-control"
+                 
+                  onChange={(event) => setIncomeType(event.target.value)}
+                  value={incomeType}
+                
+                />
+              </div>
+
+</div>
+<div class="col-12">
+<div class="form-group mb-4">
+                <label for="">LineFeeId</label>
+                <input
+
+                  type="text"
+                  class="form-control"
+                  
+                  onChange={(event) => setLineFeeId(event.target.value)}
+                  value={lineFeeId}
+                
+                />
+              </div>
+</div>
+
+<div class="col-12">
+<div class="form-group mb-4">
+                <label for="">LineChartAccountNo</label>
+                <input
+
+                  type="text"
+                  class="form-control"
+              
+                  onChange={(event) => setLineChartAccountNo(event.target.value)}
+                  value={lineChartAccountNo}
+                
+                />
+              </div>
+
+</div>
+
+
             <div class="col-12">
                
                <label for="">Accept Manual charges </label>
@@ -447,6 +550,12 @@ function ApplicableCharges() {
                   <div className="col-12 p-4">
                       <input type="checkbox" checked={updateCheck} onChange={handleOnChange}/> Refundable?
                   </div>
+
+
+
+
+
+
               </div>
             </div>
             <div class="modal-footer">
