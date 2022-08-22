@@ -1010,22 +1010,18 @@ class RequestsService {
     );
   }
   // BULK MESSAGING
-  getMessagingLandlords(data) {
-    return axiosInstance.post(baseUrl + "/landlord/list", data);
-  }
-  getMessagingPremises(data) {
-    return axiosInstance.post(baseUrl + "/premises/list", data);
-  }
-  getMessagingTenants(data) {
-    return axiosInstance.post(baseUrl + "/tenants/list", data);
-  }
   createBulkMessage(data) {
     return axiosInstance.post(baseUrl + "/communication/new/bulk", data);
   }
+<<<<<<< HEAD
   
   getBulkInvoices(){
     
     return axiosInstance.get(baseUrl + "/payments/bulk");
+=======
+  getBulkMessages() {
+    return axiosInstance.get(baseUrl + "/communication/bulk");
+>>>>>>> feature/client-landlord
   }
 }
 

@@ -7,8 +7,12 @@ import { Modal, ModalFooter } from "react-bootstrap";
 import CloseButton from "react-bootstrap/CloseButton";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
+import authService from "../../services/auth.service";
+import authLoginService from "../../services/authLogin.service";
 
 function BulkMessaging() {
+  const [periodStart, setPeriodStart] = useState("0");
+  const [periodEnd, setPeriodEnd] = useState("30");
   const [recipient, setRecipient] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -22,20 +26,30 @@ function BulkMessaging() {
   });
   const [wtc, setWtc] = useState("");
   const [percentOf, setPercentOf] = useState("");
+  const [subject, setSubject] = useState("");
   const [loading2, setloading2] = useState(false);
   const [loaded, setloaded] = useState(false);
+  const [responseData, setresponseData] = useState([]);
+  const [validIds, setVID] = useState([]);
   const [bulkMessage, setbulkMessage] = useState({
     aplicableChargeId: undefined,
     landlordIds: [],
     paid: "",
     percentOf: "",
     percentage: undefined,
+    mailModels: [],
+    whoToCharge: wtc,
+    messageModels: [],
     premiseIds: [],
     sendTo: "",
+    period: periodStart + "-" + periodEnd,
     templatedMessage: "",
     tenantIds: [],
     whoToCharge: "",
+    messageKind: "",
+    messageType: "",
   });
+  const navigate = useNavigate();
   useEffect(() => {
     // console.log(/.*{.*}.*/.test(bulkMessage.templatedMessage));
   }, [bulkMessage.templatedMessage]);
@@ -43,6 +57,7 @@ function BulkMessaging() {
   // SUBMIT FORM
   const handleSubmit = (e) => {
     e.preventDefault();
+
     let data = {
       aplicableChargeId: bulkMessage.aplicableChargeId,
       landlordIds: [],
@@ -50,46 +65,142 @@ function BulkMessaging() {
       percentOf: percentOf,
       percentage: parseInt(bulkMessage.percentage),
       premiseIds: [],
+      mailModels: [],
+      messageModels: [],
       sendTo: recipient,
       templatedMessage: bulkMessage.templatedMessage,
       tenantIds: [],
       whoToCharge: wtc,
+      period: periodStart + "-" + periodEnd,
+      messageKind: bulkMessage.messageKind,
+      messageType: bulkMessage.messageType,
     };
-    let result = selectedItems.map((a) => a.id);
+
     if (recipient === "TENANT") {
-      Object.assign(data, { tenantIds: result });
-      createBulkMessage(data);
+      Object.assign(data, { tenantIds: selectedItems.map((a) => a.id) });
     } else if (recipient === "LANDLORD") {
-      Object.assign(data, { landlordIds: result });
-      createBulkMessage(data);
+      Object.assign(data, { landlordIds: selectedItems.map((a) => a.id) });
     } else if (recipient === "PREMISE") {
-      Object.assign(data, { premiseIds: result });
-      createBulkMessage(data);
+      Object.assign(data, { premiseIds: selectedItems.map((a) => a.id) });
     }
+
+    if (bulkMessage.templatedMessage !== "") {
+      if (bulkMessage.messageType !== "SMS") {
+        Object.assign(data, {
+          mailModels: selectedItems.map((a) => ({
+            templateName: "mail/email-template",
+            portalName: JSON.parse(authService.getCurrentUserName()).client
+              .name,
+            from: "nouveta.tech@outlook.com",
+            to: a.email,
+            subject: subject,
+            model: { name: a.firstName, message: bulkMessage.templatedMessage },
+            attachments: [],
+            entityType:
+              bulkMessage.messageKind === "BALANCE_REMINDER"
+                ? "TENANCY"
+                : "TENANT",
+            createdBy: authLoginService.getCurrentUser(),
+            entityId: a.id,
+          })),
+        });
+      } else {
+        Object.assign(data, {
+          messageModels: selectedItems.map((a) => ({
+            contact: a.phoneNumber,
+            entityType:
+              bulkMessage.messageKind === "BALANCE_REMINDER"
+                ? "TENANCY"
+                : "TENANT",
+            createdBy: authLoginService.getCurrentUser(),
+            message: bulkMessage.templatedMessage,
+            templateName: undefined,
+            senderId: JSON.parse(authService.getCurrentUserName()).client
+              .senderId,
+            model: { name: a.firstName, message: bulkMessage.templatedMessage },
+            entityId: a.id,
+          })),
+        });
+      }
+    } else {
+    }
+    console.log(JSON.stringify(data));
+    createBulkMessage(data);
   };
 
   const createBulkMessage = (x) => {
-    requestsServiceService
-      .createBulkMessage(x)
-      .then((response) => {
-        if (response.status === true) {
-          setError({
-            ...error,
-            message: response.message,
-            color: "success",
-          });
-        } else {
-          setError({
-            ...error,
-            message: "SOMETHING SOMETHING ERROR",
-            color: "danger",
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (bulkMessage.templatedMessage !== "") {
+      requestsServiceService
+        .createBulkMessage(x)
+        .then((response) => {
+          if (response.data.status === true) {
+            setError({
+              ...error,
+              message: response.data.message,
+              color: "success",
+            });
+            setTimeout(() => {
+              navigate("/bulkmessages", { replace: true });
+            }, 2000);
+          } else {
+            setError({
+              ...error,
+              message: response.data.message,
+              color: "danger",
+            });
+          }
+
+          if (x.messageModels.length > 0 && x.mailModels.length > 0) {
+          }
+        })
+        .catch((err) => {
+          // setError({
+          //   ...error,
+          //   message: err.message,
+          //   color: "danger",
+          // });
+        });
+    } else {
+      requestsServiceService
+        .createBulkMessage(x)
+        .then((response) => {
+          setresponseData(response.data.data);
+          if (bulkMessage.messageKind === "CUSTOM") {
+            setVID(response.data?.data?.map((a) => a.id));
+          }
+          if (bulkMessage.messageKind === "BALANCE_REMINDER") {
+            setVID(response.data?.data?.map((a) => a.tenancy?.tenant?.id));
+          }
+          if (response.status === true) {
+            // setError({
+            //   ...error,
+            //   message: response.data.message,
+            //   color: "success",
+            // });
+          } else {
+            // setError({
+            //   ...error,
+            //   message: response.data.message,
+            //   color: "danger",
+            // });
+          }
+
+          if (x.messageModels.length > 0 && x.mailModels.length > 0) {
+          }
+        })
+        .catch((err) => {
+          // setError({
+          //   ...error,
+          //   message: err.message,
+          //   color: "danger",
+          // });
+        });
+    }
   };
+
+  useEffect(() => {
+    console.log(validIds);
+  }, [responseData]);
 
   const clearModal = () => {
     setRecipient("");
@@ -106,21 +217,37 @@ function BulkMessaging() {
     setselectedItems([]);
     setWtc("");
   };
+
   useEffect(() => {
     getApplicableCharges();
   }, []);
+
   const getApplicableCharges = () => {
     requestsServiceService.allApplicableCharges().then((res) => {
       setAc(res.data.data);
     });
   };
+
   const selectItems = (e, x) => {
-    console.log(selectedItems.some((el) => el.id === x.id));
     if (e.target.checked) {
       setselectedItems((selectedItems) => [...selectedItems, x]);
     } else {
       removeItems(x.id);
     }
+  };
+  const selectResponseItems = (e, x) => {
+    console.log(x);
+    if (e.target.checked) {
+      setVID((validIds) => [...validIds, x]);
+    } else {
+      removeResponseItems(x);
+    }
+  };
+  useEffect(() => {
+    console.log(validIds);
+  }, [validIds]);
+  const removeResponseItems = (x) => {
+    setVID([...validIds.filter((item) => item !== x)]);
   };
   const removeItems = (x) => {
     setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
@@ -132,60 +259,65 @@ function BulkMessaging() {
     setSearchResults([]);
     e.preventDefault();
     setloading(true);
-    let dates = {
-      dateCreatedEnd: moment("12/12/2022").format("YYYY-MM-DD"),
-      dateCreatedStart: moment("01/01/2022").format("YYYY-MM-DD"),
+    var size = 10;
+    var page = 0;
+    var dates = {
+      dateCreatedEnd: new Date(),
+      dateCreatedStart: moment(new Date()).startOf("year").format(),
     };
     if (recipient === "TENANT") {
       let s = {
-        search: searchTerm,
+        search: searchTerm.trim(),
       };
       let data = Object.assign(dates, s);
-      getTenants(data);
+      getTenants(searchTerm, page, size, data);
     } else if (recipient === "LANDLORD") {
       let s = {
-        search: searchTerm,
+        search: searchTerm.trim(),
       };
       let data = Object.assign(dates, s);
-      getLandlords(data);
+      getLandlords(page, size, data);
     } else if (recipient === "PREMISE") {
       let s = {
-        search: searchTerm,
+        search: searchTerm.trim(),
       };
       let data = Object.assign(dates, s);
-      getPremises(data);
+      getPremises(page, size, data);
     }
   };
 
-  const getLandlords = (x) => {
+  const getLandlords = (x, y, z) => {
     setloading2(true);
-    requestsServiceService.getMessagingLandlords(x).then((res) => {
+    requestsServiceService.getLandLords(x, y, z).then((res) => {
       setSearchResults(res.data.data);
       setloading(false);
       setloading2(false);
       setloaded(true);
     });
   };
-  const getPremises = (x) => {
+
+  const getPremises = (x, y, z) => {
     setloading2(true);
 
-    requestsServiceService.getMessagingPremises(x).then((res) => {
+    requestsServiceService.getAllpremises(x, y, z).then((res) => {
       setSearchResults(res.data.data);
       setloading(false);
       setloading2(false);
       setloaded(true);
     });
   };
-  const getTenants = (x) => {
+
+  const getTenants = (w, x, y, z) => {
     setloading2(true);
-    requestsServiceService.getMessagingTenants(x).then((res) => {
+    requestsServiceService.getAllTenants(w, x, y, z).then((res) => {
       setSearchResults(res.data.data);
       setloading(false);
       setloading2(false);
       setloaded(true);
     });
   };
-  useEffect(() => { }, [loaded]);
+
+  useEffect(() => {}, [loaded]);
 
   const handleChange = (e) => {
     setbulkMessage({
@@ -320,6 +452,73 @@ function BulkMessaging() {
                               ))}
                             </select>
                           </div>
+                          <div className="col-lg-3 col-md-6">
+                            <label htmlFor=" " className=" ">
+                              Message Type:{" "}
+                              <strong className="text-danger ">*</strong>
+                            </label>
+                            <div className="d-flex ">
+                              <div className="form-check me-3">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="messageType"
+                                  value={"SMS"}
+                                  onChange={(e) => handleChange(e)}
+                                />
+                                <label className="form-check-label">SMS</label>
+                              </div>
+                              <div className="form-check me-3">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="messageType"
+                                  value={"EMAIL"}
+                                  onChange={(e) => handleChange(e)}
+                                />
+                                <label className="form-check-label">
+                                  EMAIL
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="landlord-type"
+                              className="form-label"
+                            >
+                              Message Kind.{" "}
+                              <strong className="text-danger">*</strong>
+                            </label>
+                            <div className="form-group mb-4">
+                              <select
+                                name="messageKind"
+                                id=""
+                                className="form-control text-capitalize"
+                                onChange={(e) => handleChange(e)}
+                              >
+                                <option
+                                  className="text-black font-semibold "
+                                  value=""
+                                >
+                                  Select..
+                                </option>
+                                {["CUSTOM", "BALANCE_REMINDER"].map((item) => (
+                                  <option
+                                    key={item}
+                                    value={item}
+                                    disabled={
+                                      recipient === "LANDLORD" &&
+                                      item === "BALANCE_REMINDER"
+                                    }
+                                  >
+                                    {item}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3">
                               <p className="fw-semibold mb-0 pb-0 text-uppercase">
@@ -649,7 +848,12 @@ function BulkMessaging() {
                                                       item.lastName}
                                                   </Badge>
                                                   <br />
-                                                  <i className="fa fa-trash cursor-pointer text-danger mt-1" onClick={() => removeItems(item.id)}></i>
+                                                  <i
+                                                    className="fa fa-trash cursor-pointer text-danger mt-1"
+                                                    onClick={() =>
+                                                      removeItems(item.id)
+                                                    }
+                                                  ></i>
                                                 </h5>
                                               </>
                                             )}
@@ -672,7 +876,12 @@ function BulkMessaging() {
                                                     )}
                                                   </Badge>
                                                   <br />
-                                                  <i className="fa fa-trash cursor-pointer text-danger mt-1" onClick={() => removeItems(item.id)}></i>
+                                                  <i
+                                                    className="fa fa-trash cursor-pointer text-danger mt-1"
+                                                    onClick={() =>
+                                                      removeItems(item.id)
+                                                    }
+                                                  ></i>
                                                 </h5>
                                               </>
                                             )}
@@ -682,11 +891,16 @@ function BulkMessaging() {
                                                   className="ml-7px"
                                                   key={item.id}
                                                 >
-                                                  <Badge bg="primary">
+                                                  <Badge bg="success">
                                                     {item.premiseName}
                                                   </Badge>
                                                   <br />
-                                                  <i className="fa fa-trash cursor-pointer text-danger mt-1" onClick={() => removeItems(item.id)}></i>
+                                                  <i
+                                                    className="fa fa-trash cursor-pointer text-danger mt-1"
+                                                    onClick={() =>
+                                                      removeItems(item.id)
+                                                    }
+                                                  ></i>
                                                 </h5>
                                               </>
                                             )}
@@ -700,127 +914,511 @@ function BulkMessaging() {
                           </div>
                         </div>
                       </div>
-                      {selectedItems.length > 0 && (
-                        <div className="row">
-                          <div className="col-12">
-                            <div className="bg-primary border-2 bg-soft p-3 mb-2">
-                              <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                                Charging Rule
-                              </p>
+                      {selectedItems.length > 0 &&
+                        bulkMessage.messageKind === "BALANCE_REMINDER" && (
+                          <div className="row">
+                            <div className="col-12">
+                              <div className="bg-primary border-2 bg-soft p-3 mb-2">
+                                <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                                  Charging Rule
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                          <div className="row g-3 mb-3 align-items-center">
-                            <div className="col-auto">
-                              <label
-                                htmlFor="inputPassword6"
-                                className="col-form-label"
-                              >
-                                Who to charge:
-                              </label>
-                            </div>
-                            <div className="col-4">
-                              <select
-                                className="form-control"
-                                aria-label="Default select example"
-                                onChange={(e) => setWtc(e.target.value)}
-                              >
-                                <option>Select who to charge</option>
-                                <option value="ALLCURRENT">All Current</option>
-                                <option value="CHARGECONSTRAINT">
-                                  Charge Constraint
-                                </option>
-                              </select>
-                            </div>
-                          </div>
-                          {wtc === "CHARGECONSTRAINT" && (
-                            <div className="row g-3 align-items-center">
+                            <div className="row g-3 mb-3 align-items-center">
                               <div className="col-auto">
-                                <label className="col-form-label">
-                                  Have paid:
+                                <label
+                                  htmlFor="inputPassword6"
+                                  className="col-form-label"
+                                >
+                                  Who to charge:
                                 </label>
                               </div>
-                              <div className="col-auto">
+                              <div className="col-4">
                                 <select
                                   className="form-control"
-                                  name={"paid"}
                                   aria-label="Default select example"
-                                  onChange={(e) => handleChange(e)}
+                                  onChange={(e) => setWtc(e.target.value)}
                                 >
-                                  <option>Select..</option>
-                                  {["Over", "Below"].map((item) => (
-                                    <option key={item} value={item}>
-                                      {item}
-                                    </option>
-                                  ))}
+                                  <option>Select who to charge</option>
+                                  <option value="ALLCURRENT">
+                                    All Current
+                                  </option>
+                                  <option value="CHARGECONSTRAINT">
+                                    Charge Constraint
+                                  </option>
                                 </select>
                               </div>
-                              <div className="col-4 d-flex align-items-center gap-1">
-                                <input
-                                  type="text"
-                                  name={"percentage"}
-                                  className="form-control"
-                                  placeholder="Enter number (1-100)"
-                                  onChange={(e) => handleChange(e)}
-                                />
-                                <strong> % </strong>
-                              </div>
-                              <div className="col-4 d-flex align-items-center gap-1">
-                                <strong>of</strong>
-                                <select
-                                  className="form-control"
-                                  aria-label="Default select example"
-                                  onChange={(e) => setPercentOf(e.target.value)}
-                                >
-                                  <option>select..</option>
-                                  {["Full Period", "Specific Charge"].map(
-                                    (item) => (
+                            </div>
+                            {wtc === "CHARGECONSTRAINT" && (
+                              <div className="row g-3 align-items-center">
+                                <div className="col-auto">
+                                  <label className="col-form-label">
+                                    Have paid:
+                                  </label>
+                                </div>
+                                <div className="col-auto">
+                                  <select
+                                    className="form-control"
+                                    name={"paid"}
+                                    aria-label="Default select example"
+                                    onChange={(e) => handleChange(e)}
+                                  >
+                                    <option>Select..</option>
+                                    {["Over", "Below"].map((item) => (
                                       <option key={item} value={item}>
                                         {item}
                                       </option>
-                                    )
-                                  )}
-                                </select>
-                              </div>
-                            </div>
-                          )}
-                          {wtc === "CHARGECONSTRAINT" &&
-                            percentOf === "Specific Charge" && (
-                              <div className="col-12 mt-3">
-                                <div className="row g-3 align-items-center">
-                                  <div className="col-auto">
-                                    <label className="col-form-label">
-                                      Charge{" "}
-                                      <strong className="text-danger ">
-                                        *
-                                      </strong>
-                                    </label>
-                                  </div>
-                                  <div className="col-auto">
-                                    <select
-                                      className="form-control text-capitalize"
-                                      required={true}
-                                      name={"aplicableChargeId"}
-                                      onChange={(e) => handleChange(e)}
-                                    >
-                                      <option className="text-black font-semibold">
-                                        select charge
-                                      </option>
-                                      {applicableCharges.map((aT) => {
-                                        return (
-                                          <option key={aT.id} value={aT.id}>
-                                            {aT.name}
-                                          </option>
-                                        );
-                                      })}
-                                    </select>
-                                  </div>
+                                    ))}
+                                  </select>
+                                </div>
+                                <div className="col-4 d-flex align-items-center gap-1">
+                                  <input
+                                    type="text"
+                                    name={"percentage"}
+                                    className="form-control"
+                                    placeholder="Enter number (1-100)"
+                                    onChange={(e) => handleChange(e)}
+                                  />
+                                  <strong> % </strong>
+                                </div>
+                                <div className="col-4 d-flex align-items-center gap-1">
+                                  <strong>of</strong>
+                                  <select
+                                    className="form-control"
+                                    aria-label="Default select example"
+                                    onChange={(e) =>
+                                      setPercentOf(e.target.value)
+                                    }
+                                  >
+                                    <option>select..</option>
+                                    {["SPECIFIC_CHARGE", "FULL_PERIOD"].map(
+                                      (item) => (
+                                        <option key={item} value={item}>
+                                          {item}
+                                        </option>
+                                      )
+                                    )}
+                                  </select>
                                 </div>
                               </div>
                             )}
-                        </div>
-                      )}
+                            {wtc === "CHARGECONSTRAINT" &&
+                              percentOf === "SPECIFIC_CHARGE" && (
+                                <div className="col-12 mt-3">
+                                  <div className="row g-3 align-items-center">
+                                    <div className="col-auto">
+                                      <label className="col-form-label">
+                                        Charge{" "}
+                                        <strong className="text-danger ">
+                                          *
+                                        </strong>
+                                      </label>
+                                    </div>
+                                    <div className="col-auto">
+                                      <select
+                                        className="form-control text-capitalize"
+                                        required={true}
+                                        name={"aplicableChargeId"}
+                                        onChange={(e) => handleChange(e)}
+                                      >
+                                        <option className="text-black font-semibold">
+                                          select charge
+                                        </option>
+                                        {applicableCharges.map((aT) => {
+                                          return (
+                                            <option key={aT.id} value={aT.id}>
+                                              {aT.name}
+                                            </option>
+                                          );
+                                        })}
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+
+                            {wtc === "CHARGECONSTRAINT" && (
+                              <div class="row g-3 mb-3 mt-2 align-items-center">
+                                <div class="col-auto">
+                                  <label
+                                    for="inputPassword6"
+                                    class="col-form-label"
+                                  >
+                                    Over the period :{" "}
+                                  </label>
+                                </div>
+
+                                <div class="col-6 gap-1">
+                                  <strong> Day </strong>{" "}
+                                  <small>(Example: 0-30)</small>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    maxLength={3}
+                                    max={100}
+                                    min={1}
+                                    value={periodStart}
+                                    placeholder="Enter number (1-100)"
+                                    onChange={(e) =>
+                                      setPeriodStart(e.target.value)
+                                    }
+                                  />
+                                  <strong> - </strong>
+                                  <strong> Day </strong>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    maxLength={3}
+                                    max={100}
+                                    min={1}
+                                    value={periodEnd}
+                                    placeholder="Enter number (1-100)"
+                                    onChange={(e) =>
+                                      setPeriodEnd(e.target.value)
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                     </section>
                     <section className="step-cont d-none">
+                      <div className="row">
+                        <div className="overflow-visible">
+                          <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                              Recipient List
+                            </p>
+                          </div>
+                          {responseData.length === 0 && (
+                            <div className={"alert alert-danger text-danger"}>
+                              <p>No valid recipients !</p>
+                            </div>
+                          )}
+                          <table
+                            className="table align-middle table-hover contacts-table table-striped "
+                            id="datatable-buttons"
+                          >
+                            <thead className="table-light">
+                              {responseData.length > 0 &&
+                                responseData.length <= 5 && (
+                                  <>
+                                    {recipient === "PREMISE" && (
+                                      <>
+                                        <tr>
+                                          <th width="8px">Select</th>
+                                          <th span={"col-6"}>Tenant Type</th>
+                                          <th span={"col-3"}>Name</th>
+                                          <th span={"col-3"}>Email</th>
+                                        </tr>
+                                      </>
+                                    )}
+                                    {recipient === "LANDLORD" && (
+                                      <>
+                                        <tr>
+                                          <th width="8px">Select</th>
+                                          <th span={"col-6"}>Landlord Type</th>
+                                          <th span={"col-3"}>Name</th>
+                                          <th span={"col-3"}>Email</th>
+                                        </tr>
+                                      </>
+                                    )}
+                                    {recipient === "TENANT" && (
+                                      <>
+                                        <tr>
+                                          <th width="8px">Select</th>
+                                          <th span={"col-6"}>Tenant Type</th>
+                                          <th span={"col-3"}>Name</th>
+                                          <th span={"col-3"}>Email</th>
+                                        </tr>
+                                      </>
+                                    )}
+                                  </>
+                                )}
+                            </thead>
+                            <tbody>
+                              {responseData?.length > 0 && (
+                                <>
+                                  <>
+                                    {responseData?.map((item) => (
+                                      <>
+                                        {recipient === "LANDLORD" && (
+                                          <tr key={item.id}>
+                                            <td>
+                                              <div className="d-flex  align-items-center">
+                                                <div className="the-mail-checkbox pr-4">
+                                                  <input
+                                                    className="form-check-input mt-0 pt-0 form-check-dark"
+                                                    type="checkbox"
+                                                    id="formCheck1"
+                                                    onChange={(e) =>
+                                                      selectResponseItems(
+                                                        e,
+                                                        item.id
+                                                      )
+                                                    }
+                                                    checked={validIds.some(
+                                                      (el) => el === item.id
+                                                    )}
+                                                  />
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td>{item.landLordType}</td>
+                                            <td className="text-capitalize">
+                                              <a href="javascript:void(0)">
+                                                {item.firstName} {item.lastName}
+                                              </a>
+                                            </td>
+                                            <td>{item.email}</td>
+                                          </tr>
+                                        )}
+                                        {recipient === "PREMISE" && (
+                                          <>
+                                            {bulkMessage.messageKind ===
+                                              "BALANCE_REMINDER" && (
+                                              <tr
+                                                key={item?.tenancy?.tenant?.id}
+                                              >
+                                                <td>
+                                                  <div className="d-flex  align-items-center">
+                                                    <div className="the-mail-checkbox pr-4">
+                                                      <input
+                                                        className="form-check-input mt-0 pt-0 form-check-dark"
+                                                        type="checkbox"
+                                                        id="formCheck1"
+                                                        onChange={(e) =>
+                                                          selectResponseItems(
+                                                            e,
+                                                            item?.tenancy
+                                                              ?.tenant?.id
+                                                          )
+                                                        }
+                                                        checked={validIds.some(
+                                                          (el) =>
+                                                            el ===
+                                                            item?.tenancy
+                                                              ?.tenant?.id
+                                                        )}
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                </td>
+                                                <td>
+                                                  {
+                                                    item?.tenancy?.tenant
+                                                      ?.tenantType
+                                                  }
+                                                </td>
+                                                <td className="text-capitalize">
+                                                  <a href="javascript:void(0)">
+                                                    {item?.tenancy?.tenant
+                                                      ?.tenantType ===
+                                                    "INDIVIDUAL" ? (
+                                                      <>
+                                                        {item?.tenancy?.tenant
+                                                          ?.firstName + " "}
+                                                        {item?.tenancy?.tenant
+                                                          ?.lastName + " "}{" "}
+                                                        {
+                                                          item?.tenancy?.tenant
+                                                            ?.otherName
+                                                        }
+                                                      </>
+                                                    ) : (
+                                                      <>
+                                                        {item?.tenancy?.tenant
+                                                          ?.companyName + " "}
+                                                      </>
+                                                    )}
+                                                  </a>
+                                                </td>
+                                                <td>
+                                                  {item?.tenancy?.tenant?.email}
+                                                </td>
+                                              </tr>
+                                            )}
+                                          </>
+                                        )}
+                                        {recipient === "PREMISE" && (
+                                          <>
+                                            {bulkMessage.messageKind ===
+                                              "CUSTOM" && (
+                                              <tr key={item.id}>
+                                                <td>
+                                                  <div className="d-flex  align-items-center">
+                                                    <div className="the-mail-checkbox pr-4">
+                                                      <input
+                                                        className="form-check-input mt-0 pt-0 form-check-dark"
+                                                        type="checkbox"
+                                                        id="formCheck1"
+                                                        onChange={(e) =>
+                                                          selectResponseItems(
+                                                            e,
+                                                            item.id
+                                                          )
+                                                        }
+                                                        checked={validIds.some(
+                                                          (el) => el === item.id
+                                                        )}
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                </td>
+                                                <td>{item.tenantType}</td>
+                                                <td className="text-capitalize">
+                                                  <a href="javascript:void(0)">
+                                                    {item?.tenantType ===
+                                                    "INDIVIDUAL" ? (
+                                                      <>
+                                                        {item.firstName + " "}
+                                                        {item.lastName +
+                                                          " "}{" "}
+                                                        {item.otherName}
+                                                      </>
+                                                    ) : (
+                                                      <>
+                                                        {item.companyName + " "}
+                                                      </>
+                                                    )}
+                                                  </a>
+                                                </td>
+                                                <td>{item.email}</td>
+                                              </tr>
+                                            )}
+                                          </>
+                                        )}
+                                        {recipient === "TENANT" && (
+                                          <>
+                                            {bulkMessage.messageKind ===
+                                              "BALANCE_REMINDER" && (
+                                              <tr
+                                                key={item?.tenancy?.tenant?.id}
+                                              >
+                                                <td>
+                                                  <div className="d-flex  align-items-center">
+                                                    <div className="the-mail-checkbox pr-4">
+                                                      <input
+                                                        className="form-check-input mt-0 pt-0 form-check-dark"
+                                                        type="checkbox"
+                                                        id="formCheck1"
+                                                        onChange={(e) =>
+                                                          selectResponseItems(
+                                                            e,
+                                                            item?.tenancy
+                                                              ?.tenant?.id
+                                                          )
+                                                        }
+                                                        checked={validIds.some(
+                                                          (el) =>
+                                                            el ===
+                                                            item?.tenancy
+                                                              ?.tenant?.id
+                                                        )}
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                </td>
+                                                <td>
+                                                  {
+                                                    item?.tenancy?.tenant
+                                                      ?.tenantType
+                                                  }
+                                                </td>
+                                                <td className="text-capitalize">
+                                                  <a href="javascript:void(0)">
+                                                    {item?.tenancy?.tenant
+                                                      ?.tenantType ===
+                                                    "INDIVIDUAL" ? (
+                                                      <>
+                                                        {item?.tenancy?.tenant
+                                                          ?.firstName + " "}
+                                                        {item?.tenancy?.tenant
+                                                          ?.lastName + " "}{" "}
+                                                        {
+                                                          item?.tenancy?.tenant
+                                                            ?.otherName
+                                                        }
+                                                      </>
+                                                    ) : (
+                                                      <>
+                                                        {item?.tenancy?.tenant
+                                                          ?.companyName + " "}
+                                                      </>
+                                                    )}
+                                                  </a>
+                                                </td>
+                                                <td>
+                                                  {item?.tenancy?.tenant?.email}
+                                                </td>
+                                              </tr>
+                                            )}
+                                          </>
+                                        )}
+                                        {recipient === "TENANT" && (
+                                          <>
+                                            {bulkMessage.messageKind ===
+                                            "CUSTOM" ? (
+                                              <>
+                                                <tr key={item.id}>
+                                                  <td>
+                                                    <div className="d-flex  align-items-center">
+                                                      <div className="the-mail-checkbox pr-4">
+                                                        <input
+                                                          className="form-check-input mt-0 pt-0 form-check-dark"
+                                                          type="checkbox"
+                                                          id="formCheck1"
+                                                          onChange={(e) =>
+                                                            selectResponseItems(
+                                                              e,
+                                                              item.id
+                                                            )
+                                                          }
+                                                          checked={validIds.some(
+                                                            (el) =>
+                                                              el === item.id
+                                                          )}
+                                                        />
+                                                      </div>
+                                                    </div>
+                                                  </td>
+                                                  <td>{item.tenantType}</td>
+                                                  <td className="text-capitalize">
+                                                    <a href="javascript:void(0)">
+                                                      {item?.tenantType ===
+                                                      "INDIVIDUAL" ? (
+                                                        <>
+                                                          {item.firstName + " "}
+                                                          {item.lastName +
+                                                            " "}{" "}
+                                                          {item.otherName}
+                                                        </>
+                                                      ) : (
+                                                        <>
+                                                          {item.companyName +
+                                                            " "}
+                                                        </>
+                                                      )}
+                                                    </a>
+                                                  </td>
+                                                  <td>{item.email}</td>
+                                                </tr>
+                                              </>
+                                            ) : (
+                                              <></>
+                                            )}
+                                          </>
+                                        )}
+                                      </>
+                                    ))}
+                                  </>
+                                </>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                       <div className="col-12">
                         <div className="bg-primary border-2 bg-soft p-3 mb-4">
                           <p className="fw-semibold mb-0 pb-0 text-uppercase">
@@ -828,6 +1426,29 @@ function BulkMessaging() {
                           </p>
                         </div>
                       </div>
+                      {bulkMessage.messageType !== "SMS" && (
+                        <div className="col-lg-12">
+                          <div className="mb3">
+                            <label
+                              htmlFor="landlord-type"
+                              className="form-label"
+                            >
+                              Email Subject.{" "}
+                              <strong className="text-danger">*</strong>
+                            </label>
+                            <div className="form-group mb-4">
+                              <input
+                                placeholder="Write your subject"
+                                id={"subject"}
+                                name={"subject"}
+                                className="form-control"
+                                onChange={(e) => setSubject(e.target.value)}
+                                required={true}
+                              ></input>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                       <div className="col-lg-12">
                         <div className="mb3">
                           <label htmlFor="landlord-type" className="form-label">
@@ -860,11 +1481,8 @@ function BulkMessaging() {
                     </button>
                     <button
                       className="btn btn-primary waves-effect kev-nxt me-2"
-                      disabled={
-                        recipient === "" ||
-                        selectedItems.length === 0 ||
-                        wtc === ""
-                      }
+                      disabled={recipient === ""}
+                      onClick={handleSubmit}
                     >
                       Next{" "}
                       <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
@@ -883,6 +1501,11 @@ function BulkMessaging() {
               </div>
             </div>
           </div>
+          {error.color !== "" && (
+            <div className={"alert alert-" + error.color} role="alert">
+              {error.message}
+            </div>
+          )}
         </div>
         <footer className="footer ">
           <div className="container-fluid ">
