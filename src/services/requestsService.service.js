@@ -965,7 +965,7 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/communication/new/bulk", data);
   }
   getBulkMessages() {
-    return axiosInstance.get(baseUrl + "/communication/get/bulk");
+    return axiosInstance.get(baseUrl + "/communication/bulk");
   }
 }
 

@@ -11,7 +11,7 @@ import Badge from "react-bootstrap/Badge";
 export default function BulkMessagesList() {
   useEffect(() => {
     getBulkMessages();
-  });
+  },[]);
 
   const [messages, setmessages] = useState([]);
   const getBulkMessages = () => {
