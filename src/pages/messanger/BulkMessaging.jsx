@@ -140,8 +140,7 @@ function BulkMessaging() {
               color: "success",
             });
             setTimeout(() => {
-              console.log("WADSHDJKDHKAJSHJKASDHJKSAHSJHSDJSHAJSAHDJASKDH");
-              navigate("/messages", { replace: true });
+              navigate("/bulkmessages", { replace: true });
             }, 2000);
           } else {
             setError({
