@@ -49,7 +49,7 @@ function BulkMessaging() {
     messageKind: "",
     messageType: "",
   });
-  let data = {};
+  const navigate = useNavigate();
   useEffect(() => {
     // console.log(/.*{.*}.*/.test(bulkMessage.templatedMessage));
   }, [bulkMessage.templatedMessage]);
@@ -133,18 +133,22 @@ function BulkMessaging() {
       requestsServiceService
         .createBulkMessage(x)
         .then((response) => {
-          if (response.status === true) {
-            // setError({
-            //   ...error,
-            //   message: response.data.message,
-            //   color: "success",
-            // });
+          if (response.data.status === true) {
+            setError({
+              ...error,
+              message: response.data.message,
+              color: "success",
+            });
+            setTimeout(() => {
+              console.log("WADSHDJKDHKAJSHJKASDHJKSAHSJHSDJSHAJSAHDJASKDH");
+              navigate("/messages", { replace: true });
+            }, 2000);
           } else {
-            // setError({
-            //   ...error,
-            //   message: response.data.message,
-            //   color: "danger",
-            // });
+            setError({
+              ...error,
+              message: response.data.message,
+              color: "danger",
+            });
           }
 
           if (x.messageModels.length > 0 && x.mailModels.length > 0) {
@@ -168,30 +172,29 @@ function BulkMessaging() {
           if (bulkMessage.messageKind === "BALANCE_REMINDER") {
             setVID(response.data?.data?.map((a) => a.tenancy?.tenant?.id));
           }
-
           if (response.status === true) {
-            setError({
-              ...error,
-              message: response.data.message,
-              color: "success",
-            });
+            // setError({
+            //   ...error,
+            //   message: response.data.message,
+            //   color: "success",
+            // });
           } else {
-            setError({
-              ...error,
-              message: response.data.message,
-              color: "danger",
-            });
+            // setError({
+            //   ...error,
+            //   message: response.data.message,
+            //   color: "danger",
+            // });
           }
 
           if (x.messageModels.length > 0 && x.mailModels.length > 0) {
           }
         })
         .catch((err) => {
-          setError({
-            ...error,
-            message: err.message,
-            color: "danger",
-          });
+          // setError({
+          //   ...error,
+          //   message: err.message,
+          //   color: "danger",
+          // });
         });
     }
   };
@@ -502,7 +505,14 @@ function BulkMessaging() {
                                   Select..
                                 </option>
                                 {["CUSTOM", "BALANCE_REMINDER"].map((item) => (
-                                  <option key={item} value={item}>
+                                  <option
+                                    key={item}
+                                    value={item}
+                                    disabled={
+                                      recipient === "LANDLORD" &&
+                                      item === "BALANCE_REMINDER"
+                                    }
+                                  >
                                     {item}
                                   </option>
                                 ))}
@@ -1082,13 +1092,18 @@ function BulkMessaging() {
                               Recipient List
                             </p>
                           </div>
+                          {responseData.length === 0 && (
+                            <div className={"alert alert-danger text-danger"}>
+                              <p>No valid recipients !</p>
+                            </div>
+                          )}
                           <table
                             className="table align-middle table-hover contacts-table table-striped "
                             id="datatable-buttons"
                           >
                             <thead className="table-light">
-                              {searchResults.length > 0 &&
-                                searchResults.length <= 5 && (
+                              {responseData.length > 0 &&
+                                responseData.length <= 5 && (
                                   <>
                                     {recipient === "PREMISE" && (
                                       <>
@@ -1487,6 +1502,11 @@ function BulkMessaging() {
               </div>
             </div>
           </div>
+          {error.color !== "" && (
+            <div className={"alert alert-" + error.color} role="alert">
+              {error.message}
+            </div>
+          )}
         </div>
         <footer className="footer ">
           <div className="container-fluid ">
