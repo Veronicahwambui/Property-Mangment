@@ -134,35 +134,41 @@ function BulkMessaging() {
         .createBulkMessage(x)
         .then((response) => {
           if (response.status === true) {
-            setError({
-              ...error,
-              message: response.data.message,
-              color: "success",
-            });
+            // setError({
+            //   ...error,
+            //   message: response.data.message,
+            //   color: "success",
+            // });
           } else {
-            setError({
-              ...error,
-              message: response.data.message,
-              color: "danger",
-            });
+            // setError({
+            //   ...error,
+            //   message: response.data.message,
+            //   color: "danger",
+            // });
           }
 
           if (x.messageModels.length > 0 && x.mailModels.length > 0) {
           }
         })
         .catch((err) => {
-          setError({
-            ...error,
-            message: err.message,
-            color: "danger",
-          });
+          // setError({
+          //   ...error,
+          //   message: err.message,
+          //   color: "danger",
+          // });
         });
     } else {
       requestsServiceService
         .createBulkMessage(x)
         .then((response) => {
           setresponseData(response.data.data);
-          setVID(response.data?.data?.map((a) => a.tenancy?.tenant?.id));
+          if (bulkMessage.messageKind === "CUSTOM") {
+            setVID(response.data?.data?.map((a) => a.id));
+          }
+          if (bulkMessage.messageKind === "BALANCE_REMINDER") {
+            setVID(response.data?.data?.map((a) => a.tenancy?.tenant?.id));
+          }
+
           if (response.status === true) {
             setError({
               ...error,
@@ -1098,7 +1104,7 @@ function BulkMessaging() {
                                       <>
                                         <tr>
                                           <th width="8px">Select</th>
-                                          <th span={"col-6"}>Tenant Type</th>
+                                          <th span={"col-6"}>Landlord Type</th>
                                           <th span={"col-3"}>Name</th>
                                           <th span={"col-3"}>Email</th>
                                         </tr>
@@ -1120,164 +1126,279 @@ function BulkMessaging() {
                             <tbody>
                               {responseData?.length > 0 && (
                                 <>
-                                  {responseData?.length <= 5 && (
-                                    <>
-                                      {responseData?.map((item) => (
-                                        <>
-                                          {recipient === "LANDLORD" && (
-                                            <tr key={item.id}>
-                                              <td>
-                                                <div className="d-flex  align-items-center">
-                                                  <div className="the-mail-checkbox pr-4">
-                                                    <input
-                                                      className="form-check-input mt-0 pt-0 form-check-dark"
-                                                      type="checkbox"
-                                                      id="formCheck1"
-                                                      onChange={(e) =>
-                                                        selectItems(e, item)
-                                                      }
-                                                      checked={selectedItems.some(
-                                                        (el) =>
-                                                          el.id === item.id
-                                                      )}
-                                                    />
-                                                  </div>
+                                  <>
+                                    {responseData?.map((item) => (
+                                      <>
+                                        {recipient === "LANDLORD" && (
+                                          <tr key={item.id}>
+                                            <td>
+                                              <div className="d-flex  align-items-center">
+                                                <div className="the-mail-checkbox pr-4">
+                                                  <input
+                                                    className="form-check-input mt-0 pt-0 form-check-dark"
+                                                    type="checkbox"
+                                                    id="formCheck1"
+                                                    onChange={(e) =>
+                                                      selectResponseItems(
+                                                        e,
+                                                        item.id
+                                                      )
+                                                    }
+                                                    checked={validIds.some(
+                                                      (el) => el === item.id
+                                                    )}
+                                                  />
                                                 </div>
-                                              </td>
-                                              <td>{item.landLordType}</td>
-                                              <td className="text-capitalize">
-                                                <a href="javascript:void(0)">
-                                                  {item.firstName}{" "}
-                                                  {item.lastName}
-                                                </a>
-                                              </td>
-                                              <td>{item.email}</td>
-                                            </tr>
-                                          )}
-                                          {recipient === "PREMISE" && (
-                                            <tr key={item?.tenancy?.tenant?.id}>
-                                              <td>
-                                                <div className="d-flex  align-items-center">
-                                                  <div className="the-mail-checkbox pr-4">
-                                                    <input
-                                                      className="form-check-input mt-0 pt-0 form-check-dark"
-                                                      type="checkbox"
-                                                      id="formCheck1"
-                                                      onChange={(e) =>
-                                                        selectResponseItems(
-                                                          e,
-                                                          item?.tenancy?.tenant
-                                                            ?.id
-                                                        )
-                                                      }
-                                                      checked={validIds.some(
-                                                        (el) =>
-                                                          el ===
-                                                          item?.tenancy?.tenant
-                                                            ?.id
-                                                      )}
-                                                    />
+                                              </div>
+                                            </td>
+                                            <td>{item.landLordType}</td>
+                                            <td className="text-capitalize">
+                                              <a href="javascript:void(0)">
+                                                {item.firstName} {item.lastName}
+                                              </a>
+                                            </td>
+                                            <td>{item.email}</td>
+                                          </tr>
+                                        )}
+                                        {recipient === "PREMISE" && (
+                                          <>
+                                            {bulkMessage.messageKind ===
+                                              "BALANCE_REMINDER" && (
+                                              <tr
+                                                key={item?.tenancy?.tenant?.id}
+                                              >
+                                                <td>
+                                                  <div className="d-flex  align-items-center">
+                                                    <div className="the-mail-checkbox pr-4">
+                                                      <input
+                                                        className="form-check-input mt-0 pt-0 form-check-dark"
+                                                        type="checkbox"
+                                                        id="formCheck1"
+                                                        onChange={(e) =>
+                                                          selectResponseItems(
+                                                            e,
+                                                            item?.tenancy
+                                                              ?.tenant?.id
+                                                          )
+                                                        }
+                                                        checked={validIds.some(
+                                                          (el) =>
+                                                            el ===
+                                                            item?.tenancy
+                                                              ?.tenant?.id
+                                                        )}
+                                                      />
+                                                    </div>
                                                   </div>
-                                                </div>
-                                              </td>
-                                              <td>
-                                                {
-                                                  item?.tenancy?.tenant
-                                                    ?.tenantType
-                                                }
-                                              </td>
-                                              <td className="text-capitalize">
-                                                <a href="javascript:void(0)">
-                                                  {item?.tenancy?.tenant
-                                                    ?.tenantType ===
-                                                  "INDIVIDUAL" ? (
-                                                    <>
-                                                      {item?.tenancy?.tenant
-                                                        ?.firstName + " "}
-                                                      {item?.tenancy?.tenant
-                                                        ?.lastName + " "}{" "}
-                                                      {
-                                                        item?.tenancy?.tenant
-                                                          ?.otherName
-                                                      }
-                                                    </>
-                                                  ) : (
-                                                    <>
-                                                      {item?.tenancy?.tenant
-                                                        ?.companyName + " "}
-                                                    </>
-                                                  )}
-                                                </a>
-                                              </td>
-                                              <td>
-                                                {item?.tenancy?.tenant?.email}
-                                              </td>
-                                            </tr>
-                                          )}
-                                          {recipient === "TENANT" && (
-                                            <tr key={item?.tenancy?.tenant?.id}>
-                                              <td>
-                                                <div className="d-flex  align-items-center">
-                                                  <div className="the-mail-checkbox pr-4">
-                                                    <input
-                                                      className="form-check-input mt-0 pt-0 form-check-dark"
-                                                      type="checkbox"
-                                                      id="formCheck1"
-                                                      onChange={(e) =>
-                                                        selectResponseItems(
-                                                          e,
+                                                </td>
+                                                <td>
+                                                  {
+                                                    item?.tenancy?.tenant
+                                                      ?.tenantType
+                                                  }
+                                                </td>
+                                                <td className="text-capitalize">
+                                                  <a href="javascript:void(0)">
+                                                    {item?.tenancy?.tenant
+                                                      ?.tenantType ===
+                                                    "INDIVIDUAL" ? (
+                                                      <>
+                                                        {item?.tenancy?.tenant
+                                                          ?.firstName + " "}
+                                                        {item?.tenancy?.tenant
+                                                          ?.lastName + " "}{" "}
+                                                        {
                                                           item?.tenancy?.tenant
-                                                            ?.id
-                                                        )
-                                                      }
-                                                      checked={validIds.some(
-                                                        (el) =>
-                                                          el ===
-                                                          item?.tenancy?.tenant
-                                                            ?.id
-                                                      )}
-                                                    />
+                                                            ?.otherName
+                                                        }
+                                                      </>
+                                                    ) : (
+                                                      <>
+                                                        {item?.tenancy?.tenant
+                                                          ?.companyName + " "}
+                                                      </>
+                                                    )}
+                                                  </a>
+                                                </td>
+                                                <td>
+                                                  {item?.tenancy?.tenant?.email}
+                                                </td>
+                                              </tr>
+                                            )}
+                                          </>
+                                        )}
+                                        {recipient === "PREMISE" && (
+                                          <>
+                                            {bulkMessage.messageKind ===
+                                              "CUSTOM" && (
+                                              <tr key={item.id}>
+                                                <td>
+                                                  <div className="d-flex  align-items-center">
+                                                    <div className="the-mail-checkbox pr-4">
+                                                      <input
+                                                        className="form-check-input mt-0 pt-0 form-check-dark"
+                                                        type="checkbox"
+                                                        id="formCheck1"
+                                                        onChange={(e) =>
+                                                          selectResponseItems(
+                                                            e,
+                                                            item.id
+                                                          )
+                                                        }
+                                                        checked={validIds.some(
+                                                          (el) => el === item.id
+                                                        )}
+                                                      />
+                                                    </div>
                                                   </div>
-                                                </div>
-                                              </td>
-                                              <td>
-                                                {
-                                                  item?.tenancy?.tenant
-                                                    ?.tenantType
-                                                }
-                                              </td>
-                                              <td className="text-capitalize">
-                                                <a href="javascript:void(0)">
-                                                  {item?.tenancy?.tenant
-                                                    ?.tenantType ===
-                                                  "INDIVIDUAL" ? (
-                                                    <>
-                                                      {item?.tenancy?.tenant
-                                                        ?.firstName + " "}
-                                                      {item?.tenancy?.tenant
-                                                        ?.lastName + " "}{" "}
-                                                      {
-                                                        item?.tenancy?.tenant
-                                                          ?.otherName
-                                                      }
-                                                    </>
-                                                  ) : (
-                                                    <>
-                                                      {item?.tenancy?.tenant
-                                                        ?.companyName + " "}
-                                                    </>
-                                                  )}
-                                                </a>
-                                              </td>
-                                              <td>
-                                                {item?.tenancy?.tenant?.email}
-                                              </td>
-                                            </tr>
-                                          )}
-                                        </>
-                                      ))}
-                                    </>
-                                  )}
+                                                </td>
+                                                <td>{item.tenantType}</td>
+                                                <td className="text-capitalize">
+                                                  <a href="javascript:void(0)">
+                                                    {item?.tenantType ===
+                                                    "INDIVIDUAL" ? (
+                                                      <>
+                                                        {item.firstName + " "}
+                                                        {item.lastName +
+                                                          " "}{" "}
+                                                        {item.otherName}
+                                                      </>
+                                                    ) : (
+                                                      <>
+                                                        {item.companyName + " "}
+                                                      </>
+                                                    )}
+                                                  </a>
+                                                </td>
+                                                <td>{item.email}</td>
+                                              </tr>
+                                            )}
+                                          </>
+                                        )}
+                                        {recipient === "TENANT" && (
+                                          <>
+                                            {bulkMessage.messageKind ===
+                                              "BALANCE_REMINDER" && (
+                                              <tr
+                                                key={item?.tenancy?.tenant?.id}
+                                              >
+                                                <td>
+                                                  <div className="d-flex  align-items-center">
+                                                    <div className="the-mail-checkbox pr-4">
+                                                      <input
+                                                        className="form-check-input mt-0 pt-0 form-check-dark"
+                                                        type="checkbox"
+                                                        id="formCheck1"
+                                                        onChange={(e) =>
+                                                          selectResponseItems(
+                                                            e,
+                                                            item?.tenancy
+                                                              ?.tenant?.id
+                                                          )
+                                                        }
+                                                        checked={validIds.some(
+                                                          (el) =>
+                                                            el ===
+                                                            item?.tenancy
+                                                              ?.tenant?.id
+                                                        )}
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                </td>
+                                                <td>
+                                                  {
+                                                    item?.tenancy?.tenant
+                                                      ?.tenantType
+                                                  }
+                                                </td>
+                                                <td className="text-capitalize">
+                                                  <a href="javascript:void(0)">
+                                                    {item?.tenancy?.tenant
+                                                      ?.tenantType ===
+                                                    "INDIVIDUAL" ? (
+                                                      <>
+                                                        {item?.tenancy?.tenant
+                                                          ?.firstName + " "}
+                                                        {item?.tenancy?.tenant
+                                                          ?.lastName + " "}{" "}
+                                                        {
+                                                          item?.tenancy?.tenant
+                                                            ?.otherName
+                                                        }
+                                                      </>
+                                                    ) : (
+                                                      <>
+                                                        {item?.tenancy?.tenant
+                                                          ?.companyName + " "}
+                                                      </>
+                                                    )}
+                                                  </a>
+                                                </td>
+                                                <td>
+                                                  {item?.tenancy?.tenant?.email}
+                                                </td>
+                                              </tr>
+                                            )}
+                                          </>
+                                        )}
+                                        {recipient === "TENANT" && (
+                                          <>
+                                            {bulkMessage.messageKind ===
+                                            "CUSTOM" ? (
+                                              <>
+                                                <tr key={item.id}>
+                                                  <td>
+                                                    <div className="d-flex  align-items-center">
+                                                      <div className="the-mail-checkbox pr-4">
+                                                        <input
+                                                          className="form-check-input mt-0 pt-0 form-check-dark"
+                                                          type="checkbox"
+                                                          id="formCheck1"
+                                                          onChange={(e) =>
+                                                            selectResponseItems(
+                                                              e,
+                                                              item.id
+                                                            )
+                                                          }
+                                                          checked={validIds.some(
+                                                            (el) =>
+                                                              el === item.id
+                                                          )}
+                                                        />
+                                                      </div>
+                                                    </div>
+                                                  </td>
+                                                  <td>{item.tenantType}</td>
+                                                  <td className="text-capitalize">
+                                                    <a href="javascript:void(0)">
+                                                      {item?.tenantType ===
+                                                      "INDIVIDUAL" ? (
+                                                        <>
+                                                          {item.firstName + " "}
+                                                          {item.lastName +
+                                                            " "}{" "}
+                                                          {item.otherName}
+                                                        </>
+                                                      ) : (
+                                                        <>
+                                                          {item.companyName +
+                                                            " "}
+                                                        </>
+                                                      )}
+                                                    </a>
+                                                  </td>
+                                                  <td>{item.email}</td>
+                                                </tr>
+                                              </>
+                                            ) : (
+                                              <></>
+                                            )}
+                                          </>
+                                        )}
+                                      </>
+                                    ))}
+                                  </>
                                 </>
                               )}
                             </tbody>
