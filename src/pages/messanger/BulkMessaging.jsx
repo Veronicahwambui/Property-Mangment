@@ -1091,7 +1091,7 @@ function BulkMessaging() {
                                       <>
                                         <tr>
                                           <th width="8px">Select</th>
-                                          <th span={"col-6"}>Landlord Type</th>
+                                          <th span={"col-6"}>Tenant Type</th>
                                           <th span={"col-3"}>Name</th>
                                           <th span={"col-3"}>Email</th>
                                         </tr>
@@ -1111,14 +1111,14 @@ function BulkMessaging() {
                                 )}
                             </thead>
                             <tbody>
-                              {responseData.length > 0 && (
+                              {responseData?.length > 0 && (
                                 <>
-                                  {responseData.length <= 5 && (
+                                  {responseData?.length <= 5 && (
                                     <>
                                       {responseData?.map((item) => (
                                         <>
                                           {recipient === "LANDLORD" && (
-                                            <tr key={item.id}>
+                                            <tr key={item?.tenancy?.tenant?.id}>
                                               <td>
                                                 <div className="d-flex  align-items-center">
                                                   <div className="the-mail-checkbox pr-4">
@@ -1129,25 +1129,52 @@ function BulkMessaging() {
                                                       onChange={(e) =>
                                                         selectResponseItems(
                                                           e,
-                                                          item
+                                                          item?.tenancy?.tenant
+                                                            ?.id
                                                         )
                                                       }
-                                                      checked={responseData.some(
+                                                      checked={validIds.some(
                                                         (el) =>
-                                                          el.id === item.id
+                                                          el ===
+                                                          item?.tenancy?.tenant
+                                                            ?.id
                                                       )}
                                                     />
                                                   </div>
                                                 </div>
                                               </td>
-                                              <td>{item.landLordType}</td>
+                                              <td>
+                                                {
+                                                  item?.tenancy?.tenant
+                                                    ?.tenantType
+                                                }
+                                              </td>
                                               <td className="text-capitalize">
                                                 <a href="javascript:void(0)">
-                                                  {item.firstName}{" "}
-                                                  {item.lastName}
+                                                  {item?.tenancy?.tenant
+                                                    ?.tenantType ===
+                                                  "INDIVIDUAL" ? (
+                                                    <>
+                                                      {item?.tenancy?.tenant
+                                                        ?.firstName + " "}
+                                                      {item?.tenancy?.tenant
+                                                        ?.lastName + " "}{" "}
+                                                      {
+                                                        item?.tenancy?.tenant
+                                                          ?.otherName
+                                                      }
+                                                    </>
+                                                  ) : (
+                                                    <>
+                                                      {item?.tenancy?.tenant
+                                                        ?.companyName + " "}
+                                                    </>
+                                                  )}
                                                 </a>
                                               </td>
-                                              <td>{item.email}</td>
+                                              <td>
+                                                {item?.tenancy?.tenant?.email}
+                                              </td>
                                             </tr>
                                           )}
                                           {recipient === "PREMISE" && (
