@@ -9,6 +9,8 @@ import axios from "axios";
 import StatusBadge from "../../components/StatusBadge";
 import Message from "../../components/Message";
 import AuthService from "../../services/auth.service";
+import DatePicker from "react-datepicker";
+
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -20,14 +22,24 @@ function Invoices() {
   const [searchTerm, setSearchTerm] = useState("");
   // MODAL
   const [invoice_show, setinvoice_show] = useState(false);
+  const [invoice_Date_show, setinvoice_Date_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
+
+  const showInvoiceDate = () => setinvoice_Date_show(true);
+  const closeInvoiceDate = () => setinvoice_Date_show(false);
+
   const [startDate, setStartDate] = useState(
     moment().startOf("month").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
     moment(new Date()).add(3, "M").format("YYYY-MM-DD")
   );
+
+  const [oldInvoiceDate, setOldInvoiceDate] = useState(new Date());
+  const [newInvoiceDate, setNewInvoiceDate] = useState(new Date());
+  const [newInvoiceId, setNewInvoiceId] = useState(undefined);
+
   const [error, setError] = useState({
     message: "",
     color: "",
@@ -217,6 +229,20 @@ function Invoices() {
     });
   };
 
+
+  const extendInvoiceDay = (id,date) => {
+    showInvoiceDate();
+    setNewInvoiceId(id)
+    setNewInvoiceDate(new Date(date));
+    setOldInvoiceDate(new Date(date));
+  }
+
+  const extendDay =()=>{
+    closeInvoiceDate()
+    requestsServiceService.adjustPaymentTransactionItemDueDate(newInvoiceId,moment(newInvoiceDate).format("YYYY/MM/DD")).then((res)=>{
+      getInvoices();
+      })   
+  }
   return (
     <>
       <div className="page-content">
@@ -397,6 +423,10 @@ function Invoices() {
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
                                       </a>
+                                      {(invoice?.paymentStatus == "Partially-Paid" || invoice?.paymentStatus == "PENDING" ) && <a className="dropdown-item cursor-pointer" onClick={() => extendInvoiceDay(invoice.transactionItemId, invoice.invoiceDate)}>
+                                        <i className="font-size-15 mdi mdi-calendar-arrow-right me-3"></i>
+                                        Extend Invoice Dates
+                                      </a>} 
                                       <a className="dropdown-item">
                                         <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                         Print
@@ -672,6 +702,32 @@ function Invoices() {
               )}
             </form>
           </div>
+        </Modal.Footer>
+      </Modal>
+
+      {/* INVOICE DATE  */}
+      <Modal show={invoice_Date_show} onHide={closeInvoiceDate} size="sm" centered>
+        <Modal.Header closeButton>
+          <h5 className="modal-title" id="myLargeModalLabel">
+            Extend Invoice Dates
+          </h5>
+        </Modal.Header>
+        <Modal.Body>
+          <DatePicker
+            selected={newInvoiceDate}
+            onChange={(date) => setNewInvoiceDate(date)}
+            className="form-control cursor-pointer"
+            calendarClassName="form-group"
+            minDate={oldInvoiceDate}
+            // type="text"
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <center>
+            <button className="btn btn-primary" onClick={extendDay}>
+              Submit
+            </button>
+          </center>
         </Modal.Footer>
       </Modal>
     </>

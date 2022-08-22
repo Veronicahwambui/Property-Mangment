@@ -408,7 +408,6 @@ function Dashboard() {
                                                 minDate={startDate}
                                                 maxDate={new Date()}
                                                 type="text"
-
                                             />
 
                                         </div>
