@@ -848,7 +848,7 @@ function BulkMessaging() {
                           </div>
                         </div>
                       </div>
-                      {selectedItems.length > 0 && (
+                      {(selectedItems.length > 0 && bulkMessage.messageKind  === 'BALANCE_REMINDER') && (
                         <div className="row">
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-2">
