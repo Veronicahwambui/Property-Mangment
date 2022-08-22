@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import authService from "../../services/auth.service";
+import moment from "moment";
 import requestsServiceService from "../../services/requestsService.service";
 
 function ClientCounties() {
@@ -174,6 +175,7 @@ const deactivate = (id)=> {
                           <th>#</th>
                           <th>County</th>
                           <th>Status</th>
+                          <th>Date Created</th>
                           <th class="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -187,6 +189,8 @@ const deactivate = (id)=> {
                               <td style={{ width: "80px" }}>{index+ 1}</td>
                               <td data-field="unit-num ">{county.name}</td>
                               <td data-field="unit-num ">{cou.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
+                              <td>{moment(cou.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                               <td class=" align-items-center text-right cell-change text-nowrap ">
                               {cou.active ?  <button
                                   class="btn btn-danger btn-sm  text-uppercase px-2 mx-3"

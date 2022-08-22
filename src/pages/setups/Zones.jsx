@@ -1,5 +1,5 @@
 /* global $ */
-
+import moment from "moment";
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import requestsServiceService from '../../services/requestsService.service'
@@ -219,6 +219,7 @@ function Zones() {
                           <th>Zone</th>
                           <th>County</th>
                           <th>Status</th>
+                          <th>Date Created</th>
                           <th class="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -233,6 +234,8 @@ function Zones() {
                               <td data-field="unit-numv " className='text-capitalize'>{zon.name}</td>
                               <td data-field="unit-numv " className='text-capitalize'>{zon?.clientCounty.county.name?.toLowerCase()?.replace(/_/g, " ")}</td>
                               <td data-field="unit-num ">{zon.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                              <td>{moment(zon.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                               <td class="text-right cell-change text-nowrap ">
                                 <div className="d-flex align-items-center">
                                   <a onClick={() => {

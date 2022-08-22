@@ -6,6 +6,7 @@ import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import AuthService from "../../services/auth.service";
+import moment from "moment";
 
 function IssueType() {
   const location = useLocation();
@@ -387,6 +388,8 @@ function IssueType() {
                                     <th>Action</th>
                                     <th>Template Name</th>
                                     <th>State</th>
+                                    <th>Date Created</th>
+
                                     <th className={"text-end"}>Actions</th>
                                   </tr>
                                 </thead>
@@ -430,6 +433,8 @@ function IssueType() {
                                               </span>
                                             )}
                                           </td>
+                                          <td>{moment(item.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                           <td className="text-right cell-change text-nowrap ">
                                             <div className="d-flex align-items-center">
                                               <a

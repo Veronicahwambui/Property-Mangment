@@ -3,6 +3,7 @@ import authService from '../../services/auth.service';
 import requestsServiceService from '../../services/requestsService.service'
 import {Button, Modal} from "react-bootstrap";
 import { Link } from 'react-router-dom';
+import moment from "moment";
 
 function LandLordAgreementTypes() {
   const [agreementTypes , setAgreementTypes ]= useState([])
@@ -221,6 +222,8 @@ function LandLordAgreementTypes() {
                         <th>#</th>
                         <th>Agreement Type</th>
                         <th>Status</th>
+                        <th>Date Created</th>
+
                         <th class="text-right">Actions</th>
                       </tr>
                       </thead>
@@ -232,6 +235,8 @@ function LandLordAgreementTypes() {
                             <td style={{ width: "80px" }}>{num + 1}</td>
                             <td data-field="unit-num ">{aT.name}</td>
                             <td data-field="unit-num ">{aT.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
+                            <td>{moment(aT.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                             <td class="text-right cell-change text-nowrap ">
                               <div className="d-flex">
                                 <a onClick={() => {getOneAgreementType(aT.id); setActiveId(aT.id)}} data-bs-toggle="modal"

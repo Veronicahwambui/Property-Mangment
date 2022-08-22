@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-
+import moment from 'moment'
 import requestsServiceService from "../../services/requestsService.service";
 import StatusBadge from "../../components/StatusBadge";
 import authService from "../../services/auth.service";
@@ -317,6 +317,7 @@ function AdminList() {
                           <th>RoleName</th>
                           <th>Enabled</th>
                           <th>Account Blocked</th>
+                          <th>DateCreated</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -363,6 +364,9 @@ function AdminList() {
                                     ) : (
                                       <StatusBadge type="False" />
                                     )}
+                                  </td>
+                                  <td>
+                                  <p className="mb-0">{moment(list.user.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</p>
                                   </td>
 
                                   <td>

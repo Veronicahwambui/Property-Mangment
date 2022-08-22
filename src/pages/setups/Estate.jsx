@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import requestsServiceService from '../../services/requestsService.service'
+import moment from "moment";
 
 function Estate() {
   const [estates, setEstates] = useState([])
@@ -219,6 +220,8 @@ function Estate() {
                           <th>Zone</th>
                           <th>County</th>
                           <th>Status</th>
+                          <th>Date Created</th>
+
                           <th class="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -232,6 +235,8 @@ function Estate() {
                               <td className='text-capitalize'>{estate.zone.name}</td>
                               <td className='text-capitalize'>{estate.zone.clientCounty.county.name.toLowerCase()}</td>
                               <td >{estate.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                              <td>{moment(estate.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                               <td class="text-right cell-change text-nowrap">
                                 <div className=" align-items-center d-flex">
                                   <a onClick={() => {

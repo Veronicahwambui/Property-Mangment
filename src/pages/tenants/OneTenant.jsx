@@ -1607,6 +1607,7 @@ function OneTenant() {
                                       <th>TenancyRenewalDate</th>
                                       <th>TenancyRenewalNotificationDate</th>
                                       <th>Status</th>
+                                      <th>Date Created</th>
                                       <th>Actions</th>
                                     </tr>
                                   </thead>
@@ -1664,6 +1665,7 @@ function OneTenant() {
                                               </span>
                                             )}
                                           </td>
+                                          <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
 
                                           <td className="text-right ">
                                             <div class="dropdown">
@@ -1789,6 +1791,7 @@ function OneTenant() {
                                         <th>Relationship</th>
                                         <th>phone No</th>
                                         <th>Status</th>
+                                        <th>Date Created</th>
                                         <th className="text-right">Actions</th>
                                       </tr>
                                     </thead>
@@ -1821,6 +1824,7 @@ function OneTenant() {
                                                   </span>
                                                 )}
                                               </td>
+                                              <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
 
                                               <td className="text-right cell-change ">
                                                 <a

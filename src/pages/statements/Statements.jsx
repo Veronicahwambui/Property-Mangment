@@ -191,6 +191,7 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
                           <th>Paid By</th>
                           <th>Tenant Name</th>
                           <th>Utilized Amount</th>
+                          <th>Date Created</th>
                           <th className="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -228,6 +229,8 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
                                   statement.utilisedAmount
                                 )}
                               </td>
+                              <td>{moment(statement.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                               <td>
                                 <div className="d-flex justify-content-end">
                                   <div className="dropdown">

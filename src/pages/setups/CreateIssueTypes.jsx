@@ -8,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import requestsServiceService from "../../services/requestsService.service";
 import issueType from "./IssueType";
 
+
 function CreateIssueTypes() {
   const [initialStatus, setInitialStatus] = useState("");
   const [applicableCharges, setApplicableCharges] = useState([]);
@@ -372,6 +373,8 @@ function CreateIssueTypes() {
                               <th>Next Status</th>
                               <th>stateActionName</th>
                               <th>Template Name</th>
+                              <th>Date Created</th>
+
                               <th>State</th>
                             </tr>
                           </thead>
@@ -416,6 +419,8 @@ function CreateIssueTypes() {
                                         </span>
                                       )}
                                     </td>
+                              <td>{moment(item.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                   </tr>
                                 );
                               })}

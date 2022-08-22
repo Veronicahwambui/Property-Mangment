@@ -253,6 +253,7 @@ function Landlords() {
                           <th>File Number</th>
                           <th>Status</th>
                           <th>Agreement Period</th>
+                          <th>Date Created</th>
                           <th class="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -287,6 +288,8 @@ function Landlords() {
                             <td data-field="unit-num ">
                               {l.agreementPeriod + " months"}
                             </td>
+
+                            <td>{moment(l.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
                             <td className="text-right cell-change text-nowrap">
                               <div className="d-flex justify-content-end">
                                 <div className="dropdown">

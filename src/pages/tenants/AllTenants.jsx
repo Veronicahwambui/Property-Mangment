@@ -292,7 +292,7 @@ function AllTenants() {
 
                             </td>
                             <td>
-                              <h5 className="font-size-14 mb-1">{moment(premise.dateTimeCreated).format("MMM DD YYYY")}</h5>
+                              <h5 className="font-size-14 mb-1">{moment(premise.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</h5>
 
                             </td>
 
