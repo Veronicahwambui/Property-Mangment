@@ -827,15 +827,7 @@ function BulkMessaging() {
                                                   className="ml-7px"
                                                   key={item.id}
                                                 >
-                                                  <Badge
-                                                    bg={
-                                                      validIds?.some(
-                                                        (el) => el === item.id
-                                                      )
-                                                        ? "success"
-                                                        : "danger"
-                                                    }
-                                                  >
+                                                  <Badge bg="success">
                                                     {item.firstName +
                                                       " " +
                                                       item.lastName}
@@ -856,15 +848,7 @@ function BulkMessaging() {
                                                   className="ml-7px"
                                                   key={item.id}
                                                 >
-                                                  <Badge
-                                                    bg={
-                                                      validIds?.some(
-                                                        (el) => el === item.id
-                                                      )
-                                                        ? "success"
-                                                        : "danger"
-                                                    }
-                                                  >
+                                                  <Badge bg="success">
                                                     {item.tenantType ===
                                                     "COMPANY" ? (
                                                       <>{item.companyName}</>
@@ -892,15 +876,7 @@ function BulkMessaging() {
                                                   className="ml-7px"
                                                   key={item.id}
                                                 >
-                                                  <Badge
-                                                    bg={
-                                                      validIds?.some(
-                                                        (el) => el === item.id
-                                                      )
-                                                        ? "success"
-                                                        : "danger"
-                                                    }
-                                                  >
+                                                  <Badge bg="success">
                                                     {item.premiseName}
                                                   </Badge>
                                                   <br />
