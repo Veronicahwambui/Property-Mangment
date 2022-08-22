@@ -304,7 +304,7 @@ function BulkInvoiving() {
                       <ul className="navbar-nav mr-auto">
                         <li className="nav-item active">
                           <a className="nav-link active">
-                            1. Landlord details
+                            1. Customer details
                           </a>
                         </li>
                         <li className="nav-item">
@@ -340,7 +340,7 @@ function BulkInvoiving() {
                           <div class="col-4">
                             <select class="form-control" aria-label="Default select example" onChange={(e) => handleInvoiceFor(e)} id="invoiceFor">
                               <option ></option>
-                              <option value="CURRENT">Current</option>
+                              <option value="CURRENT">Current Tenancies</option>
                               <option value="LANDLORD">Landlord</option>
                               <option value="TENANT">Tenant</option>
                               <option value="PREMISE">Premise</option>
