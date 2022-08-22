@@ -9,16 +9,26 @@ import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 
 export default function BulkMessagesList() {
-  useEffect(() => {
-    getBulkMessages();
-  },[]);
-
   const [messages, setmessages] = useState([]);
   const getBulkMessages = () => {
+    var data = {}
+    var ds = []
     requestsServiceService.getBulkMessages().then((res) => {
-      console.log(res);
+      res.data.data?.map((item) => {
+        ds.push(Object.assign(data,  {d:JSON.parse(item.data)}, {bulkRef:item.bulkReference}, {done:item.done}))
+        console.log(data)
+        console.log(ds)
+      })
+      console.log(ds)
+      setmessages(ds)
     });
+    
   };
+  useEffect(() => {
+    getBulkMessages();
+    console.log(messages)
+  },[]);
+  
   return(
     <>
       <div className="page-content">
