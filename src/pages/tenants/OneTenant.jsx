@@ -138,6 +138,7 @@ function OneTenant() {
   const [communication, setCommunication] = useState([]);
   //  const [typeMes, setTypeMes] = useState("TENANT");
   const [message, setMessage] = useState([]);
+  const [messageData, setMessageData] = useState({})
 
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
@@ -421,20 +422,20 @@ function OneTenant() {
   const startingDate = new Date("2022-01-17T03:24:00");
 
 
-  const getPremises = () => {
-    let page = 0
-    let size = 10
-    let date = new Date()
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let page = 0,
+      size = 10;
     let data = {
-      "dateCreatedEnd": new Date(),
-      "dateCreatedStart": moment(new Date(date.getFullYear(), 0, 1)).format("YYYY-MM-DD"),
-      // "search": searchTerm.trim()
-    }
-    requestsServiceService.getAllpremises(page, size, data).then((res) =>
-      setPremises(res.data.data)
-    )
-  }
+      dateCreatedEnd: moment(searchDate).format("YYYY-MM-DD"),
+      dateCreatedStart: moment(startingDate).format("YYYY-MM-DD"),
+      premiseName: searchTerm?.trim(),
+    };
+
+    requestsServiceService.getAllpremises(page, size, data).then((res) => {
+      setPremises(res.data.data);
+    });
+  };
 
   const onPremiseChange = (event) => {
     let vals = event.target.value.split(":");
@@ -480,13 +481,13 @@ function OneTenant() {
   useEffect(() => {
     fetchAll();
     getContactTypeName();
-    //  getAllpremises()
+  
     getStatus();
     createDoc();
     createDocumentTypes();
     getDocument();
     fetchCommunication();
-    // fetchMessages()
+ 
   }, []);
 
   const createDocumentTypes = (id) => {
@@ -1120,7 +1121,7 @@ function OneTenant() {
     },
   };
   // Tenant graphs end =============================================
-  const handleSubmit = (event) => {
+  const handleSubmitTenancy= (event) => {
     event.preventDefault();
     getTenantStatements();
   };
@@ -2149,7 +2150,7 @@ function OneTenant() {
                                       "ddd MMM DD"
                                     )}
                                   </td>
-                                </tr>
+                               </tr>
                               ))}
                             </tbody>
                           </table>
@@ -3207,7 +3208,7 @@ function OneTenant() {
               <div class="modal-body">
                 <div class="row">
                   <div class="col-12">
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmitTenancy}>
                       <div className="form-group mb-4">
                         <label htmlFor=""> Premise Name</label>
                         <input
@@ -3239,105 +3240,142 @@ function OneTenant() {
                           </option>
                         ))}
                       </select>
-                    </div >
-                    <div class="form-group mb-4">
-                      <label for="">Unit</label>
-                      <select
-                        className="form-control"
-                        onChange={premiseUnitChange}
-                        name="premiseUnitId"
-                      >
-                        <option> --Select Unit--</option>
-                        {units?.map((prem, index) => (
-                          <option value={prem.id}>{prem?.unitName}</option>
-                        ))}
-                      </select>
                     </div>
 
-                    <div class="form-group mb-4">
-                      <label for="">Unit Condition</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter UnitCondition"
-                        onChange={(event) =>
-                          setUnitCondition(event.target.value)
-                        }
-                        value={unitCondition}
-                      />
-                    </div>
+                    {units?.length > 0 && (
+                      <div class="form-group mb-4">
+                        <label for="">Unit</label>
+                        <select
+                          className="form-control"
+                          onChange={premiseUnitChange}
+                          name="premiseUnitId"
+                        >
+                          <option> --Select Unit--</option>
+                          {units?.map((prem, index) => (
+                            <option value={prem.id}>{prem?.unitName}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
 
-                    <div className="form-group mb-4" id="datepicker198">
-                      <label htmlFor="">StartDate</label>
-                      <input
-                        type="text"
-                        className="form-control mouse-pointer enddate"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        placeholder="Enter StartDate"
-                        readOnly
-                        data-date-format="dd M, yyyy"
-                        data-date-container="#datepicker198"
-                        data-provide="datepicker"
-                        data-date-autoclose="true"
-                        data-date-start-date="+0d"
-                        required={true}
-                      />
-                    </div>
+                    {units?.length > 0 && (
+                      <div class="form-group mb-4">
+                        <label for="">Unit Condition</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="Enter UnitCondition"
+                          onChange={(event) =>
+                            setUnitCondition(event.target.value)
+                          }
+                          value={unitCondition}
+                        />
+                      </div>
+                    )}
 
-                    <div className="form-group mb-4 " id="datepicker1">
-                      <label htmlFor="">TenancyRenewalDate</label>
-                      <input
-                        type="text"
-                        className="form-control mouse-pointer date3"
-                        value={tenancyRenewalDate}
-                        onChange={(e) => setTenancyRenewalDate(e.target.value)}
-                        placeholder="Enter TenancyRenewalDate "
-                        readOnly
-                        data-date-format="dd M, yyyy"
-                        data-date-container="#datepicker1"
-                        data-provide="datepicker"
-                        data-date-autoclose="true"
-                        required={true}
-                      />
-                    </div>
-                    <div className="form-group mb-4" id="datepicker1">
-                      <label htmlFor="">TenancyRenewalNotificationDate</label>
-                      <input
-                        type="text"
-                        className="form-control mouse-pointer date2"
-                        value={tenancyRenewalNotificationDate}
-                        onChange={(e) =>
-                          setTenancyRenewalNotificationDate(e.target.value)
-                        }
-                        placeholder="Enter TenancyRenewalNotificationDate"
-                        readOnly
-                        data-date-format="dd M, yyyy"
-                        data-date-container="#datepicker1"
-                        data-provide="datepicker"
-                        data-date-autoclose="true"
-                        required={true}
-                      />
-                    </div>
+                    {units?.length > 0 && (
+                      <div className="form-group mb-4" id="datepicker198">
+                        <label htmlFor="">StartDate</label>
+                        <input
+                          type="text"
+                          className="form-control mouse-pointer enddate"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          placeholder="Enter StartDate"
+                          readOnly
+                          data-date-format="dd M, yyyy"
+                          data-date-container="#datepicker198"
+                          data-provide="datepicker"
+                          data-date-autoclose="true"
+                          data-date-start-date="+0d"
+                          required={true}
+                        />
+                      </div>
+                    )}
 
-                    <div className="form-group mb-4">
-                      <label htmlFor="">TenancyStatus</label>
-                      <select
-                        className="form-control"
-                        onChange={onPremiseChange}
-                        name="premise"
-                      >
-                        <option> --Select Premises--</option>
-                        {premises?.map((prem, index) => (
-                          <option value={prem.id + ":" + prem.premiseName}>
-                            {prem.premiseName}
-                          </option>
-                        ))}
-                      </select>
+                    {units?.length > 0 && (
+                      <div className="form-group mb-4 " id="datepicker1">
+                        <label htmlFor="">TenancyRenewalDate</label>
+                        <input
+                          type="text"
+                          className="form-control mouse-pointer date3"
+                          value={tenancyRenewalDate}
+                          onChange={(e) =>
+                            setTenancyRenewalDate(e.target.value)
+                          }
+                          placeholder="Enter TenancyRenewalDate "
+                          readOnly
+                          data-date-format="dd M, yyyy"
+                          data-date-container="#datepicker1"
+                          data-provide="datepicker"
+                          data-date-autoclose="true"
+                          required={true}
+                        />
+                      </div>
+                    )}
+
+                    {units?.length > 0 && (
+                      <div className="form-group mb-4" id="datepicker1">
+                        <label htmlFor="">TenancyRenewalNotificationDate</label>
+                        <input
+                          type="text"
+                          className="form-control mouse-pointer date2"
+                          value={tenancyRenewalNotificationDate}
+                          onChange={(e) =>
+                            setTenancyRenewalNotificationDate(e.target.value)
+                          }
+                          placeholder="Enter TenancyRenewalNotificationDate"
+                          readOnly
+                          data-date-format="dd M, yyyy"
+                          data-date-container="#datepicker1"
+                          data-provide="datepicker"
+                          data-date-autoclose="true"
+                          required={true}
+                        />
+                      </div>
+                    )}
+
+                    {
+                      units?.length > 0 && (
+                        <div class="form-group mb-4">
+                          <label for="">TenancyStatus</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter TenancyStatus"
+                            onChange={(event) =>
+                              setTenancyStatus(event.target.value)
+                            }
+                            value={tenancyStatus}
+                          />
+                        </div>
+                      )
+
+                      // <div className="form-group mb-4">
+                      //   <label htmlFor="">TenancyStatus</label>
+                      //   <select
+                      //     class="form-control"
+                      //     data-live-search="true"
+                      //     title="Select TenancyStatus"
+                      //     onChange={(e) => setTenancyStatus(e.target.value)}
+                      //   >
+                      //     <option className="text-black font-semibold ">
+                      //       --Select TenancyStatus--
+                      //     </option>
+                      // {tenantStatuses &&
+                        //       tenantStatuses.map((tenant, index) => {
+                        //         return (
+                        //           <option key={index} value={tenant}>
+                        //             {tenant}
+                        //           </option>
+                        //         );
+                        //       })}
+                        //   </select>
+                        // </div>
+                      }
                     </div>
-                  </div >
-                </div >
-              </div >
+                  </div>
+                </div>
 
               <div class="modal-footer">
                 <button
