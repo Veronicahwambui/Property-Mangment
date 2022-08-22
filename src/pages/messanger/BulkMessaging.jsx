@@ -129,36 +129,65 @@ function BulkMessaging() {
   };
 
   const createBulkMessage = (x) => {
-    requestsServiceService
-      .createBulkMessage(x)
-      .then((response) => {
-        console.log(response);
-        setresponseData(response.data.data);
-        setVID(response.data?.data?.map((a) => a.tenancy?.tenant?.id));
-        if (response.status === true) {
+    if (bulkMessage.templatedMessage !== "") {
+      requestsServiceService
+        .createBulkMessage(x)
+        .then((response) => {
+          if (response.status === true) {
+            setError({
+              ...error,
+              message: response.data.message,
+              color: "success",
+            });
+          } else {
+            setError({
+              ...error,
+              message: response.data.message,
+              color: "danger",
+            });
+          }
+
+          if (x.messageModels.length > 0 && x.mailModels.length > 0) {
+          }
+        })
+        .catch((err) => {
           setError({
             ...error,
-            message: response.data.message,
-            color: "success",
-          });
-        } else {
-          setError({
-            ...error,
-            message: response.data.message,
+            message: err.message,
             color: "danger",
           });
-        }
-
-        if (x.messageModels.length > 0 && x.mailModels.length > 0) {
-        }
-      })
-      .catch((err) => {
-        setError({
-          ...error,
-          message: err.message,
-          color: "danger",
         });
-      });
+    } else {
+      requestsServiceService
+        .createBulkMessage(x)
+        .then((response) => {
+          setresponseData(response.data.data);
+          setVID(response.data?.data?.map((a) => a.tenancy?.tenant?.id));
+          if (response.status === true) {
+            setError({
+              ...error,
+              message: response.data.message,
+              color: "success",
+            });
+          } else {
+            setError({
+              ...error,
+              message: response.data.message,
+              color: "danger",
+            });
+          }
+
+          if (x.messageModels.length > 0 && x.mailModels.length > 0) {
+          }
+        })
+        .catch((err) => {
+          setError({
+            ...error,
+            message: err.message,
+            color: "danger",
+          });
+        });
+    }
   };
 
   useEffect(() => {
@@ -222,34 +251,36 @@ function BulkMessaging() {
     setSearchResults([]);
     e.preventDefault();
     setloading(true);
-    let dates = {
-      dateCreatedEnd: moment("12/12/2022").format(),
-      dateCreatedStart: moment("07/07/2022").format(),
+    var size = 10;
+    var page = 0;
+    var dates = {
+      dateCreatedEnd: new Date(),
+      dateCreatedStart: moment(new Date()).startOf("year").format(),
     };
     if (recipient === "TENANT") {
       let s = {
-        search: searchTerm,
+        search: searchTerm.trim(),
       };
       let data = Object.assign(dates, s);
-      getTenants(data);
+      getTenants(searchTerm, page, size, data);
     } else if (recipient === "LANDLORD") {
       let s = {
-        landlordName: searchTerm,
+        search: searchTerm.trim(),
       };
       let data = Object.assign(dates, s);
-      getLandlords(data);
+      getLandlords(page, size, data);
     } else if (recipient === "PREMISE") {
       let s = {
-        premiseName: searchTerm,
+        search: searchTerm.trim(),
       };
       let data = Object.assign(dates, s);
-      getPremises(data);
+      getPremises(page, size, data);
     }
   };
 
-  const getLandlords = (x) => {
+  const getLandlords = (x, y, z) => {
     setloading2(true);
-    requestsServiceService.getMessagingLandlords(x).then((res) => {
+    requestsServiceService.getLandLords(x, y, z).then((res) => {
       setSearchResults(res.data.data);
       setloading(false);
       setloading2(false);
@@ -257,10 +288,10 @@ function BulkMessaging() {
     });
   };
 
-  const getPremises = (x) => {
+  const getPremises = (x, y, z) => {
     setloading2(true);
 
-    requestsServiceService.getMessagingPremises(x).then((res) => {
+    requestsServiceService.getAllpremises(x, y, z).then((res) => {
       setSearchResults(res.data.data);
       setloading(false);
       setloading2(false);
@@ -268,9 +299,9 @@ function BulkMessaging() {
     });
   };
 
-  const getTenants = (x) => {
+  const getTenants = (w, x, y, z) => {
     setloading2(true);
-    requestsServiceService.getMessagingTenants(x).then((res) => {
+    requestsServiceService.getAllTenants(w, x, y, z).then((res) => {
       setSearchResults(res.data.data);
       setloading(false);
       setloading2(false);
@@ -1249,12 +1280,15 @@ function BulkMessaging() {
                                                       onChange={(e) =>
                                                         selectResponseItems(
                                                           e,
-                                                          item
+                                                          item?.tenancy?.tenant
+                                                            ?.id
                                                         )
                                                       }
-                                                      checked={responseData.some(
+                                                      checked={validIds.some(
                                                         (el) =>
-                                                          el.id === item.id
+                                                          el ===
+                                                          item?.tenancy?.tenant
+                                                            ?.id
                                                       )}
                                                     />
                                                   </div>
