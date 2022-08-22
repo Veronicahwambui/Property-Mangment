@@ -124,9 +124,7 @@ function BulkMessaging() {
       }
     } else {
     }
-    console.log("data");
     console.log(JSON.stringify(data));
-
     createBulkMessage(data);
   };
 
@@ -134,8 +132,9 @@ function BulkMessaging() {
     requestsServiceService
       .createBulkMessage(x)
       .then((response) => {
+        console.log(response);
         setresponseData(response.data.data);
-        setVID(response.data.data?.map((a) => a.id));
+        setVID(response.data?.data?.map((a) => a.tenancy?.tenant?.id));
         if (response.status === true) {
           setError({
             ...error,
@@ -200,14 +199,18 @@ function BulkMessaging() {
     }
   };
   const selectResponseItems = (e, x) => {
+    console.log(x);
     if (e.target.checked) {
-      setresponseData((responseData) => [...responseData, x]);
+      setVID((validIds) => [...validIds, x]);
     } else {
-      removeResponseItems(x.id);
+      removeResponseItems(x);
     }
   };
+  useEffect(() => {
+    console.log(validIds);
+  }, [validIds]);
   const removeResponseItems = (x) => {
-    setresponseData([...responseData.filter((item) => item.id !== x)]);
+    setVID([...validIds.filter((item) => item !== x)]);
   };
   const removeItems = (x) => {
     setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
@@ -1058,7 +1061,6 @@ function BulkMessaging() {
                           </div>
                         )}
                     </section>
-
                     <section className="step-cont d-none">
                       <div className="row">
                         <div className="overflow-visible">
@@ -1160,12 +1162,15 @@ function BulkMessaging() {
                                                       onChange={(e) =>
                                                         selectResponseItems(
                                                           e,
-                                                          item
+                                                          item?.tenancy?.tenant
+                                                            ?.id
                                                         )
                                                       }
-                                                      checked={responseData.some(
+                                                      checked={validIds.some(
                                                         (el) =>
-                                                          el.id === item.id
+                                                          el ===
+                                                          item?.tenancy?.tenant
+                                                            ?.id
                                                       )}
                                                     />
                                                   </div>
