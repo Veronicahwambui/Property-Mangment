@@ -39,7 +39,7 @@ export default function AdminArrears() {
   }
   useEffect(() => {
     getZones(countyId)
-  },[countyId])
+  },[])
   
   const fetchFiltered = (x,y,z) => {
     requestsServiceService.getReportData(x,y,z).then((res) => {
@@ -59,7 +59,6 @@ export default function AdminArrears() {
       setzones(res.data.data?.filter(z => z?.clientCounty?.county?.id === parseInt(c)));
     })
   }
-  
   useEffect(() => {
     getEstates(zoneId)
   },[zoneId]);
@@ -193,9 +192,11 @@ export default function AdminArrears() {
                           >
                             <thead className="table-light">
                             <tr className="table-light">
-                              <th>Sum</th>
                               <th>County</th>
                               <th>Invoice Period</th>
+                              <th>Invoice Count</th>
+                              <th>Invoice Sum</th>
+                              <th>Paid Amount</th>
                               <th>Collection Rate</th>
                               <th className="text-right">Actions</th>
                             </tr>
@@ -204,9 +205,11 @@ export default function AdminArrears() {
                             {reports.length>0 &&
                               reports.map((item, index) => (
                                 <tr data-id={index} key={index}>
-                                  <td>{formatCurrency(item.sum)}</td>
                                   <td>{item.demography}</td>
                                   <td>{item.invoicePeriod}</td>
+                                  <td>{item.countAll}</td>
+                                  <td>{formatCurrency(item.sum)}</td>
+                                  <td>{item.paid}</td>
                                   <td>{item.collectionRate}</td>
                                   <td>
                                     <div className="d-flex justify-content-end">
