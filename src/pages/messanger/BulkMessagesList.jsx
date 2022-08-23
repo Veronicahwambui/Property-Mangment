@@ -18,7 +18,6 @@ export default function BulkMessagesList() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
     setmessages(totalMessages.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(totalMessages.length / size));
   }, [itemOffset, size]);
@@ -47,9 +46,6 @@ export default function BulkMessagesList() {
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * size) % totalMessages.length;
-    console.log(
-      `User requested page number ${event.selected}, offset by ${newOffset}`
-    );
     setItemOffset(newOffset);
     setPage(event.selected);
   };
@@ -91,7 +87,7 @@ export default function BulkMessagesList() {
             </div>
           </div>
           <div className="row">
-            {messages.length > 0 ? (
+            {totalMessages.length > 0 ? (
               <>
                 <div className="row">
                   <div className="col-12">
@@ -244,9 +240,9 @@ export default function BulkMessagesList() {
                               value={size}
                               onChange={(e) => sortSize(e)}
                             >
-                              <option value={parseInt(5)}>5</option>
-                              <option value={parseInt(10)}>10</option>
-                              <option value={parseInt(20)}>20</option>
+                              <option value={parseInt(5)}>5 rows</option>
+                              <option value={parseInt(10)}>10 rows</option>
+                              <option value={parseInt(20)}>20 rows</option>
                             </select>
                           </div>
                           {pageCount !== 0 && (
