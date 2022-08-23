@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
+import DatePicker from "react-datepicker";
 
 export default function AdminArrears() {
   const { county } = useParams();
@@ -31,12 +32,7 @@ export default function AdminArrears() {
   const [months, setmonths] = useState([]);
   const clientCountyName = "KIAMBU";
   const fetchAll = () => {
-    let data = {
-      clientCountyName: 1,
-      zoneId: zoneId,
-      estateId: estateId,
-    };
-    requestsServiceService.fetchArrears(data).then((res) => {
+    requestsServiceService.fetchArrears().then((res) => {
       setreports(res.data.data?.ageReportModels);
       setmonths(
         res.data.data?.ageReportModels.map((item) => item.invoicePeriod)
@@ -60,7 +56,7 @@ export default function AdminArrears() {
   };
   useEffect(() => {
     getZones(countyId);
-  }, []);
+  }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
     requestsServiceService.getReportData(x, y, z).then((res) => {
@@ -141,25 +137,6 @@ export default function AdminArrears() {
                       className={"form-control"}
                       name=""
                       id=""
-                      onChange={(e) => setmonth(e.target.value)}
-                    >
-                      <option value="">Select month</option>
-                      {months?.map((item) => (
-                        <option
-                          value={item}
-                          key={item}
-                          selected={mL[new Date().getMonth()]}
-                        >
-                          {item}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <select
-                      className={"form-control"}
-                      name=""
-                      id=""
                       onChange={(e) => setCounty(e.target.value)}
                     >
                       <option value="">Select County</option>
@@ -200,11 +177,7 @@ export default function AdminArrears() {
                       ))}
                     </select>
                   </div>
-                  <button
-                    className="btn btn-primary"
-                    onClick={sort}
-                    disabled={zoneId === "" || estateId === ""}
-                  >
+                  <button className="btn btn-primary" onClick={sort}>
                     filter
                   </button>
                 </div>
@@ -247,6 +220,28 @@ export default function AdminArrears() {
                             </div>
                           </div>
                         </div>
+                        <div className=" d-flex justify-content-start align-items-center pr-3">
+                          <div>
+                            <select
+                              className={"form-control"}
+                              name=""
+                              id=""
+                              onChange={(e) => setmonth(e.target.value)}
+                            >
+                              <option value="">Select month</option>
+                              {months?.map((item) => (
+                                <option
+                                  value={item}
+                                  key={item}
+                                  selected={mL[new Date().getMonth()]}
+                                >
+                                  {item}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
                         <div className="card-body">
                           <div className="table-responsive">
                             <table
@@ -338,19 +333,19 @@ export default function AdminArrears() {
                             </table>
                           </div>
                           <div className="mt-4 mb-0 flex justify-between px-8">
-                            <div>
-                              <select
-                                className={"btn btn-primary"}
-                                name=""
-                                id=""
-                                // value={size}
-                                // onChange={(e) => sortSize(e)}
-                              >
-                                <option value={parseInt(5)}>5 rows</option>
-                                <option value={parseInt(10)}>10 rows</option>
-                                <option value={parseInt(20)}>20 rows</option>
-                              </select>
-                            </div>
+                            {/*<div>*/}
+                            {/*  <select*/}
+                            {/*    className={"btn btn-primary"}*/}
+                            {/*    name=""*/}
+                            {/*    id=""*/}
+                            {/*    // value={size}*/}
+                            {/*    // onChange={(e) => sortSize(e)}*/}
+                            {/*  >*/}
+                            {/*    <option value={parseInt(5)}>5 rows</option>*/}
+                            {/*    <option value={parseInt(10)}>10 rows</option>*/}
+                            {/*    <option value={parseInt(20)}>20 rows</option>*/}
+                            {/*  </select>*/}
+                            {/*</div>*/}
                             {/*{pageCount !== 0 && (*/}
                             {/*  <p className=" font-medium text-xs text-gray-700">*/}
                             {/*    {" "}*/}
