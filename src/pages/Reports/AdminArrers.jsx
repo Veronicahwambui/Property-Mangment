@@ -131,56 +131,6 @@ export default function AdminArrears() {
                     </ol>
                   </div>
                 </div>
-                <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
-                  <div>
-                    <select
-                      className={"form-control"}
-                      name=""
-                      id=""
-                      onChange={(e) => setCounty(e.target.value)}
-                    >
-                      <option value="">Select County</option>
-                      {clientcounties?.map((item) => (
-                        <option
-                          value={item.county.id}
-                          key={item.county.id}
-                          selected={item.county.name === clientCountyName}
-                        >
-                          {item.county.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <select
-                      className={"form-control"}
-                      onChange={(e) => setZoneId(e.target.value)}
-                    >
-                      <option value=""> Select zone...</option>
-                      {zones?.map((zone) => (
-                        <option key={zone.id} value={zone.id}>
-                          {zone.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <select
-                      className={"form-control"}
-                      onChange={(e) => setestateId(e.target.value)}
-                    >
-                      <option value=""> Select estate...</option>
-                      {estates?.map((estate) => (
-                        <option key={estate.id} value={estate.id}>
-                          {estate.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <button className="btn btn-primary" onClick={sort}>
-                    filter
-                  </button>
-                </div>
               </div>
             </div>
             <div className="row">
@@ -205,44 +155,103 @@ export default function AdminArrears() {
                             >
                               <div className="d-flex align-items-center flex-grow-1"></div>
                               <div className="d-flex">
-                                {/*<Link to="/bulkmessaging">*/}
-                                {/*  <button*/}
-                                {/*    type="button"*/}
-                                {/*    className="btn btn-primary waves-effect btn-label waves-light me-3"*/}
-                                {/*    data-bs-toggle="modal"*/}
-                                {/*    data-bs-target="#add-new-client"*/}
-                                {/*  >*/}
-                                {/*    <i className="mdi mdi-plus label-icon"></i>{" "}*/}
-                                {/*    Create bulk Message*/}
-                                {/*  </button>*/}
-                                {/*</Link>*/}
+                                <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                                  <div>
+                                    <select
+                                      className={"form-control"}
+                                      name=""
+                                      id=""
+                                      onChange={(e) =>
+                                        setCounty(e.target.value)
+                                      }
+                                    >
+                                      <option value="">Select County</option>
+                                      {clientcounties?.map((item) => (
+                                        <option
+                                          value={item.county.id}
+                                          key={item.county.id}
+                                          selected={
+                                            item.county.name ===
+                                            clientCountyName
+                                          }
+                                        >
+                                          {item.county.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <select
+                                      className={"form-control"}
+                                      onChange={(e) =>
+                                        setZoneId(e.target.value)
+                                      }
+                                    >
+                                      <option value=""> Select zone...</option>
+                                      {zones?.map((zone) => (
+                                        <option key={zone.id} value={zone.id}>
+                                          {zone.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <select
+                                      className={"form-control"}
+                                      onChange={(e) =>
+                                        setestateId(e.target.value)
+                                      }
+                                    >
+                                      <option value="">
+                                        {" "}
+                                        Select estate...
+                                      </option>
+                                      {estates?.map((estate) => (
+                                        <option
+                                          key={estate.id}
+                                          value={estate.id}
+                                        >
+                                          {estate.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                  <button
+                                    className="btn btn-primary"
+                                    onClick={sort}
+                                  >
+                                    filter
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div className=" d-flex justify-content-start align-items-center pr-3">
-                          <div>
-                            <select
-                              className={"form-control"}
-                              name=""
-                              id=""
-                              onChange={(e) => setmonth(e.target.value)}
-                            >
-                              <option value="">Select month</option>
-                              {months?.map((item) => (
-                                <option
-                                  value={item}
-                                  key={item}
-                                  selected={mL[new Date().getMonth()]}
-                                >
-                                  {item}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-
                         <div className="card-body">
+                          <div className="d-flex justify-content-between align-items-center pr-3">
+                            <div className="d-flex">
+                              <div className="text-start">
+                                <select
+                                  className={"form-control"}
+                                  name=""
+                                  id=""
+                                  onChange={(e) => setmonth(e.target.value)}
+                                >
+                                  <option value="">Select month</option>
+                                  {months?.map((item) => (
+                                    <option
+                                      value={item}
+                                      key={item}
+                                      selected={mL[new Date().getMonth()]}
+                                    >
+                                      {item}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+
                           <div className="table-responsive">
                             <table
                               className="table align-middle table-hover  contacts-table table-striped "
