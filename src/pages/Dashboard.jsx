@@ -11,6 +11,7 @@ import moment from 'moment';
 
 import requestsServiceService from '../services/requestsService.service'
 import { Link } from 'react-router-dom';
+import AdminDashboard from './dashboards/AdminDashboard';
 
 function Dashboard() {
     const colors = ['#3399ff', '#ff7f50', '#00ff00', '#00a591', '#ecdb54', '#6b5b95', '#944743', '#dc4c46', '#034f84', '#edf1ff']
@@ -22,10 +23,12 @@ function Dashboard() {
     const [startDate, setStartDate] = useState(new Date(date.getFullYear(), 0, 1));
     const [endDate, setEndDate] = useState(new Date());
     const [transactionModesData, setTransactionModesData] = useState([])
+    const [adminDashboardData, setAdminDashboardData] = useState({})
     const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] = useState([])
 
     useEffect(() => {
         fetchDashData()
+        adminDashboard()
     }, [])
 
     const handleSubmit = (e) => {
@@ -39,7 +42,6 @@ function Dashboard() {
 
         requestsServiceService.getClientDashboardGraphs(moment(startDate).format("YYYY/MM/DD"), moment(endDate).format("YYYY/MM/DD")).then((res) => {
             $("#spinner").addClass("d-none")
-
             setRadioBarData(res.data.data.collectionSummaryByPremiseUseType)
             setRadioBarData2(res.data.data.collectionSummaryByUnitType)
             setPieChartData(res.data.data.collectionSummaryByApplicableCharge)
@@ -49,6 +51,12 @@ function Dashboard() {
         requestsServiceService.getClientDashboard(moment(startDate).format("YYYY/MM/DD"), moment(endDate).format("YYYY/MM/DD")).then((res) => {
             setDashboardData(res.data.data)
         })
+    }
+    const adminDashboard = ()=>{
+        requestsServiceService.adminDashboard().then((res) => {   
+            console.log(res.data.data);
+        })
+
     }
     // --------------------------
     // CHARTS START HERE 
@@ -354,8 +362,9 @@ function Dashboard() {
 
     return (
         <div className="page-content">
+            <AdminDashboard />
 
-            <div class="container-fluid">
+            <div class="container-fluid d-none">
 
                 {/* <!-- start page title --> */}
                 <div class="row">
