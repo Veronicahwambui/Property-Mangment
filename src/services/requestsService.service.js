@@ -1024,6 +1024,14 @@ class RequestsService {
   getBulkMessages() {
     return axiosInstance.get(baseUrl + "/communication/bulk");
   }
+  
+  // reports
+  fetchArrears(data) {
+    return axiosInstance.get(baseUrl + "/reports/adminAgedArrearsReport", data)
+  }
+  getReportData(x,y,z) {
+    return axiosInstance.get(baseUrl + "/reports/adminAgedArrearsReport?clientCountyId=" + x + "&zoneId="+ y + "&estateId=" + z)
+  }
 }
 
 export default new RequestsService();

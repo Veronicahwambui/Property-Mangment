@@ -58,6 +58,7 @@ import BulkMessaging from "./pages/messanger/BulkMessaging";
 import BulkInvoiving from "./pages/invoices/BulkInvoiving";
 import BulkInvoices from "./pages/invoices/BulkInvoices";
 import BulkMessagesList from "./pages/messanger/BulkMessagesList";
+import AdminArrears from "./pages/Reports/AdminArrers";
 
 function Main() {
   useEffect(() => {
@@ -160,7 +161,7 @@ function Main() {
                 />
                 <Route path="/addadmin" element={<AddAdmin />} />
                 <Route path="/usertypes" element={<UserTypes />} />
-               
+
                 <Route path="/allroles" element={<AllRoles />} />
 
                 {/* setup */}
@@ -188,24 +189,24 @@ function Main() {
                 <Route path="/addlandlord" element={<AddLandlord />} />
                 <Route path="/landlord/:id" element={<ViewLandlord />} />
                 <Route path="/statements" element={<Statements />} />
-                <Route path="/create-issue-type" element={<CreateIssueTypes />} />
+                <Route
+                  path="/create-issue-type"
+                  element={<CreateIssueTypes />}
+                />
                 <Route path="/issuestypes" element={<IssuesTypes />} />
                 <Route path="/issuestypes/:id" element={<IssueType />} />
 
-
                 <Route path="/uploads" element={<Uploads />} />
 
-
                 {/* messageer  */}
-                <Route path='/messages' element={<Messages />} />
-                <Route path='/createTemplate' element={<MessageTemplates />} />
-                <Route path='/emails' element={<Emails />} />
-                <Route path='/custommessages' element={<CustomMessage />} />
+                <Route path="/messages" element={<Messages />} />
+                <Route path="/createTemplate" element={<MessageTemplates />} />
+                <Route path="/emails" element={<Emails />} />
+                <Route path="/custommessages" element={<CustomMessage />} />
                 <Route path="/bulkmessaging" element={<BulkMessaging />} />
                 <Route path="/bulkmessages" element={<BulkMessagesList />} />
-  
-  
-  
+                <Route path="/admin-reports" element={<AdminArrears />} />
+
                 <Route path="*" element={<Navigate to="/" />}></Route>
               </Routes>
             </div>
