@@ -59,6 +59,9 @@ import BulkInvoiving from "./pages/invoices/BulkInvoiving";
 import BulkInvoices from "./pages/invoices/BulkInvoices";
 import BulkMessagesList from "./pages/messanger/BulkMessagesList";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
+import AdminArrears from "./pages/Reports/AdminArrers";
+import NewUnitsExpectedIncomeReport from "./pages/Reports/NewUnitsExpectedIncomeReport";
+import OccupancyReport from "./pages/Reports/OccupancyReport";
 
 function Main() {
   useEffect(() => {
@@ -67,7 +70,7 @@ function Main() {
         localStorage.clear();
         window.location.reload();
       }
-    }, new Date(AuthService.getUserLoggedInAt()).getTime()-Date.now());
+    }, new Date(AuthService.getUserLoggedInAt()).getTime() - Date.now());
   }, []);
 
   return (
@@ -163,7 +166,7 @@ function Main() {
                 />
                 <Route path="/addadmin" element={<AddAdmin />} />
                 <Route path="/usertypes" element={<UserTypes />} />
-               
+
                 <Route path="/allroles" element={<AllRoles />} />
 
                 {/* setup */}
@@ -191,24 +194,32 @@ function Main() {
                 <Route path="/addlandlord" element={<AddLandlord />} />
                 <Route path="/landlord/:id" element={<ViewLandlord />} />
                 <Route path="/statements" element={<Statements />} />
-                <Route path="/create-issue-type" element={<CreateIssueTypes />} />
+                <Route
+                  path="/create-issue-type"
+                  element={<CreateIssueTypes />}
+                />
                 <Route path="/issuestypes" element={<IssuesTypes />} />
                 <Route path="/issuestypes/:id" element={<IssueType />} />
 
-
                 <Route path="/uploads" element={<Uploads />} />
 
-
                 {/* messageer  */}
-                <Route path='/messages' element={<Messages />} />
-                <Route path='/createTemplate' element={<MessageTemplates />} />
-                <Route path='/emails' element={<Emails />} />
-                <Route path='/custommessages' element={<CustomMessage />} />
+                <Route path="/messages" element={<Messages />} />
+                <Route path="/createTemplate" element={<MessageTemplates />} />
+                <Route path="/emails" element={<Emails />} />
+                <Route path="/custommessages" element={<CustomMessage />} />
                 <Route path="/bulkmessaging" element={<BulkMessaging />} />
                 <Route path="/bulkmessages" element={<BulkMessagesList />} />
-  
-  
-  
+                <Route path="/admin-reports" element={<AdminArrears />} />
+                <Route
+                  path="/newunits-reports"
+                  element={<NewUnitsExpectedIncomeReport />}
+                />
+                <Route
+                  path="/occupancy-reports"
+                  element={<OccupancyReport />}
+                />
+
                 <Route path="*" element={<Navigate to="/" />}></Route>
               </Routes>
             </div>
