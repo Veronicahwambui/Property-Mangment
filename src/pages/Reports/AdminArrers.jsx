@@ -5,7 +5,7 @@ import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
 
 export default function AdminArrears() {
-  const { clientCountyName } = useParams();
+  const { county } = useParams();
   const [reports, setreports] = useState([]);
   const [zones, setzones] = useState([]);
   const [estates,setestates] = useState([]);
@@ -13,7 +13,9 @@ export default function AdminArrears() {
   const [estateId, setestateId ] = useState("")
   const [clientcounties, setClientCounties] = useState([])
   const [month, setmonth] = useState("")
-  const [county,setCounty] = useState("")
+  const [countyId,setCounty] = useState("")
+  const [months, setmonths] = useState([])
+  const clientCountyName = county
   
   const fetchAll = () => {
     let data = {
@@ -21,20 +23,23 @@ export default function AdminArrears() {
     };
     requestsServiceService.fetchArrears(data).then((res) => {
       setreports(res.data.data?.ageReportModels);
+      setmonths(res.data.data?.ageReportModels.map((item) =>item.invoicePeriod))
     });
     requestsServiceService.getAllZones().then((res) => {
-      setzones(res.data.data?.filter(z => z?.clientCounty?.county?.id === data.clientCountyName));
+      setzones(res.data.data?.filter(z => z?.clientCounty?.county?.id === parseInt(countyId)));
     })
     requestsServiceService.getClientCounties().then((res) => {
       setClientCounties(res.data.data)
     })
   };
   const sort= () => {
-    let clientCountyName = 1;
-    fetchFiltered(clientCountyName,zoneId,estateId);
+    fetchFiltered(countyId,zoneId,estateId);
     setZoneId("")
     setestateId("")
   }
+  useEffect(() => {
+    getZones(countyId)
+  },[countyId])
   
   const fetchFiltered = (x,y,z) => {
     requestsServiceService.getReportData(x,y,z).then((res) => {
@@ -47,6 +52,11 @@ export default function AdminArrears() {
       let resp=res.data.data
       let es= resp.filter(item => parseInt(item.zone?.id) === parseInt(zoneId))
       setestates(es)
+    })
+  }
+  const getZones = (c) => {
+    requestsServiceService.getAllZones().then((res) => {
+      setzones(res.data.data?.filter(z => z?.clientCounty?.county?.id === parseInt(c)));
     })
   }
   
@@ -102,7 +112,7 @@ export default function AdminArrears() {
                 <div>
                   <select className={"form-control"} name="" id="" onChange={(e) => setmonth(e.target.value)}>
                     <option value="">Select month</option>
-                    {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((item) => (
+                    {months?.map((item) => (
                     <option value={item} key={item}>{item}</option>
                     ))}
                   </select>
@@ -314,7 +324,9 @@ export default function AdminArrears() {
                 </div>
               </>
             ) : (
-              <></>
+              <>
+              <div className={"alert alert-danger"}>No records found</div>
+              </>
             )}
           </div>
         
