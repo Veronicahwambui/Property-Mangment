@@ -20,6 +20,12 @@ function SideBar() {
                                 <i className="bx bx-home-circle"></i><span>Dashboards</span>
                             </NavLink>
                         </li>
+
+                        <li>
+                            <NavLink to='/adminDashboard' className="waves-effect">
+                                <i className="bx bx-home-circle"></i><span>Admin Dashboard</span>
+                            </NavLink>
+                        </li>
                         <li>
                             <a href="javascript: void(0)" className="waves-effect has-arrow">
                                 <i className="mdi mdi mdi-shield-home"></i>
