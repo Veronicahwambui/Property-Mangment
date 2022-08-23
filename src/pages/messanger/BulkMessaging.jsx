@@ -110,7 +110,7 @@ function BulkMessaging() {
             from: "nouveta.tech@outlook.com",
             to: a.email,
             subject: subject,
-            model: {name: a.firstName, message: bulkMessage.templatedMessage},
+            model: {balance: paramsWithoutBraces, message: bulkMessage.templatedMessage},
             attachments: [],
             entityType:
               bulkMessage.messageKind === "BALANCE_REMINDER"
@@ -133,7 +133,7 @@ function BulkMessaging() {
             templateName: undefined,
             senderId: JSON.parse(authService.getCurrentUserName()).client
               .senderId,
-            model: {name: a.firstName, message: bulkMessage.templatedMessage},
+            model: {balance: paramsWithoutBraces, message: bulkMessage.templatedMessage},
             entityId: a.id,
           })),
         });
