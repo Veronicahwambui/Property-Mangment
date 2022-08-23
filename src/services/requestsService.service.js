@@ -32,8 +32,8 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/users/create", data);
   }
 
-  getData(type,data) {
-    return axiosInstance.get(baseUrl + "/users?type="+type, data);
+  getData(type, data) {
+    return axiosInstance.get(baseUrl + "/users?type=" + type, data);
   }
   getUserRoles() {
     return axiosInstance.get(baseUrl + "/roles");
@@ -66,10 +66,9 @@ class RequestsService {
   updateUserType(data) {
     return axiosInstance.post(baseUrl + "/user-types/update", data);
   }
-  getUserTypes(){
-    return axiosInstance.get(baseUrl +"/users/user-types");
+  getUserTypes() {
+    return axiosInstance.get(baseUrl + "/users/user-types");
   }
-
 
   getUser(id) {
     return axiosInstance.get(baseUrl + "/users/view/" + id);
@@ -431,7 +430,7 @@ class RequestsService {
   }
 
   allPremises(data) {
-    return axiosInstance.post(baseUrl + "/premises",data);
+    return axiosInstance.post(baseUrl + "/premises", data);
   }
   getPremise(id) {
     return axiosInstance.get(baseUrl + "/premises/" + id);
@@ -639,8 +638,14 @@ class RequestsService {
   getTenant(data) {
     return axiosInstance.get(baseUrl + "/tenants/" + data);
   }
-  adjustPaymentTransactionItemDueDate(invoiceNo, dueDate){
-    return axiosInstance.post(baseUrl + "/payments/invoice/adjustDueDate?invoiceNo=" + invoiceNo + "&dueDate=" + dueDate )
+  adjustPaymentTransactionItemDueDate(invoiceNo, dueDate) {
+    return axiosInstance.post(
+      baseUrl +
+        "/payments/invoice/adjustDueDate?invoiceNo=" +
+        invoiceNo +
+        "&dueDate=" +
+        dueDate
+    );
   }
   getInvoices(data) {
     return axiosInstance.post(
@@ -700,10 +705,9 @@ class RequestsService {
       data
     );
   }
-  getParentInvoicesPrem(page,size,data) {
+  getParentInvoicesPrem(page, size, data) {
     return axiosInstance.post(
-      baseUrl +
-        `/payments/parents/transactions?page=${page}&size=${size}`,
+      baseUrl + `/payments/parents/transactions?page=${page}&size=${size}`,
       data
     );
   }
@@ -730,13 +734,16 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/setup/tenancyIssueTypes");
   }
   findAllTenancyGroupIssueTypes(premiseUnitId) {
-    return axiosInstance.get(baseUrl + "/tenants/tenancyIssue/group/" + premiseUnitId );
+    return axiosInstance.get(
+      baseUrl + "/tenants/tenancyIssue/group/" + premiseUnitId
+    );
   }
 
-
-
   createUnitTenancyIssue(data) {
-    return axiosInstance.post(baseUrl + "/tenants/tenancyIssue/group/create", data);
+    return axiosInstance.post(
+      baseUrl + "/tenants/tenancyIssue/group/create",
+      data
+    );
   }
 
   //   DASHBOARD
@@ -747,7 +754,7 @@ class RequestsService {
         "/reports/dashboard/graphs?startDate=" +
         startDate +
         "&endDate=" +
-        endDate 
+        endDate
     );
   }
   getClientDashboard(startDate, endDate) {
@@ -766,7 +773,9 @@ class RequestsService {
         "/reports/dashboard/graphs?startDate=" +
         startDate +
         "&endDate=" +
-        endDate + "&premise=" + premise
+        endDate +
+        "&premise=" +
+        premise
     );
   }
   getPremDashboard(startDate, endDate, premise) {
@@ -775,7 +784,9 @@ class RequestsService {
         "/reports/dashboard?startDate=" +
         startDate +
         "&endDate=" +
-        endDate + "&premise=" + premise
+        endDate +
+        "&premise=" +
+        premise
     );
   }
 
@@ -1015,22 +1026,67 @@ class RequestsService {
   createBulkMessage(data) {
     return axiosInstance.post(baseUrl + "/communication/new/bulk", data);
   }
-  
-  getBulkInvoices(){
-    
+
+  getBulkInvoices() {
     return axiosInstance.get(baseUrl + "/payments/bulk");
   }
-  
+
   getBulkMessages() {
     return axiosInstance.get(baseUrl + "/communication/bulk");
   }
-  
-  // reports
-  fetchArrears(data) {
-    return axiosInstance.get(baseUrl + "/reports/adminAgedArrearsReport", data)
+
+  // reports arrears
+  fetchArrears() {
+    return axiosInstance.get(baseUrl + "/reports/adminAgedArrearsReport");
   }
-  getReportData(x,y,z) {
-    return axiosInstance.get(baseUrl + "/reports/adminAgedArrearsReport?clientCountyId=" + x + "&zoneId="+ y + "&estateId=" + z)
+  getReportData(x, y, z) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/adminAgedArrearsReport?clientCountyId=" +
+        x +
+        "&zoneId=" +
+        y +
+        "&estateId=" +
+        z
+    );
+  }
+  // reports newUnits
+  getNewUnitsReport() {
+    return axiosInstance.get(baseUrl + "/reports/newUnitsExpectedIncomeReport");
+  }
+  filterNewUnitsReport(w, x, y, startDate, endDate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/newUnitsExpectedIncomeReport?clientCountyId=" +
+        w +
+        "&zoneId=" +
+        x +
+        "&estateId=" +
+        y +
+        "&startDate=" +
+        startDate +
+        "&endDate=" +
+        endDate
+    );
+  }
+  // occupancyReport
+  getOccupancyReport() {
+    return axiosInstance.get(baseUrl + "/reports/occupancyReport");
+  }
+  filterOccupancyReport(w, x, y, startDate, endDate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/reports/occupancyReport?clientCountyId=" +
+        w +
+        "&zoneId=" +
+        x +
+        "&estateId=" +
+        y +
+        "&startDate=" +
+        startDate +
+        "&endDate=" +
+        endDate
+    );
   }
 }
 

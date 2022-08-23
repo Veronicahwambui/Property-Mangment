@@ -90,10 +90,6 @@ export default function AdminArrears() {
     fetchAll();
   }, []);
 
-  useEffect(() => {
-    console.log(month);
-  }, [month]);
-
   const formatCurrency = (x) => {
     let formatCurrency = new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -101,9 +97,6 @@ export default function AdminArrears() {
     });
     return formatCurrency.format(x);
   };
-  useEffect(() => {
-    console.log(mL[new Date().getMonth()]);
-  });
 
   return (
     <>
@@ -114,7 +107,7 @@ export default function AdminArrears() {
               <div className="col-12">
                 <div className="page-title-box d-sm-flex align-items-center justify-content-between">
                   <h4 className="mb-sm-0 font-size-18 text-capitalize">
-                    Arreas Reports
+                    Arrears Reports
                   </h4>
 
                   <div className="page-title-right">

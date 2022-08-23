@@ -117,11 +117,13 @@ function SideBar() {
             </li>
             <li>
               <a href="javascript: void(0)" className="waves-effect has-arrow">
-                <i className="mdi mdi-shield-account-outline"></i>
+                <i className="mdi mdi-file-document-multiple-outline"></i>
                 <span>Reports</span>
               </a>
               <ul className="sub-menu" aria-expanded="false">
                 <li><NavLink to="/admin-reports">Admin Reports</NavLink></li>
+                <li><NavLink to="/newunits-reports">Expected Income Reports</NavLink></li>
+                <li><NavLink to="/occupancy-reports">Occupancy Reports</NavLink></li>
               </ul>
             </li>
             {/* <li>

@@ -59,6 +59,8 @@ import BulkInvoiving from "./pages/invoices/BulkInvoiving";
 import BulkInvoices from "./pages/invoices/BulkInvoices";
 import BulkMessagesList from "./pages/messanger/BulkMessagesList";
 import AdminArrears from "./pages/Reports/AdminArrers";
+import NewUnitsExpectedIncomeReport from "./pages/Reports/NewUnitsExpectedIncomeReport";
+import OccupancyReport from "./pages/Reports/OccupancyReport";
 
 function Main() {
   useEffect(() => {
@@ -67,7 +69,7 @@ function Main() {
         localStorage.clear();
         window.location.reload();
       }
-    }, new Date(AuthService.getUserLoggedInAt()).getTime()-Date.now());
+    }, new Date(AuthService.getUserLoggedInAt()).getTime() - Date.now());
   }, []);
 
   return (
@@ -206,6 +208,14 @@ function Main() {
                 <Route path="/bulkmessaging" element={<BulkMessaging />} />
                 <Route path="/bulkmessages" element={<BulkMessagesList />} />
                 <Route path="/admin-reports" element={<AdminArrears />} />
+                <Route
+                  path="/newunits-reports"
+                  element={<NewUnitsExpectedIncomeReport />}
+                />
+                <Route
+                  path="/occupancy-reports"
+                  element={<OccupancyReport />}
+                />
 
                 <Route path="*" element={<Navigate to="/" />}></Route>
               </Routes>
