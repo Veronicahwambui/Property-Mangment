@@ -111,7 +111,7 @@ function AdminDashboard() {
 
                             </div>
                             <div class="card-body">
-                                <div className="table-responsiv">
+                                <div className="table-responsive">
                                     <table class="table  table-nowrap table-hover overflow-visible contacts-table">
                                         <thead class="table-light">
                                             <tr>
@@ -192,8 +192,8 @@ function AdminDashboard() {
                                                 <th>County</th>
                                                 <th>Month</th>
                                                 <th>Invoices</th>
-                                                <th>Total invoiced amount</th>
-                                                <th>Total collected amount </th>
+                                                <th>Invoiced</th>
+                                                <th>Paid</th>
                                                 <th>Collection Rate</th>
                                                 <th>Actions</th>
                                             </tr>

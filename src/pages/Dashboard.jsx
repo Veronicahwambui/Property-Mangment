@@ -29,15 +29,12 @@ function Dashboard() {
 
     useEffect(() => {
         fetchDashData()
-        adminDashboard()
     }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault()
         $("#spinner").removeClass("d-none")
-
         fetchDashData()
-
     }
     const fetchDashData = () => {
 
@@ -55,12 +52,7 @@ function Dashboard() {
             setDashboardData(res.data.data)
         })
     }
-    const adminDashboard = ()=>{
-        requestsServiceService.adminDashboard().then((res) => {   
-            console.log(res.data.data);
-        })
-
-    }
+  
     // --------------------------
     // CHARTS START HERE 
     // --------------------------
