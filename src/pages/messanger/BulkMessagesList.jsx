@@ -17,9 +17,15 @@ export default function BulkMessagesList() {
   const [itemOffset, setItemOffset] = useState(0);
 
   useEffect(() => {
-    getBulkMessages();
-    console.log(pageCount);
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    setmessages(totalMessages.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(totalMessages.length / size));
   }, [itemOffset, size]);
+
+  useEffect(() => {
+    getBulkMessages();
+  }, []);
 
   const getBulkMessages = () => {
     var data = {};
@@ -36,11 +42,9 @@ export default function BulkMessagesList() {
         );
       });
       setTotalMessages(ds);
-      const endOffset = itemOffset + size;
-      setmessages(ds.slice(itemOffset, endOffset));
-      setPageCount(Math.ceil(ds.length / size));
     });
   };
+
   const handlePageClick = (event) => {
     const newOffset = (event.selected * size) % totalMessages.length;
     console.log(
