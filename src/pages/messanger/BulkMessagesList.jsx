@@ -52,8 +52,9 @@ export default function BulkMessagesList() {
 
   const [activeMessage, setActiveMessage] = useState({});
 
-  function getOneBulkmessage(id) {
-    setActiveMessage(id);
+  function getOneBulkmessage(mes) {
+    console.log(mes);
+    setActiveMessage(mes);
   }
 
   useEffect(() => {
@@ -174,7 +175,7 @@ export default function BulkMessagesList() {
                                             <a
                                               className="dropdown-item cursor-pointer"
                                               onClick={() => {
-                                                getOneBulkmessage();
+                                                getOneBulkmessage(message);
                                               }}
                                             >
                                               <i className="font-size-15 mdi mdi-eye me-3 "></i>
