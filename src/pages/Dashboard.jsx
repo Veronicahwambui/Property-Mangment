@@ -47,6 +47,8 @@ function Dashboard() {
             setPieChartData(res.data.data.collectionSummaryByApplicableCharge)
             setTransactionModesData(res.data.data.collectionSummaryByPaymentMode)
             setMonthlyCollectionSummaryRevenue(res.data.data.monthlyCollectionSummaryRevenue)
+        }).finally(()=>{
+            $("#spinner").addClass("d-none")
         })
         requestsServiceService.getClientDashboard(moment(startDate).format("YYYY/MM/DD"), moment(endDate).format("YYYY/MM/DD")).then((res) => {
             setDashboardData(res.data.data)
@@ -362,9 +364,8 @@ function Dashboard() {
 
     return (
         <div className="page-content">
-            <AdminDashboard />
 
-            <div class="container-fluid d-none">
+            <div class="container-fluid">
 
                 {/* <!-- start page title --> */}
                 <div class="row">
@@ -384,56 +385,14 @@ function Dashboard() {
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                             <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
+                              <div className="page-title-right">
+                              <Link to="/adminDashboard"> 
 
-                            {/* <div class="page-title-right">
-                                <form className="d-flex align-items-center">
-                                    
-                                <div className="d-flex justify-content-center align-items-center">
-                                        <div className="flex p-2">
-                                            <span class="input-group-text"><i class="mdi mdi-calendar">Start Date:</i></span>
-                                            <DatePicker
-                                                selected={startDate}
-                                                onChange={(date) => setStartDate(date)}
-                                                selectsStart
-                                                className="form-control cursor-pointer"
-                                                startDate={startDate}
-                                                endDate={endDate}
-                                                maxDate={new Date()}
-                                            />
-                                        </div>
-                                        <div className="flex p-2" id='datepicker1'>
-
-                                            <span class="input-group-text"><i class="mdi mdi-calendar">End Date:</i></span>
-                                            <DatePicker
-                                                selected={endDate}
-                                                onChange={(date) => setEndDate(date)}
-                                                selectsEnd
-                                                showMonthDropdown
-                                                showYearDropdown
-                                                className="form-control cursor-pointer"
-                                                calendarClassName="form-group"
-                                                startDate={startDate}
-                                                endDate={endDate}
-                                                minDate={startDate}
-                                                maxDate={new Date()}
-                                                type="text"
-
-                                            />
-
-                                        </div>
-                                    </div>
-                                    <div className="d-flex mb-2">
-                                        <input
-                                            type="submit"
-                                            className="btn btn-primary"
-                                            onClick={handleSubmit}
-                                            value="filter"
-                                        />
-                                    </div>
-
-                                </form>
-                            </div> */}
-
+                                <button className="btn btn-primary">
+                                  Admin Dashboard
+                                </button>
+                                     </Link>
+                              </div>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 /* global $ */
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import requestsServiceService from '../../services/requestsService.service';
 
 function AdminDashboard() {
@@ -20,19 +21,51 @@ function AdminDashboard() {
 
     const getAdminDashboard = () => {
         requestsServiceService.adminDashboard().then((res) => {
+            $("#spinner").addClass("d-none")
+
             setAdminAgedArrears(res.data.data.agedArrearsReportResponse);
             setNewUnitsIncomeReport(res.data.data.newUnitsExpectedIncomeReportResponse);
             setOccupancyReport(res.data.data.occupancyReportResponse);
             let arr = res.data.data.agedArrearsReportResponse?.ageReportModels
-            setAdminAgedArrearsMonth(arr[arr.length -1].invoicePeriod)
+            setAdminAgedArrearsMonth(arr[arr.length - 1].invoicePeriod)
+        }).finally(()=>{
+            $("#spinner").addClass("d-none")
         })
     }
 
 
 
     return (
-        <>  <div className="page-content">
- <div className='conatainer-fluid'>
+        <> 
+         <div className="page-content">
+            <div className='conatainer-fluid'>
+            <div class="row">
+                    {/* <!-- Loader --> */}
+                    <div id="spinner">
+                        <div id="status">
+                            <div class="spinner-chase">
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
+                              <div className="page-title-right">
+                              <Link to="/"> 
+                                <button className="btn btn-primary">
+                                  Main Dashboard
+                                </button>
+                                     </Link>
+                              </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row mx-auto">
                     <div class="col-xl-3">
                         <div class="card">
@@ -145,7 +178,7 @@ function AdminDashboard() {
                                     <select name="" id="" className='form-control select2-container' onChange={(e) => setAdminAgedArrearsMonth(e.target.value)}>
                                         <option value={"undefined"}>Select Month </option>
                                         {adminAgedArrears?.ageReportModels?.map((model) => (
-                                            <option  selected={adminAgedArrearsMonth === model.invoicePeriod} value={model.invoicePeriod}>{model.invoicePeriod}</option>
+                                            <option selected={adminAgedArrearsMonth === model.invoicePeriod} value={model.invoicePeriod}>{model.invoicePeriod}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -298,7 +331,7 @@ function AdminDashboard() {
                 </div>
             </div>
         </div>
-           
+
 
             <Helmet>
                 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
