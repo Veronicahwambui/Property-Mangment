@@ -15,7 +15,7 @@ export default function AdminArrears() {
   const [month, setmonth] = useState("")
   const [countyId,setCounty] = useState("")
   const [months, setmonths] = useState([])
-  const clientCountyName = county
+  const clientCountyName = "KIAMBU"
   
   const fetchAll = () => {
     let data = {
@@ -65,9 +65,9 @@ export default function AdminArrears() {
   },[zoneId]);
   
   useEffect(() => {
-    console.log(clientCountyName)
     fetchAll()
   },[])
+  
   useEffect(() => {
     let temp = reports.filter(report => report.invoicePeriod === month)
     if (temp.length > 0) {
@@ -121,7 +121,7 @@ export default function AdminArrears() {
                   <select className={"form-control"} name="" id="" onChange={(e) => setCounty(e.target.value)}>
                     <option value="">Select County</option>
                     {clientcounties?.map((item) => (
-                      <option value={item.county.id} key={item.county.id}>{item.county.name}</option>
+                      <option value={item.county.id} key={item.county.id} selected={item.county.name === clientCountyName}>{item.county.name}</option>
                     ))}
                   </select>
                 </div>
