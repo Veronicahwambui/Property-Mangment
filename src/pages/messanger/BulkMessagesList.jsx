@@ -87,7 +87,6 @@ export default function BulkMessagesList() {
             </div>
           </div>
           <div className="row">
-            {totalMessages.length > 0 ? (
               <>
                 <div className="row">
                   <div className="col-12">
@@ -287,9 +286,7 @@ export default function BulkMessagesList() {
                   </div>
                 </div>
               </>
-            ) : (
-              <></>
-            )}
+           
           </div>
 
           <footer className="footer ">
