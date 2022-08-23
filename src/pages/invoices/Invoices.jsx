@@ -238,9 +238,25 @@ function Invoices() {
   }
 
   const extendDay =()=>{
-    closeInvoiceDate()
     requestsServiceService.adjustPaymentTransactionItemDueDate(newInvoiceId,moment(newInvoiceDate).format("YYYY/MM/DD")).then((res)=>{
       getInvoices();
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success",
+      });
+  
+    setTimeout(() => {
+      setError({
+        ...error,
+        message: "",
+        color: "",
+      });
+
+      closeInvoiceDate()
+
+    }, 4000);
+    
       })   
   }
   return (
@@ -713,6 +729,11 @@ function Invoices() {
           </h5>
         </Modal.Header>
         <Modal.Body>
+        {error.color !== "" && (
+                <div className={"alert alert-" + error.color} role="alert">
+                  {error.message}
+                </div>
+        )}
           <DatePicker
             selected={newInvoiceDate}
             onChange={(date) => setNewInvoiceDate(date)}
