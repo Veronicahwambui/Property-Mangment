@@ -58,6 +58,7 @@ import BulkMessaging from "./pages/messanger/BulkMessaging";
 import BulkInvoiving from "./pages/invoices/BulkInvoiving";
 import BulkInvoices from "./pages/invoices/BulkInvoices";
 import BulkMessagesList from "./pages/messanger/BulkMessagesList";
+import AdminDashboard from "./pages/dashboards/AdminDashboard";
 
 function Main() {
   useEffect(() => {
@@ -96,6 +97,8 @@ function Main() {
               <Routes>
                 {/* dashboard */}
                 <Route path="/" element={<Dashboard />} />
+                {JSON.parse(localStorage.getItem("user"))?.userType?.name === "ADMIN" && 
+                <Route path="/adminDashboard" element={<AdminDashboard />} />}
                 {/* landlords */}
                 <Route path="/landlords" element={<Landlords />} />
                 <Route exact path="/landlord/:id" element={<ViewLandlord />} />

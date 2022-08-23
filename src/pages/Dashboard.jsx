@@ -11,6 +11,8 @@ import moment from 'moment';
 
 import requestsServiceService from '../services/requestsService.service'
 import { Link } from 'react-router-dom';
+import AdminDashboard from './dashboards/AdminDashboard';
+import AuthService from '../services/auth.service';
 
 function Dashboard() {
     const colors = ['#3399ff', '#ff7f50', '#00ff00', '#00a591', '#ecdb54', '#6b5b95', '#944743', '#dc4c46', '#034f84', '#edf1ff']
@@ -22,6 +24,7 @@ function Dashboard() {
     const [startDate, setStartDate] = useState(new Date(date.getFullYear(), 0, 1));
     const [endDate, setEndDate] = useState(new moment().endOf("month").format("YYYY-MM-DD"));
     const [transactionModesData, setTransactionModesData] = useState([])
+    const [adminDashboardData, setAdminDashboardData] = useState({})
     const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] = useState([])
 
     useEffect(() => {
@@ -31,25 +34,25 @@ function Dashboard() {
     const handleSubmit = (e) => {
         e.preventDefault()
         $("#spinner").removeClass("d-none")
-
         fetchDashData()
-
     }
     const fetchDashData = () => {
 
         requestsServiceService.getClientDashboardGraphs(moment(startDate).format("YYYY/MM/DD"), moment(endDate).format("YYYY/MM/DD")).then((res) => {
             $("#spinner").addClass("d-none")
-
             setRadioBarData(res.data.data.collectionSummaryByPremiseUseType)
             setRadioBarData2(res.data.data.collectionSummaryByUnitType)
             setPieChartData(res.data.data.collectionSummaryByApplicableCharge)
             setTransactionModesData(res.data.data.collectionSummaryByPaymentMode)
             setMonthlyCollectionSummaryRevenue(res.data.data.monthlyCollectionSummaryRevenue)
+        }).finally(()=>{
+            $("#spinner").addClass("d-none")
         })
         requestsServiceService.getClientDashboard(moment(startDate).format("YYYY/MM/DD"), moment(endDate).format("YYYY/MM/DD")).then((res) => {
             setDashboardData(res.data.data)
         })
     }
+  
     // --------------------------
     // CHARTS START HERE 
     // --------------------------
@@ -375,55 +378,14 @@ function Dashboard() {
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                             <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
+                              <div className="page-title-right">
+                             { JSON.parse(localStorage.getItem("user"))?.userType?.name === "ADMIN"  && <Link to="/adminDashboard"> 
 
-                            {/* <div class="page-title-right">
-                                <form className="d-flex align-items-center">
-                                    
-                                <div className="d-flex justify-content-center align-items-center">
-                                        <div className="flex p-2">
-                                            <span class="input-group-text"><i class="mdi mdi-calendar">Start Date:</i></span>
-                                            <DatePicker
-                                                selected={startDate}
-                                                onChange={(date) => setStartDate(date)}
-                                                selectsStart
-                                                className="form-control cursor-pointer"
-                                                startDate={startDate}
-                                                endDate={endDate}
-                                                maxDate={new Date()}
-                                            />
-                                        </div>
-                                        <div className="flex p-2" id='datepicker1'>
-
-                                            <span class="input-group-text"><i class="mdi mdi-calendar">End Date:</i></span>
-                                            <DatePicker
-                                                selected={endDate}
-                                                onChange={(date) => setEndDate(date)}
-                                                selectsEnd
-                                                showMonthDropdown
-                                                showYearDropdown
-                                                className="form-control cursor-pointer"
-                                                calendarClassName="form-group"
-                                                startDate={startDate}
-                                                endDate={endDate}
-                                                minDate={startDate}
-                                                maxDate={new Date()}
-                                                type="text"
-                                            />
-
-                                        </div>
-                                    </div>
-                                    <div className="d-flex mb-2">
-                                        <input
-                                            type="submit"
-                                            className="btn btn-primary"
-                                            onClick={handleSubmit}
-                                            value="filter"
-                                        />
-                                    </div>
-
-                                </form>
-                            </div> */}
-
+                                <button className="btn btn-primary">
+                                  Admin Dashboard
+                                </button>
+                                     </Link> }
+                              </div>
                         </div>
                     </div>
                 </div>

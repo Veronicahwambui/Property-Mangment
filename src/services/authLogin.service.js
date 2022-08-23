@@ -7,9 +7,11 @@ class AuthService {
         return username
         // return JSON.parse(localStorage.getItem("user"));
     }
+    
     getCurrentUser() {
         return JSON.parse(localStorage.getItem("user")).userName;
     }
+  
     getCurrentUserId() {
         return JSON.parse(localStorage.getItem("user")).id;
     }
