@@ -1,16 +1,42 @@
 /* global $*/
 import React, {useEffect, useState} from "react";
 import requestsServiceService from "../../services/requestsService.service";
+import {Link} from "react-router-dom";
+import ReactPaginate from "react-paginate";
 
 export default function BulkMessagesList() {
   const [messages, setmessages] = useState([]);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(1);
+  
   const sortSize = (e) => {
     setSize(e.target.value);
     setPage(0);
   };
+  const [itemOffset, setItemOffset] = useState(0);
+  
+  useEffect(() => {
+    getBulkMessages()
+  }, [itemOffset, size]);
+  
+  // Invoke when user click to request another page.
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * 10) % messages.length;
+    console.log(
+      `User requested page number ${event.selected}, which is offset ${newOffset}`
+    );
+    setItemOffset(newOffset);
+  };
+  
+  useEffect(() => {
+    setPageCount(Math.ceil(messages.length / 10))
+  }, [messages])
+  
+  useEffect(() => {
+    console.log(pageCount)
+  }, [pageCount])
+  
   const getBulkMessages = () => {
     var data = {};
     var ds = [];
@@ -24,21 +50,17 @@ export default function BulkMessagesList() {
             {done: item.done}
           )
         );
-        console.log(data);
-        console.log(ds);
       });
-      console.log(ds);
-      setmessages(ds);
-      setPageCount(ds.length % 10)
+      const endOffset = itemOffset + size;
+      setmessages(ds.slice(itemOffset, endOffset));
+      setPageCount(Math.ceil(messages.length / messages));
     });
   };
   
-  const handlePageClick = (data) => {
-    let d = data.selected;
-    setPage(d);
-    // setPage(() => data.selected);
-    // console.log(page)
-  };
+  // const handlePageClick = (data) => {
+  //   let d = data.selected;
+  //   setPage(d);
+  // };
   
   const [activeMessage, setActiveMessage] = useState({});
   
@@ -91,6 +113,28 @@ export default function BulkMessagesList() {
                           <h4 className="card-title text-capitalize mb-0 ">
                             All Bulk Messages
                           </h4>
+                        </div>
+                        <div
+                          className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                          <div
+                            className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <div className="d-flex align-items-center flex-grow-1"></div>
+                            <div className="d-flex">
+                              <Link to="/bulkmessaging">
+                                <button
+                                  type="button"
+                                  className="btn btn-primary waves-effect btn-label waves-light me-3"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#add-new-client"
+                                >
+                                  <i className="mdi mdi-plus label-icon"></i> Create bulk
+                                  Message
+                                </button>
+                              </Link>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="card-body">
@@ -201,56 +245,57 @@ export default function BulkMessagesList() {
                             </tfoot>
                           </table>
                         </div>
-                        {/*<div className="mt-4 mb-0 flex justify-between px-8">*/}
-                        {/*  <div>*/}
-                        {/*    <select*/}
-                        {/*      className={"btn btn-primary"}*/}
-                        {/*      name=""*/}
-                        {/*      id=""*/}
-                        {/*      value={size}*/}
-                        {/*      onChange={(e) => sortSize(e)}*/}
-                        {/*    >*/}
-                        {/*      <option value={parseInt(10)}>10</option>*/}
-                        {/*      <option value={parseInt(30)}>30</option>*/}
-                        {/*      <option value={parseInt(50)}>50</option>*/}
-                        {/*    </select>*/}
-                        {/*  </div>*/}
-                        {/*{pageCount !== 0 && (*/}
-                        {/*  <p className=" font-medium text-xs text-gray-700">*/}
-                        {/*    {" "}*/}
-                        {/*    showing page{" "}*/}
-                        {/*    <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
-                        {/*      {page + 1}*/}
-                        {/*    </span>{" "}*/}
-                        {/*    of{" "}*/}
-                        {/*    <span className="text-sm font-bold text-black">*/}
-                        {/*      {pageCount}*/}
-                        {/*    </span>{" "}*/}
-                        {/*    pages*/}
-                        {/*  </p>*/}
-                        {/*)}*/}
-                        
-                        {/*{pageCount !== 0 && (*/}
-                        {/*  <ReactPaginate*/}
-                        {/*    previousLabel={"prev"}*/}
-                        {/*    nextLabel={"next"}*/}
-                        {/*    breakLabel={"..."}*/}
-                        {/*    pageCount={pageCount} // total number of pages needed*/}
-                        {/*    marginPagesDisplayed={2}*/}
-                        {/*    pageRangeDisplayed={1}*/}
-                        {/*    onPageChange={handlePageClick}*/}
-                        {/*    breakClassName={"page-item"}*/}
-                        {/*    breakLinkClassName={"page-link"}*/}
-                        {/*    containerClassName={"pagination"}*/}
-                        {/*    pageClassName={"page-item"}*/}
-                        {/*    pageLinkClassName={"page-link"}*/}
-                        {/*    previousClassName={"page-item"}*/}
-                        {/*    previousLinkClassName={"page-link"}*/}
-                        {/*    nextClassName={"page-item"}*/}
-                        {/*    nextLinkClassName={"page-link"}*/}
-                        {/*    activeClassName={"active"}*/}
-                        {/*  />*/}
-                        {/*)}*/}
+                        <div className="mt-4 mb-0 flex justify-between px-8">
+                          <div>
+                            <select
+                              className={"btn btn-primary"}
+                              name=""
+                              id=""
+                              value={size}
+                              onChange={(e) => sortSize(e)}
+                            >
+                              <option value={parseInt(10)}>10</option>
+                              <option value={parseInt(30)}>30</option>
+                              <option value={parseInt(50)}>50</option>
+                            </select>
+                          </div>
+                          {pageCount !== 0 && (
+                            <p className=" font-medium text-xs text-gray-700">
+                              {" "}
+                              showing page{" "}
+                              <span className="text-green-700 text-opacity-100 font-bold text-sm">
+                              {page + 1}
+                            </span>{" "}
+                              of{" "}
+                              <span className="text-sm font-bold text-black">
+                              {pageCount}
+                            </span>{" "}
+                              pages
+                            </p>
+                          )}
+                          
+                          {pageCount !== 0 && (
+                            <ReactPaginate
+                              previousLabel={"prev"}
+                              nextLabel={"next"}
+                              breakLabel={"..."}
+                              pageCount={pageCount} // total number of pages needed
+                              marginPagesDisplayed={2}
+                              pageRangeDisplayed={1}
+                              onPageChange={handlePageClick}
+                              breakClassName={"page-item"}
+                              breakLinkClassName={"page-link"}
+                              containerClassName={"pagination"}
+                              pageClassName={"page-item"}
+                              pageLinkClassName={"page-link"}
+                              previousClassName={"page-item"}
+                              previousLinkClassName={"page-link"}
+                              nextClassName={"page-item"}
+                              nextLinkClassName={"page-link"}
+                              activeClassName={"active"}
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

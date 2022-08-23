@@ -67,6 +67,13 @@ function BulkMessaging() {
       var paramsWithoutBraces = paramsText.replace(/{{|}}/gi, "");
       
     }
+    // clientId: clientId,
+    //   id: null,
+    //   language: "ENG",
+    //   parameterList: paramsWithoutBraces,
+    //   template: template,
+    //   templateName: templateName?.toLocaleUpperCase(),
+    //   templateType: "SMS"
     let data = {
       aplicableChargeId: bulkMessage.aplicableChargeId,
       landlordIds: [],
