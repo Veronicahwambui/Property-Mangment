@@ -60,6 +60,7 @@ function SideBar() {
               </a>
               <ul className="sub-menu" aria-expanded="false">
                 <li><NavLink to="/createinvoice">Create an Invoice</NavLink></li>
+                <li><NavLink to="/bulk-invoices">Bulk Invoices</NavLink></li>
                 <li><NavLink to="/invoices">Invoices</NavLink></li>
                 <li><NavLink to="/monthly-invoices">Monthly Invoices</NavLink></li>
               </ul>
