@@ -1,10 +1,11 @@
 /* global $*/
-
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 import { Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
+
 
 function IssuesTypes() {
   const [issueTypes, setIssueTypes] = useState([]);
@@ -100,6 +101,8 @@ function IssuesTypes() {
                           <th>Initial Status</th>
                           <th>Resolved Status</th>
                           <th>Status</th>
+                          <th>Date Created</th>
+
                           <th class="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -126,6 +129,8 @@ function IssuesTypes() {
                                   </span>
                                 )}
                               </td>
+                              <td>{moment(iT.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                               <td class="text-right cell-change text-nowrap ">
                                 <div className="d-flex align-items-center">
                                   <Link

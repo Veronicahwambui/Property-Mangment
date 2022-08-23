@@ -1809,6 +1809,7 @@ const pieChart = {
                             <th>months to renewal</th>
                             <th class=" ">Status</th>
                             <th>Active</th>
+                            <th>Date Created</th>
                             <th class="text-right w-220px">Actions</th>
                           </tr>
                         </thead>
@@ -1828,6 +1829,8 @@ const pieChart = {
                               <td className="text-capitalize">{unit.status?.toLowerCase()}</td>
 
                               <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                              <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                              
                               <td class="text-right cell-change d-flex align-items-center float-right justify-content-end">
                                 <a onClick={() => { setUnitName(unit.unitName); setUnittype(unit.unitType.id); setActiveUnitId(unit.id); }} data-bs-toggle="modal"
                                   data-bs-target="#edit-premise-unit" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
@@ -2002,6 +2005,7 @@ const pieChart = {
                             <th>invoice day</th>
                             <th>amount </th>
                             <th>status</th>
+                            <th>Date Created</th>
                             <th></th>
                           </tr>
                         </thead>
@@ -2020,6 +2024,7 @@ const pieChart = {
                               <td className="text-capitalize">{unit.invoiceDay}</td>
                               <td className="text-capitalize">KSH {unit.value}</td>
                               <td> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                              <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
 
                               <td class="text-right d-flex align-items-center float-right justify-content-end">
                                 <div class="dropdown">
@@ -2277,6 +2282,7 @@ const pieChart = {
                               <th>Name</th>
                               <th>Type</th>
                               <th>Owner type</th>
+                              <th>Date Created</th>
                               <th>actions</th>
                             </tr>
                           </thead>
@@ -2296,6 +2302,8 @@ const pieChart = {
                                     <td className="text-capitalize">
                                       {unit.documentOwnerType.toLowerCase()}
                                     </td>
+                              <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                     <td>
                                       <a href={baseUrl + "/documents/download?docName=" + `${unit.docName}`}
                                         className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
@@ -2426,6 +2434,7 @@ const pieChart = {
                               <th>Phone No</th>
                               <th>Email</th>
                               <th>Status</th>
+                              <th>Date Created</th>
                               <th>Actions</th>
                             </tr>
                           </thead>
@@ -2454,6 +2463,8 @@ const pieChart = {
                                       </span>
                                     )}
                                   </td>
+                                  <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                   <td class="text-right cell-change text-nowrap ">
                                     <div className="d-flex justify-content-center align-items-center">
                                       <a

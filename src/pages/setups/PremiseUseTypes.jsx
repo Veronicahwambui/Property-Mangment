@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
+import moment from "moment";
 
 function PremiseUseTypes() {
   const [list , setList]=useState([])
@@ -241,6 +242,8 @@ function PremiseUseTypes() {
                         <th>#</th>
                         <th>Premise Use Type</th>
                         <th>Status</th>
+                        <th>Date Created</th>
+
                         <th class="text-right">Actions</th>
                       </tr>
                     </thead>
@@ -252,6 +255,8 @@ function PremiseUseTypes() {
                             <td style={{ width: "80px" }}>{index+ 1}</td>
                             <td data-field="unit-num " className='text-capitalize'>{val.name}</td>
                             <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
+                            <td>{moment(val.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                             <td class="text-right cell-change text-nowrap ">
                             <div class="d-flex align-items-center">
                            

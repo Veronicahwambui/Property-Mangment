@@ -237,6 +237,7 @@ function PremisesRegister() {
                                                 <th scope='col'>County</th>
                                                 <th scope="col">File No</th>
                                                 <th scope="col">Status</th>
+                                            <th>Date Created</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -274,7 +275,7 @@ function PremisesRegister() {
                                                             {premise.fileNumber}
                                                         </td>
                                                         <td >{premise.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
-
+<td>{moment(premise.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
                                                         <td>
                                                             <div class="dropdown">
                                                                 <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">

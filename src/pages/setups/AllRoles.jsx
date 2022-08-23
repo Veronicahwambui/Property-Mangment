@@ -1,6 +1,7 @@
 /* global $ */
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import moment from "moment";
 import requestsServiceService from '../../services/requestsService.service'
 function AllRoles() {
   const [allRoles, setAllRoles] = useState([])
@@ -262,6 +263,7 @@ function AllRoles() {
                           <th>#</th>
                           <th>Role Name</th>
                           <th>Status</th>
+                          <th>Date Created</th>
                           <th class="text-right"></th>
                         </tr>
                       </thead>
@@ -273,6 +275,8 @@ function AllRoles() {
                             <td data-field="unit-num ">
                               <span class="badge-soft-success badge">Active</span>
                             </td>
+                            <td>{moment(role.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                             <td class="text-right">
                               <div class="dropdown">
                                 <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true">

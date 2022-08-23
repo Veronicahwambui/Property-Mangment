@@ -239,7 +239,10 @@ function Receipts() {
                           <th>bill balance</th>
                           <th>payment mode</th>
                           <th>payment ref</th>
+                          <th></th>
+                          <th>Date Created</th>
                           <th className="text-right">Actions</th>
+                         
                         </tr>
                       </thead>
                       <tbody>
@@ -274,6 +277,8 @@ function Receipts() {
                               </td>
                               <td>{statement.paymentMode}</td>
                               <td>{statement.payReferenceNo}</td>
+                              <td>{moment(statement.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                               <td>
                                 <div className="d-flex justify-content-end">
                                   <div className="dropdown">

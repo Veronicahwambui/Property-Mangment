@@ -1466,6 +1466,7 @@ function ViewLandlord() {
                                       <th scope="col">Account No</th>
                                       <th scope="col">% Remuneration</th>
                                       <th scope="col">Status</th>
+                                      <th>Date Created</th>
                                       <th className="text-right">Actions</th>
                                     </tr>
                                   </thead>
@@ -1506,6 +1507,8 @@ function ViewLandlord() {
                                               </span>
                                             )}
                                           </td>
+                                          <td>{moment(acc.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                           <td className="text-right cell-change ">
                                             <div className="d-flex align-items-center">
                                               <a
@@ -1613,6 +1616,7 @@ function ViewLandlord() {
                                           <th scope="col">Document Name</th>
                                           <th scope="col">Document Type</th>
                                           <th scope="col">Status</th>
+                                          <th>Date Created</th>
                                           <th className="text-right">
                                             Actions
                                           </th>
@@ -1653,6 +1657,8 @@ function ViewLandlord() {
                                                 </span>
                                               )}
                                             </td>
+                                            <td>{moment(doc.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                             <td className="text-right cell-change ">
                                               <div className="d-flex align-items-center">
                                                 <a

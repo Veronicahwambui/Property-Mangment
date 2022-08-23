@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
+import moment from "moment";
 
 function ApplicableCharges() {
 
@@ -245,6 +246,7 @@ function ApplicableCharges() {
                         <th>Charge type</th>
                         <th>Accept Manual Values</th>
                         <th>Status</th>
+                        <th>Date Created</th>
                         <th class="text-center">Actions</th>
                       </tr>
                     </thead>
@@ -257,7 +259,9 @@ function ApplicableCharges() {
                             <td className='text-capitalize'>{val.name}</td>
                             <td className='text-capitalize'>{val.applicableChargeType != null && val.applicableChargeType.toLowerCase().replace(/_/g," ")}</td>
                             <td>{ val.expectManualValues ? "Yes": "No" } </td>
+
                             <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span> }</td>
+                            <td>{moment(val.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
                             <td class="text-center cell-change text-nowrap ">
                             <div class="d-flex align-items-center justify-content-between">
                            

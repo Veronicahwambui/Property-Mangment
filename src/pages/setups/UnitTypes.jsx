@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import authService from '../../services/auth.service'
 import requestsServiceService from '../../services/requestsService.service'
 import Zones from './Zones'
+import moment from "moment";
 
 function UnitTypes() {
   const [list, setList] = useState([])
@@ -270,6 +271,8 @@ function UnitTypes() {
                           <th>unit size</th>
                           <th>months to renewal</th>
                           <th>Status</th>
+                          <th>Date Created</th>
+
                           <th class="text-center">Actions</th>
                         </tr>
                       </thead>
@@ -286,6 +289,8 @@ function UnitTypes() {
                               <td>{val.squarage} M <sup>2</sup></td>
                               <td>{val.monthCountForTenancyRenewal}</td>
                               <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                              <td>{moment(val.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                               <td class="text-center cell-change text-nowrap ">
                                 <div class="d-flex align-items-center justify-content-between">
 

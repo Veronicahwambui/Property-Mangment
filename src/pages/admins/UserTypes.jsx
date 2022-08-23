@@ -1,6 +1,7 @@
 import requestsServiceService from "../../services/requestsService.service";
 import { useEffect, useId, useState } from "react";
 import authService from "../../services/auth.service";
+import moment from "moment";
 
 function UserTypes() {
   const [userType, setUserType] = useState([]);
@@ -187,9 +188,10 @@ const getActioneer =()=>{
                         <tr class="text-uppercase table-dark">
                           <th>#</th>
                           <th>UserTypeName</th>
-                          <th className="text-right">Edit</th>
 
-                          <th class="text-right"></th>
+                          <th>Date Created</th>
+
+                          <th class="text-right">Edit</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -200,6 +202,7 @@ const getActioneer =()=>{
                                 <td data-field="estate">{++index}</td>
                                
                                 <td data-field="estate">{list.name}</td>
+                                <td>{ moment(list.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
 
                   
 
