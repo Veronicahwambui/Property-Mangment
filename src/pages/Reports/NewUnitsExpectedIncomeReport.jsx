@@ -118,7 +118,7 @@ export default function NewUnitsExpectedIncomeReport() {
                           role="toolbar"
                         >
                           <h4 className="card-title text-capitalize mb-0 ">
-                            Admin Reports
+                            New Units Reports
                           </h4>
                         </div>
                         <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
