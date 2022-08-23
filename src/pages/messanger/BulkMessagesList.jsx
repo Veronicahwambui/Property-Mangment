@@ -53,7 +53,6 @@ export default function BulkMessagesList() {
   const [activeMessage, setActiveMessage] = useState({});
 
   function getOneBulkmessage(mes) {
-    console.log(mes);
     setActiveMessage(mes);
   }
 
