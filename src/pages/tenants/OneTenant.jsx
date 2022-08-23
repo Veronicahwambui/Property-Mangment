@@ -760,7 +760,7 @@ function OneTenant() {
   // fetch data
   const fetchDashData = () => {
     let startdate = moment(new Date()).startOf("month").format("YYYY/MM/DD");
-    let enddate = moment(new Date()).format("YYYY/MM/DD");
+    let enddate = new moment().endOf("month").format("YYYY/MM/DD");
     requestsServiceService
       .getTenantDashboard(userId, startdate, enddate)
       .then((res) => {

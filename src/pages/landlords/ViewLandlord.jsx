@@ -197,7 +197,7 @@ function ViewLandlord() {
     event.preventDefault();
 
     let startdate = moment(startDate).format("YYYY/MM/DD");
-    let enddate = moment(endDate).format("YYYY/MM/DD");
+    let enddate = new moment().endOf("month").format("YYYY/MM/DD");
     requestsServiceService
       .getLandlordDashboard(userId, startdate, enddate)
       .then((res) => {
