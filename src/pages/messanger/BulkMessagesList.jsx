@@ -12,7 +12,6 @@ export default function BulkMessagesList() {
   
   const sortSize = (e) => {
     setSize(e.target.value);
-    setPage(0);
   };
   const [itemOffset, setItemOffset] = useState(0);
   
@@ -30,8 +29,8 @@ export default function BulkMessagesList() {
   };
   
   useEffect(() => {
-    setPageCount(Math.ceil(messages.length / 10))
-  }, [messages])
+    setPageCount(Math.ceil(messages.length / size))
+  }, [messages, size])
   
   useEffect(() => {
     console.log(pageCount)
