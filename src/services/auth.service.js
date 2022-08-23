@@ -5,6 +5,7 @@ class AuthService {
         return localStorage.getItem("user");
     }
 
+    
     getUserLoggedInAt() {
 
         return localStorage.getItem("expiry");

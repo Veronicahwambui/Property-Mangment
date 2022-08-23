@@ -97,7 +97,8 @@ function Main() {
               <Routes>
                 {/* dashboard */}
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/adminDashboard" element={<AdminDashboard />} />
+                {JSON.parse(localStorage.getItem("user"))?.userType?.name === "ADMIN" && 
+                <Route path="/adminDashboard" element={<AdminDashboard />} />}
                 {/* landlords */}
                 <Route path="/landlords" element={<Landlords />} />
                 <Route exact path="/landlord/:id" element={<ViewLandlord />} />

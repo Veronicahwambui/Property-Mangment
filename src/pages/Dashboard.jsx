@@ -12,6 +12,7 @@ import moment from 'moment';
 import requestsServiceService from '../services/requestsService.service'
 import { Link } from 'react-router-dom';
 import AdminDashboard from './dashboards/AdminDashboard';
+import AuthService from '../services/auth.service';
 
 function Dashboard() {
     const colors = ['#3399ff', '#ff7f50', '#00ff00', '#00a591', '#ecdb54', '#6b5b95', '#944743', '#dc4c46', '#034f84', '#edf1ff']
@@ -386,12 +387,12 @@ function Dashboard() {
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                             <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
                               <div className="page-title-right">
-                              <Link to="/adminDashboard"> 
+                             { JSON.parse(localStorage.getItem("user"))?.userType?.name === "ADMIN"  && <Link to="/adminDashboard"> 
 
                                 <button className="btn btn-primary">
                                   Admin Dashboard
                                 </button>
-                                     </Link>
+                                     </Link> }
                               </div>
                         </div>
                     </div>
