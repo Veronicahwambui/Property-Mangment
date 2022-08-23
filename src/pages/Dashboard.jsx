@@ -20,7 +20,7 @@ function Dashboard() {
     const [radioBarData2, setRadioBarData2] = useState([])
     const [pieChartData, setPieChartData] = useState([])
     const [startDate, setStartDate] = useState(new Date(date.getFullYear(), 0, 1));
-    const [endDate, setEndDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new moment().endOf("month").format("YYYY-MM-DD"));
     const [transactionModesData, setTransactionModesData] = useState([])
     const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] = useState([])
 
