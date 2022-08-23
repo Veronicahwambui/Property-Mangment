@@ -304,19 +304,19 @@ export default function NewUnitsExpectedIncomeReport() {
                           </table>
                         </div>
                         <div className="mt-4 mb-0 flex justify-between px-8">
-                          <div>
-                            <select
-                              className={"btn btn-primary"}
-                              name=""
-                              id=""
-                              // value={size}
-                              // onChange={(e) => sortSize(e)}
-                            >
-                              <option value={parseInt(5)}>5 rows</option>
-                              <option value={parseInt(10)}>10 rows</option>
-                              <option value={parseInt(20)}>20 rows</option>
-                            </select>
-                          </div>
+                          {/*<div>*/}
+                          {/*  <select*/}
+                          {/*    className={"btn btn-primary"}*/}
+                          {/*    name=""*/}
+                          {/*    id=""*/}
+                          {/*    // value={size}*/}
+                          {/*    // onChange={(e) => sortSize(e)}*/}
+                          {/*  >*/}
+                          {/*    <option value={parseInt(5)}>5 rows</option>*/}
+                          {/*    <option value={parseInt(10)}>10 rows</option>*/}
+                          {/*    <option value={parseInt(20)}>20 rows</option>*/}
+                          {/*  </select>*/}
+                          {/*</div>*/}
                           {/*{pageCount !== 0 && (*/}
                           {/*  <p className=" font-medium text-xs text-gray-700">*/}
                           {/*    {" "}*/}
