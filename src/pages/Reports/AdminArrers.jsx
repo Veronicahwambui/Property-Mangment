@@ -6,32 +6,39 @@ import ReactPaginate from "react-paginate";
 
 export default function AdminArrears() {
   const { clientCountyName } = useParams();
-  const [reports, setreports] = useState({});
+  const [reports, setreports] = useState([]);
   const [zones, setzones] = useState([]);
   const [estates,setestates] = useState([]);
-  const [zoneId, setZoneId ] = useState(1)
-  const [estateId, setestateId ] = useState(1)
+  const [zoneId, setZoneId ] = useState("")
+  const [estateId, setestateId ] = useState("")
+  const [clientcounties, setClientCounties] = useState([])
+  const [month, setmonth] = useState("")
+  const [county,setCounty] = useState("")
   
-
   const fetchAll = () => {
     let data = {
       clientCountyName: 1,zoneId:zoneId,estateId:estateId
     };
     requestsServiceService.fetchArrears(data).then((res) => {
-      setreports(res.data.data);
+      setreports(res.data.data?.ageReportModels);
     });
     requestsServiceService.getAllZones().then((res) => {
       setzones(res.data.data?.filter(z => z?.clientCounty?.county?.id === data.clientCountyName));
+    })
+    requestsServiceService.getClientCounties().then((res) => {
+      setClientCounties(res.data.data)
     })
   };
   const sort= () => {
     let clientCountyName = 1;
     fetchFiltered(clientCountyName,zoneId,estateId);
+    setZoneId("")
+    setestateId("")
   }
   
   const fetchFiltered = (x,y,z) => {
     requestsServiceService.getReportData(x,y,z).then((res) => {
-      setreports(res.data.data)
+      setreports(res.data.data?.ageReportModels)
     })
   }
   
@@ -51,6 +58,14 @@ export default function AdminArrears() {
     console.log(clientCountyName)
     fetchAll()
   },[])
+  useEffect(() => {
+    let temp = reports.filter(report => report.invoicePeriod === month)
+    if (temp.length > 0) {
+      setreports(temp);
+    } else {
+      fetchAll()
+    }
+  },[month])
   
   const formatCurrency = (x) => {
     let formatCurrency = new Intl.NumberFormat("en-US", {
@@ -59,6 +74,7 @@ export default function AdminArrears() {
     });
     return formatCurrency.format(x)
   }
+  
   return <>
     <>
       <div className="page-content">
@@ -84,6 +100,22 @@ export default function AdminArrears() {
               </div>
               <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
                 <div>
+                  <select className={"form-control"} name="" id="" onChange={(e) => setmonth(e.target.value)}>
+                    <option value="">Select month</option>
+                    {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((item) => (
+                    <option value={item} key={item}>{item}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <select className={"form-control"} name="" id="" onChange={(e) => setCounty(e.target.value)}>
+                    <option value="">Select County</option>
+                    {clientcounties?.map((item) => (
+                      <option value={item.county.id} key={item.county.id}>{item.county.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
                   <select className={"form-control"} onChange={(e) => setZoneId(e.target.value)}>
                     <option value=""> Select zone...</option>
                     {zones?.map((zone) => (
@@ -99,7 +131,7 @@ export default function AdminArrears() {
                     ))}
                   </select>
                 </div>
-                <button className="btn btn-primary" onClick={sort}>
+                <button className="btn btn-primary" onClick={sort} disabled={zoneId === "" || estateId===""}>
                   filter
                 </button>
               </div>
@@ -107,7 +139,7 @@ export default function AdminArrears() {
             </div>
           </div>
           <div className="row">
-            {reports !== {}  ? (
+            {reports.length > 0? (
               <>
                 <div className="row">
                   <div className="col-12">
@@ -159,8 +191,8 @@ export default function AdminArrears() {
                             </tr>
                             </thead>
                             <tbody>
-                            {reports !== {} &&
-                              reports?.ageReportModels?.map((item, index) => (
+                            {reports.length>0 &&
+                              reports.map((item, index) => (
                                 <tr data-id={index} key={index}>
                                   <td>{formatCurrency(item.sum)}</td>
                                   <td>{item.demography}</td>
