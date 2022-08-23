@@ -16,18 +16,24 @@ export default function NewUnitsExpectedIncomeReport() {
   const [clientcounties, setClientCounties] = useState([]);
   const [countyId, setCounty] = useState("");
   const clientCountyName = "KIAMBU";
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    new Date(new Date().getFullYear(), 0, 1)
+  );
   const [endDate, setEndDate] = useState(new Date());
 
   const fetchAll = () => {
-    requestsServiceService.getNewUnitsReport().then((res) => {
-      setreports(res.data.data?.unitIncomeModels);
-    });
+    // requestsServiceService.getNewUnitsReport().then((res) => {
+    //   setreports(res.data.data?.unitIncomeModels);
+    // });
+    fetchFiltered(2, zoneId, estateId);
     requestsServiceService.getClientCounties().then((res) => {
       setClientCounties(res.data.data);
     });
   };
-
+  useEffect(() => {
+    let t = clientcounties.find((x) => x.county?.name === clientCountyName);
+    setCounty(t?.id);
+  }, [clientcounties]);
   const sort = () => {
     fetchFiltered(countyId, zoneId, estateId);
     setZoneId("");
@@ -38,7 +44,6 @@ export default function NewUnitsExpectedIncomeReport() {
   }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
-    console.log(startDate, endDate);
     let sD = moment(startDate).format("YYYY/MM/DD");
     let eD = moment(endDate).format("YYYY/MM/DD");
     requestsServiceService.filterNewUnitsReport(x, y, z, sD, eD).then((res) => {
@@ -138,8 +143,8 @@ export default function NewUnitsExpectedIncomeReport() {
                                   <option value="">Select County</option>
                                   {clientcounties?.map((item) => (
                                     <option
-                                      value={item.county.id}
-                                      key={item.county.id}
+                                      value={item.id}
+                                      key={item.id}
                                       selected={
                                         item.county.name === clientCountyName
                                       }
@@ -243,7 +248,9 @@ export default function NewUnitsExpectedIncomeReport() {
                                     <td>
                                       {formatCurrency(item.totalExpectedIncome)}
                                     </td>
-                                    <td>{item.commissionIncome}</td>
+                                    <td>
+                                      {formatCurrency(item.commissionIncome)}
+                                    </td>
                                     <td>
                                       <div className="d-flex justify-content-end">
                                         {/*<button type="button"*/}
