@@ -639,7 +639,9 @@ class RequestsService {
   getTenant(data) {
     return axiosInstance.get(baseUrl + "/tenants/" + data);
   }
-
+  adjustPaymentTransactionItemDueDate(invoiceNo, dueDate){
+    return axiosInstance.post(baseUrl + "/payments/invoice/adjustDueDate?invoiceNo=" + invoiceNo + "&dueDate=" + dueDate )
+  }
   getInvoices(data) {
     return axiosInstance.post(
       baseUrl +
