@@ -9,8 +9,9 @@ import Chart from "react-apexcharts";
 
 export default function OccupancyReport() {
   const [searchParams, setSearchParams] = useSearchParams();
-  // const clientCountyName = searchParams.get("county");
-  const [clientCountyName, setclientCountyName] = useState("KIAMBU");
+  const [clientCountyName, setclientCountyName] = useState(
+    searchParams.get("county")
+  );
   const [reports, setreports] = useState({});
   const [zones, setzones] = useState([]);
   const [estates, setestates] = useState([]);

@@ -7,8 +7,9 @@ import DatePicker from "react-datepicker";
 
 export default function AdminArrears() {
   const [searchParams, setSearchParams] = useSearchParams();
-  // const clientCountyName = searchParams.get("county");
-  const [clientCountyName, setclientCountyName] = useState("KIAMBU");
+  const [clientCountyName, setclientCountyName] = useState(
+    searchParams.get("county")
+  );
   var mL = [
     "January",
     "February",

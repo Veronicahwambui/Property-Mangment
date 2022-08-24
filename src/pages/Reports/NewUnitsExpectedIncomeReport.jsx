@@ -8,8 +8,9 @@ import DatePicker from "react-datepicker";
 
 export default function NewUnitsExpectedIncomeReport() {
   const [searchParams, setSearchParams] = useSearchParams();
-  // const clientCountyName = searchParams.get("county");
-  const [clientCountyName, setclientCountyName] = useState("KIAMBU");
+  const [clientCountyName, setclientCountyName] = useState(
+    searchParams.get("county")
+  );
   const [reports, setreports] = useState([]);
   const [zones, setzones] = useState([]);
   const [estates, setestates] = useState([]);
@@ -36,7 +37,7 @@ export default function NewUnitsExpectedIncomeReport() {
       setCounty(x[0].id);
     }
     fetchFiltered(countyId, zoneId, estateId);
-  }, [clientcounties]);
+  }, [clientcounties, countyId]);
 
   const sort = () => {
     fetchFiltered(countyId, zoneId, estateId);
@@ -53,6 +54,7 @@ export default function NewUnitsExpectedIncomeReport() {
     let eD = moment(endDate).format("YYYY/MM/DD");
     requestsServiceService.filterNewUnitsReport(x, y, z, sD, eD).then((res) => {
       setreports(res.data.data);
+      $("#spinner").addClass("d-none");
     });
   };
 
@@ -92,6 +94,18 @@ export default function NewUnitsExpectedIncomeReport() {
         <div className="page-content">
           <div className="container-fluid">
             <div className="row">
+              <div id="spinner">
+                <div id="status">
+                  <div className="spinner-chase">
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                  </div>
+                </div>
+              </div>
               <div className="col-12">
                 <div className="page-title-box d-sm-flex align-items-center justify-content-between">
                   <h4 className="mb-sm-0 font-size-18 text-capitalize">
