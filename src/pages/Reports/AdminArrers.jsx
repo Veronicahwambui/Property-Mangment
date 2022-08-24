@@ -4,6 +4,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
 import DatePicker from "react-datepicker";
+import clientCounties from "../setups/ClientCounties";
 
 export default function AdminArrears() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,6 +48,8 @@ export default function AdminArrears() {
     if (x[0] !== undefined) {
       setCounty(x[0].id);
       fetchFiltered(x[0].id, zoneId, estateId);
+    } else {
+      fetchFiltered(countyId, zoneId, estateId);
     }
   }, [clientcounties]);
 
