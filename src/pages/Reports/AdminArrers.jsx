@@ -1,12 +1,14 @@
 /* global $*/
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
 import DatePicker from "react-datepicker";
 
 export default function AdminArrears() {
-  const { county } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  // const clientCountyName = searchParams.get("county");
+  const [clientCountyName, setclientCountyName] = useState("KIAMBU");
   var mL = [
     "January",
     "February",
@@ -21,7 +23,7 @@ export default function AdminArrears() {
     "November",
     "December",
   ];
-  const [reports, setreports] = useState([]);
+  const [reports, setreports] = useState({});
   const [zones, setzones] = useState([]);
   const [estates, setestates] = useState([]);
   const [zoneId, setZoneId] = useState("");
@@ -30,37 +32,39 @@ export default function AdminArrears() {
   const [month, setmonth] = useState(mL[new Date().getMonth()]);
   const [countyId, setCounty] = useState("");
   const [months, setmonths] = useState([]);
-  const clientCountyName = "KIAMBU";
+
   const fetchAll = () => {
-    requestsServiceService.fetchArrears().then((res) => {
-      setreports(res.data.data?.ageReportModels);
-      setmonths(
-        res.data.data?.ageReportModels.map((item) => item.invoicePeriod)
-      );
-    });
-    requestsServiceService.getAllZones().then((res) => {
-      setzones(
-        res.data.data?.filter(
-          (z) => z?.clientCounty?.county?.id === parseInt(countyId)
-        )
-      );
-    });
     requestsServiceService.getClientCounties().then((res) => {
       setClientCounties(res.data.data);
     });
   };
+
+  useEffect(() => {
+    let x = clientcounties.filter(
+      (item) => item?.county?.name === clientCountyName
+    );
+    if (x[0] !== undefined) {
+      setCounty(x[0].id);
+    }
+    fetchFiltered(countyId, zoneId, estateId);
+  }, [clientcounties]);
+
   const sort = () => {
     fetchFiltered(countyId, zoneId, estateId);
     setZoneId("");
     setestateId("");
   };
+
   useEffect(() => {
-    getZones(countyId);
+    fetchFiltered(countyId, zoneId, estateId);
   }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
     requestsServiceService.getReportData(x, y, z).then((res) => {
-      setreports(res.data.data?.ageReportModels);
+      setreports(res.data.data);
+      setmonths(
+        res.data.data?.ageReportModels.map((item) => item.invoicePeriod)
+      );
     });
   };
 
@@ -73,21 +77,19 @@ export default function AdminArrears() {
       setestates(es);
     });
   };
-  const getZones = (c) => {
+  const getZones = () => {
     requestsServiceService.getAllZones().then((res) => {
-      setzones(
-        res.data.data?.filter(
-          (z) => z?.clientCounty?.county?.id === parseInt(c)
-        )
-      );
+      setzones(res.data.data);
     });
   };
+
   useEffect(() => {
     getEstates(zoneId);
   }, [zoneId]);
 
   useEffect(() => {
     fetchAll();
+    getZones();
   }, []);
 
   const formatCurrency = (x) => {
@@ -127,7 +129,7 @@ export default function AdminArrears() {
               </div>
             </div>
             <div className="row">
-              {reports.length > 0 ? (
+              {reports !== {} ? (
                 <>
                   <div className="row">
                     <div className="col-12">
@@ -161,8 +163,8 @@ export default function AdminArrears() {
                                       <option value="">Select County</option>
                                       {clientcounties?.map((item) => (
                                         <option
-                                          value={item.county.id}
-                                          key={item.county.id}
+                                          value={item.id}
+                                          key={item.id}
                                           selected={
                                             item.county.name ===
                                             clientCountyName
@@ -182,9 +184,17 @@ export default function AdminArrears() {
                                     >
                                       <option value=""> Select zone...</option>
                                       {zones?.map((zone) => (
-                                        <option key={zone.id} value={zone.id}>
-                                          {zone.name}
-                                        </option>
+                                        <>
+                                          {zone.clientCounty?.county?.name ===
+                                            clientCountyName && (
+                                            <option
+                                              key={zone.id}
+                                              value={zone.id}
+                                            >
+                                              {zone.name}
+                                            </option>
+                                          )}
+                                        </>
                                       ))}
                                     </select>
                                   </div>
@@ -244,146 +254,161 @@ export default function AdminArrears() {
                               </div>
                             </div>
                           </div>
-
-                          <div className="table-responsive">
-                            <table
-                              className="table align-middle table-hover  contacts-table table-striped "
-                              id="datatable-buttons"
-                            >
-                              <thead className="table-light">
-                                <tr className="table-light">
-                                  <th>County</th>
-                                  <th>Invoice Period</th>
-                                  <th>Invoice Count</th>
-                                  <th>Invoice Sum</th>
-                                  <th>Paid Amount</th>
-                                  <th>Collection Rate</th>
-                                  <th className="text-right">Actions</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {reports.length > 0 &&
-                                  reports.map((item, index) => (
-                                    <>
-                                      {item.invoicePeriod === month && (
-                                        <tr data-id={index} key={index}>
-                                          <td>{item.demography}</td>
-                                          <td>{item.invoicePeriod}</td>
-                                          <td>{item.countAll}</td>
-                                          <td>{formatCurrency(item.sum)}</td>
-                                          <td>{formatCurrency(item.paid)}</td>
-                                          <td>{item.collectionRate}</td>
-                                          <td>
-                                            <div className="d-flex justify-content-end">
-                                              {/*<button type="button"*/}
-                                              {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                              {/*        // onClick={() => getOnemessage(item?.transaction.transactionId)}*/}
-                                              {/*        >Receive Payment*/}
-                                              {/*</button>*/}
-                                              <div className="dropdown">
-                                                <a
-                                                  className="text-muted font-size-16"
-                                                  role="button"
-                                                  data-bs-toggle="dropdown"
-                                                  aria-haspopup="true"
+                          <div className="row">
+                            <div className="col-2">
+                              <div className="card">
+                                <div className="card-body">
+                                  <div className="d-flex align-items-center text-capitalize">
+                                    <div className="mb-0 me-3 font-35px">
+                                      <i className="mdi mdi-home-city-outline  text-primary h1"></i>
+                                    </div>
+                                    <div className="d-flex justify-content-between col-10">
+                                      <div>
+                                        <h5 className="text-capitalize mb-0 pb-0"></h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="card-body d-flex gap-4">
+                                  <p className="p-0 m-0">
+                                    <span className="mdi mdi-map-marker me-2 font-18px"></span>
+                                  </p>
+                                  <p className="p-0 m-0">
+                                    <strong className="text-muted">
+                                      County:
+                                    </strong>
+                                    <br />
+                                    {reports?.county}
+                                  </p>
+                                </div>
+                                <div className="card-body d-flex gap-4">
+                                  <p className="p-0 m-0">
+                                    <span className="mdi mdi-map-marker me-2 font-18px"></span>
+                                  </p>
+                                  <p className="p-0 m-0">
+                                    <strong className="text-muted">
+                                      Zone:
+                                    </strong>
+                                    <br />
+                                    {reports?.zone}
+                                  </p>
+                                </div>
+                                <div className="card-body d-flex gap-4 align-items-center">
+                                  <p className="p-0 m-0">
+                                    <span className="mdi mdi-home-group me-2 font-18px"></span>
+                                  </p>
+                                  <p className="p-0 m-0">
+                                    <strong className="text-muted">
+                                      Estate
+                                    </strong>
+                                    <br />
+                                    {reports?.estate}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-10">
+                              <div className="table-responsive">
+                                <table
+                                  className="table align-middle table-hover  contacts-table table-striped "
+                                  id="datatable-buttons"
+                                >
+                                  <thead className="table-light">
+                                    <tr className="table-light">
+                                      <th>Demography</th>
+                                      <th>Invoice Period</th>
+                                      <th>Invoice Count</th>
+                                      <th>Invoice Sum</th>
+                                      <th>Paid Amount</th>
+                                      <th>Collection Rate</th>
+                                      <th className="text-right">Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {reports !== {} &&
+                                      reports.ageReportModels?.map(
+                                        (item, index) => (
+                                          <>
+                                            {item.invoicePeriod === month && (
+                                              <tr data-id={index} key={index}>
+                                                <td
+                                                  className={"text-capitalize"}
                                                 >
-                                                  <i className="bx bx-dots-vertical-rounded"></i>
-                                                </a>
-                                                <div className="dropdown-menu dropdown-menu-end ">
-                                                  <a
-                                                    className="dropdown-item cursor-pointer"
-                                                    onClick={() => {
-                                                      // getOneBulkmessage(item);
-                                                    }}
-                                                  >
-                                                    <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                    View
-                                                  </a>
-                                                  <a className="dropdown-item">
-                                                    <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                                    Print
-                                                  </a>
-                                                  <a
-                                                    className="dropdown-item cursor-pointer"
-                                                    // onClick={() => {
-                                                    //   handleModeChange("Email");
-                                                    //   handleClicked(item, "Email");
-                                                    // }}
-                                                  >
-                                                    <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                                    Email Tenant
-                                                  </a>
-                                                  <a
-                                                    className="dropdown-item cursor-pointer"
-                                                    // onClick={() => {
-                                                    //   handleModeChange("SMS");
-                                                    //   handleClicked(item, "SMS");
-                                                    // }}
-                                                  >
-                                                    <i className="font-size-15 mdi mdi-chat me-3"></i>
-                                                    Send as SMS
-                                                  </a>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </td>
-                                        </tr>
+                                                  {item.demography}
+                                                </td>
+                                                <td>{item.invoicePeriod}</td>
+                                                <td>{item.countAll}</td>
+                                                <td>
+                                                  {formatCurrency(item.sum)}
+                                                </td>
+                                                <td>
+                                                  {formatCurrency(item.paid)}
+                                                </td>
+                                                <td>{item.collectionRate}</td>
+                                                <td>
+                                                  <div className="d-flex justify-content-end">
+                                                    {/*<button type="button"*/}
+                                                    {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
+                                                    {/*        // onClick={() => getOnemessage(item?.transaction.transactionId)}*/}
+                                                    {/*        >Receive Payment*/}
+                                                    {/*</button>*/}
+                                                    <div className="dropdown">
+                                                      <a
+                                                        className="text-muted font-size-16"
+                                                        role="button"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-haspopup="true"
+                                                      >
+                                                        <i className="bx bx-dots-vertical-rounded"></i>
+                                                      </a>
+                                                      <div className="dropdown-menu dropdown-menu-end ">
+                                                        <a
+                                                          className="dropdown-item cursor-pointer"
+                                                          onClick={() => {
+                                                            // getOneBulkmessage(item);
+                                                          }}
+                                                        >
+                                                          <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                          View
+                                                        </a>
+                                                        <a className="dropdown-item">
+                                                          <i className="font-size-15 mdi mdi-printer me-3 "></i>
+                                                          Print
+                                                        </a>
+                                                        <a
+                                                          className="dropdown-item cursor-pointer"
+                                                          // onClick={() => {
+                                                          //   handleModeChange("Email");
+                                                          //   handleClicked(item, "Email");
+                                                          // }}
+                                                        >
+                                                          <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                                          Email Tenant
+                                                        </a>
+                                                        <a
+                                                          className="dropdown-item cursor-pointer"
+                                                          // onClick={() => {
+                                                          //   handleModeChange("SMS");
+                                                          //   handleClicked(item, "SMS");
+                                                          // }}
+                                                        >
+                                                          <i className="font-size-15 mdi mdi-chat me-3"></i>
+                                                          Send as SMS
+                                                        </a>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            )}
+                                          </>
+                                        )
                                       )}
-                                    </>
-                                  ))}
-                              </tbody>
-                            </table>
-                          </div>
-                          <div className="mt-4 mb-0 flex justify-between px-8">
-                            {/*<div>*/}
-                            {/*  <select*/}
-                            {/*    className={"btn btn-primary"}*/}
-                            {/*    name=""*/}
-                            {/*    id=""*/}
-                            {/*    // value={size}*/}
-                            {/*    // onChange={(e) => sortSize(e)}*/}
-                            {/*  >*/}
-                            {/*    <option value={parseInt(5)}>5 rows</option>*/}
-                            {/*    <option value={parseInt(10)}>10 rows</option>*/}
-                            {/*    <option value={parseInt(20)}>20 rows</option>*/}
-                            {/*  </select>*/}
-                            {/*</div>*/}
-                            {/*{pageCount !== 0 && (*/}
-                            {/*  <p className=" font-medium text-xs text-gray-700">*/}
-                            {/*    {" "}*/}
-                            {/*    showing page{" "}*/}
-                            {/*    <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
-                            {/*      {page + 1}*/}
-                            {/*    </span>{" "}*/}
-                            {/*    of{" "}*/}
-                            {/*    <span className="text-sm font-bold text-black">*/}
-                            {/*      {pageCount}*/}
-                            {/*    </span>{" "}*/}
-                            {/*    pages*/}
-                            {/*  </p>*/}
-                            {/*)}*/}
-
-                            {/*{pageCount !== 0 && (*/}
-                            {/*  <ReactPaginate*/}
-                            {/*    previousLabel={"prev"}*/}
-                            {/*    nextLabel={"next"}*/}
-                            {/*    breakLabel={"..."}*/}
-                            {/*    pageCount={pageCount} // total number of pages needed*/}
-                            {/*    marginPagesDisplayed={2}*/}
-                            {/*    pageRangeDisplayed={1}*/}
-                            {/*    onPageChange={handlePageClick}*/}
-                            {/*    breakClassName={"page-item"}*/}
-                            {/*    breakLinkClassName={"page-link"}*/}
-                            {/*    containerClassName={"pagination"}*/}
-                            {/*    pageClassName={"page-item"}*/}
-                            {/*    pageLinkClassName={"page-link"}*/}
-                            {/*    previousClassName={"page-item"}*/}
-                            {/*    previousLinkClassName={"page-link"}*/}
-                            {/*    nextClassName={"page-item"}*/}
-                            {/*    nextLinkClassName={"page-link"}*/}
-                            {/*    activeClassName={"active"}*/}
-                            {/*  />*/}
-                            {/*)}*/}
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div className="mt-4 mb-0 flex justify-between px-8"></div>
+                            </div>
                           </div>
                         </div>
                       </div>

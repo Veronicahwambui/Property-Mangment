@@ -1,13 +1,15 @@
 /* global $*/
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 
 export default function NewUnitsExpectedIncomeReport() {
-  const { county } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  // const clientCountyName = searchParams.get("county");
+  const [clientCountyName, setclientCountyName] = useState("KIAMBU");
   const [reports, setreports] = useState([]);
   const [zones, setzones] = useState([]);
   const [estates, setestates] = useState([]);
@@ -15,39 +17,42 @@ export default function NewUnitsExpectedIncomeReport() {
   const [estateId, setestateId] = useState("");
   const [clientcounties, setClientCounties] = useState([]);
   const [countyId, setCounty] = useState("");
-  const clientCountyName = "KIAMBU";
   const [startDate, setStartDate] = useState(
     new Date(new Date().getFullYear(), 0, 1)
   );
   const [endDate, setEndDate] = useState(new Date());
 
   const fetchAll = () => {
-    // requestsServiceService.getNewUnitsReport().then((res) => {
-    //   setreports(res.data.data?.unitIncomeModels);
-    // });
-    fetchFiltered(2, zoneId, estateId);
     requestsServiceService.getClientCounties().then((res) => {
       setClientCounties(res.data.data);
     });
   };
+
   useEffect(() => {
-    let t = clientcounties.find((x) => x.county?.name === clientCountyName);
-    setCounty(t?.id);
+    let x = clientcounties.filter(
+      (item) => item?.county?.name === clientCountyName
+    );
+    if (x[0] !== undefined) {
+      setCounty(x[0].id);
+    }
+    fetchFiltered(countyId, zoneId, estateId);
   }, [clientcounties]);
+
   const sort = () => {
     fetchFiltered(countyId, zoneId, estateId);
     setZoneId("");
     setestateId("");
   };
+
   useEffect(() => {
-    getZones(countyId);
+    fetchFiltered(countyId, zoneId, estateId);
   }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
     let sD = moment(startDate).format("YYYY/MM/DD");
     let eD = moment(endDate).format("YYYY/MM/DD");
     requestsServiceService.filterNewUnitsReport(x, y, z, sD, eD).then((res) => {
-      setreports(res.data.data?.unitIncomeModels);
+      setreports(res.data.data);
     });
   };
 
@@ -60,13 +65,9 @@ export default function NewUnitsExpectedIncomeReport() {
       setestates(es);
     });
   };
-  const getZones = (c) => {
+  const getZones = () => {
     requestsServiceService.getAllZones().then((res) => {
-      setzones(
-        res.data.data?.filter(
-          (z) => z?.clientCounty?.county?.id === parseInt(c)
-        )
-      );
+      setzones(res.data.data);
     });
   };
   useEffect(() => {
@@ -75,6 +76,7 @@ export default function NewUnitsExpectedIncomeReport() {
 
   useEffect(() => {
     fetchAll();
+    getZones();
   }, []);
 
   const formatCurrency = (x) => {
@@ -225,142 +227,130 @@ export default function NewUnitsExpectedIncomeReport() {
                         </div>
                       </div>
                       <div className="card-body">
-                        <div className="table-responsive">
-                          <table
-                            className="table align-middle table-hover  contacts-table table-striped "
-                            id="datatable-buttons"
-                          >
-                            <thead className="table-light">
-                              <tr className="table-light">
-                                <th>County</th>
-                                <th>New Units</th>
-                                <th>Expected Income</th>
-                                <th>Commission Income</th>
-                                <th className="text-right">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {reports.length > 0 &&
-                                reports?.map((item, index) => (
-                                  <tr data-id={index} key={index}>
-                                    <td>{item.demography}</td>
-                                    <td>{item.newUnits}</td>
-                                    <td>
-                                      {formatCurrency(item.totalExpectedIncome)}
-                                    </td>
-                                    <td>
-                                      {formatCurrency(item.commissionIncome)}
-                                    </td>
-                                    <td>
-                                      <div className="d-flex justify-content-end">
-                                        {/*<button type="button"*/}
-                                        {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                        {/*        // onClick={() => getOnemessage(item?.transaction.transactionId)}*/}
-                                        {/*        >Receive Payment*/}
-                                        {/*</button>*/}
-                                        <div className="dropdown">
-                                          <a
-                                            className="text-muted font-size-16"
-                                            role="button"
-                                            data-bs-toggle="dropdown"
-                                            aria-haspopup="true"
-                                          >
-                                            <i className="bx bx-dots-vertical-rounded"></i>
-                                          </a>
-                                          <div className="dropdown-menu dropdown-menu-end ">
-                                            <a
-                                              className="dropdown-item cursor-pointer"
-                                              onClick={() => {
-                                                // getOneBulkmessage(item);
-                                              }}
-                                            >
-                                              <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                              View
-                                            </a>
-                                            <a className="dropdown-item">
-                                              <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                              Print
-                                            </a>
-                                            <a
-                                              className="dropdown-item cursor-pointer"
-                                              // onClick={() => {
-                                              //   handleModeChange("Email");
-                                              //   handleClicked(item, "Email");
-                                              // }}
-                                            >
-                                              <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                              Email Tenant
-                                            </a>
-                                            <a
-                                              className="dropdown-item cursor-pointer"
-                                              // onClick={() => {
-                                              //   handleModeChange("SMS");
-                                              //   handleClicked(item, "SMS");
-                                              // }}
-                                            >
-                                              <i className="font-size-15 mdi mdi-chat me-3"></i>
-                                              Send as SMS
-                                            </a>
-                                          </div>
-                                        </div>
+                        {reports !== {} && (
+                          <div className="row">
+                            <div className="col-2">
+                              <div className="card">
+                                <div className="card-body">
+                                  <div className="d-flex align-items-center text-capitalize">
+                                    <div className="mb-0 me-3 font-35px">
+                                      <i className="mdi mdi-home-city-outline  text-primary h1"></i>
+                                    </div>
+                                    <div className="d-flex justify-content-between col-10">
+                                      <div>
+                                        <h5 className="text-capitalize mb-0 pb-0"></h5>
                                       </div>
-                                    </td>
-                                  </tr>
-                                ))}
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="mt-4 mb-0 flex justify-between px-8">
-                          {/*<div>*/}
-                          {/*  <select*/}
-                          {/*    className={"btn btn-primary"}*/}
-                          {/*    name=""*/}
-                          {/*    id=""*/}
-                          {/*    // value={size}*/}
-                          {/*    // onChange={(e) => sortSize(e)}*/}
-                          {/*  >*/}
-                          {/*    <option value={parseInt(5)}>5 rows</option>*/}
-                          {/*    <option value={parseInt(10)}>10 rows</option>*/}
-                          {/*    <option value={parseInt(20)}>20 rows</option>*/}
-                          {/*  </select>*/}
-                          {/*</div>*/}
-                          {/*{pageCount !== 0 && (*/}
-                          {/*  <p className=" font-medium text-xs text-gray-700">*/}
-                          {/*    {" "}*/}
-                          {/*    showing page{" "}*/}
-                          {/*    <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
-                          {/*      {page + 1}*/}
-                          {/*    </span>{" "}*/}
-                          {/*    of{" "}*/}
-                          {/*    <span className="text-sm font-bold text-black">*/}
-                          {/*      {pageCount}*/}
-                          {/*    </span>{" "}*/}
-                          {/*    pages*/}
-                          {/*  </p>*/}
-                          {/*)}*/}
-
-                          {/*{pageCount !== 0 && (*/}
-                          {/*  <ReactPaginate*/}
-                          {/*    previousLabel={"prev"}*/}
-                          {/*    nextLabel={"next"}*/}
-                          {/*    breakLabel={"..."}*/}
-                          {/*    pageCount={pageCount} // total number of pages needed*/}
-                          {/*    marginPagesDisplayed={2}*/}
-                          {/*    pageRangeDisplayed={1}*/}
-                          {/*    onPageChange={handlePageClick}*/}
-                          {/*    breakClassName={"page-item"}*/}
-                          {/*    breakLinkClassName={"page-link"}*/}
-                          {/*    containerClassName={"pagination"}*/}
-                          {/*    pageClassName={"page-item"}*/}
-                          {/*    pageLinkClassName={"page-link"}*/}
-                          {/*    previousClassName={"page-item"}*/}
-                          {/*    previousLinkClassName={"page-link"}*/}
-                          {/*    nextClassName={"page-item"}*/}
-                          {/*    nextLinkClassName={"page-link"}*/}
-                          {/*    activeClassName={"active"}*/}
-                          {/*  />*/}
-                          {/*)}*/}
-                        </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="card-body d-flex gap-4">
+                                  <p className="p-0 m-0">
+                                    <span className="mdi mdi-map-marker me-2 font-18px"></span>
+                                  </p>
+                                  <p className="p-0 m-0">
+                                    <strong className="text-muted">
+                                      County:
+                                    </strong>
+                                    <br />
+                                    {reports?.county}
+                                  </p>
+                                </div>
+                                <div className="card-body d-flex gap-4">
+                                  <p className="p-0 m-0">
+                                    <span className="mdi mdi-map-marker me-2 font-18px"></span>
+                                  </p>
+                                  <p className="p-0 m-0">
+                                    <strong className="text-muted">
+                                      Zone:
+                                    </strong>
+                                    <br />
+                                    {reports?.zone}
+                                  </p>
+                                </div>
+                                <div className="card-body d-flex gap-4 align-items-center">
+                                  <p className="p-0 m-0">
+                                    <span className="mdi mdi-home-group me-2 font-18px"></span>
+                                  </p>
+                                  <p className="p-0 m-0">
+                                    <strong className="text-muted">
+                                      Estate
+                                    </strong>
+                                    <br />
+                                    {reports?.estate}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-10">
+                              {" "}
+                              <div className="table-responsive">
+                                <table
+                                  className="table align-middle table-hover  contacts-table table-striped "
+                                  id="datatable-buttons"
+                                >
+                                  <thead className="table-light">
+                                    <tr className="table-light">
+                                      <th>Demography</th>
+                                      <th>New Units</th>
+                                      <th>Expected Income</th>
+                                      <th>Commission Income</th>
+                                      <th className="text-right">Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {reports !== {} &&
+                                      reports.unitIncomeModels?.map(
+                                        (item, index) => (
+                                          <tr data-id={index} key={index}>
+                                            <td className={"text-capitalize"}>
+                                              {item.demography}
+                                            </td>
+                                            <td>{item.newUnits}</td>
+                                            <td>
+                                              {formatCurrency(
+                                                item.totalExpectedIncome
+                                              )}
+                                            </td>
+                                            <td>
+                                              {formatCurrency(
+                                                item.commissionIncome
+                                              )}
+                                            </td>
+                                            <td>
+                                              <div className="d-flex justify-content-end">
+                                                <div className="dropdown">
+                                                  <a
+                                                    className="text-muted font-size-16"
+                                                    role="button"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-haspopup="true"
+                                                  >
+                                                    <i className="bx bx-dots-vertical-rounded"></i>
+                                                  </a>
+                                                  <div className="dropdown-menu dropdown-menu-end ">
+                                                    <a
+                                                      className="dropdown-item cursor-pointer"
+                                                      onClick={() => {
+                                                        // getOneBulkmessage(item);
+                                                      }}
+                                                    >
+                                                      <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                      View
+                                                    </a>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        )
+                                      )}
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div className="mt-4 mb-0 flex justify-between px-8"></div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
