@@ -36,8 +36,7 @@ export default function NewUnitsExpectedIncomeReport() {
     if (x[0] !== undefined) {
       setCounty(x[0].id);
     }
-    fetchFiltered(countyId, zoneId, estateId);
-  }, [clientcounties, countyId]);
+  }, [clientcounties]);
 
   const sort = () => {
     fetchFiltered(countyId, zoneId, estateId);

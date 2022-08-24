@@ -35,7 +35,6 @@ export default function OccupancyReport() {
     if (x[0] !== undefined) {
       setCounty(x[0].id);
     }
-    fetchFiltered(countyId, zoneId, estateId);
   }, [clientcounties]);
 
   const sort = () => {
