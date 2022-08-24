@@ -64,7 +64,7 @@ function BulkMessaging() {
       var paramsText = params.toString();
       var paramsWithoutBraces = paramsText.replace(/{{|}}/gi, "");
     }
-    
+
     let data = {
       aplicableChargeId: bulkMessage.aplicableChargeId,
       landlordIds: [],
@@ -105,6 +105,10 @@ function BulkMessaging() {
               balance: a.sum - a.paid,
               name: bulkMessage.messageKind === "BALANCE_REMINDER" ? a.tenancy.tenant.firstName : a.firstName,
             },
+            message: createMessage(bulkMessage.templatedMessage, {
+              balance: a.sum - a.paid,
+              name: bulkMessage.messageKind === "BALANCE_REMINDER" ? a.tenancy.tenant.firstName : a.firstName,
+            }),
             attachments: [],
             entityType: bulkMessage.messageKind === "BALANCE_REMINDER" ? "TENANCY" : "TENANT",
             createdBy: authLoginService.getCurrentUser(),
@@ -123,10 +127,13 @@ function BulkMessaging() {
                 ? "TENANCY"
                 : "TENANT",
             createdBy: authLoginService.getCurrentUser(),
-            message: bulkMessage.templatedMessage,
+            message: createMessage(bulkMessage.templatedMessage, {
+              balance: a.sum - a.paid,
+              name: bulkMessage.messageKind === "BALANCE_REMINDER" ? a.tenancy.tenant.firstName : a.firstName,
+            }),
             templateName: undefined,
-            senderId: JSON.parse(authService.getCurrentUserName()).client
-              .senderId,
+            senderId: JSON.parse(authService.getCurrentUserName()).client.senderId != undefined ? JSON.parse(authService.getCurrentUserName()).client.senderId :
+              'REVENUESURE',
             model: {
               balance: a.sum - a.paid,
               name: bulkMessage.messageKind === "BALANCE_REMINDER" ? a.tenancy.tenant.firstName : a.firstName,
@@ -211,9 +218,18 @@ function BulkMessaging() {
     }
   };
 
-  useEffect(() => {
-    console.log(validIds);
-  }, [responseData]);
+
+  const createMessage = (message, paramsBody) => {
+    var keys = Object.keys(paramsBody);
+    for (let v = 0; v < keys.length; v++) {
+      let regex111 = '{{' + keys[v] + '}}';
+      message = message.replace(regex111, paramsBody[keys[v]]);
+    }
+    console.log(message);
+
+    return message;
+  }
+
 
   const clearModal = () => {
     setRecipient("");
@@ -260,7 +276,7 @@ function BulkMessaging() {
       setrecepients([...recepients.filter((item) => item !== x)]);
     }
   };
-  
+
   const removeResponseItems = (x) => {
     setVID([...validIds.filter((item) => item !== x)]);
   };
