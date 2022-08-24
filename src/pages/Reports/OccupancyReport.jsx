@@ -40,6 +40,7 @@ export default function OccupancyReport() {
     if (x[0] !== undefined) {
       setCounty(x[0].id);
     }
+    getZones();
     fetchFiltered(countyId, zoneId, estateId);
   }, [clientcounties]);
 
@@ -73,13 +74,9 @@ export default function OccupancyReport() {
       setestates(es);
     });
   };
-  const getZones = (c) => {
+  const getZones = () => {
     requestsServiceService.getAllZones().then((res) => {
-      setzones(
-        res.data.data?.filter(
-          (z) => z?.clientCounty?.county?.id === parseInt(c)
-        )
-      );
+      setzones(res.data.data);
     });
   };
   useEffect(() => {
@@ -139,60 +136,7 @@ export default function OccupancyReport() {
                             Occupancy Reports
                           </h4>
                         </div>
-                        <div>
-                          {/*<div className="card-body d-flex gap-4">*/}
-                          {/*  <p className="p-0 m-0">*/}
-                          {/*    <strong className="text-muted">Plot No. </strong>*/}
-                          {/*    {premiseData?.premise?.plotNumber}*/}
-                          {/*  </p>*/}
-                          {/*  <p className="p-0 m-0">*/}
-                          {/*    <strong className="text-muted">File No.</strong>*/}
-                          {/*    {premiseData?.premise?.plotNumber}*/}
-                          {/*  </p>*/}
-                          {/*</div>*/}
-                          {/*<div className="card-body d-flex gap-4 align-items-center">*/}
-                          {/*  <p className="p-0 m-0">*/}
-                          {/*    <span className="mdi mdi-map-marker me-2 font-18px"></span>{" "}*/}
-                          {/*    {premiseData?.premise?.estate?.name}*/}
-                          {/*  </p>*/}
-                          {/*  <p className="p-0 m-0">*/}
-                          {/*    <strong className="text-muted">County </strong>{" "}*/}
-                          {/*    {premiseData.premise &&*/}
-                          {/*      premiseData.premise.estate.zone.clientCounty.county.name.toLowerCase()}*/}
-                          {/*  </p>*/}
-                          {/*  <p className="p-0 m-0">*/}
-                          {/*    <strong className="text-muted">Estate </strong>{" "}*/}
-                          {/*    {premiseData.premise &&*/}
-                          {/*      premiseData.premise.estate.name}*/}
-                          {/*  </p>*/}
-                          {/*  <p className="p-0 m-0">*/}
-                          {/*    <strong className="text-muted">Zone </strong>{" "}*/}
-                          {/*    {premiseData.premise &&*/}
-                          {/*      premiseData.premise.estate.zone.name}*/}
-                          {/*  </p>*/}
-                          {/*</div>*/}
-                          {/*<div className="card-body">*/}
-                          {/*  <h4 className="text-capitalize font-14px">*/}
-                          {/*    <a>*/}
-                          {/*      {" "}*/}
-                          {/*      {landlordDetail?.firstName}{" "}*/}
-                          {/*      {landlordDetail?.lastName}{" "}*/}
-                          {/*      {landlordDetail?.otherName} (Landlord)*/}
-                          {/*    </a>*/}
-                          {/*  </h4>*/}
-                          {/*  <p className="text-muted mb-0 d-flex align-items-center">*/}
-                          {/*    <a className="d-flex align-items-center">*/}
-                          {/*      <i className="mdi mdi-phone me-2 font-size-18"></i>*/}
-                          {/*      {landlordDetail?.phoneNumber}*/}
-                          {/*    </a>{" "}*/}
-                          {/*    <span className="px-3 px-3">|</span>*/}
-                          {/*    <a className="d-flex align-items-center">*/}
-                          {/*      <i className="mdi mdi-email-outline font-size-18 me-2"></i>{" "}*/}
-                          {/*      {landlordDetail?.email}*/}
-                          {/*    </a>*/}
-                          {/*  </p>*/}
-                          {/*</div>*/}
-                        </div>
+                        <div></div>
                         <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                           <div
                             className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
@@ -480,7 +424,7 @@ export default function OccupancyReport() {
                             </div>
                           </div>
                         )}
-                        {reports === {} && (
+                        {Object.keys(reports).length === 0 && (
                           <div className="alert alert-danger">
                             No records found
                           </div>
