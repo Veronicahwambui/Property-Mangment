@@ -132,7 +132,9 @@ function BulkInvoices() {
                           <th>Unit Cost</th>
                           <th>Bill Amount</th>
                           <th>Invoice Date</th>
+                          
                           <th>Status</th>
+                          <th>Date Created</th>
                           <th className="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -156,6 +158,9 @@ function BulkInvoices() {
                               <td>
                                 <StatusBadge type={invoice?.done ? "Done" : "In-Progress"} />
                               </td>
+                              
+                              <td>{moment(invoice.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                               <td>
                                 <div className="d-flex justify-content-end">
                                   

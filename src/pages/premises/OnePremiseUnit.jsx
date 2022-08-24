@@ -622,6 +622,7 @@ const submitIssue = (e) => {
                                                         <th>notification date </th>
                                                         <th>renewal date</th>
                                                         <th>tenancy status</th>
+                                                        <th>Date Created</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -637,6 +638,7 @@ const submitIssue = (e) => {
                                                             <td> {unit?.tenancyRenewalDate && moment(unit?.tenancyRenewalNotificationDate).format("MMM Do YYYY")}</td>
                                                             <td> {unit?.tenancyRenewalDate && moment(unit?.tenancyRenewalDate).format("MMM Do YYYY")}</td>
                                                             <td className="text-capitalize">{unit.tenancyStatus?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                                            <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
 
                                                             <td class="text-right d-flex align-items-center float-right justify-content-end">
 
@@ -690,6 +692,7 @@ const submitIssue = (e) => {
                                                             <th>invoice day</th>
                                                             <th>amount </th>
                                                             <th>status</th>
+                                                            <th>Date Created</th>
                                                             <th></th>
                                                         </tr>
                                                     </thead>
@@ -708,6 +711,8 @@ const submitIssue = (e) => {
                                                                 <td className="text-capitalize">{unit.invoiceDay}</td>
                                                                 <td className="text-capitalize">{unit.value}</td>
                                                                 <td className="text-capitalize"> {unit.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
+                                                                <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                                             </tr>
                                                         ))}
                                                     </tbody>

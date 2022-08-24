@@ -290,6 +290,8 @@ function InvoicesParent() {
                           <th>Hse/Unit</th>
                           <th>Date Issued</th>
                           <th>Payment Status</th>
+                          <th>Date Created</th>
+                      
                           <th className="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -313,7 +315,10 @@ function InvoicesParent() {
                               <td>
                                 <StatusBadge type={invoice?.paymentStatus} />
                               </td>
+                              <td>{moment(invoice.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
                               <td>
+                             
+
                                 <div className="d-flex justify-content-end">
                                   {/*<button type="button"*/}
                                   {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
