@@ -1,40 +1,56 @@
 /* global $*/
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
 import moment from "moment";
 import DatePicker from "react-datepicker";
+import Chart from "react-apexcharts";
 
 export default function OccupancyReport() {
-  const { county } = useParams();
-  const [reports, setreports] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  // const clientCountyName = searchParams.get("county");
+  const [clientCountyName, setclientCountyName] = useState("KIAMBU");
+  const [reports, setreports] = useState({});
   const [zones, setzones] = useState([]);
   const [estates, setestates] = useState([]);
   const [zoneId, setZoneId] = useState("");
   const [estateId, setestateId] = useState("");
   const [clientcounties, setClientCounties] = useState([]);
   const [countyId, setCounty] = useState("");
-  const clientCountyName = "KIAMBU";
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
   const fetchAll = () => {
-    requestsServiceService.getOccupancyReport().then((res) => {
-      setreports(res.data.data?.occupancyResponses);
-    });
+    // requestsServiceService.getOccupancyReport().then((res) => {
+    //   setreports(res.data.data?.occupancyResponses);
+    // });
     requestsServiceService.getClientCounties().then((res) => {
       setClientCounties(res.data.data);
     });
   };
+  useEffect(() => {
+    console.log(reports);
+  }, [reports]);
+
+  useEffect(() => {
+    let x = clientcounties.filter(
+      (item) => item?.county?.name === clientCountyName
+    );
+    if (x[0] !== undefined) {
+      setCounty(x[0].id);
+    }
+    fetchFiltered(countyId, zoneId, estateId);
+  }, [clientcounties]);
 
   const sort = () => {
     fetchFiltered(countyId, zoneId, estateId);
     setZoneId("");
     setestateId("");
   };
+
   useEffect(() => {
-    getZones(countyId);
+    fetchFiltered(countyId, zoneId, estateId);
   }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
@@ -44,7 +60,7 @@ export default function OccupancyReport() {
     requestsServiceService
       .filterOccupancyReport(x, y, z, sD, eD)
       .then((res) => {
-        setreports(res.data.data?.occupancyResponses);
+        setreports(res.data.data);
       });
   };
 
@@ -123,6 +139,60 @@ export default function OccupancyReport() {
                             Occupancy Reports
                           </h4>
                         </div>
+                        <div>
+                          {/*<div className="card-body d-flex gap-4">*/}
+                          {/*  <p className="p-0 m-0">*/}
+                          {/*    <strong className="text-muted">Plot No. </strong>*/}
+                          {/*    {premiseData?.premise?.plotNumber}*/}
+                          {/*  </p>*/}
+                          {/*  <p className="p-0 m-0">*/}
+                          {/*    <strong className="text-muted">File No.</strong>*/}
+                          {/*    {premiseData?.premise?.plotNumber}*/}
+                          {/*  </p>*/}
+                          {/*</div>*/}
+                          {/*<div className="card-body d-flex gap-4 align-items-center">*/}
+                          {/*  <p className="p-0 m-0">*/}
+                          {/*    <span className="mdi mdi-map-marker me-2 font-18px"></span>{" "}*/}
+                          {/*    {premiseData?.premise?.estate?.name}*/}
+                          {/*  </p>*/}
+                          {/*  <p className="p-0 m-0">*/}
+                          {/*    <strong className="text-muted">County </strong>{" "}*/}
+                          {/*    {premiseData.premise &&*/}
+                          {/*      premiseData.premise.estate.zone.clientCounty.county.name.toLowerCase()}*/}
+                          {/*  </p>*/}
+                          {/*  <p className="p-0 m-0">*/}
+                          {/*    <strong className="text-muted">Estate </strong>{" "}*/}
+                          {/*    {premiseData.premise &&*/}
+                          {/*      premiseData.premise.estate.name}*/}
+                          {/*  </p>*/}
+                          {/*  <p className="p-0 m-0">*/}
+                          {/*    <strong className="text-muted">Zone </strong>{" "}*/}
+                          {/*    {premiseData.premise &&*/}
+                          {/*      premiseData.premise.estate.zone.name}*/}
+                          {/*  </p>*/}
+                          {/*</div>*/}
+                          {/*<div className="card-body">*/}
+                          {/*  <h4 className="text-capitalize font-14px">*/}
+                          {/*    <a>*/}
+                          {/*      {" "}*/}
+                          {/*      {landlordDetail?.firstName}{" "}*/}
+                          {/*      {landlordDetail?.lastName}{" "}*/}
+                          {/*      {landlordDetail?.otherName} (Landlord)*/}
+                          {/*    </a>*/}
+                          {/*  </h4>*/}
+                          {/*  <p className="text-muted mb-0 d-flex align-items-center">*/}
+                          {/*    <a className="d-flex align-items-center">*/}
+                          {/*      <i className="mdi mdi-phone me-2 font-size-18"></i>*/}
+                          {/*      {landlordDetail?.phoneNumber}*/}
+                          {/*    </a>{" "}*/}
+                          {/*    <span className="px-3 px-3">|</span>*/}
+                          {/*    <a className="d-flex align-items-center">*/}
+                          {/*      <i className="mdi mdi-email-outline font-size-18 me-2"></i>{" "}*/}
+                          {/*      {landlordDetail?.email}*/}
+                          {/*    </a>*/}
+                          {/*  </p>*/}
+                          {/*</div>*/}
+                        </div>
                         <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                           <div
                             className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
@@ -140,8 +210,8 @@ export default function OccupancyReport() {
                                   <option value="">Select County</option>
                                   {clientcounties?.map((item) => (
                                     <option
-                                      value={item.county.id}
-                                      key={item.county.id}
+                                      value={item.id}
+                                      key={item.id}
                                       selected={
                                         item.county.name === clientCountyName
                                       }
@@ -158,9 +228,14 @@ export default function OccupancyReport() {
                                 >
                                   <option value=""> Select zone...</option>
                                   {zones?.map((zone) => (
-                                    <option key={zone.id} value={zone.id}>
-                                      {zone.name}
-                                    </option>
+                                    <>
+                                      {zone.clientCounty?.county?.name ===
+                                        clientCountyName && (
+                                        <option key={zone.id} value={zone.id}>
+                                          {zone.name}
+                                        </option>
+                                      )}
+                                    </>
                                   ))}
                                 </select>
                               </div>
@@ -227,154 +302,183 @@ export default function OccupancyReport() {
                             <div className="text-start"></div>
                           </div>
                         </div>
-                        {reports.length > 0 && (
-                          <>
-                            <div className="table-responsive">
-                              <table
-                                className="table align-middle table-hover  contacts-table table-striped "
-                                id="datatable-buttons"
-                              >
-                                <thead className="table-light">
-                                  <tr className="table-light">
-                                    <th>County</th>
-                                    <th>Premises</th>
-                                    <th>Units</th>
-                                    <th>New Units</th>
-                                    <th>Unit Summary</th>
-                                    <th className="text-right">Actions</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {reports.length > 0 &&
-                                    reports?.map((item, index) => (
-                                      <tr data-id={index} key={index}>
-                                        <td>{item.demography}</td>
-                                        <td>{item.premiseCount}</td>
-                                        <td>{item.allUnits}</td>
-                                        <td>{item.newUnits}</td>
-                                        <td>
-                                          {item.countPremiseUnitByStatus?.map(
-                                            (one) => (
-                                              <div className="d-flex justify-content-start gap-3">
-                                                <strong>{one.sum}</strong>
-                                                <span>{one.status} </span>
-                                              </div>
-                                            )
-                                          )}
-                                        </td>
-                                        <td>
-                                          <div className="d-flex justify-content-end">
-                                            {/*<button type="button"*/}
-                                            {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                            {/*        // onClick={() => getOnemessage(item?.transaction.transactionId)}*/}
-                                            {/*        >Receive Payment*/}
-                                            {/*</button>*/}
-                                            <div className="dropdown">
-                                              <a
-                                                className="text-muted font-size-16"
-                                                role="button"
-                                                data-bs-toggle="dropdown"
-                                                aria-haspopup="true"
-                                              >
-                                                <i className="bx bx-dots-vertical-rounded"></i>
-                                              </a>
-                                              <div className="dropdown-menu dropdown-menu-end ">
-                                                <a
-                                                  className="dropdown-item cursor-pointer"
-                                                  onClick={() => {
-                                                    // getOneBulkmessage(item);
-                                                  }}
-                                                >
-                                                  <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                  View
-                                                </a>
-                                                <a className="dropdown-item">
-                                                  <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                                  Print
-                                                </a>
-                                                <a
-                                                  className="dropdown-item cursor-pointer"
-                                                  // onClick={() => {
-                                                  //   handleModeChange("Email");
-                                                  //   handleClicked(item, "Email");
-                                                  // }}
-                                                >
-                                                  <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                                  Email Tenant
-                                                </a>
-                                                <a
-                                                  className="dropdown-item cursor-pointer"
-                                                  // onClick={() => {
-                                                  //   handleModeChange("SMS");
-                                                  //   handleClicked(item, "SMS");
-                                                  // }}
-                                                >
-                                                  <i className="font-size-15 mdi mdi-chat me-3"></i>
-                                                  Send as SMS
-                                                </a>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </td>
+                        {reports !== {} && (
+                          <div className="row">
+                            <div className="col-2">
+                              <div className="card">
+                                <div className="card-body">
+                                  <div className="d-flex align-items-center text-capitalize">
+                                    <div className="mb-0 me-3 font-35px">
+                                      <i className="mdi mdi-home-city-outline  text-primary h1"></i>
+                                    </div>
+                                    <div className="d-flex justify-content-between col-10">
+                                      <div>
+                                        <h5 className="text-capitalize mb-0 pb-0"></h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="card-body d-flex gap-4">
+                                  <p className="p-0 m-0">
+                                    <span className="mdi mdi-map-marker me-2 font-18px"></span>
+                                  </p>
+                                  <p className="p-0 m-0">
+                                    <strong className="text-muted">
+                                      County:
+                                    </strong>
+                                    <br />
+                                    {reports?.county}
+                                  </p>
+                                </div>
+                                <div className="card-body d-flex gap-4">
+                                  <p className="p-0 m-0">
+                                    <span className="mdi mdi-map-marker me-2 font-18px"></span>
+                                  </p>
+                                  <p className="p-0 m-0">
+                                    <strong className="text-muted">
+                                      Zone:
+                                    </strong>
+                                    <br />
+                                    {reports?.zone}
+                                  </p>
+                                </div>
+                                <div className="card-body d-flex gap-4 align-items-center">
+                                  <p className="p-0 m-0">
+                                    <span className="mdi mdi-home-group me-2 font-18px"></span>
+                                  </p>
+                                  <p className="p-0 m-0">
+                                    <strong className="text-muted">
+                                      Estate
+                                    </strong>
+                                    <br />
+                                    {reports?.estate}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-10">
+                              <>
+                                <div className="table-responsive">
+                                  <table
+                                    className="table align-middle table-hover  contacts-table table-striped "
+                                    id="datatable-buttons"
+                                  >
+                                    <thead className="table-light">
+                                      <tr className="table-light">
+                                        <th>Demography</th>
+                                        <th>Premises</th>
+                                        <th>Units</th>
+                                        <th>New Units</th>
+                                        <th>Unit Summary</th>
+                                        <th className="text-right">Actions</th>
                                       </tr>
-                                    ))}
-                                </tbody>
-                              </table>
-                            </div>
-                            <div className="mt-4 mb-0 flex justify-between px-8">
-                              {/*<div>*/}
-                              {/*  <select*/}
-                              {/*    className={"btn btn-primary"}*/}
-                              {/*    name=""*/}
-                              {/*    id=""*/}
-                              {/*    // value={size}*/}
-                              {/*    // onChange={(e) => sortSize(e)}*/}
-                              {/*  >*/}
-                              {/*    <option value={parseInt(5)}>5 rows</option>*/}
-                              {/*    <option value={parseInt(10)}>10 rows</option>*/}
-                              {/*    <option value={parseInt(20)}>20 rows</option>*/}
-                              {/*  </select>*/}
-                              {/*</div>*/}
-                              {/*{pageCount !== 0 && (*/}
-                              {/*  <p className=" font-medium text-xs text-gray-700">*/}
-                              {/*    {" "}*/}
-                              {/*    showing page{" "}*/}
-                              {/*    <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
-                              {/*      {page + 1}*/}
-                              {/*    </span>{" "}*/}
-                              {/*    of{" "}*/}
-                              {/*    <span className="text-sm font-bold text-black">*/}
-                              {/*      {pageCount}*/}
-                              {/*    </span>{" "}*/}
-                              {/*    pages*/}
-                              {/*  </p>*/}
-                              {/*)}*/}
+                                    </thead>
+                                    <tbody>
+                                      {reports !== {} &&
+                                        reports?.occupancyResponses?.map(
+                                          (item, index) => (
+                                            <tr data-id={index} key={index}>
+                                              <td>{item.demography}</td>
+                                              <td>{item.premiseCount}</td>
+                                              <td>{item.allUnits}</td>
+                                              <td>{item.newUnits}</td>
+                                              <td>
+                                                {item.countPremiseUnitByStatus?.map(
+                                                  (one) => (
+                                                    <div className="d-flex justify-content-start gap-3">
+                                                      <strong>{one.sum}</strong>
+                                                      <span>{one.status} </span>
+                                                    </div>
+                                                  )
+                                                )}
+                                              </td>
+                                              <td>
+                                                <div className="d-flex justify-content-end">
+                                                  <div className="dropdown">
+                                                    <a
+                                                      className="text-muted font-size-16"
+                                                      role="button"
+                                                      data-bs-toggle="dropdown"
+                                                      aria-haspopup="true"
+                                                    >
+                                                      <i className="bx bx-dots-vertical-rounded"></i>
+                                                    </a>
+                                                    <div className="dropdown-menu dropdown-menu-end ">
+                                                      <a
+                                                        className="dropdown-item cursor-pointer"
+                                                        onClick={() => {
+                                                          // getOneBulkmessage(item);
+                                                        }}
+                                                      >
+                                                        <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                        View
+                                                      </a>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </td>
+                                            </tr>
+                                          )
+                                        )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                                <div className="mt-4 mb-0 flex justify-between px-8">
+                                  {/*<div>*/}
+                                  {/*  <select*/}
+                                  {/*    className={"btn btn-primary"}*/}
+                                  {/*    name=""*/}
+                                  {/*    id=""*/}
+                                  {/*    // value={size}*/}
+                                  {/*    // onChange={(e) => sortSize(e)}*/}
+                                  {/*  >*/}
+                                  {/*    <option value={parseInt(5)}>5 rows</option>*/}
+                                  {/*    <option value={parseInt(10)}>10 rows</option>*/}
+                                  {/*    <option value={parseInt(20)}>20 rows</option>*/}
+                                  {/*  </select>*/}
+                                  {/*</div>*/}
+                                  {/*{pageCount !== 0 && (*/}
+                                  {/*  <p className=" font-medium text-xs text-gray-700">*/}
+                                  {/*    {" "}*/}
+                                  {/*    showing page{" "}*/}
+                                  {/*    <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
+                                  {/*      {page + 1}*/}
+                                  {/*    </span>{" "}*/}
+                                  {/*    of{" "}*/}
+                                  {/*    <span className="text-sm font-bold text-black">*/}
+                                  {/*      {pageCount}*/}
+                                  {/*    </span>{" "}*/}
+                                  {/*    pages*/}
+                                  {/*  </p>*/}
+                                  {/*)}*/}
 
-                              {/*{pageCount !== 0 && (*/}
-                              {/*  <ReactPaginate*/}
-                              {/*    previousLabel={"prev"}*/}
-                              {/*    nextLabel={"next"}*/}
-                              {/*    breakLabel={"..."}*/}
-                              {/*    pageCount={pageCount} // total number of pages needed*/}
-                              {/*    marginPagesDisplayed={2}*/}
-                              {/*    pageRangeDisplayed={1}*/}
-                              {/*    onPageChange={handlePageClick}*/}
-                              {/*    breakClassName={"page-item"}*/}
-                              {/*    breakLinkClassName={"page-link"}*/}
-                              {/*    containerClassName={"pagination"}*/}
-                              {/*    pageClassName={"page-item"}*/}
-                              {/*    pageLinkClassName={"page-link"}*/}
-                              {/*    previousClassName={"page-item"}*/}
-                              {/*    previousLinkClassName={"page-link"}*/}
-                              {/*    nextClassName={"page-item"}*/}
-                              {/*    nextLinkClassName={"page-link"}*/}
-                              {/*    activeClassName={"active"}*/}
-                              {/*  />*/}
-                              {/*)}*/}
+                                  {/*{pageCount !== 0 && (*/}
+                                  {/*  <ReactPaginate*/}
+                                  {/*    previousLabel={"prev"}*/}
+                                  {/*    nextLabel={"next"}*/}
+                                  {/*    breakLabel={"..."}*/}
+                                  {/*    pageCount={pageCount} // total number of pages needed*/}
+                                  {/*    marginPagesDisplayed={2}*/}
+                                  {/*    pageRangeDisplayed={1}*/}
+                                  {/*    onPageChange={handlePageClick}*/}
+                                  {/*    breakClassName={"page-item"}*/}
+                                  {/*    breakLinkClassName={"page-link"}*/}
+                                  {/*    containerClassName={"pagination"}*/}
+                                  {/*    pageClassName={"page-item"}*/}
+                                  {/*    pageLinkClassName={"page-link"}*/}
+                                  {/*    previousClassName={"page-item"}*/}
+                                  {/*    previousLinkClassName={"page-link"}*/}
+                                  {/*    nextClassName={"page-item"}*/}
+                                  {/*    nextLinkClassName={"page-link"}*/}
+                                  {/*    activeClassName={"active"}*/}
+                                  {/*  />*/}
+                                  {/*)}*/}
+                                </div>
+                              </>
                             </div>
-                          </>
+                          </div>
                         )}
-                        {reports.length === 0 && (
+                        {reports === {} && (
                           <div className="alert alert-danger">
                             No records found
                           </div>
