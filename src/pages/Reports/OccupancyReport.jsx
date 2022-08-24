@@ -22,16 +22,10 @@ export default function OccupancyReport() {
   const [endDate, setEndDate] = useState(new Date());
 
   const fetchAll = () => {
-    // requestsServiceService.getOccupancyReport().then((res) => {
-    //   setreports(res.data.data?.occupancyResponses);
-    // });
     requestsServiceService.getClientCounties().then((res) => {
       setClientCounties(res.data.data);
     });
   };
-  useEffect(() => {
-    console.log(reports);
-  }, [reports]);
 
   useEffect(() => {
     let x = clientcounties.filter(
@@ -40,7 +34,6 @@ export default function OccupancyReport() {
     if (x[0] !== undefined) {
       setCounty(x[0].id);
     }
-    getZones();
     fetchFiltered(countyId, zoneId, estateId);
   }, [clientcounties]);
 
@@ -55,7 +48,6 @@ export default function OccupancyReport() {
   }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
-    console.log(startDate, endDate);
     let sD = moment(startDate).format("YYYY/MM/DD");
     let eD = moment(endDate).format("YYYY/MM/DD");
     requestsServiceService
@@ -85,6 +77,7 @@ export default function OccupancyReport() {
 
   useEffect(() => {
     fetchAll();
+    getZones();
   }, []);
 
   const formatCurrency = (x) => {
@@ -424,11 +417,11 @@ export default function OccupancyReport() {
                             </div>
                           </div>
                         )}
-                        {Object.keys(reports).length === 0 && (
-                          <div className="alert alert-danger">
-                            No records found
-                          </div>
-                        )}
+                        {/*{Object.keys(reports).length === 0 && (*/}
+                        {/*  <div className="alert alert-danger">*/}
+                        {/*    No records found*/}
+                        {/*  </div>*/}
+                        {/*)}*/}
                       </div>
                     </div>
                   </div>
