@@ -34,6 +34,7 @@ export default function OccupancyReport() {
     );
     if (x[0] !== undefined) {
       setCounty(x[0].id);
+      fetchFiltered(x[0].id, zoneId, estateId);
     }
   }, [clientcounties]);
 
@@ -43,9 +44,9 @@ export default function OccupancyReport() {
     setestateId("");
   };
 
-  useEffect(() => {
-    fetchFiltered(countyId, zoneId, estateId);
-  }, [countyId]);
+  // useEffect(() => {
+  //   fetchFiltered(countyId, zoneId, estateId);
+  // }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
     let sD = moment(startDate).format("YYYY/MM/DD");
@@ -54,6 +55,7 @@ export default function OccupancyReport() {
       .filterOccupancyReport(x, y, z, sD, eD)
       .then((res) => {
         setreports(res.data.data);
+        $("#spinner").addClass("d-none");
       });
   };
 
@@ -93,6 +95,18 @@ export default function OccupancyReport() {
         <div className="page-content">
           <div className="container-fluid">
             <div className="row">
+              <div id="spinner">
+                <div id="status">
+                  <div className="spinner-chase">
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                  </div>
+                </div>
+              </div>
               <div className="col-12">
                 <div className="page-title-box d-sm-flex align-items-center justify-content-between">
                   <h4 className="mb-sm-0 font-size-18 text-capitalize">

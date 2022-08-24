@@ -46,6 +46,7 @@ export default function AdminArrears() {
     );
     if (x[0] !== undefined) {
       setCounty(x[0].id);
+      fetchFiltered(x[0].id, zoneId, estateId);
     }
   }, [clientcounties]);
 
@@ -55,16 +56,17 @@ export default function AdminArrears() {
     setestateId("");
   };
 
-  useEffect(() => {
-    fetchFiltered(countyId, zoneId, estateId);
-  }, [countyId]);
+  // useEffect(() => {
+  //   fetchFiltered(countyId, zoneId, estateId);
+  // }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
     requestsServiceService.getReportData(x, y, z).then((res) => {
       setreports(res.data.data);
       setmonths(
-        res.data.data?.ageReportModels.map((item) => item.invoicePeriod)
+        res.data.data?.ageReportModels?.map((item) => item.invoicePeriod)
       );
+      $("#spinner").addClass("d-none");
     });
   };
 
@@ -106,6 +108,18 @@ export default function AdminArrears() {
         <div className="page-content">
           <div className="container-fluid">
             <div className="row">
+              <div id="spinner">
+                <div id="status">
+                  <div className="spinner-chase">
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                    <div className="chase-dot"></div>
+                  </div>
+                </div>
+              </div>
               <div className="col-12">
                 <div className="page-title-box d-sm-flex align-items-center justify-content-between">
                   <h4 className="mb-sm-0 font-size-18 text-capitalize">

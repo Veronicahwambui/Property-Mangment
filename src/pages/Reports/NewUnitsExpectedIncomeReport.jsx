@@ -35,6 +35,7 @@ export default function NewUnitsExpectedIncomeReport() {
     );
     if (x[0] !== undefined) {
       setCounty(x[0].id);
+      fetchFiltered(x[0].id, zoneId, estateId);
     }
   }, [clientcounties]);
 
@@ -44,9 +45,9 @@ export default function NewUnitsExpectedIncomeReport() {
     setestateId("");
   };
 
-  useEffect(() => {
-    fetchFiltered(countyId, zoneId, estateId);
-  }, [countyId]);
+  // useEffect(() => {
+  //   fetchFiltered(countyId, zoneId, estateId);
+  // }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
     let sD = moment(startDate).format("YYYY/MM/DD");
