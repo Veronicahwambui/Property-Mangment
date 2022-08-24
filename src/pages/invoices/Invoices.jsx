@@ -377,7 +377,11 @@ function Invoices() {
                           <th>Total Balance</th>
                           <th>Due Date</th>
                           <th>Payment Status</th>
+                          <th>Date Created</th>
+                         
                           <th className="text-right">Actions</th>
+                      
+                     
                         </tr>
                       </thead>
                       <tbody>
@@ -411,6 +415,8 @@ function Invoices() {
                               <td>
                                 <StatusBadge type={invoice?.paymentStatus} />
                               </td>
+                              <td>{moment(invoice.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                               <td>
                                 <div className="d-flex justify-content-end">
                                   {/*<button type="button"*/}

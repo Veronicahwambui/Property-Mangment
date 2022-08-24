@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import requestsServiceService from "../../services/requestsService.service";
 import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
+import moment from "moment";
 
 export default function BulkMessagesList() {
   const [messages, setmessages] = useState([]);
@@ -136,6 +137,7 @@ export default function BulkMessagesList() {
                                 <th>Communication Channel</th>
                                 <th>Who to Charge</th>
                                 <th>Time Period</th>
+                                <th>Date Created</th>
                                 <th className="text-right">Actions</th>
                               </tr>
                             </thead>
@@ -153,6 +155,8 @@ export default function BulkMessagesList() {
                                         : message.d?.whoToCharge}
                                     </td>
                                     <td>{message.d?.period + " days"}</td>
+                              <td>{moment(message.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                     <td>
                                       <div className="d-flex justify-content-end">
                                         {/*<button type="button"*/}
@@ -160,6 +164,7 @@ export default function BulkMessagesList() {
                                         {/*        // onClick={() => getOnemessage(message?.transaction.transactionId)}*/}
                                         {/*        >Receive Payment*/}
                                         {/*</button>*/}
+
                                         <div className="dropdown">
                                           <a
                                             className="text-muted font-size-16"
