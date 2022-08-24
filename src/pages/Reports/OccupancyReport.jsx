@@ -240,6 +240,7 @@ export default function OccupancyReport() {
                                     <th>Premises</th>
                                     <th>Units</th>
                                     <th>New Units</th>
+                                    <th>Unit Summary</th>
                                     <th className="text-right">Actions</th>
                                   </tr>
                                 </thead>
@@ -251,6 +252,16 @@ export default function OccupancyReport() {
                                         <td>{item.premiseCount}</td>
                                         <td>{item.allUnits}</td>
                                         <td>{item.newUnits}</td>
+                                        <td>
+                                          {item.countPremiseUnitByStatus?.map(
+                                            (one) => (
+                                              <div className="d-flex justify-content-start gap-3">
+                                                <strong>{one.sum}</strong>
+                                                <span>{one.status} </span>
+                                              </div>
+                                            )
+                                          )}
+                                        </td>
                                         <td>
                                           <div className="d-flex justify-content-end">
                                             {/*<button type="button"*/}
