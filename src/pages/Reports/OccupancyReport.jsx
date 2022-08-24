@@ -378,7 +378,9 @@ export default function OccupancyReport() {
                                         reports?.occupancyResponses?.map(
                                           (item, index) => (
                                             <tr data-id={index} key={index}>
-                                              <td>{item.demography}</td>
+                                              <td className={"text-capitalize"}>
+                                                {item.demography}
+                                              </td>
                                               <td>{item.premiseCount}</td>
                                               <td>{item.allUnits}</td>
                                               <td>{item.newUnits}</td>
