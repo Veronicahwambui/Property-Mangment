@@ -362,57 +362,7 @@ export default function OccupancyReport() {
                                     </tbody>
                                   </table>
                                 </div>
-                                <div className="mt-4 mb-0 flex justify-between px-8">
-                                  {/*<div>*/}
-                                  {/*  <select*/}
-                                  {/*    className={"btn btn-primary"}*/}
-                                  {/*    name=""*/}
-                                  {/*    id=""*/}
-                                  {/*    // value={size}*/}
-                                  {/*    // onChange={(e) => sortSize(e)}*/}
-                                  {/*  >*/}
-                                  {/*    <option value={parseInt(5)}>5 rows</option>*/}
-                                  {/*    <option value={parseInt(10)}>10 rows</option>*/}
-                                  {/*    <option value={parseInt(20)}>20 rows</option>*/}
-                                  {/*  </select>*/}
-                                  {/*</div>*/}
-                                  {/*{pageCount !== 0 && (*/}
-                                  {/*  <p className=" font-medium text-xs text-gray-700">*/}
-                                  {/*    {" "}*/}
-                                  {/*    showing page{" "}*/}
-                                  {/*    <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
-                                  {/*      {page + 1}*/}
-                                  {/*    </span>{" "}*/}
-                                  {/*    of{" "}*/}
-                                  {/*    <span className="text-sm font-bold text-black">*/}
-                                  {/*      {pageCount}*/}
-                                  {/*    </span>{" "}*/}
-                                  {/*    pages*/}
-                                  {/*  </p>*/}
-                                  {/*)}*/}
-
-                                  {/*{pageCount !== 0 && (*/}
-                                  {/*  <ReactPaginate*/}
-                                  {/*    previousLabel={"prev"}*/}
-                                  {/*    nextLabel={"next"}*/}
-                                  {/*    breakLabel={"..."}*/}
-                                  {/*    pageCount={pageCount} // total number of pages needed*/}
-                                  {/*    marginPagesDisplayed={2}*/}
-                                  {/*    pageRangeDisplayed={1}*/}
-                                  {/*    onPageChange={handlePageClick}*/}
-                                  {/*    breakClassName={"page-item"}*/}
-                                  {/*    breakLinkClassName={"page-link"}*/}
-                                  {/*    containerClassName={"pagination"}*/}
-                                  {/*    pageClassName={"page-item"}*/}
-                                  {/*    pageLinkClassName={"page-link"}*/}
-                                  {/*    previousClassName={"page-item"}*/}
-                                  {/*    previousLinkClassName={"page-link"}*/}
-                                  {/*    nextClassName={"page-item"}*/}
-                                  {/*    nextLinkClassName={"page-link"}*/}
-                                  {/*    activeClassName={"active"}*/}
-                                  {/*  />*/}
-                                  {/*)}*/}
-                                </div>
+                                <div className="mt-4 mb-0 flex justify-between px-8"></div>
                               </>
                             </div>
                           </div>
