@@ -1870,6 +1870,7 @@ function ViewLandlord() {
                               <th scope="col">Zone</th>
                               <th scope="col">County</th>
                               <th scope="col">File No</th>
+                              <th>Date Created</th>
                               <th scope="col">Status</th>
                               <th></th>
                             </tr>
@@ -1926,6 +1927,8 @@ function ViewLandlord() {
                                   <td className="text-danger">
                                     {premise.fileNumber}
                                   </td>
+                                  <td>{moment(premise.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                   <td>
                                     {premise.active ? (
                                       <span className="badge-soft-success badge">

@@ -1905,6 +1905,7 @@ function OneTenant() {
                                 <th>Name</th>
                                 <th>Type</th>
                                 <th>Own type</th>
+                                <th>Date Created</th>
                                 <th>Action</th>
                               </tr>
                             </thead>
@@ -1923,6 +1924,8 @@ function OneTenant() {
                                     <td className="text-capitalize">
                                       {unit.documentOwnerType.toLowerCase()}
                                     </td>
+                                    <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                     <td>
                                       <a
                                         href={
@@ -2256,6 +2259,7 @@ function OneTenant() {
                               <th>Paid By</th>
                               <th>Tenant Name</th>
                               <th>Utilized Amount</th>
+                              <th>Date Created</th>
                               <th className="text-right">Actions</th>
                             </tr>
                           </thead>
@@ -2289,6 +2293,8 @@ function OneTenant() {
                                       statement.utilisedAmount
                                     )}
                                   </td>
+                                  <td>{moment(statement.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                   <td>
                                     <div className="d-flex justify-content-end">
                                       <div className="dropdown">
@@ -2438,6 +2444,7 @@ function OneTenant() {
                               <th>bill balance</th>
                               <th>payment mode</th>
                               <th>payment ref</th>
+                              <th>Date Created</th>
                               <th className="text-right">Actions</th>
                             </tr>
                           </thead>
@@ -2473,6 +2480,8 @@ function OneTenant() {
                                   </td>
                                   <td>{statement.paymentMode}</td>
                                   <td>{statement.payReferenceNo}</td>
+                                  <td>{moment(statement.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
                                   <td>
                                     <div className="d-flex justify-content-end">
                                       <div className="dropdown">
