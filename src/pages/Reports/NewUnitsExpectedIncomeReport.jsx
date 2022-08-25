@@ -24,16 +24,23 @@ export default function NewUnitsExpectedIncomeReport() {
   });
 
   const handleCallback = (sD, eD) => {
-    let sd = sD;
-    let ed = eD;
+    requestsServiceService
+      .filterNewUnitsReport(
+        countyId,
+        zoneId,
+        estateId,
+        moment(sD).format("YYYY/MM/DD"),
+        moment(eD).format("YYYY/MM/DD")
+      )
+      .then((res) => {
+        setreports(res.data.data);
+        $("#spinner").addClass("d-none");
+      });
     setDate({
       ...date,
-      startDate: sd,
-      endDate: ed,
+      startDate: moment(sD).format("YYYY/MM/DD"),
+      endDate: moment(eD).format("YYYY/MM/DD"),
     });
-    let startD = moment(sD).format("YYYY/MM/DD");
-    let endD = moment(ed).format("YYYY/MM/DD");
-    fetchFiltered(countyId, zoneId, estateId, startD, endD);
   };
 
   const fetchAll = () => {
