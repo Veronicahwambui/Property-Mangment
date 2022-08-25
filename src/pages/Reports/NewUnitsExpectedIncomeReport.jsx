@@ -108,19 +108,48 @@ export default function NewUnitsExpectedIncomeReport() {
   };
 
   function doShit(item) {
-    // if (searchParams.get("county") == null) {
-    // }
-    if (zoneId) {
-      let x = estates.find((z) => z.name === item.demography);
-      setestateId(x.id);
-      fetchFiltered(countyId, zoneId, x.id);
+    if (window.location.href.toString().includes("county")) {
+      if (countyId && !zoneId) {
+        let x = zones.find((z) => z.name === item.demography);
+        setZoneId(x.id);
+        fetchFiltered(countyId, x.id, estateId);
+      }
+      if (zoneId) {
+        let x = estates.find((z) => z.name === item.demography);
+        setestateId(x.id);
+        fetchFiltered(countyId, zoneId, x.id);
+      }
     } else {
-      let x = zones.find((z) => z.name === item.demography);
-      setZoneId(x.id);
-      fetchFiltered(countyId, x.id, estateId);
+      if (countyId === "") {
+        let x = clientcounties.find((z) => z.county?.name === item.demography);
+        setCounty(x.id);
+        fetchFiltered(x.id, zoneId, estateId);
+      }
+      if (searchParams.get("county") === null && countyId && !zoneId) {
+        let x = zones.find((z) => z.name === item.demography);
+        setZoneId(x.id);
+        fetchFiltered(countyId, x.id, estateId);
+      }
+      if (countyId && zoneId) {
+        console.log("called");
+        let x = estates.find((z) => z.name === item.demography);
+        setestateId(x.id);
+        fetchFiltered(countyId, zoneId, x.id);
+      }
     }
   }
 
+  function undoShit(item) {
+    setestateId("");
+    setZoneId("");
+    let x = clientcounties.filter(
+      (item) => item?.county?.name === clientCountyName
+    );
+    if (x[0] !== undefined) {
+      setCounty(x[0].id);
+      fetchFiltered(x[0].id, "", "");
+    }
+  }
   return (
     <>
       <>
@@ -247,7 +276,11 @@ export default function NewUnitsExpectedIncomeReport() {
                               >
                                 <option value=""> Select estate...</option>
                                 {estates?.map((estate) => (
-                                  <option key={estate.id} value={estate.id}>
+                                  <option
+                                    key={estate.id}
+                                    value={estate.id}
+                                    selected={estate.id === estateId}
+                                  >
                                     {estate.name}
                                   </option>
                                 ))}
@@ -368,7 +401,19 @@ export default function NewUnitsExpectedIncomeReport() {
                                                       }}
                                                     >
                                                       <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                      View
+                                                      View{" "}
+                                                      {zoneId !== ""
+                                                        ? "Estate"
+                                                        : "Zone"}
+                                                    </a>
+                                                    <a
+                                                      className="dropdown-item cursor-pointer"
+                                                      onClick={() => {
+                                                        undoShit(item);
+                                                      }}
+                                                    >
+                                                      <i className="font-size-15 mdi mdi-refresh me-3 "></i>
+                                                      Reset
                                                     </a>
                                                   </div>
                                                 </div>
