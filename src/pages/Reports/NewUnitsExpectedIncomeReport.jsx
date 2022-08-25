@@ -52,7 +52,9 @@ export default function NewUnitsExpectedIncomeReport() {
   useEffect(() => {
     if (searchParams.get("county") === null) {
       fetchFiltered(countyId, zoneId, estateId);
+      setactiveshit("COUNTIES");
     } else {
+      setactiveshit("ZONES");
       let x = clientcounties.filter(
         (item) => item?.county?.name === clientCountyName
       );
@@ -106,34 +108,38 @@ export default function NewUnitsExpectedIncomeReport() {
     });
     return formatCurrency.format(x);
   };
-
+  const [activeshit, setactiveshit] = useState("");
   function doShit(item) {
     if (window.location.href.toString().includes("county")) {
       if (countyId && !zoneId) {
         let x = zones.find((z) => z.name === item.demography);
         setZoneId(x.id);
+        setactiveshit("ESTATES");
         fetchFiltered(countyId, x.id, estateId);
       }
       if (zoneId) {
         let x = estates.find((z) => z.name === item.demography);
         setestateId(x.id);
+        setactiveshit("PREMISES");
         fetchFiltered(countyId, zoneId, x.id);
       }
     } else {
       if (countyId === "") {
         let x = clientcounties.find((z) => z.county?.name === item.demography);
         setCounty(x.id);
+        setactiveshit("ZONES");
         fetchFiltered(x.id, zoneId, estateId);
       }
       if (searchParams.get("county") === null && countyId && !zoneId) {
         let x = zones.find((z) => z.name === item.demography);
         setZoneId(x.id);
+        setactiveshit("ESTATES");
         fetchFiltered(countyId, x.id, estateId);
       }
       if (countyId && zoneId) {
-        console.log("called");
         let x = estates.find((z) => z.name === item.demography);
         setestateId(x.id);
+        setactiveshit("PREMISES");
         fetchFiltered(countyId, zoneId, x.id);
       }
     }
@@ -214,7 +220,7 @@ export default function NewUnitsExpectedIncomeReport() {
                                   color: "#2C2F33",
                                   cursor: " pointer",
                                   padding: " 5px 10px",
-                                  border: "1px solid #ccc",
+                                  border: "2px solid #ccc",
                                   width: " 100%",
                                 }}
                               >
@@ -356,7 +362,7 @@ export default function NewUnitsExpectedIncomeReport() {
                                 >
                                   <thead className="table-light">
                                     <tr className="table-light">
-                                      <th>Demography</th>
+                                      <th>{activeshit}</th>
                                       <th>New Units</th>
                                       <th>Expected Income</th>
                                       <th>Commission Income</th>
@@ -402,9 +408,9 @@ export default function NewUnitsExpectedIncomeReport() {
                                                     >
                                                       <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                                       View{" "}
-                                                      {zoneId !== ""
-                                                        ? "Estate"
-                                                        : "Zone"}
+                                                      {activeshit
+                                                        .slice(0, -1)
+                                                        .toLowerCase()}
                                                     </a>
                                                     <a
                                                       className="dropdown-item cursor-pointer"
