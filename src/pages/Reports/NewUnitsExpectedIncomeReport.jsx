@@ -1,5 +1,5 @@
 /* global $*/
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
@@ -22,6 +22,7 @@ export default function NewUnitsExpectedIncomeReport() {
     new Date(new Date().getFullYear(), 0, 1)
   );
   const [endDate, setEndDate] = useState(new Date());
+  const isMounted = useRef(false);
 
   const fetchAll = () => {
     requestsServiceService.getClientCounties().then((res) => {
@@ -45,7 +46,6 @@ export default function NewUnitsExpectedIncomeReport() {
 
   const sort = () => {
     fetchFiltered(countyId, zoneId, estateId);
-    setZoneId("");
     setestateId("");
   };
 
@@ -89,7 +89,10 @@ export default function NewUnitsExpectedIncomeReport() {
   };
 
   function doShit(item) {
-    console.log(item);
+    let x = zones.find((z) => z.name === item.demography);
+    console.log(x);
+    setZoneId(x.id);
+    fetchFiltered(countyId, x.id, estateId);
   }
 
   return (
@@ -186,7 +189,11 @@ export default function NewUnitsExpectedIncomeReport() {
                                     <>
                                       {parseInt(zone.clientCounty?.id) ===
                                         parseInt(countyId) && (
-                                        <option key={zone.id} value={zone.id}>
+                                        <option
+                                          key={zone.id}
+                                          value={zone.id}
+                                          selected={zone.id === zoneId}
+                                        >
                                           {zone.name}
                                         </option>
                                       )}
