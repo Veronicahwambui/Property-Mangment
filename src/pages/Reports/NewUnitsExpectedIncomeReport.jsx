@@ -4,7 +4,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
 import moment from "moment";
-import DatePicker from "react-datepicker";
+import DatePicker from "../../components/Datepicker";
 
 export default function NewUnitsExpectedIncomeReport() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,11 +18,23 @@ export default function NewUnitsExpectedIncomeReport() {
   const [estateId, setestateId] = useState("");
   const [clientcounties, setClientCounties] = useState([]);
   const [countyId, setCounty] = useState("");
-  const [startDate, setStartDate] = useState(
-    new Date(new Date().getFullYear(), 0, 1)
-  );
-  const [endDate, setEndDate] = useState(new Date());
-  const isMounted = useRef(false);
+  const [date, setDate] = useState({
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    endDate: new Date(),
+  });
+
+  const handleCallback = (sD, eD) => {
+    let sd = sD;
+    let ed = eD;
+    setDate({
+      ...date,
+      startDate: sd,
+      endDate: ed,
+    });
+    let startD = moment(sD).format("YYYY/MM/DD");
+    let endD = moment(ed).format("YYYY/MM/DD");
+    fetchFiltered(countyId, zoneId, estateId, startD, endD);
+  };
 
   const fetchAll = () => {
     requestsServiceService.getClientCounties().then((res) => {
@@ -50,8 +62,8 @@ export default function NewUnitsExpectedIncomeReport() {
   };
 
   const fetchFiltered = (x, y, z) => {
-    let sD = moment(startDate).format("YYYY/MM/DD");
-    let eD = moment(endDate).format("YYYY/MM/DD");
+    let sD = moment(date.startDate).format("YYYY/MM/DD");
+    let eD = moment(date.endDate).format("YYYY/MM/DD");
     requestsServiceService.filterNewUnitsReport(x, y, z, sD, eD).then((res) => {
       setreports(res.data.data);
       $("#spinner").addClass("d-none");
@@ -145,116 +157,91 @@ export default function NewUnitsExpectedIncomeReport() {
                           className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
                           role="toolbar"
                         >
-                          <h4 className="card-title text-capitalize mb-0 ">
-                            New Units Reports
-                          </h4>
-                        </div>
-                        <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                          <div
-                            className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                            role="toolbar"
-                          >
-                            <div className="d-flex align-items-center flex-grow-1"></div>
-                            <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
-                              <div>
-                                <select
-                                  className={"form-control"}
-                                  name=""
-                                  id=""
-                                  onChange={(e) => {
-                                    setCounty(e.target.value);
-                                  }}
-                                >
-                                  <option value="">Select County</option>
-                                  {clientcounties?.map((item) => (
-                                    <option
-                                      value={item.id}
-                                      key={item.id}
-                                      selected={
-                                        item.county.name === clientCountyName
-                                      }
-                                    >
-                                      {item.county.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <select
-                                  className={"form-control"}
-                                  onChange={(e) => setZoneId(e.target.value)}
-                                >
-                                  <option value=""> Select zone...</option>
-                                  {zones?.map((zone) => (
-                                    <>
-                                      {parseInt(zone.clientCounty?.id) ===
-                                        parseInt(countyId) && (
-                                        <option
-                                          key={zone.id}
-                                          value={zone.id}
-                                          selected={zone.id === zoneId}
-                                        >
-                                          {zone.name}
-                                        </option>
-                                      )}
-                                    </>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <select
-                                  className={"form-control"}
-                                  onChange={(e) => setestateId(e.target.value)}
-                                >
-                                  <option value=""> Select estate...</option>
-                                  {estates?.map((estate) => (
-                                    <option key={estate.id} value={estate.id}>
-                                      {estate.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                              <button
-                                className="btn btn-primary"
-                                onClick={sort}
+                          <div className="d-flex align-items-center flex-grow-1">
+                            <h4 className="mb-0 card-header bg-transparent p-0 m-0">
+                              New Units Reports
+                              <span className="this-month"></span>
+                            </h4>
+                          </div>
+                          <div className="d-flex align-items-baseline">
+                            <div className="d-flex justify-content-start align-items-center">
+                              <div
+                                style={{
+                                  backgroundColor: "#fff",
+                                  color: "#2C2F33",
+                                  cursor: " pointer",
+                                  padding: " 5px 10px",
+                                  border: "1px solid #ccc",
+                                  width: " 100%",
+                                }}
                               >
-                                filter
-                              </button>
-                            </div>
-                            <div className="d-flex justify-content-center align-items-center">
-                              <div className="flex p-2">
-                                <span className="input-group-text">
-                                  <i className="mdi mdi-calendar">
-                                    Start Date:
-                                  </i>
-                                </span>
                                 <DatePicker
-                                  selected={startDate}
-                                  onChange={(date) => setStartDate(date)}
-                                  selectsStart
-                                  className="form-control cursor-pointer"
-                                  startDate={startDate}
-                                  endDate={endDate}
-                                />
-                              </div>
-                              <div className="flex p-2" id="datepicker1">
-                                <span className="input-group-text">
-                                  <i className="mdi mdi-calendar">End Date:</i>
-                                </span>
-                                <DatePicker
-                                  selected={endDate}
-                                  onChange={(date) => setEndDate(date)}
-                                  selectsEnd
-                                  showMonthDropdown
-                                  showYearDropdown
-                                  className="form-control cursor-pointer"
-                                  calendarClassName="form-group"
-                                  startDate={startDate}
-                                  endDate={endDate}
-                                  type="text"
+                                  onCallback={handleCallback}
+                                  startDate={moment(date.startDate).format(
+                                    "YYYY/MM/DD"
+                                  )}
+                                  endDate={moment(date.endDate).format(
+                                    "YYYY/MM/DD"
+                                  )}
                                 />
                               </div>
                             </div>
+                            <div className="d-flex justify-content-center">
+                              <select
+                                className="form-control"
+                                title="Select County"
+                                onChange={(e) => setCounty(e.target.value)}
+                              >
+                                <option value="">Select County</option>
+                                {clientcounties?.map((item) => (
+                                  <option
+                                    value={item.id}
+                                    key={item.id}
+                                    selected={
+                                      item.county.name === clientCountyName
+                                    }
+                                  >
+                                    {item.county.name}
+                                  </option>
+                                ))}
+                              </select>
+                              <select
+                                className="form-control"
+                                title="Select Zone"
+                                onChange={(e) => setZoneId(e.target.value)}
+                              >
+                                <option value=""> Select zone...</option>
+                                {zones?.map((zone) => (
+                                  <>
+                                    {parseInt(zone.clientCounty?.id) ===
+                                      parseInt(countyId) && (
+                                      <option
+                                        key={zone.id}
+                                        value={zone.id}
+                                        selected={zone.id === zoneId}
+                                      >
+                                        {zone.name}
+                                      </option>
+                                    )}
+                                  </>
+                                ))}
+                              </select>
+                              <select
+                                className="form-control selectpicker w-auto show-tick"
+                                data-style="btn btn-primary waves-light waves-effect month-picker"
+                                onChange={(e) => setestateId(e.target.value)}
+                              >
+                                <option value=""> Select estate...</option>
+                                {estates?.map((estate) => (
+                                  <option key={estate.id} value={estate.id}>
+                                    {estate.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <button className="btn btn-primary" onClick={sort}>
+                              filter
+                            </button>
                           </div>
                         </div>
                       </div>
