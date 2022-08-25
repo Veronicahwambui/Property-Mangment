@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
-import DatePicker from "react-datepicker";
 import clientCounties from "../setups/ClientCounties";
+import DatePicker from "../../components/Datepicker";
+import moment from "moment";
 
 export default function AdminArrears() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,6 +41,25 @@ export default function AdminArrears() {
       setClientCounties(res.data.data);
     });
   };
+
+  const [date, setDate] = useState({
+    startDate: moment().subtract(7, "d").format("DD-MM-YYYY"),
+    endDate: "",
+  });
+
+  const handleCallback = (sD, eD) => {
+    let sd = moment(sD).format("YYYY/MM/DD");
+    let ed = moment(eD).format("YYYY/MM/DD");
+    setDate({
+      ...date,
+      startDate: sd,
+      endDate: ed,
+    });
+  };
+
+  useEffect(() => {
+    console.log(date);
+  }, [date]);
 
   useEffect(() => {
     let x = clientcounties.filter(
