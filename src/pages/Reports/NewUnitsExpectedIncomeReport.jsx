@@ -28,16 +28,18 @@ export default function NewUnitsExpectedIncomeReport() {
       setClientCounties(res.data.data);
     });
   };
-
+  // ?? will change this
   useEffect(() => {
-    let x = clientcounties.filter(
-      (item) => item?.county?.name === clientCountyName
-    );
-    if (x[0] !== undefined) {
-      setCounty(x[0].id);
-      fetchFiltered(x[0].id, zoneId, estateId);
-    } else {
+    if (searchParams.get("county") === null) {
       fetchFiltered(countyId, zoneId, estateId);
+    } else {
+      let x = clientcounties.filter(
+        (item) => item?.county?.name === clientCountyName
+      );
+      if (x[0] !== undefined) {
+        setCounty(x[0].id);
+        fetchFiltered(x[0].id, zoneId, estateId);
+      }
     }
   }, [clientcounties]);
 
@@ -46,10 +48,6 @@ export default function NewUnitsExpectedIncomeReport() {
     setZoneId("");
     setestateId("");
   };
-
-  // useEffect(() => {
-  //   fetchFiltered(countyId, zoneId, estateId);
-  // }, [countyId]);
 
   const fetchFiltered = (x, y, z) => {
     let sD = moment(startDate).format("YYYY/MM/DD");
@@ -179,9 +177,14 @@ export default function NewUnitsExpectedIncomeReport() {
                                 >
                                   <option value=""> Select zone...</option>
                                   {zones?.map((zone) => (
-                                    <option key={zone.id} value={zone.id}>
-                                      {zone.name}
-                                    </option>
+                                    <>
+                                      {zone.clientCounty?.county?.name ===
+                                        clientCountyName && (
+                                        <option key={zone.id} value={zone.id}>
+                                          {zone.name}
+                                        </option>
+                                      )}
+                                    </>
                                   ))}
                                 </select>
                               </div>
