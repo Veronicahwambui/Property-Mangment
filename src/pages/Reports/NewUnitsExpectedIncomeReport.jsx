@@ -108,10 +108,17 @@ export default function NewUnitsExpectedIncomeReport() {
   };
 
   function doShit(item) {
-    let x = zones.find((z) => z.name === item.demography);
-    console.log(x);
-    setZoneId(x.id);
-    fetchFiltered(countyId, x.id, estateId);
+    // if (searchParams.get("county") == null) {
+    // }
+    if (zoneId) {
+      let x = estates.find((z) => z.name === item.demography);
+      setestateId(x.id);
+      fetchFiltered(countyId, zoneId, x.id);
+    } else {
+      let x = zones.find((z) => z.name === item.demography);
+      setZoneId(x.id);
+      fetchFiltered(countyId, x.id, estateId);
+    }
   }
 
   return (
