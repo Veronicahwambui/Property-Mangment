@@ -80,7 +80,6 @@ export default function NewUnitsExpectedIncomeReport() {
     fetchAll();
     getZones();
   }, []);
-
   const formatCurrency = (x) => {
     let formatCurrency = new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -88,6 +87,11 @@ export default function NewUnitsExpectedIncomeReport() {
     });
     return formatCurrency.format(x);
   };
+
+  function doShit(item) {
+    console.log(item);
+  }
+
   return (
     <>
       <>
@@ -154,7 +158,9 @@ export default function NewUnitsExpectedIncomeReport() {
                                   className={"form-control"}
                                   name=""
                                   id=""
-                                  onChange={(e) => setCounty(e.target.value)}
+                                  onChange={(e) => {
+                                    setCounty(e.target.value);
+                                  }}
                                 >
                                   <option value="">Select County</option>
                                   {clientcounties?.map((item) => (
@@ -178,8 +184,8 @@ export default function NewUnitsExpectedIncomeReport() {
                                   <option value=""> Select zone...</option>
                                   {zones?.map((zone) => (
                                     <>
-                                      {zone.clientCounty?.county?.name ===
-                                        clientCountyName && (
+                                      {parseInt(zone.clientCounty?.id) ===
+                                        parseInt(countyId) && (
                                         <option key={zone.id} value={zone.id}>
                                           {zone.name}
                                         </option>
@@ -350,7 +356,7 @@ export default function NewUnitsExpectedIncomeReport() {
                                                     <a
                                                       className="dropdown-item cursor-pointer"
                                                       onClick={() => {
-                                                        // getOneBulkmessage(item);
+                                                        doShit(item);
                                                       }}
                                                     >
                                                       <i className="font-size-15 mdi mdi-eye me-3 "></i>
