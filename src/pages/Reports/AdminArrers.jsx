@@ -2,9 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
-import ReactPaginate from "react-paginate";
-import clientCounties from "../setups/ClientCounties";
-import DatePicker from "../../components/Datepicker";
 import moment from "moment";
 
 export default function AdminArrears() {
@@ -62,20 +59,23 @@ export default function AdminArrears() {
   }, [date]);
 
   useEffect(() => {
-    let x = clientcounties.filter(
-      (item) => item?.county?.name === clientCountyName
-    );
-    if (x[0] !== undefined) {
-      setCounty(x[0].id);
-      fetchFiltered(x[0].id, zoneId, estateId);
-    } else {
+    if (searchParams.get("county") === null) {
       fetchFiltered(countyId, zoneId, estateId);
+      setactiveshit("COUNTIES");
+    } else {
+      setactiveshit("ZONES");
+      let x = clientcounties.filter(
+        (item) => item?.county?.name === clientCountyName
+      );
+      if (x[0] !== undefined) {
+        setCounty(x[0].id);
+        fetchFiltered(x[0].id, zoneId, estateId);
+      }
     }
   }, [clientcounties]);
 
   const sort = () => {
     fetchFiltered(countyId, zoneId, estateId);
-    setZoneId("");
     setestateId("");
   };
 
@@ -124,6 +124,61 @@ export default function AdminArrears() {
     });
     return formatCurrency.format(x);
   };
+  const [activeshit, setactiveshit] = useState("");
+  function doShit(item) {
+    if (window.location.href.toString().includes("county")) {
+      if (countyId && !zoneId) {
+        let x = zones.find((z) => z.name === item.demography);
+        setZoneId(x.id);
+        setactiveshit("ESTATES");
+        fetchFiltered(countyId, x.id, estateId);
+      }
+      if (zoneId) {
+        let x = estates.find((z) => z.name === item.demography);
+        setestateId(x.id);
+        setactiveshit("PREMISES");
+        fetchFiltered(countyId, zoneId, x.id);
+      }
+    } else {
+      if (countyId === "") {
+        let x = clientcounties.find((z) => z.county?.name === item.demography);
+        setCounty(x.id);
+        setactiveshit("ZONES");
+        fetchFiltered(x.id, zoneId, estateId);
+      }
+      if (searchParams.get("county") === null && countyId && !zoneId) {
+        let x = zones.find((z) => z.name === item.demography);
+        setZoneId(x.id);
+        setactiveshit("ESTATES");
+        fetchFiltered(countyId, x.id, estateId);
+      }
+      if (countyId && zoneId) {
+        let x = estates.find((z) => z.name === item.demography);
+        setestateId(x.id);
+        setactiveshit("PREMISES");
+        fetchFiltered(countyId, zoneId, x.id);
+      }
+    }
+  }
+
+  function undoShit(item) {
+    if (window.location.href.toString().includes("county")) {
+      setestateId("");
+      setZoneId("");
+      let x = clientcounties.filter(
+        (item) => item?.county?.name === clientCountyName
+      );
+      if (x[0] !== undefined) {
+        setCounty(x[0].id);
+        fetchFiltered(x[0].id, "", "");
+      }
+    } else {
+      setCounty("");
+      setZoneId("");
+      setactiveshit("COUNTIES");
+      fetchFiltered("", "", "");
+    }
+  }
 
   return (
     <>
@@ -363,84 +418,65 @@ export default function AdminArrears() {
                                   </thead>
                                   <tbody>
                                     {reports !== {} &&
-                                      reports.ageReportModels?.map(
-                                        (item, index) => (
-                                          <>
-                                            {item.invoicePeriod === month && (
-                                              <tr data-id={index} key={index}>
-                                                <td
-                                                  className={"text-capitalize"}
-                                                >
-                                                  {item.demography}
-                                                </td>
-                                                <td>{item.invoicePeriod}</td>
-                                                <td>{item.countAll}</td>
-                                                <td>
-                                                  {formatCurrency(item.sum)}
-                                                </td>
-                                                <td>
-                                                  {formatCurrency(item.paid)}
-                                                </td>
-                                                <td>{item.collectionRate}</td>
-                                                <td>
-                                                  <div className="d-flex justify-content-end">
-                                                    {/*<button type="button"*/}
-                                                    {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                                    {/*        // onClick={() => getOnemessage(item?.transaction.transactionId)}*/}
-                                                    {/*        >Receive Payment*/}
-                                                    {/*</button>*/}
-                                                    <div className="dropdown">
+                                      reports.ageReportModels?.map((item) => (
+                                        <>
+                                          {item.invoicePeriod === month && (
+                                            <tr data-id={item.id} key={item.id}>
+                                              <td className={"text-capitalize"}>
+                                                {item.demography}
+                                              </td>
+                                              <td>{item.invoicePeriod}</td>
+                                              <td>{item.countAll}</td>
+                                              <td>
+                                                {formatCurrency(item.sum)}
+                                              </td>
+                                              <td>
+                                                {formatCurrency(item.paid)}
+                                              </td>
+                                              <td>{item.collectionRate}</td>
+                                              <td>
+                                                <div className="d-flex justify-content-end">
+                                                  {/*<button type="button"*/}
+                                                  {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
+                                                  {/*        // onClick={() => getOnemessage(item?.transaction.transactionId)}*/}
+                                                  {/*        >Receive Payment*/}
+                                                  {/*</button>*/}
+                                                  <div className="dropdown">
+                                                    <a
+                                                      className="text-muted font-size-16"
+                                                      role="button"
+                                                      data-bs-toggle="dropdown"
+                                                      aria-haspopup="true"
+                                                    >
+                                                      <i className="bx bx-dots-vertical-rounded"></i>
+                                                    </a>
+                                                    <div className="dropdown-menu dropdown-menu-end ">
                                                       <a
-                                                        className="text-muted font-size-16"
-                                                        role="button"
-                                                        data-bs-toggle="dropdown"
-                                                        aria-haspopup="true"
+                                                        className="dropdown-item cursor-pointer"
+                                                        onClick={() => {
+                                                          doShit(item);
+                                                        }}
                                                       >
-                                                        <i className="bx bx-dots-vertical-rounded"></i>
+                                                        <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                        View {item.demography}
                                                       </a>
-                                                      <div className="dropdown-menu dropdown-menu-end ">
-                                                        <a
-                                                          className="dropdown-item cursor-pointer"
-                                                          onClick={() => {
-                                                            // getOneBulkmessage(item);
-                                                          }}
-                                                        >
-                                                          <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                          View
-                                                        </a>
-                                                        <a className="dropdown-item">
-                                                          <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                                          Print
-                                                        </a>
-                                                        <a
-                                                          className="dropdown-item cursor-pointer"
-                                                          // onClick={() => {
-                                                          //   handleModeChange("Email");
-                                                          //   handleClicked(item, "Email");
-                                                          // }}
-                                                        >
-                                                          <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                                          Email Tenant
-                                                        </a>
-                                                        <a
-                                                          className="dropdown-item cursor-pointer"
-                                                          // onClick={() => {
-                                                          //   handleModeChange("SMS");
-                                                          //   handleClicked(item, "SMS");
-                                                          // }}
-                                                        >
-                                                          <i className="font-size-15 mdi mdi-chat me-3"></i>
-                                                          Send as SMS
-                                                        </a>
-                                                      </div>
+                                                      <a
+                                                        className="dropdown-item cursor-pointer"
+                                                        onClick={() => {
+                                                          undoShit(item);
+                                                        }}
+                                                      >
+                                                        <i className="font-size-15 mdi mdi-refresh me-3 "></i>
+                                                        Reset
+                                                      </a>
                                                     </div>
                                                   </div>
-                                                </td>
-                                              </tr>
-                                            )}
-                                          </>
-                                        )
-                                      )}
+                                                </div>
+                                              </td>
+                                            </tr>
+                                          )}
+                                        </>
+                                      ))}
                                   </tbody>
                                 </table>
                               </div>

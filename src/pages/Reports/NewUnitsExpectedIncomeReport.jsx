@@ -146,14 +146,21 @@ export default function NewUnitsExpectedIncomeReport() {
   }
 
   function undoShit(item) {
-    setestateId("");
-    setZoneId("");
-    let x = clientcounties.filter(
-      (item) => item?.county?.name === clientCountyName
-    );
-    if (x[0] !== undefined) {
-      setCounty(x[0].id);
-      fetchFiltered(x[0].id, "", "");
+    if (window.location.href.toString().includes("county")) {
+      setestateId("");
+      setZoneId("");
+      let x = clientcounties.filter(
+        (item) => item?.county?.name === clientCountyName
+      );
+      if (x[0] !== undefined) {
+        setCounty(x[0].id);
+        fetchFiltered(x[0].id, "", "");
+      }
+    } else {
+      setCounty("");
+      setZoneId("");
+      setactiveshit("COUNTIES");
+      fetchFiltered("", "", "");
     }
   }
   return (
@@ -219,8 +226,8 @@ export default function NewUnitsExpectedIncomeReport() {
                                   backgroundColor: "#fff",
                                   color: "#2C2F33",
                                   cursor: " pointer",
-                                  padding: " 5px 10px",
-                                  border: "2px solid #ccc",
+                                  padding: "7px 10px",
+                                  border: "1px solid #ccc",
                                   width: " 100%",
                                 }}
                               >
@@ -257,7 +264,10 @@ export default function NewUnitsExpectedIncomeReport() {
                               <select
                                 className="form-control"
                                 title="Select Zone"
-                                onChange={(e) => setZoneId(e.target.value)}
+                                onChange={(e) => {
+                                  setZoneId(e.target.value);
+                                  setactiveshit("Zones");
+                                }}
                               >
                                 <option value=""> Select zone...</option>
                                 {zones?.map((zone) => (
@@ -276,9 +286,12 @@ export default function NewUnitsExpectedIncomeReport() {
                                 ))}
                               </select>
                               <select
-                                className="form-control selectpicker w-auto show-tick"
+                                className="form-control w-auto show-tick"
                                 data-style="btn btn-primary waves-light waves-effect month-picker"
-                                onChange={(e) => setestateId(e.target.value)}
+                                onChange={(e) => {
+                                  setestateId(e.target.value);
+                                  setactiveshit("Estates");
+                                }}
                               >
                                 <option value=""> Select estate...</option>
                                 {estates?.map((estate) => (
@@ -371,35 +384,35 @@ export default function NewUnitsExpectedIncomeReport() {
                                   </thead>
                                   <tbody>
                                     {reports !== {} &&
-                                      reports.unitIncomeModels?.map(
-                                        (item, index) => (
-                                          <tr data-id={index} key={index}>
-                                            <td className={"text-capitalize"}>
-                                              {item.demography}
-                                            </td>
-                                            <td>{item.newUnits}</td>
-                                            <td>
-                                              {formatCurrency(
-                                                item.totalExpectedIncome
-                                              )}
-                                            </td>
-                                            <td>
-                                              {formatCurrency(
-                                                item.commissionIncome
-                                              )}
-                                            </td>
-                                            <td>
-                                              <div className="d-flex justify-content-end">
-                                                <div className="dropdown">
-                                                  <a
-                                                    className="text-muted font-size-16"
-                                                    role="button"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-haspopup="true"
-                                                  >
-                                                    <i className="bx bx-dots-vertical-rounded"></i>
-                                                  </a>
-                                                  <div className="dropdown-menu dropdown-menu-end ">
+                                      reports.unitIncomeModels?.map((item) => (
+                                        <tr data-id={item.id} key={item.id}>
+                                          <td className={"text-capitalize"}>
+                                            {item.demography}
+                                          </td>
+                                          <td>{item.newUnits}</td>
+                                          <td>
+                                            {formatCurrency(
+                                              item.totalExpectedIncome
+                                            )}
+                                          </td>
+                                          <td>
+                                            {formatCurrency(
+                                              item.commissionIncome
+                                            )}
+                                          </td>
+                                          <td>
+                                            <div className="d-flex justify-content-end">
+                                              <div className="dropdown">
+                                                <a
+                                                  className="text-muted font-size-16"
+                                                  role="button"
+                                                  data-bs-toggle="dropdown"
+                                                  aria-haspopup="true"
+                                                >
+                                                  <i className="bx bx-dots-vertical-rounded"></i>
+                                                </a>
+                                                <div className="dropdown-menu dropdown-menu-end ">
+                                                  <>
                                                     <a
                                                       className="dropdown-item cursor-pointer"
                                                       onClick={() => {
@@ -407,27 +420,24 @@ export default function NewUnitsExpectedIncomeReport() {
                                                       }}
                                                     >
                                                       <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                      View{" "}
-                                                      {activeshit
-                                                        .slice(0, -1)
-                                                        .toLowerCase()}
+                                                      View {item.demography}
                                                     </a>
-                                                    <a
-                                                      className="dropdown-item cursor-pointer"
-                                                      onClick={() => {
-                                                        undoShit(item);
-                                                      }}
-                                                    >
-                                                      <i className="font-size-15 mdi mdi-refresh me-3 "></i>
-                                                      Reset
-                                                    </a>
-                                                  </div>
+                                                  </>
+                                                  <a
+                                                    className="dropdown-item cursor-pointer"
+                                                    onClick={() => {
+                                                      undoShit(item);
+                                                    }}
+                                                  >
+                                                    <i className="font-size-15 mdi mdi-refresh me-3 "></i>
+                                                    Reset
+                                                  </a>
                                                 </div>
                                               </div>
-                                            </td>
-                                          </tr>
-                                        )
-                                      )}
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      ))}
                                   </tbody>
                                 </table>
                               </div>

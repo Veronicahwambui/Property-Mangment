@@ -9,8 +9,7 @@ import axios from "axios";
 import StatusBadge from "../../components/StatusBadge";
 import Message from "../../components/Message";
 import AuthService from "../../services/auth.service";
-import DatePicker from "react-datepicker";
-
+import DatePicker from "../../components/Datepicker";
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -29,12 +28,17 @@ function Invoices() {
   const showInvoiceDate = () => setinvoice_Date_show(true);
   const closeInvoiceDate = () => setinvoice_Date_show(false);
 
-  const [startDate, setStartDate] = useState(
-    moment().startOf("month").format("YYYY-MM-DD")
-  );
-  const [endDate, setEndDate] = useState(
-    moment(new Date()).add(3, "M").format("YYYY-MM-DD")
-  );
+  const [date, setDate] = useState({
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    endDate: new Date(),
+  });
+  const handleCallback = (sD, eD) => {
+    setDate({
+      ...date,
+      startDate: moment(sD).format("YYYY-MM-DD"),
+      endDate: moment(eD).format("YYYY-MM-DD"),
+    });
+  };
 
   const [oldInvoiceDate, setOldInvoiceDate] = useState(new Date());
   const [newInvoiceDate, setNewInvoiceDate] = useState(new Date());
@@ -51,19 +55,23 @@ function Invoices() {
 
   const sort = (event) => {
     event.preventDefault();
+    console.log(date.startDate, date.endDate);
     let data = {
-      startDate: startDate,
-      endDate: endDate,
+      startDate: moment(date.startDate).format("YYYY-MM-DD"),
+      endDate: moment(date.endDate).format("YYYY-MM-DD"),
       size: size,
       page: page,
       search: searchTerm?.toLowerCase().trim(),
     };
-    requestsServiceService.getInvoices(data).then((res) => {
-      setPageCount(res.data.totalPages);
-      setinvoices(res.data.data);
-      setSearchTerm('')
-    }).then(() => {
-    });
+    requestsServiceService
+      .getInvoices(data)
+      .then((res) => {
+        setPageCount(res.data.totalPages);
+        setinvoices(res.data.data);
+        $("#spinner").addClass("d-none");
+        setSearchTerm("");
+      })
+      .then(() => {});
   };
   const sortSize = (e) => {
     setSize(e.target.value);
@@ -76,8 +84,8 @@ function Invoices() {
 
   const getInvoices = () => {
     let data = {
-      startDate: startDate,
-      endDate: endDate,
+      startDate: date.startDate,
+      endDate: date.endDate,
       size: size,
       page: page,
       applicableChargeName: searchTerm,
@@ -85,6 +93,7 @@ function Invoices() {
     requestsServiceService.getInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
+      $("#spinner").addClass("d-none");
       window.scrollTo(0, 0);
     });
   };
@@ -114,15 +123,6 @@ function Invoices() {
     style: "currency",
     currency: "KES",
   });
-  const addDate = (date) => {
-    setStartDate(new Date(date.target.value));
-  };
-  const addDate2 = (date) => {
-    setEndDate(new Date(date.target.value));
-  };
-
-  $(document).on("change", ".sdate", addDate);
-  $(document).on("change", ".edate", addDate2);
   const [phonenumber, setphonenumber] = useState("");
 
   const sendSTK = (event) => {
@@ -185,10 +185,11 @@ function Invoices() {
     setmode(mode);
   };
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
-      } balance is ${formatCurrency.format(
-        inv.billAmount - inv.billPaidAmount
-      )}. Click here to pay for it`;
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${
+      inv.billerBillNo
+    } balance is ${formatCurrency.format(
+      inv.billAmount - inv.billPaidAmount
+    )}. Click here to pay for it`;
     let senderId =
       JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
@@ -211,7 +212,7 @@ function Invoices() {
       $(".the-message-maker").addClass("email-overlay-transform");
     }, 0);
   };
-  useEffect(() => { }, [details, mode]);
+  useEffect(() => {}, [details, mode]);
 
   const clear = () => {
     setDetails({
@@ -229,36 +230,38 @@ function Invoices() {
     });
   };
 
-
-  const extendInvoiceDay = (id,date) => {
+  const extendInvoiceDay = (id, date) => {
     showInvoiceDate();
-    setNewInvoiceId(id)
+    setNewInvoiceId(id);
     setNewInvoiceDate(new Date(date));
     setOldInvoiceDate(new Date(date));
-  }
+  };
 
-  const extendDay =()=>{
-    requestsServiceService.adjustPaymentTransactionItemDueDate(newInvoiceId,moment(newInvoiceDate).format("YYYY/MM/DD")).then((res)=>{
-      getInvoices();
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "success",
+  const extendDay = () => {
+    requestsServiceService
+      .adjustPaymentTransactionItemDueDate(
+        newInvoiceId,
+        moment(newInvoiceDate).format("YYYY/MM/DD")
+      )
+      .then((res) => {
+        getInvoices();
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success",
+        });
+
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+
+          closeInvoiceDate();
+        }, 4000);
       });
-  
-    setTimeout(() => {
-      setError({
-        ...error,
-        message: "",
-        color: "",
-      });
-
-      closeInvoiceDate()
-
-    }, 4000);
-    
-      })   
-  }
+  };
   return (
     <>
       <div className="page-content">
@@ -266,6 +269,18 @@ function Invoices() {
 
         <div className="container-fluid">
           <div className="row">
+            <div id="spinner">
+              <div id="status">
+                <div className="spinner-chase">
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 className="mb-sm-0 font-size-18">Rent & Bills invoices</h4>
@@ -309,41 +324,28 @@ function Invoices() {
                           </div>
                         </form>
                       </div>
-                      <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
-                        <div className=" p-2">
-                          <span className="input-group-text">
-                            <i className="mdi mdi-calendar">Start Date</i>
-                          </span>
-                          <input
-                            type="text"
-                            className="form-control mouse-pointer sdate"
-                            placeholder={`${startDate}`}
-                            name="dob"
-                            readOnly
-                            data-date-format="dd M, yyyy"
-                            data-date-container="#datepicker1"
-                            data-provide="datepicker"
-                            data-date-autoclose="true"
-                            data-date-end-date="+0d"
+                      <div
+                        className="input-group d-flex justify-content-end align-items-center"
+                        id="datepicker1"
+                      >
+                        <div
+                          style={{
+                            backgroundColor: "#fff",
+                            color: "#2C2F33",
+                            cursor: " pointer",
+                            padding: "7px 10px",
+                            border: "2px solid #ccc",
+                            width: " 100%",
+                          }}
+                        >
+                          <DatePicker
+                            onCallback={handleCallback}
+                            startDate={moment(date.startDate).format(
+                              "YYYY-MM-DD"
+                            )}
+                            endDate={moment(date.endDate).format("YYYY-MM-DD")}
                           />
                         </div>
-                        <div className=" p-2">
-                          <span className="input-group-text">
-                            <i className="mdi mdi-calendar">End Date: </i>
-                          </span>
-                          <input
-                            type="text"
-                            className="form-control mouse-pointer edate"
-                            name="dob"
-                            placeholder={`${endDate}`}
-                            readOnly
-                            data-date-format="dd M, yyyy"
-                            data-date-container="#datepicker1"
-                            data-provide="datepicker"
-                            data-date-autoclose="true"
-                          />
-                        </div>
-
                       </div>
                       <button className="btn btn-primary" onClick={sort}>
                         filter
@@ -374,14 +376,12 @@ function Invoices() {
                           <th>Charge Name</th>
                           <th>Bill Amount</th>
                           <th>Paid Amount</th>
-                          <th>Total Balance</th>
+                          <th className={"text-right"}>Total Balance</th>
                           <th>Due Date</th>
                           <th>Payment Status</th>
                           <th>Date Created</th>
-                         
+
                           <th className="text-right">Actions</th>
-                      
-                     
                         </tr>
                       </thead>
                       <tbody>
@@ -400,7 +400,7 @@ function Invoices() {
                               <td>
                                 {formatCurrency.format(invoice.billPaidAmount)}
                               </td>
-                              <td>
+                              <td className={"text-right"}>
                                 <span className="fw-semibold ">
                                   {formatCurrency.format(
                                     invoice.billAmount - invoice.billPaidAmount
@@ -415,7 +415,11 @@ function Invoices() {
                               <td>
                                 <StatusBadge type={invoice?.paymentStatus} />
                               </td>
-                              <td>{moment(invoice.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                              <td>
+                                {moment(invoice.dateTimeCreated).format(
+                                  "YYYY-MM-DD HH:mm"
+                                )}
+                              </td>
 
                               <td>
                                 <div className="d-flex justify-content-end">
@@ -445,10 +449,23 @@ function Invoices() {
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
                                       </a>
-                                      {(invoice?.paymentStatus == "Partially-Paid" || invoice?.paymentStatus == "PENDING" ) && <a className="dropdown-item cursor-pointer" onClick={() => extendInvoiceDay(invoice.transactionItemId, invoice.invoiceDate)}>
-                                        <i className="font-size-15 mdi mdi-calendar-arrow-right me-3"></i>
-                                        Extend Invoice Dates
-                                      </a>} 
+                                      {(invoice?.paymentStatus ===
+                                        "Partially-Paid" ||
+                                        invoice?.paymentStatus ===
+                                          "PENDING") && (
+                                        <a
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() =>
+                                            extendInvoiceDay(
+                                              invoice.transactionItemId,
+                                              invoice.invoiceDate
+                                            )
+                                          }
+                                        >
+                                          <i className="font-size-15 mdi mdi-calendar-arrow-right me-3"></i>
+                                          Extend Invoice Dates
+                                        </a>
+                                      )}
                                       <a className="dropdown-item">
                                         <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                         Print
@@ -496,61 +513,62 @@ function Invoices() {
                           <td></td>
                           <td></td>
                           <td></td>
+                          <td></td>
                         </tr>
                       </tfoot>
                     </table>
-                  </div>
-                  <div className="mt-4 mb-0 flex justify-between px-8">
-
-                    <div>
-
-                      <select
-                        className={"btn btn-primary"}
-                        name=""
-                        id=""
-                        value={size}
-                        onChange={(e) => sortSize(e)}
-                      >
-                        <option value={parseInt(10)}>10</option>
-                        <option value={parseInt(30)}>30</option>
-                        <option value={parseInt(50)}>50</option>
-                      </select>
+                    <div className="d-flex justify-content-between align-items-center">
+                      {pageCount !== 0 && (
+                        <>
+                          <select
+                            className="btn btn-md btn-primary"
+                            title="Select A range"
+                            onChange={(e) => sortSize(e)}
+                            value={size}
+                          >
+                            <option className="bs-title-option" value="">
+                              Select A range
+                            </option>
+                            <option value="10">10 Rows</option>
+                            <option value="30">30 Rows</option>
+                            <option value="50">50 Rows</option>
+                          </select>
+                          <nav
+                            aria-label="Page navigation comments"
+                            className="mt-4"
+                          >
+                            <ReactPaginate
+                              previousLabel="<"
+                              nextLabel=">"
+                              breakLabel="..."
+                              breakClassName="page-item"
+                              breakLinkClassName="page-link"
+                              pageCount={pageCount}
+                              pageRangeDisplayed={4}
+                              marginPagesDisplayed={2}
+                              containerClassName="pagination justify-content-center"
+                              pageClassName="page-item"
+                              pageLinkClassName="page-link"
+                              previousClassName="page-item"
+                              previousLinkClassName="page-link"
+                              nextClassName="page-item"
+                              nextLinkClassName="page-link"
+                              activeClassName="active"
+                              onPageChange={(data) => handlePageClick(data)}
+                            />
+                          </nav>
+                        </>
+                      )}
                     </div>
                     {pageCount !== 0 && (
-                      <p className=" font-medium text-xs text-gray-700">
-                        {" "}
+                      <p className="font-medium  text-muted">
                         showing page{" "}
-                        <span className="text-green-700 text-opacity-100 font-bold text-sm">
-                          {page + 1}
+                        <span className="text-primary">
+                          {pageCount === 0 ? page : page + 1}
                         </span>{" "}
-                        of{" "}
-                        <span className="text-sm font-bold text-black">
-                          {pageCount}
-                        </span>{" "}
+                        of<span className="text-primary"> {pageCount}</span>{" "}
                         pages
                       </p>
-                    )}
-
-                    {pageCount !== 0 && (
-                      <ReactPaginate
-                        previousLabel={"prev"}
-                        nextLabel={"next"}
-                        breakLabel={"..."}
-                        pageCount={pageCount} // total number of pages needed
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={1}
-                        onPageChange={handlePageClick}
-                        breakClassName={"page-item"}
-                        breakLinkClassName={"page-link"}
-                        containerClassName={"pagination"}
-                        pageClassName={"page-item"}
-                        pageLinkClassName={"page-link"}
-                        previousClassName={"page-item"}
-                        previousLinkClassName={"page-link"}
-                        nextClassName={"page-item"}
-                        nextLinkClassName={"page-link"}
-                        activeClassName={"active"}
-                      />
                     )}
                   </div>
                 </div>
@@ -655,7 +673,7 @@ function Invoices() {
                       {" "}
                       {formatCurrency.format(
                         activeInvoice?.billAmount -
-                        activeInvoice?.billPaidAmount
+                          activeInvoice?.billPaidAmount
                       )}
                     </h5>
                   </td>
@@ -728,18 +746,23 @@ function Invoices() {
       </Modal>
 
       {/* INVOICE DATE  */}
-      <Modal show={invoice_Date_show} onHide={closeInvoiceDate} size="sm" centered>
+      <Modal
+        show={invoice_Date_show}
+        onHide={closeInvoiceDate}
+        size="sm"
+        centered
+      >
         <Modal.Header closeButton>
           <h5 className="modal-title" id="myLargeModalLabel">
             Extend Invoice Dates
           </h5>
         </Modal.Header>
         <Modal.Body>
-        {error.color !== "" && (
-                <div className={"alert alert-" + error.color} role="alert">
-                  {error.message}
-                </div>
-        )}
+          {error.color !== "" && (
+            <div className={"alert alert-" + error.color} role="alert">
+              {error.message}
+            </div>
+          )}
           <DatePicker
             selected={newInvoiceDate}
             onChange={(date) => setNewInvoiceDate(date)}
