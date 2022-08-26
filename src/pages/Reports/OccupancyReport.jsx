@@ -393,8 +393,8 @@ export default function OccupancyReport() {
                                     <tbody>
                                       {reports !== {} &&
                                         reports?.occupancyResponses?.map(
-                                          (item, index) => (
-                                            <tr data-id={index} key={index}>
+                                          (item) => (
+                                            <tr data-id={item.id} key={item.id}>
                                               <td className={"text-capitalize"}>
                                                 {item.demography}
                                               </td>

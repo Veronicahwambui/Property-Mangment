@@ -384,62 +384,60 @@ export default function NewUnitsExpectedIncomeReport() {
                                   </thead>
                                   <tbody>
                                     {reports !== {} &&
-                                      reports.unitIncomeModels?.map(
-                                        (item, index) => (
-                                          <tr data-id={index} key={index}>
-                                            <td className={"text-capitalize"}>
-                                              {item.demography}
-                                            </td>
-                                            <td>{item.newUnits}</td>
-                                            <td>
-                                              {formatCurrency(
-                                                item.totalExpectedIncome
-                                              )}
-                                            </td>
-                                            <td>
-                                              {formatCurrency(
-                                                item.commissionIncome
-                                              )}
-                                            </td>
-                                            <td>
-                                              <div className="d-flex justify-content-end">
-                                                <div className="dropdown">
-                                                  <a
-                                                    className="text-muted font-size-16"
-                                                    role="button"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-haspopup="true"
-                                                  >
-                                                    <i className="bx bx-dots-vertical-rounded"></i>
-                                                  </a>
-                                                  <div className="dropdown-menu dropdown-menu-end ">
-                                                    <>
-                                                      <a
-                                                        className="dropdown-item cursor-pointer"
-                                                        onClick={() => {
-                                                          doShit(item);
-                                                        }}
-                                                      >
-                                                        <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                        View {item.demography}
-                                                      </a>
-                                                    </>
+                                      reports.unitIncomeModels?.map((item) => (
+                                        <tr data-id={item.id} key={item.id}>
+                                          <td className={"text-capitalize"}>
+                                            {item.demography}
+                                          </td>
+                                          <td>{item.newUnits}</td>
+                                          <td>
+                                            {formatCurrency(
+                                              item.totalExpectedIncome
+                                            )}
+                                          </td>
+                                          <td>
+                                            {formatCurrency(
+                                              item.commissionIncome
+                                            )}
+                                          </td>
+                                          <td>
+                                            <div className="d-flex justify-content-end">
+                                              <div className="dropdown">
+                                                <a
+                                                  className="text-muted font-size-16"
+                                                  role="button"
+                                                  data-bs-toggle="dropdown"
+                                                  aria-haspopup="true"
+                                                >
+                                                  <i className="bx bx-dots-vertical-rounded"></i>
+                                                </a>
+                                                <div className="dropdown-menu dropdown-menu-end ">
+                                                  <>
                                                     <a
                                                       className="dropdown-item cursor-pointer"
                                                       onClick={() => {
-                                                        undoShit(item);
+                                                        doShit(item);
                                                       }}
                                                     >
-                                                      <i className="font-size-15 mdi mdi-refresh me-3 "></i>
-                                                      Reset
+                                                      <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                      View {item.demography}
                                                     </a>
-                                                  </div>
+                                                  </>
+                                                  <a
+                                                    className="dropdown-item cursor-pointer"
+                                                    onClick={() => {
+                                                      undoShit(item);
+                                                    }}
+                                                  >
+                                                    <i className="font-size-15 mdi mdi-refresh me-3 "></i>
+                                                    Reset
+                                                  </a>
                                                 </div>
                                               </div>
-                                            </td>
-                                          </tr>
-                                        )
-                                      )}
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      ))}
                                   </tbody>
                                 </table>
                               </div>

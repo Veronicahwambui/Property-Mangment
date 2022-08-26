@@ -418,69 +418,65 @@ export default function AdminArrears() {
                                   </thead>
                                   <tbody>
                                     {reports !== {} &&
-                                      reports.ageReportModels?.map(
-                                        (item, index) => (
-                                          <>
-                                            {item.invoicePeriod === month && (
-                                              <tr data-id={index} key={index}>
-                                                <td
-                                                  className={"text-capitalize"}
-                                                >
-                                                  {item.demography}
-                                                </td>
-                                                <td>{item.invoicePeriod}</td>
-                                                <td>{item.countAll}</td>
-                                                <td>
-                                                  {formatCurrency(item.sum)}
-                                                </td>
-                                                <td>
-                                                  {formatCurrency(item.paid)}
-                                                </td>
-                                                <td>{item.collectionRate}</td>
-                                                <td>
-                                                  <div className="d-flex justify-content-end">
-                                                    {/*<button type="button"*/}
-                                                    {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                                    {/*        // onClick={() => getOnemessage(item?.transaction.transactionId)}*/}
-                                                    {/*        >Receive Payment*/}
-                                                    {/*</button>*/}
-                                                    <div className="dropdown">
+                                      reports.ageReportModels?.map((item) => (
+                                        <>
+                                          {item.invoicePeriod === month && (
+                                            <tr data-id={item.id} key={item.id}>
+                                              <td className={"text-capitalize"}>
+                                                {item.demography}
+                                              </td>
+                                              <td>{item.invoicePeriod}</td>
+                                              <td>{item.countAll}</td>
+                                              <td>
+                                                {formatCurrency(item.sum)}
+                                              </td>
+                                              <td>
+                                                {formatCurrency(item.paid)}
+                                              </td>
+                                              <td>{item.collectionRate}</td>
+                                              <td>
+                                                <div className="d-flex justify-content-end">
+                                                  {/*<button type="button"*/}
+                                                  {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
+                                                  {/*        // onClick={() => getOnemessage(item?.transaction.transactionId)}*/}
+                                                  {/*        >Receive Payment*/}
+                                                  {/*</button>*/}
+                                                  <div className="dropdown">
+                                                    <a
+                                                      className="text-muted font-size-16"
+                                                      role="button"
+                                                      data-bs-toggle="dropdown"
+                                                      aria-haspopup="true"
+                                                    >
+                                                      <i className="bx bx-dots-vertical-rounded"></i>
+                                                    </a>
+                                                    <div className="dropdown-menu dropdown-menu-end ">
                                                       <a
-                                                        className="text-muted font-size-16"
-                                                        role="button"
-                                                        data-bs-toggle="dropdown"
-                                                        aria-haspopup="true"
+                                                        className="dropdown-item cursor-pointer"
+                                                        onClick={() => {
+                                                          doShit(item);
+                                                        }}
                                                       >
-                                                        <i className="bx bx-dots-vertical-rounded"></i>
+                                                        <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                        View {item.demography}
                                                       </a>
-                                                      <div className="dropdown-menu dropdown-menu-end ">
-                                                        <a
-                                                          className="dropdown-item cursor-pointer"
-                                                          onClick={() => {
-                                                            doShit(item);
-                                                          }}
-                                                        >
-                                                          <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                          View {item.demography}
-                                                        </a>
-                                                        <a
-                                                          className="dropdown-item cursor-pointer"
-                                                          onClick={() => {
-                                                            undoShit(item);
-                                                          }}
-                                                        >
-                                                          <i className="font-size-15 mdi mdi-refresh me-3 "></i>
-                                                          Reset
-                                                        </a>
-                                                      </div>
+                                                      <a
+                                                        className="dropdown-item cursor-pointer"
+                                                        onClick={() => {
+                                                          undoShit(item);
+                                                        }}
+                                                      >
+                                                        <i className="font-size-15 mdi mdi-refresh me-3 "></i>
+                                                        Reset
+                                                      </a>
                                                     </div>
                                                   </div>
-                                                </td>
-                                              </tr>
-                                            )}
-                                          </>
-                                        )
-                                      )}
+                                                </div>
+                                              </td>
+                                            </tr>
+                                          )}
+                                        </>
+                                      ))}
                                   </tbody>
                                 </table>
                               </div>
