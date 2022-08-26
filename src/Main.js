@@ -226,7 +226,6 @@ function Main() {
           </>
         )}
       </div>
-
       <Helmet>
         {/* the popper makes sure the bootstrap select works with bootstrap 5 */}
         <script
@@ -250,7 +249,7 @@ function Main() {
           crossorigin
         ></script>
         {/* data table plugin */}
-        <script src="./assets/js/pages/datatables.init.js"></script>
+        {/* <script src="./assets/js/pages/datatables.init.js"></script> */}
 
         {/* <!-- jquery step --> */}
         <script src="./assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
@@ -260,6 +259,7 @@ function Main() {
         <script src="./assets/js/app.js "></script>
         <script src="./assets/js/custom.js "></script>
       </Helmet>
+
     </HashRouter>
   );
 }

@@ -1424,9 +1424,9 @@ const pieChart = {
                             onClick={fetchUpdateData}
                             data-bs-toggle="modal"
                             data-bs-target="#edit-premise-detail"
-                            className="btn btn-primary dropdown-toggle option-selector"
+                            className="btn btn-primary btn-sm dropdown-toggle option-selector"
                           >
-                            <i className="dripicons-plus font-size-16"></i>{" "}
+                            <i className="dripicons-plus font-size-16 d-md-none"></i>{" "}
                             <span className="pl-1 d-md-inline">
                               Edit Premise Details
                             </span>

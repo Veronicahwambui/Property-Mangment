@@ -3,6 +3,8 @@ import moment from 'moment';
 import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react'
+import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
 import requestsServiceService from '../../services/requestsService.service';
 
 function BulkInvoiving() {
@@ -12,12 +14,12 @@ function BulkInvoiving() {
   const [loading, setloading] = useState(false);
   const [loaded, setloaded] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [premises, setPremises] = useState([]);
+  const [results, setResults] = useState([]);
   const [premisesId, setPremisesId] = useState([]);
-  const [landlords, setLandlords] = useState([]);
+  // const [landlords, setLandlords] = useState([]);
   const [landlordsId, setLandlordsId] = useState([]);
   const [invoices, setInvoices] = useState([]);
-  const [tenants, setTenants] = useState([]);
+  // const [tenants, setTenants] = useState([]);
   const [tenantsId, setTenantsID] = useState([]);
   const [tenancyList, setTenancyList] = useState([]);
   const [tenancies, setTenancies] = useState([]);
@@ -53,9 +55,7 @@ function BulkInvoiving() {
 
   const handleInvoiceFor = (e) => {
     setInvoiceFor(e.target.value);
-    setLandlords([]);
-    setTenants([]);
-    setPremises([])
+
   }
 
   if (invoiceFor !== "") {
@@ -66,10 +66,12 @@ function BulkInvoiving() {
   }
 
   const search = () => {
+    setloading(true)
     let endDate = new Date()
     let startDate = "2022-01-01"
     let page = 0
     let size = 10
+
 
     if (invoiceFor == "PREMISE") {
       // SEARCH PREMISE
@@ -79,7 +81,9 @@ function BulkInvoiving() {
         "search": searchTerm.trim()
       }
       requestsServiceService.getAllpremises(page, size, data).then((res) => {
-        setPremises(res.data.data)
+        setResults(res.data.data)
+        setloaded(true)
+        setloading(false)
       })
 
     } else if (invoiceFor == "LANDLORD") {
@@ -90,7 +94,9 @@ function BulkInvoiving() {
         "search": searchTerm.trim()
       }
       requestsServiceService.getLandLords(page, size, data).then((res) => {
-        setLandlords(res.data.data)
+        setResults(res.data.data)
+        setloaded(true)
+        setloading(false)
       });
     } else if (invoiceFor == "TENANT") {
       // SEARCH TENANT
@@ -100,41 +106,16 @@ function BulkInvoiving() {
         "search": searchTerm.trim()
       }
       requestsServiceService.getAllTenants(searchTerm, page, size, data).then((res) => {
-        setTenants(res.data.data)
+        setResults(res.data.data)
+        setloaded(true)
+        setloading(false)
       })
     }
     setSearchTerm('')
   }
 
-  const handlePremiseChange = (index, event) => {
-    const { checked, value } = event.target;
-    if (checked) {
-      setPremisesId([...premisesId, premises[index].id]);
-      setSelected([...selected, premises[index]])
-    } else {
-      setPremisesId(
-        premisesId.filter((prem) => prem !== premises[index].id)
-      );
-      setSelected(
-        selected.filter((select) => select.id !== premises[index].id)
-      )
-    }
-  };
-  const handleTenantChange = (index, event) => {
-    const { checked, value } = event.target;
 
-    if (checked) {
-      setTenantsID([...tenantsId, tenants[index].id]);
-      setSelected([...selected, tenants[index]])
-    } else {
-      setTenantsID(
-        tenantsId.filter((prem) => prem !== tenants[index].id)
-      );
-      setSelected(
-        selected.filter((select) => select.id !== tenants[index].id)
-      )
-    }
-  };
+
 
   const filter = (id) => {
     setSelected(
@@ -143,22 +124,6 @@ function BulkInvoiving() {
 
 
   }
-
-  const handleLandlordChange = (index, event) => {
-    const { checked, value } = event.target;
-
-    if (checked) {
-      setLandlordsId([...landlordsId, landlords[index].id]);
-      setSelected([...selected, landlords[index]])
-    } else {
-      setLandlordsId(
-        landlordsId.filter((prem) => prem !== landlords[index].id)
-      );
-      setSelected(
-        selected.filter((select) => select.id !== landlords[index].id)
-      )
-    }
-  };
 
   const handleWhoToCharge = (e) => {
     setWhoToCharge(e.target.value);
@@ -199,6 +164,15 @@ function BulkInvoiving() {
 
     } else if (invoiceFor !== "" && invoices?.length > 0 && unitCost != "" && quantity >= 0 && invoiceDate != "" && applicableChargeName != "") {
 
+
+      if (invoiceFor === "TENANT") {
+        setTenantsID(() => selected?.map((a) => a.id))
+      } else if (invoiceFor === "LANDLORD") {
+        setLandlordsId(() => selected?.map((a) => a.id))
+      } else if (invoiceFor === "PREMISE") {
+        setPremisesId(() => selected?.map((a) => a.id))
+      }
+
       let data = JSON.stringify({
         "aplicableChargeId": aplicableChargeId,
         "invoiceFor": invoiceFor,
@@ -217,7 +191,9 @@ function BulkInvoiving() {
         "unitCost": unitCost,
         "invoiceDate": invoiceDate,
         "invoiceTitle": invoiceTitle
-      })
+      });
+
+
       requestsServiceService.createBulkInvoice(data).then((res) => {
         if (res.data.status == true)
           redirectToInvoices();
@@ -247,6 +223,23 @@ function BulkInvoiving() {
     }
 
   }
+
+  const handleChange = (index, event) => {
+    const { checked, value } = event.target;
+
+    if (checked) {
+      setSelected([...selected, results[index]])
+    } else {
+      setSelected(
+        selected.filter((select) => select.id !== results[index].id)
+      )
+    }
+  };
+
+
+
+
+
 
   const addDate = (date) => {
     setinvoiceDate(new Date(date.target.value).toISOString());
@@ -365,31 +358,56 @@ function BulkInvoiving() {
                               </div>
                             </div>
                           </div>
-                          {searchTerm !== "" && <div class="col-auto">
-                            <button onClick={search} className="btn btn-md bg-primary text-white">
-                              Search
-                              <span style={{ marginLeft: "10px" }}>
-                                {loading && <i className="fa fa-refresh fa-spin" />}
-                                {loaded && (
-                                  <>
-                                    <i className="fa fa-check" />
-                                  </>
-                                )}
-                              </span>
-                            </button>
-                          </div>}
+                          {!loading && <div class="col-auto">
+                          <button
+                            onClick={search}
+                            form={"bulk-search-form"}
+                            disabled={
+                              loading 
+                            }
+                            className="btn btn-primary btn-rounded"
+                          >
+                            { loading && (
+                              <i
+                                className="fa fa-refresh fa-spin"
+                                style={{ marginRight: "5px" }}
+                              />
+                            )}
+                            { loading && (
+                              <>
+                                <span className="d-inline-block me-2">
+                                  Searching...
+                                </span>
+                              </>
+                            )}
+                            {!loading && (
+                              <>
+                                <span className="d-sm-inline-block me-2">
+                                  Search
+                                </span>
+                              </>
+                            )}
+                          </button>
+                          </div> }
+
+                         
 
                         </div>}
 
-                        {invoiceFor !== "" && invoiceFor !== "CURRENT" && <div class="row g-3 mb-4 align-items-center">
+                        {invoiceFor !== "" && invoiceFor !== "CURRENT" && results?.length > 0 && <div class="row g-3 mb-4 align-items-center">
                           <strong> Select {invoiceFor?.toLowerCase()}s to invoice for <strong className='text-danger'>*</strong> </strong>
-                          {invoiceFor === 'PREMISE' && premises?.length > 0 &&
-                            premises?.map((prem, index) => (
+                          {invoiceFor === 'PREMISE' && results?.length > 0 &&
+                            results?.map((prem, index) => (
                               <div class="col-4" key={prem.id}>
                                 <div class="form-check mb-3">
                                   <input class="form-check-input" onChange={(event) =>
-                                    handlePremiseChange(index, event)
-                                  } type="checkbox" id="formCheck1" />
+                                    handleChange(index, event)
+                                  } type="checkbox" id="formCheck1"
+                                    checked={selected.some(
+                                      (el) =>
+                                        el.id ===
+                                        prem.id
+                                    )} />
                                   <label class="form-check-label" for="formCheck1">
                                     {prem.premiseName}
                                   </label>
@@ -399,13 +417,18 @@ function BulkInvoiving() {
                             ))
                           }
 
-                          {invoiceFor === 'LANDLORD' && landlords?.length > 0 &&
-                            landlords?.map((lord, index) => (
+                          {invoiceFor === 'LANDLORD' && results?.length > 0 &&
+                            results?.map((lord, index) => (
                               <div class="col-4" key={lord.id}>
                                 <div class="form-check mb-3">
                                   <input class="form-check-input" onChange={(event) =>
-                                    handleLandlordChange(index, event)
-                                  } type="checkbox" id="formCheck1" />
+                                    handleChange(index, event)
+                                  } type="checkbox" id="formCheck1"
+                                    checked={selected.some(
+                                      (el) =>
+                                        el.id ===
+                                        lord.id
+                                    )} />
                                   <label class="form-check-label" for="formCheck1">
                                     {lord.firstName} {lord.lastName}  {lord.otherName}
                                   </label>
@@ -415,13 +438,18 @@ function BulkInvoiving() {
                             ))
                           }
 
-                          {invoiceFor === 'TENANT' && tenants?.length > 0 &&
-                            tenants?.map((tenant, index) => (
+                          {invoiceFor === 'TENANT' && results?.length > 0 &&
+                            results?.map((tenant, index) => (
                               <div class="col-4" key={tenant.id}>
                                 <div class="form-check mb-3">
                                   <input class="form-check-input" onChange={(event) =>
-                                    handleTenantChange(index, event)
-                                  } type="checkbox" id="formCheck1" />
+                                    handleChange(index, event)
+                                  } type="checkbox" id="formCheck1"
+                                    checked={selected.some(
+                                      (el) =>
+                                        el.id ===
+                                        tenant.id
+                                    )} />
                                   <label class="form-check-label" for="formCheck1">
                                     {tenant.tenantType != 'COMPANY' ? <>{tenant.firstName} {tenant.lastName}  {tenant.otherName}</> :
                                       <>{tenant.companyName}</>
@@ -436,40 +464,112 @@ function BulkInvoiving() {
                         </div>
                         }
 
-                        {selected?.length > 0 && invoiceFor !== "PREMISE" &&
-                          <div class="row g-3 mb-4 align-items-center">
-                            <h4 className="text-center">Selected {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}s</h4>
-                            <div className="row">
-                              {selected && selected.map((one) => (
-                                <div className="col-4 d-flex align-items-baseline gap-4 ">
-                                  <p><i class="bx bx-check text-primary font-18px"></i>{(one.tenantType != 'COMPANY' || one.tenantType == undefined) ?
-                                    <>{one.firstName} {one.lastName}  {one.otherName}</> :
-                                    <>{one.companyName}</>
-                                  }</p>
-                                  <i class="bx bx-trash text-primary font-18px" onClick={() => filter(one.id)}></i>
-                                </div>
-                              ))
-                              }
+                        {loaded && results.length < 1 && (
+                          <>
+                            <span className={"text-danger"}>
+                              No records found!
+                            </span>
+                          </>
+                        )}
 
-                            </div>
+
+                        {selected.length > 0 && (
+                          <div
+                            className={
+                              "alert alert-warning d-flex align-items-center"
+                            }
+                          >
+                            {selected.length > 0 && (
+                              <>
+                                <Button variant="primary">
+                                  Selected
+                                  <Badge
+                                    bg="light"
+                                    className="ml-7px"
+                                  >
+                                    <b>{selected.length}</b>
+                                  </Badge>
+                                </Button>
+                              </>
+                            )}
+                            {selected.length > 0 &&
+                              selected?.map((item) => (
+                                <>
+                                  {invoiceFor === "LANDLORD" && (
+                                    <>
+                                      <h5
+                                        className="ml-7px"
+                                        key={item.id}
+                                      >
+                                        <Badge bg="success">
+                                          {item.firstName +
+                                            " " +
+                                            item.lastName}
+                                        </Badge>
+                                        <br />
+                                        <i
+                                          className="fa fa-trash cursor-pointer text-danger mt-1"
+                                          onClick={() =>
+                                            filter(item.id)
+                                          }
+                                        ></i>
+                                      </h5>
+                                    </>
+                                  )}
+                                  {invoiceFor === "TENANT" && (
+                                    <>
+                                      <h5
+                                        className="ml-7px"
+                                        key={item.id}
+                                      >
+                                        <Badge bg="success">
+                                          {item.tenantType ===
+                                            "COMPANY" ? (
+                                            <>{item.companyName}</>
+                                          ) : (
+                                            <>
+                                              {item.firstName +
+                                                " " +
+                                                item.lastName}
+                                            </>
+                                          )}
+                                        </Badge>
+                                        <br />
+                                        <i
+                                          className="fa fa-trash cursor-pointer text-danger mt-1"
+                                          onClick={() =>
+                                            filter(item.id)
+                                          }
+                                        ></i>
+                                      </h5>
+                                    </>
+                                  )}
+                                  {invoiceFor === "PREMISE" && (
+                                    <>
+                                      <h5
+                                        className="ml-7px"
+                                        key={item.id}
+                                      >
+                                        <Badge bg="success">
+                                          {item.premiseName}
+                                        </Badge>
+                                        <br />
+                                        <i
+                                          className="fa fa-trash cursor-pointer text-danger mt-1"
+                                          onClick={() =>
+                                            filter(item.id)
+                                          }
+                                        ></i>
+                                      </h5>
+                                    </>
+                                  )}
+                                </>
+                              ))}
                           </div>
-                        }
+                        )}
 
-                        {selected?.length > 0 && invoiceFor === "PREMISE" &&
-                          <div class="row g-3 mb-4 align-items-center">
-                            <h4 className="text-center">Selected {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}s</h4>
-                            <div className="row">
-                              {selected && selected.map((one) => (
-                                <div className="col-4 d-flex align-items-baseline gap-4 ">
-                                  <p><i class="bx bx-check text-primary font-18px"></i> {one.premiseName}</p>
-                                  <i class="bx bx-trash text-primary font-18px" onClick={() => filter(one.id)}></i>
-                                </div>
-                              ))
-                              }
 
-                            </div>
-                          </div>
-                        }
+
                       </div>
 
                       <div className="card">

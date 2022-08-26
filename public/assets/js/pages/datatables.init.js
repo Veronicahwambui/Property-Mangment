@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$( document).ready(function() {
  
 
     var theTable
@@ -156,7 +156,8 @@ $(document).ready(function() {
     });
 
     var theUnitTable
-    theTable = $("#unit-datatable").DataTable(), $("#unit-datatable-buttons").DataTable({
+    theTable = $("#unit-datatable").DataTable(), 
+    $("#unit-datatable-buttons").DataTable({
         lengthChange: !1,
         buttons: ["copy", "print", "excel", "csv", "pdf"],
         language: {
