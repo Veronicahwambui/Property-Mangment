@@ -286,7 +286,7 @@ export default function NewUnitsExpectedIncomeReport() {
                                 ))}
                               </select>
                               <select
-                                className="form-control selectpicker w-auto show-tick"
+                                className="form-control w-auto show-tick"
                                 data-style="btn btn-primary waves-light waves-effect month-picker"
                                 onChange={(e) => {
                                   setestateId(e.target.value);
@@ -413,18 +413,17 @@ export default function NewUnitsExpectedIncomeReport() {
                                                     <i className="bx bx-dots-vertical-rounded"></i>
                                                   </a>
                                                   <div className="dropdown-menu dropdown-menu-end ">
-                                                    <a
-                                                      className="dropdown-item cursor-pointer"
-                                                      onClick={() => {
-                                                        doShit(item);
-                                                      }}
-                                                    >
-                                                      <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                      View{" "}
-                                                      {activeshit
-                                                        .slice(0, -1)
-                                                        .toLowerCase()}
-                                                    </a>
+                                                    <>
+                                                      <a
+                                                        className="dropdown-item cursor-pointer"
+                                                        onClick={() => {
+                                                          doShit(item);
+                                                        }}
+                                                      >
+                                                        <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                        View {item.demography}
+                                                      </a>
+                                                    </>
                                                     <a
                                                       className="dropdown-item cursor-pointer"
                                                       onClick={() => {

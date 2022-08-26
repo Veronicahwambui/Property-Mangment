@@ -288,7 +288,7 @@ export default function OccupancyReport() {
                                 ))}
                               </select>
                               <select
-                                className="form-control selectpicker w-auto show-tick"
+                                className="form-control w-auto show-tick"
                                 data-style="btn btn-primary waves-light waves-effect month-picker"
                                 onChange={(e) => {
                                   setestateId(e.target.value);
@@ -430,10 +430,7 @@ export default function OccupancyReport() {
                                                         }}
                                                       >
                                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                        View{" "}
-                                                        {activeshit
-                                                          .slice(0, -1)
-                                                          .toLowerCase()}
+                                                        View {item.demography}
                                                       </a>
                                                       <a
                                                         className="dropdown-item cursor-pointer"

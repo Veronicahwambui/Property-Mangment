@@ -461,10 +461,7 @@ export default function AdminArrears() {
                                                           }}
                                                         >
                                                           <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                          View{" "}
-                                                          {activeshit
-                                                            .slice(0, -1)
-                                                            .toLowerCase()}
+                                                          View {item.demography}
                                                         </a>
                                                         <a
                                                           className="dropdown-item cursor-pointer"
