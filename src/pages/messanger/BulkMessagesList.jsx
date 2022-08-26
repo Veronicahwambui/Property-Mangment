@@ -238,57 +238,56 @@ export default function BulkMessagesList() {
                             </tr>
                           </tfoot>
                         </table>
-                      </div>
-                      <div className="mt-4 mb-0 flex justify-between px-8">
-                        <div>
+                        <div className="d-flex justify-content-between align-items-center">
                           <select
-                            className={"btn btn-primary"}
-                            name=""
-                            id=""
-                            value={size}
+                            className="btn btn-md btn-primary"
+                            title="Select A range"
                             onChange={(e) => sortSize(e)}
+                            value={size}
                           >
-                            <option value={parseInt(5)}>5 rows</option>
-                            <option value={parseInt(10)}>10 rows</option>
-                            <option value={parseInt(20)}>20 rows</option>
+                            <option className="bs-title-option" value="">
+                              Select A range
+                            </option>
+                            <option value="10">10 Rows</option>
+                            <option value="30">30 Rows</option>
+                            <option value="50">50 Rows</option>
                           </select>
-                        </div>
-                        {pageCount !== 0 && (
-                          <p className=" font-medium text-xs text-gray-700">
-                            {" "}
-                            showing page{" "}
-                            <span className="text-green-700 text-opacity-100 font-bold text-sm">
-                              {page + 1}
-                            </span>{" "}
-                            of{" "}
-                            <span className="text-sm font-bold text-black">
-                              {pageCount}
-                            </span>{" "}
-                            pages
-                          </p>
-                        )}
 
-                        {pageCount !== 0 && (
-                          <ReactPaginate
-                            previousLabel={"prev"}
-                            nextLabel={"next"}
-                            breakLabel={"..."}
-                            pageCount={pageCount} // total number of pages needed
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={1}
-                            onPageChange={handlePageClick}
-                            breakClassName={"page-item"}
-                            breakLinkClassName={"page-link"}
-                            containerClassName={"pagination"}
-                            pageClassName={"page-item"}
-                            pageLinkClassName={"page-link"}
-                            previousClassName={"page-item"}
-                            previousLinkClassName={"page-link"}
-                            nextClassName={"page-item"}
-                            nextLinkClassName={"page-link"}
-                            activeClassName={"active"}
-                          />
-                        )}
+                          {pageCount !== 0 && pageCount > 1 && (
+                            <nav
+                              aria-label="Page navigation comments"
+                              className="mt-4"
+                            >
+                              <ReactPaginate
+                                previousLabel="<"
+                                nextLabel=">"
+                                breakLabel="..."
+                                breakClassName="page-item"
+                                breakLinkClassName="page-link"
+                                pageCount={pageCount}
+                                pageRangeDisplayed={4}
+                                marginPagesDisplayed={2}
+                                containerClassName="pagination justify-content-center"
+                                pageClassName="page-item"
+                                pageLinkClassName="page-link"
+                                previousClassName="page-item"
+                                previousLinkClassName="page-link"
+                                nextClassName="page-item"
+                                nextLinkClassName="page-link"
+                                activeClassName="active"
+                                onPageChange={(data) => handlePageClick(data)}
+                              />
+                            </nav>
+                          )}
+                        </div>
+                        <h5 className="font-medium  text-muted mt-2">
+                          showing page{" "}
+                          <span className="text-primary">
+                            {pageCount === 0 ? page : page + 1}
+                          </span>{" "}
+                          of<span className="text-primary"> {pageCount}</span>{" "}
+                          pages
+                        </h5>
                       </div>
                     </div>
                   </div>
