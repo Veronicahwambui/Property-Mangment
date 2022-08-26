@@ -157,6 +157,9 @@ export default function NewUnitsExpectedIncomeReport() {
         fetchFiltered(x[0].id, "", "");
       }
     } else {
+      setCounty("");
+      setZoneId("");
+      setactiveshit("COUNTIES");
       fetchFiltered("", "", "");
     }
   }
