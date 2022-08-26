@@ -21,7 +21,7 @@ export default function BulkMessagesList() {
     const endOffset = parseInt(itemOffset) + parseInt(size);
     setmessages(totalMessages.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(totalMessages.length / size));
-  }, [itemOffset, size, messages]);
+  }, [itemOffset, size, totalMessages]);
 
   useEffect(() => {
     getBulkMessages();
