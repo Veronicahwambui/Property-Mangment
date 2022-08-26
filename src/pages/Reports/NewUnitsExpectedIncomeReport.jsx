@@ -146,14 +146,18 @@ export default function NewUnitsExpectedIncomeReport() {
   }
 
   function undoShit(item) {
-    setestateId("");
-    setZoneId("");
-    let x = clientcounties.filter(
-      (item) => item?.county?.name === clientCountyName
-    );
-    if (x[0] !== undefined) {
-      setCounty(x[0].id);
-      fetchFiltered(x[0].id, "", "");
+    if (window.location.href.toString().includes("county")) {
+      setestateId("");
+      setZoneId("");
+      let x = clientcounties.filter(
+        (item) => item?.county?.name === clientCountyName
+      );
+      if (x[0] !== undefined) {
+        setCounty(x[0].id);
+        fetchFiltered(x[0].id, "", "");
+      }
+    } else {
+      fetchFiltered("", "", "");
     }
   }
   return (
