@@ -264,7 +264,10 @@ export default function NewUnitsExpectedIncomeReport() {
                               <select
                                 className="form-control"
                                 title="Select Zone"
-                                onChange={(e) => setZoneId(e.target.value)}
+                                onChange={(e) => {
+                                  setZoneId(e.target.value);
+                                  setactiveshit("Zones");
+                                }}
                               >
                                 <option value=""> Select zone...</option>
                                 {zones?.map((zone) => (
@@ -285,7 +288,10 @@ export default function NewUnitsExpectedIncomeReport() {
                               <select
                                 className="form-control selectpicker w-auto show-tick"
                                 data-style="btn btn-primary waves-light waves-effect month-picker"
-                                onChange={(e) => setestateId(e.target.value)}
+                                onChange={(e) => {
+                                  setestateId(e.target.value);
+                                  setactiveshit("Estates");
+                                }}
                               >
                                 <option value=""> Select estate...</option>
                                 {estates?.map((estate) => (
