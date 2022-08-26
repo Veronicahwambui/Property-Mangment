@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from '../../services/requestsService.service';
 
+
 function AdminDashboard() {
 
     const [adminAgedArrears, setAdminAgedArrears] = useState({})
@@ -350,13 +351,6 @@ function AdminDashboard() {
                     </div>
                 </div>
             </div>
-
-
-            <Helmet>
-                <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-                <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-                <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-            </Helmet>
         </>
 
     )
