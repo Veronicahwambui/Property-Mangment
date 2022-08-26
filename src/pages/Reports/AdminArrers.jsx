@@ -2,9 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
-import ReactPaginate from "react-paginate";
-import clientCounties from "../setups/ClientCounties";
-import DatePicker from "../../components/Datepicker";
 import moment from "moment";
 
 export default function AdminArrears() {
@@ -62,20 +59,23 @@ export default function AdminArrears() {
   }, [date]);
 
   useEffect(() => {
-    let x = clientcounties.filter(
-      (item) => item?.county?.name === clientCountyName
-    );
-    if (x[0] !== undefined) {
-      setCounty(x[0].id);
-      fetchFiltered(x[0].id, zoneId, estateId);
-    } else {
+    if (searchParams.get("county") === null) {
       fetchFiltered(countyId, zoneId, estateId);
+      setactiveshit("COUNTIES");
+    } else {
+      setactiveshit("ZONES");
+      let x = clientcounties.filter(
+        (item) => item?.county?.name === clientCountyName
+      );
+      if (x[0] !== undefined) {
+        setCounty(x[0].id);
+        fetchFiltered(x[0].id, zoneId, estateId);
+      }
     }
   }, [clientcounties]);
 
   const sort = () => {
     fetchFiltered(countyId, zoneId, estateId);
-    setZoneId("");
     setestateId("");
   };
 
@@ -124,6 +124,61 @@ export default function AdminArrears() {
     });
     return formatCurrency.format(x);
   };
+  const [activeshit, setactiveshit] = useState("");
+  function doShit(item) {
+    if (window.location.href.toString().includes("county")) {
+      if (countyId && !zoneId) {
+        let x = zones.find((z) => z.name === item.demography);
+        setZoneId(x.id);
+        setactiveshit("ESTATES");
+        fetchFiltered(countyId, x.id, estateId);
+      }
+      if (zoneId) {
+        let x = estates.find((z) => z.name === item.demography);
+        setestateId(x.id);
+        setactiveshit("PREMISES");
+        fetchFiltered(countyId, zoneId, x.id);
+      }
+    } else {
+      if (countyId === "") {
+        let x = clientcounties.find((z) => z.county?.name === item.demography);
+        setCounty(x.id);
+        setactiveshit("ZONES");
+        fetchFiltered(x.id, zoneId, estateId);
+      }
+      if (searchParams.get("county") === null && countyId && !zoneId) {
+        let x = zones.find((z) => z.name === item.demography);
+        setZoneId(x.id);
+        setactiveshit("ESTATES");
+        fetchFiltered(countyId, x.id, estateId);
+      }
+      if (countyId && zoneId) {
+        let x = estates.find((z) => z.name === item.demography);
+        setestateId(x.id);
+        setactiveshit("PREMISES");
+        fetchFiltered(countyId, zoneId, x.id);
+      }
+    }
+  }
+
+  function undoShit(item) {
+    if (window.location.href.toString().includes("county")) {
+      setestateId("");
+      setZoneId("");
+      let x = clientcounties.filter(
+        (item) => item?.county?.name === clientCountyName
+      );
+      if (x[0] !== undefined) {
+        setCounty(x[0].id);
+        fetchFiltered(x[0].id, "", "");
+      }
+    } else {
+      setCounty("");
+      setZoneId("");
+      setactiveshit("COUNTIES");
+      fetchFiltered("", "", "");
+    }
+  }
 
   return (
     <>
@@ -402,35 +457,23 @@ export default function AdminArrears() {
                                                         <a
                                                           className="dropdown-item cursor-pointer"
                                                           onClick={() => {
-                                                            // getOneBulkmessage(item);
+                                                            doShit(item);
                                                           }}
                                                         >
                                                           <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                          View
-                                                        </a>
-                                                        <a className="dropdown-item">
-                                                          <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                                          Print
-                                                        </a>
-                                                        <a
-                                                          className="dropdown-item cursor-pointer"
-                                                          // onClick={() => {
-                                                          //   handleModeChange("Email");
-                                                          //   handleClicked(item, "Email");
-                                                          // }}
-                                                        >
-                                                          <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                                          Email Tenant
+                                                          View{" "}
+                                                          {activeshit
+                                                            .slice(0, -1)
+                                                            .toLowerCase()}
                                                         </a>
                                                         <a
                                                           className="dropdown-item cursor-pointer"
-                                                          // onClick={() => {
-                                                          //   handleModeChange("SMS");
-                                                          //   handleClicked(item, "SMS");
-                                                          // }}
+                                                          onClick={() => {
+                                                            undoShit(item);
+                                                          }}
                                                         >
-                                                          <i className="font-size-15 mdi mdi-chat me-3"></i>
-                                                          Send as SMS
+                                                          <i className="font-size-15 mdi mdi-refresh me-3 "></i>
+                                                          Reset
                                                         </a>
                                                       </div>
                                                     </div>
