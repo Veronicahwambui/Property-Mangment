@@ -92,6 +92,11 @@ export default function OccupancyReport() {
       setzones(res.data.data);
     });
   };
+  const fetchEstates = () => {
+    requestsServiceService.getAllEstates().then((res) => {
+      setestates(res.data.data);
+    });
+  };
   useEffect(() => {
     getEstates(zoneId);
   }, [zoneId]);
@@ -99,6 +104,7 @@ export default function OccupancyReport() {
   useEffect(() => {
     fetchAll();
     getZones();
+    fetchEstates();
   }, []);
 
   const formatCurrency = (x) => {

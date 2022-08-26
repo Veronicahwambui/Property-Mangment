@@ -226,8 +226,8 @@ export default function NewUnitsExpectedIncomeReport() {
                                   backgroundColor: "#fff",
                                   color: "#2C2F33",
                                   cursor: " pointer",
-                                  padding: " 5px 10px",
-                                  border: "2px solid #ccc",
+                                  padding: "7px 10px",
+                                  border: "1px solid #ccc",
                                   width: " 100%",
                                 }}
                               >

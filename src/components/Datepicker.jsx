@@ -9,11 +9,13 @@ export default function DatePicker(props) {
   return (
     <DateRangePicker onApply={handleEvent}>
       {/* <input style={{display:'none'}} /> */}
-      <i className="ti-calendar text-nowrap" style={{ padding: "4px" }}>
-        <span style={{ marginLeft: "6px" }}>
-          {props.startDate + " - " + props.endDate}
-        </span>
-      </i>
+      <span style={{ marginLeft: "6px" }}>
+        <i
+          className="mdi mdi-calendar text-nowrap"
+          style={{ padding: "4px" }}
+        ></i>
+        {props.startDate + " - " + props.endDate}
+      </span>
     </DateRangePicker>
   );
 }
