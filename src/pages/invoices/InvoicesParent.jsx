@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import StatusBadge from "../../components/StatusBadge";
 import authService from "../../services/auth.service";
 import Message from "../../components/Message";
+import DatePicker from "../../components/Datepicker";
 
 function InvoicesParent() {
   const [invoices, setinvoices] = useState([]);
@@ -16,25 +17,29 @@ function InvoicesParent() {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [status, setStatus] = useState("");
-  const [startDate, setStartDate] = useState(
-    moment().startOf("month").format("YYYY-MM-DD")
-  );
-  const [endDate, setEndDate] = useState(
-    moment(new Date()).add(3, "M").format("YYYY-MM-DD")
-  );
+  const [date, setDate] = useState({
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    endDate: new Date(),
+  });
+  const handleCallback = (sD, eD) => {
+    setDate({
+      ...date,
+      startDate: moment(sD).format("YYYY-MM-DD"),
+      endDate: moment(eD).format("YYYY-MM-DD"),
+    });
+  };
+
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
   const [transaction, settransaction] = useState({});
   const [paymentItems, setpaymentItems] = useState([]);
-  useEffect(() => { }, [transaction]);
-  useEffect(() => { }, [paymentItems]);
+  useEffect(() => {}, [transaction]);
+  useEffect(() => {}, [paymentItems]);
   const closeInvoice = () => {
     setpaymentItems([]);
     settransaction({});
     setinvoice_show(false);
   };
-
-
 
   useEffect(() => {
     getInvoices();
@@ -42,8 +47,8 @@ function InvoicesParent() {
   const sort = (event) => {
     event.preventDefault();
     let data = {
-      startDate: startDate,
-      endDate: endDate,
+      startDate: moment(date.startDate).format("YYYY-MM-DD"),
+      endDate: moment(date.endDate).format("YYYY-MM-DD"),
       size: size,
       page: page,
       search: status,
@@ -59,8 +64,8 @@ function InvoicesParent() {
   };
   const getInvoices = () => {
     let data = {
-      startDate: startDate,
-      endDate: endDate,
+      startDate: date.startDate,
+      endDate: date.endDate,
       size: size,
       page: page,
       search: status.trim(),
@@ -68,7 +73,8 @@ function InvoicesParent() {
     requestsServiceService.getParentInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
-      setStatus('')
+      $("#spinner").addClass("d-none");
+      setStatus("");
       window.scrollTo(0, 0);
     });
   };
@@ -104,17 +110,6 @@ function InvoicesParent() {
     style: "currency",
     currency: "KES",
   });
-  const addDate = (date) => {
-    setStartDate(new Date(date.target.value));
-  };
-  const addDate2 = (date) => {
-    setEndDate(new Date(date.target.value));
-  };
-
-  $(document).on("change", ".sdate", addDate);
-  $(document).on("change", ".edate", addDate2);
-
-
   // MESSAGE TEST
   const [details, setDetails] = useState({
     message: "",
@@ -134,8 +129,7 @@ function InvoicesParent() {
     setmode(mode);
   };
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.tenantName}, your monthly invoice ${inv.transactionId
-      } has been generated . Click here to pay for it`;
+    let mes = `Dear ${inv.tenantName}, your monthly invoice ${inv.transactionId} has been generated . Click here to pay for it`;
     let senderId =
       JSON.parse(authService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
@@ -199,6 +193,18 @@ function InvoicesParent() {
             </div>
           </div>
           <div className="row">
+            <div id="spinner">
+              <div id="status">
+                <div className="spinner-chase">
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div className="col-12">
               <div className="card">
                 <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
@@ -224,41 +230,28 @@ function InvoicesParent() {
                           </div>
                         </form>
                       </div>
-                      <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
-                        <div className=" p-2">
-                          <span className="input-group-text">
-                            <i className="mdi mdi-calendar">Start Date</i>
-                          </span>
-                          <input
-                            type="text"
-                            className="form-control mouse-pointer sdate"
-                            placeholder={`${startDate}`}
-                            name="dob"
-                            readOnly
-                            data-date-format="dd M, yyyy"
-                            data-date-container="#datepicker1"
-                            data-provide="datepicker"
-                            data-date-autoclose="true"
-                            data-date-end-date="+0d"
+                      <div
+                        className="input-group d-flex justify-content-end align-items-center"
+                        id="datepicker1"
+                      >
+                        <div
+                          style={{
+                            backgroundColor: "#fff",
+                            color: "#2C2F33",
+                            cursor: " pointer",
+                            padding: "7px 10px",
+                            border: "2px solid #ccc",
+                            width: " 100%",
+                          }}
+                        >
+                          <DatePicker
+                            onCallback={handleCallback}
+                            startDate={moment(date.startDate).format(
+                              "YYYY-MM-DD"
+                            )}
+                            endDate={moment(date.endDate).format("YYYY-MM-DD")}
                           />
                         </div>
-                        <div className=" p-2">
-                          <span className="input-group-text">
-                            <i className="mdi mdi-calendar">End Date: </i>
-                          </span>
-                          <input
-                            type="text"
-                            className="form-control mouse-pointer edate"
-                            name="dob"
-                            placeholder={`${endDate}`}
-                            readOnly
-                            data-date-format="dd M, yyyy"
-                            data-date-container="#datepicker1"
-                            data-provide="datepicker"
-                            data-date-autoclose="true"
-                          />
-                        </div>
-
                       </div>
                       <button className="btn btn-primary" onClick={sort}>
                         filter
@@ -283,7 +276,6 @@ function InvoicesParent() {
                     >
                       <thead className="table-light">
                         <tr className="table-dark">
-
                           <th>Invoice Number</th>
                           <th>Tenant</th>
                           <th>Premises</th>
@@ -291,7 +283,7 @@ function InvoicesParent() {
                           <th>Date Issued</th>
                           <th>Payment Status</th>
                           <th>Date Created</th>
-                      
+
                           <th className="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -299,11 +291,7 @@ function InvoicesParent() {
                         {invoices.length > 0 &&
                           invoices?.map((invoice, index) => (
                             <tr data-id={index} key={index}>
-
-                              <td
-                              >
-                                {invoice.transactionId}
-                              </td>
+                              <td>{invoice.transactionId}</td>
                               <td>{invoice.tenantName}</td>
                               <td>{invoice.premiseName}</td>
                               <td>{invoice.premiseUnitName}</td>
@@ -315,10 +303,12 @@ function InvoicesParent() {
                               <td>
                                 <StatusBadge type={invoice?.paymentStatus} />
                               </td>
-                              <td>{moment(invoice.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
                               <td>
-                             
-
+                                {moment(invoice.dateTimeCreated).format(
+                                  "YYYY-MM-DD HH:mm"
+                                )}
+                              </td>
+                              <td>
                                 <div className="d-flex justify-content-end">
                                   {/*<button type="button"*/}
                                   {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
@@ -352,19 +342,23 @@ function InvoicesParent() {
                                         <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                         Print
                                       </a>
-                                      <a className="dropdown-item "
+                                      <a
+                                        className="dropdown-item "
                                         onClick={() => {
                                           handleModeChange("Email");
                                           handleClicked(invoice, "Email");
-                                        }}>
+                                        }}
+                                      >
                                         <i className="font-size-15 mdi mdi-email me-3 "></i>
                                         Email Tenant
                                       </a>
-                                      <a className="dropdown-item "
+                                      <a
+                                        className="dropdown-item "
                                         onClick={() => {
                                           handleModeChange("SMS");
                                           handleClicked(invoice, "SMS");
-                                        }}>
+                                        }}
+                                      >
                                         <i className="font-size-15 mdi mdi-chat me-3 "></i>
                                         SMS Tenant
                                       </a>
@@ -386,53 +380,58 @@ function InvoicesParent() {
                         </tr>
                       </tfoot>
                     </table>
-                  </div>
-                  <div className="mt-4 mb-0 flex justify-between px-8">
-                    <select className="btn btn-md btn-primary" title="Select A range"
-                      onChange={(e) => sortSize(e)}
-                      value={size}
-                    >
-                      <option className="bs-title-option" value="">Select A range</option>
-                      <option value="10">10 Rows</option>
-                      <option value="30">30 Rows</option>
-                      <option value="50">50 Rows</option>
-                    </select>
-
+                    <div className="d-flex justify-content-between align-items-center">
+                      {pageCount !== 0 && (
+                        <>
+                          <select
+                            className="btn btn-md btn-primary"
+                            title="Select A range"
+                            onChange={(e) => sortSize(e)}
+                            value={size}
+                          >
+                            <option className="bs-title-option" value="">
+                              Select A range
+                            </option>
+                            <option value="10">10 Rows</option>
+                            <option value="30">30 Rows</option>
+                            <option value="50">50 Rows</option>
+                          </select>
+                          <nav
+                            aria-label="Page navigation comments"
+                            className="mt-4"
+                          >
+                            <ReactPaginate
+                              previousLabel="<"
+                              nextLabel=">"
+                              breakLabel="..."
+                              breakClassName="page-item"
+                              breakLinkClassName="page-link"
+                              pageCount={pageCount}
+                              pageRangeDisplayed={4}
+                              marginPagesDisplayed={2}
+                              containerClassName="pagination justify-content-center"
+                              pageClassName="page-item"
+                              pageLinkClassName="page-link"
+                              previousClassName="page-item"
+                              previousLinkClassName="page-link"
+                              nextClassName="page-item"
+                              nextLinkClassName="page-link"
+                              activeClassName="active"
+                              onPageChange={(data) => handlePageClick(data)}
+                            />
+                          </nav>
+                        </>
+                      )}
+                    </div>
                     {pageCount !== 0 && (
-                      <p className=" font-medium text-xs text-gray-700">
-                        {" "}
+                      <p className="font-medium  text-muted mt-2">
                         showing page{" "}
-                        <span className="text-green-700 text-opacity-100 font-bold text-sm">
-                          {page + 1}
+                        <span className="text-primary">
+                          {pageCount === 0 ? page : page + 1}
                         </span>{" "}
-                        of{" "}
-                        <span className="text-sm font-bold text-black">
-                          {pageCount}
-                        </span>{" "}
+                        of<span className="text-primary"> {pageCount}</span>{" "}
                         pages
                       </p>
-                    )}
-
-                    {pageCount !== 0 && (
-                      <ReactPaginate
-                        previousLabel={"prev"}
-                        nextLabel={"next"}
-                        breakLabel={"..."}
-                        pageCount={pageCount} // total number of pages needed
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={1}
-                        onPageChange={handlePageClick}
-                        breakClassName={"page-item"}
-                        breakLinkClassName={"page-link"}
-                        containerClassName={"pagination"}
-                        pageClassName={"page-item"}
-                        pageLinkClassName={"page-link"}
-                        previousClassName={"page-item"}
-                        previousLinkClassName={"page-link"}
-                        nextClassName={"page-item"}
-                        nextLinkClassName={"page-link"}
-                        activeClassName={"active"}
-                      />
                     )}
                   </div>
                 </div>
