@@ -191,7 +191,11 @@ function Landlords() {
 
                 <div class="card-body">
                   <div className="d-flex justify-content-between align-items-center pr-3">
-                    <div></div>
+                    <div>
+                      <h4 className="card-title text-capitalize mb-0 ">
+                        All Landlords
+                      </h4>
+                    </div>
                     <form className="d-flex justify-content-between align-items-center">
                       <div>
                         <div>
@@ -243,7 +247,7 @@ function Landlords() {
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
-                        <tr class="text-uppercase table-dark">
+                        <tr class="text-uppercase table-light">
                           <th>#</th>
                           <th>Name</th>
                           <th>Phone</th>
