@@ -35,18 +35,16 @@ export default function BulkMessagesList() {
       console.log(res.data.data);
       setTotalMessages(res.data.data);
       $("#spinner").addClass("d-none");
-      res.data.data?.map((item) => {
-        let x = Object.assign(
-          data,
-          { d: JSON.parse(item.data) },
-          { bulkRef: item.bulkReference },
-          { done: item.done }
-        );
-        console.log(x);
-        ds.push(x);
+      let x = 0;
+      let d = [];
+      res.data.data.forEach((message, index) => {
+        d.push({
+          data: JSON.parse(message.data),
+          bulkReference: message.bulkReference,
+          done: message.done,
+        });
+        setTotalMessages(d);
       });
-      console.log();
-      // setTotalMessages(ds);
     });
   };
 
@@ -164,21 +162,15 @@ export default function BulkMessagesList() {
                               messages?.map((message, index) => (
                                 <tr data-id={index} key={index}>
                                   <td>{message.bulkReference}</td>
-                                  <td>{JSON.parse(message.data).sendTo}</td>
+                                  <td>{message.data.sendTo}</td>
+                                  <td>{message.data.messageKind}</td>
+                                  <td>{message.data.messageType}</td>
                                   <td>
-                                    {JSON.parse(message.data).messageKind}
-                                  </td>
-                                  <td>
-                                    {JSON.parse(message.data).messageType}
-                                  </td>
-                                  <td>
-                                    {JSON.parse(message.data).whoToCharge === ""
+                                    {message.data.whoToCharge === ""
                                       ? "N/A"
-                                      : JSON.parse(message.data).whoToCharge}
+                                      : message.data.whoToCharge}
                                   </td>
-                                  <td>
-                                    {JSON.parse(message.data).period + " days"}
-                                  </td>
+                                  <td>{message.data.period + " days"}</td>
                                   <td>
                                     {moment(message.dateTimeCreated).format(
                                       "YYYY-MM-DD HH:mm"
@@ -193,12 +185,6 @@ export default function BulkMessagesList() {
                                   </td>
                                   <td>
                                     <div className="d-flex justify-content-end">
-                                      {/*<button type="button"*/}
-                                      {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                      {/*        // onClick={() => getOnemessage(message?.transaction.transactionId)}*/}
-                                      {/*        >Receive Payment*/}
-                                      {/*</button>*/}
-
                                       <div className="dropdown">
                                         <a
                                           className="text-muted font-size-16"
@@ -208,41 +194,6 @@ export default function BulkMessagesList() {
                                         >
                                           <i className="bx bx-dots-vertical-rounded"></i>
                                         </a>
-                                        <div className="dropdown-menu dropdown-menu-end ">
-                                          <a
-                                            className="dropdown-item cursor-pointer"
-                                            onClick={() => {
-                                              getOneBulkmessage(message);
-                                            }}
-                                          >
-                                            <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                            View
-                                          </a>
-                                          <a className="dropdown-item">
-                                            <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                            Print
-                                          </a>
-                                          <a
-                                            className="dropdown-item cursor-pointer"
-                                            // onClick={() => {
-                                            //   handleModeChange("Email");
-                                            //   handleClicked(message, "Email");
-                                            // }}
-                                          >
-                                            <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                            Email Tenant
-                                          </a>
-                                          <a
-                                            className="dropdown-item cursor-pointer"
-                                            // onClick={() => {
-                                            //   handleModeChange("SMS");
-                                            //   handleClicked(message, "SMS");
-                                            // }}
-                                          >
-                                            <i className="font-size-15 mdi mdi-chat me-3"></i>
-                                            Send as SMS
-                                          </a>
-                                        </div>
                                       </div>
                                     </div>
                                   </td>
@@ -269,55 +220,58 @@ export default function BulkMessagesList() {
                           </tfoot>
                         </table>
                         <div className="d-flex justify-content-between align-items-center">
-                          <select
-                            className="btn btn-md btn-primary"
-                            title="Select A range"
-                            onChange={(e) => sortSize(e)}
-                            value={size}
-                          >
-                            <option className="bs-title-option" value="">
-                              Select A range
-                            </option>
-                            <option value="10">10 Rows</option>
-                            <option value="30">30 Rows</option>
-                            <option value="50">50 Rows</option>
-                          </select>
-
-                          {pageCount !== 0 && pageCount > 1 && (
-                            <nav
-                              aria-label="Page navigation comments"
-                              className="mt-4"
-                            >
-                              <ReactPaginate
-                                previousLabel="<"
-                                nextLabel=">"
-                                breakLabel="..."
-                                breakClassName="page-item"
-                                breakLinkClassName="page-link"
-                                pageCount={pageCount}
-                                pageRangeDisplayed={4}
-                                marginPagesDisplayed={2}
-                                containerClassName="pagination justify-content-center"
-                                pageClassName="page-item"
-                                pageLinkClassName="page-link"
-                                previousClassName="page-item"
-                                previousLinkClassName="page-link"
-                                nextClassName="page-item"
-                                nextLinkClassName="page-link"
-                                activeClassName="active"
-                                onPageChange={(data) => handlePageClick(data)}
-                              />
-                            </nav>
+                          {pageCount !== 0 && (
+                            <>
+                              <select
+                                className="btn btn-md btn-primary"
+                                title="Select A range"
+                                onChange={(e) => sortSize(e)}
+                                value={size}
+                              >
+                                <option className="bs-title-option" value="">
+                                  Select A range
+                                </option>
+                                <option value="10">10 Rows</option>
+                                <option value="30">30 Rows</option>
+                                <option value="50">50 Rows</option>
+                              </select>
+                              <nav
+                                aria-label="Page navigation comments"
+                                className="mt-4"
+                              >
+                                <ReactPaginate
+                                  previousLabel="<"
+                                  nextLabel=">"
+                                  breakLabel="..."
+                                  breakClassName="page-item"
+                                  breakLinkClassName="page-link"
+                                  pageCount={pageCount}
+                                  pageRangeDisplayed={4}
+                                  marginPagesDisplayed={2}
+                                  containerClassName="pagination justify-content-center"
+                                  pageClassName="page-item"
+                                  pageLinkClassName="page-link"
+                                  previousClassName="page-item"
+                                  previousLinkClassName="page-link"
+                                  nextClassName="page-item"
+                                  nextLinkClassName="page-link"
+                                  activeClassName="active"
+                                  onPageChange={(data) => handlePageClick(data)}
+                                />
+                              </nav>
+                            </>
                           )}
                         </div>
-                        <h5 className="font-medium  text-muted mt-2">
-                          showing page{" "}
-                          <span className="text-primary">
-                            {pageCount === 0 ? page : page + 1}
-                          </span>{" "}
-                          of<span className="text-primary"> {pageCount}</span>{" "}
-                          pages
-                        </h5>
+                        {pageCount !== 0 && (
+                          <p className="font-medium  text-muted">
+                            showing page{" "}
+                            <span className="text-primary">
+                              {pageCount === 0 ? page : page + 1}
+                            </span>{" "}
+                            of<span className="text-primary"> {pageCount}</span>{" "}
+                            pages
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
