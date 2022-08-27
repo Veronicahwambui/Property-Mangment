@@ -1,5 +1,5 @@
 /* global $ */
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
@@ -14,7 +14,6 @@ import DatePicker from "../../components/Datepicker";
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
-  const [transaction, setTransaction] = useState({});
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
@@ -22,12 +21,110 @@ function Invoices() {
   // MODAL
   const [invoice_show, setinvoice_show] = useState(false);
   const [invoice_Date_show, setinvoice_Date_show] = useState(false);
+  const [receive_payment, setreceive_payment] = useState(false);
+  const [receivepaymentInvoice, setreceivepaymentInvoices] = useState([]);
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
 
   const showInvoiceDate = () => setinvoice_Date_show(true);
   const closeInvoiceDate = () => setinvoice_Date_show(false);
 
+  const showReceivePayment = () => setreceive_payment(true);
+  const closeReceivePayment = () => setreceive_payment(false);
+
+  const [billamount, setbillAmount] = useState("");
+  const [receivePaymentData, setReceivePaymentData] = useState({
+    approvalStatus: "NEUTRAL",
+    billAmount: "5.0",
+    billBalance: "0.0",
+    billId: 7317,
+    billNo: "BC2208-235869",
+    childAdminId: 47278,
+    clientAccountNo: "TR-I00016141",
+    clientPhoneNo: "0700000",
+    createdBy: 3,
+    dateCreated: "2022-08-23T08:15:48.000Z",
+    dateModified: null,
+    grandChildAdminId: 472781386,
+    incomeType: 1,
+    incomeTypeDescription: "BASIC CLASSES",
+    isActive: 1,
+    modifiedBy: 3,
+    paidBy: "-",
+    paidFor: 0,
+    parentAdminId: 47,
+    payReferenceNo: uuid().toString().toUpperCase(),
+    paymentId: 415,
+    paymentMode: "CASH",
+    printCount: 0,
+    printable: true,
+    receiptAmount: billamount,
+    receiptDate: null,
+    receiptInfoId: 27,
+    receiptNo: "22010823000026",
+    receiptSecurityCode:
+      "3ce0b2f5bedfdce52aeb98cf24dcf79682d7d9880b5d0223f03a35f54b5cf9dd",
+    receiptStatus: "1",
+    sessionCode: null,
+    subSystemUserId: "123",
+    subSystemUserName: "Test User",
+  });
+  const receiveOnePayment = (item) => {
+    setreceivepaymentInvoices(item);
+    setReceivePaymentData({
+      ...receivePaymentData,
+      billAmount: item.billAmount,
+      billBalance: item.billAmount - item.billPaidAmount,
+      billNo: item.billerBillNo,
+      clientAccountNo: item.transactionItemId,
+      receiptNo: undefined,
+      payReferenceNo: uuid().toString(),
+      clientPhoneNo: item.transaction.tenancy.tenant.phoneNumber,
+    });
+    showReceivePayment();
+  };
+
+  const handleReceivePayment = (e) => {
+    e.preventDefault();
+    let paymentdata = receivePaymentData;
+    let d = {
+      receiptAmount: parseInt(billamount),
+    };
+    let finalPaymentData = Object.assign(paymentdata, d);
+    let finalData = {
+      status: 200,
+      message: 1,
+      data: [
+        {
+          receiptInfo: finalPaymentData,
+        },
+      ],
+    };
+    requestsServiceService
+      .receivePayment(finalData)
+      .then((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success",
+        });
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+          closeReceivePayment();
+        }, 2000);
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          message: err.data.message,
+          color: "danger",
+        });
+      });
+  };
   const [date, setDate] = useState({
     startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     endDate: new Date(),
@@ -39,7 +136,6 @@ function Invoices() {
       endDate: moment(eD).format("YYYY-MM-DD"),
     });
   };
-
   const [oldInvoiceDate, setOldInvoiceDate] = useState(new Date());
   const [newInvoiceDate, setNewInvoiceDate] = useState(new Date());
   const [newInvoiceId, setNewInvoiceId] = useState(undefined);
@@ -55,7 +151,6 @@ function Invoices() {
 
   const sort = (event) => {
     event.preventDefault();
-    console.log(date.startDate, date.endDate);
     let data = {
       startDate: moment(date.startDate).format("YYYY-MM-DD"),
       endDate: moment(date.endDate).format("YYYY-MM-DD"),
@@ -77,11 +172,6 @@ function Invoices() {
     setSize(e.target.value);
     setPage(0);
   };
-  const reset = () => {
-    setSize(10);
-    setPage(1);
-  };
-
   const getInvoices = () => {
     let data = {
       startDate: date.startDate,
@@ -100,10 +190,7 @@ function Invoices() {
   const handlePageClick = (data) => {
     let d = data.selected;
     setPage(d);
-    // setPage(() => data.selected);
-    // console.log(page)
   };
-
   const total = () => {
     let sum = 0;
     let paid = 0;
@@ -114,7 +201,6 @@ function Invoices() {
     return sum - paid;
   };
   const getOneInvoice = (id) => {
-    console.log(id);
     let acc = invoices.find((invoice) => invoice.transactionItemId === id);
     setactiveInvoice(acc);
     showInvoice();
@@ -262,6 +348,14 @@ function Invoices() {
         }, 4000);
       });
   };
+
+  function uuid() {
+    return "XXXXXXXXXXX".replace(/[XY]/g, function (c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == "X" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
   return (
     <>
       <div className="page-content">
@@ -466,10 +560,21 @@ function Invoices() {
                                           Extend Invoice Dates
                                         </a>
                                       )}
-                                      <a className="dropdown-item">
-                                        <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                        Print
-                                      </a>
+                                      {invoice.billerBillNo !== null && (
+                                        <a
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            receiveOnePayment(invoice);
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-cash-multiple me-3 "></i>
+                                          Receive Payment
+                                        </a>
+                                      )}
+                                      {/*<a className="dropdown-item">*/}
+                                      {/*  <i className="font-size-15 mdi mdi-printer me-3 "></i>*/}
+                                      {/*  Print*/}
+                                      {/*</a>*/}
                                       <a
                                         className="dropdown-item cursor-pointer"
                                         onClick={() => {
@@ -779,6 +884,188 @@ function Invoices() {
             </button>
           </center>
         </Modal.Footer>
+      </Modal>
+
+      {/*RECEIVE PAYMENT */}
+      <Modal
+        show={receive_payment}
+        onHide={closeReceivePayment}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <h5 className="modal-title" id="myLargeModalLabel">
+            Receive Payment
+          </h5>
+        </Modal.Header>
+        <Modal.Body>
+          <StatusBadge type={receivepaymentInvoice?.paymentStatus} />
+          <div className="col-12">
+            <address>
+              <strong>Billed To:</strong>
+              <br />
+              {receivepaymentInvoice?.transaction?.tenantName} <br />
+              {receivepaymentInvoice?.transactionCustomerEmail}
+              <br />
+              {receivepaymentInvoice?.transaction?.premiseName + " , "}
+              {receivepaymentInvoice?.transaction?.premiseUnitName}
+              <br />
+              <br />
+              <p>
+                Issue date:{" "}
+                {moment(receivepaymentInvoice.dateTimeCreated).format(
+                  "DD-MM-YYYY"
+                )}
+              </p>
+              <p>
+                Due date:{" "}
+                {moment(receivepaymentInvoice.invoiceDate).format("DD-MM-YYYY")}
+              </p>
+            </address>
+            <p>Title: {receivepaymentInvoice?.transactionTitle}</p>
+            <p>Description: {receivepaymentInvoice?.transactionDescription}</p>
+          </div>
+          <div className="col-12">
+            <div className="py-2 mt-3">
+              <h3 className="font-size-15 fw-bold">
+                Invoice Details ({" "}
+                <span className="text-primary fw-medium">
+                  {receivepaymentInvoice?.transactionItemId}
+                </span>{" "}
+                )
+              </h3>
+            </div>
+          </div>
+          <div className="col-12">
+            <table className="table table-nowrap">
+              <thead>
+                <tr>
+                  <th style={{ width: "70px" }}>No.</th>
+                  <th>Item</th>
+                  <th>Quantity</th>
+                  <th>Unit Cost</th>
+                  <th className="text-end">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>01</td>
+                  <td>{receivepaymentInvoice?.applicableChargeName}</td>
+                  <td>
+                    {formatCurrency.format(receivepaymentInvoice.quantity)}
+                  </td>
+                  <td>
+                    {formatCurrency.format(receivepaymentInvoice?.unitCost)}
+                  </td>
+                  <td className="text-end">
+                    KES.{" "}
+                    {formatCurrency.format(receivepaymentInvoice?.billAmount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Total
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency.format(receivepaymentInvoice?.billAmount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Paid
+                  </td>
+                  <td className="text-end  fw-bold">
+                    {formatCurrency.format(
+                      receivepaymentInvoice?.billPaidAmount
+                    )}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="border-0 text-end">
+                    <strong>Balance</strong>
+                  </td>
+                  <td className="border-0 text-end">
+                    <h5 className="m-0 text-uppercase fw-bold">
+                      {" "}
+                      {formatCurrency.format(
+                        receivepaymentInvoice?.billAmount -
+                          receivepaymentInvoice?.billPaidAmount
+                      )}
+                    </h5>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Modal.Body>
+        {receivepaymentInvoice?.paymentStatus !== "Paid" && (
+          <Modal.Footer>
+            <div className="col-12">
+              <form onSubmit={(e) => handleReceivePayment(e)}>
+                <table className="w-100">
+                  <tbody>
+                    <tr data-id="1">
+                      <td>
+                        <label htmlFor="" className="">
+                          Payment Method
+                        </label>
+                        <select
+                          className="form-control"
+                          title="Select payment Method"
+                          disabled={true}
+                        >
+                          {/*<option value="Mpesa">MPESA</option>*/}
+                          <option value="Cash">CASH</option>
+                        </select>
+                      </td>
+                      <td className="px-3">
+                        <div className="phone-num">
+                          <label htmlFor="">Amount.</label>
+                          <input
+                            className="form-control w-100 d-flex"
+                            spellCheck="false"
+                            onChange={(event) =>
+                              setbillAmount(event.target.value)
+                            }
+                            placeholder="Enter amount"
+                            data-ms-editor="true"
+                            type="text"
+                            id="billamount"
+                            name="billamount"
+                            required={true}
+                          />
+                        </div>
+                      </td>
+                      <td className="text-right float-right">
+                        <div className="d-flex flex-column">
+                          <label className="opacity-0">Something</label>
+                          <button
+                            className="btn btn-primary w-md waves-effect waves-light"
+                            type="submit"
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <br />
+                {error.color !== "" && (
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                )}
+              </form>
+            </div>
+          </Modal.Footer>
+        )}
       </Modal>
     </>
   );

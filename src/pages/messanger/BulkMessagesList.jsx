@@ -31,17 +31,18 @@ export default function BulkMessagesList() {
     var data = {};
     var ds = [];
     requestsServiceService.getBulkMessages().then((res) => {
-      res.data.data?.map((item) => {
-        ds.push(
-          Object.assign(
-            data,
-            { d: JSON.parse(item.data) },
-            { bulkRef: item.bulkReference },
-            { done: item.done }
-          )
-        );
-      });
-      setTotalMessages(ds);
+      console.log(res.data.data);
+      setTotalMessages(res.data.data);
+      // res.data.data?.map((item) => {
+      //   let x = Object.assign(
+      //     data,
+      //     { d: JSON.parse(item.data) },
+      //     { bulkRef: item.bulkReference },
+      //     { done: item.done }
+      //   );
+      //   ds.push(x);
+      // });
+      // setTotalMessages(ds);
     });
   };
 
@@ -145,16 +146,22 @@ export default function BulkMessagesList() {
                             {messages.length > 0 &&
                               messages?.map((message, index) => (
                                 <tr data-id={index} key={index}>
-                                  <td>{message.bulkRef}</td>
-                                  <td>{message.d?.sendTo}</td>
-                                  <td>{message.d?.messageKind}</td>
-                                  <td>{message.d?.messageType}</td>
+                                  <td>{message.bulkReference}</td>
+                                  <td>{JSON.parse(message.data).sendTo}</td>
                                   <td>
-                                    {message.d?.whoToCharge === ""
-                                      ? "N/A"
-                                      : message.d?.whoToCharge}
+                                    {JSON.parse(message.data).messageKind}
                                   </td>
-                                  <td>{message.d?.period + " days"}</td>
+                                  <td>
+                                    {JSON.parse(message.data).messageType}
+                                  </td>
+                                  <td>
+                                    {JSON.parse(message.data).whoToCharge === ""
+                                      ? "N/A"
+                                      : JSON.parse(message.data).whoToCharge}
+                                  </td>
+                                  <td>
+                                    {JSON.parse(message.data).period + " days"}
+                                  </td>
                                   <td>
                                     {moment(message.dateTimeCreated).format(
                                       "YYYY-MM-DD HH:mm"
