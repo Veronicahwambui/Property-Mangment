@@ -108,6 +108,7 @@ function Invoices() {
           message: res.data.message,
           color: "success",
         });
+        getInvoices();
         setTimeout(() => {
           setError({
             ...error,
@@ -352,8 +353,9 @@ function Invoices() {
   function uuid() {
     return "XXXXXXXXXXX".replace(/[XY]/g, function (c) {
       var r = (Math.random() * 16) | 0,
-        v = c == "X" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
+        v = c == "X" ? r : (r & 0x7) | 0x10;
+      v = v.toString(16);
+      return v.toUpperCase();
     });
   }
   return (
@@ -446,13 +448,6 @@ function Invoices() {
                       </button>
                     </div>
                   </div>
-                  {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
-                  {/*     role="toolbar">*/}
-                  {/*  <button type="button"*/}
-                  {/*          className="btn btn-primary waves-effect btn-label waves-light me-3"><i*/}
-                  {/*    className="mdi mdi-printer label-icon"></i> Print Selected Invoices*/}
-                  {/*  </button>*/}
-                  {/*</div>*/}
                 </div>
                 <div className="card-body">
                   <div className="table-responsive">
