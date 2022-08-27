@@ -4,6 +4,7 @@ import requestsServiceService from "../../services/requestsService.service";
 import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import moment from "moment";
+import StatusBadge from "../../components/StatusBadge";
 
 export default function BulkMessagesList() {
   const [messages, setmessages] = useState([]);
@@ -33,15 +34,18 @@ export default function BulkMessagesList() {
     requestsServiceService.getBulkMessages().then((res) => {
       console.log(res.data.data);
       setTotalMessages(res.data.data);
-      // res.data.data?.map((item) => {
-      //   let x = Object.assign(
-      //     data,
-      //     { d: JSON.parse(item.data) },
-      //     { bulkRef: item.bulkReference },
-      //     { done: item.done }
-      //   );
-      //   ds.push(x);
-      // });
+      $("#spinner").addClass("d-none");
+      res.data.data?.map((item) => {
+        let x = Object.assign(
+          data,
+          { d: JSON.parse(item.data) },
+          { bulkRef: item.bulkReference },
+          { done: item.done }
+        );
+        console.log(x);
+        ds.push(x);
+      });
+      console.log();
       // setTotalMessages(ds);
     });
   };
@@ -67,6 +71,18 @@ export default function BulkMessagesList() {
     <>
       <div className="page-content">
         <div className="container-fluid">
+          <div id="spinner">
+            <div id="status">
+              <div className="spinner-chase">
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+              </div>
+            </div>
+          </div>
           <div className="row">
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -139,6 +155,7 @@ export default function BulkMessagesList() {
                               <th>Who to Charge</th>
                               <th>Time Period</th>
                               <th>Date Created</th>
+                              <th>Status</th>
                               <th className="text-right">Actions</th>
                             </tr>
                           </thead>
@@ -167,7 +184,13 @@ export default function BulkMessagesList() {
                                       "YYYY-MM-DD HH:mm"
                                     )}
                                   </td>
-
+                                  <td>
+                                    <StatusBadge
+                                      type={
+                                        message?.done ? "Done" : "In-Progress"
+                                      }
+                                    />
+                                  </td>
                                   <td>
                                     <div className="d-flex justify-content-end">
                                       {/*<button type="button"*/}
