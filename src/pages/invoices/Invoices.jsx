@@ -148,7 +148,7 @@ function Invoices() {
 
   useEffect(() => {
     getInvoices();
-  }, [page, size, pageCount]);
+  }, []);
 
   const sort = (event) => {
     event.preventDefault();
@@ -165,7 +165,6 @@ function Invoices() {
         setPageCount(res.data.totalPages);
         setinvoices(res.data.data);
         $("#spinner").addClass("d-none");
-        setSearchTerm("");
       })
       .then(() => {});
   };
@@ -179,7 +178,7 @@ function Invoices() {
       endDate: date.endDate,
       size: size,
       page: page,
-      applicableChargeName: searchTerm,
+      searchTerm: searchTerm.trim(),
     };
     requestsServiceService.getInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
@@ -358,6 +357,9 @@ function Invoices() {
       return v.toUpperCase();
     });
   }
+  const generateBillNo = () => {
+    console.log("");
+  };
   return (
     <>
       <div className="page-content">
@@ -457,19 +459,18 @@ function Invoices() {
                     >
                       <thead className="table-light">
                         <tr className="table-light">
-                          <th>Invoice Number</th>
-                          <th>Bill Reference No</th>
+                          <th>Invoice No</th>
+                          <th>Bill Ref</th>
                           <th>Tenant</th>
                           <th>Premises</th>
                           <th>Hse/Unit</th>
                           <th>Charge Name</th>
                           <th>Bill Amount</th>
                           <th>Paid Amount</th>
-                          <th className={"text-right"}>Total Balance</th>
+                          <th>Total Balance</th>
                           <th>Due Date</th>
                           <th>Payment Status</th>
                           <th>Date Created</th>
-
                           <th className="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -490,7 +491,13 @@ function Invoices() {
                                 {formatCurrency.format(invoice.billPaidAmount)}
                               </td>
                               <td className={"text-right"}>
-                                <span className="fw-semibold ">
+                                <span
+                                  className={
+                                    invoice.billPaidAmount > invoice.billAmount
+                                      ? "fw-semibold text-success"
+                                      : "fw-semibold text-danger"
+                                  }
+                                >
                                   {formatCurrency.format(
                                     invoice.billAmount - invoice.billPaidAmount
                                   )}
@@ -512,11 +519,6 @@ function Invoices() {
 
                               <td>
                                 <div className="d-flex justify-content-end">
-                                  {/*<button type="button"*/}
-                                  {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                  {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
-                                  {/*        >Receive Payment*/}
-                                  {/*</button>*/}
                                   <div className="dropdown">
                                     <a
                                       className="text-muted font-size-16"
@@ -553,6 +555,17 @@ function Invoices() {
                                         >
                                           <i className="font-size-15 mdi mdi-calendar-arrow-right me-3"></i>
                                           Extend Invoice Dates
+                                        </a>
+                                      )}
+                                      {invoice.billerBillNo === null && (
+                                        <a
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            generateBillNo(invoice);
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-cog me-3"></i>
+                                          Generate Bill No
                                         </a>
                                       )}
                                       {invoice.billerBillNo !== null && (
@@ -617,60 +630,59 @@ function Invoices() {
                         </tr>
                       </tfoot>
                     </table>
-                    <div className="d-flex justify-content-between align-items-center">
-                      {pageCount !== 0 && (
-                        <>
-                          <select
-                            className="btn btn-md btn-primary"
-                            title="Select A range"
-                            onChange={(e) => sortSize(e)}
-                            value={size}
-                          >
-                            <option className="bs-title-option" value="">
-                              Select A range
-                            </option>
-                            <option value="10">10 Rows</option>
-                            <option value="30">30 Rows</option>
-                            <option value="50">50 Rows</option>
-                          </select>
-                          <nav
-                            aria-label="Page navigation comments"
-                            className="mt-4"
-                          >
-                            <ReactPaginate
-                              previousLabel="<"
-                              nextLabel=">"
-                              breakLabel="..."
-                              breakClassName="page-item"
-                              breakLinkClassName="page-link"
-                              pageCount={pageCount}
-                              pageRangeDisplayed={4}
-                              marginPagesDisplayed={2}
-                              containerClassName="pagination justify-content-center"
-                              pageClassName="page-item"
-                              pageLinkClassName="page-link"
-                              previousClassName="page-item"
-                              previousLinkClassName="page-link"
-                              nextClassName="page-item"
-                              nextLinkClassName="page-link"
-                              activeClassName="active"
-                              onPageChange={(data) => handlePageClick(data)}
-                            />
-                          </nav>
-                        </>
-                      )}
-                    </div>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center">
                     {pageCount !== 0 && (
-                      <p className="font-medium  text-muted">
-                        showing page{" "}
-                        <span className="text-primary">
-                          {pageCount === 0 ? page : page + 1}
-                        </span>{" "}
-                        of<span className="text-primary"> {pageCount}</span>{" "}
-                        pages
-                      </p>
+                      <>
+                        <select
+                          className="btn btn-md btn-primary"
+                          title="Select A range"
+                          onChange={(e) => sortSize(e)}
+                          value={size}
+                        >
+                          <option className="bs-title-option" value="">
+                            Select A range
+                          </option>
+                          <option value="10">10 Rows</option>
+                          <option value="30">30 Rows</option>
+                          <option value="50">50 Rows</option>
+                        </select>
+                        <nav
+                          aria-label="Page navigation comments"
+                          className="mt-4"
+                        >
+                          <ReactPaginate
+                            previousLabel="<"
+                            nextLabel=">"
+                            breakLabel="..."
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link"
+                            pageCount={pageCount}
+                            pageRangeDisplayed={4}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            onPageChange={(data) => handlePageClick(data)}
+                          />
+                        </nav>
+                      </>
                     )}
                   </div>
+                  {pageCount !== 0 && (
+                    <p className="font-medium  text-muted">
+                      showing page{" "}
+                      <span className="text-primary">
+                        {pageCount === 0 ? page : page + 1}
+                      </span>{" "}
+                      of<span className="text-primary"> {pageCount}</span> pages
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
