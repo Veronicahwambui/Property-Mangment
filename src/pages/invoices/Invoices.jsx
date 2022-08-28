@@ -1,5 +1,5 @@
 /* global $ */
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
@@ -14,7 +14,6 @@ import DatePicker from "../../components/Datepicker";
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
-  const [transaction, setTransaction] = useState({});
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
@@ -22,12 +21,111 @@ function Invoices() {
   // MODAL
   const [invoice_show, setinvoice_show] = useState(false);
   const [invoice_Date_show, setinvoice_Date_show] = useState(false);
+  const [receive_payment, setreceive_payment] = useState(false);
+  const [receivepaymentInvoice, setreceivepaymentInvoices] = useState([]);
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
 
   const showInvoiceDate = () => setinvoice_Date_show(true);
   const closeInvoiceDate = () => setinvoice_Date_show(false);
 
+  const showReceivePayment = () => setreceive_payment(true);
+  const closeReceivePayment = () => setreceive_payment(false);
+
+  const [billamount, setbillAmount] = useState("");
+  const [receivePaymentData, setReceivePaymentData] = useState({
+    approvalStatus: "NEUTRAL",
+    billAmount: "5.0",
+    billBalance: "0.0",
+    billId: 7317,
+    billNo: "BC2208-235869",
+    childAdminId: 47278,
+    clientAccountNo: "TR-I00016141",
+    clientPhoneNo: "0700000",
+    createdBy: 3,
+    dateCreated: "2022-08-23T08:15:48.000Z",
+    dateModified: null,
+    grandChildAdminId: 472781386,
+    incomeType: 1,
+    incomeTypeDescription: "BASIC CLASSES",
+    isActive: 1,
+    modifiedBy: 3,
+    paidBy: "-",
+    paidFor: 0,
+    parentAdminId: 47,
+    payReferenceNo: uuid().toString().toUpperCase(),
+    paymentId: 415,
+    paymentMode: "CASH",
+    printCount: 0,
+    printable: true,
+    receiptAmount: billamount,
+    receiptDate: null,
+    receiptInfoId: 27,
+    receiptNo: "22010823000026",
+    receiptSecurityCode:
+      "3ce0b2f5bedfdce52aeb98cf24dcf79682d7d9880b5d0223f03a35f54b5cf9dd",
+    receiptStatus: "1",
+    sessionCode: null,
+    subSystemUserId: "123",
+    subSystemUserName: "Test User",
+  });
+  const receiveOnePayment = (item) => {
+    setreceivepaymentInvoices(item);
+    setReceivePaymentData({
+      ...receivePaymentData,
+      billAmount: item.billAmount,
+      billBalance: item.billAmount - item.billPaidAmount,
+      billNo: item.billerBillNo,
+      clientAccountNo: item.transactionItemId,
+      receiptNo: undefined,
+      payReferenceNo: uuid().toString(),
+      clientPhoneNo: item.transaction.tenancy.tenant.phoneNumber,
+    });
+    showReceivePayment();
+  };
+
+  const handleReceivePayment = (e) => {
+    e.preventDefault();
+    let paymentdata = receivePaymentData;
+    let d = {
+      receiptAmount: parseInt(billamount),
+    };
+    let finalPaymentData = Object.assign(paymentdata, d);
+    let finalData = {
+      status: 200,
+      message: 1,
+      data: [
+        {
+          receiptInfo: finalPaymentData,
+        },
+      ],
+    };
+    requestsServiceService
+      .receivePayment(finalData)
+      .then((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success",
+        });
+        getInvoices();
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+          closeReceivePayment();
+        }, 2000);
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          message: err.data.message,
+          color: "danger",
+        });
+      });
+  };
   const [date, setDate] = useState({
     startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     endDate: new Date(),
@@ -39,7 +137,6 @@ function Invoices() {
       endDate: moment(eD).format("YYYY-MM-DD"),
     });
   };
-
   const [oldInvoiceDate, setOldInvoiceDate] = useState(new Date());
   const [newInvoiceDate, setNewInvoiceDate] = useState(new Date());
   const [newInvoiceId, setNewInvoiceId] = useState(undefined);
@@ -51,11 +148,10 @@ function Invoices() {
 
   useEffect(() => {
     getInvoices();
-  }, [page, size, pageCount]);
+  }, []);
 
   const sort = (event) => {
     event.preventDefault();
-    console.log(date.startDate, date.endDate);
     let data = {
       startDate: moment(date.startDate).format("YYYY-MM-DD"),
       endDate: moment(date.endDate).format("YYYY-MM-DD"),
@@ -69,7 +165,6 @@ function Invoices() {
         setPageCount(res.data.totalPages);
         setinvoices(res.data.data);
         $("#spinner").addClass("d-none");
-        setSearchTerm("");
       })
       .then(() => {});
   };
@@ -77,18 +172,13 @@ function Invoices() {
     setSize(e.target.value);
     setPage(0);
   };
-  const reset = () => {
-    setSize(10);
-    setPage(1);
-  };
-
   const getInvoices = () => {
     let data = {
       startDate: date.startDate,
       endDate: date.endDate,
       size: size,
       page: page,
-      applicableChargeName: searchTerm,
+      searchTerm: searchTerm.trim(),
     };
     requestsServiceService.getInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
@@ -100,10 +190,7 @@ function Invoices() {
   const handlePageClick = (data) => {
     let d = data.selected;
     setPage(d);
-    // setPage(() => data.selected);
-    // console.log(page)
   };
-
   const total = () => {
     let sum = 0;
     let paid = 0;
@@ -114,7 +201,6 @@ function Invoices() {
     return sum - paid;
   };
   const getOneInvoice = (id) => {
-    console.log(id);
     let acc = invoices.find((invoice) => invoice.transactionItemId === id);
     setactiveInvoice(acc);
     showInvoice();
@@ -262,6 +348,18 @@ function Invoices() {
         }, 4000);
       });
   };
+
+  function uuid() {
+    return "XXXXXXXXXXX".replace(/[XY]/g, function (c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == "X" ? r : (r & 0x7) | 0x10;
+      v = v.toString(16);
+      return v.toUpperCase();
+    });
+  }
+  const generateBillNo = () => {
+    console.log("");
+  };
   return (
     <>
       <div className="page-content">
@@ -352,13 +450,6 @@ function Invoices() {
                       </button>
                     </div>
                   </div>
-                  {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
-                  {/*     role="toolbar">*/}
-                  {/*  <button type="button"*/}
-                  {/*          className="btn btn-primary waves-effect btn-label waves-light me-3"><i*/}
-                  {/*    className="mdi mdi-printer label-icon"></i> Print Selected Invoices*/}
-                  {/*  </button>*/}
-                  {/*</div>*/}
                 </div>
                 <div className="card-body">
                   <div className="table-responsive">
@@ -368,19 +459,18 @@ function Invoices() {
                     >
                       <thead className="table-light">
                         <tr className="table-light">
-                          <th>Invoice Number</th>
-                          <th>Bill Reference No</th>
+                          <th>Invoice No</th>
+                          <th>Bill Ref</th>
                           <th>Tenant</th>
                           <th>Premises</th>
                           <th>Hse/Unit</th>
                           <th>Charge Name</th>
                           <th>Bill Amount</th>
                           <th>Paid Amount</th>
-                          <th className={"text-right"}>Total Balance</th>
+                          <th>Total Balance</th>
                           <th>Due Date</th>
                           <th>Payment Status</th>
                           <th>Date Created</th>
-
                           <th className="text-right">Actions</th>
                         </tr>
                       </thead>
@@ -401,7 +491,13 @@ function Invoices() {
                                 {formatCurrency.format(invoice.billPaidAmount)}
                               </td>
                               <td className={"text-right"}>
-                                <span className="fw-semibold ">
+                                <span
+                                  className={
+                                    invoice.billPaidAmount > invoice.billAmount
+                                      ? "fw-semibold text-success"
+                                      : "fw-semibold text-danger"
+                                  }
+                                >
                                   {formatCurrency.format(
                                     invoice.billAmount - invoice.billPaidAmount
                                   )}
@@ -423,11 +519,6 @@ function Invoices() {
 
                               <td>
                                 <div className="d-flex justify-content-end">
-                                  {/*<button type="button"*/}
-                                  {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                  {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
-                                  {/*        >Receive Payment*/}
-                                  {/*</button>*/}
                                   <div className="dropdown">
                                     <a
                                       className="text-muted font-size-16"
@@ -466,10 +557,32 @@ function Invoices() {
                                           Extend Invoice Dates
                                         </a>
                                       )}
-                                      <a className="dropdown-item">
-                                        <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                        Print
-                                      </a>
+                                      {invoice.billerBillNo === null && (
+                                        <a
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            generateBillNo(invoice);
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-cog me-3"></i>
+                                          Generate Bill No
+                                        </a>
+                                      )}
+                                      {invoice.billerBillNo !== null && (
+                                        <a
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            receiveOnePayment(invoice);
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-cash-multiple me-3 "></i>
+                                          Receive Payment
+                                        </a>
+                                      )}
+                                      {/*<a className="dropdown-item">*/}
+                                      {/*  <i className="font-size-15 mdi mdi-printer me-3 "></i>*/}
+                                      {/*  Print*/}
+                                      {/*</a>*/}
                                       <a
                                         className="dropdown-item cursor-pointer"
                                         onClick={() => {
@@ -517,60 +630,59 @@ function Invoices() {
                         </tr>
                       </tfoot>
                     </table>
-                    <div className="d-flex justify-content-between align-items-center">
-                      {pageCount !== 0 && (
-                        <>
-                          <select
-                            className="btn btn-md btn-primary"
-                            title="Select A range"
-                            onChange={(e) => sortSize(e)}
-                            value={size}
-                          >
-                            <option className="bs-title-option" value="">
-                              Select A range
-                            </option>
-                            <option value="10">10 Rows</option>
-                            <option value="30">30 Rows</option>
-                            <option value="50">50 Rows</option>
-                          </select>
-                          <nav
-                            aria-label="Page navigation comments"
-                            className="mt-4"
-                          >
-                            <ReactPaginate
-                              previousLabel="<"
-                              nextLabel=">"
-                              breakLabel="..."
-                              breakClassName="page-item"
-                              breakLinkClassName="page-link"
-                              pageCount={pageCount}
-                              pageRangeDisplayed={4}
-                              marginPagesDisplayed={2}
-                              containerClassName="pagination justify-content-center"
-                              pageClassName="page-item"
-                              pageLinkClassName="page-link"
-                              previousClassName="page-item"
-                              previousLinkClassName="page-link"
-                              nextClassName="page-item"
-                              nextLinkClassName="page-link"
-                              activeClassName="active"
-                              onPageChange={(data) => handlePageClick(data)}
-                            />
-                          </nav>
-                        </>
-                      )}
-                    </div>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center">
                     {pageCount !== 0 && (
-                      <p className="font-medium  text-muted">
-                        showing page{" "}
-                        <span className="text-primary">
-                          {pageCount === 0 ? page : page + 1}
-                        </span>{" "}
-                        of<span className="text-primary"> {pageCount}</span>{" "}
-                        pages
-                      </p>
+                      <>
+                        <select
+                          className="btn btn-md btn-primary"
+                          title="Select A range"
+                          onChange={(e) => sortSize(e)}
+                          value={size}
+                        >
+                          <option className="bs-title-option" value="">
+                            Select A range
+                          </option>
+                          <option value="10">10 Rows</option>
+                          <option value="30">30 Rows</option>
+                          <option value="50">50 Rows</option>
+                        </select>
+                        <nav
+                          aria-label="Page navigation comments"
+                          className="mt-4"
+                        >
+                          <ReactPaginate
+                            previousLabel="<"
+                            nextLabel=">"
+                            breakLabel="..."
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link"
+                            pageCount={pageCount}
+                            pageRangeDisplayed={4}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            onPageChange={(data) => handlePageClick(data)}
+                          />
+                        </nav>
+                      </>
                     )}
                   </div>
+                  {pageCount !== 0 && (
+                    <p className="font-medium  text-muted">
+                      showing page{" "}
+                      <span className="text-primary">
+                        {pageCount === 0 ? page : page + 1}
+                      </span>{" "}
+                      of<span className="text-primary"> {pageCount}</span> pages
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -779,6 +891,188 @@ function Invoices() {
             </button>
           </center>
         </Modal.Footer>
+      </Modal>
+
+      {/*RECEIVE PAYMENT */}
+      <Modal
+        show={receive_payment}
+        onHide={closeReceivePayment}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <h5 className="modal-title" id="myLargeModalLabel">
+            Receive Payment
+          </h5>
+        </Modal.Header>
+        <Modal.Body>
+          <StatusBadge type={receivepaymentInvoice?.paymentStatus} />
+          <div className="col-12">
+            <address>
+              <strong>Billed To:</strong>
+              <br />
+              {receivepaymentInvoice?.transaction?.tenantName} <br />
+              {receivepaymentInvoice?.transactionCustomerEmail}
+              <br />
+              {receivepaymentInvoice?.transaction?.premiseName + " , "}
+              {receivepaymentInvoice?.transaction?.premiseUnitName}
+              <br />
+              <br />
+              <p>
+                Issue date:{" "}
+                {moment(receivepaymentInvoice.dateTimeCreated).format(
+                  "DD-MM-YYYY"
+                )}
+              </p>
+              <p>
+                Due date:{" "}
+                {moment(receivepaymentInvoice.invoiceDate).format("DD-MM-YYYY")}
+              </p>
+            </address>
+            <p>Title: {receivepaymentInvoice?.transactionTitle}</p>
+            <p>Description: {receivepaymentInvoice?.transactionDescription}</p>
+          </div>
+          <div className="col-12">
+            <div className="py-2 mt-3">
+              <h3 className="font-size-15 fw-bold">
+                Invoice Details ({" "}
+                <span className="text-primary fw-medium">
+                  {receivepaymentInvoice?.transactionItemId}
+                </span>{" "}
+                )
+              </h3>
+            </div>
+          </div>
+          <div className="col-12">
+            <table className="table table-nowrap">
+              <thead>
+                <tr>
+                  <th style={{ width: "70px" }}>No.</th>
+                  <th>Item</th>
+                  <th>Quantity</th>
+                  <th>Unit Cost</th>
+                  <th className="text-end">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>01</td>
+                  <td>{receivepaymentInvoice?.applicableChargeName}</td>
+                  <td>
+                    {formatCurrency.format(receivepaymentInvoice.quantity)}
+                  </td>
+                  <td>
+                    {formatCurrency.format(receivepaymentInvoice?.unitCost)}
+                  </td>
+                  <td className="text-end">
+                    KES.{" "}
+                    {formatCurrency.format(receivepaymentInvoice?.billAmount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Total
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency.format(receivepaymentInvoice?.billAmount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Paid
+                  </td>
+                  <td className="text-end  fw-bold">
+                    {formatCurrency.format(
+                      receivepaymentInvoice?.billPaidAmount
+                    )}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="border-0 text-end">
+                    <strong>Balance</strong>
+                  </td>
+                  <td className="border-0 text-end">
+                    <h5 className="m-0 text-uppercase fw-bold">
+                      {" "}
+                      {formatCurrency.format(
+                        receivepaymentInvoice?.billAmount -
+                          receivepaymentInvoice?.billPaidAmount
+                      )}
+                    </h5>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Modal.Body>
+        {receivepaymentInvoice?.paymentStatus !== "Paid" && (
+          <Modal.Footer>
+            <div className="col-12">
+              <form onSubmit={(e) => handleReceivePayment(e)}>
+                <table className="w-100">
+                  <tbody>
+                    <tr data-id="1">
+                      <td>
+                        <label htmlFor="" className="">
+                          Payment Method
+                        </label>
+                        <select
+                          className="form-control"
+                          title="Select payment Method"
+                          disabled={true}
+                        >
+                          {/*<option value="Mpesa">MPESA</option>*/}
+                          <option value="Cash">CASH</option>
+                        </select>
+                      </td>
+                      <td className="px-3">
+                        <div className="phone-num">
+                          <label htmlFor="">Amount.</label>
+                          <input
+                            className="form-control w-100 d-flex"
+                            spellCheck="false"
+                            onChange={(event) =>
+                              setbillAmount(event.target.value)
+                            }
+                            placeholder="Enter amount"
+                            data-ms-editor="true"
+                            type="text"
+                            id="billamount"
+                            name="billamount"
+                            required={true}
+                          />
+                        </div>
+                      </td>
+                      <td className="text-right float-right">
+                        <div className="d-flex flex-column">
+                          <label className="opacity-0">Something</label>
+                          <button
+                            className="btn btn-primary w-md waves-effect waves-light"
+                            type="submit"
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <br />
+                {error.color !== "" && (
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                )}
+              </form>
+            </div>
+          </Modal.Footer>
+        )}
       </Modal>
     </>
   );

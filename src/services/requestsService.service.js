@@ -750,16 +750,16 @@ class RequestsService {
     return axiosInstance.get(baseUrl + "/reports/dashboard/admin");
   }
 
-  adminAgedArrearsReports(){
-    return axiosInstance.get(baseUrl + "/reports/adminAgedArrearsReport")
+  adminAgedArrearsReports() {
+    return axiosInstance.get(baseUrl + "/reports/adminAgedArrearsReport");
   }
 
-  occupancyReport(){
-    return axiosInstance.get(baseUrl + "/reports/occupancyReport")
+  occupancyReport() {
+    return axiosInstance.get(baseUrl + "/reports/occupancyReport");
   }
 
-  newUnitsExpectedIncomeReportResponse(){
-    return axiosInstance.get(baseUrl + "/reports/newUnitsExpectedIncomeReport")
+  newUnitsExpectedIncomeReportResponse() {
+    return axiosInstance.get(baseUrl + "/reports/newUnitsExpectedIncomeReport");
   }
 
   //   DASHBOARD
@@ -1103,6 +1103,9 @@ class RequestsService {
         "&endDate=" +
         endDate
     );
+  }
+  receivePayment(data) {
+    return axiosInstance.post(baseUrl + "/payments/invoice/callback", data);
   }
 }
 
