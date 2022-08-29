@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
-import DatePicker from "../../components/Datepicker";
-
+import DatePickRange from "../../components/Datepicker";
 export default function OccupancyReport() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [clientCountyName, setclientCountyName] = useState(
@@ -239,7 +238,7 @@ export default function OccupancyReport() {
                                   width: " 100%",
                                 }}
                               >
-                                <DatePicker
+                                <DatePickRange
                                   onCallback={handleCallback}
                                   startDate={moment(date.startDate).format(
                                     "YYYY/MM/DD"

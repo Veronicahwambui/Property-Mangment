@@ -39,8 +39,6 @@ function Receipts() {
     showInvoice();
   };
 
-
-
   // MESSAGE TEST
   const [details, setDetails] = useState({
     message: "",
@@ -61,10 +59,11 @@ function Receipts() {
   };
 
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.paidBy}, your payment for invoice ${inv.billNo
-      } for KES ${formatCurrency.format(
-        inv.receiptAmount
-      )} has been received. Thank you`;
+    let mes = `Dear ${inv.paidBy}, your payment for invoice ${
+      inv.billNo
+    } for KES ${formatCurrency.format(
+      inv.receiptAmount
+    )} has been received. Thank you`;
     let senderId =
       JSON.parse(authService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
@@ -72,15 +71,12 @@ function Receipts() {
     setDetails({
       ...details,
       message: mes,
-      contact:
-        mod === "Email"
-          ? inv?.tenant?.email
-          : inv?.tenant?.phoneNumber,
-      entity: inv.tenant !=undefined ? inv.tenant.id : inv.id,
+      contact: mod === "Email" ? inv?.tenant?.email : inv?.tenant?.phoneNumber,
+      entity: inv.tenant != undefined ? inv.tenant.id : inv.id,
       recipientName: inv?.tenantName,
       createdBy: authService.getCurrentUserName(),
       senderId: senderId,
-      subject: "Invoice Payment"
+      subject: "Invoice Payment",
     });
 
     $(".email-overlay").removeClass("d-none");
@@ -104,7 +100,6 @@ function Receipts() {
       subject: "Customer Receipt",
     });
   };
-
 
   return (
     <>
@@ -232,17 +227,15 @@ function Receipts() {
                     >
                       <thead className="table-light">
                         <tr className="table-dark">
-
-                          <th>receiptNo</th>
-                          <th>paid by</th>
-                          <th>bill amount</th>
-                          <th>bill balance</th>
-                          <th>payment mode</th>
-                          <th>payment ref</th>
-                          <th></th>
+                          <th>ReceiptNo</th>
+                          <th>Paid by</th>
+                          <th>Tenant</th>
+                          <th>Bill amount</th>
+                          <th>Bill balance</th>
+                          <th>Payment mode</th>
+                          <th>Payment ref</th>
                           <th>Date Created</th>
                           <th className="text-right">Actions</th>
-                         
                         </tr>
                       </thead>
                       <tbody>
@@ -254,7 +247,7 @@ function Receipts() {
                               <td>{statement.paidBy}</td>
                               <td>
                                 {statement?.tenant?.tenantType ===
-                                  "INDIVIDUAL" ? (
+                                "INDIVIDUAL" ? (
                                   <>
                                     {statement?.tenant?.firstName}{" "}
                                     {statement?.tenant?.lastName}
@@ -277,7 +270,11 @@ function Receipts() {
                               </td>
                               <td>{statement.paymentMode}</td>
                               <td>{statement.payReferenceNo}</td>
-                              <td>{moment(statement.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                              <td>
+                                {moment(statement.dateTimeCreated).format(
+                                  "YYYY-MM-DD HH:mm"
+                                )}
+                              </td>
 
                               <td>
                                 <div className="d-flex justify-content-end">
@@ -290,34 +287,37 @@ function Receipts() {
                                     >
                                       <i className="bx bx-dots-vertical-rounded"></i>
                                     </a>
-                                    <div className="dropdown-menu dropdown-menu-end ">
-                                      <span
-                                        className="dropdown-item"
-                                        href="#"
+                                    <div className="dropdown-menu dropdown-menu-end cursor-pointer">
+                                      <a
+                                        className="dropdown-item cursor-pointer"
                                         onClick={() =>
                                           getOneInvoice(statement.billNo)
                                         }
                                       >
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
-                                      </span>
+                                      </a>
                                       <a className="dropdown-item " href="# ">
                                         <i className="font-size-15 mdi mdi-printer me-3 "></i>
                                         Print
                                       </a>
-                                      <a className="dropdown-item "
+                                      <a
+                                        className="dropdown-item "
                                         onClick={() => {
                                           handleModeChange("Email");
                                           handleClicked(statement, "Email");
-                                        }}>
+                                        }}
+                                      >
                                         <i className="font-size-15 mdi mdi-email me-3 "></i>
                                         Email Tenant
                                       </a>
-                                      <a className="dropdown-item "
+                                      <a
+                                        className="dropdown-item "
                                         onClick={() => {
                                           handleModeChange("SMS");
                                           handleClicked(statement, "SMS");
-                                        }}>
+                                        }}
+                                      >
                                         <i className="font-size-15 mdi mdi-chat me-3 "></i>
                                         Send as SMS
                                       </a>
