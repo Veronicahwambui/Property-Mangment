@@ -8,8 +8,7 @@ import { Link } from "react-router-dom";
 import StatusBadge from "../../components/StatusBadge";
 import authService from "../../services/auth.service";
 import Message from "../../components/Message";
-import DatePicker from "../../components/Datepicker";
-
+import DatePickRange from "../../components/Datepicker";
 function InvoicesParent() {
   const [invoices, setinvoices] = useState([]);
   const [activeInvoice] = useState({});
@@ -244,7 +243,7 @@ function InvoicesParent() {
                             width: " 100%",
                           }}
                         >
-                          <DatePicker
+                          <DatePickRange
                             onCallback={handleCallback}
                             startDate={moment(date.startDate).format(
                               "YYYY-MM-DD"

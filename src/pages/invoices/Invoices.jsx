@@ -9,7 +9,8 @@ import axios from "axios";
 import StatusBadge from "../../components/StatusBadge";
 import Message from "../../components/Message";
 import AuthService from "../../services/auth.service";
-import DatePicker from "../../components/Datepicker";
+import DatePickRange from "../../components/Datepicker";
+import DatePicker from "react-datepicker";
 
 function Invoices() {
   const [invoices, setinvoices] = useState([]);
@@ -440,7 +441,7 @@ function Invoices() {
                             width: " 100%",
                           }}
                         >
-                          <DatePicker
+                          <DatePickRange
                             onCallback={handleCallback}
                             startDate={moment(date.startDate).format(
                               "YYYY-MM-DD"

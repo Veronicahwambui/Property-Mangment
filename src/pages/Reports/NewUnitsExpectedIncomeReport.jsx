@@ -4,8 +4,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import ReactPaginate from "react-paginate";
 import moment from "moment";
-import DatePicker from "../../components/Datepicker";
-
+import DatePickRange from "../../components/Datepicker";
 export default function NewUnitsExpectedIncomeReport() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [clientCountyName, setclientCountyName] = useState(
@@ -231,7 +230,7 @@ export default function NewUnitsExpectedIncomeReport() {
                                   width: " 100%",
                                 }}
                               >
-                                <DatePicker
+                                <DatePickRange
                                   onCallback={handleCallback}
                                   startDate={moment(date.startDate).format(
                                     "YYYY/MM/DD"

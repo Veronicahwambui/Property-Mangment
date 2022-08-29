@@ -1,6 +1,6 @@
 /* global $ */
 import moment from "moment";
-import DatePicker from "../../components/Datepicker";
+import DatePickRange from "../../components/Datepicker";
 import ReactPaginate from "react-paginate";
 
 import React from "react";
@@ -239,7 +239,7 @@ function AllTenants() {
                             width: " 100%",
                           }}
                         >
-                          <DatePicker
+                          <DatePickRange
                             onCallback={handleCallback}
                             startDate={moment(date.startDate).format(
                               "YYYY-MM-DD"
