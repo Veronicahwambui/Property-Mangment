@@ -1,7 +1,7 @@
 import DateRangePicker from "react-bootstrap-daterangepicker";
 import "bootstrap-daterangepicker/daterangepicker.css";
 
-export default function DatePicker(props) {
+export default function DatePickRange(props) {
   const handleEvent = (event, picker) => {
     props.onCallback(picker.startDate, picker.endDate, event);
   };
