@@ -32,8 +32,6 @@ export default function BulkMessagesList() {
     var data = {};
     var ds = [];
     requestsServiceService.getBulkMessages().then((res) => {
-      console.log(res.data.data);
-      setTotalMessages(res.data.data);
       $("#spinner").addClass("d-none");
       let x = 0;
       let d = [];
