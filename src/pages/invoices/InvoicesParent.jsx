@@ -280,7 +280,7 @@ function InvoicesParent() {
                           <th>Tenant</th>
                           <th>Premises</th>
                           <th>Hse/Unit</th>
-                          <th>Date Issued</th>
+                          <th>Due Date</th>
                           <th>Payment Status</th>
                           <th>Date Created</th>
 
