@@ -150,6 +150,10 @@ function Invoices() {
     getInvoices();
   }, []);
 
+  useEffect(() => {
+    getInvoices();
+  }, [page]);
+
   const sort = (event) => {
     event.preventDefault();
     let data = {
