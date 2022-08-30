@@ -104,13 +104,9 @@ export default function AdminArrears() {
     });
   };
 
-  const getEstates = (zoneId) => {
+  const getEstates = () => {
     requestsServiceService.getAllEstates().then((res) => {
-      let resp = res.data.data;
-      let es = resp.filter(
-        (item) => parseInt(item.zone?.id) === parseInt(zoneId)
-      );
-      setestates(es);
+      setestates(res.data.data);
     });
   };
   const getZones = () => {
@@ -118,14 +114,10 @@ export default function AdminArrears() {
       setzones(res.data.data);
     });
   };
-
-  useEffect(() => {
-    getEstates(zoneId);
-  }, [zoneId]);
-
   useEffect(() => {
     fetchAll();
     getZones();
+    getEstates();
   }, []);
 
   const formatCurrency = (x) => {
