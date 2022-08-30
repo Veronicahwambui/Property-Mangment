@@ -14,7 +14,9 @@ export default function BulkMessagesList() {
   const [totalMessages, setTotalMessages] = useState([]);
 
   const sortSize = (e) => {
-    setSize(e.target.value);
+    setPage(0);
+    setItemOffset(0);
+    setSize(parseInt(e.target.value));
   };
   const [itemOffset, setItemOffset] = useState(0);
 
@@ -47,9 +49,13 @@ export default function BulkMessagesList() {
   };
 
   const handlePageClick = (event) => {
+    console.log(event);
     const newOffset = (event.selected * size) % totalMessages.length;
     setItemOffset(newOffset);
     setPage(event.selected);
+  };
+  const handleClick = (event) => {
+    console.log(event.selected);
   };
 
   const [activeMessage, setActiveMessage] = useState({});
@@ -255,6 +261,7 @@ export default function BulkMessagesList() {
                                   nextLinkClassName="page-link"
                                   activeClassName="active"
                                   onPageChange={(data) => handlePageClick(data)}
+                                  forcePage={page}
                                 />
                               </nav>
                             </>

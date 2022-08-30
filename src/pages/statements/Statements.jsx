@@ -22,10 +22,30 @@ function Statements() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
   useEffect(() => {
     getStatements();
   }, []);
+  // PAGINATION
+  const sortSize = (e) => {
+    setSize(e.target.value);
+  };
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(1);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [currentStatements, setCurrentStatements] = useState([]);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setCurrentStatements(statements.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(statements.length / size));
+  }, [itemOffset, size, statements]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * size) % statements.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
 
   const getStatements = () => {
     let data = { startDate: startDate, endDate: endDate };
@@ -47,46 +67,47 @@ function Statements() {
     color: "",
   });
 
-const [utilData,setUtilData] = useState( {
-  newBillNo: '',
-  statementId: '',
-  tenantId: '',
-})
+  const [utilData, setUtilData] = useState({
+    newBillNo: "",
+    statementId: "",
+    tenantId: "",
+  });
 
-const setUtilizeValues = (statementId,tenantId)=>{
-  setUtilData({
-    ...utilData ,
-    newBillNo: '',
-    statementId: statementId,
-    tenantId: tenantId,
-  })
-}
-
-const searchBillNo = async (e)=>{
-  e.preventDefault();
-  handleClose()
-
-await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=>{
-   console.log(res.data);
-   if( res.data.paymentStatus !== "PAID" && res.data.status === true){
-     utilize();
-  }else {
-    setError({
-      ...error,
-      message: 'ERROR: Bill is already paid',
-      color: "danger",
+  const setUtilizeValues = (statementId, tenantId) => {
+    setUtilData({
+      ...utilData,
+      newBillNo: "",
+      statementId: statementId,
+      tenantId: tenantId,
     });
-  }
-  setTimeout(() => {
-    setError({
-      ...error,
-      message: "",
-      color: "",
-    });
-  }, 2000);
-  
-})
-}
+  };
+
+  const searchBillNo = async (e) => {
+    e.preventDefault();
+    handleClose();
+
+    await requestsServiceService
+      .viewTransactionItem(utilData.newBillNo)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.paymentStatus !== "PAID" && res.data.status === true) {
+          utilize();
+        } else {
+          setError({
+            ...error,
+            message: "ERROR: Bill is already paid",
+            color: "danger",
+          });
+        }
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        }, 2000);
+      });
+  };
 
   const utilize = () => {
     requestsServiceService.utilize(utilData).then((res) => {
@@ -112,7 +133,6 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
       }, 2000);
     });
   };
-
 
   return (
     <>
@@ -183,7 +203,6 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
                     >
                       <thead className="table-light">
                         <tr className="table-dark">
-                      
                           <th>Bill No</th>
                           <th>Receipt Amount</th>
                           <th>Pay Reference No</th>
@@ -196,11 +215,9 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
                         </tr>
                       </thead>
                       <tbody>
-                        {statements &&
-                          statements?.length > 0 &&
-                          statements?.map((statement, index) => (
+                        {currentStatements?.length > 0 &&
+                          currentStatements?.map((statement, index) => (
                             <tr data-id={index} key={index}>
-                            
                               <td>
                                 {
                                   JSON.parse(statement.response).receiptInfo
@@ -229,7 +246,11 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
                                   statement.utilisedAmount
                                 )}
                               </td>
-                              <td>{moment(statement.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                              <td>
+                                {moment(statement.dateTimeCreated).format(
+                                  "YYYY-MM-DD HH:mm"
+                                )}
+                              </td>
 
                               <td>
                                 <div className="d-flex justify-content-end">
@@ -245,7 +266,6 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
                                     <div className="dropdown-menu dropdown-menu-end ">
                                       <span
                                         className="dropdown-item cursor-pinter"
-                                        
                                         onClick={() =>
                                           getOneInvoice(statement.billNo)
                                         }
@@ -253,12 +273,18 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
                                       </span>
-                                   
+
                                       {statement.utilisedAmount <
                                         statement.receiptAmount && (
                                         <a
                                           className="dropdown-item  cursor-pointer"
-                                          onClick={()=>{ handleShow();setUtilizeValues(  statement?.id, statement?.tenant?.id)}}
+                                          onClick={() => {
+                                            handleShow();
+                                            setUtilizeValues(
+                                              statement?.id,
+                                              statement?.tenant?.id
+                                            );
+                                          }}
                                         >
                                           <i className="font-size-15 mdi mdi-account-check me-3 "></i>
                                           Utilize
@@ -277,7 +303,8 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
                             className="text-capitalize text-nowrap"
                             colSpan="3"
                           >
-                            {statements && statements?.length} Statements
+                            {currentStatements && currentStatements?.length}{" "}
+                            Statements
                           </th>
                           <td className="text-nowrap text-right" colSpan="7">
                             <span className="fw-semibold">
@@ -287,8 +314,60 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
                         </tr>
                       </tfoot>
                     </table>
+                    <div className="d-flex justify-content-between align-items-center">
+                      {pageCount !== 0 && (
+                        <>
+                          <select
+                            className="btn btn-md btn-primary"
+                            title="Select A range"
+                            onChange={(e) => sortSize(e)}
+                            value={size}
+                          >
+                            <option className="bs-title-option" value="">
+                              Select A range
+                            </option>
+                            <option value="10">10 Rows</option>
+                            <option value="30">30 Rows</option>
+                            <option value="50">50 Rows</option>
+                          </select>
+                          <nav
+                            aria-label="Page navigation comments"
+                            className="mt-4"
+                          >
+                            <ReactPaginate
+                              previousLabel="<"
+                              nextLabel=">"
+                              breakLabel="..."
+                              breakClassName="page-item"
+                              breakLinkClassName="page-link"
+                              pageCount={pageCount}
+                              pageRangeDisplayed={4}
+                              marginPagesDisplayed={2}
+                              containerClassName="pagination justify-content-center"
+                              pageClassName="page-item"
+                              pageLinkClassName="page-link"
+                              previousClassName="page-item"
+                              previousLinkClassName="page-link"
+                              nextClassName="page-item"
+                              nextLinkClassName="page-link"
+                              activeClassName="active"
+                              onPageChange={(data) => handlePageClick(data)}
+                            />
+                          </nav>
+                        </>
+                      )}
+                    </div>
+                    {pageCount !== 0 && (
+                      <p className="font-medium  text-muted">
+                        showing page{" "}
+                        <span className="text-primary">
+                          {pageCount === 0 ? page : page + 1}
+                        </span>{" "}
+                        of
+                        <span className="text-primary"> {pageCount}</span> pages
+                      </p>
+                    )}
                   </div>
-              
                 </div>
               </div>
             </div>
@@ -391,18 +470,29 @@ await requestsServiceService.viewTransactionItem(utilData.newBillNo).then((res)=
             Search for Bill to utilize
           </h5>
         </Modal.Header>
-        <form onSubmit={ (e) => searchBillNo(e)}>
-        <Modal.Body>
-           <div className="form-group  justify-content-center d-flex flex-column">
-             <label htmlFor="">BILL NO</label>
-             <input type="text" className="form-control"  value={utilData.newBillNo} onChange={e => setUtilData({...utilData ,newBillNo: e.target.value})} placeholder='Enter Bill No ' required/>
-           </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <div>
-           <button className="btn btn-sm btn-primary" type="submit">Search</button>
-          </div>
-        </Modal.Footer>
+        <form onSubmit={(e) => searchBillNo(e)}>
+          <Modal.Body>
+            <div className="form-group  justify-content-center d-flex flex-column">
+              <label htmlFor="">BILL NO</label>
+              <input
+                type="text"
+                className="form-control"
+                value={utilData.newBillNo}
+                onChange={(e) =>
+                  setUtilData({ ...utilData, newBillNo: e.target.value })
+                }
+                placeholder="Enter Bill No "
+                required
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <div>
+              <button className="btn btn-sm btn-primary" type="submit">
+                Search
+              </button>
+            </div>
+          </Modal.Footer>
         </form>
       </Modal>
     </>

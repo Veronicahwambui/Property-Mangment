@@ -153,7 +153,7 @@ function Invoices() {
 
   useEffect(() => {
     getInvoices();
-  }, [page]);
+  }, [page, size]);
 
   const sort = (event) => {
     event.preventDefault();
@@ -674,6 +674,7 @@ function Invoices() {
                             nextLinkClassName="page-link"
                             activeClassName="active"
                             onPageChange={(data) => handlePageClick(data)}
+                            forcePage={page}
                           />
                         </nav>
                       </>
@@ -753,7 +754,7 @@ function Invoices() {
                 <tr>
                   <td>01</td>
                   <td>{activeInvoice?.applicableChargeName}</td>
-                  <td>{formatCurrency.format(activeInvoice.quantity)}</td>
+                  <td>{activeInvoice.quantity}</td>
                   <td>{formatCurrency.format(activeInvoice?.unitCost)}</td>
                   <td className="text-end">
                     KES. {formatCurrency.format(activeInvoice?.billAmount)}
@@ -799,67 +800,70 @@ function Invoices() {
             </table>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <div className="col-12">
-            <form onSubmit={sendSTK}>
-              <table className="w-100">
-                <tbody>
-                  <tr data-id="1">
-                    <td>
-                      <label htmlFor="" className="">
-                        Payment Method
-                      </label>
-                      <select
-                        className="form-control"
-                        title="Select payment Method"
-                        disabled={true}
-                      >
-                        <option value="Mpesa">MPESA</option>
-                        <option value="Cash">CASH</option>
-                      </select>
-                    </td>
-                    <td className="px-3">
-                      <div className="phone-num">
-                        <label htmlFor="">Phone No.</label>
-                        <input
-                          className="form-control w-100 d-flex"
-                          spellCheck="false"
-                          onChange={(event) =>
-                            setphonenumber(event.target.value)
-                          }
-                          data-ms-editor="true"
-                          type="tel"
-                          id="phone"
-                          name="phone"
-                          placeholder="07XXXXXXXX"
-                          pattern="[0]{1}[0-9]{9}"
-                          required={true}
-                        />
-                      </div>
-                    </td>
-                    <td className="text-right float-right">
-                      <div className="d-flex flex-column">
-                        <label className="opacity-0">Something</label>
-                        <button
-                          type="submit"
-                          className="btn btn-primary w-md waves-effect waves-light"
+        {(activeInvoice.paymentStatus === "PENDING" ||
+          activeInvoice.paymentStatus === "Partially-Paid") && (
+          <Modal.Footer>
+            <div className="col-12">
+              <form onSubmit={sendSTK}>
+                <table className="w-100">
+                  <tbody>
+                    <tr data-id="1">
+                      <td>
+                        <label htmlFor="" className="">
+                          Payment Method
+                        </label>
+                        <select
+                          className="form-control"
+                          title="Select payment Method"
+                          disabled={true}
                         >
-                          Submit
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <br />
-              {error.color !== "" && (
-                <div className={"alert alert-" + error.color} role="alert">
-                  {error.message}
-                </div>
-              )}
-            </form>
-          </div>
-        </Modal.Footer>
+                          <option value="Mpesa">MPESA</option>
+                          <option value="Cash">CASH</option>
+                        </select>
+                      </td>
+                      <td className="px-3">
+                        <div className="phone-num">
+                          <label htmlFor="">Phone No.</label>
+                          <input
+                            className="form-control w-100 d-flex"
+                            spellCheck="false"
+                            onChange={(event) =>
+                              setphonenumber(event.target.value)
+                            }
+                            data-ms-editor="true"
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="0XXXXXXXXX"
+                            pattern="[0]{1}[0-9]{9}"
+                            required={true}
+                          />
+                        </div>
+                      </td>
+                      <td className="text-right float-right">
+                        <div className="d-flex flex-column">
+                          <label className="opacity-0">Something</label>
+                          <button
+                            type="submit"
+                            className="btn btn-primary w-md waves-effect waves-light"
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <br />
+                {error.color !== "" && (
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                )}
+              </form>
+            </div>
+          </Modal.Footer>
+        )}
       </Modal>
 
       {/* INVOICE DATE  */}
