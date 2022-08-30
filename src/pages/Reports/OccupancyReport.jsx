@@ -22,7 +22,6 @@ export default function OccupancyReport() {
     endDate: new Date(),
   });
   const handleCallback = (sD, eD) => {
-    console.log(sD, eD);
     setDate({
       ...date,
       startDate: moment(sD).format("YYYY/MM/DD"),
@@ -122,17 +121,23 @@ export default function OccupancyReport() {
     } else {
       if (countyId === "") {
         let x = clientcounties.find((z) => z.county?.name === item.demography);
+        setPageCount(1);
+        setPage(0);
         setCounty(x.id);
         setactiveshit("ZONES");
         fetchFiltered(x.id, zoneId, estateId);
       }
       if (searchParams.get("county") === null && countyId && !zoneId) {
+        setPageCount(1);
+        setPage(0);
         let x = zones.find((z) => z.name === item.demography);
         setZoneId(x.id);
         setactiveshit("ESTATES");
         fetchFiltered(countyId, x.id, estateId);
       }
       if (countyId && zoneId) {
+        setPageCount(1);
+        setPage(0);
         let x = estates.find((z) => z.name === item.demography);
         setestateId(x.id);
         setactiveshit("PREMISES");
@@ -158,19 +163,21 @@ export default function OccupancyReport() {
         fetchFiltered(x[0].id, "", "");
       }
     } else {
+      setPage(0);
+      setPageCount(1);
+      setSize(10);
       setCounty("");
       setZoneId("");
       setactiveshit("COUNTIES");
       fetchFiltered("", "", "");
-      setPage(0);
-      setPageCount(1);
-      setSize(10);
     }
   }
 
   // PAGINATION
   const sortSize = (e) => {
-    setSize(e.target.value);
+    setPage(0);
+    setItemOffset(0);
+    setSize(parseInt(e.target.value));
   };
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
@@ -417,8 +424,8 @@ export default function OccupancyReport() {
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {reportInfo.length > 0 &&
-                                      reportInfo?.map((item) => (
+                                    {reports.length > 0 &&
+                                      reports?.map((item) => (
                                         <tr data-id={item.id} key={item.id}>
                                           <td className={"text-capitalize"}>
                                             {item.demography}
@@ -489,9 +496,9 @@ export default function OccupancyReport() {
                                         >
                                           Select A range
                                         </option>
-                                        <option value="2">2 Rows</option>
-                                        <option value="5">5 Rows</option>
                                         <option value="10">10 Rows</option>
+                                        <option value="30">30 Rows</option>
+                                        <option value="50">50 Rows</option>
                                       </select>
                                       <nav
                                         aria-label="Page navigation comments"
@@ -517,6 +524,7 @@ export default function OccupancyReport() {
                                           onPageChange={(data) =>
                                             handlePageClick(data)
                                           }
+                                          forcePage={page}
                                         />
                                       </nav>
                                     </>

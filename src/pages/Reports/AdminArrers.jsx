@@ -56,10 +56,6 @@ export default function AdminArrears() {
   };
 
   useEffect(() => {
-    console.log(date);
-  }, [date]);
-
-  useEffect(() => {
     if (searchParams.get("county") === null) {
       fetchFiltered(countyId, zoneId, estateId);
       setactiveshit("COUNTIES");
@@ -104,13 +100,9 @@ export default function AdminArrears() {
     });
   };
 
-  const getEstates = (zoneId) => {
+  const getEstates = () => {
     requestsServiceService.getAllEstates().then((res) => {
-      let resp = res.data.data;
-      let es = resp.filter(
-        (item) => parseInt(item.zone?.id) === parseInt(zoneId)
-      );
-      setestates(es);
+      setestates(res.data.data);
     });
   };
   const getZones = () => {
@@ -118,14 +110,10 @@ export default function AdminArrears() {
       setzones(res.data.data);
     });
   };
-
-  useEffect(() => {
-    getEstates(zoneId);
-  }, [zoneId]);
-
   useEffect(() => {
     fetchAll();
     getZones();
+    getEstates();
   }, []);
 
   const formatCurrency = (x) => {
@@ -434,8 +422,8 @@ export default function AdminArrears() {
                               </tr>
                             </thead>
                             <tbody>
-                              {reportInfo.length > 0 &&
-                                reportInfo?.map((item) => (
+                              {reports.length > 0 &&
+                                reports?.map((item) => (
                                   <>
                                     {item.invoicePeriod === month && (
                                       <tr data-id={item.id} key={item.id}>
@@ -504,9 +492,9 @@ export default function AdminArrears() {
                                   <option className="bs-title-option" value="">
                                     Select A range
                                   </option>
-                                  <option value="2">2 Rows</option>
-                                  <option value="5">5 Rows</option>
-                                  <option value="10">10 Rows</option>
+                                  <option value="1">10 Rows</option>
+                                  <option value="30">30 Rows</option>
+                                  <option value="50">50 Rows</option>
                                 </select>
                                 <nav
                                   aria-label="Page navigation comments"

@@ -242,7 +242,6 @@ export default function NewUnitsExpectedIncomeReport() {
                           <div className="d-flex align-items-center flex-grow-1">
                             <h4 className="mb-0 card-header bg-transparent p-0 m-0">
                               New Units Reports
-                              <span className="this-month"></span>
                             </h4>
                           </div>
                           <div className="d-flex align-items-baseline">
@@ -409,8 +408,8 @@ export default function NewUnitsExpectedIncomeReport() {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {reportInfo.length > 0 &&
-                                    reportInfo?.map((item) => (
+                                  {reports.length > 0 &&
+                                    reports?.map((item) => (
                                       <tr data-id={item.id} key={item.id}>
                                         <td className={"text-capitalize"}>
                                           {item.demography}

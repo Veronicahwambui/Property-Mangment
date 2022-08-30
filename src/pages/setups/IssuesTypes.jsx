@@ -5,7 +5,7 @@ import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 import { Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
+import ReactPaginate from "react-paginate";
 
 function IssuesTypes() {
   const [issueTypes, setIssueTypes] = useState([]);
@@ -15,9 +15,33 @@ function IssuesTypes() {
     getIssueTypes();
   }, []);
 
+  // PAGINATION
+  const sortSize = (e) => {
+    setSize(parseInt(e.target.value));
+    setPage(0);
+    setItemOffset(0);
+  };
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(1);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [list, setlist] = useState([]);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setIssueTypes(list.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(list.length / size));
+  }, [itemOffset, size, list]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * size) % list.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
+
   const getIssueTypes = () => {
     requestsServiceService.getTenancyIssuesTypes().then((res) => {
-      setIssueTypes(res.data.data);
+      setlist(res.data.data);
       $("#spinner").addClass("d-none");
     });
   };
@@ -93,7 +117,7 @@ function IssuesTypes() {
                 </div>
                 <div class="card-body">
                   <div class="table-responsive table-responsive-md">
-                    <table class="table table-editable align-middle table-edits">
+                    <table class="table table-editable align-middle table-edits table-striped">
                       <thead class="table-light">
                         <tr class="text-uppercase table-light">
                           <th>#</th>
@@ -129,7 +153,11 @@ function IssuesTypes() {
                                   </span>
                                 )}
                               </td>
-                              <td>{moment(iT.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                              <td>
+                                {moment(iT.dateTimeCreated).format(
+                                  "YYYY-MM-DD HH:mm"
+                                )}
+                              </td>
 
                               <td class="text-right cell-change text-nowrap ">
                                 <div className="d-flex align-items-center">
@@ -176,6 +204,60 @@ function IssuesTypes() {
                         })}
                       </tbody>
                     </table>
+                    <div className="d-flex justify-content-between align-items-center">
+                      {pageCount !== 0 && (
+                        <>
+                          <select
+                            className="btn btn-md btn-primary"
+                            title="Select A range"
+                            onChange={(e) => sortSize(e)}
+                            value={size}
+                          >
+                            <option className="bs-title-option" value="">
+                              Select A range
+                            </option>
+                            <option value="10">10 Rows</option>
+                            <option value="30">30 Rows</option>
+                            <option value="50">50 Rows</option>
+                          </select>
+                          <nav
+                            aria-label="Page navigation comments"
+                            className="mt-4"
+                          >
+                            <ReactPaginate
+                              previousLabel="<"
+                              nextLabel=">"
+                              breakLabel="..."
+                              breakClassName="page-item"
+                              breakLinkClassName="page-link"
+                              pageCount={pageCount}
+                              pageRangeDisplayed={4}
+                              marginPagesDisplayed={2}
+                              containerClassName="pagination justify-content-center"
+                              pageClassName="page-item"
+                              pageLinkClassName="page-link"
+                              previousClassName="page-item"
+                              previousLinkClassName="page-link"
+                              nextClassName="page-item"
+                              nextLinkClassName="page-link"
+                              activeClassName="active"
+                              onPageChange={(data) => handlePageClick(data)}
+                              forcePage={page}
+                            />
+                          </nav>
+                        </>
+                      )}
+                    </div>
+                    {pageCount !== 0 && (
+                      <p className="font-medium  text-muted">
+                        showing page{" "}
+                        <span className="text-primary">
+                          {pageCount === 0 ? page : page + 1}
+                        </span>{" "}
+                        of
+                        <span className="text-primary"> {pageCount}</span> pages
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
