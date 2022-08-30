@@ -19,9 +19,31 @@ function Receipts() {
     style: "currency",
     currency: "KES",
   });
+
   useEffect(() => {
     getStatements();
   }, []);
+  // PAGINATION
+  const sortSize = (e) => {
+    setSize(e.target.value);
+  };
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(1);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [currentStatements, setCurrentStatements] = useState([]);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setCurrentStatements(statements.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(statements.length / size));
+  }, [itemOffset, size, statements]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * size) % statements.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
 
   const getStatements = () => {
     let data = { startDate: startDate, endDate: endDate };
@@ -147,75 +169,7 @@ function Receipts() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       Receipts
                     </h4>
-                    <div className="d-flex justify-content-end align-items-center">
-                      <div>
-                        <div>
-                          {/*<form className="app-search d-none d-lg-block">*/}
-                          {/*  <div className="position-relative">*/}
-                          {/*    <input*/}
-                          {/*      type="text"*/}
-                          {/*      className="form-control"*/}
-                          {/*      placeholder="Search..."*/}
-                          {/*      // onChange={(e) => setSearchTerm(e.target.value)}*/}
-                          {/*    />*/}
-                          {/*    <span className="bx bx-search-alt"></span>*/}
-                          {/*  </div>*/}
-                          {/*</form>*/}
-                        </div>
-                      </div>
-                      {/*<div>*/}
-                      {/*  <select className={"btn btn-primary"} name="" id="">*/}
-                      {/*    <option value={parseInt(100)}>100</option>*/}
-                      {/*    <option value={parseInt(20)}>20</option>*/}
-                      {/*    <option value={parseInt(10)}>10</option>*/}
-                      {/*    <option value={parseInt(5)}>5</option>*/}
-                      {/*  </select>*/}
-                      {/*</div>*/}
-                      {/*<div className="col-6">*/}
-                      {/*  <div className="input-group" id="datepicker1">*/}
-                      {/*    <input*/}
-                      {/*      type="text"*/}
-                      {/*      className="form-control mouse-pointer sdate"*/}
-                      {/*      placeholder={`${startDate}`}*/}
-                      {/*      name="dob"*/}
-                      {/*      readOnly*/}
-                      {/*      data-date-format="dd M, yyyy"*/}
-                      {/*      data-date-container="#datepicker1"*/}
-                      {/*      data-provide="datepicker"*/}
-                      {/*      data-date-autoclose="true"*/}
-                      {/*      data-date-end-date="+0d"*/}
-                      {/*    />*/}
-                      {/*    <span className="input-group-text">*/}
-                      {/*      <i className="mdi mdi-calendar"></i>*/}
-                      {/*    </span>*/}
-                      {/*    <input*/}
-                      {/*      type="text"*/}
-                      {/*      className="form-control mouse-pointer edate"*/}
-                      {/*      name="dob"*/}
-                      {/*      placeholder={`${endDate}`}*/}
-                      {/*      readOnly*/}
-                      {/*      data-date-format="dd M, yyyy"*/}
-                      {/*      data-date-container="#datepicker1"*/}
-                      {/*      data-provide="datepicker"*/}
-                      {/*      data-date-autoclose="true"*/}
-                      {/*    />*/}
-                      {/*    <span className="input-group-text">*/}
-                      {/*      <i className="mdi mdi-calendar"></i>*/}
-                      {/*    </span>*/}
-                      {/*    <button className="btn btn-primary" onClick={sort}>*/}
-                      {/*      filter*/}
-                      {/*    </button>*/}
-                      {/*  </div>*/}
-                      {/*</div>*/}
-                    </div>
                   </div>
-                  {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
-                  {/*     role="toolbar">*/}
-                  {/*  <button type="button"*/}
-                  {/*          className="btn btn-primary waves-effect btn-label waves-light me-3"><i*/}
-                  {/*    className="mdi mdi-printer label-icon"></i> Print Selected Invoices*/}
-                  {/*  </button>*/}
-                  {/*</div>*/}
                 </div>
 
                 <Message details={details} mode={mode} clear={clear} />
@@ -239,9 +193,8 @@ function Receipts() {
                         </tr>
                       </thead>
                       <tbody>
-                        {statements &&
-                          statements?.length > 0 &&
-                          statements?.map((statement, index) => (
+                        {currentStatements?.length > 0 &&
+                          currentStatements?.map((statement, index) => (
                             <tr data-id={index} key={index}>
                               <td>{statement.receiptNo}</td>
                               <td>{statement.paidBy}</td>
@@ -334,7 +287,8 @@ function Receipts() {
                             className="text-capitalize text-nowrap"
                             colSpan="3"
                           >
-                            {statements && statements?.length} Receipts
+                            {currentStatements && currentStatements?.length}{" "}
+                            Receipts
                           </th>
                           <td className="text-nowrap text-right" colSpan="7">
                             <span className="fw-semibold">
@@ -344,45 +298,60 @@ function Receipts() {
                         </tr>
                       </tfoot>
                     </table>
+                    <div className="d-flex justify-content-between align-items-center">
+                      {pageCount !== 0 && (
+                        <>
+                          <select
+                            className="btn btn-md btn-primary"
+                            title="Select A range"
+                            onChange={(e) => sortSize(e)}
+                            value={size}
+                          >
+                            <option className="bs-title-option" value="">
+                              Select A range
+                            </option>
+                            <option value="10">10 Rows</option>
+                            <option value="30">30 Rows</option>
+                            <option value="50">50 Rows</option>
+                          </select>
+                          <nav
+                            aria-label="Page navigation comments"
+                            className="mt-4"
+                          >
+                            <ReactPaginate
+                              previousLabel="<"
+                              nextLabel=">"
+                              breakLabel="..."
+                              breakClassName="page-item"
+                              breakLinkClassName="page-link"
+                              pageCount={pageCount}
+                              pageRangeDisplayed={4}
+                              marginPagesDisplayed={2}
+                              containerClassName="pagination justify-content-center"
+                              pageClassName="page-item"
+                              pageLinkClassName="page-link"
+                              previousClassName="page-item"
+                              previousLinkClassName="page-link"
+                              nextClassName="page-item"
+                              nextLinkClassName="page-link"
+                              activeClassName="active"
+                              onPageChange={(data) => handlePageClick(data)}
+                            />
+                          </nav>
+                        </>
+                      )}
+                    </div>
+                    {pageCount !== 0 && (
+                      <p className="font-medium  text-muted">
+                        showing page{" "}
+                        <span className="text-primary">
+                          {pageCount === 0 ? page : page + 1}
+                        </span>{" "}
+                        of
+                        <span className="text-primary"> {pageCount}</span> pages
+                      </p>
+                    )}
                   </div>
-                  {/*<div className="mt-4 mb-0 flex justify-between px-8">*/}
-                  {/*  {pageCount !== 0 && (*/}
-                  {/*    <p className=" font-medium text-xs text-gray-700">*/}
-                  {/*      {" "}*/}
-                  {/*      showing page{" "}*/}
-                  {/*      <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
-                  {/*        {page + 1}*/}
-                  {/*      </span>{" "}*/}
-                  {/*      of{" "}*/}
-                  {/*      <span className="text-sm font-bold text-black">*/}
-                  {/*        {pageCount}*/}
-                  {/*      </span>{" "}*/}
-                  {/*      pages*/}
-                  {/*    </p>*/}
-                  {/*  )}*/}
-
-                  {/*  {pageCount !== 0 && (*/}
-                  {/*    <ReactPaginate*/}
-                  {/*      previousLabel={"prev"}*/}
-                  {/*      nextLabel={"next"}*/}
-                  {/*      breakLabel={"..."}*/}
-                  {/*      pageCount={pageCount} // total number of pages needed*/}
-                  {/*      marginPagesDisplayed={2}*/}
-                  {/*      pageRangeDisplayed={1}*/}
-                  {/*      onPageChange={handlePageClick}*/}
-                  {/*      breakClassName={"page-item"}*/}
-                  {/*      breakLinkClassName={"page-link"}*/}
-                  {/*      containerClassName={"pagination"}*/}
-                  {/*      pageClassName={"page-item"}*/}
-                  {/*      pageLinkClassName={"page-link"}*/}
-                  {/*      previousClassName={"page-item"}*/}
-                  {/*      previousLinkClassName={"page-link"}*/}
-                  {/*      nextClassName={"page-item"}*/}
-                  {/*      nextLinkClassName={"page-link"}*/}
-                  {/*      activeClassName={"active"}*/}
-                  {/*    />*/}
-                  {/*  )}*/}
-                  {/*</div>*/}
                 </div>
               </div>
             </div>
