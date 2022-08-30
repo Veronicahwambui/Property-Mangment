@@ -295,18 +295,8 @@ function AdminDashboard() {
                                     </td>
                                     <td>{model.invoicePeriod}</td>
                                     <td>{model.countAll}</td>
-                                    <td>
-                                      KSH{" "}
-                                      {model.sum
-                                        ?.toString()
-                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                    </td>
-                                    <td>
-                                      KSH{" "}
-                                      {model.paid
-                                        ?.toString()
-                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                    </td>
+                                    <td>{formatCurrency(model.sum)}</td>
+                                    <td>{formatCurrency(model.paid)}</td>
                                     <td>{model.collectionRate}</td>
                                     <td>
                                       <i
@@ -336,18 +326,8 @@ function AdminDashboard() {
                                     </td>
                                     <td>{model.invoicePeriod}</td>
                                     <td>{model.countAll}</td>
-                                    <td>
-                                      KSH{" "}
-                                      {model.sum
-                                        ?.toString()
-                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                    </td>
-                                    <td>
-                                      KSH{" "}
-                                      {model.paid
-                                        ?.toString()
-                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                    </td>
+                                    <td>{formatCurrency(model.sum)}</td>
+                                    <td>{formatCurrency(model.paid)}</td>
                                     <td>{model.collectionRate}</td>
                                     <td>
                                       <i
