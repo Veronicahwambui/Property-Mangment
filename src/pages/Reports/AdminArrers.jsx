@@ -56,10 +56,6 @@ export default function AdminArrears() {
   };
 
   useEffect(() => {
-    console.log(date);
-  }, [date]);
-
-  useEffect(() => {
     if (searchParams.get("county") === null) {
       fetchFiltered(countyId, zoneId, estateId);
       setactiveshit("COUNTIES");
@@ -496,7 +492,7 @@ export default function AdminArrears() {
                                   <option className="bs-title-option" value="">
                                     Select A range
                                   </option>
-                                  <option value="10">10 Rows</option>
+                                  <option value="1">10 Rows</option>
                                   <option value="30">30 Rows</option>
                                   <option value="50">50 Rows</option>
                                 </select>
