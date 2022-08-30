@@ -496,7 +496,7 @@ export default function OccupancyReport() {
                                         >
                                           Select A range
                                         </option>
-                                        <option value="1">10 Rows</option>
+                                        <option value="10">10 Rows</option>
                                         <option value="30">30 Rows</option>
                                         <option value="50">50 Rows</option>
                                       </select>
