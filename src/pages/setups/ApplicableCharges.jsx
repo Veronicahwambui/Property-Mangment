@@ -242,7 +242,7 @@ function ApplicableCharges() {
                     <thead class="table-light">
                       <tr class="text-uppercase table-dark">
                         <th>#</th>
-                        <th>Premise Type</th>
+                        <th>Property Type</th>
                         <th>Charge type</th>
                         <th>Accept Manual Values</th>
                         <th>Status</th>
@@ -596,7 +596,7 @@ function ApplicableCharges() {
         <div class="modal-content">
           <div class="modal-body">
            <center>
-              <h5>Deactivate this  premise type?</h5>
+              <h5>Deactivate this  property type?</h5>
            </center>
           </div>
           <div class="modal-footer">
@@ -634,7 +634,7 @@ function ApplicableCharges() {
         <div class="modal-content">
           <div class="modal-body">
            <center>
-              <h5>Activate this  premise type?</h5>
+              <h5>Activate this  property type?</h5>
            </center>
           </div>
           <div class="modal-footer">

@@ -336,7 +336,7 @@ function BulkInvoiving() {
                               <option value="CURRENT">Current Tenancies</option>
                               <option value="LANDLORD">Landlord</option>
                               <option value="TENANT">Tenant</option>
-                              <option value="PREMISE">Premise</option>
+                              <option value="PREMISE">Property</option>
                             </select>
                           </div>
                         </div>

@@ -97,7 +97,7 @@ function PremisesRegister() {
         <div class="row">
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-              <h4 class="mb-sm-0 font-size-18">All Registered Premises</h4>
+              <h4 class="mb-sm-0 font-size-18">All Registered Property</h4>
 
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -215,7 +215,7 @@ function PremisesRegister() {
                       <div class="dropdown-menu">
                         <a class="dropdown-item" href="#">
                           <i class="mdi mdi-checkbox-blank text-white"></i>
-                          <span class="pl-1">All Premises</span>
+                          <span class="pl-1">All Properties</span>
                         </a>
                         <a class="dropdown-item" href="#">
                           <i class="mdi mdi-checkbox-blank text-info"></i>
@@ -235,7 +235,7 @@ function PremisesRegister() {
                       class="btn btn-primary dropdown-toggle option-selector"
                     >
                       <i class="dripicons-plus font-size-16"></i>{" "}
-                      <span class="pl-1 d-md-inline">Add A Premises</span>
+                      <span class="pl-1 d-md-inline">Add A Properties</span>
                     </Link>
                   </div>
                 </div>
@@ -247,7 +247,7 @@ function PremisesRegister() {
                     role="toolbar"
                   >
                     <h4 className="card-title text-capitalize mb-0 ">
-                      All Premises
+                      All Properties
                     </h4>
 
                     <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
@@ -304,9 +304,9 @@ function PremisesRegister() {
                     <thead class="table-light">
                       <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Premises</th>
-                        <th scope="col">Premises type</th>
-                        <th scope="col">Premises use type</th>
+                        <th scope="col">Properties</th>
+                        <th scope="col">Properties type</th>
+                        <th scope="col">Property use type</th>
                         <th scope="col">Address</th>
                         <th scope="col">Estate</th>
                         <th scope="col">Zone</th>

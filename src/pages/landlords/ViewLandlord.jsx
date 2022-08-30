@@ -959,7 +959,7 @@ function ViewLandlord() {
                               : "nav-item cursor-pointer nav-link"
                           }
                         >
-                          Premises
+                          Properties
                         </a>
                       </div>
                     </div>
@@ -1120,7 +1120,7 @@ function ViewLandlord() {
                                             </span>
                                           </div>
                                           <p className="text-muted text-truncate mb-2">
-                                            Premises
+                                            Properties
                                           </p>
                                           <h5 className="mb-0">
                                             {dashboardData?.premiseCount}
@@ -1319,7 +1319,7 @@ function ViewLandlord() {
                   <div className="card">
                     <div className="card-body">
                       <h4 className="card-title mb-0">
-                        Collections by Premise Type
+                        Collections by Property Type
                       </h4>
                       <div className="row">
                         <div className="col-sm-7">
@@ -1845,7 +1845,7 @@ function ViewLandlord() {
                         role="toolbar"
                       >
                         <h4 className="card-title text-capitalize mb-0 ">
-                          Landlord Premises
+                          Landlord Properties
                         </h4>
                       </div>
                       {/*<div className="btn-toolbar p-3 align-items-center d-none animated delete-tool-bar"*/}
@@ -1862,9 +1862,9 @@ function ViewLandlord() {
                           <thead className="table-light">
                             <tr>
                               <th scope="col">#</th>
-                              <th scope="col">Premises</th>
-                              <th scope="col">Premises type</th>
-                              <th scope="col">Premises use type</th>
+                              <th scope="col">Properties</th>
+                              <th scope="col">Properties type</th>
+                              <th scope="col">Properties use type</th>
                               <th scope="col">Address</th>
                               <th scope="col">Estate</th>
                               <th scope="col">Zone</th>

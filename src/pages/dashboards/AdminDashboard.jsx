@@ -397,7 +397,7 @@ function AdminDashboard() {
                         <tr>
                           <th>#</th>
                           <th>County</th>
-                          <th>Premises</th>
+                          <th>Properties</th>
                           <th>All Units</th>
                           <th>New Units</th>
                           <th>Unit Summary</th>

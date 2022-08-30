@@ -1195,7 +1195,7 @@ function AddTenant() {
                                 <thead className="table-light">
                                   <tr className="text-uppercase table-dark">
                                     <th>#</th>
-                                    <th>Premises</th>
+                                    <th>Properties</th>
                                     <th className="">Unit No.</th>
                                     <th>Unit Condition</th>
                                     {/* <th className="">Rent</th>
