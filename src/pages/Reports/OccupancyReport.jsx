@@ -22,7 +22,6 @@ export default function OccupancyReport() {
     endDate: new Date(),
   });
   const handleCallback = (sD, eD) => {
-    console.log(sD, eD);
     setDate({
       ...date,
       startDate: moment(sD).format("YYYY/MM/DD"),
