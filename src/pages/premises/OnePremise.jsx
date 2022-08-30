@@ -1103,7 +1103,7 @@ const pieChart = {
                     <Link to='/'>Dashboard </Link>
                   </li>
                   <li class="breadcrumb-item">
-                    <Link to='/premisesregister'>All Premises</Link>
+                    <Link to='/premisesregister'>All Properties</Link>
 
                   </li>
                   <li class="breadcrumb-item active">
@@ -1146,7 +1146,7 @@ const pieChart = {
                             : "nav-item cursor-pointer nav-link"
                         }
                       >
-                        Premises Details<span class="sr-only">urrent</span>
+                        Properties Details<span class="sr-only">urrent</span>
                       </a>
                       <a
                         onClick={() => setActiveLink(5)}
@@ -1212,10 +1212,10 @@ const pieChart = {
                     <div class="navbar-nav">
                       {premiseData.premise && premiseData.premise.active ?
                         <a href="#" data-toggle="modal" data-target="#deactivate-modal" type="button" class="btn btn-outline-danger waves-effect waves-light">
-                          <i class="bx dripicons-wrong font-size-16 align-middle me-2"></i> Deactivate Premise
+                          <i class="bx dripicons-wrong font-size-16 align-middle me-2"></i> Deactivate Property
                         </a> :
                         <a href="#" data-toggle="modal" data-target="#deactivate-modal" type="button" class="btn btn-outline-success waves-effect waves-light">
-                          <i class="bx dripicons-wrong font-size-16 align-middle me-2"></i> Activate Premise
+                          <i class="bx dripicons-wrong font-size-16 align-middle me-2"></i> Activate Property
                         </a>
                       }
 
@@ -1224,7 +1224,7 @@ const pieChart = {
                         <div class="modal-dialog modal-dialog-centered" role="document">
                           <div class="modal-content ">
                             <div class="modal-header">
-                              <h5 class="modal-title" id="composemodalTitle">Deactivate the Premise</h5>
+                              <h5 class="modal-title" id="composemodalTitle">Deactivate the Property</h5>
                               <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -1244,7 +1244,7 @@ const pieChart = {
                                         </div>
 
                                         <div class="flex-grow-1 overflow-hidden">
-                                          <p class="text-truncate mb-1">Premises Name</p>
+                                          <p class="text-truncate mb-1">Properties Name</p>
                                           <h5 class="text-truncate font-size-14 mb-0 text-capitalize"> {premiseData.premise && premiseData.premise.premiseName}</h5>
 
                                         </div>
@@ -1428,7 +1428,7 @@ const pieChart = {
                           >
                             <i className="dripicons-plus font-size-16 d-md-none"></i>{" "}
                             <span className="pl-1 d-md-inline">
-                              Edit Premise Details
+                              Edit Property Details
                             </span>
                           </button>
                         </div>
@@ -1585,7 +1585,7 @@ const pieChart = {
 
                         <div className="col-6">
                           <div className="form-group">
-                            <label htmlFor="">Premise Name</label>
+                            <label htmlFor="">Property Name</label>
                             <input
                               type="text"
                               required
@@ -1598,7 +1598,7 @@ const pieChart = {
                         </div>
                         <div className="col-6">
                           <div className="form-group">
-                            <label htmlFor="">Premise status</label>
+                            <label htmlFor="">Property status</label>
                             <select
                               className="form-control"
                               onChange={handleChange}
@@ -1620,7 +1620,7 @@ const pieChart = {
 
                         <div className="col-6">
                           <div className="form-group">
-                            <label htmlFor="">Premise Type</label>
+                            <label htmlFor="">Property Type</label>
                             <select
                               className="form-control text-capitalize"
                               onChange={handleChange}
@@ -1642,7 +1642,7 @@ const pieChart = {
                         </div>
                         <div className="col-6">
                           <div className="form-group">
-                            <label htmlFor="">Premise Use Type</label>
+                            <label htmlFor="">Property Use Type</label>
                             <select
                               className="form-control text-capitalize"
                               onChange={handleChange}
@@ -1790,7 +1790,7 @@ const pieChart = {
                       >
                         <i className="dripicons-plus font-size-16"></i>{" "}
                         <span className="pl-1 d-md-inline">
-                          New Premise Unit
+                          New Property Unit
                         </span>
                       </button>
                     </div>
@@ -2868,7 +2868,7 @@ const pieChart = {
 
                                 <th>Invoice Number</th>
                                 <th>Tenant</th>
-                                <th>Premises</th>
+                                <th>Properties</th>
                                 <th>Hse/Unit</th>
                                 <th>Date Issued</th>
                                 <th>Payment Status</th>

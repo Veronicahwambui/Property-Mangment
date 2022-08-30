@@ -388,7 +388,7 @@ export default function OccupancyReport() {
                                     <thead className="table-light">
                                       <tr className="table-light">
                                         <th>Demography</th>
-                                        <th>Premises</th>
+                                        <th>Properties</th>
                                         <th>Units</th>
                                         <th>New Units</th>
                                         <th>Unit Summary</th>

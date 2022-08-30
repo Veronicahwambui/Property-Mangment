@@ -467,7 +467,7 @@ function Invoices() {
                           <th>Invoice No</th>
                           <th>Bill Ref</th>
                           <th>Tenant</th>
-                          <th>Premises</th>
+                          <th>Properties</th>
                           <th>Hse/Unit</th>
                           <th>Charge Name</th>
                           <th>Bill Amount</th>

@@ -482,7 +482,7 @@ function BulkMessaging() {
                               >
                                 Select..
                               </option>
-                              {["TENANT", "LANDLORD", "PREMISE"].map((item) => (
+                              {["TENANT", "LANDLORD", "PROPERTY"].map((item) => (
                                 <option key={item} value={item}>
                                   {item}
                                 </option>

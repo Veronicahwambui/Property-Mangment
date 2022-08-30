@@ -186,7 +186,7 @@ function PremiseUseTypes() {
         <div class="row">
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-              <h4 class="mb-sm-0 font-size-18">Registered  Premise use Type</h4>
+              <h4 class="mb-sm-0 font-size-18">Registered  Property Use Type</h4>
 
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -196,7 +196,7 @@ function PremiseUseTypes() {
                   <li class="breadcrumb-item">
                     Set Ups
                   </li>
-                  <li class="breadcrumb-item active">Registered  Premise Use Types</li>
+                  <li class="breadcrumb-item active">Registered  Property Use Types</li>
                 </ol>
               </div>
             </div>
@@ -213,7 +213,7 @@ function PremiseUseTypes() {
                 >
                   <div class="d-flex align-items-center flex-grow-1">
                     <h4 class="mb-0  bg-transparent  p-0 m-0">
-                      Premise Use Type Register
+                      Property Use Type Register
                     </h4>
                   </div>
                   <div class="d-flex">
@@ -224,7 +224,7 @@ function PremiseUseTypes() {
                       data-bs-toggle="modal"
                       data-bs-target="#add-new-zone"
                     >
-                      <i class="mdi mdi-plus label-icon"></i> Add Premise Use Type
+                      <i class="mdi mdi-plus label-icon"></i> Add Property Use Type
                     </button>
                   </div>
                 </div>
@@ -240,7 +240,7 @@ function PremiseUseTypes() {
                     <thead class="table-light">
                       <tr class="text-uppercase table-dark">
                         <th>#</th>
-                        <th>Premise Use Type</th>
+                        <th>Property Use Type</th>
                         <th>Status</th>
                         <th>Date Created</th>
 
@@ -317,7 +317,7 @@ function PremiseUseTypes() {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">
-              New  Premise Use Type
+              New  Property Use Type
             </h5>
             <button
               type="button"
@@ -330,7 +330,7 @@ function PremiseUseTypes() {
             <div class="row">
             <div class="col-12">
                       <div class="form-group mb-4">
-                                        <label for=""> Premise Use Type <strong class="text-danger">*</strong></label>
+                                        <label for=""> Property Use Type <strong class="text-danger">*</strong></label>
                                         <input value={createName} onChange={ (e)=> setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
                                     </div>
             </div>
@@ -386,7 +386,7 @@ function PremiseUseTypes() {
             <div class="row">
             <div class="col-12">
                       <div class="form-group mb-4">
-                                        <label for="">Premise Use Type <strong class="text-danger">*</strong></label>
+                                        <label for="">Property Use Type <strong class="text-danger">*</strong></label>
                                         <input required value={updateName} onChange={ (e)=> setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                                     </div>
             </div>
@@ -427,7 +427,7 @@ function PremiseUseTypes() {
         <div class="modal-content">
           <div class="modal-body">
            <center>
-              <h5>Deactivate this  premise use type?</h5>
+              <h5>Deactivate this  property use type?</h5>
            </center>
           </div>
           <div class="modal-footer">
@@ -465,7 +465,7 @@ function PremiseUseTypes() {
         <div class="modal-content">
           <div class="modal-body">
            <center>
-              <h5>Activate this  premise use type?</h5>
+              <h5>Activate this  property use type?</h5>
            </center>
           </div>
           <div class="modal-footer">

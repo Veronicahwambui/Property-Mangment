@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import requestsServiceService from "../../services/requestsService.service";
 import { confirmAlert } from "react-confirm-alert";
 
-function AddPremises() {
+function AddProperties() {
 
   const [landlordData, setLandlordData] = useState({
     "active": true,
@@ -46,7 +46,7 @@ function AddPremises() {
     window.location.href = "/#/addlandlord"
   }
 
-  const redirectToPremises = () => {
+  const redirectToProperties = () => {
     window.location.href = "/#/premisesregister"
   }
 
@@ -516,7 +516,7 @@ const getCaretakerType = ()=>{
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18 text-capitalize">
-                  Premises Registration
+                  Properties Registration
                 </h4>
 
                 <div class="page-title-right">
@@ -525,10 +525,10 @@ const getCaretakerType = ()=>{
                       <a href="index.html">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                      <a href="property-list.html">All Premies</a>
+                      <a href="property-list.html">All Properties</a>
                     </li>
                     <li class="breadcrumb-item active">
-                      Premises registration
+                      Properties registration
                     </li>
                   </ol>
                 </div>
@@ -579,7 +579,7 @@ const getCaretakerType = ()=>{
                       <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav mr-auto">
                           <li className="nav-item active">
-                            <a className="nav-link active">1. Premise Details <span
+                            <a className="nav-link active">1. Property Details <span
                               className="sr-only">(current)</span></a>
                           </li>
                           <li className="nav-item">
@@ -593,14 +593,14 @@ const getCaretakerType = ()=>{
                       </div>
                     </nav>
 
-                    {/* <!-- Premises details --> */}
+                    {/* <!-- Properties details --> */}
                     <section className="step-cont active-step">
-                      <h3>Premises details</h3>
+                      <h3>Properties details</h3>
                       <form>
                         <div class="col-12">
                           <div class="bg-primary border-2 bg-soft p-3 mb-4">
                             <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                              General Information about the Premises
+                              General Information about the Properties
                             </p>
                           </div>
                         </div>
@@ -640,7 +640,7 @@ const getCaretakerType = ()=>{
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                Premises Name{" "}
+                                Properties Name{" "}
                                 <strong class="text-danger ">*</strong>
                               </label>
                               <input
@@ -696,7 +696,7 @@ const getCaretakerType = ()=>{
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-lastname-input ">
-                                Premises Type{" "}
+                                Properties Type{" "}
                                 <strong class="text-danger ">*</strong>
                               </label>
                               <select
@@ -723,12 +723,12 @@ const getCaretakerType = ()=>{
                               </label>
                               <select
                                 class="form-control text-capitalize "
-                                title="Select Property use type "
+                                title="Select Premise use type "
                                 name='premiseUseTypeId'
                                 onChange={handleGeneral}
 
                               >
-                                <option>Select premise use type </option>
+                                <option>Select property use type </option>
                                 {premiseUseTypes && premiseUseTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type) => (
                                   <option value={type.id} className="text-capitalize"> {type.name}</option>
                                 ))}
@@ -960,7 +960,7 @@ const getCaretakerType = ()=>{
                         <div class="col-12">
                           <div class="bg-primary border-2 bg-soft p-3 mb-4">
                             <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                              Units/ Hse Types on offer At the premises
+                              Units/ Hse Types on offer At the properties
                             </p>
                           </div>
                         </div>
@@ -1051,13 +1051,13 @@ const getCaretakerType = ()=>{
                         <div class="col-12">
                           <div class="bg-primary border-2 bg-soft p-3 mb-4">
                             <p class="fw-semibold mb-0 pb-0 text-uppercase">
-                              Applicable charges for this premises
+                              Applicable charges for this properties
                             </p>
                           </div>
                           <p class="d-none">
                             <strong>
                               Check the correct charges that may be charged from
-                              tenants at this premises
+                              tenants at this property
                             </strong>
                           </p>
                         </div>
@@ -1545,7 +1545,7 @@ const getCaretakerType = ()=>{
                     </div>
 
                     <div class="col-12 ">
-                      <button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToPremises}>
+                      <button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToProperties}>
                         Cancel
                       </button>
                     </div>
@@ -1561,4 +1561,4 @@ const getCaretakerType = ()=>{
   );
 }
 
-export default AddPremises;
+export default AddProperties;

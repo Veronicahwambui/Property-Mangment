@@ -1369,7 +1369,7 @@ function OneTenant() {
                                             </span>
                                           </div>
                                           <p className="text-muted text-truncate mb-2">
-                                            Premises
+                                            Properties
                                           </p>
                                           <h5 className="mb-0">
                                             {dashboardData?.premiseCount}
@@ -1599,7 +1599,7 @@ function OneTenant() {
                                     <tr class="text-uppercase table-dark">
                                       <th>#</th>
                                       <th>Unit Name</th>
-                                      <th>Premise Name</th>
+                                      <th>Property Name</th>
                                       <th>Unit Type</th>
                                       <th>Start Date</th>
                                       <th>Unit Condition</th>
@@ -3223,7 +3223,7 @@ function OneTenant() {
                   <div class="col-12">
                     <form onSubmit={handleSubmitTenancy}>
                       <div className="form-group mb-4">
-                        <label htmlFor=""> Premise Name</label>
+                        <label htmlFor=""> Property Name</label>
                         <input
                           type="text"
                           className="form-control"
@@ -3240,13 +3240,13 @@ function OneTenant() {
                       </div>
                     </form>
                     <div class="form-group mb-4">
-                      <label for="">Premises</label>
+                      <label for="">Properties</label>
                       <select
                         className="form-control"
                         onChange={onPremiseChange}
                         name="premise"
                       >
-                        <option> --Select Premises--</option>
+                        <option> --Select Properties--</option>
                         {premises?.map((prem, index) => (
                           <option value={prem.id + ":" + prem.premiseName}>
                             {prem.premiseName}

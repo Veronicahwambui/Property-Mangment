@@ -277,7 +277,7 @@ function InvoicesParent() {
                         <tr className="table-dark">
                           <th>Invoice Number</th>
                           <th>Tenant</th>
-                          <th>Premises</th>
+                          <th>Properties</th>
                           <th>Hse/Unit</th>
                           <th>Due Date</th>
                           <th>Payment Status</th>

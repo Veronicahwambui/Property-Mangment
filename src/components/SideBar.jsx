@@ -34,11 +34,11 @@ function SideBar() {
             <li>
               <a href="javascript: void(0)" className="waves-effect has-arrow">
                 <i className="mdi mdi-office-building-outline"></i>
-                <span>Premises</span>
+                <span>Properties</span>
               </a>
               <ul className="sub-menu" aria-expanded="false">
-                <li><NavLink to="/premisesregister">Premises Register</NavLink></li>
-                <li><NavLink to="/addpremises">Add a premises</NavLink></li>
+                <li><NavLink to="/premisesregister">Properties Register</NavLink></li>
+                <li><NavLink to="/addpremises">Add a properties</NavLink></li>
               </ul>
             </li>
             <li>
@@ -148,8 +148,8 @@ function SideBar() {
               </a>
               <ul className="sub-menu" aria-expanded="false">
                 <li><NavLink to="/applicablecharges">Applicable Charges</NavLink></li>
-                <li><NavLink to="/premisetypes">Premise Types</NavLink></li>
-                <li><NavLink to="/premiseusetypes">Premise Use Types</NavLink></li>
+                <li><NavLink to="/premisetypes">Property Types</NavLink></li>
+                <li><NavLink to="/premiseusetypes">Property Use Types</NavLink></li>
                 <li><NavLink to="/unit-types">Unit Types</NavLink></li>
                 <li><NavLink to="/document-types">Attachable Documents</NavLink></li>
                 <li><NavLink to="/allroles">All roles </NavLink></li>

@@ -155,7 +155,7 @@ function PremiseTypes() {
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Registered  Premise Type</h4>
+                <h4 class="mb-sm-0 font-size-18">Registered  Property Type</h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
@@ -165,7 +165,7 @@ function PremiseTypes() {
                     <li class="breadcrumb-item">
                       Set Ups
                     </li>
-                    <li class="breadcrumb-item active">Registered  Premise Types</li>
+                    <li class="breadcrumb-item active">Registered  Property Types</li>
                   </ol>
                 </div>
               </div>
@@ -182,7 +182,7 @@ function PremiseTypes() {
                   >
                     <div class="d-flex align-items-center flex-grow-1">
                       <h4 class="mb-0  bg-transparent  p-0 m-0">
-                        Premise Type Register
+                        Property Type Register
                       </h4>
                     </div>
                     <div class="d-flex">
@@ -193,7 +193,7 @@ function PremiseTypes() {
                         data-bs-toggle="modal"
                         data-bs-target="#add-new-zone"
                       >
-                        <i class="mdi mdi-plus label-icon"></i> Add Premise Type
+                        <i class="mdi mdi-plus label-icon"></i> Add Property Type
                       </button>
                     </div>
                   </div>
@@ -209,7 +209,7 @@ function PremiseTypes() {
                       <thead class="table-light">
                         <tr class="text-uppercase table-dark">
                           <th>#</th>
-                          <th>Premise Type</th>
+                          <th>Property Type</th>
                           <th>Status</th>
                           <th>Date Created</th>
 
@@ -289,7 +289,7 @@ function PremiseTypes() {
 
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
-                  New  Premise Type
+                  New  Property Type
                 </h5>
                 <button
                   type="button"
@@ -302,7 +302,7 @@ function PremiseTypes() {
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group mb-4">
-                      <label for=""> Premise Type <strong class="text-danger">*</strong> </label>
+                      <label for=""> Property Type <strong class="text-danger">*</strong> </label>
                       <input required value={createName} onChange={(e) => setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
                     </div>
                   </div>
@@ -345,7 +345,7 @@ function PremiseTypes() {
 
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
-                  Update  Premise Type
+                  Update  Property Type
                 </h5>
                 <button
                   type="button"
@@ -358,7 +358,7 @@ function PremiseTypes() {
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group mb-4">
-                      <label for="">Premise Type <strong class="text-danger">*</strong></label>
+                      <label for="">Property Type <strong class="text-danger">*</strong></label>
                       <input required value={updateName} onChange={(e) => setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                     </div>
                   </div>
@@ -399,7 +399,7 @@ function PremiseTypes() {
           <div class="modal-content">
             <div class="modal-body">
               <center>
-                <h5>Deactivate this  premise type?</h5>
+                <h5>Deactivate this  property type?</h5>
               </center>
             </div>
             <div class="modal-footer">
@@ -437,7 +437,7 @@ function PremiseTypes() {
           <div class="modal-content">
             <div class="modal-body">
               <center>
-                <h5>Activate this  premise type?</h5>
+                <h5>Activate this  property type?</h5>
               </center>
             </div>
             <div class="modal-footer">
