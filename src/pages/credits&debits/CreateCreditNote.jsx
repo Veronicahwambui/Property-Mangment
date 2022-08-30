@@ -7,6 +7,7 @@ import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
+import StatusBadge from "../../components/StatusBadge";
 
 function CreateCreditNote() {
   const [debitToLandlord, setDebitToLandlord] = useState(false);
@@ -33,11 +34,17 @@ function CreateCreditNote() {
   const [tenantPhone, settenantPhone] = useState("");
   const [tenancies, settenancies] = useState([]);
   const [tenancyId, settenancyId] = useState(undefined);
+  const [reason, setReason] = useState("");
+  const [amount, setAmount] = useState("");
 
   // modals and loaders
+  const [invoice_show, setinvoice_show] = useState(false);
+  const showInvoice = () => setinvoice_show(true);
   const [show, setshow] = useState(true);
   const showCreditModal = () => setshow(true);
   const closeCreditModal = () => setshow(false);
+  const closeInvoice = () => setinvoice_show(false);
+
   const [loading, setloading] = useState(false);
   const [loaded, setloaded] = useState(false);
   const [loading2, setloading2] = useState(false);
@@ -119,6 +126,13 @@ function CreateCreditNote() {
           });
         });
     }
+    let sD = moment().startOf("year").format("YYYY/MM/DD");
+    let eD = moment(new Date()).format("YYYY/MM/DD");
+    requestsServiceService.getTenantStatements(x, sD, eD).then((res) => {
+      settransactions(res.data.data);
+      if (res.data.data?.length > 0) {
+      }
+    });
   };
 
   // autofill
@@ -167,6 +181,24 @@ function CreateCreditNote() {
   useEffect(() => {
     console.log(transactionId, tenancyId);
   }, [recipient, transactionId, tenancyId]);
+
+  const total = () => {
+    let sum = 0;
+    let paid = 0;
+    transactions?.transactionItems?.map((item) => {
+      sum += item.billAmount;
+      paid += item.billPaidAmount;
+    });
+    return { sum: sum, paid: paid, balance: sum - paid };
+  };
+
+  const formatCurrency = (x) => {
+    let formatCurrency = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "KES",
+    });
+    return formatCurrency.format(x);
+  };
 
   return (
     <>
@@ -395,6 +427,8 @@ function CreateCreditNote() {
                                     cols="30"
                                     rows="3"
                                     className="form-control"
+                                    required={true}
+                                    onChange={(e) => setReason(e.target.value)}
                                   ></textarea>
                                 </div>
                               </div>
@@ -405,10 +439,12 @@ function CreateCreditNote() {
                                     Amount To Credit
                                   </label>
                                   <input
-                                    type="number"
+                                    type="text"
                                     className="form-control credit-amount"
                                     id=""
                                     placeholder="KES"
+                                    onChange={(e) => setAmount(e.target.value)}
+                                    required={true}
                                   />
                                 </div>
                               </div>
@@ -418,8 +454,7 @@ function CreateCreditNote() {
                               <div className="">
                                 <button
                                   type="button"
-                                  data-bs-toggle="modal"
-                                  data-bs-target=".debit-tenant-modal"
+                                  onClick={showInvoice}
                                   className="btn btn-success w-md"
                                 >
                                   Next
@@ -446,6 +481,139 @@ function CreateCreditNote() {
       {/* <!-- End Page-content --> */}
 
       {/* <!-- Debiting amount to the tenant --> */}
+      <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
+        <Modal.Header closeButton>
+          <h5 className="modal-title" id="myLargeModalLabel">
+            Distribute the Debited amount to the correct invoice accounts
+          </h5>
+        </Modal.Header>
+        <Modal.Body>
+          <StatusBadge type={transactions?.transaction?.paymentStatus} />
+          <div className="col-12">
+            <address>
+              <strong>Billed To:</strong>
+              <br />
+              {transactions?.transaction?.tenantName} <br />
+              {/*{activeInvoice?.transactionCustomerEmail}<br/>*/}
+              {transactions?.transaction?.premiseName} -{" "}
+              {transactions?.transaction?.premiseUnitName}
+              <br />
+              <br />
+              {moment(transactions?.transaction?.invoiceDate).format(
+                "dddd, MMMM Do YYYY, h:mm a"
+              )}
+            </address>
+            {/*<p>Title: {activeInvoice?.transactionTitle}</p>*/}
+            <p>
+              Description: {transactions?.transaction?.invoicePeriodDescription}
+            </p>
+          </div>
+          <div className="col-12">
+            <div className="py-2 mt-3">
+              <h3 className="font-size-15 fw-bold">
+                Charges Breakdown ({" "}
+                <span className="text-primary fw-medium">
+                  {transactions?.transaction?.transactionId}
+                </span>{" "}
+                )
+              </h3>
+            </div>
+          </div>
+          <div className="col-12">
+            <table className="table table-nowrap">
+              <thead>
+                <tr>
+                  <th style={{ width: "70px" }}>No.</th>
+                  <th>Charge name</th>
+                  <th>Quantity</th>
+                  <th>Unit Cost</th>
+                  <th>Paid Amount</th>
+                  <th></th>
+                  <th className={"text-end"}>Bill Amount</th>
+                  <th className="" style={{ width: "150px" }}>
+                    Assign Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions?.transactionItems?.length > 0 &&
+                  transactions?.transactionItems?.map((item, index) => (
+                    <tr data-id={index} key={index}>
+                      <td>{index + 1}</td>
+                      <td>{item.applicableChargeName}</td>
+                      <td>{item.quantity}</td>
+                      <td>{item.unitCost}</td>
+                      <td>{item.billPaidAmount}</td>
+                      <td></td>
+                      <td className="text-end">{item.billAmount}</td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-control form-control-sm text-right"
+                          placeholder="KES"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Total
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency(total().sum)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Paid
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency(total().paid)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    <strong>Balance</strong>
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency(total().balance)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="col-12">
+            <div className="alert alert-warning" role="alert">
+              <i className="mdi mdi-alert-outline me-2 "></i> A debit note with
+              these details will be created and information will be sent to the
+              tenant on the same via SMS
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="float-end">
+            <a
+              href="javascript: void(0);"
+              className="btn btn-primary w-md waves-effect waves-light submit-credit-details"
+            >
+              Submit Details
+            </a>
+          </div>
+        </Modal.Footer>
+      </Modal>
+
       <div
         className="modal fade debit-tenant-modal"
         data-bs-backdrop="static"
