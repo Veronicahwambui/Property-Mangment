@@ -584,7 +584,7 @@ $(document).ready(function() {
     $(".this-month").text(name + " " + huuMwaka);
 
     // the next button
-    $('body').on('click','.kev-nxt', function(){
+    $('body').unbind().on('click','.kev-nxt', function(){
 
         var countTheSteps = parseFloat($("nav ul li").length);
 
