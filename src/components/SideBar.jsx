@@ -92,6 +92,16 @@ function SideBar() {
                 <li class=""><NavLink to="/bulkmessages">Bulk Messages</NavLink></li>
               </ul>
             </li>
+            <li>
+              <a href="javascript: void(0);" class="waves-effect has-arrow">
+                <i class="mdi mdi-cash-remove"></i>
+                <span>Credit & Debit Notes</span>
+              </a>
+              <ul class="sub-menu" aria-expanded="false">
+                <li><NavLink to="/create-credit-note">Create Credit Note</NavLink></li>
+                <li><NavLink to="/create-debit-note">Create Debit Note</NavLink></li>
+              </ul>
+            </li>
             {/* <li>
                             <NavLink to="/receipts" className="waves-effect">
                                 <i className="mdi mdi-receipt"></i><span>Receipts</span>
