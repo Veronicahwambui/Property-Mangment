@@ -68,12 +68,23 @@ export default function NewUnitsExpectedIncomeReport() {
     fetchFiltered(countyId, zoneId, estateId);
     setestateId("");
   };
+  const [reportData, setreportData] = useState({});
+  const [reportInfo, setreportInfo] = useState([]);
 
   const fetchFiltered = (x, y, z) => {
     let sD = moment(date.startDate).format("YYYY/MM/DD");
     let eD = moment(date.endDate).format("YYYY/MM/DD");
     requestsServiceService.filterNewUnitsReport(x, y, z, sD, eD).then((res) => {
-      setreports(res.data.data);
+      let v = res.data.data;
+      let tempdata = {
+        county: v.county,
+        estate: v.estate,
+        zone: v.zone,
+        period: v.datePeriod,
+        premise: v.premise,
+      };
+      setreportData(tempdata);
+      setreportInfo(v.unitIncomeModels);
       $("#spinner").addClass("d-none");
     });
   };
@@ -162,6 +173,26 @@ export default function NewUnitsExpectedIncomeReport() {
       fetchFiltered("", "", "");
     }
   }
+  // PAGINATION
+  const sortSize = (e) => {
+    setSize(e.target.value);
+  };
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(1);
+  const [itemOffset, setItemOffset] = useState(0);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setreports(reportInfo.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(reportInfo.length / size));
+  }, [itemOffset, size, reportInfo]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * size) % reportInfo.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
   return (
     <>
       <>
@@ -336,7 +367,7 @@ export default function NewUnitsExpectedIncomeReport() {
                                       County:
                                     </strong>
                                     <br />
-                                    {reports?.county}
+                                    {reportData?.county}
                                   </p>
                                 </div>
                                 <div className="card-body d-flex gap-4">
@@ -348,7 +379,7 @@ export default function NewUnitsExpectedIncomeReport() {
                                       Zone:
                                     </strong>
                                     <br />
-                                    {reports?.zone}
+                                    {reportData?.zone}
                                   </p>
                                 </div>
                                 <div className="card-body d-flex gap-4 align-items-center">
@@ -360,7 +391,7 @@ export default function NewUnitsExpectedIncomeReport() {
                                       Estate
                                     </strong>
                                     <br />
-                                    {reports?.estate}
+                                    {reportData?.estate}
                                   </p>
                                 </div>
                               </div>
@@ -383,7 +414,7 @@ export default function NewUnitsExpectedIncomeReport() {
                                   </thead>
                                   <tbody>
                                     {reports !== {} &&
-                                      reports.unitIncomeModels?.map((item) => (
+                                      reports?.map((item) => (
                                         <tr data-id={item.id} key={item.id}>
                                           <td className={"text-capitalize"}>
                                             {item.demography}
@@ -439,8 +470,69 @@ export default function NewUnitsExpectedIncomeReport() {
                                       ))}
                                   </tbody>
                                 </table>
+                                <div className="d-flex justify-content-between align-items-center">
+                                  {pageCount !== 0 && (
+                                    <>
+                                      <select
+                                        className="btn btn-md btn-primary"
+                                        title="Select A range"
+                                        onChange={(e) => sortSize(e)}
+                                        value={size}
+                                      >
+                                        <option
+                                          className="bs-title-option"
+                                          value=""
+                                        >
+                                          Select A range
+                                        </option>
+                                        <option value="10">10 Rows</option>
+                                        <option value="30">30 Rows</option>
+                                        <option value="50">50 Rows</option>
+                                      </select>
+                                      <nav
+                                        aria-label="Page navigation comments"
+                                        className="mt-4"
+                                      >
+                                        <ReactPaginate
+                                          previousLabel="<"
+                                          nextLabel=">"
+                                          breakLabel="..."
+                                          breakClassName="page-item"
+                                          breakLinkClassName="page-link"
+                                          pageCount={pageCount}
+                                          pageRangeDisplayed={4}
+                                          marginPagesDisplayed={2}
+                                          containerClassName="pagination justify-content-center"
+                                          pageClassName="page-item"
+                                          pageLinkClassName="page-link"
+                                          previousClassName="page-item"
+                                          previousLinkClassName="page-link"
+                                          nextClassName="page-item"
+                                          nextLinkClassName="page-link"
+                                          activeClassName="active"
+                                          onPageChange={(data) =>
+                                            handlePageClick(data)
+                                          }
+                                        />
+                                      </nav>
+                                    </>
+                                  )}
+                                </div>
+                                {pageCount !== 0 && (
+                                  <p className="font-medium  text-muted">
+                                    showing page{" "}
+                                    <span className="text-primary">
+                                      {pageCount === 0 ? page : page + 1}
+                                    </span>{" "}
+                                    of
+                                    <span className="text-primary">
+                                      {" "}
+                                      {pageCount}
+                                    </span>{" "}
+                                    pages
+                                  </p>
+                                )}
                               </div>
-                              <div className="mt-4 mb-0 flex justify-between px-8"></div>
                             </div>
                           </div>
                         )}

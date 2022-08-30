@@ -4,12 +4,13 @@ import { Link, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
 import DatePickRange from "../../components/Datepicker";
+import ReactPaginate from "react-paginate";
 export default function OccupancyReport() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [clientCountyName, setclientCountyName] = useState(
     searchParams.get("county")
   );
-  const [reports, setreports] = useState({});
+  const [reports, setreports] = useState([]);
   const [zones, setzones] = useState([]);
   const [estates, setestates] = useState([]);
   const [zoneId, setZoneId] = useState("");
@@ -65,18 +66,28 @@ export default function OccupancyReport() {
     fetchFiltered(countyId, zoneId, estateId);
     setestateId("");
   };
-
+  const [reportData, setreportData] = useState({});
+  const [reportInfo, setreportInfo] = useState([]);
   const fetchFiltered = (x, y, z) => {
     let sD = moment(date.startDate).format("YYYY/MM/DD");
     let eD = moment(date.endDate).format("YYYY/MM/DD");
     requestsServiceService
       .filterOccupancyReport(x, y, z, sD, eD)
       .then((res) => {
-        setreports(res.data.data);
+        let v = res.data.data;
+        console.log(v.occupancyResponses);
+        let tempdata = {
+          county: v.county,
+          estate: v.estate,
+          zone: v.zone,
+          period: v.newUnitsDatePeriod,
+          premise: v.premise,
+        };
+        setreportData(tempdata);
+        setreportInfo(v.occupancyResponses);
         $("#spinner").addClass("d-none");
       });
   };
-
   const getEstates = (zoneId) => {
     requestsServiceService.getAllEstates().then((res) => {
       let resp = res.data.data;
@@ -121,11 +132,15 @@ export default function OccupancyReport() {
         setZoneId(x.id);
         setactiveshit("ESTATES");
         fetchFiltered(countyId, x.id, estateId);
+        setPageCount(1);
+        setPage(0);
       }
       if (zoneId) {
         let x = estates.find((z) => z.name === item.demography);
         setestateId(x.id);
         setactiveshit("PREMISES");
+        setPageCount(1);
+        setPage(0);
         fetchFiltered(countyId, zoneId, x.id);
       }
     } else {
@@ -153,11 +168,17 @@ export default function OccupancyReport() {
     if (window.location.href.toString().includes("county")) {
       setestateId("");
       setZoneId("");
+      setPage(0);
+      setPageCount(1);
+      setSize(10);
       let x = clientcounties.filter(
         (item) => item?.county?.name === clientCountyName
       );
       if (x[0] !== undefined) {
         setCounty(x[0].id);
+        setPage(0);
+        setPageCount(1);
+        setSize(10);
         fetchFiltered(x[0].id, "", "");
       }
     } else {
@@ -165,8 +186,32 @@ export default function OccupancyReport() {
       setZoneId("");
       setactiveshit("COUNTIES");
       fetchFiltered("", "", "");
+      setPage(0);
+      setPageCount(1);
+      setSize(10);
     }
   }
+
+  // PAGINATION
+  const sortSize = (e) => {
+    setSize(e.target.value);
+  };
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(1);
+  const [itemOffset, setItemOffset] = useState(0);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setreports(reportInfo.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(reportInfo.length / size));
+  }, [itemOffset, size, reportInfo]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * size) % reportInfo.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
 
   return (
     <>
@@ -349,7 +394,7 @@ export default function OccupancyReport() {
                                       County:
                                     </strong>
                                     <br />
-                                    {reports?.county}
+                                    {reportData?.county}
                                   </p>
                                 </div>
                                 <div className="card-body d-flex gap-4">
@@ -361,7 +406,7 @@ export default function OccupancyReport() {
                                       Zone:
                                     </strong>
                                     <br />
-                                    {reports?.zone}
+                                    {reportData?.zone}
                                   </p>
                                 </div>
                                 <div className="card-body d-flex gap-4 align-items-center">
@@ -373,7 +418,7 @@ export default function OccupancyReport() {
                                       Estate
                                     </strong>
                                     <br />
-                                    {reports?.estate}
+                                    {reportData?.estate}
                                   </p>
                                 </div>
                               </div>
@@ -397,66 +442,125 @@ export default function OccupancyReport() {
                                     </thead>
                                     <tbody>
                                       {reports !== {} &&
-                                        reports?.occupancyResponses?.map(
-                                          (item) => (
-                                            <tr data-id={item.id} key={item.id}>
-                                              <td className={"text-capitalize"}>
-                                                {item.demography}
-                                              </td>
-                                              <td>{item.premiseCount}</td>
-                                              <td>{item.allUnits}</td>
-                                              <td>{item.newUnits}</td>
-                                              <td>
-                                                {item.countPremiseUnitByStatus?.map(
-                                                  (one) => (
-                                                    <div className="d-flex justify-content-start gap-3">
-                                                      <strong>{one.sum}</strong>
-                                                      <span>{one.status} </span>
-                                                    </div>
-                                                  )
-                                                )}
-                                              </td>
-                                              <td>
-                                                <div className="d-flex justify-content-end">
-                                                  <div className="dropdown">
+                                        reports?.map((item) => (
+                                          <tr data-id={item.id} key={item.id}>
+                                            <td className={"text-capitalize"}>
+                                              {item.demography}
+                                            </td>
+                                            <td>{item.premiseCount}</td>
+                                            <td>{item.allUnits}</td>
+                                            <td>{item.newUnits}</td>
+                                            <td>
+                                              {item.countPremiseUnitByStatus?.map(
+                                                (one) => (
+                                                  <div className="d-flex justify-content-start gap-3">
+                                                    <strong>{one.sum}</strong>
+                                                    <span>{one.status} </span>
+                                                  </div>
+                                                )
+                                              )}
+                                            </td>
+                                            <td>
+                                              <div className="d-flex justify-content-end">
+                                                <div className="dropdown">
+                                                  <a
+                                                    className="text-muted font-size-16"
+                                                    role="button"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-haspopup="true"
+                                                  >
+                                                    <i className="bx bx-dots-vertical-rounded"></i>
+                                                  </a>
+                                                  <div className="dropdown-menu dropdown-menu-end ">
                                                     <a
-                                                      className="text-muted font-size-16"
-                                                      role="button"
-                                                      data-bs-toggle="dropdown"
-                                                      aria-haspopup="true"
+                                                      className="dropdown-item cursor-pointer"
+                                                      onClick={() => {
+                                                        doShit(item);
+                                                      }}
                                                     >
-                                                      <i className="bx bx-dots-vertical-rounded"></i>
+                                                      <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                      View {item.demography}
                                                     </a>
-                                                    <div className="dropdown-menu dropdown-menu-end ">
-                                                      <a
-                                                        className="dropdown-item cursor-pointer"
-                                                        onClick={() => {
-                                                          doShit(item);
-                                                        }}
-                                                      >
-                                                        <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                        View {item.demography}
-                                                      </a>
-                                                      <a
-                                                        className="dropdown-item cursor-pointer"
-                                                        onClick={() => {
-                                                          undoShit(item);
-                                                        }}
-                                                      >
-                                                        <i className="font-size-15 mdi mdi-refresh me-3 "></i>
-                                                        Reset
-                                                      </a>
-                                                    </div>
+                                                    <a
+                                                      className="dropdown-item cursor-pointer"
+                                                      onClick={() => {
+                                                        undoShit(item);
+                                                      }}
+                                                    >
+                                                      <i className="font-size-15 mdi mdi-refresh me-3 "></i>
+                                                      Reset
+                                                    </a>
                                                   </div>
                                                 </div>
-                                              </td>
-                                            </tr>
-                                          )
-                                        )}
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        ))}
                                     </tbody>
                                   </table>
+                                  <div className="d-flex justify-content-between align-items-center">
+                                    {pageCount !== 0 && (
+                                      <>
+                                        <select
+                                          className="btn btn-md btn-primary"
+                                          title="Select A range"
+                                          onChange={(e) => sortSize(e)}
+                                          value={size}
+                                        >
+                                          <option
+                                            className="bs-title-option"
+                                            value=""
+                                          >
+                                            Select A range
+                                          </option>
+                                          <option value="2">2 Rows</option>
+                                          <option value="5">5 Rows</option>
+                                          <option value="10">10 Rows</option>
+                                        </select>
+                                        <nav
+                                          aria-label="Page navigation comments"
+                                          className="mt-4"
+                                        >
+                                          <ReactPaginate
+                                            previousLabel="<"
+                                            nextLabel=">"
+                                            breakLabel="..."
+                                            breakClassName="page-item"
+                                            breakLinkClassName="page-link"
+                                            pageCount={pageCount}
+                                            pageRangeDisplayed={4}
+                                            marginPagesDisplayed={2}
+                                            containerClassName="pagination justify-content-center"
+                                            pageClassName="page-item"
+                                            pageLinkClassName="page-link"
+                                            previousClassName="page-item"
+                                            previousLinkClassName="page-link"
+                                            nextClassName="page-item"
+                                            nextLinkClassName="page-link"
+                                            activeClassName="active"
+                                            onPageChange={(data) =>
+                                              handlePageClick(data)
+                                            }
+                                          />
+                                        </nav>
+                                      </>
+                                    )}
+                                  </div>
+                                  {pageCount !== 0 && (
+                                    <p className="font-medium  text-muted">
+                                      showing page{" "}
+                                      <span className="text-primary">
+                                        {pageCount === 0 ? page : page + 1}
+                                      </span>{" "}
+                                      of
+                                      <span className="text-primary">
+                                        {" "}
+                                        {pageCount}
+                                      </span>{" "}
+                                      pages
+                                    </p>
+                                  )}
                                 </div>
-                                <div className="mt-4 mb-0 flex justify-between px-8"></div>
                               </>
                             </div>
                           </div>
