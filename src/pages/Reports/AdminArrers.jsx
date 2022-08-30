@@ -434,8 +434,8 @@ export default function AdminArrears() {
                               </tr>
                             </thead>
                             <tbody>
-                              {reportInfo.length > 0 &&
-                                reportInfo?.map((item) => (
+                              {reports.length > 0 &&
+                                reports?.map((item) => (
                                   <>
                                     {item.invoicePeriod === month && (
                                       <tr data-id={item.id} key={item.id}>
@@ -504,9 +504,9 @@ export default function AdminArrears() {
                                   <option className="bs-title-option" value="">
                                     Select A range
                                   </option>
-                                  <option value="2">2 Rows</option>
-                                  <option value="5">5 Rows</option>
                                   <option value="10">10 Rows</option>
+                                  <option value="30">30 Rows</option>
+                                  <option value="50">50 Rows</option>
                                 </select>
                                 <nav
                                   aria-label="Page navigation comments"
