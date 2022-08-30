@@ -128,7 +128,7 @@ function CreateCreditNote() {
     }
     let sD = moment().startOf("year").format("YYYY/MM/DD");
     let eD = moment(new Date()).format("YYYY/MM/DD");
-    requestsServiceService.getTenantStatements(x, sD, eD).then((res) => {
+    requestsServiceService.getTenantStatements(y, sD, eD).then((res) => {
       settransactions(res.data.data);
       if (res.data.data?.length > 0) {
       }
