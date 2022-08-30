@@ -833,7 +833,7 @@ function Invoices() {
                             type="tel"
                             id="phone"
                             name="phone"
-                            placeholder="07XXXXXXXX"
+                            placeholder="0XXXXXXXXX"
                             pattern="[0]{1}[0-9]{9}"
                             required={true}
                           />
