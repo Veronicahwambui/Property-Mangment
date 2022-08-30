@@ -105,16 +105,7 @@ function UserDetails() {
                                                 {/* <a class="nav-item nav-link" >All Logs</a> */}
 
                                             </div>
-                                            <div class="navbar-nav">
-                                                <a  type="button" class="btn btn-primary waves-effect waves-light text-white">
-                                                    <i class="bx bx bxs-edit-alt font-size-16 align-middle me-2">
-                                                  
-                                                     Edit Account
-                                                   
-                                                     </i>
-                                                </a>
-                                            </div>
-
+                                          
                                         </div>
                                     </nav>
                                 </div>
@@ -350,9 +341,11 @@ function UserDetails() {
                                 </thead>
 
                                 <tbody class="table-hover">
-                                  {communication?.map((com, index) => (
+                                  {communication?.map((com, index) => {
                                       
-                                
+                                      let message = JSON.parse(com.data) 
+
+                                      return(
                                       <tr data-id="1">
                                     <td>{index + 1}</td>
                                     {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
@@ -390,12 +383,12 @@ function UserDetails() {
                                         <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
                                        
                                         <td class="the-msg the-msg-2">
-                                  <span>{JSON.parse(com.data).text}</span>
+                                  <span>{message.text}</span>
                                            
                                             </td>   
                                         <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
                                         </tr>
-                                       ) 
+                                   ) }
                               )}
                               
                                 </tbody>
