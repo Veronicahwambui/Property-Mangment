@@ -153,7 +153,7 @@ function Invoices() {
 
   useEffect(() => {
     getInvoices();
-  }, [page]);
+  }, [page, size]);
 
   const sort = (event) => {
     event.preventDefault();
@@ -674,6 +674,7 @@ function Invoices() {
                             nextLinkClassName="page-link"
                             activeClassName="active"
                             onPageChange={(data) => handlePageClick(data)}
+                            forcePage={page}
                           />
                         </nav>
                       </>
