@@ -19,6 +19,7 @@ function Invoices() {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const[invoiceNumber ,setInvoiceNumber] =useState("undefined")
   // MODAL
   const [invoice_show, setinvoice_show] = useState(false);
   const [invoice_Date_show, setinvoice_Date_show] = useState(false);
@@ -362,9 +363,24 @@ function Invoices() {
       return v.toUpperCase();
     });
   }
-  const generateBillNo = () => {
-    console.log("");
+  const generateBillNo = (x) => {
+    console.log(x)
+
+   setInvoiceNumber(x)
   };
+
+   // toggle function 
+   const toggleStatus = ()=>{
+    
+    requestsServiceService.toogleRegenerateReference(invoiceNumber).then((res)=>{
+  //  console.log(res)
+   
+    getInvoices();
+   
+
+
+    })
+  }
   return (
     <>
       <div className="page-content">
@@ -460,7 +476,7 @@ function Invoices() {
                   <div className="table-responsive">
                     <table
                       className="table align-middle table-hover  contacts-table table-striped "
-                      id="datatable-buttons"
+                    
                     >
                       <thead className="table-light">
                         <tr className="table-light">
@@ -565,8 +581,10 @@ function Invoices() {
                                       {invoice.billerBillNo === null && (
                                         <a
                                           className="dropdown-item cursor-pointer"
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#confirm"
                                           onClick={() => {
-                                            generateBillNo(invoice);
+                                            generateBillNo(invoice.transactionItemId);
                                           }}
                                         >
                                           <i className="font-size-15 mdi mdi-cog me-3"></i>
@@ -694,6 +712,47 @@ function Invoices() {
           </div>
         </div>
       </div>
+
+       {/* Invoice */}
+
+       <div
+      class="modal fade"
+      id="confirm"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      role="dialog"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+           <center>
+              <h5>Are you sure you want to generate BillNo?</h5>
+           </center>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-light"
+              data-bs-dismiss="modal"
+            >
+              no
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              onClick={()=>toggleStatus()}
+            >
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 
       {/*VIEW INVOICE*/}
       <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>

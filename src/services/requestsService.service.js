@@ -1107,6 +1107,11 @@ class RequestsService {
   receivePayment(data) {
     return axiosInstance.post(baseUrl + "/payments/invoice/callback", data);
   }
+
+  toogleRegenerateReference(invoiceNo){
+
+    return axiosInstance.get(baseUrl+ "/payments/parents/item/" + invoiceNo + "/regenerateReference")
+  }
 }
 
 export default new RequestsService();
