@@ -324,8 +324,8 @@ function AllNotes() {
                                   {noteType === "CREDIT" && (
                                     <td>
                                       <p className="mb-0">
-                                        {list.tenancy.tenant.firstName}{" "}
-                                        {list.tenancy.tenant.lastName}
+                                        {list.tenancy?.tenant?.firstName}{" "}
+                                        {list.tenancy?.tenant?.lastName}
                                       </p>
                                     </td>
                                   )}
@@ -346,8 +346,8 @@ function AllNotes() {
                                     <td>
                                       <p className="mb-0">
                                         {
-                                          list.tenancy.premiseUnit.premise
-                                            .premiseName
+                                          list.tenancy?.premiseUnit?.premise
+                                            ?.premiseName
                                         }
                                       </p>
                                     </td>
