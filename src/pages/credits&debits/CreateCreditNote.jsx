@@ -269,7 +269,7 @@ function CreateCreditNote() {
       };
     }
     requestsServiceService
-      .testStuff(data)
+      .createCreditNote(data)
       .then((res) => {
         if (res.data.status === true) {
           setError({

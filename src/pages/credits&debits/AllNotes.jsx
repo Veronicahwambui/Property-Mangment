@@ -24,10 +24,9 @@ function AllNotes() {
 
   const getData = () => {
     // e.preventDefault()
-    requestsServiceService.getStuff(noteType).then((res) => {
-      let x = res.data.data.map((item) => item.response);
-      console.log(x);
+    requestsServiceService.getNotes(noteType).then((res) => {
       setnotes(res.data.data);
+      $("#spinner").addClass("d-none");
     });
   };
   useEffect(() => {
@@ -222,6 +221,18 @@ function AllNotes() {
         <div className="container-fluid">
           {/* <!-- start page title --> */}
           <div class="row">
+            <div id="spinner">
+              <div id="status">
+                <div className="spinner-chase">
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                  <div className="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">Credit & Debit Notes</h4>
@@ -283,10 +294,7 @@ function AllNotes() {
               <div class="card">
                 <div class="card-body">
                   <div className="">
-                    <table
-                      className="table no-wrap nowrap w-100 table-striped"
-                      id="datatable-buttons"
-                    >
+                    <table className="table no-wrap nowrap w-100 table-striped">
                       <thead className="table-dark">
                         <tr>
                           <th></th>
