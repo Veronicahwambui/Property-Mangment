@@ -75,12 +75,13 @@ function CreateCreditNote() {
   // fetch invoices
   const getInvoice = (invoiceNumber) => {
     requestsServiceService.getParentInvoice(invoiceNumber).then((res) => {
+      console.log(res.data.data);
       if (res.data.status === true) {
         setloading(false);
         setloaded(true);
         setfetched(true);
         setloading2(false);
-        settransactions(res.data.data);
+        // settransactions(res.data.data);
         settransactionId(res.data.data?.transaction?.transactionId);
       } else {
         setloading(false);
@@ -90,7 +91,11 @@ function CreateCreditNote() {
       }
     });
   };
-
+  const [tItem, setTitem] = useState("");
+  useEffect(() => {
+    console.log(tItem);
+    getInvoice(tItem);
+  }, [tItem]);
   // get tenancies etc
   const getId = (y) => {
     if (recipient === "TENANT") {
@@ -126,14 +131,18 @@ function CreateCreditNote() {
           });
         });
     }
-    let sD = moment().startOf("year").format("YYYY/MM/DD");
-    let eD = moment(new Date()).format("YYYY/MM/DD");
-    requestsServiceService.getTenantStatements(y, sD, eD).then((res) => {
-      settransactions(res.data.data);
-      if (res.data.data?.length > 0) {
-      }
-    });
   };
+
+  useEffect(() => {
+    let data = {
+      startDate: moment().startOf("year").toISOString(),
+      endDate: moment(new Date()).toISOString(),
+      tenancyId: parseInt(tenancyId),
+    };
+    requestsServiceService.getTransactions(data).then((res) => {
+      settransactions(res.data.data);
+    });
+  }, [tenancyId]);
 
   // autofill
   const autofill = (x) => {
@@ -198,6 +207,94 @@ function CreateCreditNote() {
       currency: "KES",
     });
     return formatCurrency.format(x);
+  };
+
+  const [datas, setdatas] = useState([]);
+  const [dat, setdat] = useState([]);
+  function handleForm(e, i, t) {
+    setdat((dat) => [...dat, i]);
+    if (!dat.some((y) => y === i)) {
+      let x = {
+        code: t.transactionItemId,
+        name: t.applicableChargeName,
+        value: parseInt(e.target.value),
+      };
+      setdatas((datas) => [...datas, x]);
+    } else {
+      let newArr = [...datas];
+      newArr[i] = {
+        code: t.transactionItemId,
+        name: t.applicableChargeName,
+        value: parseInt(e.target.value),
+      };
+      setdatas(newArr);
+    }
+  }
+  const debitTotal = () => {
+    let sum = 0;
+    datas?.map((item) => {
+      sum += parseInt(item.value);
+    });
+    return sum;
+  };
+
+  useEffect(() => {
+    debitTotal();
+  }, [datas]);
+  useEffect(() => {
+    console.log(!(tenancyId !== "" || amount !== ""));
+  });
+
+  const handleFinalSubmit = () => {
+    if (recipient === "TENANT") {
+      var data = {
+        amount: parseInt(amount),
+        debitLandlords: debitToLandlord,
+        noteFor: recipient,
+        parentInvoiceNumber: "",
+        reason: reason,
+        tenancyId: parseInt(tenancyId),
+        transactionValues: datas,
+      };
+    }
+    if (recipient === "INVOICE") {
+      var data = {
+        amount: parseInt(amount),
+        debitLandlords: debitToLandlord,
+        noteFor: recipient,
+        parentInvoiceNumber: transactionId,
+        reason: reason,
+        tenancyId: "",
+        transactionValues: datas,
+      };
+    }
+    requestsServiceService
+      .testStuff(data)
+      .then((res) => {
+        if (res.data.status === true) {
+          setError({
+            ...error,
+            color: "success",
+            message: res.data.message,
+          });
+          setTimeout(() => {
+            navigate("/notes", { replace: true });
+          }, 2500);
+        } else {
+          setError({
+            ...error,
+            color: "danger",
+            message: res.data.message,
+          });
+        }
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          color: "danger",
+          message: err.message,
+        });
+      });
   };
 
   return (
@@ -428,6 +525,7 @@ function CreateCreditNote() {
                                     rows="3"
                                     className="form-control"
                                     required={true}
+                                    maxLength="255"
                                     onChange={(e) => setReason(e.target.value)}
                                   ></textarea>
                                 </div>
@@ -455,6 +553,7 @@ function CreateCreditNote() {
                                 <button
                                   type="button"
                                   onClick={showInvoice}
+                                  disabled={amount === "" || reason === ""}
                                   className="btn btn-success w-md"
                                 >
                                   Next
@@ -520,7 +619,7 @@ function CreateCreditNote() {
             </div>
           </div>
           <div className="col-12">
-            <table className="table table-nowrap">
+            <table className="table table-striped">
               <thead>
                 <tr>
                   <th style={{ width: "70px" }}>No.</th>
@@ -536,21 +635,25 @@ function CreateCreditNote() {
                 </tr>
               </thead>
               <tbody>
-                {transactions?.transactionItems?.length > 0 &&
-                  transactions?.transactionItems?.map((item, index) => (
-                    <tr data-id={index} key={index}>
+                {transactions?.length > 0 &&
+                  transactions?.map((item, index) => (
+                    <tr data-id={item.id} key={item.id}>
                       <td>{index + 1}</td>
                       <td>{item.applicableChargeName}</td>
                       <td>{item.quantity}</td>
-                      <td>{item.unitCost}</td>
-                      <td>{item.billPaidAmount}</td>
+                      <td>{formatCurrency(item.unitCost)}</td>
+                      <td>{formatCurrency(item.billPaidAmount)}</td>
                       <td></td>
-                      <td className="text-end">{item.billAmount}</td>
+                      <td className="text-end">
+                        {formatCurrency(item.billAmount)}
+                      </td>
                       <td>
                         <input
-                          type="number"
+                          type="text"
                           className="form-control form-control-sm text-right"
+                          // placeholder="Input amount"
                           placeholder="KES"
+                          onChange={(e) => handleForm(e, index, item)}
                         />
                       </td>
                     </tr>
@@ -563,9 +666,7 @@ function CreateCreditNote() {
                   <td colSpan="2" className="text-end">
                     Total
                   </td>
-                  <td className="text-end fw-bold">
-                    {formatCurrency(total().sum)}
-                  </td>
+                  <td className="text-end fw-bold">{formatCurrency(amount)}</td>
                 </tr>
                 <tr>
                   <td></td>
@@ -576,7 +677,7 @@ function CreateCreditNote() {
                     Paid
                   </td>
                   <td className="text-end fw-bold">
-                    {formatCurrency(total().paid)}
+                    {formatCurrency(debitTotal())}
                   </td>
                 </tr>
                 <tr>
@@ -588,7 +689,23 @@ function CreateCreditNote() {
                     <strong>Balance</strong>
                   </td>
                   <td className="text-end fw-bold">
-                    {formatCurrency(total().balance)}
+                    {formatCurrency(parseInt(amount) - debitTotal())}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td colSpan={"2"} className="text-end"></td>
+                  <td className="text-end fw-bold text-danger">
+                    {debitTotal() > amount ? (
+                      <>
+                        <span>Amount exceeded!</span>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </td>
                 </tr>
               </tbody>
@@ -604,13 +721,19 @@ function CreateCreditNote() {
         </Modal.Body>
         <Modal.Footer>
           <div className="float-end">
-            <a
-              href="javascript: void(0);"
+            <button
+              onClick={handleFinalSubmit}
+              // disabled={amount === "" && reason === ""}
               className="btn btn-primary w-md waves-effect waves-light submit-credit-details"
             >
               Submit Details
-            </a>
+            </button>
           </div>
+          {error.color !== "" && (
+            <div className={"alert alert-" + error.color} role="alert">
+              {error.message}
+            </div>
+          )}
         </Modal.Footer>
       </Modal>
 

@@ -13,11 +13,20 @@ import authLoginService from "../../services/authLogin.service";
 
 function AllNotes() {
   const [notes, setnotes] = useState([]);
-  const [noteType, setnoteType] = useState("");
+  const [noteType, setnoteType] = useState("CREDIT");
+  const formatCurrency = (x) => {
+    let formatCurrency = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "KES",
+    });
+    return formatCurrency.format(x);
+  };
 
   const getData = () => {
     // e.preventDefault()
     requestsServiceService.getStuff(noteType).then((res) => {
+      let x = res.data.data.map((item) => item.response);
+      console.log(x);
       setnotes(res.data.data);
     });
   };
@@ -215,7 +224,7 @@ function AllNotes() {
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">User List</h4>
+                <h4 class="mb-sm-0 font-size-18">Credit & Debit Notes</h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
@@ -223,7 +232,7 @@ function AllNotes() {
                       <Link to="/">Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">
-                      <Link to="/adminlist"> System Users</Link>
+                      <Link to="/notes"> All Notes</Link>
                     </li>
                   </ol>
                 </div>
@@ -236,21 +245,23 @@ function AllNotes() {
               role="toolbar"
             >
               <div class="d-flex align-items-center flex-grow-1">
-                <h4 class="mb-0  bg-transparent  p-0 m-0">UserList</h4>
+                <h4 class="mb-0  bg-transparent  p-0 m-0">
+                  {noteType} Notes List
+                </h4>
               </div>
               <div class="d-flex">
                 <div className="form-group">
-                  <label htmlFor="">UserType</label>
+                  <label htmlFor="">Note Type</label>
                   <select
                     class="form-control"
                     title="Select TenancyStatus"
                     onChange={(e) => setnoteType(e.target.value)}
                   >
                     <option className="text-black font-semibold ">
-                      --Select type
+                      --Select note type
                     </option>
 
-                    {["Credit", "Debit"]?.map((t, index) => {
+                    {["CREDIT", "DEBIT"]?.map((t, index) => {
                       return (
                         <option key={t} value={t}>
                           {t.toLowerCase()}
@@ -302,35 +313,46 @@ function AllNotes() {
                                   <td>
                                     <p className="mb-0">{list.reference}</p>
                                   </td>
-                                  <td>
-                                    <p className="mb-0">
-                                      {list.tenancy.tenant.firstName}{" "}
-                                      {list.tenancy.tenant.lastName}
-                                    </p>
-                                  </td>
+                                  {noteType === "CREDIT" && (
+                                    <td>
+                                      <p className="mb-0">
+                                        {list.tenancy.tenant.firstName}{" "}
+                                        {list.tenancy.tenant.lastName}
+                                      </p>
+                                    </td>
+                                  )}
+                                  {noteType === "DEBIT" && (
+                                    <td>
+                                      <p className="mb-0">
+                                        {list.landLord?.firstName}{" "}
+                                        {list.landLord?.lastName}
+                                      </p>
+                                    </td>
+                                  )}
                                   <td>
                                     {moment(list.dateTimeCreated).format(
                                       "YYYY-MM-DD HH:mm"
                                     )}
                                   </td>
+                                  {noteType === "CREDIT" && (
+                                    <td>
+                                      <p className="mb-0">
+                                        {
+                                          list.tenancy.premiseUnit.premise
+                                            .premiseName
+                                        }
+                                      </p>
+                                    </td>
+                                  )}
+                                  {noteType === "DEBIT" && (
+                                    <td>
+                                      <p className="mb-0">{list.noteType}</p>
+                                    </td>
+                                  )}
                                   <td>
-                                    <p className="mb-0">
-                                      {
-                                        list.tenancy.premiseUnit.premise
-                                          .premiseName
-                                      }
-                                    </p>
+                                    {list.reason.substring(0, 50) + "...."}
                                   </td>
-                                  <td>
-                                    {list.reason.substring(0, 10) + "...."}
-                                  </td>
-                                  <td>
-                                    {
-                                      JSON.parse(
-                                        list.transactionValueAllocations
-                                      ).value
-                                    }
-                                  </td>
+                                  <td>{formatCurrency(list.amount)}</td>
                                 </tr>
                               </>
                             );
