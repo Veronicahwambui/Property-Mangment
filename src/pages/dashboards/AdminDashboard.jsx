@@ -172,64 +172,64 @@ function AdminDashboard() {
                       <tbody>
                         {newUnitsIncomeReportCounty === "undefined"
                           ? newUnitsIncomeReport?.unitIncomeModels?.map(
-                              (model, index) => {
-                                return (
-                                  <tr>
-                                    <td>{index + 1}</td>
-                                    <td className="text-capitalize">
-                                      {model.demography
-                                        ?.toLowerCase()
-                                        ?.replace(/_/g, " ")}
-                                    </td>
-                                    <td>{model.newUnits}</td>
-                                    <td>
-                                      {formatCurrency(
-                                        model.totalExpectedIncome
-                                      )}
-                                    </td>
-                                    <td>
-                                      {formatCurrency(model.commissionIncome)}
-                                    </td>
-                                    <td>
-                                      <i
-                                        onClick={() =>
-                                          linkToNewUnits(model.demography)
-                                        }
-                                        className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
-                                      ></i>
-                                    </td>
-                                  </tr>
-                                );
-                              }
-                            )
+                            (model, index) => {
+                              return (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td className="text-capitalize">
+                                    {model.demography
+                                      ?.toLowerCase()
+                                      ?.replace(/_/g, " ")}
+                                  </td>
+                                  <td>{model.newUnits}</td>
+                                  <td>
+                                    {formatCurrency(
+                                      model.totalExpectedIncome
+                                    )}
+                                  </td>
+                                  <td>
+                                    {formatCurrency(model.commissionIncome)}
+                                  </td>
+                                  <td>
+                                    <i
+                                      onClick={() =>
+                                        linkToNewUnits(model.demography)
+                                      }
+                                      className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
+                                    ></i>
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          )
                           : newUnitsIncomeReport?.unitIncomeModels
-                              ?.filter(
-                                (one) =>
-                                  one.demography === newUnitsIncomeReportCounty
-                              )
-                              ?.map((model, index) => {
-                                return (
-                                  <tr>
-                                    <td>{index + 1}</td>
-                                    <td className="text-capitalize">
-                                      {model.demography
-                                        ?.toLowerCase()
-                                        ?.replace(/_/g, " ")}
-                                    </td>
-                                    <td>{model.newUnits}</td>
-                                    <td>{model.totalExpectedIncome}</td>
-                                    <td>{model.commissionIncome}</td>
-                                    <td>
-                                      <i
-                                        onClick={() =>
-                                          linkToNewUnits(model.demography)
-                                        }
-                                        className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
-                                      ></i>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                            ?.filter(
+                              (one) =>
+                                one.demography === newUnitsIncomeReportCounty
+                            )
+                            ?.map((model, index) => {
+                              return (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td className="text-capitalize">
+                                    {model.demography
+                                      ?.toLowerCase()
+                                      ?.replace(/_/g, " ")}
+                                  </td>
+                                  <td>{model.newUnits}</td>
+                                  <td>{model.totalExpectedIncome}</td>
+                                  <td>{model.commissionIncome}</td>
+                                  <td>
+                                    <i
+                                      onClick={() =>
+                                        linkToNewUnits(model.demography)
+                                      }
+                                      className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
+                                    ></i>
+                                  </td>
+                                </tr>
+                              );
+                            })}
                         {/* <tr></tr> */}
                       </tbody>
                     </table>
@@ -269,7 +269,7 @@ function AdminDashboard() {
                 </div>
                 <div class="card-body">
                   <div className="table-responsive">
-                    <table class="table  table-nowrap table-hover overflow-visible contacts-table">
+                    <table class="table  table-nowrap table-hover overflow-visible contacts-table" id="unit-datatable-buttons">
                       <thead class="table-light">
                         <tr>
                           <th>#</th>
@@ -285,62 +285,62 @@ function AdminDashboard() {
                       <tbody>
                         {adminAgedArrearsMonth === "undefined"
                           ? adminAgedArrears?.ageReportModels?.map(
-                              (model, index) => {
-                                return (
-                                  <tr>
-                                    <td>{index + 1}</td>
-                                    <td className="text-capitalize">
-                                      {model.demography
-                                        ?.toLowerCase()
-                                        ?.replace(/_/g, " ")}
-                                    </td>
-                                    <td>{model.invoicePeriod}</td>
-                                    <td>{model.countAll}</td>
-                                    <td>{formatCurrency(model.sum)}</td>
-                                    <td>{formatCurrency(model.paid)}</td>
-                                    <td>{model.collectionRate}</td>
-                                    <td>
-                                      <i
-                                        onClick={() =>
-                                          linkToArrears(model.demography)
-                                        }
-                                        className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
-                                      ></i>
-                                    </td>
-                                  </tr>
-                                );
-                              }
-                            )
+                            (model, index) => {
+                              return (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td className="text-capitalize">
+                                    {model.demography
+                                      ?.toLowerCase()
+                                      ?.replace(/_/g, " ")}
+                                  </td>
+                                  <td>{model.invoicePeriod}</td>
+                                  <td>{model.countAll}</td>
+                                  <td>{formatCurrency(model.sum)}</td>
+                                  <td>{formatCurrency(model.paid)}</td>
+                                  <td>{model.collectionRate}</td>
+                                  <td>
+                                    <i
+                                      onClick={() =>
+                                        linkToArrears(model.demography)
+                                      }
+                                      className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
+                                    ></i>
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          )
                           : adminAgedArrears?.ageReportModels
-                              ?.filter(
-                                (one) =>
-                                  one.invoicePeriod === adminAgedArrearsMonth
-                              )
-                              .map((model, index) => {
-                                return (
-                                  <tr>
-                                    <td>{index + 1}</td>
-                                    <td className="text-capitalize">
-                                      {model.demography
-                                        ?.toLowerCase()
-                                        ?.replace(/_/g, " ")}
-                                    </td>
-                                    <td>{model.invoicePeriod}</td>
-                                    <td>{model.countAll}</td>
-                                    <td>{formatCurrency(model.sum)}</td>
-                                    <td>{formatCurrency(model.paid)}</td>
-                                    <td>{model.collectionRate}</td>
-                                    <td>
-                                      <i
-                                        onClick={() =>
-                                          linkToArrears(model.demography)
-                                        }
-                                        className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
-                                      ></i>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                            ?.filter(
+                              (one) =>
+                                one.invoicePeriod === adminAgedArrearsMonth
+                            )
+                            .map((model, index) => {
+                              return (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td className="text-capitalize">
+                                    {model.demography
+                                      ?.toLowerCase()
+                                      ?.replace(/_/g, " ")}
+                                  </td>
+                                  <td>{model.invoicePeriod}</td>
+                                  <td>{model.countAll}</td>
+                                  <td>{formatCurrency(model.sum)}</td>
+                                  <td>{formatCurrency(model.paid)}</td>
+                                  <td>{model.collectionRate}</td>
+                                  <td>
+                                    <i
+                                      onClick={() =>
+                                        linkToArrears(model.demography)
+                                      }
+                                      className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
+                                    ></i>
+                                  </td>
+                                </tr>
+                              );
+                            })}
                         {/* <tr></tr> */}
                       </tbody>
                     </table>
@@ -372,7 +372,7 @@ function AdminDashboard() {
                 </div>
                 <div class="card-body">
                   <div className="table-responsive">
-                    <table class="table  table-nowrap table-hover overflow-visible contacts-table">
+                    <table class="table  table-nowrap table-hover overflow-visible contacts-table" id="datatable-buttons2">
                       <thead class="table-light">
                         <tr>
                           <th>#</th>
@@ -387,86 +387,86 @@ function AdminDashboard() {
                       <tbody>
                         {occupancyReportCounty === "undefined"
                           ? occupancyReport?.occupancyResponses?.map(
-                              (model, index) => {
-                                return (
-                                  <tr>
-                                    <td>{index + 1}</td>
-                                    <td className="text-capitalize">
-                                      {model.demography
-                                        ?.toLowerCase()
-                                        ?.replace(/_/g, " ")}
-                                    </td>
-                                    <td>{model.premiseCount}</td>
-                                    <td>{model.allUnits}</td>
-                                    <td>{model.newUnits}</td>
-                                    <td>
-                                      {model.countPremiseUnitByStatus?.map(
-                                        (one) => (
-                                          <div className="d-flex justify-content-start gap-3">
-                                            <strong>{one.sum}</strong>
-                                            <span className="text-capitalize">
-                                              {one.status
-                                                ?.toLowerCase()
-                                                ?.replace(/_/g, " ")}{" "}
-                                            </span>
-                                          </div>
+                            (model, index) => {
+                              return (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td className="text-capitalize">
+                                    {model.demography
+                                      ?.toLowerCase()
+                                      ?.replace(/_/g, " ")}
+                                  </td>
+                                  <td>{model.premiseCount}</td>
+                                  <td>{model.allUnits}</td>
+                                  <td>{model.newUnits}</td>
+                                  <td>
+                                    {model.countPremiseUnitByStatus?.map(
+                                      (one) => (
+                                        <div className="d-flex justify-content-start gap-3">
+                                          <strong>{one.sum}</strong>
+                                          <span className="text-capitalize">
+                                            {one.status
+                                              ?.toLowerCase()
+                                              ?.replace(/_/g, " ")}{" "}
+                                          </span>
+                                        </div>
+                                      )
+                                    )}
+                                  </td>
+                                  <td>
+                                    <i
+                                      onClick={() =>
+                                        linkToOccupancyReports(
+                                          model.demography
                                         )
-                                      )}
-                                    </td>
-                                    <td>
-                                      <i
-                                        onClick={() =>
-                                          linkToOccupancyReports(
-                                            model.demography
-                                          )
-                                        }
-                                        className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
-                                      ></i>
-                                    </td>
-                                  </tr>
-                                );
-                              }
-                            )
+                                      }
+                                      className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
+                                    ></i>
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          )
                           : occupancyReport?.occupancyResponses
-                              ?.filter(
-                                (one) =>
-                                  one.demography === occupancyReportCounty
-                              )
-                              ?.map((model, index) => {
-                                return (
-                                  <tr>
-                                    <td>{index + 1}</td>
-                                    <td className="text-capitalize">
-                                      {model.demography
-                                        ?.toLowerCase()
-                                        ?.replace(/_/g, " ")}
-                                    </td>
-                                    <td>{model.premiseCount}</td>
-                                    <td>{model.allUnits}</td>
-                                    <td>{model.newUnits}</td>
-                                    <td>
-                                      {model.countPremiseUnitByStatus?.map(
-                                        (one) => (
-                                          <div className="d-flex justify-content-start gap-3">
-                                            <strong>{one.sum}</strong>
-                                            <span>{one.status} </span>
-                                          </div>
+                            ?.filter(
+                              (one) =>
+                                one.demography === occupancyReportCounty
+                            )
+                            ?.map((model, index) => {
+                              return (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td className="text-capitalize">
+                                    {model.demography
+                                      ?.toLowerCase()
+                                      ?.replace(/_/g, " ")}
+                                  </td>
+                                  <td>{model.premiseCount}</td>
+                                  <td>{model.allUnits}</td>
+                                  <td>{model.newUnits}</td>
+                                  <td>
+                                    {model.countPremiseUnitByStatus?.map(
+                                      (one) => (
+                                        <div className="d-flex justify-content-start gap-3">
+                                          <strong>{one.sum}</strong>
+                                          <span>{one.status} </span>
+                                        </div>
+                                      )
+                                    )}
+                                  </td>
+                                  <td>
+                                    <i
+                                      onClick={() =>
+                                        linkToOccupancyReports(
+                                          model.demography
                                         )
-                                      )}
-                                    </td>
-                                    <td>
-                                      <i
-                                        onClick={() =>
-                                          linkToOccupancyReports(
-                                            model.demography
-                                          )
-                                        }
-                                        className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
-                                      ></i>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                                      }
+                                      className="font-size-20 mdi mdi-eye me-3 cursor-pinter "
+                                    ></i>
+                                  </td>
+                                </tr>
+                              );
+                            })}
                         {/* <tr></tr> */}
                       </tbody>
                     </table>
@@ -479,9 +479,8 @@ function AdminDashboard() {
       </div>
 
       <Helmet>
-        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-        <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+      {/* <!-- Datatable init js --> */}
+         <script src="assets/js/pages/datatables.init.js" type="text/javascript"></script>
       </Helmet>
     </>
   );

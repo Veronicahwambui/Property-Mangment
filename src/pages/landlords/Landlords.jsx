@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
 import Message from "../../components/Message";
+import { Helmet } from "react-helmet";
 
 function Landlords() {
   const [landlords, setLandlords] = useState([]);
@@ -245,7 +246,7 @@ function Landlords() {
                     </form>
                   </div>
                   <div class="table-responsive table-responsive-md">
-                    <table class="table table-editable align-middle table-edits">
+                  <table class="table table-nowrap table-hover overflow-visible contacts-table" id="datatable-buttons2">
                       <thead class="table-light">
                         <tr class="text-uppercase table-light">
                           <th>#</th>
@@ -361,7 +362,7 @@ function Landlords() {
                                 </div>
                               </div>
                             </td>
-                            <td></td>
+                          
                           </tr>
                         ))}
                       </tbody>
@@ -501,6 +502,10 @@ function Landlords() {
           </div>
         </div>
       </div>
+      <Helmet>
+      {/* <!-- Datatable init js --> */}
+         <script src="assets/js/pages/datatables.init.js" type="text/javascript"></script>
+      </Helmet>
     </>
   );
 }

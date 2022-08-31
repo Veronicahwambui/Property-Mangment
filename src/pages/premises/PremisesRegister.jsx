@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
+import { Helmet } from "react-helmet";
 
 function PremisesRegister() {
   const [premises, setPremises] = useState([]);
@@ -300,7 +301,7 @@ function PremisesRegister() {
 
               <div class="card-body">
                 <div className="table-responsive">
-                  <table class="table  table-nowrap table-hover overflow-visible contacts-table">
+                <table class="table table-nowrap table-hover overflow-visible contacts-table" id="datatable-buttons2">
                     <thead class="table-light">
                       <tr>
                         <th scope="col">#</th>
@@ -417,7 +418,7 @@ function PremisesRegister() {
                       })}
                       {/* <tr></tr> */}
                     </tbody>
-                  </table>
+                </table>
                   <div className="d-flex justify-content-between align-items-center">
                     {pageCount !== 0 && (
                       <>
@@ -472,6 +473,7 @@ function PremisesRegister() {
                   )}
                 </div>
               </div>
+             
             </div>
           </div>
           {/* <!-- end col --> */}
@@ -480,6 +482,11 @@ function PremisesRegister() {
         {/* <!-- end row --> */}
       </div>
       {/* <!-- container-fluid --> */}
+      
+      <Helmet>
+      {/* <!-- Datatable init js --> */}
+         <script src="assets/js/pages/datatables.init.js" type="text/javascript"></script>
+      </Helmet>
     </div>
   );
 }

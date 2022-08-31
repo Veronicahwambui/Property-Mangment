@@ -260,10 +260,7 @@ function AllTenants() {
               </div>
               <div className="card-body">
                 <div className="table-responsive">
-                  <table
-                    className="table  align-middle table-nowrap table-hover"
-                    id="example"
-                  >
+                <table class="table table-nowrap table-hover overflow-visible contacts-table" id="datatable-buttons2">
                     <thead className="table-light">
                       <tr>
                         <th scope="col">#</th>
@@ -387,7 +384,6 @@ function AllTenants() {
                           </tr>
                         );
                       })}
-                      <tr></tr>
                     </tbody>
                   </table>
 
@@ -453,7 +449,8 @@ function AllTenants() {
         {/* <!-- end col --> */}
       </div>
       <Helmet>
-        <script src="assets/js/pages/datatables.init.js"></script>
+      {/* <!-- Datatable init js --> */}
+         <script src="assets/js/pages/datatables.init.js" type="text/javascript"></script>
       </Helmet>
       {/* <!-- end row --> */}
     </div>

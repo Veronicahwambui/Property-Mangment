@@ -1,6 +1,6 @@
 $( document).ready(function() {
  
-
+  setTimeout(() => {
     var theTable
     theTable = $("#datatable").DataTable(), $("#datatable-buttons").DataTable({
         lengthChange: !1,
@@ -51,6 +51,55 @@ $( document).ready(function() {
         <a class="dropdown-item" data-table-action="csv" href="#">Download as CSV file</a>
     </div>
 </div>`), $('.buttons-print').children('span').eq(1).addClass('d-none d-xxl-inline'), $('.buttons-colvis').prepend('<span class="mdi mdi-eye-check-outline font-size-16 align-middle me-2"></span>').children('span').eq(1).addClass('d-none d-xxl-inline');
+   
+
+$("#datatable2").DataTable(), 
+$("#datatable-buttons2").DataTable({
+        paging: false,
+        searching: false,
+        info: false,
+        buttons: ["copy", "print", "excel", "csv", "pdf", "colvis"],
+        //this functon is fired once the datatable is drawn 
+        "fnDrawCallback": function(oSettings) {
+            var isEmpty = $('.dataTable tr td').hasClass('dataTables_empty');
+            if (isEmpty == true) {
+                $('.dataTable tbody tr td').text("");
+                $('.dataTable tr').removeClass('odd');
+                $('.dataTable tbody tr td').append(`  <div class="row justify-content-center mt-5 w-100">
+                                                        <div class="col-sm-4 col-md-6 p-4 mb-0">
+                                                            <img src="assets/images/empty.svg" alt=" " class="img-fluid mx-auto d-block">
+                                                        </div>
+                                                        <div class="col-12 text-center mb-3">
+                                                            <h2 class="mt-3 text-capitalize">No data available in table</h2>
+                                                            <p class="text-muted"><strong>Sorry!!!</strong>, we are afraid there are no results to be displayed for that search. Try something else</p>
+                                                        </div>
+                                                    </div>`);
+
+            }
+        }
+    }).buttons().container().appendTo("#datatable-buttons2_wrapper .col-md-6:eq(0)"),
+    $('#datatable-buttons2_wrapper .dt-buttons').append('<button type="button" class="btn btn-secondary" data-bs-toggle="offcanvas" data-bs-target="#dt__filter" aria-controls="offcanvasRight"><i class="mdi mdi-filter-variant font-size-16 align-middle me-2"></i><span class="d-none d-xxl-inline">Filter</span></button>'), $('#unit-datatable-buttons_wrapper .dataTables_length > label').addClass(''),
+    $('.dataTables_length select btn-sm').addClass('form-control selectpicker show-tick table-rows-selector d-flex'), 
+    $('.dataTables_filter').eq(1).addClass('d-none d-xl-flex'), $('.dataTables_filter').eq(0).addClass('d-xl-none'),
+    $('.dataTables_length select').attr("data-style", "btn-primary"), 
+    $('.dataTables__top').addClass('pr-0 pl-0 d-flex align-items-center w-100'),
+    $('.dataTables_filter input').addClass('emailSearch w-100'),
+    $('#datatable-buttons2_filter').addClass('mb-3 d-xl-none'), 
+    $('#datatable-buttons2_wrapper .buttons-copy').prepend('<span class="bx bx-copy font-size-16 align-middle me-2"></span>').children('span').eq(1).addClass('d-none d-xxl-inline'), $('.buttons-pdf').addClass('d-none'), 
+    $('.buttons-csv').addClass('d-none'), $('.buttons-excel').addClass('d-none'), 
+    $('#datatable-buttons2_wrapper .buttons-print').prepend('<span class="bx bx-printer font-size-16 align-middle me-2"></span>'),
+    $('#datatable-buttons2_wrapper .dt-buttons').prepend(`<div class="dropdown m-0 d-flex">
+    <a href="#" class="btn btn-secondary dropdown-toggle boarder-right-0 d-flex" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bx bxs-download font-size-16 align-middle me-2"></i> <span class="d-none d-xxl-inline">Download</span><i class="mdi mdi-chevron-down"></i>
+    </a>
+
+    <div class="dropdown-menu" style="">
+        <a class="dropdown-item" data-table-action="pdf" href="#">Download as PDF</a>
+        <a class="dropdown-item buttons-html5" data-table-action="excel" aria-controls="unit-datatable-buttons" tabindex="0"  href="#">Download as Excel File</a>
+        <a class="dropdown-item" data-table-action="csv" href="#">Download as CSV file</a>
+    </div>
+</div>`), $('.buttons-print').children('span').eq(1).addClass('d-none d-xxl-inline'), 
+$('#datatable-buttons2_wrapper .buttons-colvis').prepend('<span class="mdi mdi-eye-check-outline font-size-16 align-middle me-2"></span>').children('span').eq(1).addClass('d-none d-xxl-inline');
 
 
     var emailTable;
@@ -242,7 +291,9 @@ $( document).ready(function() {
     $('.dt-buttons').removeClass('flex-wrap');
     $('#datatable-buttons_wrapper .dt-buttons');
 
-    
+     
+  }, 1000 );
+  
     
 
 });
