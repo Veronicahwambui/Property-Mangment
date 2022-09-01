@@ -11,9 +11,6 @@ import StatusBadge from "../../components/StatusBadge";
 
 function CreateDebitNote() {
   const [creditTenancy, setCreditTenancy] = useState(false);
-  const [recipient, setRecipient] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [selectedItems, setselectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [landlords, setLandlords] = useState([]);
@@ -44,9 +41,6 @@ function CreateDebitNote() {
   const showDebitModal = () => setdebitShow(true);
   const hideDebitModal = () => setdebitShow(false);
   const showInvoice = () => setinvoice_show(true);
-  const [show, setshow] = useState(true);
-  const showCreditModal = () => setshow(true);
-  const closeCreditModal = () => setshow(false);
   const closeInvoice = () => setinvoice_show(false);
 
   const [loading, setloading] = useState(false);
@@ -118,11 +112,6 @@ function CreateDebitNote() {
       }
     });
   };
-  const [tItem, setTitem] = useState("");
-  useEffect(() => {
-    console.log(tItem);
-    getInvoice(tItem);
-  }, [tItem]);
   // get tenancies etc
   const getPremises = (x) => {
     let startdate = moment(new Date()).startOf("year").format("YYYY/MM/DD");
@@ -1073,7 +1062,7 @@ function CreateDebitNote() {
           <div className="float-end">
             <button
               onClick={handleFinalSubmit}
-              // disabled={parseInt(amount) < debitTotal()}
+              disabled={parseInt(amount) < debitTotal()}
               className="btn btn-primary w-md waves-effect waves-light submit-credit-details"
             >
               Submit Details

@@ -13,7 +13,7 @@ import authLoginService from "../../services/authLogin.service";
 
 function AllNotes() {
   const [notes, setnotes] = useState([]);
-  const [noteType, setnoteType] = useState("CREDIT");
+  const [noteType, setnoteType] = useState("Credit");
   const formatCurrency = (x) => {
     let formatCurrency = new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -23,7 +23,6 @@ function AllNotes() {
   };
 
   const getData = () => {
-    // e.preventDefault()
     requestsServiceService.getNotes(noteType).then((res) => {
       setnotes(res.data.data);
       $("#spinner").addClass("d-none");
@@ -32,130 +31,6 @@ function AllNotes() {
   useEffect(() => {
     getData();
   }, [noteType]);
-
-  const confirmDeactivateUser = (el) => {
-    el.preventDefault();
-    let id = el.target.dataset.id;
-
-    confirmAlert({
-      message: "Are you sure you want to deactivate user id " + id,
-      buttons: [
-        {
-          label: "Cancel",
-        },
-        {
-          label: "OK",
-          onClick: () =>
-            requestsServiceService
-              .deactivateUser(id)
-              .then((res) => {
-                getData();
-                confirmAlert({
-                  message: res.data.message,
-                  buttons: [
-                    {
-                      label: "OK",
-                    },
-                  ],
-                });
-              })
-              .catch((err) => {
-                confirmAlert({
-                  message: err.data.message,
-                  buttons: [
-                    {
-                      label: "OK",
-                    },
-                  ],
-                });
-              }),
-        },
-      ],
-    });
-  };
-  const confirmActivateUser = (el) => {
-    el.preventDefault();
-    let id = el.target.dataset.id;
-    confirmAlert({
-      message: "Are you sure you want to activate user " + id,
-      buttons: [
-        {
-          label: "Cancel",
-        },
-        {
-          label: "OK",
-          onClick: () =>
-            requestsServiceService
-              .activateUser(id)
-              .then((res) => {
-                getData();
-                confirmAlert({
-                  message: res.data.message,
-                  buttons: [
-                    {
-                      label: "OK",
-                    },
-                  ],
-                });
-              })
-              .catch((err) => {
-                confirmAlert({
-                  message: err.data.message,
-                  buttons: [
-                    {
-                      label: "OK",
-                    },
-                  ],
-                });
-              }),
-        },
-      ],
-    });
-  };
-  const confirmUnlockUserAccount = (el) => {
-    el.preventDefault();
-    let id = el.target.dataset.id;
-
-    confirmAlert({
-      message: "Are you sure you want to unblock user id " + id,
-      buttons: [
-        {
-          label: "Cancel",
-        },
-        {
-          label: "OK",
-          onClick: () =>
-            requestsServiceService
-              .unlockUserAccount(id)
-              .then((res) => {
-                getData();
-                confirmAlert({
-                  message: res.data.message,
-                  buttons: [
-                    {
-                      label: "OK",
-                    },
-                  ],
-                });
-              })
-              .catch((err) => {
-                confirmAlert({
-                  message: err.data.message,
-                  buttons: [
-                    {
-                      label: "OK",
-                    },
-                  ],
-                });
-              }),
-        },
-      ],
-    });
-  };
-
-  $("body").on("click", ".disableUser", confirmDeactivateUser);
-  $("body").on("click", ".enableUser", confirmActivateUser);
-  $("body").on("click", ".unlockUser", confirmUnlockUserAccount);
 
   // MESSAGE TEST
   const [details, setDetails] = useState({
@@ -250,36 +125,60 @@ function AllNotes() {
               </div>
             </div>
           </div>
-          <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+          <div class="card-header bg-white pt-0 pr-0 p-0 justify-content-between align-items-center w-100 border-bottom">
+            <div
+              className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+              role="toolbar"
+            >
+              <h4 className="card-title text-capitalize mb-0 ">
+                {noteType} Notes
+                {/*<span className="today-month">March 2022</span>*/}
+              </h4>
+
+              <div className="d-flex">
+                <Link to={`/create-${noteType}-note`}>
+                  <button className="btn btn-primary dropdown-toggle option-selector me-3">
+                    <i className="mdi mdi-plus-circle-outline  font-size-16"></i>{" "}
+                    <span className="pl-1 d-md-inline">
+                      Create A {noteType} Note
+                    </span>
+                  </button>
+                </Link>
+              </div>
+            </div>
             <div
               class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
               role="toolbar"
             >
               <div class="d-flex align-items-center flex-grow-1">
-                <h4 class="mb-0  bg-transparent  p-0 m-0">
-                  {noteType} Notes List
-                </h4>
-              </div>
-              <div class="d-flex">
-                <div className="form-group">
-                  <label htmlFor="">Note Type</label>
-                  <select
-                    class="form-control"
-                    title="Select TenancyStatus"
-                    onChange={(e) => setnoteType(e.target.value)}
+                <div className="form-group d-flex">
+                  <div
+                    className={"form-check mb-3"}
+                    style={{ marginRight: "1em" }}
                   >
-                    <option className="text-black font-semibold ">
-                      --Select note type
-                    </option>
-
-                    {["CREDIT", "DEBIT"]?.map((t, index) => {
-                      return (
-                        <option key={t} value={t}>
-                          {t.toLowerCase()}
-                        </option>
-                      );
-                    })}
-                  </select>
+                    <input
+                      className="form-check-input"
+                      value="Credit"
+                      type="checkbox"
+                      checked={noteType === "Credit"}
+                      onChange={() => setnoteType("Credit")}
+                    />
+                    <label className="form-check-label" htmlFor="debit-yes">
+                      Credit
+                    </label>
+                  </div>
+                  <div className={"form-check mb-3"}>
+                    <input
+                      className="form-check-input"
+                      value="Credit"
+                      type="checkbox"
+                      checked={noteType === "Debit"}
+                      onChange={() => setnoteType("Debit")}
+                    />
+                    <label className="form-check-label" htmlFor="debit-no">
+                      Debit
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

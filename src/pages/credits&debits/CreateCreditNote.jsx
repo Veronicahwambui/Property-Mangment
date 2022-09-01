@@ -91,11 +91,6 @@ function CreateCreditNote() {
       }
     });
   };
-  const [tItem, setTitem] = useState("");
-  useEffect(() => {
-    console.log(tItem);
-    getInvoice(tItem);
-  }, [tItem]);
   // get tenancies etc
   const getId = (y) => {
     if (recipient === "TENANT") {
@@ -134,14 +129,16 @@ function CreateCreditNote() {
   };
 
   useEffect(() => {
-    let data = {
-      startDate: moment().startOf("year").toISOString(),
-      endDate: moment(new Date()).toISOString(),
-      tenancyId: parseInt(tenancyId),
-    };
-    requestsServiceService.getTransactions(data).then((res) => {
-      settransactions(res.data.data);
-    });
+    if (tenancyId !== undefined) {
+      let data = {
+        startDate: moment().startOf("year").toISOString(),
+        endDate: moment(new Date()).toISOString(),
+        tenancyId: parseInt(tenancyId),
+      };
+      requestsServiceService.getTransactions(data).then((res) => {
+        settransactions(res.data.data);
+      });
+    }
   }, [tenancyId]);
 
   // autofill
@@ -165,9 +162,6 @@ function CreateCreditNote() {
     }
   };
 
-  function selectItems() {}
-
-  function removeItems() {}
   // search for invoice/tenant
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -210,25 +204,14 @@ function CreateCreditNote() {
   };
 
   const [datas, setdatas] = useState([]);
-  const [dat, setdat] = useState([]);
-  function handleForm(e, i, t) {
-    setdat((dat) => [...dat, i]);
-    if (!dat.some((y) => y === i)) {
-      let x = {
-        code: t.transactionItemId,
-        name: t.applicableChargeName,
-        value: parseInt(e.target.value),
-      };
-      setdatas((datas) => [...datas, x]);
-    } else {
-      let newArr = [...datas];
-      newArr[i] = {
-        code: t.transactionItemId,
-        name: t.applicableChargeName,
-        value: parseInt(e.target.value),
-      };
-      setdatas(newArr);
-    }
+  function handleForm(e, index, transaction) {
+    let newArr = [...datas];
+    newArr[index] = {
+      code: transaction.transactionItemId,
+      name: transaction.applicableChargeName,
+      value: parseInt(e.target.value),
+    };
+    setdatas(newArr);
   }
   const debitTotal = () => {
     let sum = 0;
