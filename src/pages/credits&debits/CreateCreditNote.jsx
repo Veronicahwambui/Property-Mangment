@@ -129,7 +129,8 @@ function CreateCreditNote() {
   };
 
   useEffect(() => {
-    if (tenancyId !== undefined) {
+    console.log(tenancyId);
+    if (tenancyId) {
       let data = {
         startDate: moment().startOf("year").toISOString(),
         endDate: moment(new Date()).toISOString(),
@@ -180,21 +181,6 @@ function CreateCreditNote() {
       getInvoice(searchTerm.trim().toUpperCase());
     }
   };
-
-  useEffect(() => {
-    console.log(transactionId, tenancyId);
-  }, [recipient, transactionId, tenancyId]);
-
-  const total = () => {
-    let sum = 0;
-    let paid = 0;
-    transactions?.transactionItems?.map((item) => {
-      sum += item.billAmount;
-      paid += item.billPaidAmount;
-    });
-    return { sum: sum, paid: paid, balance: sum - paid };
-  };
-
   const formatCurrency = (x) => {
     let formatCurrency = new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -224,9 +210,6 @@ function CreateCreditNote() {
   useEffect(() => {
     debitTotal();
   }, [datas]);
-  useEffect(() => {
-    console.log(!(tenancyId !== "" || amount !== ""));
-  });
 
   const handleFinalSubmit = () => {
     if (recipient === "TENANT") {
@@ -337,7 +320,7 @@ function CreateCreditNote() {
                                           value="tenant"
                                           type="radio"
                                           name="credit"
-                                          checked={recipient == "TENANT"}
+                                          checked={recipient === "TENANT"}
                                           disabled
                                         />
                                         <label
@@ -356,7 +339,7 @@ function CreateCreditNote() {
                                           value="invoice"
                                           type="radio"
                                           name="credit"
-                                          checked={recipient == "INVOICE"}
+                                          checked={recipient === "INVOICE"}
                                           disabled
                                         />
                                         <label
@@ -1176,7 +1159,7 @@ function CreateCreditNote() {
                         )}
                         {recipient === "INVOICE" && (
                           <div className={"mt-2 mb-2"}>
-                            {fetched && transactions.length < 1 && (
+                            {fetched && transactionId === undefined && (
                               <span className={"text-danger"}>
                                 Invoice not found!
                               </span>
@@ -1200,8 +1183,6 @@ function CreateCreditNote() {
                       <select
                         className="form-control"
                         title="Select tenant"
-                        value={tenancyId}
-                        onChange={(e) => settenancyId(e.target.value)}
                         required={true}
                       >
                         <option value="">Select premises..</option>
@@ -1221,6 +1202,8 @@ function CreateCreditNote() {
                         className="form-control"
                         title="Select tenant"
                         required={true}
+                        value={tenancyId}
+                        onChange={(e) => settenancyId(e.target.value)}
                       >
                         <option value="">Select units...</option>
                         {tenancies.map((item, index) => (
@@ -1307,13 +1290,26 @@ function CreateCreditNote() {
                     maxHeight: "50px",
                   }}
                 >
-                  <button
-                    className="btn btn-primary cursor-pointer"
-                    type={"button"}
-                    onClick={closeCreditModal}
-                  >
-                    Continue
-                  </button>
+                  {recipient === "INVOICE" && (
+                    <button
+                      className="btn btn-primary cursor-pointer"
+                      type={"button"}
+                      onClick={closeCreditModal}
+                      disabled={transactionId === undefined}
+                    >
+                      Continue
+                    </button>
+                  )}
+                  {recipient === "TENANT" && (
+                    <button
+                      className="btn btn-primary cursor-pointer"
+                      type={"button"}
+                      onClick={closeCreditModal}
+                      disabled={tenancyId === undefined}
+                    >
+                      Continue
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

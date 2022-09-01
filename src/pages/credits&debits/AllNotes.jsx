@@ -14,6 +14,7 @@ import authLoginService from "../../services/authLogin.service";
 function AllNotes() {
   const [notes, setnotes] = useState([]);
   const [noteType, setnoteType] = useState("Credit");
+  const [loading, setloading] = useState(false);
   const formatCurrency = (x) => {
     let formatCurrency = new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -23,12 +24,13 @@ function AllNotes() {
   };
 
   const getData = () => {
-    requestsServiceService.getNotes(noteType).then((res) => {
+    requestsServiceService.getNotes(noteType.toUpperCase()).then((res) => {
       setnotes(res.data.data);
       $("#spinner").addClass("d-none");
     });
   };
   useEffect(() => {
+    setnotes([]);
     getData();
   }, [noteType]);
 
@@ -45,6 +47,14 @@ function AllNotes() {
     senderId: "",
     subject: "I",
   });
+  const total = () => {
+    let sum = 0;
+    let paid = 0;
+    notes?.map((item) => {
+      sum += item.amount;
+    });
+    return sum;
+  };
 
   const [mode, setmode] = useState("");
   const handleModeChange = (mode) => {
@@ -52,6 +62,7 @@ function AllNotes() {
   };
 
   const handleClicked = (inv, mod) => {
+    console.log(inv);
     let mes = `Dear ${inv.firstName}, `;
     let senderId =
       JSON.parse(authService.getCurrentUserName()).client?.senderId === null
@@ -65,7 +76,7 @@ function AllNotes() {
       recipientName: inv?.firstName,
       createdBy: authService.getCurrentUserName(),
       senderId: senderId,
-      subject: "Invoice Payment",
+      subject: `${noteType} note notification`,
     });
 
     $(".email-overlay").removeClass("d-none");
@@ -196,14 +207,30 @@ function AllNotes() {
                     <table className="table no-wrap nowrap w-100 table-striped">
                       <thead className="table-dark">
                         <tr>
-                          <th></th>
-                          <th>Note Ref</th>
-                          <th>For</th>
-                          <th>Created on</th>
-                          <th>Invoice</th>
-                          <th>Reason</th>
-                          <th>Amount</th>
-                          <th>Actions</th>
+                          {noteType === "Credit" ? (
+                            <>
+                              <th></th>
+                              <th>Note Ref</th>
+                              <th>Type</th>
+                              <th>For</th>
+                              <th>Created on</th>
+                              <th>Invoice</th>
+                              <th>Reason</th>
+                              <th>Credit Amount</th>
+                              <th>Actions</th>
+                            </>
+                          ) : (
+                            <>
+                              <th></th>
+                              <th>Note Ref</th>
+                              <th>Type</th>
+                              <th>For</th>
+                              <th>Created on</th>
+                              <th>Reason</th>
+                              <th>Amount</th>
+                              <th>Actions</th>
+                            </>
+                          )}
                         </tr>
                       </thead>
 
@@ -212,59 +239,186 @@ function AllNotes() {
                           notes?.map((list, index) => {
                             return (
                               <>
-                                <tr key={list.id}>
-                                  <td className="">
-                                    <div className="d-flex align-items-center"></div>
-                                  </td>
+                                {noteType === "Credit" ? (
+                                  <>
+                                    <tr key={list.id}>
+                                      <td className="">
+                                        <div className="d-flex align-items-end"></div>
+                                      </td>
+                                      <td>
+                                        <p className="mb-0">{list.reference}</p>
+                                      </td>
+                                      <td>{list.noteType}</td>
+                                      <td>
+                                        <Link
+                                          to={
+                                            "/tenant/" +
+                                            list.tenancy?.tenant?.id
+                                          }
+                                        >
+                                          {list.tenancy?.tenant?.tenantType ===
+                                          "COMPANY"
+                                            ? list.tenancy?.tenant?.companyName
+                                            : list.tenancy?.tenant?.firstName +
+                                              " " +
+                                              list.tenancy?.tenant?.lastName}
+                                        </Link>
+                                      </td>
+                                      <td>
+                                        {moment(list.dateTimeCreated).format(
+                                          "YYYY-MM-DD HH:mm"
+                                        )}
+                                      </td>
+                                      <td>
+                                        <p className="mb-0">
+                                          {
+                                            list.tenancy?.premiseUnit?.premise
+                                              ?.premiseName
+                                          }
+                                        </p>
+                                      </td>
+                                      <td>
+                                        {list.reason.substring(0, 50) + "...."}
+                                      </td>
+                                      <td>{formatCurrency(list.amount)}</td>
+                                      <td>
+                                        <div className="d-flex justify-content-end">
+                                          <div className="dropdown">
+                                            <a
+                                              className="text-muted font-size-16"
+                                              role="button"
+                                              data-bs-toggle="dropdown"
+                                              aria-haspopup="true"
+                                            >
+                                              <i className="bx bx-dots-vertical-rounded"></i>
+                                            </a>
 
-                                  <td>
-                                    <p className="mb-0">{list.reference}</p>
-                                  </td>
-                                  {noteType === "CREDIT" && (
-                                    <td>
-                                      <p className="mb-0">
-                                        {list.tenancy?.tenant?.firstName}{" "}
-                                        {list.tenancy?.tenant?.lastName}
-                                      </p>
-                                    </td>
-                                  )}
-                                  {noteType === "DEBIT" && (
-                                    <td>
-                                      <p className="mb-0">
-                                        {list.landLord?.firstName}{" "}
-                                        {list.landLord?.lastName}
-                                      </p>
-                                    </td>
-                                  )}
-                                  <td>
-                                    {moment(list.dateTimeCreated).format(
-                                      "YYYY-MM-DD HH:mm"
-                                    )}
-                                  </td>
-                                  {noteType === "CREDIT" && (
-                                    <td>
-                                      <p className="mb-0">
-                                        {
-                                          list.tenancy?.premiseUnit?.premise
-                                            ?.premiseName
-                                        }
-                                      </p>
-                                    </td>
-                                  )}
-                                  {noteType === "DEBIT" && (
-                                    <td>
-                                      <p className="mb-0">{list.noteType}</p>
-                                    </td>
-                                  )}
-                                  <td>
-                                    {list.reason.substring(0, 50) + "...."}
-                                  </td>
-                                  <td>{formatCurrency(list.amount)}</td>
-                                </tr>
+                                            <div className="dropdown-menu dropdown-menu-end ">
+                                              <a
+                                                className="dropdown-item "
+                                                href="# "
+                                              >
+                                                <i className="font-size-15 mdi mdi-printer me-3 "></i>
+                                                Print Credit Note
+                                              </a>
+                                              <a
+                                                className="dropdown-item "
+                                                href="# "
+                                                target="new"
+                                              >
+                                                <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                                Email Credit note
+                                              </a>
+                                              <a
+                                                className="dropdown-item "
+                                                href="# "
+                                              >
+                                                <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                                Send as SMS
+                                              </a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    <tr key={list.id}>
+                                      <td className="">
+                                        <div className="d-flex align-items-end"></div>
+                                      </td>
+                                      <td>
+                                        <p className="mb-0">{list.reference}</p>
+                                      </td>
+                                      <td>{list.noteType}</td>
+                                      <td>
+                                        <Link
+                                          to={"/landlord/" + list.landLord?.id}
+                                        >
+                                          {list.landLord?.landLordType ===
+                                          "COMPANY"
+                                            ? list.landLord?.companyName
+                                            : list.landLord?.firstName +
+                                              " " +
+                                              list.landLord?.lastName}
+                                        </Link>
+                                      </td>
+                                      <td>
+                                        {moment(list.dateTimeCreated).format(
+                                          "YYYY-MM-DD HH:mm"
+                                        )}
+                                      </td>
+                                      <td>
+                                        {list.reason.substring(0, 70) + "..."}
+                                      </td>
+                                      <td>{formatCurrency(list.amount)}</td>
+                                      <td>
+                                        <div className="d-flex justify-content-end">
+                                          <div className="dropdown">
+                                            <a
+                                              className="text-muted font-size-16"
+                                              role="button"
+                                              data-bs-toggle="dropdown"
+                                              aria-haspopup="true"
+                                            >
+                                              <i className="bx bx-dots-vertical-rounded"></i>
+                                            </a>
+
+                                            <div className="dropdown-menu dropdown-menu-end ">
+                                              {/*<a*/}
+                                              {/*  className="dropdown-item "*/}
+                                              {/*  href="# "*/}
+                                              {/*>*/}
+                                              {/*  <i className="font-size-15 mdi mdi-printer me-3 "></i>*/}
+                                              {/*  Print Credit Note*/}
+                                              {/*</a>*/}
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("Email");
+                                                  handleClicked(list, "Email");
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                                Email {noteType} note
+                                              </a>
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("SMS");
+                                                  handleClicked(list, "SMS");
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-chat me-3"></i>
+                                                SMS {noteType} note
+                                              </a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </>
+                                )}
                               </>
                             );
                           })}
                       </tbody>
+                      <tfoot className="table-dark">
+                        <tr>
+                          <th
+                            className="text-capitalize text-nowrap"
+                            colSpan="3"
+                          >
+                            {notes && notes.length} {noteType} notes
+                          </th>
+                          <td className="text-nowrap text-right" colSpan="6">
+                            <span className="fw-semibold">
+                              {formatCurrency(total())}
+                            </span>
+                          </td>
+                        </tr>
+                      </tfoot>
                     </table>
 
                     <Message details={details} mode={mode} clear={clear} />

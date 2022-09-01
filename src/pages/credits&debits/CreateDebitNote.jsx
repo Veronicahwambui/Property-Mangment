@@ -5,8 +5,6 @@ import { Modal, ModalFooter } from "react-bootstrap";
 import CloseButton from "react-bootstrap/CloseButton";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
-import Button from "react-bootstrap/Button";
-import Badge from "react-bootstrap/Badge";
 import StatusBadge from "../../components/StatusBadge";
 
 function CreateDebitNote() {
@@ -25,10 +23,6 @@ function CreateDebitNote() {
 
   // tenant details
   const [landlordId, setlandlordId] = useState(undefined);
-  const [tenantName, setTenantName] = useState("");
-  const [custname, setcustname] = useState("");
-  const [tenantEmail, settenantEmail] = useState("");
-  const [tenantPhone, settenantPhone] = useState("");
   const [tenancies, settenancies] = useState([]);
   const [tenancyId, settenancyId] = useState(undefined);
   const [reason, setReason] = useState("");
@@ -38,7 +32,6 @@ function CreateDebitNote() {
   // modals and loaders
   const [invoice_show, setinvoice_show] = useState(false);
   const [debitShow, setdebitShow] = useState(true);
-  const showDebitModal = () => setdebitShow(true);
   const hideDebitModal = () => setdebitShow(false);
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
@@ -59,21 +52,25 @@ function CreateDebitNote() {
 
   useEffect(() => {
     console.log(tenancyId);
-    let data = {
-      startDate: moment().startOf("year").toISOString(),
-      endDate: moment(new Date()).toISOString(),
-      tenancyId: parseInt(tenancyId),
-    };
-    requestsServiceService.getTransactions(data).then((res) => {
-      console.log(res.data.data);
-      settransactions(res.data.data);
-    });
+    if (tenancyId) {
+      let data = {
+        startDate: moment().startOf("year").toISOString(),
+        endDate: moment(new Date()).toISOString(),
+        tenancyId: parseInt(tenancyId),
+      };
+      requestsServiceService.getTransactions(data).then((res) => {
+        settransactions(res.data.data);
+      });
+    }
   }, [tenancyId]);
 
   useEffect(() => {
-    premiseId !== null && getPremisesTenancies(premiseId);
+    premiseId !== undefined && getPremisesTenancies(premiseId);
   }, [premiseId]);
 
+  useEffect(() => {
+    console.log();
+  });
   const getLandlords = () => {
     let page = 0,
       size = 100;
@@ -92,26 +89,7 @@ function CreateDebitNote() {
     });
   };
   const [transactions, settransactions] = useState([]);
-  const [transactionId, settransactionId] = useState(undefined);
-  // fetch invoices
-  const getInvoice = (invoiceNumber) => {
-    requestsServiceService.getParentInvoice(invoiceNumber).then((res) => {
-      console.log(res.data.data);
-      if (res.data.status === true) {
-        setloading(false);
-        setloaded(true);
-        setfetched(true);
-        setloading2(false);
-        // settransactions(res.data.data);
-        settransactionId(res.data.data?.transaction?.transactionId);
-      } else {
-        setloading(false);
-        setloaded(true);
-        setloading2(false);
-        setfetched(true);
-      }
-    });
-  };
+
   // get tenancies etc
   const getPremises = (x) => {
     let startdate = moment(new Date()).startOf("year").format("YYYY/MM/DD");
@@ -479,6 +457,14 @@ function CreateDebitNote() {
                                   Create Debit Note
                                 </button>
                               )}
+                              {error.color !== "" && (
+                                <div
+                                  className={"mt-1 alert alert-" + error.color}
+                                  role="alert"
+                                >
+                                  {error.message}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -746,13 +732,26 @@ function CreateDebitNote() {
                     maxHeight: "50px",
                   }}
                 >
-                  <button
-                    className="btn btn-primary cursor-pointer"
-                    type={"button"}
-                    onClick={hideDebitModal}
-                  >
-                    Continue
-                  </button>
+                  {creditTenancy && (
+                    <button
+                      className="btn btn-primary cursor-pointer"
+                      type={"button"}
+                      onClick={hideDebitModal}
+                      disabled={tenancyId === undefined}
+                    >
+                      Continue
+                    </button>
+                  )}
+                  {!creditTenancy && (
+                    <button
+                      className="btn btn-primary cursor-pointer"
+                      type={"button"}
+                      onClick={hideDebitModal}
+                      disabled={landlordId === undefined}
+                    >
+                      Continue
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -952,7 +951,7 @@ function CreateDebitNote() {
                 Charges Breakdown ({" "}
                 <span className="text-primary fw-medium">
                   {transactions?.transaction?.transactionId}
-                </span>{" "}
+                </span>
                 )
               </h3>
             </div>
