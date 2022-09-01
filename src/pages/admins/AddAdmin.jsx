@@ -182,20 +182,7 @@ function AddAdmin() {
             <div className="col-12">
               <div className="card p-4">
                 <div className="card-body">
-                {error.color !== "" &&
-                  <div className={"alert alert-" + error.color} role="alert">
-                    {error.message}
-                  </div>
-                  }
-                  
-                        {errors &&
-                    errors.map((err)=>(
-                      <div className={"alert alert-danger mb-2"} role="alert">
-                      {err.message}
-                    </div>
-                    ))
-           
-                  }
+                
                   <h4 className="card-title text-capitalize">
                     Register a new System User
                   </h4>
@@ -444,6 +431,21 @@ function AddAdmin() {
                         </button>
                       </div>
                     </div>
+
+                    {error.color !== "" &&
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                  }
+                  
+                        {errors &&
+                    errors.map((err)=>(
+                      <div className={"alert alert-danger mb-2"} role="alert">
+                      {err.message}
+                    </div>
+                    ))
+           
+                  }
                   </form>
                 </div>
               </div>
