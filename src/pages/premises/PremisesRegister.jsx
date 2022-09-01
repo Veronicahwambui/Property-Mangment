@@ -301,7 +301,7 @@ function PremisesRegister() {
 
               <div class="card-body">
                 <div className="table-responsive">
-                <table class="table table-nowrap table-hover overflow-visible contacts-table" id="datatable-buttons2">
+                <table class="table table-nowrap table-hover overflow-visible contacts-table" id="datatable-buttons">
                     <thead class="table-light">
                       <tr>
                         <th scope="col">#</th>

@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 
-
 function AdminDashboard() {
   const [adminAgedArrears, setAdminAgedArrears] = useState({});
   const [occupancyReport, setOccupancyReport] = useState({});
@@ -19,6 +18,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     getAdminDashboard();
+
   }, []);
 
   const navigate = useNavigate();

@@ -502,10 +502,7 @@ function Landlords() {
           </div>
         </div>
       </div>
-      <Helmet>
-      {/* <!-- Datatable init js --> */}
-         <script src="assets/js/pages/datatables.init.js" type="text/javascript"></script>
-      </Helmet>
+    
     </>
   );
 }

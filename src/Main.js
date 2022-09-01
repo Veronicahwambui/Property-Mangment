@@ -249,7 +249,7 @@ function Main() {
           crossorigin
         ></script>
         {/* data table plugin */}
-        {/* <script src="./assets/js/pages/datatables.init.js"></script> */}
+        {/* <script src="assets/js/pages/datatables.init.js"></script> */}
 
         {/* <!-- jquery step --> */}
         <script src="./assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
