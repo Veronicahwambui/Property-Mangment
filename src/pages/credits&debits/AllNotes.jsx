@@ -45,7 +45,7 @@ function AllNotes() {
     entityType: "USER",
     createdBy: authLoginService.getCurrentUser(),
     senderId: "",
-    subject: "I",
+    subject: `${noteType} notification message`,
   });
   const total = () => {
     let sum = 0;
@@ -62,22 +62,46 @@ function AllNotes() {
   };
 
   const handleClicked = (inv, mod) => {
-    console.log(inv);
-    let mes = `Dear ${inv.firstName}, `;
-    let senderId =
+    var senderId =
       JSON.parse(authService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
         : JSON.parse(authService.getCurrentUserName()).client?.senderId;
-    setDetails({
-      ...details,
-      message: mes,
-      contact: mod === "Email" ? inv?.email : inv?.phoneNumber,
-      entity: inv.id,
-      recipientName: inv?.firstName,
-      createdBy: authService.getCurrentUserName(),
-      senderId: senderId,
-      subject: `${noteType} note notification`,
-    });
+    if (inv.noteType === "DEBIT") {
+      let mes = `Dear ${inv.landLord.firstName} ${inv.landLord.lastName}, your DEBIT balance is ${inv.amount}`;
+      setDetails({
+        ...details,
+        message: mes,
+        contact:
+          mod === "Email" ? inv?.landLord.email : inv?.landLord.phoneNumber,
+        entity: inv.landLord.id,
+        recipientName: inv?.landLord.firstName,
+        createdBy: authService.getCurrentUserName(),
+        senderId: senderId,
+        subject: `${noteType} note notification`,
+      });
+    }
+    if (inv.noteType === "CREDIT") {
+      let tenantName =
+        inv.tenancy?.tenant?.tenantType === "COMPANY"
+          ? inv.tenancy?.tenant?.companyName
+          : inv.tenancy?.tenant?.firstName +
+            " " +
+            inv.tenancy?.tenant?.lastName;
+      let mes = `Dear ${tenantName}, your DEBIT balance is ${inv.amount} for note reference ${inv.reference}`;
+      setDetails({
+        ...details,
+        message: mes,
+        contact:
+          mod === "Email"
+            ? inv.tenancy?.tenant?.email
+            : inv.tenancy?.tenant?.phoneNumber,
+        entity: inv.tenancy?.tenant?.id,
+        recipientName: tenantName,
+        createdBy: authService.getCurrentUserName(),
+        senderId: senderId,
+        subject: `${noteType} note notification`,
+      });
+    }
 
     $(".email-overlay").removeClass("d-none");
     setTimeout(function () {
@@ -294,27 +318,32 @@ function AllNotes() {
                                             </a>
 
                                             <div className="dropdown-menu dropdown-menu-end ">
+                                              {/*<a*/}
+                                              {/*  className="dropdown-item "*/}
+                                              {/*  href="# "*/}
+                                              {/*>*/}
+                                              {/*  <i className="font-size-15 mdi mdi-printer me-3 "></i>*/}
+                                              {/*  Print Credit Note*/}
+                                              {/*</a>*/}
                                               <a
-                                                className="dropdown-item "
-                                                href="# "
-                                              >
-                                                <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                                Print Credit Note
-                                              </a>
-                                              <a
-                                                className="dropdown-item "
-                                                href="# "
-                                                target="new"
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("Email");
+                                                  handleClicked(list, "Email");
+                                                }}
                                               >
                                                 <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                                Email Credit note
+                                                Email {noteType} note
                                               </a>
                                               <a
-                                                className="dropdown-item "
-                                                href="# "
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("SMS");
+                                                  handleClicked(list, "SMS");
+                                                }}
                                               >
-                                                <i className="font-size-15 mdi mdi-chat me-3 "></i>
-                                                Send as SMS
+                                                <i className="font-size-15 mdi mdi-chat me-3"></i>
+                                                SMS {noteType} note
                                               </a>
                                             </div>
                                           </div>
