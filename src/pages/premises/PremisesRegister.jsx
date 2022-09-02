@@ -18,7 +18,7 @@ function PremisesRegister() {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [date, setDate] = useState({
-    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    startDate: new Date(new Date().getFullYear(), 1),
     endDate: new Date(),
   });
   const handleCallback = (sD, eD) => {
@@ -301,7 +301,7 @@ function PremisesRegister() {
 
               <div class="card-body">
                 <div className="table-responsive">
-                <table class="table table-nowrap table-hover overflow-visible contacts-table" id="datatable-buttons">
+                <table class="table table-nowrap table-hover overflow-visible contacts-table" id="example">
                     <thead class="table-light">
                       <tr>
                         <th scope="col">#</th>
