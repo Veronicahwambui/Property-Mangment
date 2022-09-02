@@ -494,10 +494,11 @@ function CreateDebitNote() {
         size="lg"
         centered
       >
-        <Modal.Header closeButton>
+        <Modal.Header>
           <h5 className="modal-title" id="myLargeModalLabel">
             Create Debit Note
           </h5>
+          <CloseButton aria-label="Hide" onClick={() => navigate(-1)} />
         </Modal.Header>
         <Modal.Body>
           <div className="col-lg-12">
