@@ -1,6 +1,6 @@
 /* global $ */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -22,15 +22,19 @@ function AllNotes() {
     });
     return formatCurrency.format(x);
   };
-
+  const prevLength = useRef();
+  useEffect(() => {
+    prevLength.current = notes.length;
+  });
   const getData = () => {
+    $("#spinner").removeClass("d-none");
     requestsServiceService.getNotes(noteType.toUpperCase()).then((res) => {
       setnotes(res.data.data);
       $("#spinner").addClass("d-none");
     });
   };
   useEffect(() => {
-    setnotes([]);
+    // setnotes([]);
     getData();
   }, [noteType]);
 
@@ -124,6 +128,9 @@ function AllNotes() {
       subject: "",
     });
   };
+
+  const privacyLink = `<a href=${"https://fucks.gov"}>Privacy Policy</a>`;
+  const template = `I read and agree to the ${privacyLink}`;
 
   return (
     <div className="">
@@ -259,6 +266,9 @@ function AllNotes() {
                       </thead>
 
                       <tbody className="table-striped">
+                        <div className="loader-container">
+                          <div className="spinner"></div>
+                        </div>
                         {notes !== null &&
                           notes?.map((list, index) => {
                             return (
