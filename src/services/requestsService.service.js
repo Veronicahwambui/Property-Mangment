@@ -1107,6 +1107,23 @@ class RequestsService {
   receivePayment(data) {
     return axiosInstance.post(baseUrl + "/payments/invoice/callback", data);
   }
+  createCreditNote(data) {
+    return axiosInstance.post(baseUrl + "/payments/credit-notes/new", data);
+  }
+  getNotes(d) {
+    return axiosInstance.get(baseUrl + "/payments/payment-notes?type=" + d);
+  }
+  getTransactions(d) {
+    return axiosInstance.post(baseUrl + "/payments/invoice/transactions", d);
+  }
+  getPremiseTenancies(data) {
+    return axiosInstance.get(
+      baseUrl + "/tenants/tenancy/premiseActive/" + data
+    );
+  }
+  createDebitNote(data) {
+    return axiosInstance.post(baseUrl + "/payments/debit-notes/new", data);
+  }
 }
 
 export default new RequestsService();

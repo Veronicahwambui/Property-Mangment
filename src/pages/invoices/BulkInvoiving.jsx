@@ -358,7 +358,7 @@ function BulkInvoiving() {
                               </div>
                             </div>
                           </div>
-                          {!loading && <div class="col-auto">
+                          { searchTerm !== '' && <div class="col-auto">
                           <button
                             onClick={search}
                             form={"bulk-search-form"}

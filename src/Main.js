@@ -62,6 +62,8 @@ import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import AdminArrears from "./pages/Reports/AdminArrers";
 import NewUnitsExpectedIncomeReport from "./pages/Reports/NewUnitsExpectedIncomeReport";
 import OccupancyReport from "./pages/Reports/OccupancyReport";
+import CreateDebitNote from "./credits&debits/CreateDebitNote";
+import CreateCreditNote from "./credits&debits/CreateCreditNote";
 
 function Main() {
   useEffect(() => {
@@ -135,6 +137,11 @@ function Main() {
                 <Route path="/premiseusetypes" element={<PremiseUseTypes />} />
                 <Route path="/unit-types" element={<UnitTypes />} />
                 <Route path="/document-types" element={<DocumentTypes />} />
+                {/* credit and debit notes  */}
+                <Route path="/create-debit-note" element={<CreateDebitNote />} />
+                <Route path="/create-credit-note" element={<CreateCreditNote />} />
+
+
                 {/* invoices */}
                 <Route path="/createinvoice" element={<CreateInvoice />} />
                 <Route path="/invoices" element={<Invoices />} />
