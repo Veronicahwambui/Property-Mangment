@@ -19,7 +19,7 @@ function AllNotes() {
     let formatCurrency = new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "KES",
-    });
+    }); 
     return formatCurrency.format(x);
   };
   const prevLength = useRef();

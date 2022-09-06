@@ -17,7 +17,7 @@ function CreateDebitNote() {
     message: "",
     color: "",
   });
-
+ 
   // navigation
   const navigate = useNavigate();
 

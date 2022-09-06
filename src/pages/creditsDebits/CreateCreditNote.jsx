@@ -20,7 +20,7 @@ function CreateCreditNote() {
   // error handling
   const [error, setError] = useState({
     message: "",
-    color: "",
+    color: "", 
   });
 
   // navigation

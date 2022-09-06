@@ -62,8 +62,8 @@ import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import AdminArrears from "./pages/Reports/AdminArrers";
 import NewUnitsExpectedIncomeReport from "./pages/Reports/NewUnitsExpectedIncomeReport";
 import OccupancyReport from "./pages/Reports/OccupancyReport";
-import CreateDebitNote from "./credits&debits/CreateDebitNote";
-import CreateCreditNote from "./credits&debits/CreateCreditNote";
+import CreateDebitNote from "./pages/creditsDebits/CreateDebitNote";
+import CreateCreditNote from "./pages/creditsDebits/CreateCreditNote";
 
 function Main() {
   useEffect(() => {
