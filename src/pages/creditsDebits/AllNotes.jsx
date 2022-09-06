@@ -19,13 +19,9 @@ function AllNotes() {
     let formatCurrency = new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "KES",
-    }); 
+    });
     return formatCurrency.format(x);
   };
-  const prevLength = useRef();
-  useEffect(() => {
-    prevLength.current = notes.length;
-  });
   const getData = () => {
     $("#spinner").removeClass("d-none");
     requestsServiceService.getNotes(noteType.toUpperCase()).then((res) => {
@@ -128,9 +124,6 @@ function AllNotes() {
       subject: "",
     });
   };
-
-  const privacyLink = `<a href=${"https://fucks.gov"}>Privacy Policy</a>`;
-  const template = `I read and agree to the ${privacyLink}`;
 
   return (
     <div className="">

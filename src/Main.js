@@ -64,6 +64,7 @@ import NewUnitsExpectedIncomeReport from "./pages/Reports/NewUnitsExpectedIncome
 import OccupancyReport from "./pages/Reports/OccupancyReport";
 import CreateDebitNote from "./pages/creditsDebits/CreateDebitNote";
 import CreateCreditNote from "./pages/creditsDebits/CreateCreditNote";
+import AllNotes from "./pages/creditsDebits/AllNotes";
 
 function Main() {
   useEffect(() => {
@@ -102,8 +103,10 @@ function Main() {
               <Routes>
                 {/* dashboard */}
                 <Route path="/" element={<Dashboard />} />
-                {JSON.parse(localStorage.getItem("user"))?.userType?.name === "ADMIN" && 
-                <Route path="/adminDashboard" element={<AdminDashboard />} />}
+                {JSON.parse(localStorage.getItem("user"))?.userType?.name ===
+                  "ADMIN" && (
+                  <Route path="/adminDashboard" element={<AdminDashboard />} />
+                )}
                 {/* landlords */}
                 <Route path="/landlords" element={<Landlords />} />
                 <Route exact path="/landlord/:id" element={<ViewLandlord />} />
@@ -138,9 +141,15 @@ function Main() {
                 <Route path="/unit-types" element={<UnitTypes />} />
                 <Route path="/document-types" element={<DocumentTypes />} />
                 {/* credit and debit notes  */}
-                <Route path="/create-debit-note" element={<CreateDebitNote />} />
-                <Route path="/create-credit-note" element={<CreateCreditNote />} />
-
+                <Route
+                  path="/create-debit-note"
+                  element={<CreateDebitNote />}
+                />
+                <Route
+                  path="/create-credit-note"
+                  element={<CreateCreditNote />}
+                />
+                <Route path="/notes" element={<AllNotes />} />
 
                 {/* invoices */}
                 <Route path="/createinvoice" element={<CreateInvoice />} />
@@ -266,7 +275,6 @@ function Main() {
         <script src="./assets/js/app.js "></script>
         <script src="./assets/js/custom.js "></script>
       </Helmet>
-
     </HashRouter>
   );
 }
