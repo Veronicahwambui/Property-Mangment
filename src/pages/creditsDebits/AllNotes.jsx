@@ -10,9 +10,13 @@ import StatusBadge from "../../components/StatusBadge";
 import authService from "../../services/auth.service";
 import Message from "../../components/Message";
 import authLoginService from "../../services/authLogin.service";
+import ReactPaginate from "react-paginate";
 
 function AllNotes() {
   const [notes, setnotes] = useState([]);
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(0);
+  const [page, setPage] = useState(0);
   const [noteType, setnoteType] = useState("Credit");
   const [loading, setloading] = useState(false);
   const formatCurrency = (x) => {
@@ -24,15 +28,18 @@ function AllNotes() {
   };
   const getData = () => {
     $("#spinner").removeClass("d-none");
-    requestsServiceService.getNotes(noteType.toUpperCase()).then((res) => {
+    requestsServiceService.getNotes(noteType.toUpperCase(), page , size).then((res) => {
       setnotes(res.data.data);
+      setPage(res.data.page);
+      setSize(res.data.size);
+      setPageCount(res.data.totalPages);
       $("#spinner").addClass("d-none");
     });
   };
   useEffect(() => {
     // setnotes([]);
     getData();
-  }, [noteType]);
+  }, [page , size ,noteType]);
 
   // MESSAGE TEST
   const [details, setDetails] = useState({
@@ -123,6 +130,16 @@ function AllNotes() {
       senderId: "",
       subject: "",
     });
+  };
+  
+  
+  const sortSize = (e) => {
+    setSize(e.target.value);
+    setPage(0);
+  };
+
+  const handlePageClick = (data) => {
+    setPage(() => data.selected);
   };
 
   return (
@@ -452,7 +469,58 @@ function AllNotes() {
                         </tr>
                       </tfoot>
                     </table>
-
+                    <div className="d-flex justify-content-between align-items-center">
+                    {pageCount !== 0 && (
+                      <>
+                        <select
+                          className="btn btn-md btn-primary"
+                          title="Select A range"
+                          onChange={(e) => sortSize(e)}
+                          // value={size}
+                        >
+                          <option className="bs-title-option" value="">
+                            Select A range
+                          </option>
+                          <option value={10}>10 Rows</option>
+                          <option value={30}>30 Rows</option>
+                          <option value={50}>50 Rows</option>
+                        </select>
+                        <nav
+                          aria-label="Page navigation comments"
+                          className="mt-4"
+                        >
+                          <ReactPaginate
+                            previousLabel="<"
+                            nextLabel=">"
+                            breakLabel="..."
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link"
+                            pageCount={pageCount}
+                            pageRangeDisplayed={4}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            onPageChange={(data) => handlePageClick(data)}
+                          />
+                        </nav>
+                      </>
+                    )}
+                  </div>
+                  {pageCount !== 0 && (
+                    <p className="font-medium  text-muted">
+                      showing page{" "}
+                      <span className="text-primary">
+                        {pageCount === 0 ? page : page + 1}
+                      </span>{" "}
+                      of<span className="text-primary"> {pageCount}</span> pages
+                    </p>
+                  )}
                     <Message details={details} mode={mode} clear={clear} />
                   </div>
                 </div>

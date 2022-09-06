@@ -1043,8 +1043,8 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/communication/new/bulk", data);
   }
 
-  getBulkInvoices() {
-    return axiosInstance.get(baseUrl + "/payments/bulk");
+  getBulkInvoices(page ,size) {
+    return axiosInstance.get(baseUrl + "/payments/bulk?page=" + page + "&size=" + size );
   }
 
   getBulkMessages() {
@@ -1110,8 +1110,8 @@ class RequestsService {
   createCreditNote(data) {
     return axiosInstance.post(baseUrl + "/payments/credit-notes/new", data);
   }
-  getNotes(d) {
-    return axiosInstance.get(baseUrl + "/payments/payment-notes?type=" + d);
+  getNotes(d, page , size ) {
+    return axiosInstance.get(baseUrl + "/payments/payment-notes?type=" + d + "&page"+ page + "&size" + size);
   }
   getTransactions(d) {
     return axiosInstance.post(baseUrl + "/payments/invoice/transactions", d);
