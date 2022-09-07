@@ -29,7 +29,7 @@ function AllNotes() {
   const getData = () => {
     $("#spinner").removeClass("d-none");
     requestsServiceService.getNotes(noteType.toUpperCase(), page , size).then((res) => {
-      setnotes(res.data.data);
+      setnotes( res.data.data != null? res.data.data:[]);
       setPage(res.data.page);
       setSize(res.data.size);
       setPageCount(res.data.totalPages);
@@ -459,7 +459,7 @@ function AllNotes() {
                             className="text-capitalize text-nowrap"
                             colSpan="3"
                           >
-                            {notes && notes.length} {noteType} notes
+                            { notes && notes?.length} {noteType} notes
                           </th>
                           <td className="text-nowrap text-right" colSpan="6">
                             <span className="fw-semibold">
@@ -478,9 +478,7 @@ function AllNotes() {
                           onChange={(e) => sortSize(e)}
                           // value={size}
                         >
-                          <option className="bs-title-option" value="">
-                            Select A range
-                          </option>
+                         
                           <option value={10}>10 Rows</option>
                           <option value={30}>30 Rows</option>
                           <option value={50}>50 Rows</option>
