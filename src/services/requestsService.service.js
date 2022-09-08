@@ -1151,10 +1151,7 @@ class RequestsService {
   createSettlements(data) {
     return axiosInstance.post(baseUrl + "/settlements", data);
   }
-  createSettlement(data){
-    return axiosInstance.post(baseUrl + "/settlements", data);
-
-  }
+  
 }
 
 export default new RequestsService();
