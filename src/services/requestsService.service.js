@@ -903,7 +903,7 @@ class RequestsService {
 
   // STATEMENTS 
 
-  getAllSettlements(page, size, startDate , endDate) {
+  getAllSettlements(page, size, startDate , endDate,landlordId) {
     return axiosInstance.get(
       baseUrl +
         "/settlements?page=" +
@@ -913,7 +913,7 @@ class RequestsService {
         "&startDate=" +
         startDate +
         "&endDate=" +
-        endDate
+        endDate + "&landlordId=" + landlordId
     );
   }
 
