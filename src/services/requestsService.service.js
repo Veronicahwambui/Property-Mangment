@@ -1148,6 +1148,9 @@ class RequestsService {
   createDebitNote(data) {
     return axiosInstance.post(baseUrl + "/payments/debit-notes/new", data);
   }
+  createSettlements(data) {
+    return axiosInstance.post(baseUrl + "/settlements", data);
+  }
 }
 
 export default new RequestsService();
