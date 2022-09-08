@@ -900,9 +900,10 @@ class RequestsService {
     );
   }
 
-  // STATEMENTS
 
-  getAllSettlements(page, size, startDate, endDate) {
+  // STATEMENTS 
+
+  getAllSettlements(page, size, startDate , endDate,landlordId) {
     return axiosInstance.get(
       baseUrl +
         "/settlements?page=" +
@@ -912,14 +913,17 @@ class RequestsService {
         "&startDate=" +
         startDate +
         "&endDate=" +
-        endDate
+        endDate + "&landlordId=" + landlordId
     );
   }
 
-  getOneSettlement(settlementRef) {
-    return axiosInstance.get(baseUrl + "/settlements/" + settlementRef);
+  getOneSettlement(settlementRef){
+    return axiosInstance.get(
+      baseUrl + "/settlements/" + settlementRef
+    );
   }
 
+  
   // MESSANGER API
   createMessageTemplate(data) {
     return communicationService.post(
@@ -1063,10 +1067,8 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/communication/new/bulk", data);
   }
 
-  getBulkInvoices(page, size) {
-    return axiosInstance.get(
-      baseUrl + "/payments/bulk?page=" + page + "&size=" + size
-    );
+  getBulkInvoices(page ,size) {
+    return axiosInstance.get(baseUrl + "/payments/bulk?page=" + page + "&size=" + size );
   }
 
   getBulkMessages() {
@@ -1132,16 +1134,8 @@ class RequestsService {
   createCreditNote(data) {
     return axiosInstance.post(baseUrl + "/payments/credit-notes/new", data);
   }
-  getNotes(d, page, size) {
-    return axiosInstance.get(
-      baseUrl +
-        "/payments/payment-notes?type=" +
-        d +
-        "&page" +
-        page +
-        "&size" +
-        size
-    );
+  getNotes(d, page , size ) {
+    return axiosInstance.get(baseUrl + "/payments/payment-notes?type=" + d + "&page"+ page + "&size" + size);
   }
   getTransactions(d) {
     return axiosInstance.post(baseUrl + "/payments/invoice/transactions", d);
@@ -1153,9 +1147,6 @@ class RequestsService {
   }
   createDebitNote(data) {
     return axiosInstance.post(baseUrl + "/payments/debit-notes/new", data);
-  }
-  createSettlements(data) {
-    return axiosInstance.post(baseUrl + "/settlements", data);
   }
 }
 
