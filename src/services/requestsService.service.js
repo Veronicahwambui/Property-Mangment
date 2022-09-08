@@ -1,5 +1,5 @@
 import { axiosInstance, baseUrl } from "./API";
-import { communicationService, communicationBaseUrl } from "./CommunicationApi";
+import { communicationService, communicationBaseUrl } from "./CommunicationAPI";
 import axios from "axios";
 
 class RequestsService {
@@ -913,7 +913,7 @@ class RequestsService {
         "&startDate=" +
         startDate +
         "&endDate=" +
-        endDate + "&landlordId=" + landlordId
+        endDate +(landlordId != undefined ? "&landlordId=" + landlordId:'')
     );
   }
 
