@@ -3,20 +3,11 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
-import ReactPaginate from "react-paginate";
 import DatePicker from "react-datepicker";
 
 function Settlements() {
-  // settlements
-  const [settlementStuff, setsettlementStuff] = useState({
-    chargeId: 0,
-    endDate: new Date(),
-    landlordId: [],
-    periodAlias: "string",
-    startDate: new Date(),
-  });
-  const [sDate, setsdate] = useState("");
-  const [eDate, setedate] = useState("");
+  const [sDate, setsdate] = useState(new Date());
+  const [eDate, setedate] = useState(new Date());
   const [palias, setpalias] = useState("");
   const [chargeId, setchargeId] = useState(undefined);
   const [lids, setlids] = useState([]);
@@ -65,6 +56,43 @@ function Settlements() {
     requestsServiceService.getLandLords(page, size, data).then((res) => {
       setlandlords(res.data.data);
     });
+  };
+  const [error, setError] = useState({
+    message: "",
+    color: "",
+  });
+  const submitSettlement = () => {
+    let data = {
+      chargeId: parseInt(chargeId),
+      endDate: moment(eDate).format(),
+      landlordId: lids,
+      periodAlias: palias,
+      startDate: moment(sDate).format(),
+    };
+    requestsServiceService
+      .createSettlements(data)
+      .then((response) => {
+        if (response.data.status === true) {
+          setError({
+            ...error,
+            message: response.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: response.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        // setError({
+        //   ...error,
+        //   message: err.message,
+        //   color: "danger",
+        // });
+      });
   };
   return (
     <div className="page-content">
@@ -149,9 +177,9 @@ function Settlements() {
                     </div>
                   </div>
                   <div className="row">
-                    {check && (
-                      <>
-                        <div className="col-12">
+                    <>
+                      <div className="col-12">
+                        {check && (
                           <form
                             onSubmit={handleSearch}
                             id={"credit-search-form"}
@@ -177,79 +205,95 @@ function Settlements() {
                               Search
                             </button>
                           </form>
-                        </div>
-                        <div className="col-12">
-                          {landlords?.length < 5 && (
+                        )}
+                      </div>
+                      <div className="col-12">
+                        <div className="row">
+                          {check && landlords?.length < 5 && (
                             <>
                               {landlords?.map((landlord) => (
                                 <>
-                                  <input
-                                    type="checkbox"
-                                    onChange={(e) =>
-                                      selectItems(e, landlord.id)
-                                    }
-                                    checked={lids.some(
-                                      (el) => el === landlord.id
-                                    )}
-                                  />
-                                  <span>{landlord.firstName}</span>
+                                  <div className="p-2 d-flex">
+                                    <input
+                                      type="checkbox"
+                                      onChange={(e) =>
+                                        selectItems(e, landlord.id)
+                                      }
+                                      checked={lids.some(
+                                        (el) => el === landlord.id
+                                      )}
+                                    />
+                                    <span>{landlord.firstName}</span>
+                                  </div>
                                 </>
                               ))}
                             </>
                           )}
                         </div>
-                        <div className="col-12">
-                          <>
-                            <div className="form-group">
-                              <label htmlFor="">Applicable Charges</label>
-                              <select
-                                name=""
-                                id=""
-                                value={chargeId}
-                                className={"form-control"}
-                              >
-                                {charges?.map((charge) => (
-                                  <option
-                                    key={charge.id}
-                                    value={parseInt(charge.id)}
-                                  >
-                                    {charge.name.toUpperCase()}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="">Period</label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Enter Period"
-                                onChange={(e) => setpalias(e.target.value)}
-                              />
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="">Start Date</label>
-                              <DatePicker
-                                selected={new Date()}
-                                onChange={(date) => setsdate(date)}
-                                selectsStart
-                                className="form-control cursor-pointer"
-                              />
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="">End Date</label>
-                              <DatePicker
-                                selected={new Date()}
-                                onChange={(date) => setedate(date)}
-                                selectsStart
-                                className="form-control cursor-pointer"
-                              />
-                            </div>
-                          </>
-                        </div>
-                      </>
-                    )}
+                      </div>
+                      <div className="col-12">
+                        <>
+                          <div className="form-group">
+                            <label htmlFor="">Applicable Charges</label>
+                            <select
+                              name=""
+                              id=""
+                              onChange={(e) => setchargeId(e.target.value)}
+                              value={chargeId}
+                              className={"form-control"}
+                            >
+                              <option>Select charge...</option>
+                              {charges?.map((charge) => (
+                                <option key={charge.id} value={charge.id}>
+                                  {charge.name.toUpperCase()}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="">Period</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Enter Period"
+                              onChange={(e) => setpalias(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="">Start Date</label>
+                            <DatePicker
+                              selected={sDate}
+                              onChange={(date) => setsdate(date)}
+                              selectsStart
+                              className="form-control cursor-pointer"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="">End Date</label>
+                            <DatePicker
+                              selected={eDate}
+                              onChange={(date) => setedate(date)}
+                              selectsStart
+                              className="form-control cursor-pointer"
+                            />
+                          </div>
+                        </>
+                      </div>
+                    </>
                   </div>
+                </div>
+                <div className="col-12">
+                  <button
+                    className="btn btn-primary"
+                    onClick={submitSettlement}
+                  >
+                    Submit
+                  </button>
+                  {error.color !== "" && (
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
