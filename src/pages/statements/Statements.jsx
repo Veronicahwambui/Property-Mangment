@@ -134,6 +134,33 @@ function Statements() {
     });
   };
 
+  // settlements
+
+  //settlement modals
+  const [settlement_show, setsettlementshow] = useState(true);
+  const showSettlement = () => setsettlementshow(true);
+  const hideSettlement = () => setsettlementshow(false);
+  const [check, setCheck] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [landlords, setlandlords] = useState([]);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    getLandlords();
+    console.log();
+  };
+  const getLandlords = () => {
+    let page = 0,
+      size = 100;
+    let data = {
+      dateCreatedEnd: new Date(),
+      dateCreatedStart: moment(new Date()).startOf("year").format(),
+      search: searchTerm?.trim(),
+    };
+    requestsServiceService.getLandLords(page, size, data).then((res) => {
+      setlandlords(res.data.data);
+    });
+  };
+
   return (
     <>
       <div className="page-content">
@@ -272,6 +299,13 @@ function Statements() {
                                       >
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
+                                      </span>
+                                      <span
+                                        className="dropdown-item cursor-pinter"
+                                        onClick={() => showSettlement()}
+                                      >
+                                        <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                        Create Landlord Settlement
                                       </span>
 
                                       {statement.utilisedAmount <
@@ -494,6 +528,80 @@ function Statements() {
             </div>
           </Modal.Footer>
         </form>
+      </Modal>
+      <Modal
+        show={settlement_show}
+        onHide={hideSettlement}
+        centered
+        size={"md"}
+      >
+        <Modal.Header closeButton></Modal.Header>
+        <Modal.Body>
+          <div className="row">
+            <label htmlFor="">Select a landlord?</label>
+            <div className="d-flex align-items-center flex-grow-1">
+              <div className="form-group d-flex">
+                <div
+                  className={"form-check mb-3"}
+                  style={{ marginRight: "1em" }}
+                >
+                  <input
+                    className="form-check-input"
+                    value="Credit"
+                    type="checkbox"
+                    checked={check}
+                    onChange={() => setCheck(true)}
+                  />
+                  <label className="form-check-label" htmlFor="debit-yes">
+                    Yes
+                  </label>
+                </div>
+                <div className={"form-check mb-3"}>
+                  <input
+                    className="form-check-input"
+                    value="Credit"
+                    type="checkbox"
+                    checked={!check}
+                    onChange={() => setCheck(false)}
+                  />
+                  <label className="form-check-label" htmlFor="debit-no">
+                    No
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            {check && (
+              <>
+                <div className="col-12">
+                  <form onSubmit={handleSearch} id={"credit-search-form"}>
+                    <div className="app-search d-none d-lg-block d-flex">
+                      <div className="position-relative">
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder={"Search Landlord"}
+                          required={true}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <span className="bx bx-search-alt"></span>
+                      </div>
+                    </div>
+                    <button
+                      className="btn btn-primary btn-sm btn-rounded"
+                      type="submit"
+                    >
+                      Search
+                    </button>
+                  </form>
+                </div>
+                <div className="col-12"></div>
+              </>
+            )}
+          </div>
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
       </Modal>
     </>
   );
