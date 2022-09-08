@@ -11,6 +11,12 @@ import StatusBadge from "../../components/StatusBadge";
 function ViewLandlordStatement() {
     const [activeLink, setActiveLink] = useState(1);
     const [statement, setStatement] = useState([]);
+    const [landlordAccounts, setLandlordAccounts] = useState([])
+    const [landlordId, setLandlordId] = useState()
+    const [error, setError] = useState({
+        message: "",
+        color: ""
+    });
     const { id } = useParams()
 
     const formatCurrency = (x) => {
@@ -29,6 +35,10 @@ function ViewLandlordStatement() {
     const getOneStateMent = () => {
         requestsServiceService.getOneSettlement(id).then((res) => {
             setStatement(res.data.data)
+            setLandlordId(res.data.data.clientSettlement.landLord.id)
+            requestsServiceService.getLandLordByFileNumber(res.data.data.clientSettlement.landLord.id).then((res) => {
+                setLandlordAccounts(res.data.data.accounts)
+            })
         })
     }
 
@@ -36,17 +46,56 @@ function ViewLandlordStatement() {
     const showSettlement = () => setsettlementshow(true);
     const hideSettlement = () => setsettlementshow(false);
 
-    const [ payoutData, setPayoutData ] = useState({
-        amount : '',
+    const [payoutData, setPayoutData] = useState({
+        amount: '',
         payoutAccountNumber: '',
         payoutMethod: '',
         payoutReference: '',
     })
 
-   const createPayout = (e)=>{
-     e.preventDefault();
+    const handleChange = (e) => {
+        setPayoutData({
+            ...payoutData, [e.target.name]: e.target.value
+        })
+    }
 
-   }
+    const createPayout = (e) => {
+        e.preventDefault();
+
+        let data = JSON.stringify({
+            "amount": payoutData.amount,
+            "done": true,
+            "payoutAccountNumber": payoutData.payoutAccountNumber,
+            "payoutMethod": payoutData.payoutMethod,
+            "payoutReference": payoutData.payoutReference,
+            "reference": null,
+            "settlementReference": id
+        })
+
+        requestsServiceService.createSettlementPayouts(data).then((res) => {
+            getOneStateMent()
+            setError({
+                ...error,
+                message: res.data?.message,
+                color: "success"
+            })
+
+            setTimeout(() => {
+                hideSettlement()
+                clear()
+            }, 1500)
+        })
+
+    }
+
+    const clear = () => {
+        setError({
+            ...error,
+            message: "",
+            color: ""
+        });
+    }
+  
 
     return (
         <div className="page-content">
@@ -158,7 +207,6 @@ function ViewLandlordStatement() {
                                                     <th>Client Type</th>
                                                     <th>URL</th>
                                                     <th>Created on</th>
-                                                    <th class="text-right">Actions</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -197,12 +245,48 @@ function ViewLandlordStatement() {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="card-body">
+                                    <div class="table-responsive table-responsive-md">
+                                        <table class="table">
+                                            <thead class="table-light">
+                                                <tr className="table-light text-uppercase">
+                                                    <th className="text-nowrap">reference Id</th>
+                                                    <th className="text-nowrap">Payout Method</th>
+                                                    <th className="text-nowrap">Account Number</th>
+                                                    <th className="text-nowrap">Mpesa Reference</th>
+                                                    <th className="text-nowrap">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="table-striped">
+                                                {statement?.payouts?.map((invoice, index) => (
+                                                    <tr data-id={index} key={index}>
+                                                        <td className="text-nowrap">{invoice.reference}</td>
+                                                        <td className="text-capitalize">{invoice.payoutMethod?.toLowerCase()?.replace(/_/g , " ")}</td>
+                                                        <td>{invoice.payoutAccountNumber}</td>
+                                                        <td>{invoice.payoutReference}</td>
+                                                        <td>
+                                                            {formatCurrency(invoice.amount)}
+                                                        </td>
+                                                       
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+                                </div>
                                 </div>
                             </div>
                         </div>
 
 
                         <Modal show={settlement_show} onHide={hideSettlement} size="md" centered>
+                             {error.color !== "" &&
+                                    <div className={"alert alert-" + error.color} role="alert">
+                                        {error.message}
+                                    </div>
+                            }
                             <Modal.Header closeButton>
                                 <h5 className="modal-title" id="myLargeModalLabel">
                                     Create New Payout
@@ -211,34 +295,41 @@ function ViewLandlordStatement() {
                             <form onSubmit={(e) => createPayout(e)}>
                                 <Modal.Body>
                                     <div className="form-group  justify-content-center d-flex flex-column">
-                                    <label htmlFor=""> Payment Method</label>
-                                      <select  className="form-control">
-                                          <option value=""></option>
-                                          <option value="MPESA">Mpesa</option>
-                                          <option value="bANK">Bank</option>
-                                      </select>
+                                        <label htmlFor=""> Payment Method</label>
+                                        <select className="form-control" name="payoutMethod" onChange={(e) => handleChange(e)} >
+                                            <option value=""></option>
+                                            <option value="MPESA">Mpesa</option>
+                                            <option value="BANK">Bank</option>
+                                        </select>
                                     </div>
-                                    <div className="form-group">
+
+                                    {payoutData.payoutMethod === "MPESA" && <div className="form-group">
                                         <label htmlFor="">Payout Reference</label>
-                                        <input type="text" className="form-control"/>
-                                    </div>
-                                    <div className="form-group  justify-content-center d-flex flex-column">
+                                        <input type="text" className="form-control" name='payoutReference' onChange={(e) => handleChange(e)} />
+                                    </div>}
+
+                                    {payoutData.payoutMethod === "BANK" && <div className="form-group  justify-content-center d-flex flex-column">
                                         <label htmlFor="">Account Number</label>
-                                      <select  className="form-control">
-                                          <option value=""></option>
-                                          {/* <option value="MPESA">Mpesa</option> */}
-                                        
-                                      </select>
-                                    </div>
+
+                                        {landlordAccounts?.length >= 1 && <select className="form-control" name="payoutAccountNumber" onChange={(e) => handleChange(e)}>
+                                            <option value=""></option>
+                                            {landlordAccounts?.map((unit) => (
+                                                <option value={unit.bankAccountNumber}> {unit.bank?.bankName?.toLowerCase()?.replace(/_/g, " ")} - {unit.bankAccountNumber} </option>
+                                            ))}
+                                            {/* <option value="MPESA">Mpesa</option> */}
+                                        </select>}
+                                        {landlordAccounts?.length === 0 && <input type="text" className="form-control" name="payoutAccountNumber" onChange={(e) => handleChange(e)} />}
+                                    </div>}
+
                                     <div className="form-group">
                                         <label htmlFor="">Amount</label>
-                                        <input type="text" className="form-control"/>
+                                        <input type="text" className="form-control" name="amount" onChange={(e) => handleChange(e)} />
                                     </div>
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <div>
                                         <button className="btn btn-sm btn-primary" type="submit">
-                                            Search
+                                            Create
                                         </button>
                                     </div>
                                 </Modal.Footer>
@@ -268,7 +359,6 @@ function ViewLandlordStatement() {
                                                     <th className="text-nowrap">Due Date</th>
                                                     <th className="text-nowrap">Payment Status</th>
                                                     <th className="text-nowrap">Date Created</th>
-                                                    <th className="text-right">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="table-striped">
@@ -313,7 +403,6 @@ function ViewLandlordStatement() {
                                                             )}
                                                         </td>
 
-                                                        <td> Actions </td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -343,7 +432,6 @@ function ViewLandlordStatement() {
                                                     <th>Created on</th>
                                                     <th>Reason</th>
                                                     <th>Amount</th>
-                                                    <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="table-striped">
@@ -375,9 +463,7 @@ function ViewLandlordStatement() {
                                                             {list.reason.substring(0, 70) + "..."}
                                                         </td>
                                                         <td>{formatCurrency(list.amount)}</td>
-                                                        <td>
-                                                            Actions
-                                                        </td>
+                                                      
                                                     </tr>
                                                 ))}
                                             </tbody>

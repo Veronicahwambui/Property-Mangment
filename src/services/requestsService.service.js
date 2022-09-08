@@ -923,6 +923,9 @@ class RequestsService {
     );
   }
 
+  createSettlementPayouts(data){
+    return axiosInstance.post( baseUrl + "/settlements/payouts" , data)
+  }
   
   // MESSANGER API
   createMessageTemplate(data) {
