@@ -8,7 +8,6 @@ import DatePicker from "react-datepicker";
 function Settlements() {
   const [sDate, setsdate] = useState(new Date());
   const [eDate, setedate] = useState(new Date());
-  const [palias, setpalias] = useState("");
   const [chargeId, setchargeId] = useState(undefined);
   const [lids, setlids] = useState([]);
 
@@ -94,6 +93,22 @@ function Settlements() {
         // });
       });
   };
+  const months=[
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
+  const [palias, setpalias] = useState("");
+  
   return (
     <div className="page-content">
       <div className="container-fluid">
@@ -252,12 +267,12 @@ function Settlements() {
                           </div>
                           <div className="form-group">
                             <label htmlFor="">Period</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Enter Period"
-                              onChange={(e) => setpalias(e.target.value)}
-                            />
+                            <select name="" id="" className={"form-control"}onChange={(e) => setpalias(e.target.value)}>
+                              <option value="">Select month...</option>
+                              {months?.map((month) => (
+                                <option value={month} key={month}>{month}</option>
+                              ))}
+                            </select>
                           </div>
                           <div className="form-group">
                             <label htmlFor="">Start Date</label>
@@ -276,6 +291,47 @@ function Settlements() {
                               selectsStart
                               className="form-control cursor-pointer"
                             />
+                            {/*<DatePicker*/}
+                            {/*  selected={sDate}*/}
+                            {/*  renderCustomHeader={({*/}
+                            {/*                         date,*/}
+                            {/*                         changeYear,*/}
+                            {/*                         changeMonth,*/}
+                            {/*                         decreaseMonth,*/}
+                            {/*                         increaseMonth,*/}
+                            {/*                         prevMonthButtonDisabled,*/}
+                            {/*                         nextMonthButtonDisabled,*/}
+                            {/*                       }) => (*/}
+                            {/*    <div*/}
+                            {/*      style={{*/}
+                            {/*        margin: 10,*/}
+                            {/*        display: "flex",*/}
+                            {/*        justifyContent: "center",*/}
+                            {/*      }}*/}
+                            {/*    >*/}
+                            {/*      <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>*/}
+                            {/*        {"<"}*/}
+                            {/*      </button>*/}
+                            {/*      <select*/}
+                            {/*        value={palias}*/}
+                            {/*        onChange={({ target: { value } }) =>*/}
+                            {/*          changeMonth(months.indexOf(value))*/}
+                            {/*        }*/}
+                            {/*      >*/}
+                            {/*        {months.map((option) => (*/}
+                            {/*          <option key={option} value={option}>*/}
+                            {/*            {option}*/}
+                            {/*          </option>*/}
+                            {/*        ))}*/}
+                            {/*      </select>*/}
+                            
+                            {/*      <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>*/}
+                            {/*        {">"}*/}
+                            {/*      </button>*/}
+                            {/*    </div>*/}
+                            {/*  )}*/}
+                            {/*  onChange={(date) => setsdate(date)}*/}
+                            {/*/>*/}
                           </div>
                         </>
                       </div>
