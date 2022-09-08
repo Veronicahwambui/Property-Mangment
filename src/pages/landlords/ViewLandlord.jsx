@@ -490,7 +490,7 @@ function ViewLandlord() {
 
 
     });
-    requestsServiceService.createSettlement(data).then((res) => {
+    requestsServiceService.createSettlements(data).then((res) => {
       console.log(res.data)
       fetchApplicableCharges()
 
