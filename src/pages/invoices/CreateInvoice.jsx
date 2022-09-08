@@ -410,7 +410,7 @@ function CreateInvoice() {
                                         )}
                                       </select>
                                     </div>
-                                  )} {expectManualValues ? 
+                                  )} {applicableChargeName != "" && expectManualValues ? 
                               <span className="alert alert-warning">This charge expects a unit cost entry</span>  :
                               <span className="alert alert-warning">This charge will charge the default values set for the property</span> 
                               }
