@@ -23,6 +23,7 @@ function CreateInvoice() {
   const [tenancyId, settenancyId] = useState(undefined);
   const [applicableChargeName, setapplicableChargeName] = useState("");
   const [applicableCharges, setapplicableCharges] = useState([]);
+  const [expectManualValues, setexpectManualValues] = useState(true);
   const [error, setError] = useState({
     message: "",
     color: "",
@@ -44,6 +45,13 @@ function CreateInvoice() {
       setapplicableCharges(res.data.data);
     });
   }, []);
+
+  useEffect(() => {
+    let found = applicableCharges.find(x => x.name === applicableChargeName)
+    if (found != undefined)
+      setexpectManualValues(found.expectManualValues);
+  }, [applicableChargeName]);
+
   useEffect(() => {
     getTotalKsh();
   }, [quantity, unitcost]);
@@ -364,7 +372,7 @@ function CreateInvoice() {
                                   )}
                                 </div>
                               </div>
-                              <div className="col-12">
+                              <div className="row col-12">
                                 <div className="mb-3">
                                   <label
                                     htmlFor="formrow-firstname-input"
@@ -402,8 +410,12 @@ function CreateInvoice() {
                                         )}
                                       </select>
                                     </div>
-                                  )}
+                                  )} {expectManualValues ? 
+                              <span className="alert alert-warning">This charge expects a unit cost entry</span>  :
+                              <span className="alert alert-warning">This charge will charge the default values set for the property</span> 
+                              }
                                 </div>
+                               
                               </div>
                             </div>
                             <div className="col-12">
@@ -471,28 +483,30 @@ function CreateInvoice() {
                                   />
                                 </div>
                               </div>
-                              <div className="col-md-6">
-                                <div className="mb-3">
-                                  <label
-                                    htmlFor="formrow-password-input"
-                                    className="form-label"
-                                  >
-                                    Unit cost.{" "}
-                                    <strong className="text-danger">*</strong>
-                                  </label>
-                                  <input
-                                    type="number"
-                                    className="form-control"
-                                    value={unitcost}
-                                    min="1"
-                                    onChange={(e) =>
-                                      setunitcost(e.target.value)
-                                    }
-                                    placeholder="Enter cost"
-                                    required={true}
-                                  />
+                              {expectManualValues &&
+                                <div className="col-md-6">
+                                  <div className="mb-3">
+                                    <label
+                                      htmlFor="formrow-password-input"
+                                      className="form-label"
+                                    >
+                                      Unit cost.{" "}
+                                      <strong className="text-danger">*</strong>
+                                    </label>
+                                    <input
+                                      type="number"
+                                      className="form-control"
+                                      value={unitcost}
+                                      min="1"
+                                      onChange={(e) =>
+                                        setunitcost(e.target.value)
+                                      }
+                                      placeholder="Enter cost"
+                                      required={true}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
+                              }
                               <div className="col-md-6">
                                 <div className="mb-4">
                                   <label htmlFor="" className="">
