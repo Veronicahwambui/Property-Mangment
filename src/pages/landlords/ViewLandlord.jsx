@@ -26,7 +26,10 @@ function ViewLandlord() {
   const [landlordtypes, setLandlordTypes] = useState([]);
   const [banks, setBanks] = useState([]);
   const [documentTypes, setdocumentTypes] = useState([]);
-
+  const [error, setError] = useState({
+    message: "",
+    color: ""
+  });
   const { id } = useParams();
   const userId = id;
 
@@ -174,6 +177,7 @@ function ViewLandlord() {
   };
   useEffect(() => {
     getPremises();
+  
   }, []);
   const handlePageClick = (data) => {
     let d = data.selected;
@@ -252,10 +256,7 @@ function ViewLandlord() {
   const showEditLandLord = () => {
     console.log("clicked");
   };
-  const [error, setError] = useState({
-    message: "",
-    color: "",
-  });
+  
 
   const handlelandlordsubmit = (event) => {
     event.preventDefault();
@@ -455,6 +456,87 @@ function ViewLandlord() {
       });
   };
 
+ const[ periodAlias,setPeriodAlias]=useState("");
+ const[chargeId, setChargeId]=useState("");
+ const[charges,setCharges]=useState([]);
+   const[landlordId, setLandlordId]=useState("")
+
+
+   const startingDate = new Date("2022-09-08T12:06:26.255Z");
+   const endingDate = new Date();
+   
+
+  ///Settlements
+
+
+  const fetchApplicableCharges = () => {
+    requestsServiceService.allApplicableCharges().then((res) => {
+      setCharges(res.data.data)
+    });
+  };
+
+
+  const settlement =() => {
+    let data =JSON.stringify({
+
+  chargeId: chargeId,
+  endDate: endingDate,
+  "landlordId": [
+   
+    
+  ],
+  periodAlias: periodAlias,
+  startDate:startingDate,
+
+
+    });
+    requestsServiceService.createSettlement(data).then((res)=>{
+     console.log(res.data)
+    fetchApplicableCharges()
+
+    if(res.data.status){
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "success"
+      }) } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        }) 
+      }
+
+      setTimeout(() => {
+        clear()
+      }, 3000)
+      
+    }).catch((res)=>{
+
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+    })
+  }
+
+  const clear = ()=> {
+    setError({
+      ...error,
+      message: "",
+      color: ""
+     
+    });
+    // console.log(data)
+  }
+     
+
+    
+
+
   // LANDLORD DASHBOARD
   const colors = [
     "#3399ff",
@@ -478,6 +560,8 @@ function ViewLandlord() {
     useState([]);
   useEffect(() => {
     fetchDashData();
+    fetchApplicableCharges();
+    
   }, [userId, landlord]);
   // fetch data
   const fetchDashData = () => {
@@ -961,19 +1045,20 @@ function ViewLandlord() {
                         >
                           Properties
                         </a>
+                        <a
+                          onClick={() => setActiveLink(6)}
+                          className={
+                            activeLink === 6
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
+                          Settlements
+                        </a>
                       </div>
                     </div>
                   </nav>
-                  <div className="text-end">
-                    <button
-                      type="button"
-                      onClick={() => landlordshow()}
-                      className="btn btn-primary dropdown-toggle option-selector"
-                    >
-                      <i class="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
-                      Edit Details
-                    </button>
-                  </div>
+                 
                 </div>
               </div>
             </div>
@@ -992,9 +1077,20 @@ function ViewLandlord() {
                   <div className="card calc-h-3px">
                     <div className="card-body pb-1">
                       <div>
+                      <div className="text-end">
+                    <button
+                      type="button"
+                      onClick={() => landlordshow()}
+                      className="btn btn-primary dropdown-toggle option-selector"
+                    >
+                      <i class="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
+                      Edit Details
+                    </button>
+                  </div>
                         <div className="mb-4 me-3">
                           <i className="mdi mdi-account-circle text-primary h1"></i>
                         </div>
+                        
                         <div>
                           <h5 className="text-capitalize">
                             {landlord?.firstName} {landlord?.lastName}
@@ -2041,6 +2137,67 @@ function ViewLandlord() {
               </div>
             </div>
           )}
+          {activeLink === 6 && (
+  <div className={"row"}>
+  <div className="col-12">
+    <div className="card">
+      <div className="col-12">
+        <div className="card calc-h-3px">
+          <div>
+            <div className="row">
+              <div className="col-12">
+                <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                  <div
+                    className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                    role="toolbar"
+                  >
+                    <div className="d-flex align-items-center flex-grow-1">
+                      <h4 className="mb-0  bg-transparent  p-0 m-0">
+                        Landlord Settlements
+                      </h4>
+                    </div>
+                    <div className="d-flex">
+                      <button
+                        type="button"
+                        className="btn btn-primary waves-effect btn-label waves-light me-3"
+                        data-bs-toggle="modal"
+                       
+                        data-bs-target="#add-sett"
+                        onClick={()=>{setChargeId(""); setPeriodAlias("")}}
+                      >
+                        <i className="mdi mdi-plus label-icon"></i>{" "}
+                        Add Settlement
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="row">
+                    {error.color !== "" && (
+                      <div
+                        className={"alert alert-" + error.color}
+                        role="alert"
+                      >
+                        {error.message}
+                      </div>
+                    )}
+                    <div className="col-12">
+                      <div className="table-responsive">
+                       
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+          )}
           {/*edit landlord modals*/}
           <Modal
             show={show_landlord}
@@ -2660,6 +2817,138 @@ function ViewLandlord() {
             </div>
           </div>
         </div>
+
+        {/* //Settlement */}
+
+        <div
+        class="modal fade"
+        id="add-sett"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault(); 
+               
+              }}
+            >
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                new  settlement
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+
+              <div class="modal-body">
+                <div class="row">
+                  
+                  <div class="col-12">
+                    <label for="">
+                      Charges <strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control"
+                      data-live-search="true"
+                      title="Select county where the zone is"
+                      onChange={(e) => setChargeId(e.target.value)}
+                    >
+                      <option value=""> Charges</option>
+                      {
+                        charges?.map((cou, index) => {
+                         
+                          return (
+                            <option key={index} value={cou.id}>
+                              {cou.name}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        Period Alias <strong class="text-danger">*</strong>
+                      </label>
+                      <input
+                        required
+                        value={periodAlias}
+                        onChange={(e) => setPeriodAlias(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Period Alias name"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        StartDate<strong class="text-danger">*</strong>
+                      </label>
+                      <input
+                          type="text"
+                          className="form-control mouse-pointer enddate"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          placeholder="Enter StartDate"
+                          readOnly
+                          data-date-format="dd M, yyyy"
+                          data-date-container="#datepicker198"
+                          data-provide="datepicker"
+                          data-date-autoclose="true"
+                          data-date-start-date="+0d"
+                          />
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        EndDate <strong class="text-danger">*</strong>
+                      </label>
+                      <input
+                          type="text"
+                          className="form-control mouse-pointer enddate"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          placeholder="Enter StartDate"
+                          readOnly
+                          data-date-format="dd M, yyyy"
+                          data-date-container="#datepicker198"
+                          data-provide="datepicker"
+                          data-date-autoclose="true"
+                          data-date-start-date="+0d"
+                          />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="button" class="btn btn-primary" 
+                data-bs-dismiss="modal" onClick={() => settlement()}>
+                Save
+              </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
 
         {/* confirm ACCOUNT  */}
         <div
