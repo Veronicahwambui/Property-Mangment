@@ -383,7 +383,7 @@ function AddTenant() {
   };
 
   const toogleShowAssignUnits = () => {
-    setShowAssignUnits(!showAssignUnits);
+    setShowAssignUnits(!showAssignUnits)
   };
 
 

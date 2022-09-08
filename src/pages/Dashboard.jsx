@@ -405,7 +405,8 @@ function Dashboard() {
                                     <div class="flex-grow-1 align-self-center">
                                         <div class="text-muted mt-2">
                                             <h5 class="mb-1">{dashboardData?.clientName}</h5>
-                                            <p class="mb-0">RevenueSure Property Management</p>
+                                            
+                                            <p class="mb-0">Revenue Collection and Property management.</p>
                                         </div>
                                     </div>
                                 </div>
