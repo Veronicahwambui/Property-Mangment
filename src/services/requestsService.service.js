@@ -1,5 +1,5 @@
 import { axiosInstance, baseUrl } from "./API";
-import { communicationService, communicationBaseUrl } from "./CommunicationAPI";
+import { communicationService, communicationBaseUrl } from "./CommunicationApi";
 import axios from "axios";
 
 class RequestsService {
@@ -900,6 +900,30 @@ class RequestsService {
     );
   }
 
+
+  // STATEMENTS 
+
+  getAllSettlements(page, size, startDate , endDate) {
+    return axiosInstance.get(
+      baseUrl +
+        "/settlements?page=" +
+        page +
+        "&size=" +
+        size +
+        "&startDate=" +
+        startDate +
+        "&endDate=" +
+        endDate
+    );
+  }
+
+  getOneSettlement(settlementRef){
+    return axiosInstance.get(
+      baseUrl + "/settlements/" + settlementRef
+    );
+  }
+
+  
   // MESSANGER API
   createMessageTemplate(data) {
     return communicationService.post(

@@ -96,6 +96,9 @@ function SideBar() {
                   <NavLink to="/statements">Tenant Statements</NavLink>
                 </li>
                 <li>
+                  <NavLink to="/landord-statements">Landord Statements</NavLink>
+                </li>
+                <li>
                   <NavLink to="/receipts">Receipts</NavLink>
                 </li>
               </ul>
