@@ -6,6 +6,7 @@ import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import { confirmAlert } from "react-confirm-alert";
+import DatePicker from "react-datepicker";
 
 function Statements() {
   const [statements, setstatements] = useState([]);
@@ -135,6 +136,28 @@ function Statements() {
   };
 
   // settlements
+  const [settlementStuff, setsettlementStuff] = useState({
+    chargeId: 0,
+    endDate: new Date(),
+    landlordId: [],
+    periodAlias: "string",
+    startDate: new Date(),
+  });
+  const [sDate, setsdate] = useState("");
+  const [eDate, setedate] = useState("");
+  const [palias, setpalias] = useState("");
+  const [chargeId, setchargeId] = useState(undefined);
+  const [lids, setlids] = useState([]);
+
+  useEffect(() => {
+    getCharges();
+  }, []);
+  const [charges, setcharges] = useState([]);
+  const getCharges = () => {
+    requestsServiceService.allApplicableCharges().then((res) => {
+      setcharges(res.data.data);
+    });
+  };
 
   //settlement modals
   const [settlement_show, setsettlementshow] = useState(true);
@@ -147,6 +170,17 @@ function Statements() {
     e.preventDefault();
     getLandlords();
     console.log();
+  };
+  const selectItems = (e, x) => {
+    if (e.target.checked) {
+      setlids((lids) => [...lids, x]);
+    } else {
+      removeItems(x);
+    }
+  };
+
+  const removeItems = (x) => {
+    setlids([...lids.filter((item) => item !== x)]);
   };
   const getLandlords = () => {
     let page = 0,
@@ -596,7 +630,66 @@ function Statements() {
                     </button>
                   </form>
                 </div>
-                <div className="col-12"></div>
+                <div className="col-12">
+                  {landlords?.length < 5 && (
+                    <>
+                      {landlords?.map((landlord) => (
+                        <>
+                          <input
+                            type="checkbox"
+                            onChange={(e) => selectItems(e, landlord.id)}
+                            checked={lids.some((el) => el === landlord.id)}
+                          />
+                          <span>{landlord.firstName}</span>
+                        </>
+                      ))}
+                    </>
+                  )}
+                </div>
+                <div className="col-12">
+                  <>
+                    <div className="form-group">
+                      <label htmlFor="">Applicable Charges</label>
+                      <select
+                        name=""
+                        id=""
+                        value={chargeId}
+                        className={"form-control"}
+                      >
+                        {charges?.map((charge) => (
+                          <option key={charge.id} value={parseInt(charge.id)}>
+                            {charge.name.toUpperCase()}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Period</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter Period"
+                        onChange={(e) => setpalias(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">Start Date</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter Period"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="">End Date</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter Period"
+                      />
+                    </div>
+                  </>
+                </div>
               </>
             )}
           </div>
