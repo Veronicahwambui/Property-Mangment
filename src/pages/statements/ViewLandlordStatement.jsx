@@ -1,6 +1,7 @@
 /* global $ */
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { Modal } from "react-bootstrap";
 import moment from "moment";
 import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
@@ -31,6 +32,21 @@ function ViewLandlordStatement() {
         })
     }
 
+    const [settlement_show, setsettlementshow] = useState(false);
+    const showSettlement = () => setsettlementshow(true);
+    const hideSettlement = () => setsettlementshow(false);
+
+    const [ payoutData, setPayoutData ] = useState({
+        amount : '',
+        payoutAccountNumber: '',
+        payoutMethod: '',
+        payoutReference: '',
+    })
+
+   const createPayout = (e)=>{
+     e.preventDefault();
+
+   }
 
     return (
         <div className="page-content">
@@ -155,7 +171,80 @@ function ViewLandlordStatement() {
                 )}
 
                 {activeLink === 2 && (
-                    <div className="row"></div>
+                    <>
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="card">
+                                    <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                                        <div
+                                            className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                                            role="toolbar"
+                                        >
+                                            <h4 className="card-title text-capitalize mb-0 ">
+                                                Payouts
+                                            </h4>
+                                            <div className="d-flex justify-content-end align-items-center">
+                                                <div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => showSettlement()}
+                                                        className="btn btn-primary dropdown-toggle option-selector"
+                                                    >
+                                                        <i class="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
+                                                        New Payout
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <Modal show={settlement_show} onHide={hideSettlement} size="md" centered>
+                            <Modal.Header closeButton>
+                                <h5 className="modal-title" id="myLargeModalLabel">
+                                    Create New Payout
+                                </h5>
+                            </Modal.Header>
+                            <form onSubmit={(e) => createPayout(e)}>
+                                <Modal.Body>
+                                    <div className="form-group  justify-content-center d-flex flex-column">
+                                    <label htmlFor=""> Payment Method</label>
+                                      <select  className="form-control">
+                                          <option value=""></option>
+                                          <option value="MPESA">Mpesa</option>
+                                          <option value="bANK">Bank</option>
+                                      </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="">Payout Reference</label>
+                                        <input type="text" className="form-control"/>
+                                    </div>
+                                    <div className="form-group  justify-content-center d-flex flex-column">
+                                        <label htmlFor="">Account Number</label>
+                                      <select  className="form-control">
+                                          <option value=""></option>
+                                          {/* <option value="MPESA">Mpesa</option> */}
+                                        
+                                      </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="">Amount</label>
+                                        <input type="text" className="form-control"/>
+                                    </div>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <div>
+                                        <button className="btn btn-sm btn-primary" type="submit">
+                                            Search
+                                        </button>
+                                    </div>
+                                </Modal.Footer>
+                            </form>
+                        </Modal>
+                    </>
                 )}
 
                 {activeLink === 3 && (
