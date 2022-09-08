@@ -900,6 +900,30 @@ class RequestsService {
     );
   }
 
+
+  // STATEMENTS 
+
+  getAllSettlements(page, size, startDate , endDate,landlordId) {
+    return axiosInstance.get(
+      baseUrl +
+        "/settlements?page=" +
+        page +
+        "&size=" +
+        size +
+        "&startDate=" +
+        startDate +
+        "&endDate=" +
+        endDate +(landlordId != undefined ? "&landlordId=" + landlordId:'')
+    );
+  }
+
+  getOneSettlement(settlementRef){
+    return axiosInstance.get(
+      baseUrl + "/settlements/" + settlementRef
+    );
+  }
+
+  
   // MESSANGER API
   createMessageTemplate(data) {
     return communicationService.post(
@@ -1123,6 +1147,9 @@ class RequestsService {
   }
   createDebitNote(data) {
     return axiosInstance.post(baseUrl + "/payments/debit-notes/new", data);
+  }
+  createSettlements(data) {
+    return axiosInstance.post(baseUrl + "/settlements", data);
   }
 }
 

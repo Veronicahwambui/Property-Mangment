@@ -65,6 +65,9 @@ import OccupancyReport from "./pages/Reports/OccupancyReport";
 import CreateDebitNote from "./pages/creditsDebits/CreateDebitNote";
 import CreateCreditNote from "./pages/creditsDebits/CreateCreditNote";
 import AllNotes from "./pages/creditsDebits/AllNotes";
+import LandlordStatements from "./pages/statements/LandlordStatements";
+import ViewLandlordStatement from "./pages/statements/ViewLandlordStatement";
+import Settlements from "./pages/statements/Settlements";
 
 function Main() {
   useEffect(() => {
@@ -210,6 +213,15 @@ function Main() {
                 <Route path="/addlandlord" element={<AddLandlord />} />
                 <Route path="/landlord/:id" element={<ViewLandlord />} />
                 <Route path="/statements" element={<Statements />} />
+
+                <Route
+                  path="/landord-statements"
+                  element={<LandlordStatements />}
+                />
+                <Route
+                  path="/landord-statements/:id"
+                  element={<ViewLandlordStatement />}
+                />
                 <Route
                   path="/create-issue-type"
                   element={<CreateIssueTypes />}
@@ -235,6 +247,7 @@ function Main() {
                   path="/occupancy-reports"
                   element={<OccupancyReport />}
                 />
+                <Route path="/settlements" element={<Settlements />} />
 
                 <Route path="*" element={<Navigate to="/" />}></Route>
               </Routes>
