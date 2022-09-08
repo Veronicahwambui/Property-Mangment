@@ -913,7 +913,7 @@ class RequestsService {
         "&startDate=" +
         startDate +
         "&endDate=" +
-        endDate + "&landlordId=" + landlordId
+        endDate +(landlordId != undefined ? "&landlordId=" + landlordId:'')
     );
   }
 
