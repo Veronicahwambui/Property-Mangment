@@ -100,7 +100,7 @@ function Settlements() {
         <div className="row">
           <div className="col-12">
             <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-              <h4 className="mb-sm-0 font-size-18">Statements</h4>
+              <h4 className="mb-sm-0 font-size-18">Settlements</h4>
 
               <div className="page-title-right">
                 <ol className="breadcrumb m-0">
@@ -108,9 +108,9 @@ function Settlements() {
                     <a href="index.html">Dashboards</a>
                   </li>
                   <li className="breadcrumb-item">
-                    <a href="#">Statements</a>
+                    <a href="#">Settlements</a>
                   </li>
-                  <li className="breadcrumb-item active">All Statements</li>
+                  <li className="breadcrumb-item active">Create Settlements</li>
                 </ol>
               </div>
             </div>
@@ -125,7 +125,7 @@ function Settlements() {
                   role="toolbar"
                 >
                   <h4 className="card-title text-capitalize mb-0 ">
-                    LandLord Statements
+                    Settlements
                   </h4>
                   <div className="d-flex justify-content-end align-items-center">
                     <div>
