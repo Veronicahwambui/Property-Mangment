@@ -43,7 +43,6 @@ function LandlordStatements() {
       setPage(res.data.page)
       setSize(res.data.size)
       setPageCount(res.data.totalPages)
-
       $("#spinner").addClass("d-none");
     });
   };
@@ -101,7 +100,7 @@ function LandlordStatements() {
               </div>
             </div>
             <div className="card-body">
-              <div className="table-responsive overflow-visible">
+              <div className="table-responsive overflow-visile">
                 {error.color !== "" && (
                   <div
                     className={"alert alert-" + error.color}
@@ -119,11 +118,11 @@ function LandlordStatements() {
                       <th>RC No</th>
                       <th>Premises</th>
                       <th>LandLord</th>
-                      <th>Agreement Type</th>
-                      <th>Client % share</th>
-                      <th>Client Commission</th>
-                      <th>Total Debits</th>
-                      <th>Amount Paid</th>
+                      <th className="text-nowrap">Agreement Type</th>
+                      <th className="text-nowrap">Client % share</th>
+                      <th className="text-nowrap">Client Commission</th>
+                      <th className="text-nowrap">Total Debits</th>
+                      <th className="text-nowrap">Amount Paid</th>
                       <th className="text-right">Actions</th>
                     </tr>
                   </thead>
@@ -131,13 +130,13 @@ function LandlordStatements() {
                     {statements?.length > 0 &&
                       statements?.map((statement, index) => (
                        <tr key={index}>
-                         <td>{statement.reference}</td>
+                         <td className="text-nowrap">{statement.reference}</td>
                          <td className="text-capitalize">{statement.premise.premiseName}</td>
-                         <td className="text-capitalize">{statement.landLord.firstName} {statement.landLord.lastName}</td>
-                         <td>{statement.landLordAgreementType.name}</td>
+                         <td className="text-capitalize text-nowrap">{statement.landLord.firstName} {statement.landLord.lastName}</td>
+                         <td className="text-nowrap">{statement.landLordAgreementType.name}</td>
                          <td>{statement.clientCommissionRate} % </td>
                          <td>{formatCurrency.format(statement.clientCommission)}</td>
-                         <td>{statement.totalDebitNotes}</td>
+                         <td>{formatCurrency.format(statement.totalDebitNotes)}</td>
                          <td>{formatCurrency.format(statement.amountPaidOut)}</td>
                          <td className="text-right text-nowrap">
                             <Link to={"/landord-statements/"+ statement.reference}>

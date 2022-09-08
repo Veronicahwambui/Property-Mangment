@@ -852,6 +852,35 @@ function ViewLandlord() {
       },
     },
   };
+
+  // STATEMENTS
+  const [statements, setstatements] = useState([]);
+  const [startDate2, setStartDate2] = useState("01/12/2022");
+  const [endDate2, setEndDate2] = useState("12/12/2022");
+  const [page2, setPage2] = useState(0);
+  const [size2, setSize2] = useState(10);
+  const [pageCount2, setPageCount2] = useState(1);
+  const sortSize2 = (e) => {
+    setSize(e.target.value);
+  };
+  useEffect(() => {
+    getStatements();
+}, []);
+
+const handlePageClick2 = (event) => {
+    setPage2(event.selected);
+  };
+
+const getStatements = () => {
+requestsServiceService.getAllSettlements(page2, size2 ,startDate2 ,endDate2,userId).then((res) => {
+  setstatements(res.data.data !== null ? res.data.data : []);
+  setPage2(res.data.page)
+  setSize2(res.data.size)
+  setPageCount2(res.data.totalPages)
+  $("#spinner").addClass("d-none");
+});
+};
+
   return (
     <>
       <div className="page-content">
@@ -960,6 +989,16 @@ function ViewLandlord() {
                           }
                         >
                           Properties
+                        </a>
+                        <a
+                          onClick={() => setActiveLink(6)}
+                          className={
+                            activeLink === 6
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
+                          Statements
                         </a>
                       </div>
                     </div>
@@ -1810,9 +1849,9 @@ function ViewLandlord() {
                                     {com.createdBy}
                                   </td>
                                   <td class="the-msg the-msg-2">
-                                  <span>{JSON.parse(com.data).text}</span>
-                                           
-                                            </td>   
+                                    <span>{JSON.parse(com.data).text}</span>
+
+                                  </td>
                                   <td class="text-capitalize d-none d-md-table-cell">
                                     {moment(com.dateTimeCreated).format(
                                       "ddd MMM DD"
@@ -2034,6 +2073,155 @@ function ViewLandlord() {
                           of<span className="text-primary"> {pageCount}</span>{" "}
                           pages
                         </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeLink === 6 && (
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-12">
+                  <div className="card">
+                    <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                      <div
+                        className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                        role="toolbar"
+                      >
+                        <h4 className="card-title text-capitalize mb-0 ">
+                          LandLord Statements
+                        </h4>
+                        <div className="d-flex justify-content-end align-items-center">
+                          <div>
+                            <div></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-body">
+                      <div className="table-responsive overflow-visile">
+                        {error.color !== "" && (
+                          <div
+                            className={"alert alert-" + error.color}
+                            role="alert"
+                          >
+                            {error.message}
+                          </div>
+                        )}
+                        <table
+                          className="table align-middle table-hover  contacts-table table-striped "
+                          id="datatable-buttons"
+                        >
+                          <thead className="table-light">
+                            <tr className="table-dark">
+                              <th>RC No</th>
+                              <th>Premises</th>
+                              <th>LandLord</th>
+                              <th className="text-nowrap">Agreement Type</th>
+                              <th className="text-nowrap">Client % share</th>
+                              <th className="text-nowrap">Client Commission</th>
+                              <th className="text-nowrap">Total Debits</th>
+                              <th className="text-nowrap">Amount Paid</th>
+                              <th className="text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {statements?.length > 0 &&
+                              statements?.map((statement, index) => (
+                                <tr key={index}>
+                                  <td className="text-nowrap">{statement.reference}</td>
+                                  <td className="text-capitalize">{statement.premise.premiseName}</td>
+                                  <td className="text-capitalize text-nowrap">{statement.landLord.firstName} {statement.landLord.lastName}</td>
+                                  <td className="text-nowrap">{statement.landLordAgreementType.name}</td>
+                                  <td>{statement.clientCommissionRate} % </td>
+                                  <td>{formatCurrency.format(statement.clientCommission)}</td>
+                                  <td>{formatCurrency.format(statement.totalDebitNotes)}</td>
+                                  <td>{formatCurrency.format(statement.amountPaidOut)}</td>
+                                  <td className="text-right text-nowrap">
+                                    <Link to={"/landord-statements/" + statement.reference}>
+                                      <button type="button"
+                                        className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                      >
+                                        View Details
+                                      </button>
+                                    </Link>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                          <tfoot className="table-light">
+                            <tr>
+                              <th
+                                className="text-capitalize text-nowrap"
+                                colSpan="3"
+                              >
+                                {statements && statements?.length}{" "}
+                                Statements
+                              </th>
+                              <td className="text-nowrap text-right" colSpan="7">
+                                <span className="fw-semibold">
+                                  {/*{formatCurrency.format(total())}*/}
+                                </span>
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                        <div className="d-flex justify-content-between align-items-center">
+                          {pageCount2 !== 0 && (
+                            <>
+                              <select
+                                className="btn btn-md btn-primary"
+                                title="Select A range"
+                                onChange={(e) => sortSize2(e)}
+                                value={size2}
+                              >
+                                <option className="bs-title-option" value="">
+                                  Select A range
+                                </option>
+                                <option value="10">10 Rows</option>
+                                <option value="30">30 Rows</option>
+                                <option value="50">50 Rows</option>
+                              </select>
+                              <nav
+                                aria-label="Page navigation comments"
+                                className="mt-4"
+                              >
+                                <ReactPaginate
+                                  previousLabel="<"
+                                  nextLabel=">"
+                                  breakLabel="..."
+                                  breakClassName="page-item"
+                                  breakLinkClassName="page-link"
+                                  pageCount={pageCount2}
+                                  pageRangeDisplayed={4}
+                                  marginPagesDisplayed={2}
+                                  containerClassName="pagination justify-content-center"
+                                  pageClassName="page-item"
+                                  pageLinkClassName="page-link"
+                                  previousClassName="page-item"
+                                  previousLinkClassName="page-link"
+                                  nextClassName="page-item"
+                                  nextLinkClassName="page-link"
+                                  activeClassName="active"
+                                  onPageChange={(data) => handlePageClick2(data)}
+                                />
+                              </nav>
+                            </>
+                          )}
+                        </div>
+                        {pageCount2 !== 0 && (
+                          <p className="font-medium  text-muted">
+                            showing page{" "}
+                            <span className="text-primary">
+                              {pageCount2 === 0 ? page2 : page2 + 1}
+                            </span>{" "}
+                            of
+                            <span className="text-primary"> {pageCount2}</span> pages
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -101,6 +101,9 @@ function SideBar() {
                 <li>
                   <NavLink to="/receipts">Receipts</NavLink>
                 </li>
+                <li>
+                  <NavLink to="/settlements">Settlements</NavLink>
+                </li>
               </ul>
             </li>
 

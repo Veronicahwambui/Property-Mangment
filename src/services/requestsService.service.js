@@ -903,7 +903,7 @@ class RequestsService {
 
   // STATEMENTS 
 
-  getAllSettlements(page, size, startDate , endDate) {
+  getAllSettlements(page, size, startDate , endDate,landlordId) {
     return axiosInstance.get(
       baseUrl +
         "/settlements?page=" +
@@ -913,7 +913,7 @@ class RequestsService {
         "&startDate=" +
         startDate +
         "&endDate=" +
-        endDate
+        endDate + "&landlordId=" + landlordId
     );
   }
 
@@ -1147,6 +1147,9 @@ class RequestsService {
   }
   createDebitNote(data) {
     return axiosInstance.post(baseUrl + "/payments/debit-notes/new", data);
+  }
+  createSettlements(data) {
+    return axiosInstance.post(baseUrl + "/settlements", data);
   }
 }
 
