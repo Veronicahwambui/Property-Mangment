@@ -6,6 +6,7 @@ import { Modal } from "react-bootstrap";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import { confirmAlert } from "react-confirm-alert";
+import DatePicker from "react-datepicker";
 
 function Statements() {
   const [statements, setstatements] = useState([]);
@@ -273,7 +274,6 @@ function Statements() {
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
                                       </span>
-
                                       {statement.utilisedAmount <
                                         statement.receiptAmount && (
                                         <a
