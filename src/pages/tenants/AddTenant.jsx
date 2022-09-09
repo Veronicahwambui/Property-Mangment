@@ -808,13 +808,12 @@ function AddTenant() {
                               <select
                                 className="form-control"
                                 data-live-search="true"
-                                title="Select nationality"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="nationality"
                                 required={true}
                               >
                                 <option></option>
-                                <option value="Kenya">Kenyan</option>
+                                <option selected value="Kenya">Kenyan</option>
                               </select>
                             </div>
                           </div>
@@ -825,15 +824,14 @@ function AddTenant() {
                                 <strong className="text-danger">*</strong>
                               </label>
                               <select
-                                className="form-control"
-                                data-live-search="true"
+                                className="form-control form-select"
                                 title="Select Marital status"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="maritalStatus"
                                 required
                               >
                                 <option></option>
-                                <option value="Single">Single</option>
+                                <option selected value="Single">Single</option>
                                 <option value="Married">Married</option>
                               </select>
                             </div>
@@ -881,7 +879,7 @@ function AddTenant() {
                                 <strong className="text-danger">*</strong>
                               </label>
                               <select
-                                className="form-control "
+                                className="form-control form-select"
                                 data-live-search="true"
                                 title="Select occupation"
                                 onChange={(e) => handleTenantDtoChange(e)}

@@ -1,5 +1,5 @@
 import { axiosInstance, baseUrl } from "./API";
-import { communicationService, communicationBaseUrl } from "./CommunicationAPI";
+import { communicationService, communicationBaseUrl } from "./CommunicationApi";
 import axios from "axios";
 
 class RequestsService {
