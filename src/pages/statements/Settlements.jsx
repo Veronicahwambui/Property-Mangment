@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
 import DatePicker from "react-datepicker";
+import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
 
 function Settlements() {
   const [sDate, setsdate] = useState(new Date());
@@ -22,12 +24,33 @@ function Settlements() {
   };
 
   //settlement modals
+  function generateArrayOfYears() {
+    var max = new Date().getFullYear()
+    var min = max - 5
+    var years = []
+    
+    for (var i = max; i >= min; i--) {
+      years.push(i)
+    }
+    return years
+  }
+  const yearArray = generateArrayOfYears();
+  
+  const [year, setYear] = useState(new Date().getFullYear())
+  const [month, setMonth] = useState(new Date().getMonth())
   const [settlement_show, setsettlementshow] = useState(true);
   const showSettlement = () => setsettlementshow(true);
   const hideSettlement = () => setsettlementshow(false);
   const [check, setCheck] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [landlords, setlandlords] = useState([]);
+  useEffect(() => {
+    let x = new Date(`01 ${month} ${year}`)
+    setsdate(moment(x).startOf("month").format("YYYY-MM-DD"))
+    setedate(moment(x).endOf("month").format("YYYY-MM-DD"))
+  },[year, month])
+  const [selectedItems, setselectedItems] = useState([])
+  
   const handleSearch = (e) => {
     e.preventDefault();
     getLandlords();
@@ -35,15 +58,18 @@ function Settlements() {
   };
   const selectItems = (e, x) => {
     if (e.target.checked) {
-      setlids((lids) => [...lids, x]);
+      setselectedItems((selectedItems) => [...selectedItems, x]);
     } else {
-      removeItems(x);
+      removeItems(x.id);
     }
   };
-
   const removeItems = (x) => {
-    setlids([...lids.filter((item) => item !== x)]);
+    setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
   };
+
+  // const removeItems = (x) => {
+  //   setlids([...lids.filter((item) => item !== x)]);
+  // };
   const getLandlords = () => {
     let page = 0,
       size = 100;
@@ -60,12 +86,16 @@ function Settlements() {
     message: "",
     color: "",
   });
+  useEffect(() => {
+    setlids(selectedItems?.map((a) => a.id))
+  }, [selectedItems])
+  
   const submitSettlement = () => {
     let data = {
       chargeId: parseInt(chargeId),
       endDate: moment(eDate).format(),
       landlordId: lids,
-      periodAlias: palias,
+      periodAlias: month,
       startDate: moment(sDate).format(),
     };
     requestsServiceService
@@ -84,14 +114,7 @@ function Settlements() {
             color: "danger",
           });
         }
-      })
-      .catch((err) => {
-        // setError({
-        //   ...error,
-        //   message: err.message,
-        //   color: "danger",
-        // });
-      });
+      }).catch((err) => {})
   };
   const months=[
     "January",
@@ -223,32 +246,118 @@ function Settlements() {
                         )}
                       </div>
                       <div className="col-12">
-                        <div className="row">
-                          {check && landlords?.length < 5 && (
-                            <>
-                              {landlords?.map((landlord) => (
-                                <>
-                                  <div className="p-2 d-flex">
-                                    <input
-                                      type="checkbox"
-                                      onChange={(e) =>
-                                        selectItems(e, landlord.id)
-                                      }
-                                      checked={lids.some(
-                                        (el) => el === landlord.id
-                                      )}
-                                    />
-                                    <span>{landlord.firstName}</span>
-                                  </div>
-                                </>
-                              ))}
-                            </>
-                          )}
+                        <div className="row justify-content-center">
+                          <div className="overflow-visible">
+                            {check &&  (
+                              <table className="table align-middle table-hover contacts-table table-striped "
+                              >
+                                <thead className="table-light">
+                                <tr>
+                                  <th width="8px">Select</th>
+                                  <th span={"col-6"}>
+                                    Landlord Type
+                                  </th>
+                                  <th span={"col-3"}>Name</th>
+                                  <th span={"col-3"}>Email</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {check && landlords?.length < 5 && (
+                                  <>
+                                    {landlords?.map((landlord) => (
+                                      <>
+                                        <tr key={landlord.id}>
+                                          <td>
+                                            <div className="d-flex  align-items-center">
+                                              <div className="the-mail-checkbox pr-4">
+                                                <input
+                                                  className="form-check-input mt-0 pt-0 form-check-dark"
+                                                  type="checkbox"
+                                                  id="formCheck1"
+                                                  onChange={(e) =>
+                                                    selectItems(
+                                                      e,
+                                                      landlord
+                                                    )
+                                                  }
+                                                  checked={selectedItems.some(
+                                                    (el) =>
+                                                      el.id ===
+                                                      landlord.id
+                                                  )}
+                                                />
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            {landlord.landLordType}
+                                          </td>
+                                          <td className="text-capitalize">
+                                            <a href="javascript:void(0)">
+                                              {landlord.firstName}{" "}
+                                              {landlord.lastName}
+                                            </a>
+                                          </td>
+                                          <td>{landlord.email}</td>
+                                        </tr>
+                                      </>
+                                    ))}
+                                  </>
+                                )}
+                                </tbody>
+                              </table>
+                            )}
+                            {selectedItems.length > 0 && (
+                              <div
+                                className={
+                                  "alert alert-warning d-flex align-items-center"
+                                }
+                              >
+                                {selectedItems.length > 0 && (
+                                  <>
+                                    <Button variant="primary">
+                                      Selected
+                                      <Badge
+                                        bg="light"
+                                        className="ml-7px"
+                                      >
+                                        <b>{selectedItems.length}</b>
+                                      </Badge>
+                                    </Button>
+                                  </>
+                                )}
+                                {selectedItems.length > 0 &&
+                                  selectedItems?.map((item) => (
+                                    <>
+                                        <>
+                                          <h5
+                                            className="ml-7px"
+                                            key={item.id}
+                                          >
+                                            <Badge bg="success">
+                                              {item.firstName +
+                                                " " +
+                                                item.lastName}
+                                            </Badge>
+                                            <br />
+                                            <i
+                                              className="fa fa-trash cursor-pointer text-danger mt-1"
+                                              onClick={() =>
+                                                removeItems(item.id)
+                                              }
+                                            ></i>
+                                          </h5>
+                                        </>
+                                    </>
+                                  ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="col-12">
                         <>
-                          <div className="form-group">
+                          <div className="form-group mb-3">
                             <label htmlFor="">Applicable Charges</label>
                             <select
                               name=""
@@ -265,80 +374,41 @@ function Settlements() {
                               ))}
                             </select>
                           </div>
-                          <div className="form-group">
-                            <label htmlFor="">Period</label>
-                            <select name="" id="" className={"form-control"}onChange={(e) => setpalias(e.target.value)}>
-                              <option value="">Select month...</option>
-                              {months?.map((month) => (
-                                <option value={month} key={month}>{month}</option>
-                              ))}
-                            </select>
+                          <div>
+                            <label htmlFor="">Time Period</label>
+                            <div className="d-flex">
+                              <div className="form-group m-2">
+                                <label htmlFor="">Select year</label>
+                                <select value={year}name="" id="" onChange={(e) => setYear(e.target.value)} className={"form-control"}>
+                                  {yearArray?.map((year) => (
+                                    <option value={year} key={year}>{year}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div className="form-group m-2">
+                                <label htmlFor="">Select Month</label>
+                                <select name="" id="" value={month}onChange={(e) => setMonth(e.target.value)} className={"form-control"}>
+                                  {months?.map((month) => (
+                                    <option value={month} key={month}>{month}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
                           </div>
                           <div className="form-group">
                             <label htmlFor="">Start Date</label>
-                            <DatePicker
-                              selected={sDate}
-                              onChange={(date) => setsdate(date)}
-                              selectsStart
-                              className="form-control cursor-pointer"
-                            />
+                            <input type="text" className={"form-control"} value={moment(sDate).format("LL")} disabled/>
                           </div>
                           <div className="form-group">
                             <label htmlFor="">End Date</label>
-                            <DatePicker
-                              selected={eDate}
-                              onChange={(date) => setedate(date)}
-                              selectsStart
-                              className="form-control cursor-pointer"
-                            />
-                            {/*<DatePicker*/}
-                            {/*  selected={sDate}*/}
-                            {/*  renderCustomHeader={({*/}
-                            {/*                         date,*/}
-                            {/*                         changeYear,*/}
-                            {/*                         changeMonth,*/}
-                            {/*                         decreaseMonth,*/}
-                            {/*                         increaseMonth,*/}
-                            {/*                         prevMonthButtonDisabled,*/}
-                            {/*                         nextMonthButtonDisabled,*/}
-                            {/*                       }) => (*/}
-                            {/*    <div*/}
-                            {/*      style={{*/}
-                            {/*        margin: 10,*/}
-                            {/*        display: "flex",*/}
-                            {/*        justifyContent: "center",*/}
-                            {/*      }}*/}
-                            {/*    >*/}
-                            {/*      <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>*/}
-                            {/*        {"<"}*/}
-                            {/*      </button>*/}
-                            {/*      <select*/}
-                            {/*        value={palias}*/}
-                            {/*        onChange={({ target: { value } }) =>*/}
-                            {/*          changeMonth(months.indexOf(value))*/}
-                            {/*        }*/}
-                            {/*      >*/}
-                            {/*        {months.map((option) => (*/}
-                            {/*          <option key={option} value={option}>*/}
-                            {/*            {option}*/}
-                            {/*          </option>*/}
-                            {/*        ))}*/}
-                            {/*      </select>*/}
-                            
-                            {/*      <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>*/}
-                            {/*        {">"}*/}
-                            {/*      </button>*/}
-                            {/*    </div>*/}
-                            {/*  )}*/}
-                            {/*  onChange={(date) => setsdate(date)}*/}
-                            {/*/>*/}
+                            <input type="text" className={"form-control"} value={moment(eDate).format("LL")} disabled/>
                           </div>
                         </>
                       </div>
                     </>
                   </div>
                 </div>
-                <div className="col-12">
+                <div className="col-12 mt-3">
                   <button
                     className="btn btn-primary"
                     onClick={submitSettlement}
