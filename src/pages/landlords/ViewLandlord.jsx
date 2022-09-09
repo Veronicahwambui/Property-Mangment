@@ -460,11 +460,31 @@ function ViewLandlord() {
   const [chargeId, setChargeId] = useState("");
   const [charges, setCharges] = useState([]);
   const [landlordId, setLandlordId] = useState("")
+  const [sDate, setsdate] = useState(new Date());
+  const [eDate, setedate] = useState(new Date());
 
 
-  const startingDate = new Date("2022-09-08T12:06:26.255Z");
-  const endingDate = new Date();
+  // const startingDate = new Date("2022-09-08T12:06:26.255Z");
+  // const endingDate = new Date();
+  const months=[
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
 
+  const [year, setYear] = useState(new Date().getFullYear())
+  const [month, setMonth] = useState(new Date().getMonth())
+  const yearArray = generateArrayOfYears();
+  
 
   ///Settlements
 
@@ -480,13 +500,13 @@ function ViewLandlord() {
     let data = JSON.stringify({
 
       chargeId: chargeId,
-      endDate: endingDate,
+      endDate: eDate,
       "landlordId": [
 
 
       ],
       periodAlias: periodAlias,
-      startDate: startingDate,
+      startDate: sDate,
 
 
     });
@@ -523,6 +543,16 @@ function ViewLandlord() {
 
     })
   }
+  function generateArrayOfYears() {
+    var max = new Date().getFullYear()
+    var min = max - 5
+    var years = []
+    
+    for (var i = max; i >= min; i--) {
+      years.push(i)
+    }
+    return years
+  }
 
   const clear = () => {
     setError({
@@ -533,7 +563,11 @@ function ViewLandlord() {
     });
     // console.log(data)
   }
-
+  useEffect(() => {
+    let x = new Date(`01 ${month} ${year}`)
+    setsdate(moment(x).startOf("month").format("YYYY-MM-DD"))
+    setedate(moment(x).endOf("month").format("YYYY-MM-DD"))
+  },[year, month])
 
 
 
@@ -3004,61 +3038,36 @@ function ViewLandlord() {
                             })}
                         </select>
                       </div>
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">
-                            Period Alias <strong class="text-danger">*</strong>
-                          </label>
-                          <input
-                            required
-                            value={periodAlias}
-                            onChange={(e) => setPeriodAlias(e.target.value)}
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter Period Alias name"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">
-                            StartDate<strong class="text-danger">*</strong>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control mouse-pointer enddate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            placeholder="Enter StartDate"
-                            readOnly
-                            data-date-format="dd M, yyyy"
-                            data-date-container="#datepicker198"
-                            data-provide="datepicker"
-                            data-date-autoclose="true"
-                            data-date-start-date="+0d"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">
-                            EndDate <strong class="text-danger">*</strong>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control mouse-pointer enddate"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            placeholder="Enter StartDate"
-                            readOnly
-                            data-date-format="dd M, yyyy"
-                            data-date-container="#datepicker198"
-                            data-provide="datepicker"
-                            data-date-autoclose="true"
-                            data-date-start-date="+0d"
-                          />
-                        </div>
-                      </div>
+                      <div>
+                            <label htmlFor="">Time Period</label>
+                            <div className="d-flex">
+                              <div className="form-group m-2">
+                                <label htmlFor="">Select year</label>
+                                <select value={year}name="" id="" onChange={(e) => setYear(e.target.value)} className={"form-control"}>
+                                  {yearArray?.map((year) => (
+                                    <option value={year} key={year}>{year}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div className="form-group m-2">
+                                <label htmlFor="">Select Month</label>
+                                <select name="" id="" value={month}onChange={(e) => setMonth(e.target.value)} className={"form-control"}>
+                                  {months?.map((month) => (
+                                    <option value={month} key={month}>{month}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="">Start Date</label>
+                            <input type="text" className={"form-control"} value={moment(sDate).format("LL")} disabled/>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="">End Date</label>
+                            <input type="text" className={"form-control"} value={moment(eDate).format("LL")} disabled/>
+                          </div>
+                     
                     </div>
                   </div>
                   <div class="modal-footer">
