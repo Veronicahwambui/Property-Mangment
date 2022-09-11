@@ -728,7 +728,7 @@ function Invoices() {
         <div class="modal-content">
           <div class="modal-body">
            <center>
-              <h5>Are you sure you want to generate BillNo?</h5>
+              <h5>Regenerate Bill Reference?</h5>
            </center>
           </div>
           <div class="modal-footer">
