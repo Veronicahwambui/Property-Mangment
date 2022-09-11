@@ -556,8 +556,8 @@ $(document).ready(function() {
         $('.the-inv-description').text(tenantDescription);
         $('.invoice-item-price').text(invoiceAmt);
     })
-    $('.selectpicker').selectpicker();
-    $('.selectpicker').selectpicker('render');
+    //$('.selectpicker').selectpicker();
+    ///$('.selectpicker').selectpicker('render');
 
     $('#send-msg-land').on('click', function() {
 
