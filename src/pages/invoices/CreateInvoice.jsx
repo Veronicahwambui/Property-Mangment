@@ -410,12 +410,9 @@ function CreateInvoice() {
                                         )}
                                       </select>
                                     </div>
-                                  )} {applicableChargeName != "" && expectManualValues ? 
-                              <span className="alert alert-warning">This charge expects a unit cost entry</span>  :
-                              <span className="alert alert-warning">This charge will charge the default values set for the property</span> 
-                              }
+                                  )}
                                 </div>
-                               
+
                               </div>
                             </div>
                             <div className="col-12">
@@ -483,30 +480,6 @@ function CreateInvoice() {
                                   />
                                 </div>
                               </div>
-                              {expectManualValues &&
-                                <div className="col-md-6">
-                                  <div className="mb-3">
-                                    <label
-                                      htmlFor="formrow-password-input"
-                                      className="form-label"
-                                    >
-                                      Unit cost.{" "}
-                                      <strong className="text-danger">*</strong>
-                                    </label>
-                                    <input
-                                      type="number"
-                                      className="form-control"
-                                      value={unitcost}
-                                      min="1"
-                                      onChange={(e) =>
-                                        setunitcost(e.target.value)
-                                      }
-                                      placeholder="Enter cost"
-                                      required={true}
-                                    />
-                                  </div>
-                                </div>
-                              }
                               <div className="col-md-6">
                                 <div className="mb-4">
                                   <label htmlFor="" className="">
@@ -530,27 +503,58 @@ function CreateInvoice() {
                                   </div>
                                 </div>
                               </div>
-                              <div className="col-md-6">
-                                <div className="mb-3">
-                                  <label
-                                    htmlFor="formrow-password-input"
-                                    className="form-label"
-                                  >
-                                    Invoice amount.{" "}
-                                    <strong className="text-danger">*</strong>
-                                  </label>
-                                  <input
-                                    type="text"
-                                    className="form-control invoice-amount"
-                                    value={"KES " + total}
-                                    onChange={(e) => settotal(e.target.value)}
-                                    id="formrow-password-input"
-                                    placeholder="KES"
-                                    required={true}
-                                    disabled={true}
-                                  />
+                                <div className="row">
+                              {expectManualValues &&
+                              <>
+                                  <div className="col-md-6">
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="formrow-password-input"
+                                        className="form-label"
+                                      >
+                                        Unit cost.{" "}
+                                        <strong className="text-danger">*</strong>
+                                      </label>
+                                      <input
+                                        type="number"
+                                        className="form-control"
+                                        value={unitcost}
+                                        min="1"
+                                        onChange={(e) =>
+                                          setunitcost(e.target.value)
+                                        }
+                                        placeholder="Enter cost"
+                                        required={true}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-md-6">
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="formrow-password-input"
+                                        className="form-label"
+                                      >
+                                        Invoice amount.{" "}
+                                        <strong className="text-danger">*</strong>
+                                      </label>
+                                      <input
+                                        type="text"
+                                        className="form-control invoice-amount"
+                                        value={"KES " + total}
+                                        onChange={(e) => settotal(e.target.value)}
+                                        id="formrow-password-input"
+                                        placeholder="KES"
+                                        required={true}
+                                        disabled={true}
+                                      />
+                                    </div>
+                                  </div>
+                              </>
+                                }   {applicableChargeName != "" && expectManualValues ? 
+                                <span className="alert alert-warning">This charge expects a unit cost entry</span>  :
+                                <span className="alert alert-warning">This charge will charge the default values set for the property</span> 
+                                }
                                 </div>
-                              </div>
                             </div>
                             <div>
                               <button
