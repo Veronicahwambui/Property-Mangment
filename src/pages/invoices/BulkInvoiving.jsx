@@ -50,6 +50,18 @@ function BulkInvoiving() {
 
 
   useEffect(() => {
+
+    if (invoiceFor === "TENANT") {
+      setTenantsID(() => selected?.map((a) => a.id))
+    } else if (invoiceFor === "LANDLORD") {
+      setLandlordsId(() => selected?.map((a) => a.id))
+    } else if (invoiceFor === "PREMISE") {
+      setPremisesId(() => selected?.map((a) => a.id))
+    }
+
+  },[selected]);
+  
+  useEffect(() => {
     setbillAmount(unitCost * quantity);
   }, [unitCost, quantity])
 
@@ -138,6 +150,15 @@ function BulkInvoiving() {
 
   const sendData = () => {
     setError(undefined)
+
+      if (invoiceFor === "TENANT") {
+        setTenantsID(() => selected?.map((a) => a.id))
+      } else if (invoiceFor === "LANDLORD") {
+        setLandlordsId(() => selected?.map((a) => a.id))
+      } else if (invoiceFor === "PREMISE") {
+        setPremisesId(() => selected?.map((a) => a.id))
+      }
+
     if (tenancies.length <= 0) {
       let data = JSON.stringify({
         "aplicableChargeId": aplicableChargeId,
@@ -163,15 +184,6 @@ function BulkInvoiving() {
       })
 
     } else if (invoiceFor !== "" && invoices?.length > 0 && unitCost != "" && quantity >= 0 && invoiceDate != "" && applicableChargeName != "") {
-
-
-      if (invoiceFor === "TENANT") {
-        setTenantsID(() => selected?.map((a) => a.id))
-      } else if (invoiceFor === "LANDLORD") {
-        setLandlordsId(() => selected?.map((a) => a.id))
-      } else if (invoiceFor === "PREMISE") {
-        setPremisesId(() => selected?.map((a) => a.id))
-      }
 
       let data = JSON.stringify({
         "aplicableChargeId": aplicableChargeId,
