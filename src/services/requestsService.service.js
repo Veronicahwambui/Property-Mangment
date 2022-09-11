@@ -1,7 +1,5 @@
 import { axiosInstance, baseUrl } from "./API";
 import { communicationService, communicationBaseUrl } from "./CommunicationAPI";
-import axios from "axios";
-
 class RequestsService {
   // roles
   getAllRoles() {

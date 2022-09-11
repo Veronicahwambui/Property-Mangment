@@ -7,6 +7,7 @@ import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
+import data from '../data/coutries.json'
 
 function AddTenant() {
 
@@ -18,6 +19,8 @@ function AddTenant() {
   const [searchTerm, setSearchTerm] = useState("");
 
 
+  const [countries, setCounties] = useState([]);
+
   const [premises, setPremises] = useState([]);
   const [units, setUnits] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
@@ -25,6 +28,7 @@ function AddTenant() {
 
   useEffect(() => {
     getAllDocumentTypes();
+    setCounties(data);
   }, []);
 
 
@@ -814,7 +818,9 @@ function AddTenant() {
                                 required={true}
                               >
                                 <option></option>
-                                <option value="Kenya">Kenyan</option>
+                                {countries.length > 0 && countries.map((country, index) => (
+                                   <option key={index+country.code} value={country.name}>{country.name}</option>
+                                ))}
                               </select>
                             </div>
                           </div>
