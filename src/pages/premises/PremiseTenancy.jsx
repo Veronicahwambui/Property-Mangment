@@ -209,6 +209,9 @@ function PremiseTenancy() {
                 color: "danger"
             })
 
+            setTimeout(() => {
+                clear()
+            }, 3000)
         })
 
 
@@ -316,6 +319,10 @@ function PremiseTenancy() {
                     color: "warning"
                 })
             }
+ 
+            setTimeout(() => {
+                clear() 
+            }, 3000)
 
         }).catch((res) => {
             $(".update-issues").modal("hide");
@@ -330,6 +337,9 @@ function PremiseTenancy() {
                 color: "danger"
             })
 
+            setTimeout(() => {
+                clear()
+            }, 3000)
         })
     }
     //communication
