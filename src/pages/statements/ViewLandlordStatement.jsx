@@ -9,7 +9,7 @@ import StatusBadge from "../../components/StatusBadge";
 
 
 function ViewLandlordStatement() {
-    const [activeLink, setActiveLink] = useState(1);
+    const [activeLink, setActiveLink] = useState(2);
     const [statement, setStatement] = useState([]);
     const [landlordAccounts, setLandlordAccounts] = useState([])
     const [landlordId, setLandlordId] = useState()
@@ -36,7 +36,7 @@ function ViewLandlordStatement() {
         requestsServiceService.getOneSettlement(id).then((res) => {
             setStatement(res.data.data)
             setLandlordId(res.data.data.clientSettlement.landLord.id)
-            requestsServiceService.getLandLordByFileNumber(res.data.data.clientSettlement.landLord.id).then((res) => {
+            requestsServiceService.getLandLordByFileNumber(res.data.data.clientSettlement.landLord.fileNumber).then((res) => {
                 setLandlordAccounts(res.data.data.accounts)
             })
         })
@@ -95,7 +95,7 @@ function ViewLandlordStatement() {
             color: ""
         });
     }
-  
+
 
     return (
         <div className="page-content">
@@ -120,7 +120,94 @@ function ViewLandlordStatement() {
                         </div>
                     </div>
                 </div>
+                {/* statisticsc */}
+                <div class="row">
+                    <div class="col-lg-12 px-sm-30px">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <div class="d-flex">
+                                            <div class="flex-grow-1 align-self-center">
+                                                <div class="text-muted">
+                                                    <h5 class="mb-3"> Quick Overview on {statement?.clientSettlement?.reference}</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 align-self-center">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <div class="text-lg-left mt-4 mt-lg-0">
+                                                    <div class="row">
+                                                        <div class="col-sm-4 col-md-2 mx-3  text-capitalize text-nowrap">
+                                                            <div>
+                                                                <div class="avatar-xs-2 mb-3">
+                                                                    <span class="avatar-title bg-info rounded-circle font-size-24">
+                                                                        <i class="mdi mdi-account-group text-white"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <p class="text-muted  mb-2">Client Commission</p>
+                                                                <h5 class="mb-0"> {formatCurrency(statement?.clientSettlement?.clientCommission)}</h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3 col-md-2   mx-3 text-capitalize text-nowrap">
+                                                            <div>
+                                                                <div class="avatar-xs-2 mb-3">
+                                                                    <span class="avatar-title rounded-circle bg-danger font-size-24">
+                                                                        <i class="mdi mdi-account-cash text-white"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <p class="text-muted  mb-2">Commission Rate</p>
+                                                                <h5 class="mb-0"> {statement?.clientSettlement?.clientCommissionRate} % </h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3 col-md-2  mx-3 text-capitalize text-nowrap ">
+                                                            <div>
+                                                                <div class="avatar-xs-2 mb-3">
+                                                                    <span class="avatar-title rounded-circle bg-primary font-size-24">
+                                                                        <i class="mdi mdi-account-cash text-white"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <p class="text-muted  mb-2">Period Alias</p>
+                                                                <h5 class="mb-0"> {statement?.clientSettlement?.periodAlias} </h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3 col-md-2  mx-2 text-capitalize text-nowrap">
+                                                            <div>
+                                                                <div class="avatar-xs-2 mb-3">
+                                                                    <span class="avatar-title rounded-circle bg-danger font-size-24">
+                                                                        <i class="mdi mdi-account-cash text-white"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <p class="text-muted  mb-2">Total Debit Notes</p>
+                                                                <h5 class="mb-0 text-nowrap"> {formatCurrency(statement?.clientSettlement?.totalDebitNotes)}  </h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3 col-md-2 text-capitalize text-nowrap">
+                                                            <div>
+                                                                <div class="avatar-xs-2 mb-3">
+                                                                    <span class="avatar-title rounded-circle bg-primary font-size-24">
+                                                                        <i class="mdi mdi-account-cash text-white"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <p class="text-muted  mb-2">Amount Paid Out</p>
+                                                                <h5 class="mb-0 text-nowrap"> {formatCurrency(statement?.clientSettlement?.amountPaidOut)}  </h5>
+                                                            </div>
+                                                        </div>
 
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* <!-- end row --> */}
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {/* toolbar  */}
                 <div className="row">
                     <div className="col-12">
@@ -143,16 +230,7 @@ function ViewLandlordStatement() {
                                         id="navbarNavAltMarkup"
                                     >
                                         <div className="navbar-nav">
-                                            <a
-                                                onClick={() => setActiveLink(1)}
-                                                className={
-                                                    activeLink === 1
-                                                        ? "nav-item nav-link active cursor-pointer"
-                                                        : "nav-item cursor-pointer nav-link"
-                                                }
-                                            >
-                                                Details
-                                            </a>
+
                                             <a
                                                 onClick={() => setActiveLink(2)}
                                                 className={
@@ -193,30 +271,6 @@ function ViewLandlordStatement() {
 
                 {/* active link start  */}
 
-                {activeLink === 1 && (
-                    <div className="row">
-                        <div className="col-12">
-                            <div className="card">
-                                <div className="card-body">
-                                    <div class="table-responsive table-responsive-md">
-                                        <table class="table">
-                                            <thead class="table-light">
-                                                <tr class="text-uppercase">
-                                                    <th>#</th>
-                                                    <th>Name</th>
-                                                    <th>Client Type</th>
-                                                    <th>URL</th>
-                                                    <th>Created on</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
 
                 {activeLink === 2 && (
                     <>
@@ -246,46 +300,46 @@ function ViewLandlordStatement() {
                                         </div>
                                     </div>
                                     <div className="card-body">
-                                    <div class="table-responsive table-responsive-md">
-                                        <table class="table">
-                                            <thead class="table-light">
-                                                <tr className="table-light text-uppercase">
-                                                    <th className="text-nowrap">reference Id</th>
-                                                    <th className="text-nowrap">Payout Method</th>
-                                                    <th className="text-nowrap">Account Number</th>
-                                                    <th className="text-nowrap">Mpesa Reference</th>
-                                                    <th className="text-nowrap">Amount</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="table-striped">
-                                                {statement?.payouts?.map((invoice, index) => (
-                                                    <tr data-id={index} key={index}>
-                                                        <td className="text-nowrap">{invoice.reference}</td>
-                                                        <td className="text-capitalize">{invoice.payoutMethod?.toLowerCase()?.replace(/_/g , " ")}</td>
-                                                        <td>{invoice.payoutAccountNumber}</td>
-                                                        <td>{invoice.payoutReference}</td>
-                                                        <td>
-                                                            {formatCurrency(invoice.amount)}
-                                                        </td>
-                                                       
+                                        <div class="table-responsive table-responsive-md">
+                                            <table class="table">
+                                                <thead class="table-light">
+                                                    <tr className="table-light text-uppercase">
+                                                        <th className="text-nowrap">reference Id</th>
+                                                        <th className="text-nowrap">Payout Method</th>
+                                                        <th className="text-nowrap">Account Number</th>
+                                                        <th className="text-nowrap">Mpesa Reference</th>
+                                                        <th className="text-nowrap">Amount</th>
                                                     </tr>
-                                                ))}
-                                            </tbody>
+                                                </thead>
+                                                <tbody className="table-striped">
+                                                    {statement?.payouts?.map((invoice, index) => (
+                                                        <tr data-id={index} key={index}>
+                                                            <td className="text-nowrap">{invoice.reference}</td>
+                                                            <td className="text-capitalize">{invoice.payoutMethod?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                                            <td>{invoice.payoutAccountNumber}</td>
+                                                            <td>{invoice.payoutReference}</td>
+                                                            <td>
+                                                                {formatCurrency(invoice.amount)}
+                                                            </td>
 
-                                        </table>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
 
+                                            </table>
+
+                                        </div>
                                     </div>
-                                </div>
                                 </div>
                             </div>
                         </div>
 
 
                         <Modal show={settlement_show} onHide={hideSettlement} size="md" centered>
-                             {error.color !== "" &&
-                                    <div className={"alert alert-" + error.color} role="alert">
-                                        {error.message}
-                                    </div>
+                            {error.color !== "" &&
+                                <div className={"alert alert-" + error.color} role="alert">
+                                    {error.message}
+                                </div>
                             }
                             <Modal.Header closeButton>
                                 <h5 className="modal-title" id="myLargeModalLabel">
@@ -314,7 +368,7 @@ function ViewLandlordStatement() {
                                         {landlordAccounts?.length >= 1 && <select className="form-control" name="payoutAccountNumber" onChange={(e) => handleChange(e)}>
                                             <option value=""></option>
                                             {landlordAccounts?.map((unit) => (
-                                                <option value={unit.bankAccountNumber}> {unit.bank?.bankName?.toLowerCase()?.replace(/_/g, " ")} - {unit.bankAccountNumber} </option>
+                                                <option value={unit.bankAccountNumber}> {unit.bank?.bankName === "NCBA" ? "National Bank of Kenya" : unit.bank?.bankName?.toLowerCase()?.replace(/_/g, " ")} - {unit.bankAccountNumber} </option>
                                             ))}
                                             {/* <option value="MPESA">Mpesa</option> */}
                                         </select>}
@@ -463,7 +517,7 @@ function ViewLandlordStatement() {
                                                             {list.reason.substring(0, 70) + "..."}
                                                         </td>
                                                         <td>{formatCurrency(list.amount)}</td>
-                                                      
+
                                                     </tr>
                                                 ))}
                                             </tbody>
