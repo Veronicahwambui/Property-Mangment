@@ -265,14 +265,14 @@ function PremiseTenancy() {
         setTenacyIssueId(tenacyIssueId)
         setNewStatus(newStat)
 
-        if ( newStat?.length == 1 ) {
-            setNewStatusAction( newStat[0]?.stateAction )
-            setNewStatusSelected(newStat[0]?.status)   
-        }
+        // if ( newStat?.length === 1 ) {
+        //     setNewStatusAction( newStat[0]?.stateAction )
+        //     setNewStatusSelected(newStat[0]?.status)   
+        // }
     }
 
     const [newStatus, setNewStatus] = useState([])
-    
+     console.log(newStatus);
 
     const [newStatusSelected, setNewStatusSelected] = useState('')
     const [newStatusAction, setNewStatusAction] = useState('')
@@ -348,15 +348,10 @@ function PremiseTenancy() {
     }
 
    const handleStatusAction = (e)=> {
-    if ( e.target.checked ) {
-        setNewStatusAction( e.target.value)
-        setNewStatusSelected(newStatus[1]?.status)  
-    } else {
-        setNewStatusAction('')
-        setNewStatusSelected('')    
-    }
-
+        setNewStatusAction( e.target.value) 
    }
+
+   console.log(newStatusSelected);
     return (
         <div>
             <div className='page-content'>
@@ -804,7 +799,7 @@ function PremiseTenancy() {
                                                                                 {issue.nextState?.status?.toLowerCase()?.replace(/_/g, " ")}
                                                                             </button>}</td>
                                                                             <td>
-                                                                                <td className='text-nowrap'>{issue.issue.endDate === null && <button onClick={() => handleNextSatatus(issue.nextState.chargeable, issue.nextState.applicableCharge, issue.issue.id, issue.nextState)} className="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                                                <td className='text-nowrap'>{ issue.nextState?.length >= 1 && issue.issue.endDate === null && <button onClick={() => handleNextSatatus(issue.nextState.chargeable, issue.nextState.applicableCharge, issue.issue.id, issue.nextState)} className="btn btn-sm btn-warning" data-bs-toggle="modal"
                                                                                     data-bs-target=".update-issues">
                                                                                     next status
                                                                                 </button>}</td>
@@ -843,11 +838,11 @@ function PremiseTenancy() {
                                         <strong class="text-danger ">*</strong>
                                       </label>
                                       <div class="d-flex ">
-                                       { newStatus?.length === 1 && <div class="form-check me-3">
+                                       { newStatus.length > 1 | newStatus.length === 1  && <div class="form-check me-3">
                                           <input
                                             class="form-check-input"
                                             type="radio"
-                                            onChange = { e => { handleStatusAction(e);}}
+                                            onChange = { e => { handleStatusAction(e); setNewStatusSelected(newStatus[0]?.status) }}
                                             name="gender"
                                             value={newStatus[0]?.stateAction}
                                             checked= { newStatusAction == newStatus[0]?.stateAction ? true : false  }
@@ -861,7 +856,8 @@ function PremiseTenancy() {
                                           </label>
                                         </div> }
 
-                                       { newStatus?.length > 1 && <div class="form-check me-3">
+                                       { newStatus?.length > 1 && 
+                                       <div class="form-check me-3">
                                           <input
                                             onChange={ e => { setNewStatusAction( e.target.value); setNewStatusSelected(newStatus[1]?.status)}}
                                             class="form-check-input"
