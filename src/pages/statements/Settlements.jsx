@@ -95,7 +95,7 @@ function Settlements() {
       chargeId: parseInt(chargeId),
       endDate: moment(eDate).format(),
       landlordId: lids,
-      periodAlias: month,
+      periodAlias: month + " " + year,
       startDate: moment(sDate).format(),
     };
     requestsServiceService
@@ -202,7 +202,7 @@ function Settlements() {
                             value="Credit"
                             type="checkbox"
                             checked={!check}
-                            onChange={() => setCheck(false)}
+                            onChange={() => {setCheck(false); setselectedItems([]); setSearchTerm(""); setlandlords([])}}
                           />
                           <label
                             className="form-check-label"
@@ -416,7 +416,7 @@ function Settlements() {
                     Submit
                   </button>
                   {error.color !== "" && (
-                    <div className={"alert alert-" + error.color} role="alert">
+                    <div className={"mt-3 alert alert-" + error.color} role="alert">
                       {error.message}
                     </div>
                   )}
