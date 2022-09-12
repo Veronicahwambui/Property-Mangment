@@ -209,6 +209,9 @@ function PremiseTenancy() {
                 color: "danger"
             })
 
+            setTimeout(() => {
+                clear()
+            }, 3000)
         })
 
 
@@ -264,9 +267,18 @@ function PremiseTenancy() {
         setApplicableCharge(applicableCharge)
         setTenacyIssueId(tenacyIssueId)
         setNewStatus(newStat)
+
+        // if ( newStat?.length === 1 ) {
+        //     setNewStatusAction( newStat[0]?.stateAction )
+        //     setNewStatusSelected(newStat[0]?.status)   
+        // }
     }
 
-    const [newStatus, setNewStatus] = useState('')
+    const [newStatus, setNewStatus] = useState([])
+     console.log(newStatus);
+
+    const [newStatusSelected, setNewStatusSelected] = useState('')
+    const [newStatusAction, setNewStatusAction] = useState('')
     const moveToNextStep = (e) => {
         e.preventDefault()
         let date = new Date()
@@ -276,8 +288,10 @@ function PremiseTenancy() {
             description: issueDetails.description,
             documents: docArr,
             invoiceDate: date,
-            newStatus: newStatus,
-            unitCost: unitCost
+            newStatus: newStatusSelected,
+            unitCost: unitCost,
+            action: newStatusAction,
+            tenancyIssueId: tenacyIssueId,
         })
 
         requestsServiceService.moveTenancyIssueToNextState(tenacyIssueId, data).then((res) => {
@@ -286,6 +300,8 @@ function PremiseTenancy() {
                 description: '',
                 issueTypeId: null,
             })
+            setNewStatusSelected('')
+            setNewStatusAction(' ')
             setUnitCost(null)
 
             $(".update-issues").modal("hide");
@@ -303,6 +319,10 @@ function PremiseTenancy() {
                     color: "warning"
                 })
             }
+ 
+            setTimeout(() => {
+                clear() 
+            }, 3000)
 
         }).catch((res) => {
             $(".update-issues").modal("hide");
@@ -317,25 +337,31 @@ function PremiseTenancy() {
                 color: "danger"
             })
 
+            setTimeout(() => {
+                clear()
+            }, 3000)
         })
     }
-       //communication
+    //communication
 
- const[communication, setCommunication]=useState([])
+    const [communication, setCommunication] = useState([])
 
- let clientId=AuthService.getClientId()
+    let clientId = AuthService.getClientId()
 
-   const fetchCommunication=()=>{
-   
-    requestsServiceService.getEntityCommunication(tenantId, 0, 5, "TENANCY", clientId).then((res)=>{
-      setCommunication(res.data.data)
+    const fetchCommunication = () => {
 
-    })
+        requestsServiceService.getEntityCommunication(tenantId, 0, 5, "TENANCY", clientId).then((res) => {
+            setCommunication(res.data.data)
 
+        })
+
+    }
+
+   const handleStatusAction = (e)=> {
+        setNewStatusAction( e.target.value) 
    }
 
-
-
+   console.log(newStatusSelected);
     return (
         <div>
             <div className='page-content'>
@@ -562,7 +588,6 @@ function PremiseTenancy() {
                                                             <th>title</th>
                                                             <th>description</th>
                                                             <th>quantity</th>
-
                                                             <th>applicable charge</th>
                                                             <th>charge type</th>
                                                             <th>bill Amount</th>
@@ -736,7 +761,7 @@ function PremiseTenancy() {
                                 </div>
                             }
 
-                            {activeLink ===4 &&
+                            {activeLink === 4 &&
                                 <div>
 
                                     <div class="row">
@@ -784,7 +809,7 @@ function PremiseTenancy() {
                                                                                 {issue.nextState?.status?.toLowerCase()?.replace(/_/g, " ")}
                                                                             </button>}</td>
                                                                             <td>
-                                                                                <td className='text-nowrap'>{issue.nextState?.status && issue.issue.endDate === null && <button onClick={() => handleNextSatatus(issue.nextState.chargeable, issue.nextState.applicableCharge, issue.issue.id, issue.nextState?.status)} className="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                                                <td className='text-nowrap'>{ issue.nextState?.length >= 1 && issue.issue.endDate === null && <button onClick={() => handleNextSatatus(issue.nextState.chargeable, issue.nextState.applicableCharge, issue.issue.id, issue.nextState)} className="btn btn-sm btn-warning" data-bs-toggle="modal"
                                                                                     data-bs-target=".update-issues">
                                                                                     next status
                                                                                 </button>}</td>
@@ -811,15 +836,60 @@ function PremiseTenancy() {
                                         <div class="modal-dialog modal-md modal-dialog-centered mb-5">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Update issue to <span className='text-capitalize text-success'>{newStatus?.toLowerCase()?.replace(/_/g, " ")}</span> </h5>
+                                                    <h5 class="modal-title">Update issue to <span className='text-capitalize text-success'>{ newStatusSelected?.toLowerCase()?.replace(/_/g, " ")}</span> </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
+
                                                 <form onSubmit={(e) => moveToNextStep(e)}>
                                                     <div className="modal-body">
+                                                    <div class="row mb-3">
+                                      <label for=" " class=" ">
+                                        Next Status Action : {" "}
+                                        <strong class="text-danger ">*</strong>
+                                      </label>
+                                      <div class="d-flex ">
+                                       { newStatus.length > 1 | newStatus.length === 1  && <div class="form-check me-3">
+                                          <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            onChange = { e => { handleStatusAction(e); setNewStatusSelected(newStatus[0]?.status) }}
+                                            name="gender"
+                                            value={newStatus[0]?.stateAction}
+                                            checked= { newStatusAction == newStatus[0]?.stateAction ? true : false  }
+                                            required
+                                          />
+                                          <label
+                                            class="form-check-label"
+                                            for="caretaker-male"
+                                          >
+                                          { newStatus[0]?.stateAction }
+                                          </label>
+                                        </div> }
+
+                                       { newStatus?.length > 1 && 
+                                       <div class="form-check me-3">
+                                          <input
+                                            onChange={ e => { setNewStatusAction( e.target.value); setNewStatusSelected(newStatus[1]?.status)}}
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="gender"
+                                            value={newStatus[1]?.stateAction}
+                                            required
+                                          />
+                                          <label
+                                            class="form-check-label"
+                                            for="caretaker-female"
+                                          >
+                                           {newStatus[1]?.stateAction}
+                                          </label>
+                                        </div> }
+                                      </div>
+                                    </div>
                                                         <div class="col-12">
+                                                            
                                                             <div class="mb-4 ">
                                                                 <label for="basicpill-firstname-input ">Issue description <strong class="text-danger ">*</strong></label>
-                                                                <textarea required name="description" class="form-control " placeholder="Enter details on the issue" id="" cols="30" rows="5" onChange={(e) => handleIssues(e)} ></textarea>
+                                                                <textarea required name="description" class="form-control " placeholder="Enter details on the issue" id="" cols="30" rows="5" onChange={(e) => handleIssues(e)} value={issueDetails.description} ></textarea>
                                                             </div>
                                                         </div>
                                                         {chargeable &&
@@ -932,142 +1002,142 @@ function PremiseTenancy() {
                                 </div>
                             }
 
-{activeLink===5 &&(
-  <div>
- 
+                            {activeLink === 5 && (
+                                <div>
 
 
-    <div class="container-fluid">
 
-        {/* <!-- start page title --> */}
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">All Messages</h4>
+                                    <div class="container-fluid">
 
-               
-                </div>
-            </div>
-        </div>
-        {/* <!-- end page title --> */}
+                                        {/* <!-- start page title --> */}
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                                    <h4 class="mb-sm-0 font-size-18">All Messages</h4>
 
-        <div class="row">
-            <div class="col-12">
 
-                {/* <!-- Right Sidebar --> */}
-                <div class="mb-3">
-
-                    <div class="card">
-                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                            <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
-
-                                <div class="d-flex align-items-center flex-grow-1">
-                                 
-                                
-                                 
-
-                                </div>
-
-                           
-
-                            </div>
-                        </div>
-                        <div class="card-body the-inbox">
-                            <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
-                                <thead>
-                                    <tr class="d-none">
-                                        <th>Mode</th>
-                                        <th>
-                                            {/* <!-- this is where the index is stored --> */}
-                                        </th>
-                                        <th>Status</th>
-                                        <th>Name</th>
-                                        <th>Message Content</th>
-                                        <th>Date</th>
-
-                                    </tr>
-                                </thead>
-
-                                <tbody class="table-hover">
-                                  {communication?.map((com, index) => (
-                                      
-                                
-                                      <tr data-id="1">
-                                    <td>{index + 1}</td>
-                                    {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
-                                        <td class="">
-                                            {/* <!-- put the index here --> */}
-
-                                            <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
-                                                <div class="avatar-xs m-0">
-                                                    <span class="avatar-title rounded-circle bg-success bg-orange text-white">
-                                                        AW
-                                                    </span>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        {/* <!-- end page title --> */}
+
+                                        <div class="row">
+                                            <div class="col-12">
+
+                                                {/* <!-- Right Sidebar --> */}
+                                                <div class="mb-3">
+
+                                                    <div class="card">
+                                                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                                                            <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
+
+                                                                <div class="d-flex align-items-center flex-grow-1">
+
+
+
+
+                                                                </div>
+
+
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body the-inbox">
+                                                            <table id="emailDataTable-btns" class="table   nowrap w-100 table-hover mt-0 mb-0">
+                                                                <thead>
+                                                                    <tr class="d-none">
+                                                                        <th>Mode</th>
+                                                                        <th>
+                                                                            {/* <!-- this is where the index is stored --> */}
+                                                                        </th>
+                                                                        <th>Status</th>
+                                                                        <th>Name</th>
+                                                                        <th>Message Content</th>
+                                                                        <th>Date</th>
+
+                                                                    </tr>
+                                                                </thead>
+
+                                                                <tbody class="table-hover">
+                                                                    {communication?.map((com, index) => (
+
+
+                                                                        <tr data-id="1">
+                                                                            <td>{index + 1}</td>
+                                                                            {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                                                            <td class="">
+                                                                                {/* <!-- put the index here --> */}
+
+                                                                                <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
+                                                                                    <div class="avatar-xs m-0">
+                                                                                        <span class="avatar-title rounded-circle bg-success bg-orange text-white">
+                                                                                            AW
+                                                                                        </span>
+                                                                                    </div>
+
+                                                                                </div>
+
+
+                                                                                <span class=" font-size-18 d-none d-md-flex">
+                                                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
+                                                                                    <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>
+
+                                                                                </span>
+                                                                                <span class=" font-size-18 d-flex d-md-none">
+                                                                                    <br />
+                                                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                                                                    {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
+
+                                                                                </span>
+
+
+
+                                                                            </td>
+
+                                                                            <td class="d-none"><span class="d-none">0</span></td>
+
+                                                                            <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
+                                                                            <td class="the-msg the-msg-2">
+
+
+                                                                            </td>
+                                                                            <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+                                                                        </tr>
+                                                                    )
+                                                                    )}
+
+                                                                </tbody>
+
+                                                            </table>
+
+                                                        </div>
+
+
+                                                    </div>
+
+
+
+                                                </div>
+                                                {/* <!-- end Col-9 --> */}
 
                                             </div>
 
+                                        </div>
+                                        {/* <!-- End row --> */}
 
-                                            <span class=" font-size-18 d-none d-md-flex">
-                                                <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
-                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>
-
-                                            </span>
-                                            <span class=" font-size-18 d-flex d-md-none">
-                                                <br/>
-                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
-                                            {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-
-                                            </span>
-
-
-
-                                        </td>
-
-                                        <td class="d-none"><span class="d-none">0</span></td>
-                                        
-                                        <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-                                        <td class="the-msg the-msg-2">
-                                           
-                                            
-                                        </td>
-                                        <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
-                                        </tr>
-                                       ) 
-                              )}
-                              
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-
-                    </div>
-                 
-
-
-                </div>
-                {/* <!-- end Col-9 --> */}
-
-            </div>
-
-        </div>
-        {/* <!-- End row --> */}
-
-    </div>
-    {/* <!-- container-fluid --> */}
+                                    </div>
+                                    {/* <!-- container-fluid --> */}
 
 
 
 
 
 
-</div>
+                                </div>
 
 
-    )
-    }
+                            )
+                            }
                         </div>
 
                     </div>
@@ -1091,7 +1161,7 @@ function PremiseTenancy() {
                                         {/* Hse No. 410, 90 Degrees By Tsavo */}
                                         <br />
                                         <span class="today-date"> <strong> Date :</strong>   {new Date().toLocaleDateString()}</span><br />
-                                        <span class="fw-semibold">Being Reported By </span> {AuthService.getCurrentUserName()}<br />
+                                        {/* <span class="fw-semibold">Being Reported By </span> { AuthService.getCurrentUserName()}<br /> */}
                                     </address>
                                 </div>
                                 <div class="col-12">
