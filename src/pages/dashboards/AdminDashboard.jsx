@@ -269,7 +269,7 @@ function AdminDashboard() {
                 </div>
                 <div class="card-body">
                   <div className="table-responsive">
-                    <table class="table  table-nowrap table-hover overflow-visible contacts-table" id="unit-datatable-buttons">
+                    <table class="table  table-nowrap table-hover overflow-visible contacts-table" id="">
                       <thead class="table-light">
                         <tr>
                           <th>#</th>
@@ -372,7 +372,7 @@ function AdminDashboard() {
                 </div>
                 <div class="card-body">
                   <div className="table-responsive">
-                    <table class="table  table-nowrap table-hover overflow-visible contacts-table" id="datatable-buttons2">
+                    <table class="table  table-nowrap table-hover overflow-visible contacts-table" id="">
                       <thead class="table-light">
                         <tr>
                           <th>#</th>
