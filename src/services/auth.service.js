@@ -6,6 +6,11 @@ class AuthService {
     }
 
     
+    getCurrentUserType() {
+        return atob(localStorage.getItem("Type"));
+    }
+
+    
     getUserLoggedInAt() {
 
         return localStorage.getItem("expiry");

@@ -4,6 +4,7 @@ import { Modal, Button } from "react-bootstrap";
 import AuthService from '../../services/authLogin.service';
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
+import loginTypes from '../data/LoginTypes.json';
 
 function Login() {
   const [userInfo, setuserInfo] = useState({
@@ -13,6 +14,7 @@ function Login() {
   const [show, setShow] = useState(false);
   const [mes, setMes] = useState(" ");
   const [token, setToken] = useState(null);
+  const [types, setTypes] = useState(loginTypes.map(x => btoa(x)));
 
   const handleClose = () => {
     let message = "Approved"
@@ -52,20 +54,29 @@ function Login() {
         message: "Approved",
         color: "success"
       });
-        let token = res.data.accessToken
-        let decoded = jwt_decode(token);
+      let token = res.data.accessToken
+      let decoded = jwt_decode(token);
+
+
+      let type = btoa(decoded.clientType);
+
+        console.log(JSON.stringify(decoded))
         console.log(decoded.user)
+      if (types.includes(type)) {
+
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(decoded.user));
-        localStorage.setItem('clientId', JSON.stringify(decoded.user.client.id));
-        localStorage.setItem('expiry', new Date(decoded.exp*1000));
-        localStorage.setItem('App-Key', decoded.user.client.appKey);
+        localStorage.setItem('clientId', JSON.stringify(decoded.clientId));
+        localStorage.setItem('expiry', new Date(decoded.exp * 1000));
+        localStorage.setItem('App-Key', decoded.key);
+        localStorage.setItem('Type', (type));
         let permissions = [];
         for (let i = 0; i < decoded.permissions.length; i++) {
           permissions.push(decoded.permissions[i]);
         }
         localStorage.setItem('permissions', permissions);
-        window.location.reload();
+      }
+      window.location.reload();
     }).catch(err => {
       let errorCode = err.response.data.message;
       setError({
@@ -124,71 +135,71 @@ function Login() {
                   <div className="mb-4 mb-md-5 ">
                     <a href="index.html " className="d-block auth-logo ">
                       <img src="assets/images/logo-dark.png " alt=" " height="18 " className="auth-logo-dark "></img>
-                        <img src="assets/images/logo-light.png " alt=" " height="18 " className="auth-logo-light "></img>
-                        </a>
+                      <img src="assets/images/logo-light.png " alt=" " height="18 " className="auth-logo-light "></img>
+                    </a>
+                  </div>
+                  <div className="my-auto ">
+
+                    <div>
+                      <h5 className="text-primary ">Welcome Back !</h5>
+                    </div>
+                    {error.color !== "" &&
+                      <div className={"alert alert-" + error.color} role="alert">
+                        {error.message}
                       </div>
-                      <div className="my-auto ">
+                    }
 
-                        <div>
-                          <h5 className="text-primary ">Welcome Back !</h5>
+                    <div className="mt-4 ">
+                      <form onSubmit={handleSubmit}>
+
+                        <div className="mb-3 ">
+                          <label for="username " className="form-label ">Username. <strong className="text-danger ">*</strong></label>
+                          <input type="text" className="form-control " id="username " placeholder="Enter username " onChange={handleChange} name={"username"} required={true}></input>
                         </div>
-                        {error.color !== "" &&
-                        <div className={"alert alert-" + error.color} role="alert">
-                          {error.message}
+
+                        <div className="mb-3 ">
+                          <label className="form-label ">Password. <strong className="text-danger ">*</strong></label>
+                          <div className="input-group auth-pass-inputgroup ">
+                            <input type="password" className="form-control " placeholder="Enter password " aria-label="Password " name={"password"} onChange={handleChange} required={true} />
+                            <button className="btn btn-light " type={"button"} id="password-addon "><i className="mdi mdi-eye-outline " /></button>
+                          </div>
+                          <div className="float-end">
+                            <Link to="/recoverpassword" className={"text-muted"}>
+                              Forgot Password?
+                            </Link>
+                            {/*<a className="text-muted ">Forgot password?</a>*/}
+                          </div>
+                          <br />
                         </div>
-                        }
 
-                        <div className="mt-4 ">
-                          <form onSubmit={handleSubmit}>
+                        {/*<div className="form-check ">*/}
+                        {/*  <input className="form-check-input " type="checkbox " id="remember-check "/>*/}
+                        {/*    <label className="form-check-label " for="remember-check ">*/}
+                        {/*      Remember me*/}
+                        {/*    </label>*/}
+                        {/*</div>*/}
 
-                            <div className="mb-3 ">
-                              <label for="username " className="form-label ">Username. <strong className="text-danger ">*</strong></label>
-                              <input type="text" className="form-control " id="username " placeholder="Enter username " onChange={handleChange} name={"username"} required={true}></input>
-                            </div>
-
-                            <div className="mb-3 ">
-                              <label className="form-label ">Password. <strong className="text-danger ">*</strong></label>
-                              <div className="input-group auth-pass-inputgroup ">
-                                <input type="password" className="form-control " placeholder="Enter password " aria-label="Password " name={"password"} onChange={handleChange} required={true}/>
-                                  <button className="btn btn-light " type={"button"} id="password-addon "><i className="mdi mdi-eye-outline "/></button>
-                              </div>
-                              <div className="float-end">
-                                <Link to="/recoverpassword" className={"text-muted"}>
-                                  Forgot Password?
-                                </Link>
-                                {/*<a className="text-muted ">Forgot password?</a>*/}
-                              </div>
-                              <br/>
-                            </div>
-
-                            {/*<div className="form-check ">*/}
-                            {/*  <input className="form-check-input " type="checkbox " id="remember-check "/>*/}
-                            {/*    <label className="form-check-label " for="remember-check ">*/}
-                            {/*      Remember me*/}
-                            {/*    </label>*/}
-                            {/*</div>*/}
-
-                            <div className="mt-3 d-grid ">
-                              <button className="btn btn-primary waves-effect waves-light " type="submit">Log In</button>
-                            </div>
-                          </form>
+                        <div className="mt-3 d-grid ">
+                          <button className="btn btn-primary waves-effect waves-light " type="submit">Log In</button>
                         </div>
-                      </div>
+                      </form>
+                    </div>
+                  </div>
 
-                      {/* <div className="mt-4 mt-md-5 text-center ">
+                  {/* <div className="mt-4 mt-md-5 text-center ">
                         <p className="mb-0 ">©
                           <script>
                             document.write(new Date().getFullYear())
                           </script> <strong>Revenue Collection & Property Management System</strong>
                         </p>
                       </div> */}
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
   )
 }
 

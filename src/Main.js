@@ -68,6 +68,7 @@ import AllNotes from "./pages/creditsDebits/AllNotes";
 import LandlordStatements from "./pages/statements/LandlordStatements";
 import ViewLandlordStatement from "./pages/statements/ViewLandlordStatement";
 import Settlements from "./pages/statements/Settlements";
+import authLoginService from "./services/authLogin.service";
 
 function Main() {
   useEffect(() => {
@@ -100,157 +101,191 @@ function Main() {
           </Routes>
         ) : (
           <>
-            <SideBar />
+            {AuthService.getCurrentUserType() === "USER" && <SideBar />}
             <Header />
             <div className="main-content">
-              <Routes>
-                {/* dashboard */}
-                <Route path="/" element={<Dashboard />} />
-                {JSON.parse(localStorage.getItem("user"))?.userType?.name ===
-                  "ADMIN" && (
-                  <Route path="/adminDashboard" element={<AdminDashboard />} />
-                )}
-                {/* landlords */}
-                <Route path="/landlords" element={<Landlords />} />
-                <Route exact path="/landlord/:id" element={<ViewLandlord />} />
-                {/* premises */}
-                <Route
-                  path="/premisesregister"
-                  element={<PremisesRegister />}
-                />
-                <Route path="/addpremises" element={<AddPremises />} />
-                <Route path="/premise/:id" element={<OnePremise />} />
-                <Route path="/premise/:id/:one" element={<OnePremiseUnit />} />
-                <Route
-                  path="/premise/tenant/:id"
-                  element={<PremiseTenancy />}
-                />
-                <Route path="/premise/:id/:one" element={<OnePremiseUnit />} />
+              {(AuthService.getCurrentUserType() === "LANDLORD"
+                || AuthService.getCurrentUserType() === "TENANT"
+                || AuthService.getCurrentUserType() === "USER") && <Routes>
+                  {/* dashboard */}
+                  {AuthService.getCurrentUserType() === "USER" &&
+                    <>
+                      <Route path="/" element={<Dashboard />} />
+                      {JSON.parse(localStorage.getItem("user"))?.userType?.name ===
+                        "ADMIN" && (
+                          <Route path="/adminDashboard" element={<AdminDashboard />} />
+                        )}
+                      {/* landlords */}
+                      <Route path="/landlords" element={<Landlords />} />
+                      {/* premises */}
+                      <Route
+                        path="/premisesregister"
+                        element={<PremisesRegister />}
+                      />
+                      <Route path="/addpremises" element={<AddPremises />} />
+                      <Route path="/premise/:id" element={<OnePremise />} />
+                      <Route path="/premise/:id/:one" element={<OnePremiseUnit />} />
 
-                {/* tenants  */}
-                <Route path="/alltenants" element={<AllTenants />} />
-                <Route path="/addtenant" element={<AddTenant />} />
-                <Route path="/tenant/:id" element={<OneTenant />} />
+                      <Route path="/premise/:id/:one" element={<OnePremiseUnit />} />
 
-                {/* set ups  */}
-                <Route
-                  path="/applicablecharges"
-                  element={<ApplicableCharges />}
-                />
-                <Route path="/estates" element={<Estate />} />
-                <Route path="/zones" element={<Zones />} />
-                <Route path="/premisetypes" element={<PremiseTypes />} />
-                <Route path="/premiseusetypes" element={<PremiseUseTypes />} />
-                <Route path="/unit-types" element={<UnitTypes />} />
-                <Route path="/document-types" element={<DocumentTypes />} />
-                {/* credit and debit notes  */}
-                <Route
-                  path="/create-debit-note"
-                  element={<CreateDebitNote />}
-                />
-                <Route
-                  path="/create-credit-note"
-                  element={<CreateCreditNote />}
-                />
-                <Route path="/notes" element={<AllNotes />} />
+                      {/* tenants  */}
+                      <Route path="/alltenants" element={<AllTenants />} />
+                      <Route path="/addtenant" element={<AddTenant />} />
 
-                {/* invoices */}
-                <Route path="/createinvoice" element={<CreateInvoice />} />
-                <Route path="/invoices" element={<Invoices />} />
-                <Route path="/monthly-invoices" element={<InvoiceParent />} />
-                <Route path="/bulk-invoices" element={<BulkInvoices />} />
-                <Route path="/bulk-invoicing" element={<BulkInvoiving />} />
-                {/* receipts */}
-                <Route path="/receipts" element={<Receipts />} />
-                {/* transactions  */}
-                <Route path="/trasactions" element={<Transactions />} />
+                      {/* set ups  */}
+                      <Route
+                        path="/applicablecharges"
+                        element={<ApplicableCharges />}
+                      />
+                      <Route path="/estates" element={<Estate />} />
+                      <Route path="/zones" element={<Zones />} />
+                      <Route path="/premisetypes" element={<PremiseTypes />} />
+                      <Route path="/premiseusetypes" element={<PremiseUseTypes />} />
+                      <Route path="/unit-types" element={<UnitTypes />} />
+                      <Route path="/document-types" element={<DocumentTypes />} />
+                      {/* credit and debit notes  */}
+                      <Route
+                        path="/create-debit-note"
+                        element={<CreateDebitNote />}
+                      />
+                      <Route
+                        path="/create-credit-note"
+                        element={<CreateCreditNote />}
+                      />
+                      <Route path="/notes" element={<AllNotes />} />
 
-                {/* stystem users */}
+                      {/* invoices */}
+                      <Route path="/createinvoice" element={<CreateInvoice />} />
+                      <Route path="/invoices" element={<Invoices />} />
+                      <Route path="/monthly-invoices" element={<InvoiceParent />} />
+                      <Route path="/bulk-invoices" element={<BulkInvoices />} />
+                      <Route path="/bulk-invoicing" element={<BulkInvoiving />} />
+                      {/* receipts */}
+                      <Route path="/receipts" element={<Receipts />} />
+                      {/* transactions  */}
+                      <Route path="/trasactions" element={<Transactions />} />
 
-                <Route exact path="/adminlist" element={<AdminList />} />
-                <Route
-                  exact
-                  path="/adminlist/edit/:id"
-                  element={<UpdateUser />}
-                />
-                <Route
-                  exact
-                  path="/adminlist/view/:id"
-                  element={<UserDetails />}
-                />
-                <Route
-                  exact
-                  path="/userdetails/edit/:id"
-                  element={<UserDetails />}
-                />
-                <Route path="/addadmin" element={<AddAdmin />} />
-                <Route path="/usertypes" element={<UserTypes />} />
+                      {/* stystem users */}
 
-                <Route path="/allroles" element={<AllRoles />} />
+                      <Route exact path="/adminlist" element={<AdminList />} />
+                      <Route
+                        exact
+                        path="/adminlist/edit/:id"
+                        element={<UpdateUser />}
+                      />
+                      <Route
+                        exact
+                        path="/adminlist/view/:id"
+                        element={<UserDetails />}
+                      />
+                      <Route
+                        exact
+                        path="/userdetails/edit/:id"
+                        element={<UserDetails />}
+                      />
+                      <Route path="/addadmin" element={<AddAdmin />} />
+                      <Route path="/usertypes" element={<UserTypes />} />
 
-                {/* setup */}
-                <Route path="/clientcounties" element={<ClientCounties />} />
+                      <Route path="/allroles" element={<AllRoles />} />
 
-                <Route path="/clienttype" element={<ClientType />} />
+                      {/* setup */}
+                      <Route path="/clientcounties" element={<ClientCounties />} />
 
-                <Route path="/adminlist" element={<AdminList />} />
-                <Route path="/addadmin" element={<AddAdmin />} />
-                <Route path="/clienttypes" element={<ClientType />} />
-                <Route path="/clients" element={<Clients />} />
-                <Route
-                  path="/agreementtypes"
-                  element={<LandLordAgreementTypes />}
-                />
-                <Route path="/addlandlord" element={<AddLandlord />} />
-                <Route path="/landlord/:id" element={<ViewLandlord />} />
-                <Route path="/addclient/" element={<NewClient />} />
-                <Route path="/client/:id" element={<ViewClient />} />
-                <Route path="/clients" element={<Clients />} />
-                <Route
-                  path="/agreementtypes"
-                  element={<LandLordAgreementTypes />}
-                />
-                <Route path="/addlandlord" element={<AddLandlord />} />
-                <Route path="/landlord/:id" element={<ViewLandlord />} />
-                <Route path="/statements" element={<Statements />} />
+                      <Route path="/clienttype" element={<ClientType />} />
 
-                <Route
-                  path="/landord-statements"
-                  element={<LandlordStatements />}
-                />
-                <Route
-                  path="/landord-statements/:id"
-                  element={<ViewLandlordStatement />}
-                />
-                <Route
-                  path="/create-issue-type"
-                  element={<CreateIssueTypes />}
-                />
-                <Route path="/issuestypes" element={<IssuesTypes />} />
-                <Route path="/issuestypes/:id" element={<IssueType />} />
+                      <Route path="/adminlist" element={<AdminList />} />
+                      <Route path="/addadmin" element={<AddAdmin />} />
+                      <Route path="/clienttypes" element={<ClientType />} />
+                      <Route path="/clients" element={<Clients />} />
+                      <Route
+                        path="/agreementtypes"
+                        element={<LandLordAgreementTypes />}
+                      />
+                      <Route path="/addlandlord" element={<AddLandlord />} />
+                      <Route path="/landlord/:id" element={<ViewLandlord />} />
+                      <Route path="/addclient/" element={<NewClient />} />
+                      <Route path="/client/:id" element={<ViewClient />} />
+                      <Route path="/clients" element={<Clients />} />
+                      <Route
+                        path="/agreementtypes"
+                        element={<LandLordAgreementTypes />}
+                      />
+                      <Route path="/addlandlord" element={<AddLandlord />} />
+                      <Route path="/statements" element={<Statements />} />
 
-                <Route path="/uploads" element={<Uploads />} />
+                      <Route
+                        path="/landord-statements"
+                        element={<LandlordStatements />}
+                      />
+                      <Route
+                        path="/create-issue-type"
+                        element={<CreateIssueTypes />}
+                      />
+                      <Route path="/issuestypes" element={<IssuesTypes />} />
+                      <Route path="/issuestypes/:id" element={<IssueType />} />
 
-                {/* messageer  */}
-                <Route path="/messages" element={<Messages />} />
-                <Route path="/createTemplate" element={<MessageTemplates />} />
-                <Route path="/emails" element={<Emails />} />
-                <Route path="/custommessages" element={<CustomMessage />} />
-                <Route path="/bulkmessaging" element={<BulkMessaging />} />
-                <Route path="/bulkmessages" element={<BulkMessagesList />} />
-                <Route path="/admin-reports" element={<AdminArrears />} />
-                <Route
-                  path="/newunits-reports"
-                  element={<NewUnitsExpectedIncomeReport />}
-                />
-                <Route
-                  path="/occupancy-reports"
-                  element={<OccupancyReport />}
-                />
-                <Route path="/settlements" element={<Settlements />} />
+                      <Route path="/uploads" element={<Uploads />} />
 
-                <Route path="*" element={<Navigate to="/" />}></Route>
-              </Routes>
+                      {/* messageer  */}
+                      <Route path="/messages" element={<Messages />} />
+                      <Route path="/createTemplate" element={<MessageTemplates />} />
+                      <Route path="/emails" element={<Emails />} />
+                      <Route path="/custommessages" element={<CustomMessage />} />
+                      <Route path="/bulkmessaging" element={<BulkMessaging />} />
+                      <Route path="/bulkmessages" element={<BulkMessagesList />} />
+                      <Route path="/admin-reports" element={<AdminArrears />} />
+                      <Route
+                        path="/newunits-reports"
+                        element={<NewUnitsExpectedIncomeReport />}
+                      />
+                      <Route
+                        path="/occupancy-reports"
+                        element={<OccupancyReport />}
+                      />
+                      <Route path="/settlements" element={<Settlements />} />
+
+
+
+                    </>
+                  }
+
+                  {(AuthService.getCurrentUserType() === "TENANT" ||
+                    AuthService.getCurrentUserType() === "USER") &&
+                    <>
+                      <Route path="/tenant/:id" element={<OneTenant />} />
+
+                      <Route
+                        path="/premise/tenant/:id"
+                        element={<PremiseTenancy />}
+                      />
+                    </>
+                  }
+
+                  {(AuthService.getCurrentUserType() === "LANDLORD" ||
+                    AuthService.getCurrentUserType() === "USER") &&
+                    <>
+                      <Route
+                        path="/landord-statements/:id"
+                        element={<ViewLandlordStatement />}
+                      />
+                      <Route exact path="/landlord/:id" element={<ViewLandlord />} />
+                    </>
+                  }
+
+
+                  {AuthService.getCurrentUserType() === "USER" ?
+
+                    <Route path="*" element={<Navigate to="/" />}></Route>
+                    :
+                    <>
+                      {AuthService.getCurrentUserType() === "LANDLORD" ?
+                        <Route path="*" element={<Navigate to={"/landlord/" + authLoginService.getCurrentUserId()} />} /> :
+                        <Route path="*" element={<Navigate to={"/tenant/" + authLoginService.getCurrentUserId()} />} />
+                      }
+                    </>
+                  }
+                </Routes>
+              }
             </div>
           </>
         )}
