@@ -1344,6 +1344,16 @@ function OneTenant() {
                         Communication
                       </a>
                       <a
+                        onClick={() => setActiveLink(8)}
+                        class={
+                          activeLink === 8
+                            ? "nav-item nav-link active cursor-pointer"
+                            : "nav-item cursor-pointer nav-link"
+                        }
+                      >
+                        Invoices
+                      </a>
+                      <a
                         onClick={() => setActiveLink(6)}
                         className={
                           activeLink === 6
@@ -1362,16 +1372,6 @@ function OneTenant() {
                         }
                       >
                         Receipts
-                      </a>
-                      <a
-                        onClick={() => setActiveLink(8)}
-                        class={
-                          activeLink === 8
-                            ? "nav-item nav-link active cursor-pointer"
-                            : "nav-item cursor-pointer nav-link"
-                        }
-                      >
-                        invoices
                       </a>
                     </div >
                   </div >
