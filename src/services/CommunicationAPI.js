@@ -11,7 +11,7 @@ var headers = {
 
 export const communicationService = axios.create({
   headers: headers,
-  timeout: 25000
+  timeout: 250000
 });
 
 export const communicationBaseUrl = "http://142.93.231.97:8083";
