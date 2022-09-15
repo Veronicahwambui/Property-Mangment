@@ -358,14 +358,18 @@ function CreateInvoice() {
                                           select tenancy
                                         </option>
                                         {tenancies.map((item, index) => (
-                                          <option
-                                            value={parseInt(item.id)}
-                                            key={item.id}
-                                          >
-                                            {item.premiseUnit?.unitName +
-                                              " - " +
-                                              item.premiseUnit?.unitType.name}
-                                          </option>
+                                         <>
+                                         {item.active &&
+                                           <option
+                                           value={parseInt(item.id)}
+                                           key={item.id}
+                                         >
+                                           {item.premiseUnit?.unitName +
+                                             " - " +
+                                             item.premiseUnit?.unitType.name}
+                                         </option>
+                                         }
+                                         </>
                                         ))}
                                       </select>
                                     </div>
