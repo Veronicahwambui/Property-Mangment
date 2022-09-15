@@ -721,7 +721,7 @@ function OneTenant() {
       endDate: endDate2,
       // size: size,
       // page: page,
-      premiseId: tenantId,
+      tenantId: userId,
       search: status,
     };
     requestsServiceService.getParentInvoicesPrem(page, size, data).then((res) => {
@@ -739,7 +739,7 @@ function OneTenant() {
       endDate: endDate2,
       // size: size,
       // page: page,
-      premiseId: tenantId,
+      tenantId: userId,
       search: status.trim(),
     };
     requestsServiceService.getParentInvoicesPrem(page, size, data).then((res) => {
@@ -2810,8 +2810,8 @@ function OneTenant() {
                               <tr className="table-dark">
 
                                 <th>Invoice Number</th>
-                                <th>Student</th>
-                                <th>Premises</th>
+                                <th>Tenant</th>
+                                <th>Properties</th>
                                 <th>Hse/Unit</th>
                                 <th>Date Issued</th>
                                 <th>Payment Status</th>
