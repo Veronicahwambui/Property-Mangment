@@ -496,7 +496,7 @@ function AddTenant() {
                               <select
                                 onChange={handleTenantDtoChange}
                                 name="tenantTypeName"
-                                className="form-control"
+                                className="form-select"
                               >
                                 <option value="individual">Individual</option>
                                 <option value="company">Company</option>
@@ -805,12 +805,12 @@ function AddTenant() {
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
-                              <label htmlFor="basicpill-lastname-input">
+                              <label htmlFor="">
                                 Nationality{" "}
                                 <strong className="text-danger">*</strong>
                               </label>
                               <select
-                                className="form-control"
+                                className="form-select"
                                 data-live-search="true"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="nationality"
@@ -825,12 +825,12 @@ function AddTenant() {
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
-                              <label htmlFor="basicpill-lastname-input">
+                              <label htmlFor="">
                                 Marital Status{" "}
                                 <strong className="text-danger">*</strong>
                               </label>
                               <select
-                                className="form-control form-select"
+                                className=" form-select"
                                 title="Select Marital status"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="maritalStatus"
@@ -880,12 +880,12 @@ function AddTenant() {
 
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
-                              <label htmlFor="basicpill-firstname-input">
+                              <label htmlFor="">
                                 Occupation{" "}
                                 <strong className="text-danger">*</strong>
                               </label>
                               <select
-                                className="form-control form-select"
+                                className=" form-select"
                                 data-live-search="true"
                                 title="Select occupation"
                                 onChange={(e) => handleTenantDtoChange(e)}
