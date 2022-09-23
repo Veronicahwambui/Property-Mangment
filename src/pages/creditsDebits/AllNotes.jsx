@@ -14,6 +14,7 @@ import ReactPaginate from "react-paginate";
 
 function AllNotes() {
   const [notes, setnotes] = useState([]);
+  const[notesData,setNotesData ]=useState({})
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
@@ -30,6 +31,7 @@ function AllNotes() {
     $("#spinner").removeClass("d-none");
     requestsServiceService.getNotes(noteType.toUpperCase(), page , size).then((res) => {
       setnotes( res.data.data != null? res.data.data:[]);
+      // setNotesData(res.data.data);
       setPage(res.data.page);
       setSize(res.data.size);
       setPageCount(res.data.totalPages);
@@ -41,6 +43,7 @@ function AllNotes() {
     getData();
   }, [page , size ,noteType]);
 
+  console.log(notesData)
   // MESSAGE TEST
   const [details, setDetails] = useState({
     message: "",
@@ -321,7 +324,7 @@ function AllNotes() {
                                           }
                                         </p>
                                       </td>
-                                      <td>
+                                      <td onClick={()=>setNotesData(notes[index])}  data-toggle="modal" data-target="#messageDetails">
                                         {list.reason.substring(0, 50) + "...."}
                                       </td>
                                       <td>{formatCurrency(list.amount)}</td>
@@ -526,7 +529,59 @@ function AllNotes() {
             </div>
           </div>
 
+
+
           {/* <!-- end row --> */}
+
+
+
+
+
+                {/* <!-- message details modal --> */}
+                <div class="modal fade" id="messageDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content border-radius-0">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Credit Details</h5>
+                                <span class="close font-28 cursor-pointer" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </span>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div >
+                                            <div>
+                                                <div class="flex-grow-1  d-flex align-items-center justify-content-between mb-3 chat-user-box">
+                                                    <p class="user-title m-0 text-capitalize"> For :{notesData.noteFor}</p>
+                                                    <p class="text-muted mt-1 pb-0">  Created on : {moment(notesData.dateTimeCreated).format(
+                                          "YYYY-MM-DD HH:mm"
+                                        )}</p>
+                                                    <p class="text-muted mt-1 pb-0"> Amount :{formatCurrency(notesData.amount)}
+                                          
+                                   </p>
+                                 
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                        <p class="text-muted mt-1 pb-0">Note Type :{notesData.noteType}
+                                    
+                                          
+                                          </p>
+                                          {/* <p class="text-muted mt-1 pb-0">Invoice :{notesData.parentInvoiceNumber}</p> */}
+                                            <h5 class="font-size-14">Reason</h5>
+
+                                            <p class="text-muted mt-3"> {notesData.reason}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
         </div>
         {/* <!-- container-fluid --> */}
       </div>
