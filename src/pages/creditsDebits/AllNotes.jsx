@@ -401,7 +401,7 @@ function AllNotes() {
                                           "YYYY-MM-DD HH:mm"
                                         )}
                                       </td>
-                                      <td>
+                                      <td onClick={()=>setNotesData(notes[index])}  data-toggle="modal" data-target="#creditDetails">
                                         {list.reason.substring(0, 70) + "..."}
                                       </td>
                                       <td>{formatCurrency(list.amount)}</td>
@@ -553,7 +553,74 @@ function AllNotes() {
                                         <div >
                                             <div>
                                                 <div class="flex-grow-1  d-flex align-items-center justify-content-between mb-3 chat-user-box">
-                                                    <p class="user-title m-0 text-capitalize"> For :{notesData.noteFor}</p>
+                                                    <p class="user-title m-0 text-capitalize"> For :{ <Link
+                                          to={
+                                            "/tenant/" +
+                                            notesData.tenancy?.tenant?.id
+                                          }
+                                        >
+                                          {notesData.tenancy?.tenant?.tenantType ===
+                                          "COMPANY"
+                                            ? notesData.tenancy?.tenant?.companyName
+                                            : notesData.tenancy?.tenant?.firstName +
+                                              " " +
+                                              notesData.tenancy?.tenant?.lastName}
+                                        </Link>}</p>
+                                                    <p class="text-muted mt-1 pb-0">  Created on : {moment(notesData.dateTimeCreated).format(
+                                          "YYYY-MM-DD HH:mm"
+                                        )}</p>
+                                                    <p class="text-muted mt-1 pb-0"> Amount :{formatCurrency(notesData.amount)}
+                                          
+                                   </p>
+                                 
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                        <p class="text-muted mt-1 pb-0">Note Type :{notesData.noteType}
+                                    
+                                          
+                                          </p>
+                                          {/* <p class="text-muted mt-1 pb-0">Invoice :{notesData.parentInvoiceNumber}</p> */}
+                                            <h5 class="font-size-14">Reason</h5>
+
+                                            <p class="text-muted mt-3"> {notesData.reason}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                  {/* <!-- message details modal --> */}
+                  <div class="modal fade" id="creditDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content border-radius-0">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Debit Details</h5>
+                                <span class="close font-28 cursor-pointer" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </span>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div >
+                                        
+                                            <div>
+                                                <div class="flex-grow-1  d-flex align-items-center justify-content-between mb-3 chat-user-box">
+                                                    <p class="user-title m-0 text-capitalize"> For :{<Link
+                                          to={"/landlord/" + notesData.landLord?.id}
+                                        >
+                                          {notesData.landLord?.landLordType ===
+                                          "COMPANY"
+                                            ? notesData.landLord?.companyName
+                                            : notesData.landLord?.firstName +
+                                              " " +
+                                              notesData.landLord?.lastName}
+                                        </Link>}</p>
                                                     <p class="text-muted mt-1 pb-0">  Created on : {moment(notesData.dateTimeCreated).format(
                                           "YYYY-MM-DD HH:mm"
                                         )}</p>
