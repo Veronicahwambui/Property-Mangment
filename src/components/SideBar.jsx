@@ -221,7 +221,10 @@ function SideBar() {
                   <NavLink to="/landordsetup">Landlords</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/tenantsetup">Tenant</NavLink>
+                  <NavLink to="/tenantsetup">Tenants</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/properties">Properties</NavLink>
                 </li>
                 {/* <li>
                   <NavLink to="/applicablecharges">Applicable Charges</NavLink>

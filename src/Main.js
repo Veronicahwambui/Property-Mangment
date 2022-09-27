@@ -72,6 +72,7 @@ import authLoginService from "./services/authLogin.service";
 
 import LandordSetup from "./pages/setups/LandordSetup";
 import TenantSetup from "./pages/setups/TenantSetup";
+import Properties from "./pages/setups/Properties";
 
 
 
@@ -145,6 +146,11 @@ function Main() {
                         <Route
                         path="/tenantsetup"
                         element={<TenantSetup />}
+                      />
+
+<Route
+                        path="/properties"
+                        element={<Properties />}
                       />
                       <Route
                         path="/applicablecharges"
