@@ -70,6 +70,11 @@ import ViewLandlordStatement from "./pages/statements/ViewLandlordStatement";
 import Settlements from "./pages/statements/Settlements";
 import authLoginService from "./services/authLogin.service";
 
+import LandordSetup from "./pages/setups/LandordSetup";
+import TenantSetup from "./pages/setups/TenantSetup";
+
+
+
 function Main() {
   useEffect(() => {
     setTimeout(function () {
@@ -133,6 +138,14 @@ function Main() {
                       <Route path="/addtenant" element={<AddTenant />} />
 
                       {/* set ups  */}
+                      <Route
+                        path="/landordsetup"
+                        element={<LandordSetup />}
+                      />
+                        <Route
+                        path="/tenantsetup"
+                        element={<TenantSetup />}
+                      />
                       <Route
                         path="/applicablecharges"
                         element={<ApplicableCharges />}

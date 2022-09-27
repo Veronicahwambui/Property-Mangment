@@ -217,7 +217,13 @@ function SideBar() {
                 <span>Set ups</span>
               </a>
               <ul className="sub-menu" aria-expanded="false">
+              <li>
+                  <NavLink to="/landordsetup">Landlords</NavLink>
+                </li>
                 <li>
+                  <NavLink to="/tenantsetup">Tenant</NavLink>
+                </li>
+                {/* <li>
                   <NavLink to="/applicablecharges">Applicable Charges</NavLink>
                 </li>
                 <li>
@@ -246,11 +252,11 @@ function SideBar() {
                 </li>
                 <li>
                   <NavLink to="/agreementtypes">Agreement Types</NavLink>
-                </li>
+                </li> */}
                 {/* <li><NavLink  to="/create-issue-type">Create Issue Types</NavLink></li> */}
-                <li>
+                {/* <li>
                   <NavLink to="/issuestypes">Issue Types</NavLink>
-                </li>
+                </li> */}
                 {/* <li><NavLink  to="/uploads">Data Uploads</NavLink></li> */}
               </ul>
             </li>
