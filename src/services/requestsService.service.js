@@ -33,6 +33,9 @@ class RequestsService {
   getData(type, data) {
     return axiosInstance.get(baseUrl + "/users?type=" + type, data);
   }
+  getAuctioneer() {
+    return axiosInstance.get(baseUrl + "/users?type=AUCTIONEER");
+  }
   getUserRoles() {
     return axiosInstance.get(baseUrl + "/roles");
   }

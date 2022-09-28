@@ -31,6 +31,8 @@ function CreateInvoice() {
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [ auctioneers , setAuctioneers] = useState([ ])
+  const [invoiceFor, setInvoiceFor] = useState( undefined );
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     setloaded(false);
@@ -44,6 +46,9 @@ function CreateInvoice() {
     requestsServiceService.allApplicableCharges().then((res) => {
       setapplicableCharges(res.data.data);
     });
+    requestsServiceService.getAuctioneer().then( ({ data }) => {
+      setAuctioneers( data.data )
+    })
   }, []);
 
   useEffect(() => {
@@ -609,9 +614,24 @@ function CreateInvoice() {
               </div>
             </div>
             <div className="row justify-content-center ">
-              <div className="col-xl-10 ">
+              <div className="col-xl-10">
+                <h4 className="text-primary">
+                  Create invoice for 
+                </h4>
+
+                <div className="form-group col-6 mx-auto app-search">
+                  <select name="" id="" className="form-control" onChange={ e => setInvoiceFor( e.target.value )} >
+                    <option value="">select invoice type </option>
+                    <option value="TENANT">Tenant</option>
+                    <option value="LANDLORD">Landlord</option> 
+                    <option value="AUCTIONEER">Auctioneer</option> 
+                  </select>
+                </div>
+              </div>
+              {/* SEARCHING FUNCTIONALITY  */}
+             { ( invoiceFor !== 'AUCTIONEER' && invoiceFor !== '' ) &&  <div className="col-xl-10 mb-0">
                 <h4 className="text-primary ">
-                  Search for Tenant{" "}
+                  Search for { invoiceFor }
                   <span style={{ marginLeft: "10px" }}>
                     {loading && <i className="fa fa-refresh fa-spin" />}
                     {loaded && (
@@ -622,7 +642,7 @@ function CreateInvoice() {
                   </span>
                 </h4>
                 <p className="text-muted font-size-14 mb-4 ">
-                  Search for the tenant and proceed with creating the invoice
+                  Search for the { invoiceFor } and proceed with creating the invoice
                 </p>
                 <div className="row text-capitalize">
                   <div className="col-12">
@@ -630,7 +650,7 @@ function CreateInvoice() {
                       <form
                         id={"invoice-tenant-form"}
                         onSubmit={handleSubmit}
-                        className="app-search d-none d-lg-block p-2 d-flex"
+                        className="app-search d-lg-block p-2 d-block"
                       >
                         <div className="position-relative">
                           <input
@@ -692,8 +712,18 @@ function CreateInvoice() {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="overflow-visible">
+              </div> }
+
+           { invoiceFor === 'AUCTIONEER' &&  <div className="col-8">
+                <div className="form-group app-search">
+                  <label htmlFor="" className="text-primary"> Auctioneer to Invoice </label>
+                  <select name="" id="" className="form-control mt-2">
+                    <option value="">Select</option>
+        
+                  </select>
+                </div>
+              </div> }
+                <div className="overflow-visible">
                 <table
                   className="table align-middle table-hover contacts-table table-striped "
                   id="datatable-buttons"
@@ -769,7 +799,7 @@ function CreateInvoice() {
                     </button>
                   )}
                 </div>
-              </div>
+                </div>
             </div>
           </div>
         </Modal.Body>
@@ -791,6 +821,7 @@ function CreateInvoice() {
           </div>
         </div>
       </footer>
+       
     </>
   );
 }
