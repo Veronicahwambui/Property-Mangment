@@ -901,10 +901,9 @@ class RequestsService {
     );
   }
 
+  // STATEMENTS
 
-  // STATEMENTS 
-
-  getAllSettlements(page, size, startDate , endDate,landlordId) {
+  getAllSettlements(page, size, startDate, endDate, landlordId) {
     return axiosInstance.get(
       baseUrl +
         "/settlements?page=" +
@@ -914,20 +913,19 @@ class RequestsService {
         "&startDate=" +
         startDate +
         "&endDate=" +
-        endDate +(landlordId != undefined ? "&landlordId=" + landlordId:'')
+        endDate +
+        (landlordId != undefined ? "&landlordId=" + landlordId : "")
     );
   }
 
-  getOneSettlement(settlementRef){
-    return axiosInstance.get(
-      baseUrl + "/settlements/" + settlementRef
-    );
+  getOneSettlement(settlementRef) {
+    return axiosInstance.get(baseUrl + "/settlements/" + settlementRef);
   }
 
-  createSettlementPayouts(data){
-    return axiosInstance.post( baseUrl + "/settlements/payouts" , data)
+  createSettlementPayouts(data) {
+    return axiosInstance.post(baseUrl + "/settlements/payouts", data);
   }
-  
+
   // MESSANGER API
   createMessageTemplate(data) {
     return communicationService.post(
@@ -1071,8 +1069,10 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/communication/new/bulk", data);
   }
 
-  getBulkInvoices(page ,size) {
-    return axiosInstance.get(baseUrl + "/payments/bulk?page=" + page + "&size=" + size );
+  getBulkInvoices(page, size) {
+    return axiosInstance.get(
+      baseUrl + "/payments/bulk?page=" + page + "&size=" + size
+    );
   }
 
   getBulkMessages() {
@@ -1138,8 +1138,16 @@ class RequestsService {
   createCreditNote(data) {
     return axiosInstance.post(baseUrl + "/payments/credit-notes/new", data);
   }
-  getNotes(d, page , size ) {
-    return axiosInstance.get(baseUrl + "/payments/payment-notes?type=" + d + "&page"+ page + "&size" + size);
+  getNotes(d, page, size) {
+    return axiosInstance.get(
+      baseUrl +
+        "/payments/payment-notes?type=" +
+        d +
+        "&page" +
+        page +
+        "&size" +
+        size
+    );
   }
   getTransactions(d) {
     return axiosInstance.post(baseUrl + "/payments/invoice/transactions", d);
@@ -1155,11 +1163,20 @@ class RequestsService {
   createSettlements(data) {
     return axiosInstance.post(baseUrl + "/settlements", data);
   }
-  
 
-  toogleRegenerateReference(invoiceNo){
-
-    return axiosInstance.get(baseUrl+ "/payments/parents/item/" + invoiceNo + "/regenerateReference")
+  toogleRegenerateReference(invoiceNo) {
+    return axiosInstance.get(
+      baseUrl + "/payments/parents/item/" + invoiceNo + "/regenerateReference"
+    );
+  }
+  fetchEntityPendingTotals(entType, entId) {
+    return axiosInstance.get(
+      baseUrl +
+        "/payments/statements/fetchEntityPendingTotals?entityType=" +
+        entType +
+        "&entityId=" +
+        entId
+    );
   }
 }
 
