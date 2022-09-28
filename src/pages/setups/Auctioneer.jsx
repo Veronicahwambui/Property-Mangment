@@ -30,7 +30,6 @@ function TenantSetup() {
   const [lineChartAccountNo, setLineChartAccountNo] = useState("");
   const[chargeDueAfterDays,setChargeDueAfterDays]=useState("")
 
-
   useEffect(() => {
     fetchTypes();
     fetchAll();
@@ -61,7 +60,7 @@ function TenantSetup() {
 
   // fetch list function
   const fetchAll = () => {
-    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
+    requestsServiceService.allApplicableCharges("AUCTIONEER").then((res) => {
       setList(res.data.data);
     });
   };
@@ -79,7 +78,7 @@ function TenantSetup() {
       applicableChargeTypeName: chargeType,
       clientId: authService.getClientId(),
       expectManualValues: manualVal,
-      entityType: "TENANT",
+      entityType: "AUCTIONEER",
       id: null,
       incomeType: incomeType,
       lineChartAccountNo: lineChartAccountNo,
@@ -213,7 +212,7 @@ function TenantSetup() {
  
    // fetch list function
    const fetchAllDocument = () => {
-     requestsServiceService.allDocumentTypes("TENANT").then((res) => {
+     requestsServiceService.allDocumentTypes("AUCTIONEER").then((res) => {
        setLists(res.data.data != null ? res.data.data : []);
        // setList([])
      });
@@ -249,7 +248,7 @@ function TenantSetup() {
        clientId: authService.getClientId(),
        id: 0,
        name: createNames,
-       entityType: "TENANT",
+       entityType: "AUCTIONEER",
  
      });
  
@@ -372,7 +371,7 @@ function TenantSetup() {
                       <Link to="/">Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">Set Ups</li>
-                    <li class="breadcrumb-item active">Tenants</li>
+                    <li class="breadcrumb-item active">Auctioneers</li>
                   </ol>
                 </div>
               </div>
@@ -414,7 +413,7 @@ function TenantSetup() {
                               : "nav-item cursor-pointer nav-link"
                           }
                         >
-                             Tenants Documents
+                             Auctioneer Documents
                         </a>
                         
                       </div>
@@ -834,7 +833,8 @@ function TenantSetup() {
                         placeholder="Enter applicable charge name"
                       />
                     </div>
-                    <div class="col-12">
+                  </div>
+                  <div class="col-12">
                     <div class="form-group mb-4">
                       <label for="">
                       ChargeDueAfterDays{" "}
@@ -850,7 +850,7 @@ function TenantSetup() {
                       />
                     </div>
                   </div>
-                  </div>
+
                   <div class="col-12">
                     <div class="form-group mb-4">
                       <label for="">IncomeType</label>
@@ -1015,7 +1015,6 @@ function TenantSetup() {
                       />
                     </div>
                   </div>
-
 
                   <div class="col-12">
                     <div class="form-group mb-4">

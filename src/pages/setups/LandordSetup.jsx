@@ -29,6 +29,7 @@ function LandlordSetup() {
   const [incomeType, setIncomeType] = useState("");
   const [lineFeeId, setLineFeeId] = useState("");
   const [lineChartAccountNo, setLineChartAccountNo] = useState("");
+   const[chargeDueAfterDays,setChargeDueAfterDays]=useState("")
 
   useEffect(() => {
     fetchTypes();
@@ -79,6 +80,7 @@ function LandlordSetup() {
       clientId: authService.getClientId(),
       expectManualValues: manualVal,
       entityType: "LANDLORD",
+      chargeDueAfterDays: chargeDueAfterDays,
       id: null,
       incomeType: incomeType,
       lineChartAccountNo: lineChartAccountNo,
@@ -199,7 +201,6 @@ function LandlordSetup() {
 
 
   // document types
-
   const [lists, setLists] = useState([]);
  
   const [createNames, setCreateNames] = useState("");
@@ -221,22 +222,22 @@ function LandlordSetup() {
     });
   };
   // PAGINATION
-  // const sortSize = (e) => {
-  //   setSize(parseInt(e.target.value));
-  //   setPage(0);
-  //   setItemOffset(0);
-  // };
-  // const [page, setPage] = useState(0);
-  // const [size, setSize] = useState(10);
-  // const [pageCount, setPageCount] = useState(1);
-  // const [itemOffset, setItemOffset] = useState(0);
+  const sortSizes = (e) => {
+    setSizes(parseInt(e.target.value));
+    setPages(0);
+    setItemOffset(0);
+  };
+  const [pages, setPages] = useState(0);
+  const [sizes, setSizes] = useState(10);
+  const [pageCounts, setPageCounts] = useState(1);
+  const [itemOffsets, setItemOffsets] = useState(0);
   const [documentTypes, setDocumentTypes] = useState([]);
 
   useEffect(() => {
-    const endOffset = parseInt(itemOffset) + parseInt(size);
-    setDocumentTypes(lists.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(lists.length / size));
-  }, [itemOffset, size, lists]);
+    const endOffset = parseInt(itemOffsets) + parseInt(size);
+    setDocumentTypes(lists.slice(itemOffsets, endOffset));
+    setPageCounts(Math.ceil(lists.length / size));
+  }, [itemOffsets, size, lists]);
 
   const handlePageClicks = (event) => {
     const newOffset = (event.selected * size) % lists.length;
@@ -250,7 +251,7 @@ function LandlordSetup() {
       active: true,
       clientId: authService.getClientId(),
       id: 0,
-      name: createName,
+      name: createNames,
       entityType: "LANDLORD",
 
     });
@@ -315,7 +316,7 @@ function LandlordSetup() {
       active: true,
       clientId: authService.getClientId(),
       id: activeId,
-      name: updateName,
+      name: updateNames,
     });
     requestsServiceService
       .updateDocumentType(data)
@@ -355,6 +356,8 @@ function LandlordSetup() {
         }, 3000);
       });
   };  
+
+
 
 // landord  Agreement types
 
@@ -1217,6 +1220,23 @@ const handleEdit = (id, name) => {
                       />
                     </div>
                   </div>
+
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                      ChargeDueAfterDays{" "}
+                        <strong class="text-danger">*</strong>{" "}
+                      </label>
+                      <input
+                        required
+                        value={chargeDueAfterDays}
+                        onChange={(e) => setChargeDueAfterDays(e.target.value)}
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter ChargeDueAfterDays"
+                      />
+                    </div>
+                  </div>
                   <div class="col-12">
                     <div class="form-group mb-4">
                       <label for="">IncomeType</label>
@@ -1365,12 +1385,25 @@ const handleEdit = (id, name) => {
                       />
                     </div>
                   </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">ChargeDueAfterDays  </label>
+                      <input
+                        value={chargeDueAfterDays}
+                        onChange={(e) => setChargeDueAfterDays(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter ChargeDueAfterDays"
+                        required
+                      />
+                    </div>
+                  </div>
 
                   <div class="col-12">
                     <div class="form-group mb-4">
                       <label for="">IncomeType</label>
                       <input
-                        type="text"
+                        type="number"
                         class="form-control"
                         onChange={(event) => setIncomeType(event.target.value)}
                         value={incomeType}
@@ -1752,7 +1785,7 @@ const handleEdit = (id, name) => {
                 type="button"
                 class="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={() => toggleStatus()}
+                onClick={() => toggleStatuses()}
               >
                 Yes
               </button>
@@ -1790,7 +1823,7 @@ const handleEdit = (id, name) => {
                 type="button"
                 class="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={() => toggleStatus()}
+                onClick={() => toggleStatuses()}
               >
                 Yes
               </button>

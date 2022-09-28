@@ -74,7 +74,7 @@ import LandordSetup from "./pages/setups/LandordSetup";
 import TenantSetup from "./pages/setups/TenantSetup";
 import Properties from "./pages/setups/Properties";
 import General from "./pages/setups/General";
-
+import Auctioneer from './pages/setups/Auctioneer'
 
 
 function Main() {
@@ -156,6 +156,10 @@ function Main() {
                       <Route
                         path="/general"
                         element={<General />}
+                      />
+                        <Route
+                        path="/auctioneer"
+                        element={<Auctioneer/>}
                       />
                       <Route
                         path="/applicablecharges"

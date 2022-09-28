@@ -10,6 +10,8 @@ import ReactPaginate from "react-paginate";
 function IssuesTypes() {
   const [issueTypes, setIssueTypes] = useState([]);
   const [activeId, setActiveId] = useState("");
+  const [activeLink, setActiveLink] = useState(1);
+
 
   useEffect(() => {
     getIssueTypes();
@@ -88,7 +90,54 @@ function IssuesTypes() {
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-12">
+          <div class="card">
+                <div class="card-body pt-2 pb-3 align-items-center d-flex">
+                  <div
+                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                    role="toolbar"
+                  >
+                                    <nav class="navbar navbar-expand-md navbar-white bg-white py-2">
+
+                  
+                      <div
+                      className="collapse navbar-collapse justify-content-between"
+                      id="navbarNavAltMarkup"
+                    >
+                      <div className="navbar-nav">
+                        <a
+                          onClick={() => setActiveLink(1)}
+                          className={
+                            activeLink === 1
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
+                          Issues Types<span className="sr-only"></span>
+                        </a>
+                       
+                        <a
+                          onClick={() => setActiveLink(2)}
+                          className={
+                            activeLink === 2
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
+                          General 
+                        </a>
+                        
+                      </div>
+                    </div>
+                </nav>
+                  </div>
+                </div>
+              </div>
           {/* <!-- end page title --> */}
+          {activeLink === 1 &&(
+
+        <div>
           <div class="row">
             <div class="col-12">
               <div class="card">
@@ -264,6 +313,8 @@ function IssuesTypes() {
             </div>
             {/* <!-- end col --> */}
           </div>
+          </div>
+            )}
           {/* <!-- end row --> */}
         </div>
         {/* <!-- container-fluid --> */}
@@ -344,6 +395,8 @@ function IssuesTypes() {
             </div>
           </div>
         </div>
+      </div>
+      </div>
       </div>
     </>
   );

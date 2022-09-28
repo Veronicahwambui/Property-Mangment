@@ -230,7 +230,10 @@ function SideBar() {
                 <li>
                   <NavLink to="/general">General</NavLink>
                 </li>
-
+                <li>
+                  <NavLink to="/auctioneer">Auctioneer </NavLink>
+                </li>
+               
 
                 {/* <li>
                   <NavLink to="/applicablecharges">Applicable Charges</NavLink>

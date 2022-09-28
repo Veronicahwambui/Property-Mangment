@@ -23,7 +23,7 @@ function DocumentTypes() {
 
   // fetch list function
   const fetchAllDocument = () => {
-    requestsServiceService.allDocumentTypes().then((res) => {
+    requestsServiceService.allDocumentTypes("TENANT").then((res) => {
       setLists(res.data.data != null ? res.data.data : []);
       // setList([])
     });
