@@ -226,6 +226,12 @@ function SideBar() {
                 <li>
                   <NavLink to="/properties">Properties</NavLink>
                 </li>
+
+                <li>
+                  <NavLink to="/general">General</NavLink>
+                </li>
+
+
                 {/* <li>
                   <NavLink to="/applicablecharges">Applicable Charges</NavLink>
                 </li>

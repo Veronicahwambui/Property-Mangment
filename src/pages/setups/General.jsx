@@ -1,30 +1,18 @@
+/* global $*/
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 import { Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import moment from "moment";
 import ReactPaginate from "react-paginate";
 
-function LandLordAgreementTypes() {
-  const [agreementTypes, setAgreementTypes] = useState([]);
-  const [agreementTypeName, setagreementTypeName] = useState("");
-  const [clients, setClients] = useState([]);
-  const [selectedClient, setselectedClient] = useState({});
+function IssuesTypes() {
+  const [issueTypes, setIssueTypes] = useState([]);
   const [activeId, setActiveId] = useState("");
-  const [editAgreementTypeName, setEditAgreementTypeName] = useState("");
-  const [editSelectedClient, setEditSelectedClient] = useState("");
-  const [editId, setEditId] = useState("");
-  const [editName, setEditName] = useState("");
-  const [editClientId, setEditClientId] = useState("");
-  const [editType, setEditType] = useState({
-    name: "",
-    id: "",
-  });
 
   useEffect(() => {
-    getAgreementTypes();
-    getClients();
+    getIssueTypes();
   }, []);
 
   // PAGINATION
@@ -41,7 +29,7 @@ function LandLordAgreementTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setAgreementTypes(list.slice(itemOffset, endOffset));
+    setIssueTypes(list.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(list.length / size));
   }, [itemOffset, size, list]);
 
@@ -51,159 +39,42 @@ function LandLordAgreementTypes() {
     setPage(event.selected);
   };
 
-  const getClients = () => {
-    const client = {
-      name: requestsServiceService.getCurrentUserClient().name,
-      id: requestsServiceService.getCurrentUserClient().id,
-    };
-
-    setselectedClient(client);
-
-    requestsServiceService.getClients().then((res) => {
-      setClients(res.data.data);
-    });
-  };
-  // console.log(agreementTypes);
-  // create agreementType
-  const [error, setError] = useState({
-    message: "",
-    color: "",
-  });
-  const [show, setShow] = useState(false);
-  const [editshow, seteditShow] = useState(false);
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
-  const editShow = () => seteditShow(true);
-  const editClose = () => seteditShow(false);
-  const createAgreementType = (event) => {
-    event.preventDefault();
-    let data = JSON.stringify({
-      active: true,
-      clientId: selectedClient.id,
-      id: null,
-      name: agreementTypeName,
-    });
-    requestsServiceService
-      .createAgreementType(data)
-      .then((res) => {
-        console.log(res);
-        if (res.data.status === false) {
-          setError({
-            ...error,
-            message: res.data.message,
-            color: "danger",
-          });
-        } else {
-          setError({
-            ...error,
-            message: res.data.message,
-            color: "success",
-          });
-          getAgreementTypes();
-          handleClose();
-        }
-        setTimeout(() => {
-          setError({
-            ...error,
-            message: "",
-            color: "",
-          });
-        }, 2000);
-      })
-      .catch((err) => {
-        setError({
-          ...error,
-          message: err.data.message,
-          color: "danger",
-        });
-      });
-  };
-
-  // get all agreementTypes
-
-  const getAgreementTypes = () => {
-    requestsServiceService.getAllAgreementTypes().then((res) => {
+  const getIssueTypes = () => {
+    requestsServiceService.getTenancyIssuesTypes().then((res) => {
       setlist(res.data.data);
+      $("#spinner").addClass("d-none");
     });
   };
 
-  // update agreementType
-
-  const getOneAgreementType = (id) => {
-    let agreementType = agreementTypes.find((aT) => aT.id === id);
-    setEditAgreementTypeName(agreementType.name);
-    setEditId(id);
-    editShow();
-  };
-
-  const updateAgreementType = (event) => {
-    event.preventDefault();
-    let data = JSON.stringify({
-      active: true,
-      clientId: parseInt(authService.getClientId()),
-      id: activeId,
-      name: editAgreementTypeName,
+  const deactivate = (x) => {
+    requestsServiceService.toggleIssueType(x).then((res) => {
+      if (res.data.status === true) {
+        getIssueTypes();
+      }
     });
-    requestsServiceService
-      .editAgreementType(data)
-      .then((res) => {
-        let message = res.data.message;
-        if (res.data.status === false) {
-          setError({
-            ...error,
-            message: message,
-            color: "danger",
-          });
-        } else {
-          setError({
-            ...error,
-            message: message,
-            color: "success",
-          });
-          editClose();
-          getAgreementTypes();
-        }
-        setTimeout(() => {
-          setError({
-            ...error,
-            message: "",
-            color: "",
-          });
-        }, 2000);
-      })
-      .catch((err) => {
-        setError({
-          ...error,
-          message: err.data.message,
-          color: "success",
-        });
-      });
-  };
-  let num = 0;
-
-  //   const deactivate
-
-  const deactivate = (id) => {
-    requestsServiceService.deactivateAgreementType(id).then((res) => {
-      getAgreementTypes();
-    });
-  };
-
-  const handleEdit = (id, name) => {
-    setEditName(name);
-    setEditId(id);
-    console.log(name, editId);
   };
 
   return (
     <>
       <div class="page-content">
         <div class="container-fluid">
+          <div id="spinner" className={""}>
+            <div id="status">
+              <div className="spinner-chase">
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+                <div className="chase-dot"></div>
+              </div>
+            </div>
+          </div>
           {/* <!-- start page title --> */}
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Registered Agreement Types</h4>
+                <h4 class="mb-sm-0 font-size-18">Issue Types</h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
@@ -211,9 +82,7 @@ function LandLordAgreementTypes() {
                       <Link to="/">Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">Set Ups</li>
-                    <li class="breadcrumb-item active">
-                      Registered Agreement Types
-                    </li>
+                    <li class="breadcrumb-item active">Issue Types</li>
                   </ol>
                 </div>
               </div>
@@ -230,18 +99,19 @@ function LandLordAgreementTypes() {
                   >
                     <div class="d-flex align-items-center flex-grow-1">
                       <h4 class="mb-0  bg-transparent  p-0 m-0">
-                        Agreement Type Register
+                        {/*Issue Types Register*/}
                       </h4>
                     </div>
                     <div class="d-flex">
-                      <button
-                        onClick={handleShow}
-                        type="button"
-                        class="btn btn-primary waves-effect btn-label waves-light me-3"
-                      >
-                        <i class="mdi mdi-plus label-icon"></i> Add Agreement
-                        Type
-                      </button>
+                      <Link to="/create-issue-type">
+                        <button
+                          type="button"
+                          className="btn btn-primary waves-effect btn-label waves-light me-3"
+                        >
+                          <i className="mdi mdi-plus label-icon"></i> Add Issue
+                          Type
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -249,9 +119,11 @@ function LandLordAgreementTypes() {
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits table-striped">
                       <thead class="table-light">
-                        <tr class="text-uppercase table-dark">
+                        <tr class="text-uppercase table-light">
                           <th>#</th>
-                          <th>Agreement Type</th>
+                          <th>Name</th>
+                          <th>Initial Status</th>
+                          <th>Resolved Status</th>
                           <th>Status</th>
                           <th>Date Created</th>
 
@@ -259,13 +131,19 @@ function LandLordAgreementTypes() {
                         </tr>
                       </thead>
                       <tbody>
-                        {agreementTypes?.map((aT, num) => {
+                        {issueTypes?.map((iT, index) => {
                           return (
-                            <tr data-id="1" key={aT.id}>
-                              <td style={{ width: "80px" }}>{num + 1}</td>
-                              <td data-field="unit-num ">{aT.name}</td>
+                            <tr
+                              data-id="1"
+                              key={index}
+                              className={"text-uppercase"}
+                            >
+                              <td style={{ width: "80px" }}>{index + 1}</td>
+                              <td data-field="unit-num ">{iT.name}</td>
+                              <td data-field="unit-num ">{iT.initialStatus}</td>
+                              <td data-field="unit-num ">{iT.resolveStatus}</td>
                               <td data-field="unit-num ">
-                                {aT.active ? (
+                                {iT.active ? (
                                   <span class="badge-soft-success badge">
                                     Active
                                   </span>
@@ -276,32 +154,35 @@ function LandLordAgreementTypes() {
                                 )}
                               </td>
                               <td>
-                                {moment(aT.dateTimeCreated).format(
+                                {moment(iT.dateTimeCreated).format(
                                   "YYYY-MM-DD HH:mm"
                                 )}
                               </td>
 
                               <td class="text-right cell-change text-nowrap ">
-                                <div className="d-flex align-items-center justify-content-between">
-                                  <a
-                                    onClick={() => {
-                                      getOneAgreementType(aT.id);
-                                      setActiveId(aT.id);
-                                    }}
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#update-modal"
-                                    className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
-                                    title="Edit "
+                                <div className="d-flex align-items-center">
+                                  <Link
+                                    to={`/issuestypes/${iT.id}`}
+                                    state={{ issueType: iT }}
                                   >
-                                    <i className="bx bx-edit-alt "></i>
-                                  </a>
-                                  {aT.active ? (
                                     <button
-                                      class="btn btn-danger btn-sm btn-rounded  text-uppercase px-2 mx-3"
+                                      type="button"
+                                      className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#edit"
+                                      onClick={() => {}}
+                                      style={{ marginLeft: "8px" }}
+                                    >
+                                      View Details
+                                    </button>
+                                  </Link>
+                                  {iT.active ? (
+                                    <button
+                                      class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
                                       title="deactivate"
                                       data-bs-toggle="modal"
                                       data-bs-target="#confirm-deactivate"
-                                      onClick={() => setActiveId(aT.id)}
+                                      onClick={() => setActiveId(iT.id)}
                                     >
                                       Deactivate
                                     </button>
@@ -311,7 +192,7 @@ function LandLordAgreementTypes() {
                                       title="deactivate"
                                       data-bs-toggle="modal"
                                       data-bs-target="#confirm-activate"
-                                      onClick={() => setActiveId(aT.id)}
+                                      onClick={() => setActiveId(iT.id)}
                                     >
                                       Activate
                                     </button>
@@ -388,110 +269,8 @@ function LandLordAgreementTypes() {
         {/* <!-- container-fluid --> */}
       </div>
 
-      {/*ADD MODAL*/}
-      <Modal show={show} onHide={handleClose} className={"modal fade"} centered>
-        <form onSubmit={createAgreementType}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add agreement type</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row">
-              {error.color !== "" && (
-                <div className={"alert alert-" + error.color} role="alert">
-                  {error.message}
-                </div>
-              )}
-              <div className="col-12">
-                <div className="form-group mb-4">
-                  <label htmlFor="">
-                    Agreement type name.{" "}
-                    <strong className="text-danger ">*</strong>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={agreementTypeName}
-                    onChange={(e) => setagreementTypeName(e.target.value)}
-                    placeholder="Enter agreement type name"
-                    required={true}
-                  />
-                </div>
-              </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              className={"btn btn-grey"}
-              onClick={handleClose}
-            >
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              className={"btn btn-primary"}
-              type={"submit"}
-            >
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
-      {/*EDIT MODAL*/}
-      <Modal
-        show={editshow}
-        onHide={editClose}
-        className={"modal fade"}
-        centered
-      >
-        <form onSubmit={updateAgreementType}>
-          <Modal.Header closeButton>
-            <Modal.Title>Update agreement type</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row">
-              {error.color !== "" && (
-                <div className={"alert alert-" + error.color} role="alert">
-                  {error.message}
-                </div>
-              )}
-              <div className="col-12">
-                <div className="form-group mb-4">
-                  <label htmlFor="">
-                    Agreement type name.{" "}
-                    <strong className="text-danger ">*</strong>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={editAgreementTypeName}
-                    onChange={(e) => setEditAgreementTypeName(e.target.value)}
-                    placeholder="Enter agreement type name"
-                    required={true}
-                  />
-                </div>
-              </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              className={"btn btn-grey"}
-              onClick={editClose}
-            >
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              className={"btn btn-primary"}
-              type={"submit"}
-            >
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
-
+      {/*MODALS*/}
+      {/*deactivate activate modals*/}
       {/* confirm deactivate  */}
       <div
         class="modal fade"
@@ -506,7 +285,7 @@ function LandLordAgreementTypes() {
           <div class="modal-content">
             <div class="modal-body">
               <center>
-                <h5>Deactivate this Agreement Type ?</h5>
+                <h5>Deactivate this Issue Type ?</h5>
               </center>
             </div>
             <div class="modal-footer">
@@ -543,7 +322,7 @@ function LandLordAgreementTypes() {
           <div class="modal-content">
             <div class="modal-body">
               <center>
-                <h5>Activate this Agreement Type ?</h5>
+                <h5>Activate this Issue Type?</h5>
               </center>
             </div>
             <div class="modal-footer">
@@ -566,9 +345,8 @@ function LandLordAgreementTypes() {
           </div>
         </div>
       </div>
-      
     </>
   );
 }
 
-export default LandLordAgreementTypes;
+export default IssuesTypes;

@@ -349,8 +349,8 @@ class RequestsService {
 
   // document types Document
 
-  allDocumentTypes() {
-    return axiosInstance.get(baseUrl + "/setup/documentTypes");
+  allDocumentTypes(entityType) {
+    return axiosInstance.get(baseUrl + "/setup/documentTypes?entityType="+ entityType);
   }
 
   createDocumentTypes(data) {
