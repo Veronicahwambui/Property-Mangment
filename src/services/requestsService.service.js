@@ -633,6 +633,9 @@ class RequestsService {
   createInvoice(data) {
     return axiosInstance.post(baseUrl + "/payments/invoice/new", data);
   }
+  createNewInvoice(data) {
+    return axiosInstance.post(baseUrl + "/payments/entityInvoice/new", data);
+  }
   createBulkInvoice(data) {
     return axiosInstance.post(baseUrl + "/payments/invoice/new/bulk", data);
   }

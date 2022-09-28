@@ -8,7 +8,10 @@ import CloseButton from "react-bootstrap/CloseButton";
 function CreateInvoice() {
   const [tenants, setTenants] = useState([]);
   const [landlords, setLandlords] = useState([]);
-
+  const [dates, setDates] = useState({
+    startDate: new Date(new Date().getFullYear(), 1),
+    endDate: new Date(),
+  });
   // tenant details
   const [tenantId, settenantId] = useState(undefined);
   const [tenantEmail, settenantEmail] = useState("");
@@ -109,6 +112,8 @@ function CreateInvoice() {
   const [loaded, setloaded] = useState(false);
   const [loading2, setloading2] = useState(false);
   const [fetched, setfetched] = useState(false);
+  const [ prems, setPrems] = useState([]);
+  const [ premId, setPremId] = useState(undefined);
 
   const getId = (y) => {
     requestsServiceService
@@ -143,6 +148,52 @@ function CreateInvoice() {
         });
       });
   };
+
+
+  const getLandLordPrems = (fileNumber) => {
+
+    let data = JSON.stringify({
+      dateCreatedEnd: moment(dates.endDate).format("YYYY-MM-DD"),
+      dateCreatedStart: moment(dates.startDate).format("YYYY-MM-DD"),
+      fileNumber: fileNumber,
+      
+    })
+
+
+    requestsServiceService
+      .getLandLordPremises(data)
+      .then((res) => {
+        let temp = res.data.data !== null ? res.data.data : [];
+        if (res.data?.data?.length > 0) {
+          setPrems(temp);
+          setloading(false);
+          setloaded(true);
+          setIsChecked(true);
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        } else {
+          setloading(false);
+          setError({
+            ...error,
+            message: "Landlord has no premises!",
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        setloading(false);
+        setError({
+          ...error,
+          message: "Landlord has no premises!",
+          color: "danger",
+        });
+      });
+  };
+
+
   const handleSubmit = (e) => {
     setfetched(false);
     e.preventDefault();
@@ -166,13 +217,19 @@ function CreateInvoice() {
   const [tenantName, setTenantName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   useEffect(() => { }, [tenants, isChecked, custname]);
-  const autofill = (x) => {
+
+  const autofill = (x,fileNumber ) => {
 
     setfetched(false);
     setloaded(true);
     setloading(true);
+    setPrems([]);
+    if (invoiceFor === "TENANT") {
+      getId(x);
+    } else {
+      getLandLordPrems(fileNumber); 
+    }
 
-    // getId(x);
 
     let sel = tenants.find((tenant) => tenant.id === parseInt(x));
     let email = sel?.email;
@@ -187,8 +244,8 @@ function CreateInvoice() {
       name = sel?.firstName + " " + sel?.lastName
     }
 
-
     settenantId(x);
+
     settenantEmail(email);
     settenantPhone(phone);
     setcustname(name);
@@ -207,20 +264,85 @@ function CreateInvoice() {
   }
 
   const invoiceForHandler = (e) => {
+    setloaded(false)
     setInvoiceFor(e.target.value)
     requestsServiceService.allApplicableCharges(e.target.value).then((res) => {
       setapplicableCharges(res.data.data !== null ? res.data.data : []);
     });
     setTenants([]);
     setLandlords([]);
-
+    setPrems([]);
   }
 
   const submitInvoice = (event) => {
     event.preventDefault();
+    if (invoiceFor === "TENANT") {
+      submitNormalInvoice()
+    } else {
+      submitEntityInvoice()
+    }
+  }
+
+ const submitNormalInvoice = ()=>{
+
+    let data = {
+      applicableChargeName: applicableChargeName,
+      billAmount: total,
+      invoiceDate: date,
+      parentTransactionId: null,
+      quantity: parseInt(quantity),
+      tenancyId: parseInt(tenancyId),
+      transactionCustomerEmail: tenantEmail,
+      transactionCustomerName: custname,
+      transactionDescription: description,
+      transactionTitle: chargetitle,
+      unitCost: unitcost,
+    };
+    requestsServiceService
+      .createInvoice(data)
+      .then((res) => {
+        if (res.data.status === true) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+          setTimeout(() => {
+            navigate("/invoices", { replace: true });
+          }, 2000);
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setError({
+          ...error,
+          message: err.response.data.message,
+          color: "danger",
+        });
+      });
+    setTimeout(() => {
+      setError({
+        ...error,
+        message: "",
+        color: "",
+      });
+    }, 3500);
+  
+ }
+
+
+
+  const submitEntityInvoice = () => {
+  
    
     let landlordId = invoiceFor === "LANDLORD" ? tenantId : null
-    let tentId = invoiceFor === "TENANT" ? tenantId : auctioneer
+    // let tentId = invoiceFor === "TENANT" ? tenantId : auctioneer
 
     let data = {
       "applicableChargeName": applicableChargeName,
@@ -228,18 +350,18 @@ function CreateInvoice() {
       "invoiceDate": date,
       "landlordId": landlordId ,
       "parentTransactionId": null,
-      "premiseId": null,
+      "premiseId": parseInt(premId),
       "quantity": parseInt(quantity),
       "transactionCustomerEmail": tenantEmail,
       "transactionCustomerName": custname,
       "transactionDescription": description,
       "transactionTitle": chargetitle,
       "unitCost": unitcost,
-      "userId": tentId 
+      "userId": auctioneer
     }
 
     requestsServiceService
-      .createInvoice(data)
+      .createNewInvoice(data)
       .then((res) => {
         if (res.data.status === true) {
           setError({
@@ -286,9 +408,7 @@ function CreateInvoice() {
     }
   };
   $(document).on("change", ".enddate", addDate);
-  useEffect(() => {
-    console.log(fetched);
-  }, [fetched]);
+  
   return (
     <>
       <div className="page-content">
@@ -400,7 +520,7 @@ function CreateInvoice() {
                                   />
                                 </div>
                               </div>
-                              {/* <div className="col-12">
+                              { invoiceFor === "TENANT" && <div className="col-12">
                                 <div className="mb-3">
                                   <label
                                     htmlFor="formrow-firstname-input"
@@ -442,7 +562,7 @@ function CreateInvoice() {
                                     </div>
                                   )}
                                 </div>
-                              </div> */}
+                              </div> }
 
                               <div className="row col-12">
                                 <div className="mb-3">
@@ -477,6 +597,48 @@ function CreateInvoice() {
                                               key={index}
                                             >
                                               {item.name}
+                                            </option>
+                                          )
+                                        )}
+                                      </select>
+                                    </div>
+                                  )}
+                                </div>
+
+                              </div>
+                              <div className="row col-12">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-firstname-input"
+                                    className="form-label"
+                                  >
+                                    Preimise.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  { prems && (
+                                    <div className="form-group mb-4">
+                                      <select
+                                        class="form-control"
+                                        title="Select tenant"
+                                        data-live-search="true"
+                                        // value={applicableChargeName}
+                                        onChange={(e) =>
+                                          setPremId(
+                                            e.target.value
+                                          )
+                                        }
+                                        required={true}
+                                      >
+                                        <option className="text-black font-semibold ">
+                                          select premise
+                                        </option>
+                                        { prems.map(
+                                          (item, index) => (
+                                            <option
+                                              value={item.id}
+                                              key={index}
+                                            >
+                                              {item.premiseName}
                                             </option>
                                           )
                                         )}
@@ -796,7 +958,7 @@ function CreateInvoice() {
                 </button>
               </div>}
 
-              <div className="table-responsive">
+              <div className="">
                 <table
                   className="table align-middle table-hover contacts-table table-striped "
                   id="datatable-buttons"
@@ -841,7 +1003,7 @@ function CreateInvoice() {
                                         type="checkbox"
                                         id="formCheck1"
                                         onChange={() => {
-                                          autofill(tenant.id);
+                                          autofill(tenant.id, tenant.fileNumber);
                                         }}
                                         checked={
                                           tenant.id === tenantId
@@ -883,7 +1045,17 @@ function CreateInvoice() {
                   className="col-12 d-flex justify-content-end"
                   style={{ minHeight: "40px", maxHeight: "50px" }}
                 >
-                  {loaded && (
+                  { loaded && tenancies.length > 0 && (
+                    <button
+                      className="btn btn-primary cursor-pointer"
+                      type={"button"}
+                      onClick={closeTenantModal}
+                    >
+                      Continue
+                    </button>
+                  )}
+
+                  { loaded && prems?.length >= 1  && (
                     <button
                       className="btn btn-primary cursor-pointer"
                       type={"button"}
