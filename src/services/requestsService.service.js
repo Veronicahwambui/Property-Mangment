@@ -95,8 +95,8 @@ class RequestsService {
 
   // applicable charges
 
-  allApplicableCharges() {
-    return axiosInstance.get(baseUrl + "/setup/applicableCharges");
+  allApplicableCharges(type) {
+    return axiosInstance.get(baseUrl + "/setup/applicableCharges?entityType=" + type );
   }
 
   applicableChargeTypes() {
