@@ -132,33 +132,11 @@ function Settlements() {
   ];
   const [palias, setpalias] = useState("");
 
-  // TEMPORARY CODE
+  // SLEEPING PILLS CODE
   const [show, setshow] = useState(false);
   const showModal = () => setshow(true);
   const hideModal = () => setshow(false);
   const [recipient, setrecipient] = useState("");
-
-  const createStatement = () => {
-    let d = {
-      allocations: [
-        {
-          code: "string",
-          name: "string",
-          value: "string",
-        },
-      ],
-      billNo: "string",
-      landLordFileNumber: "string",
-      paidBy: "string",
-      payReferenceNo: "string",
-      paymentMode: "string",
-      receiptAmount: "string",
-      receiptNo: "string",
-      tenancyFileNumber: "string",
-      tenantNumber: "string",
-      userName: "string",
-    };
-  };
   const [searchrecipient, setSearchRecipient] = useState("");
   const [foundRecipients, setfoundRecipients] = useState([]);
   const [recipientId, setRecipientId] = useState("");
@@ -202,7 +180,24 @@ function Settlements() {
   };
   useEffect(() => {
     getUnpaidCharges();
+    getEntityDetails();
   }, [recipientId]);
+
+  const [receivedData, setRECEIVEDDATA] = useState([]);
+  const getEntityDetails = () => {
+    if (recipient === "TENANT") {
+      requestsServiceService.viewTenant(recipientId).then((res) => {
+        setRECEIVEDDATA(res.data.data);
+      });
+    }
+    if (recipient === "USER") {
+    }
+    if (recipient === "LANDLORD") {
+      requestsServiceService.getLandlord(recipientId).then((res) => {
+        setRECEIVEDDATA(res.data.data);
+      });
+    }
+  };
 
   const getUnpaidCharges = () => {
     if (recipientId !== "") {
@@ -254,6 +249,27 @@ function Settlements() {
     }
   };
 
+  const createStatement = () => {
+    let d = {
+      allocations: [
+        {
+          code: "string",
+          name: "string",
+          value: "string",
+        },
+      ],
+      billNo: "string",
+      landLordFileNumber: "string",
+      paidBy: "string",
+      payReferenceNo: "string",
+      paymentMode: "CASH",
+      receiptAmount: "string",
+      receiptNo: "string",
+      tenancyFileNumber: "string",
+      tenantNumber: "string",
+      userName: "string",
+    };
+  };
   return (
     <div className="page-content">
       <div className="container-fluid">
