@@ -347,7 +347,7 @@ function CreateInvoice() {
     let data = {
       "applicableChargeName": applicableChargeName,
       "billAmount": total,
-      "invoiceDate": date,
+      "invoiceDate": moment(date).format("YYYY/MM/DD"),
       "landlordId": landlordId ,
       "parentTransactionId": null,
       "premiseId": parseInt(premId),

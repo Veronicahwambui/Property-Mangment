@@ -658,6 +658,13 @@ class RequestsService {
       data
     );
   }
+  getSortedInvoices(page , size ,data) {
+    return axiosInstance.post(
+      baseUrl +
+        `/payments/invoice/transactions?page=${page}&size=${size}`,
+      data
+    );
+  }
   viewTenancy(tenancyId) {
     return axiosInstance.get(baseUrl + "/tenants/tenancy/" + tenancyId);
   }
