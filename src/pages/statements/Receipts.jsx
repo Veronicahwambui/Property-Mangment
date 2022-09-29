@@ -202,8 +202,9 @@ function Receipts() {
                           <th>ReceiptNo</th>
                           <th>Paid by</th>
                           <th>Tenant</th>
-                          <th>Bill amount</th>
-                          <th>Bill balance</th>
+                          <th>Receipt Amount</th>
+                          <th>Utilised Amount</th>
+                          <th>Utilised By</th>
                           <th>Payment mode</th>
                           <th>Payment ref</th>
                           <th>Date Created</th>
@@ -229,14 +230,15 @@ function Receipts() {
                               </td>
                               <td>
                                 {formatCurrency.format(
-                                  JSON.parse(statement.response).billAmount
+                                  statement.receiptAmount
                                 )}
                               </td>
                               <td>
                                 {formatCurrency.format(
-                                  JSON.parse(statement.response).billBalance
+                                  statement.utilisedAmount
                                 )}
                               </td>
+                              <td>{statement.utilisedBy}</td>
                               <td>{statement.paymentMode}</td>
                               <td>{statement.payReferenceNo}</td>
                               <td>
@@ -266,10 +268,7 @@ function Receipts() {
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
                                       </a>
-                                      <a className="dropdown-item " href="# ">
-                                        <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                        Print
-                                      </a>
+                                     
                                       <a
                                         className="dropdown-item "
                                         onClick={() => {
@@ -385,45 +384,21 @@ function Receipts() {
         <Modal.Body>
           <div className="col-12">
             <address>
-              <strong>Billed To:</strong>
-              {activeInvoice.tenant?.tenantType === "INDIVIDUAL" ? (
-                <>
-                  <div>
-                    <br />
-                    {activeInvoice?.tenant?.firstName}{" "}
-                    {activeInvoice?.tenant?.lastName}
-                    {activeInvoice?.tenant?.otherName}
-                    <br />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <br />
-                    {activeInvoice?.tenant?.companyName}{" "}
-                    {activeInvoice?.tenant?.companyIncorporationNumber}{" "}
-                    {activeInvoice?.tenant?.companyAddress}
-                    <br />
-                  </div>
-                </>
-              )}
+              <strong>Paid By : </strong>
+              {activeInvoice?.paidBy}
               <br />
-              {activeInvoice?.tenant?.email}
               <br />
               <p>
-                Issue date:{" "}
+               <strong>Issue date : </strong> {" "}
                 {moment(activeInvoice.dateTimeCreated).format("DD-MM-YYYY")}
               </p>
-              <p>
-                Due date:{" "}
-                {moment(activeInvoice.invoiceDate).format("DD-MM-YYYY")}
-              </p>
+             
             </address>
           </div>
           <div className="col-12">
             <div className="py-2 mt-3">
               <h3 className="font-size-15 fw-bold">
-                Statement Details ({" "}
+                Statement Details ({"Receipt No : "}
                 <span className="text-primary fw-medium">
                   {activeInvoice?.receiptNo}
                 </span>{" "}
@@ -436,36 +411,21 @@ function Receipts() {
               <table className="table table-nowrap">
                 <thead>
                   <tr>
-                    <th>Receipt No</th>
-                    <th>Paid By</th>
-                    <th>Bill Amount</th>
-                    <th>Bill Balance</th>
                     <th>Payment Mode</th>
                     <th>Payment Ref</th>
+                    <th>Receipt Amount</th>
+                    <th>Utilised Amount</th>
+                    <th>Utilised By</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{activeInvoice?.receiptNo}</td>
-                    <td>{activeInvoice?.paidBy}</td>
-                    {Object.keys(activeInvoice).length > 0 ? (
-                      <>
-                        <td>
-                          {formatCurrency.format(
-                            JSON.parse(activeInvoice?.response).billAmount
-                          )}
-                        </td>
-                        <td>
-                          {formatCurrency.format(
-                            JSON.parse(activeInvoice?.response).billBalance
-                          )}
-                        </td>
-                      </>
-                    ) : (
-                      <></>
-                    )}
+
                     <td>{activeInvoice?.paymentMode}</td>
                     <td>{activeInvoice?.payReferenceNo}</td>
+                    <td>{formatCurrency.format(activeInvoice?.receiptAmount)}</td>
+                    <td>{formatCurrency.format(activeInvoice?.utilisedAmount)}</td>
+                    <td>{activeInvoice?.utilisedBy}</td>
                   </tr>
                 </tbody>
               </table>
@@ -490,7 +450,7 @@ function Receipts() {
                     <td>{item.transactionItemId}</td>
                     <td>{item.transactionTitle}</td>
                     <td>{item.transactionDescription}</td>
-                    <td>{item.amount}</td>
+                    <td>{formatCurrency.format(item.amount)}</td>
                     
                   </tr>
 
@@ -500,7 +460,7 @@ function Receipts() {
             </div>
           </div>
 
-          <button className="btn btn-success print-btn" onClick={handlePrint}>Print this out!</button>
+          <button className="btn btn-success print-btn" onClick={handlePrint}>Print Receipt</button>
 
         </Modal.Body>
         </div>
