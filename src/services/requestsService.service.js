@@ -824,6 +824,13 @@ class RequestsService {
         `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`
     );
   }
+
+  getOneStatement(statementId) {
+    return axiosInstance.get(
+      baseUrl +
+        `/payments/statements/view?statementId=${statementId}`
+    );
+  }
   getLandlordStatements(data) {
     return axiosInstance.get(
       baseUrl +

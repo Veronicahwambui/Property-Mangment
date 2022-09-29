@@ -1,8 +1,9 @@
 /* global $ */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef } from "react";
 import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
+import { useReactToPrint } from 'react-to-print';
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
@@ -13,6 +14,7 @@ import Message from "../../components/Message";
 function Receipts() {
   const [statements, setstatements] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
+  const [activeInvoiceItems, setactiveInvoiceItems] = useState([]);
   const [startDate, setStartDate] = useState("01/12/2022");
   const [endDate, setEndDate] = useState("12/12/2022");
   let formatCurrency = new Intl.NumberFormat("en-US", {
@@ -55,10 +57,17 @@ function Receipts() {
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
-  const getOneInvoice = (bill) => {
-    let acc = statements.find((statement) => statement.billNo === bill);
-    setactiveInvoice(acc);
-    showInvoice();
+  const getOneInvoice = (id ) => {
+
+    requestsServiceService.getOneStatement(id).then((res) => {
+      setactiveInvoice(res.data.data.paymentStatement);
+      setactiveInvoiceItems(res.data.data.items);
+      showInvoice();
+      $("#spinner").addClass("d-none");
+    }).catch((err)=>{
+       showInvoice();
+    })
+
   };
 
   // MESSAGE TEST
@@ -122,6 +131,15 @@ function Receipts() {
       subject: "Customer Receipt",
     });
   };
+
+        // ^============ printing section   =====================
+
+        const componentRef = useRef(null);
+
+        const handlePrint = useReactToPrint({
+          content: () => componentRef.current,
+        });
+      
 
   return (
     <>
@@ -242,7 +260,7 @@ function Receipts() {
                                       <a
                                         className="dropdown-item cursor-pointer"
                                         onClick={() =>
-                                          getOneInvoice(statement.billNo)
+                                          getOneInvoice(statement.id)
                                         }
                                       >
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
@@ -356,7 +374,9 @@ function Receipts() {
           </div>
         </div>
       </div>
+
       <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
+        <div  ref={componentRef} className="print-div" >
         <Modal.Header closeButton>
           <h5 className="modal-title" id="myLargeModalLabel">
             Receipt Details
@@ -432,14 +452,12 @@ function Receipts() {
                       <>
                         <td>
                           {formatCurrency.format(
-                            JSON.parse(activeInvoice?.response).receiptInfo
-                              .billAmount
+                            JSON.parse(activeInvoice?.response).billAmount
                           )}
                         </td>
                         <td>
                           {formatCurrency.format(
-                            JSON.parse(activeInvoice?.response).receiptInfo
-                              .billBalance
+                            JSON.parse(activeInvoice?.response).billBalance
                           )}
                         </td>
                       </>
@@ -453,7 +471,39 @@ function Receipts() {
               </table>
             </div>
           </div>
+
+          <div className="col-12 mt-4">
+          <h3 className="font-size-15 fw-bold">Receipt Items</h3>
+            <div className="table-responsive">
+              <table className="table table-nowrap">
+                <thead>
+                  <tr>
+                    <th>Item Id</th>
+                    <th>Title</th>
+                    <th>Decription</th>
+                    <th>Bill Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activeInvoiceItems?.map((item)=>(
+                  <tr key={item.id}>
+                    <td>{item.transactionItemId}</td>
+                    <td>{item.transactionTitle}</td>
+                    <td>{item.transactionDescription}</td>
+                    <td>{item.amount}</td>
+                    
+                  </tr>
+
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <button className="btn btn-success print-btn" onClick={handlePrint}>Print this out!</button>
+
         </Modal.Body>
+        </div>
       </Modal>
     </>
   );
