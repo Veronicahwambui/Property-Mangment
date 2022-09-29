@@ -1200,7 +1200,7 @@ function ViewLandlord() {
 
   useEffect(() => {
     getLanlordStatements();
-  }, []);
+  }, [statpage ,statsize ]);
 
   const getLanlordStatements = () => {
     let data = { startDate: moment(statementdate.startDate).format("YYYY/MM/DD"), endDate: moment(statementdate.endDate).format("YYYY/MM/DD"), page: statpage, size: statsize, id: userId };
@@ -2961,8 +2961,8 @@ function ViewLandlord() {
                               <tr data-id={index} key={index}>
                                 <td>
                                   {
-                                    JSON.parse(statement.response).receiptInfo
-                                      .clientAccountNo
+                                    JSON.parse(statement.response).billNo
+               
                                   }
                                 </td>
                                 <td>

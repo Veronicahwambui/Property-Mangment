@@ -196,7 +196,7 @@ function Receipts() {
                         {currentStatements?.length > 0 &&
                           currentStatements?.map((statement, index) => (
                             <tr data-id={index} key={index}>
-                              <td>{statement.receiptNo}</td>
+                              <td>{ JSON.parse(statement.response).receiptNo}</td>
                               <td>{statement.paidBy}</td>
                               <td>
                                 {statement?.tenant?.tenantType ===
@@ -211,14 +211,12 @@ function Receipts() {
                               </td>
                               <td>
                                 {formatCurrency.format(
-                                  JSON.parse(statement.response).receiptInfo
-                                    .billAmount
+                                  JSON.parse(statement.response).billAmount
                                 )}
                               </td>
                               <td>
                                 {formatCurrency.format(
-                                  JSON.parse(statement.response).receiptInfo
-                                    .billBalance
+                                  JSON.parse(statement.response).billBalance
                                 )}
                               </td>
                               <td>{statement.paymentMode}</td>

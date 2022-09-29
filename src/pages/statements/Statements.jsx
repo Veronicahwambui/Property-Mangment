@@ -221,8 +221,8 @@ function Statements() {
                             <tr data-id={index} key={index}>
                               <td>
                                 {
-                                  JSON.parse(statement.response).receiptInfo
-                                    .clientAccountNo
+                                  JSON.parse(statement.response).billNo
+                                  
                                 }
                               </td>
                               <td>
