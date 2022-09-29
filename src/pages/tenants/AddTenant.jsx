@@ -1508,7 +1508,7 @@ function AddTenant() {
 
                     <div className="form-group row col-12">
                       <div className="form-group mb-4">
-                        <label htmlFor=""> Premise Name</label>
+                        <label htmlFor=""> Property Name</label>
                         <input
                           type="text"
                           className="form-control"

@@ -3708,7 +3708,7 @@ function OneTenant() {
                         />
                       </div>
                       <div class="col-3 ">
-                        <button class="btn btn-primary btn-block w-100 btn-lg">
+                        <button class="btn btn-primary btn-block w-100 btn-lg" onClick={handleSubmit}>
                           <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
                           <div class="d-none">Search</div>
                         </button>

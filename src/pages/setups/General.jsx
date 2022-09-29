@@ -4,17 +4,25 @@ import React, { useEffect, useState } from "react";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 import { Button, Modal } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link,useParams } from "react-router-dom";
+
 import ReactPaginate from "react-paginate";
 
 function IssuesTypes() {
   const [issueTypes, setIssueTypes] = useState([]);
   const [activeId, setActiveId] = useState("");
   const [activeLink, setActiveLink] = useState(1);
+  const [error, setError] = useState({
+    message: "",
+    color: "",
+  });
+
 
 
   useEffect(() => {
     getIssueTypes();
+    getAll ()
+    getApplicable();
   }, []);
 
   // PAGINATION
@@ -55,6 +63,113 @@ function IssuesTypes() {
       }
     });
   };
+
+//  general  settings
+
+
+const[bouncedChequeChargeId,setBouncedChequeChargeId]=useState("")
+const[chequeProcessingPeriod,setChequeProcessingPeriod]=useState("")
+const[invoicePaymentPriority,setInvoicePaymentPriority]=useState("")
+const[landlordSettlementChargeId,setLandlordSettlementChargeId]=useState("")
+const[penaltyChargeId,setPenaltyChargeId]=useState("")
+const[penaltyChargeRate,setpenaltyChargeRate]=useState("")
+const[propertyTaxChargeId,setPropertyTaxChargeId]=useState("")
+const[senderId,setSenderId]=useState("")
+const[propertyTaxRate,setPropertyTaxRate]=useState("")
+const[settlementPeriod,setsettlementPeriod]=useState("")
+const[visitationChargeDay,setvisitationChargeDay]=useState("")
+const[visitationChargeId,setvisitationChargeId]=useState("")
+const[invo,setInvo]= useState([])
+const [client, setClient] = useState([]);
+const clientId = useParams().id;
+
+const[]=useState("")
+const createGeneral =() =>{
+  let data = JSON.stringify({
+
+   bouncedChequeChargeId: parseInt(bouncedChequeChargeId),
+  chequeProcessingPeriod: chequeProcessingPeriod,
+  id: null,
+  invoicePaymentPriority:invoicePaymentPriority,
+  landlordSettlementChargeId: landlordSettlementChargeId,
+  penaltyChargeId: penaltyChargeId,
+  penaltyChargeRate: penaltyChargeRate,
+  propertyTaxChargeId: propertyTaxChargeId,
+  propertyTaxRate: propertyTaxRate,
+  senderId: senderId,
+  settlementPeriod: settlementPeriod,
+  visitationChargeDay: visitationChargeDay,
+  visitationChargeId: visitationChargeId,
+  });
+  requestsServiceService.createSettings(data).then((res) => {
+    getAll(data)
+    $("#add-new-settings").modal("hide");
+
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#add-new-settings").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      });
+  };
+
+  const clear = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+   
+
+  
+
+}
+const getApplicable =() => {
+  requestsServiceService.allApplicableCharges("TENANT").then((res) => {
+    setInvo(res.data.data)
+    
+  
+  })
+}
+const getAll = () => {
+  requestsServiceService.getClient(clientId).then((res) => {
+    setClient(res.data.data.client);
+  });
+}
+// const getAllClients = () => {
+//   requestsServiceService.getClients().then((res) => {
+//     console.log(res.data.data)
+//   }).catch(err => {
+//     console.log(err)
+//   })
+// }
+
+
 
   return (
     <>
@@ -315,12 +430,382 @@ function IssuesTypes() {
           </div>
           </div>
             )}
+
+
+            {activeLink === 2 && (
+              <div>
+                            <div className="row">
+              <div className="col-12">
+                <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                  <div
+                    className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                    role="toolbar"
+                  >
+                    <div className="d-flex align-items-center flex-grow-1">
+                      <h4 className="mb-0  bg-transparent  p-0 m-0">
+                        
+                      </h4>
+                    </div>
+                    <div className="d-flex align-items-center flex-grow-1"></div>
+                    <div className="d-flex">
+                      <button
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#add-new-settings"
+                     
+                        className="btn btn-primary dropdown-toggle option-selector"
+                      >
+                        <i className="dripicons-plus font-size-16"></i>{" "}
+                        <span className="pl-1 d-md-inline">
+                       Add General Settings
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="card calc-h-3px">
+                  <div className={"d-flex"}>
+                    <div className="card-body border-top">
+                      <p className="p-0 m-0">
+                        <span className="text-muted">BouncedChequeChargeId </span>
+                        {client?.bouncedChequeChargeId}
+                      </p>
+                    </div>
+                    <div className="card-body border-top">
+                      <p className="p-0 m-0">
+ ChequeProcessingPeriod
+                        <span className="text-muted"></span>
+                        {client?.chequeProcessingPeriod}
+                      </p>
+                    </div>
+                    <div className="card-body border-top">
+                      <p className="p-0 m-0">
+                        <span className="text-muted">
+                        InvoicePaymentPriority.{" "}
+                        </span>
+                        {client?. invoicePaymentPriority}
+                      </p>
+                    </div>
+                   
+                  </div>
+                  <div className={"d-flex"}>
+                  <div className="card-body border-top">
+                      <p className="p-0 m-0">
+                        <span className="text-muted">  LandlordSettlementChargeId
+ </span>
+                        {client?.landlordSettlementChargeId}
+                      </p>
+                    </div>
+                    <div className="card-body border-top">
+                      <p className="p-0 m-0">
+                      PenaltyChargeId
+                        <span className="text-muted"></span>
+                        {client?.penaltyChargeId}
+                    
+                      </p>
+                    </div>
+                    <div className="card-body border-top">
+                      <p className="p-0 m-0">
+                        <span className="text-muted">
+                        PenaltyChargeRate.{" "}
+                        </span>
+                        {client?.penaltyChargeRate}
+                      </p>
+                    </div>
+                    </div>
+                   
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+                       
+            )}
           {/* <!-- end row --> */}
         </div>
         {/* <!-- container-fluid --> */}
       </div>
 
       {/*MODALS*/}
+
+  {/* create modal */}
+  <div
+        class="modal fade"
+        id="add-new-settings"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                createGeneral();
+              }}
+            >
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  General Settings
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  
+                  <div class="col-12">
+                    <label for="">
+                    BouncedChequeChargeId <strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control text-capitalize"
+                                           title="Select Applicable Charge Type"
+                      onChange={(e) => {
+                        setBouncedChequeChargeId(e.target.value);
+                      }}
+                    >
+                      <option>-------Select BouncedChequeChargeId -------</option>
+                      {invo.map((item) => (
+                        <option value={item.id} key={item.id}>
+                        {item.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                      ChequeProcessingPeriod{" "}
+                        <strong class="text-danger">*</strong>{" "}
+                      </label>
+                      <input
+                        required
+                        min="1"
+                        max="30"
+                        value={chequeProcessingPeriod}
+                        onChange={(e) => setChequeProcessingPeriod(e.target.value)}
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter  ChequeProcessingPeriod"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="">
+                    InvoicePaymentPriority <strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control text-capitalize"
+                                           title="Select Applicable Charge Type"
+                      onChange={(e) => {
+                        setInvoicePaymentPriority(e.target.value);
+                      }}
+                    >
+                      <option>Select  InvoicePaymentPriority-----</option>
+                      {invo.map((item) => (
+                        <option value={item.id} key={item.id}>
+                        {item.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <label for="">
+                    landlordSettlementChargeId <strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control text-capitalize"
+                                           title="Select Applicable Charge Type"
+                      onChange={(e) => {
+                        setLandlordSettlementChargeId(e.target.value);
+                      }}
+                    >
+                      <option>---Select  LandlordSettlementChargeId-----</option>
+                      {invo.map((item) => (
+                        <option value={item.id} key={item.id}>
+                        {item.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                
+              
+                  <div class="col-12">
+                    <label for="">
+                   PenaltyChargeId <strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control text-capitalize"
+                                           title="Select Applicable Charge Type"
+                      onChange={(e) => {
+                        setPenaltyChargeId(e.target.value)
+                        (e.target.value);
+                      }}
+                    >
+                      <option>---Select  PenaltyChargeId-----</option>
+                      {invo.map((item) => (
+                        <option value={item.id} key={item.id}>
+                        {item.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">PropertyTaxRate</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="30"
+                        class="form-control"
+                        placeholder="Enter PropertyTaxRate"
+                        onChange={(event) =>
+                          setPropertyTaxRate(event.target.value)
+                        }
+                        value={propertyTaxRate}
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">PenaltyChargeRate</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="30"
+                        class="form-control"
+                        placeholder="Enter PenaltyChargeRate"
+                        onChange={(event) =>
+                          setpenaltyChargeRate(event.target.value)
+                        }
+                        value={penaltyChargeRate}
+                      />
+                    </div>
+                  </div>
+                
+                  <div class="col-12">
+                    <label for="">
+                    PropertyTaxChargeId <strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control text-capitalize"
+                                           title="Select Applicable Charge Type"
+                      onChange={(e) => {
+                        setPropertyTaxChargeId(e.target.value)
+                        (e.target.value);
+                      }}
+                    >
+                      <option value="">Select Applicable Charge Type --</option>
+                      {invo.map((item) => (
+                        <option value={item.id} key={item.id}>
+                        {item.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">SenderId</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter SenderId"
+                        onChange={(event) =>
+                          setSenderId(event.target.value)
+                        }
+                        value={senderId}
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">SettlementPeriod</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter SettlementPeriod"
+                        onChange={(event) =>
+                          setsettlementPeriod(event.target.value)
+                        }
+                        value={settlementPeriod}
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">visitationChargeDay</label>
+                      <input
+                        type="number"
+                        max="30"
+                        min="1"
+                        class="form-control"
+                        placeholder="Enter visitationChargeDay"
+                        onChange={(event) =>
+                          setvisitationChargeDay(event.target.value)
+                        }
+                        value={visitationChargeDay}
+                      />
+                    </div>
+                  </div>
+
+                 
+                  
+                  <div class="col-12">
+                    <label for="">
+                    visitationChargeId<strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control text-capitalize"
+                                           title="Select VisitationChargeId"
+                      onChange={(e) => {
+                        setvisitationChargeId(e.target.value)
+                        (e.target.value);
+                      }}
+                    >
+                      <option>Select VisitationChargeId ----</option>
+                      {invo.map((item) => (
+                        <option value={item.id} key={item.id}>
+                        {item.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                 
+                
+                 
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Create
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
       {/*deactivate activate modals*/}
       {/* confirm deactivate  */}
       <div

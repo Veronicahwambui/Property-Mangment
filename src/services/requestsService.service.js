@@ -1158,6 +1158,9 @@ class RequestsService {
 
     return axiosInstance.get(baseUrl+ "/payments/parents/item/" + invoiceNo + "/regenerateReference")
   }
+  createSettings(data){
+    return axiosInstance.post(baseUrl + "/clients/settings", data);
+  }
 }
 
 export default new RequestsService();
