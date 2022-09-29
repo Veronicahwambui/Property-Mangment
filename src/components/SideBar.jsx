@@ -99,7 +99,7 @@ function SideBar() {
                   <NavLink to="/receipts">Payment Receipts</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/landord-statements">Landord Statements</NavLink>
+                  <NavLink to="/landord-statements">Landord Settlements</NavLink>
                 </li>
                 <li>
                   <NavLink to="/settlements">Create New Statements</NavLink>

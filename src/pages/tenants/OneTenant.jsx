@@ -17,6 +17,7 @@ import numeral from "numeral";
 import DatePickRange from "../../components/Datepicker";
 import DatePicker from "react-datepicker";
 import StatusBadge from "../../components/StatusBadge";
+import ViewInvoice from "../../components/ViewInvoice";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -681,17 +682,12 @@ function OneTenant() {
   // invoice stuff   
   // * ==============================
   const [invoices, setinvoices] = useState([]);
-  // const [activeInvoice] = useState({});
+  const [activeInvoice2, setActiveInvoice2] = useState({});
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [status, setStatus] = useState("");
-  // const [startDate, setStartDate] = useState(
-  //   moment().startOf("month").format("YYYY-MM-DD")
-  // );
-  // const [endDate, setEndDate] = useState(
-  //   moment(new Date()).add(3, "M").format("YYYY-MM-DD")
-  // );
+  
 
   const [startDate2, setStartDate2] = useState(
     moment().startOf("month").format("YYYY-MM-DD")
@@ -699,19 +695,13 @@ function OneTenant() {
   const [endDate2, setEndDate2] = useState(
     moment(new Date()).add(3, "M").format("YYYY-MM-DD")
   );
-  // const [invoice_show, setinvoice_show] = useState(false);
-  // const showInvoice = () => setinvoice_show(true);
+  const [invoice_show2, setinvoice_show2] = useState(false);
+  const showInvoice2 = () => setinvoice_show2(true);
+
   const [transaction, settransaction] = useState({});
   const [paymentItems, setpaymentItems] = useState([]);
-  useEffect(() => { }, [transaction]);
-  useEffect(() => { }, [paymentItems]);
-  // const closeInvoice = () => {
-  //   setpaymentItems([]);
-  //   settransaction({});
-  //   setinvoice_show(false);
-  // };
-  
 
+ 
   const [date, setDate] = useState({
     startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     endDate: new Date(),
@@ -725,6 +715,9 @@ function OneTenant() {
     });
   };
 
+  const closeInvoice2 = () => {
+    setinvoice_show2(false);
+  };
 
   useEffect(() => {
     getInvoices();
@@ -777,23 +770,9 @@ function OneTenant() {
     });
     return { sum: sum, paid: paid, balance: sum - paid };
   };
-  const reset = () => {
-    setSize(100);
-    setPage(1);
-  };
-  const getOneInvoice = (id) => {
-    requestsServiceService.getParentInvoice(id).then((res) => {
-      settransaction(res.data.data.transaction);
-      setpaymentItems(res.data.data.transactionItems);
-    });
-    setTimeout(() => {
-      showInvoice();
-    }, 800);
-  };
-  // let formatCurrency = new Intl.NumberFormat("en-US", {
-  //   style: "currency",
-  //   currency: "KES",
-  // });
+
+ 
+ 
   const addDate = (date) => {
     setStartDate(new Date(date.target.value));
   };
@@ -804,51 +783,74 @@ function OneTenant() {
   $(document).on("change", ".sdate", addDate);
   $(document).on("change", ".edate", addDate2);
 
+  const getOneInvoice = (id) => {
+    let one = invoices.find(one => one.transactionItemId === id)
+    setActiveInvoice2(one)
+    showInvoice2();
+  };
 
-
-  // MESSAGE TEST
-  const [details, setDetails] = useState({
+   // MESSAGE TEST
+   const [details, setDetails] = useState({
     message: "",
     contact: "",
     recipientName: "",
     entity: null,
-    clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
-    clientId: parseInt(authService.getClientId()),
+    clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+    clientId: parseInt(AuthService.getClientId()),
     entityType: "TENANCY",
     createdBy: "",
     senderId: "",
     subject: "Invoice Payment",
   });
-
   const [mode, setmode] = useState("");
   const handleModeChange = (mode) => {
     setmode(mode);
   };
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.paidBy}, your payment for invoice ${inv.billNo
-      } for KES ${formatCurrency.format(
-        inv.receiptAmount
-      )} has been received. Thank you`;
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
+      } balance is ${formatCurrency.format(
+        inv.billAmount - inv.billPaidAmount
+      )}. Click here to pay for it`;
     let senderId =
-      JSON.parse(authService.getCurrentUserName()).client?.senderId === null
+      JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
-        : JSON.parse(authService.getCurrentUserName()).client?.senderId;
+        : JSON.parse(AuthService.getCurrentUserName()).client?.senderId;
     setDetails({
       ...details,
       message: mes,
-      contact: mod === "Email" ? inv?.tenant?.email : inv?.tenant?.phoneNumber,
-      entity: inv.tenant != undefined ? inv.tenant.id : inv.id,
-      recipientName: inv?.tenantName,
-      createdBy: authService.getCurrentUserName(),
+      contact:
+        mod === "Email"
+          ? inv.transactionCustomerEmail
+          : inv.transaction?.tenancy?.tenant?.phoneNumber,
+      entity: inv.transaction?.tenancy?.id,
+      recipientName: inv.transactionCustomerName,
+      createdBy: inv.createdBy,
       senderId: senderId,
       subject: "Invoice Payment",
     });
-
     $(".email-overlay").removeClass("d-none");
     setTimeout(function () {
       $(".the-message-maker").addClass("email-overlay-transform");
     }, 0);
   };
+  useEffect(() => { }, [details, mode]);
+
+  const clear2 = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+      clientId: parseInt(AuthService.getClientId()),
+      entityType: "TENANCY",
+      createdBy: "",
+      senderId: "",
+      subject: "Invoice Payment",
+    });
+  };
+
   const clearDetails = () => {
     setDetails({
       ...details,
@@ -856,14 +858,15 @@ function OneTenant() {
       contact: "",
       recipientName: "",
       entity: null,
-      clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
-      clientId: parseInt(authService.getClientId()),
-      entityType: "TENANT",
+      clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+      clientId: parseInt(AuthService.getClientId()),
+      entityType: "TENANCY",
       createdBy: "",
       senderId: "",
-      subject: "Customer Receipt",
+      subject: "Invoice Payment",
     });
   };
+
   // end tenant updates=============================================
 
   // Tenant graphs =================================================
@@ -2740,10 +2743,11 @@ function OneTenant() {
             </div>
           )
         }
-   {activeLink === 8 &&
+     {activeLink === 8 &&
           <>
             <div className="">
               <div className="container-fluid">
+              <Message details={details} mode={mode} clear={clear2} />
 
                 <div className="row">
                   <div className="col-12">
@@ -2820,6 +2824,7 @@ function OneTenant() {
                           <th>Due Date</th>
                           <th>Payment Status</th>
                           <th>Date Created</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -2864,6 +2869,53 @@ function OneTenant() {
                                   "YYYY-MM-DD HH:mm"
                                 )}
                               </td>
+                              <td>
+                                        <div className="d-flex justify-content-end">
+                                          <div className="dropdown">
+                                            <a
+                                              className="text-muted font-size-16"
+                                              role="button"
+                                              data-bs-toggle="dropdown"
+                                              aria-haspopup="true"
+                                            >
+                                              <i className="bx bx-dots-vertical-rounded"></i>
+                                            </a>
+                                            <div className="dropdown-menu dropdown-menu-end ">
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  getOneInvoice(
+                                                    invoice.transactionItemId
+                                                  );
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                View
+                                              </a>
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("Email");
+                                                  handleClicked(invoice, "Email");
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                                Email Tenant
+                                              </a>
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("SMS");
+                                                  handleClicked(invoice, "SMS");
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-chat me-3"></i>
+                                                Send as SMS
+                                              </a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
                             </tr>
                           ))}
                       </tbody>
@@ -2930,110 +2982,8 @@ function OneTenant() {
               </div>
             </div>
 
-            <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
-              <Modal.Header closeButton>
-                <h5 className="modal-title" id="myLargeModalLabel">
-                  Invoice Details
-                </h5>
-              </Modal.Header>
-              <Modal.Body>
-                <StatusBadge type={transaction?.paymentStatus} />
-                <div className="col-12">
-                  <address>
-                    <strong>Billed To:</strong>
-                    <br />
-                    {transaction?.tenantName} <br />
-                    {/*{activeInvoice?.transactionCustomerEmail}<br/>*/}
-                    {transaction?.premiseName} - {transaction?.premiseUnitName}
-                    <br />
-                    <br />
-                    {moment(transaction?.transaction?.invoiceDate).format(
-                      "dddd, MMMM Do YYYY, h:mm a"
-                    )}
-                  </address>
-                  {/*<p>Title: {activeInvoice?.transactionTitle}</p>*/}
-                  <p>Description: {transaction?.invoicePeriodDescription}</p>
-                </div>
-                <div className="col-12">
-                  <div className="py-2 mt-3">
-                    <h3 className="font-size-15 fw-bold">
-                      Charges Breakdown ({" "}
-                      <span className="text-primary fw-medium">
-                        {transaction?.transactionId}
-                      </span>{" "}
-                      )
-                    </h3>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <table className="table table-nowrap">
-                    <thead>
-                      <tr>
-                        <th style={{ width: "70px" }}>No.</th>
-                        <th>Charge name</th>
-                        <th>Quantity</th>
-                        <th>Unit Cost</th>
-                        <th>Paid Amount</th>
-                        <th></th>
-                        <th className={"text-end"}>Bill Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paymentItems?.length > 0 &&
-                        paymentItems?.map((item, index) => (
-                          <tr data-id={index} key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.applicableChargeName}</td>
-                            <td>{item.quantity}</td>
-                            <td>{formatCurrency.format(item.unitCost)}</td>
-                            <td>{formatCurrency.format(item.billPaidAmount)}</td>
-                            <td></td>
-                            <td className="text-end">
-                              {formatCurrency.format(item.billAmount)}
-                            </td>
-                          </tr>
-                        ))}
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td colSpan="2" className="text-end">
-                          Total
-                        </td>
-                        <td className="text-end fw-bold">
-                          {formatCurrency.format(total().sum)}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td colSpan="2" className="text-end">
-                          Paid
-                        </td>
-                        <td className="text-end fw-bold">
-                          {formatCurrency.format(total().paid)}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td colSpan="2" className="text-end">
-                          <strong>Balance</strong>
-                        </td>
-                        <td className="text-end fw-bold">
-                          {formatCurrency.format(total().balance)}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </Modal.Body>
-            </Modal>
+            {/*VIEW INVOICE*/}
+            <ViewInvoice show={invoice_show2} closeInvoice={closeInvoice2} activeInvoice={activeInvoice2} />
           </>
         }
 

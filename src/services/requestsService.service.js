@@ -824,6 +824,12 @@ class RequestsService {
         `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`
     );
   }
+  getLandlordStatements(data) {
+    return axiosInstance.get(
+      baseUrl +
+        `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}&entityType="LANDLORD"&entityId=${data.id}&page=${data.page}&size=${data.size}`
+    );
+  }
 
   moveTenancyIssueToNextState(tenancyIssueId, data) {
     return axiosInstance.post(
