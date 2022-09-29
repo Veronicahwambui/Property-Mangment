@@ -81,7 +81,7 @@ function SideBar() {
                   <NavLink to="/invoices">Invoices</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/monthly-invoices">Monthly Invoices</NavLink>
+                  {/* <NavLink to="/monthly-invoices">Monthly Invoices</NavLink> */}
                 </li>
               </ul>
             </li>

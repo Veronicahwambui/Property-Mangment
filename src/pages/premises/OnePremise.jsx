@@ -972,7 +972,7 @@ const pieChart = {
       premiseId: parseInt(userId),
       search: searchTerm,
     };
-    requestsServiceService.getSortedInvoices(0, 10, data).then((res) => {
+    requestsServiceService.getSortedInvoices(page, size , data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
     });
