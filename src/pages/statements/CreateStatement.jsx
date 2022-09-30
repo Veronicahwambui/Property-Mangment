@@ -231,8 +231,8 @@ export default function CreateStatement() {
   function handleForm(e, index, transaction) {
     let newArr = [...datas];
     newArr[index] = {
-      code: transaction.all,
-      name: transaction.status,
+      code: transaction.status,
+      name: "",
       value: parseInt(e.target.value),
     };
     setdatas(newArr);
@@ -270,21 +270,22 @@ export default function CreateStatement() {
     console.log(recipient, recipientPerson);
     var data = {
       allocations: datas,
-      billNo: "",
-      landLordFileNumber: "",
-      paidBy: "",
-      payReferenceNo: uuid().toString().toUpperCase(),
-      paymentMode: "CASH",
-      receiptAmount: receiptAmount,
-      receiptNo: invoicePresent ? invNo : uuid().toString().toUpperCase(),
-      tenancyFileNumber: "",
-      tenantNumber: "",
-      userName: "",
+      billNo: invoicePresent ? invNo : uuid().toString().toUpperCase(),
+      landLordFileNumber: null,
+      paidBy: null,
+      payReferenceNo: null,
+      paymentMode: null,
+      receiptAmount: null,
+      receiptNo: receiptNo === "" ? uuid().toString().toUpperCase() : receiptNo,
+      tenancyFileNumber: null,
+      tenantNumber: null,
+      userName: null,
     };
     if (recipient === "USER") {
       let d = {
         userName: recipientPerson.userName,
       };
+      var x = Object.assign(data, d);
     }
     if (recipient === "LANDLORD") {
       let d = {
@@ -294,13 +295,15 @@ export default function CreateStatement() {
     }
     if (recipient === "TENANT") {
       let d = {
-        tenantNumber: "",
-        tenancyFileNumber: "",
+        tenantNumber: recipientPerson.fileNumber,
+        tenancyFileNumber: tenancyFileNo,
       };
+      var x = Object.assign(data, d);
     }
-    requestsServiceService.createStatements(x).then((res) => {
-      console.log(res);
-    });
+    console.log(x);
+    // requestsServiceService.createStatements(x).then((res) => {
+    //   console.log(res);
+    // });
   };
   function uuid() {
     return "XXXXXXXXXXX".replace(/[XY]/g, function (c) {
@@ -317,6 +320,8 @@ export default function CreateStatement() {
   const [recipientPerson, setrecipientPerson] = useState({});
   const [receiptAmount, setreceiptAmount] = useState("");
   const [payerName, setpayerName] = useState("");
+  const [receiptNo, setreceiptNo] = useState("");
+  const [tenancyFileNo, setTenancyFileNo] = useState("");
 
   useEffect(() => {
     console.log(recipientPerson);
@@ -476,7 +481,10 @@ export default function CreateStatement() {
                                   <div className={"mt-2"}>
                                     <input
                                       type="checkbox"
-                                      onChange={(e) => setTenancyId(item.id)}
+                                      onChange={(e) => {
+                                        setTenancyId(item.id);
+                                        setTenancyFileNo(item.fileNumber);
+                                      }}
                                       checked={item.id === tenancyId}
                                       style={{ marginRight: "5px" }}
                                     />
@@ -525,12 +533,12 @@ export default function CreateStatement() {
                                 <td>{index + 1}</td>
                                 <td>{item.status}</td>
                                 <td>{item.all}</td>
-                                <td>{formatCurrency(item.sum)}</td>
                                 <td>{formatCurrency(item.balance)}</td>
+                                <td>{formatCurrency(item.sum)}</td>
                                 {/*<td>{formatCurrency(item.billPaidAmount)}</td>*/}
                                 <td></td>
                                 <td className="text-end">
-                                  {formatCurrency(item.sum - item.balance)}
+                                  {formatCurrency(item.balance - item.sum)}
                                 </td>
                                 <td>
                                   <input
@@ -629,11 +637,11 @@ export default function CreateStatement() {
                         className={"form-control"}
                       />
                       <br />
-                      <label htmlFor="">Payer Name</label>
+                      <label htmlFor="">ReceiptNo</label>
                       <input
                         type="text"
-                        placeholder={"Enter Payer Name"}
-                        onChange={(e) => setpayerName(e.target.value)}
+                        placeholder={"Enter Receipt No"}
+                        onChange={(e) => setreceiptNo(e.target.value)}
                         className={"form-control"}
                       />
                     </>
