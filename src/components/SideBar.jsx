@@ -99,10 +99,20 @@ function SideBar() {
                   <NavLink to="/receipts">Payment Receipts</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/landord-statements">Landord Statements</NavLink>
+                  <NavLink to="/landord-statements">
+                    Landlord Statements
+                  </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/settlements">Create New Statements</NavLink>
+                  <NavLink to="/new-statement">Create New Statements</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/unallocated-payments">
+                    Unallocated Payments
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/settlements">Settlements</NavLink>
                 </li>
               </ul>
             </li>

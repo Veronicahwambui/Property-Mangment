@@ -43,6 +43,7 @@ export default function AddLandlord() {
   const [idNumber, setidNumber] = useState("");
   const [remunerationPercentage, setremunerationPercentage] = useState(null);
   const [phoneNumber, setphoneNumber] = useState("");
+  const [invoicePaymentPriority, setinvoicePaymentPriority] = useState("");
 
   //modals
   const [show, setShow] = useState(false);
@@ -163,6 +164,7 @@ export default function AddLandlord() {
       firstName: firstName,
       gender: gender,
       id: null,
+      invoicePaymentPriority: tmp.join("-").toString(),
       idNumber: idNumber,
       landLordAgreementTypeId: landLordAgreementTypeId,
       landLordTypeName: landLordTypeName,
@@ -176,34 +178,35 @@ export default function AddLandlord() {
       landLord: data,
       landLordAccounts: accounts,
     };
-    requestsServiceService
-      .createLandLord(new_t)
-      .then((res) => {
-        if (res.data.status === true) {
-          confirmAlert({
-            message: res.data.message,
-            buttons: [
-              {
-                label: "OK",
-                onClick: (e) => {
-                  navigate("/landlords", { replace: true });
-                },
-              },
-            ],
-          });
-        } else {
-          confirmAlert({
-            message: res.data.message,
-            buttons: [{ label: "OK" }],
-          });
-        }
-      })
-      .catch((err) => {
-        confirmAlert({
-          message: err.message,
-          buttons: [{ label: "OK" }],
-        });
-      });
+    // requestsServiceService
+    //   .createLandLord(new_t)
+    //   .then((res) => {
+    //     if (res.data.status === true) {
+    //       confirmAlert({
+    //         message: res.data.message,
+    //         buttons: [
+    //           {
+    //             label: "OK",
+    //             onClick: (e) => {
+    //               navigate("/landlords", { replace: true });
+    //             },
+    //           },
+    //         ],
+    //       });
+    //     } else {
+    //       confirmAlert({
+    //         message: res.data.message,
+    //         buttons: [{ label: "OK" }],
+    //       });
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     confirmAlert({
+    //       message: err.message,
+    //       buttons: [{ label: "OK" }],
+    //     });
+    //   });
+    console.log(data);
   };
   const removeDoc = (id) => {
     setLandlordDocuments(
@@ -246,6 +249,29 @@ export default function AddLandlord() {
     setPercentageRemuneration(0);
     setShow(false);
   };
+  const [ac, setAC] = useState([]);
+
+  useEffect(() => {
+    requestsServiceService.allApplicableCharges().then((res) => {
+      setAC(res.data.data);
+    });
+  }, []);
+
+  const [tmp, stmp] = useState([]);
+  const [chargeNames, setChargeNames] = useState([]);
+  const handleACchange = (e, i) => {
+    let id = e.target.value.split("-")[0];
+    let name = e.target.value.split("-")[1];
+    if (tmp?.includes(id)) {
+      //
+    } else {
+      stmp([...tmp, id]);
+    }
+    if (chargeNames.includes(name)) {
+    } else {
+      setChargeNames([...chargeNames, name]);
+    }
+  };
   return (
     <>
       <div className="page-content">
@@ -278,7 +304,7 @@ export default function AddLandlord() {
                 {error.message}
               </div>
             )}
-          
+
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
@@ -318,7 +344,6 @@ export default function AddLandlord() {
                     {/*section add landlord details*/}
                     <form id="my-form" onSubmit={handleSubmit}>
                       <section className={"step-cont active-step"}>
-                    
                         <p>
                           Fill in the form correctly. Fields with an Asterisk{" "}
                           <strong className="text-danger">*</strong> are
@@ -610,6 +635,36 @@ export default function AddLandlord() {
                                 placeholder="Agreement period (months)"
                                 required={true}
                               />
+                            </div>
+                          </div>
+                          <div className="col-lg-4">
+                            <div className="mb-4">
+                              <label htmlFor="">Applicable charges</label>
+                              <br />
+                              <select
+                                name=""
+                                onChange={(e) => handleACchange(e)}
+                                id=""
+                                className={"form-control"}
+                              >
+                                {ac?.map((item) => (
+                                  <option value={item.id + "-" + item.name}>
+                                    {item.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="mb-4">
+                              <label htmlFor="basicpill-lastname-input ">
+                                Invoice Payment Priority
+                              </label>
+                              <div className="alert alert-info bg-soft">
+                                {chargeNames.length > 0
+                                  ? chargeNames.join("  -->  ")
+                                  : chargeNames}
+                              </div>
                             </div>
                           </div>
                         </div>

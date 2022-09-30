@@ -68,6 +68,7 @@ import AllNotes from "./pages/creditsDebits/AllNotes";
 import LandlordStatements from "./pages/statements/LandlordStatements";
 import ViewLandlordStatement from "./pages/statements/ViewLandlordStatement";
 import Settlements from "./pages/statements/Settlements";
+import CreateStatement from "./pages/statements/CreateStatement";
 import authLoginService from "./services/authLogin.service";
 
 function Main() {
@@ -104,17 +105,21 @@ function Main() {
             {AuthService.getCurrentUserType() === "USER" && <SideBar />}
             <Header />
             <div className="main-content">
-              {(AuthService.getCurrentUserType() === "LANDLORD"
-                || AuthService.getCurrentUserType() === "TENANT"
-                || AuthService.getCurrentUserType() === "USER") && <Routes>
+              {(AuthService.getCurrentUserType() === "LANDLORD" ||
+                AuthService.getCurrentUserType() === "TENANT" ||
+                AuthService.getCurrentUserType() === "USER") && (
+                <Routes>
                   {/* dashboard */}
-                  {AuthService.getCurrentUserType() === "USER" &&
+                  {AuthService.getCurrentUserType() === "USER" && (
                     <>
                       <Route path="/" element={<Dashboard />} />
-                      {JSON.parse(localStorage.getItem("user"))?.userType?.name ===
-                        "ADMIN" && (
-                          <Route path="/adminDashboard" element={<AdminDashboard />} />
-                        )}
+                      {JSON.parse(localStorage.getItem("user"))?.userType
+                        ?.name === "ADMIN" && (
+                        <Route
+                          path="/adminDashboard"
+                          element={<AdminDashboard />}
+                        />
+                      )}
                       {/* landlords */}
                       <Route path="/landlords" element={<Landlords />} />
                       {/* premises */}
@@ -124,9 +129,15 @@ function Main() {
                       />
                       <Route path="/addpremises" element={<AddPremises />} />
                       <Route path="/premise/:id" element={<OnePremise />} />
-                      <Route path="/premise/:id/:one" element={<OnePremiseUnit />} />
+                      <Route
+                        path="/premise/:id/:one"
+                        element={<OnePremiseUnit />}
+                      />
 
-                      <Route path="/premise/:id/:one" element={<OnePremiseUnit />} />
+                      <Route
+                        path="/premise/:id/:one"
+                        element={<OnePremiseUnit />}
+                      />
 
                       {/* tenants  */}
                       <Route path="/alltenants" element={<AllTenants />} />
@@ -140,9 +151,15 @@ function Main() {
                       <Route path="/estates" element={<Estate />} />
                       <Route path="/zones" element={<Zones />} />
                       <Route path="/premisetypes" element={<PremiseTypes />} />
-                      <Route path="/premiseusetypes" element={<PremiseUseTypes />} />
+                      <Route
+                        path="/premiseusetypes"
+                        element={<PremiseUseTypes />}
+                      />
                       <Route path="/unit-types" element={<UnitTypes />} />
-                      <Route path="/document-types" element={<DocumentTypes />} />
+                      <Route
+                        path="/document-types"
+                        element={<DocumentTypes />}
+                      />
                       {/* credit and debit notes  */}
                       <Route
                         path="/create-debit-note"
@@ -155,11 +172,20 @@ function Main() {
                       <Route path="/notes" element={<AllNotes />} />
 
                       {/* invoices */}
-                      <Route path="/createinvoice" element={<CreateInvoice />} />
+                      <Route
+                        path="/createinvoice"
+                        element={<CreateInvoice />}
+                      />
                       <Route path="/invoices" element={<Invoices />} />
-                      <Route path="/monthly-invoices" element={<InvoiceParent />} />
+                      <Route
+                        path="/monthly-invoices"
+                        element={<InvoiceParent />}
+                      />
                       <Route path="/bulk-invoices" element={<BulkInvoices />} />
-                      <Route path="/bulk-invoicing" element={<BulkInvoiving />} />
+                      <Route
+                        path="/bulk-invoicing"
+                        element={<BulkInvoiving />}
+                      />
                       {/* receipts */}
                       <Route path="/receipts" element={<Receipts />} />
                       {/* transactions  */}
@@ -189,7 +215,10 @@ function Main() {
                       <Route path="/allroles" element={<AllRoles />} />
 
                       {/* setup */}
-                      <Route path="/clientcounties" element={<ClientCounties />} />
+                      <Route
+                        path="/clientcounties"
+                        element={<ClientCounties />}
+                      />
 
                       <Route path="/clienttype" element={<ClientType />} />
 
@@ -228,11 +257,23 @@ function Main() {
 
                       {/* messageer  */}
                       <Route path="/messages" element={<Messages />} />
-                      <Route path="/createTemplate" element={<MessageTemplates />} />
+                      <Route
+                        path="/createTemplate"
+                        element={<MessageTemplates />}
+                      />
                       <Route path="/emails" element={<Emails />} />
-                      <Route path="/custommessages" element={<CustomMessage />} />
-                      <Route path="/bulkmessaging" element={<BulkMessaging />} />
-                      <Route path="/bulkmessages" element={<BulkMessagesList />} />
+                      <Route
+                        path="/custommessages"
+                        element={<CustomMessage />}
+                      />
+                      <Route
+                        path="/bulkmessaging"
+                        element={<BulkMessaging />}
+                      />
+                      <Route
+                        path="/bulkmessages"
+                        element={<BulkMessagesList />}
+                      />
                       <Route path="/admin-reports" element={<AdminArrears />} />
                       <Route
                         path="/newunits-reports"
@@ -243,14 +284,15 @@ function Main() {
                         element={<OccupancyReport />}
                       />
                       <Route path="/settlements" element={<Settlements />} />
-
-
-
+                      <Route
+                        path="/new-statement"
+                        element={<CreateStatement />}
+                      />
                     </>
-                  }
+                  )}
 
                   {(AuthService.getCurrentUserType() === "TENANT" ||
-                    AuthService.getCurrentUserType() === "USER") &&
+                    AuthService.getCurrentUserType() === "USER") && (
                     <>
                       <Route path="/tenant/:id" element={<OneTenant />} />
 
@@ -259,33 +301,55 @@ function Main() {
                         element={<PremiseTenancy />}
                       />
                     </>
-                  }
+                  )}
 
                   {(AuthService.getCurrentUserType() === "LANDLORD" ||
-                    AuthService.getCurrentUserType() === "USER") &&
+                    AuthService.getCurrentUserType() === "USER") && (
                     <>
                       <Route
                         path="/landord-statements/:id"
                         element={<ViewLandlordStatement />}
                       />
-                      <Route exact path="/landlord/:id" element={<ViewLandlord />} />
+                      <Route
+                        exact
+                        path="/landlord/:id"
+                        element={<ViewLandlord />}
+                      />
                     </>
-                  }
+                  )}
 
-
-                  {AuthService.getCurrentUserType() === "USER" ?
-
+                  {AuthService.getCurrentUserType() === "USER" ? (
                     <Route path="*" element={<Navigate to="/" />}></Route>
-                    :
+                  ) : (
                     <>
-                      {AuthService.getCurrentUserType() === "LANDLORD" ?
-                        <Route path="*" element={<Navigate to={"/landlord/" + authLoginService.getCurrentUserId()} />} /> :
-                        <Route path="*" element={<Navigate to={"/tenant/" + authLoginService.getCurrentUserId()} />} />
-                      }
+                      {AuthService.getCurrentUserType() === "LANDLORD" ? (
+                        <Route
+                          path="*"
+                          element={
+                            <Navigate
+                              to={
+                                "/landlord/" +
+                                authLoginService.getCurrentUserId()
+                              }
+                            />
+                          }
+                        />
+                      ) : (
+                        <Route
+                          path="*"
+                          element={
+                            <Navigate
+                              to={
+                                "/tenant/" + authLoginService.getCurrentUserId()
+                              }
+                            />
+                          }
+                        />
+                      )}
                     </>
-                  }
+                  )}
                 </Routes>
-              }
+              )}
             </div>
           </>
         )}
