@@ -1178,6 +1178,9 @@ class RequestsService {
         entId
     );
   }
+  createStatements(data) {
+    return axiosInstance.post(baseUrl + "/payments/statements/new", data);
+  }
 }
 
 export default new RequestsService();

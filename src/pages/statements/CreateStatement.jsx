@@ -164,13 +164,13 @@ export default function CreateStatement() {
       let data = Object.assign(dates, s);
       getLandlords2(page, size, data);
     }
-    if (recipient === "INVOICE") {
-      getInvoices(searchrecipient);
-    }
-    if (recipient === "AUCTIONEER") {
+  };
+
+  useEffect(() => {
+    if (recipient === "USER") {
       getAuctioneer();
     }
-  };
+  }, [recipient === "USER"]);
   const getTenants = (w, x, y, z) => {
     requestsServiceService.getAllTenants(w, x, y, z).then((res) => {
       setfoundRecipients(res.data.data);
@@ -181,13 +181,8 @@ export default function CreateStatement() {
       setfoundRecipients(res.data.data);
     });
   };
-  const getInvoices = (x) => {
-    requestsServiceService.getParentInvoice(x).then((res) => {
-      setfoundRecipients(res.data.data);
-    });
-  };
   const getAuctioneer = () => {
-    requestsServiceService.getData(recipient).then((res) => {
+    requestsServiceService.getData("AUCTIONEER").then((res) => {
       setfoundRecipients(res.data.data);
     });
   };
@@ -198,10 +193,6 @@ export default function CreateStatement() {
       getEntityDetails();
     }
   }, [recipientId]);
-
-  useEffect(() => {
-    console.log(foundRecipients);
-  }, []);
 
   const [receivedData, setRECEIVEDDATA] = useState([]);
   const [tenancies, setTenancies] = useState([]);
@@ -225,19 +216,15 @@ export default function CreateStatement() {
         setRECEIVEDDATA(res.data.data);
       });
     }
-    if (recipient === "INVOICE") {
-    }
   };
 
   const getUnpaidCharges = () => {
-    if (recipientId !== "") {
-      requestsServiceService
-        .fetchEntityPendingTotals(recipient, recipientId)
-        .then((res) => {
-          console.log(res.data.data);
-          setunpaidCharges(res.data.data);
-        });
-    }
+    requestsServiceService
+      .fetchEntityPendingTotals(recipient, recipientId)
+      .then((res) => {
+        console.log(res.data.data);
+        setunpaidCharges(res.data.data);
+      });
   };
 
   const [datas, setdatas] = useState([]);
@@ -280,20 +267,40 @@ export default function CreateStatement() {
   };
 
   const createStatement = () => {
-    let d = {
+    console.log(recipient, recipientPerson);
+    var data = {
       allocations: datas,
-      billNo: "string",
-      landLordFileNumber: "string",
-      paidBy: "string",
+      billNo: "",
+      landLordFileNumber: "",
+      paidBy: "",
       payReferenceNo: uuid().toString().toUpperCase(),
       paymentMode: "CASH",
-      receiptAmount: "string",
-      receiptNo: "string",
+      receiptAmount: receiptAmount,
+      receiptNo: invoicePresent ? invNo : uuid().toString().toUpperCase(),
       tenancyFileNumber: "",
-      tenantNumber: "string",
+      tenantNumber: "",
       userName: "",
     };
-    console.log(d);
+    if (recipient === "USER") {
+      let d = {
+        userName: recipientPerson.userName,
+      };
+    }
+    if (recipient === "LANDLORD") {
+      let d = {
+        landLordFileNumber: recipientPerson.fileNumber,
+      };
+      var x = Object.assign(data, d);
+    }
+    if (recipient === "TENANT") {
+      let d = {
+        tenantNumber: "",
+        tenancyFileNumber: "",
+      };
+    }
+    requestsServiceService.createStatements(x).then((res) => {
+      console.log(res);
+    });
   };
   function uuid() {
     return "XXXXXXXXXXX".replace(/[XY]/g, function (c) {
@@ -303,6 +310,17 @@ export default function CreateStatement() {
       return v.toUpperCase();
     });
   }
+
+  const [invoicePresent, setInvoicePresent] = useState(false);
+  const [invNo, setinvNo] = useState("");
+  const [paymentMode, setpaymentMode] = useState("");
+  const [recipientPerson, setrecipientPerson] = useState({});
+  const [receiptAmount, setreceiptAmount] = useState("");
+  const [payerName, setpayerName] = useState("");
+
+  useEffect(() => {
+    console.log(recipientPerson);
+  }, [recipientPerson]);
   return (
     <div className="page-content">
       <div className="container-fluid">
@@ -339,12 +357,12 @@ export default function CreateStatement() {
                   <div className="d-flex justify-content-end align-items-center">
                     <div>
                       <div>
-                        <button
-                          className={"btn btn-primary"}
-                          onClick={showModal}
-                        >
-                          Create New Statement
-                        </button>
+                        {/*<button*/}
+                        {/*  className={"btn btn-primary"}*/}
+                        {/*  onClick={showModal}*/}
+                        {/*>*/}
+                        {/*  Create New Statement*/}
+                        {/*</button>*/}
                       </div>
                     </div>
                   </div>
@@ -363,28 +381,30 @@ export default function CreateStatement() {
                       <option value={""}>--Select--</option>
                       <option value="TENANT">TENANT</option>
                       <option value="LANDLORD">LANDLORD</option>
-                      {/*<option value="AUCTIONEER ">AUCTIONEER</option>*/}
+                      <option value="USER">AUCTIONEER</option>
                     </select>
                   </div>
                   <div className="form-group mt-2">
                     <br />
-
                     <form onSubmit={searchRecipient}>
-                      <label htmlFor="">Search recipient</label>
-                      {recipient !== "AUCTIONEER" && (
-                        <input
-                          type="text"
-                          className={"form-control"}
-                          onChange={(e) => setSearchRecipient(e.target.value)}
-                          placeholder={"search..."}
-                        />
+                      {recipient !== "USER" && (
+                        <>
+                          <label htmlFor="">Search recipient</label>
+                          <input
+                            type="text"
+                            className={"form-control"}
+                            onChange={(e) => setSearchRecipient(e.target.value)}
+                            placeholder={"Search..."}
+                            required
+                          />
+                          <button
+                            type={"submit"}
+                            className={"btn btn-primary mt-2 btn-sm"}
+                          >
+                            Search
+                          </button>
+                        </>
                       )}
-                      <button
-                        type={"submit"}
-                        className={"btn btn-primary mt-2 btn-sm"}
-                      >
-                        Search
-                      </button>
                     </form>
                   </div>
                   <br />
@@ -393,24 +413,56 @@ export default function CreateStatement() {
                       <div className="col-6">
                         {foundRecipients.length < 5 && (
                           <>
-                            {foundRecipients?.map((item) => (
+                            {recipient === "USER" ? (
                               <>
-                                <div className={"mt-2"}>
-                                  <input
-                                    type="checkbox"
-                                    onChange={(e) => setRecipientId(item.id)}
-                                    checked={item.id === recipientId}
-                                    style={{ marginRight: "5px" }}
-                                  />
-                                  <label
-                                    className={"form-check-label"}
-                                    style={{ marginLeft: "5px" }}
-                                  >
-                                    {item?.firstName} {item?.lastName}
-                                  </label>
-                                </div>
+                                {foundRecipients?.map((item) => (
+                                  <>
+                                    <div className={"mt-2"}>
+                                      <input
+                                        type="checkbox"
+                                        onChange={(e) => {
+                                          setRecipientId(item.user.id);
+                                          setrecipientPerson(item.user);
+                                        }}
+                                        checked={item.user.id === recipientId}
+                                        style={{ marginRight: "5px" }}
+                                      />
+                                      <label
+                                        className={"form-check-label"}
+                                        style={{ marginLeft: "5px" }}
+                                      >
+                                        {item?.user.firstName}{" "}
+                                        {item?.user.lastName}
+                                      </label>
+                                    </div>
+                                  </>
+                                ))}
                               </>
-                            ))}
+                            ) : (
+                              <>
+                                {foundRecipients?.map((item) => (
+                                  <>
+                                    <div className={"mt-2"}>
+                                      <input
+                                        type="checkbox"
+                                        onChange={(e) => {
+                                          setRecipientId(item.id);
+                                          setrecipientPerson(item);
+                                        }}
+                                        checked={item.id === recipientId}
+                                        style={{ marginRight: "5px" }}
+                                      />
+                                      <label
+                                        className={"form-check-label"}
+                                        style={{ marginLeft: "5px" }}
+                                      >
+                                        {item?.firstName} {item?.lastName}
+                                      </label>
+                                    </div>
+                                  </>
+                                ))}
+                              </>
+                            )}
                           </>
                         )}
                       </div>
@@ -444,6 +496,7 @@ export default function CreateStatement() {
                     </div>
                   </>
                 </div>
+                <br />
                 {unpaidCharges?.length > 0 && (
                   <div className="row">
                     <div className="alert alert-info mt-3">
@@ -549,15 +602,50 @@ export default function CreateStatement() {
                     </div>
                   </div>
                 )}
+                <div className={"mb-2"}>
+                  <div className={"form-group"}>
+                    <label htmlFor="">Invoice Present?</label>
+                    <input
+                      type="checkbox"
+                      onChange={(e) => setInvoicePresent(!invoicePresent)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  {!invoicePresent && (
+                    <>
+                      <input
+                        type="text"
+                        placeholder={"Enter Invoice Number"}
+                        onChange={(e) => setinvNo(e.target.value)}
+                        className={"form-control"}
+                      />
+                      <br />
+                      <label htmlFor="">Amount</label>
+                      <input
+                        type="text"
+                        placeholder={"Enter Amount"}
+                        onChange={(e) => setreceiptAmount(e.target.value)}
+                        className={"form-control"}
+                      />
+                      <br />
+                      <label htmlFor="">Payer Name</label>
+                      <input
+                        type="text"
+                        placeholder={"Enter Payer Name"}
+                        onChange={(e) => setpayerName(e.target.value)}
+                        className={"form-control"}
+                      />
+                    </>
+                  )}
+                </div>
+                <div className={"col-3 mt-2"}>
+                  <Button variant="primary" onClick={createStatement}>
+                    Create Statement
+                  </Button>
+                </div>
               </div>
             </div>
-            <Button
-              variant="primary"
-              onClick={createStatement}
-              disabled={debitTotal() > total(unpaidCharges)}
-            >
-              Create Statement
-            </Button>
           </div>
         </div>
       </div>
