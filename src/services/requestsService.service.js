@@ -834,7 +834,7 @@ class RequestsService {
   getLandlordStatements(data) {
     return axiosInstance.get(
       baseUrl +
-        `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}&entityType="LANDLORD"&entityId=${data.id}&page=${data.page}&size=${data.size}`
+        `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}&entityType=${data.entityType}&entityId=${data.id}&page=${data.page}&size=${data.size}`
     );
   }
 

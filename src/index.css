@@ -24,6 +24,7 @@ code {
 @media print {
   .print-div {
     margin: 2rem;
+    padding: 1rem;
   }
 
   .print-btn {

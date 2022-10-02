@@ -977,8 +977,8 @@ function ViewLandlord() {
 
   // SETTLEMENTS
   const [statements, setstatements] = useState([]);
-  const [startDate2, setStartDate2] = useState("01/12/2022");
-  const [endDate2, setEndDate2] = useState("12/12/2022");
+  const [startDate2, setStartDate2] = useState(moment(new Date(new Date().getFullYear(), 0)).format("DD/MM/YYYY"));
+  const [endDate2, setEndDate2] = useState(moment(new Date()).format("DD/MM/YYYY"));
   const [page2, setPage2] = useState(0);
   const [size2, setSize2] = useState(10);
   const [pageCount2, setPageCount2] = useState(1);
@@ -1175,11 +1175,12 @@ function ViewLandlord() {
   //  ! STATEMENTS PART   
   // * ==============================
   const [currentStatements, setCurrentStatements] = useState([]);
+  const [viewStatement, setViewStatement] = useState({});
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [statementdate, setstatementdate] = useState({
-    startDate: new Date(new Date().getFullYear(), 1),
+    startDate: new Date(new Date().getFullYear(), 0),
     endDate: new Date(),
   });
 
@@ -1191,21 +1192,30 @@ function ViewLandlord() {
   const [statsize, setstatSize] = useState(10);
   const [statpageCount, setstatPageCount] = useState(1);
 
+  const [invoice_show2, setinvoice_show2] = useState(false);
+  const showInvoice2 = () => setinvoice_show2(true);
+  const closeInvoice2 = () => setinvoice_show2(false);
 
   const handleStatPageClick = (event) => {
     // const newOffset = (event.selected * size) % statements.length;
     // setItemOffset(newOffset);
     setStatPage(event.selected);
   };
+  const getOneStatement = (bill) => {
+    let acc = currentStatements.find((statement) => statement.id === bill);
+    setActiveInvoice(acc);
+    showInvoice2()
+  };
 
   useEffect(() => {
     getLanlordStatements();
-  }, [statpage ,statsize ]);
+  }, [statpage, statsize]);
 
   const getLanlordStatements = () => {
-    let data = { startDate: moment(statementdate.startDate).format("YYYY/MM/DD"), endDate: moment(statementdate.endDate).format("YYYY/MM/DD"), page: statpage, size: statsize, id: userId };
+    let data = { startDate: moment(statementdate.startDate).format("YYYY/MM/DD"), endDate: moment(statementdate.endDate).format("YYYY/MM/DD"), page: statpage, size: statsize, id: userId , entityType : "LANDLORD" };
     requestsServiceService.getLandlordStatements(data).then((res) => {
       setCurrentStatements(res.data.data);
+      setstatPageCount(res.data.totalPages)
     });
   };
 
@@ -2891,7 +2901,7 @@ function ViewLandlord() {
                             <p className="font-medium  text-muted">
                               showing page{" "}
                               <span className="text-primary">
-                                {setPageCount3 === 0 ? page3 : page3 + 1}
+                                {pageCount3 === 0 ? page : page3 + 1}
                               </span>{" "}
                               of<span className="text-primary"> {pageCount3}</span> pages
                             </p>
@@ -2909,169 +2919,297 @@ function ViewLandlord() {
             </>
           }
           {activeLink === 8 && (
-
-            <div className="row">
-              <div className="col-12">
-                <div className="card">
-                  <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <h4 className="card-title text-capitalize mb-0 ">
-                        landlord Statements
-                      </h4>
-                      <div className="d-flex justify-content-end align-items-center">
-                        <div>
-                          <div></div>
+            <>
+              <div className="row">
+                <div className="col-12">
+                  <div className="card">
+                    <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                      <div
+                        className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                        role="toolbar"
+                      >
+                        <h4 className="card-title text-capitalize mb-0 ">
+                          landlord Statements
+                        </h4>
+                        <div className="d-flex justify-content-end align-items-center">
+                          <div>
+                            <div></div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="table-responsive overflow-visible">
-                      {error.color !== "" && (
-                        <div
-                          className={"alert alert-" + error.color}
-                          role="alert"
+                    <div className="card-body">
+                      <div className="table-responsive overflow-visible">
+                        {error.color !== "" && (
+                          <div
+                            className={"alert alert-" + error.color}
+                            role="alert"
+                          >
+                            {error.message}
+                          </div>
+                        )}
+                        <table
+                          className="table align-middle table-hover  contacts-table table-striped "
+                          id="datatable-buttons"
                         >
-                          {error.message}
+                          <thead className="table-light">
+                            <tr className="table-dark">
+                              <th>Bill No</th>
+                              <th>Receipt Amount</th>
+                              <th>Pay Reference No</th>
+                              <th>Payment Mode</th>
+                              <th>Paid By</th>
+                              <th>Tenant Name</th>
+                              <th>Utilized Amount</th>
+                              <th>Date Created</th>
+                              <th className="text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {currentStatements?.length > 0 &&
+                              currentStatements?.map((statement, index) => (
+                                <tr data-id={index} key={index}>
+                                  <td>
+                                    {
+                                      JSON.parse(statement.response).billNo
+
+                                    }
+                                  </td>
+                                  <td>
+                                    {formatCurrency.format(statement.receiptAmount)}
+                                  </td>
+                                  <td>{statement.payReferenceNo}</td>
+                                  <td>{statement.paymentMode}</td>
+                                  <td>{statement.paidBy}</td>
+                                  <td>
+                                    {statement?.tenant?.tenantType ===
+                                      "INDIVIDUAL" ? (
+                                      <>
+                                        {statement?.tenant?.firstName}{" "}
+                                        {statement?.tenant?.lastName}
+                                      </>
+                                    ) : (
+                                      <>{statement?.tenant?.companyName}</>
+                                    )}
+                                  </td>
+                                  <td>
+                                    {formatCurrency.format(
+                                      statement.utilisedAmount
+                                    )}
+                                  </td>
+                                  <td>
+                                    {moment(statement.dateTimeCreated).format(
+                                      "YYYY-MM-DD HH:mm"
+                                    )}
+                                  </td>
+
+                                  <td>
+                                    <div className="d-flex justify-content-end">
+                                      <div className="dropdown">
+                                        <a
+                                          className="text-muted font-size-16 cursor-pinter"
+                                          role="button"
+                                          data-bs-toggle="dropdown"
+                                          aria-haspopup="true"
+                                        >
+                                          <i className="bx bx-dots-vertical-rounded"></i>
+                                        </a>
+                                        <div className="dropdown-menu dropdown-menu-end ">
+                                          <span
+                                            className="dropdown-item cursor-pinter"
+                                            onClick={() =>
+                                              getOneStatement(statement.id)
+                                            }
+                                          >
+                                            <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                            View
+                                          </span>
+                                          {statement.utilisedAmount <
+                                            statement.receiptAmount && (
+                                              <a
+                                                className="dropdown-item  cursor-pointer"
+                                                onClick={() => {
+                                                  handleShow();
+                                                  setUtilizeValues(
+                                                    statement?.id,
+                                                    statement?.tenant?.id
+                                                  );
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-account-check me-3 "></i>
+                                                Utilize
+                                              </a>
+                                            )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                          <tfoot className="table-light">
+                            <tr>
+                              <th
+                                className="text-capitalize text-nowrap"
+                                colSpan="3"
+                              >
+                                {currentStatements && currentStatements?.length}{" "}
+                                Statements
+                              </th>
+                              <td className="text-nowrap text-right" colSpan="7">
+                                <span className="fw-semibold">
+                                  {/*{formatCurrency.format(total())}*/}
+                                </span>
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                        <div className="d-flex justify-content-between align-items-center">
+                          {statpageCount !== 0 && (
+                            <>
+                              <select
+                                className="btn btn-md btn-primary"
+                                title="Select A range"
+                                onChange={(e) => statsortSize(e)}
+                                value={statsize}
+                              >
+                                <option className="bs-title-option" value="">
+                                  Select A range
+                                </option>
+                                <option value="10">10 Rows</option>
+                                <option value="30">30 Rows</option>
+                                <option value="50">50 Rows</option>
+                              </select>
+                              <nav
+                                aria-label="Page navigation comments"
+                                className="mt-4"
+                              >
+                                <ReactPaginate
+                                  previousLabel="<"
+                                  nextLabel=">"
+                                  breakLabel="..."
+                                  breakClassName="page-item"
+                                  breakLinkClassName="page-link"
+                                  pageCount={statpageCount}
+                                  pageRangeDisplayed={4}
+                                  marginPagesDisplayed={2}
+                                  containerClassName="pagination justify-content-center"
+                                  pageClassName="page-item"
+                                  pageLinkClassName="page-link"
+                                  previousClassName="page-item"
+                                  previousLinkClassName="page-link"
+                                  nextClassName="page-item"
+                                  nextLinkClassName="page-link"
+                                  activeClassName="active"
+                                  onPageChange={(data) => handleStatPageClick(data)}
+                                />
+                              </nav>
+                            </>
+                          )}
                         </div>
-                      )}
-                      <table
-                        className="table align-middle table-hover  contacts-table table-striped "
-                        id="datatable-buttons"
-                      >
-                        <thead className="table-light">
-                          <tr className="table-dark">
+                        {statpageCount !== 0 && (
+                          <p className="font-medium  text-muted">
+                            showing page{" "}
+                            <span className="text-primary">
+                              {statpageCount === 0 ? statpage : statpage + 1}
+                            </span>{" "}
+                            of
+                            <span className="text-primary"> {statpageCount}</span> pages
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/*VIEW INVOICE*/}
+              <Modal show={invoice_show2} onHide={closeInvoice2} size="lg" centered>
+                <Modal.Header closeButton>
+                  <h5 className="modal-title" id="myLargeModalLabel">
+                    Statement Details
+                  </h5>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="col-12">
+                  </div>
+                  <div className="col-12">
+                    <div className="py-2 mt-3">
+                      <h3 className="font-size-15 fw-bold">
+                        Statement Details ({" "}
+                        <span className="text-primary fw-medium">
+                          {activeInvoice?.receiptNo}
+                        </span>{" "}
+                        )
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="table-responsive">
+                      <table className="table table-nowrap">
+                        <thead>
+                          <tr>
                             <th>Bill No</th>
                             <th>Receipt Amount</th>
                             <th>Pay Reference No</th>
                             <th>Payment Mode</th>
                             <th>Paid By</th>
-                            <th>Tenant Name</th>
                             <th>Utilized Amount</th>
-                            <th>Date Created</th>
-                            {/* <th className="text-right">Actions</th> */}
                           </tr>
                         </thead>
                         <tbody>
-                          {currentStatements?.length > 0 &&
-                            currentStatements?.map((statement, index) => (
-                              <tr data-id={index} key={index}>
-                                <td>
-                                  {
-                                    JSON.parse(statement.response).billNo
-               
-                                  }
-                                </td>
-                                <td>
-                                  {formatCurrency.format(statement.receiptAmount)}
-                                </td>
-                                <td>{statement.payReferenceNo}</td>
-                                <td>{statement.paymentMode}</td>
-                                <td>{statement.paidBy}</td>
-                                <td>
-                                  {statement?.tenant?.tenantType ===
-                                    "INDIVIDUAL" ? (
-                                    <>
-                                      {statement?.tenant?.firstName}{" "}
-                                      {statement?.tenant?.lastName}
-                                    </>
-                                  ) : (
-                                    <>{statement?.tenant?.companyName}</>
-                                  )}
-                                </td>
-                                <td>
-                                  {formatCurrency.format(
-                                    statement.utilisedAmount
-                                  )}
-                                </td>
-                                <td>
-                                  {moment(statement.dateTimeCreated).format(
-                                    "YYYY-MM-DD HH:mm"
-                                  )}
-                                </td>
-
-
-                              </tr>
-                            ))}
-                        </tbody>
-                        <tfoot className="table-light">
                           <tr>
-                            <th
-                              className="text-capitalize text-nowrap"
-                              colSpan="3"
-                            >
-                              {currentStatements && currentStatements?.length}{" "}
-                              Statements
-                            </th>
-                            <td className="text-nowrap text-right" colSpan="7">
-                              <span className="fw-semibold">
-                                {/*{formatCurrency.format(total())}*/}
-                              </span>
+                            <td>{activeInvoice?.billNo}</td>
+                            <td>
+                              {formatCurrency.format(activeInvoice?.receiptAmount)}
+                            </td>
+                            <td>{activeInvoice?.payReferenceNo}</td>
+                            <td>{activeInvoice?.paymentMode}</td>
+                            <td>{activeInvoice?.paidBy}</td>
+                            <td>
+                              {formatCurrency.format(activeInvoice?.utilisedAmount)}
                             </td>
                           </tr>
-                        </tfoot>
+                        </tbody>
                       </table>
-                      <div className="d-flex justify-content-between align-items-center">
-                        {statpageCount !== 0 && (
-                          <>
-                            <select
-                              className="btn btn-md btn-primary"
-                              title="Select A range"
-                              onChange={(e) => statsortSize(e)}
-                              value={statsize}
-                            >
-                              <option className="bs-title-option" value="">
-                                Select A range
-                              </option>
-                              <option value="10">10 Rows</option>
-                              <option value="30">30 Rows</option>
-                              <option value="50">50 Rows</option>
-                            </select>
-                            <nav
-                              aria-label="Page navigation comments"
-                              className="mt-4"
-                            >
-                              <ReactPaginate
-                                previousLabel="<"
-                                nextLabel=">"
-                                breakLabel="..."
-                                breakClassName="page-item"
-                                breakLinkClassName="page-link"
-                                pageCount={statpageCount}
-                                pageRangeDisplayed={4}
-                                marginPagesDisplayed={2}
-                                containerClassName="pagination justify-content-center"
-                                pageClassName="page-item"
-                                pageLinkClassName="page-link"
-                                previousClassName="page-item"
-                                previousLinkClassName="page-link"
-                                nextClassName="page-item"
-                                nextLinkClassName="page-link"
-                                activeClassName="active"
-                                onPageChange={(data) => handleStatPageClick(data)}
-                              />
-                            </nav>
-                          </>
-                        )}
-                      </div>
-                      {statpageCount !== 0 && (
-                        <p className="font-medium  text-muted">
-                          showing page{" "}
-                          <span className="text-primary">
-                            {statpageCount === 0 ? statpage : statpage + 1}
-                          </span>{" "}
-                          of
-                          <span className="text-primary"> {pageCount}</span> pages
-                        </p>
-                      )}
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
+                </Modal.Body>
+              </Modal>
+              {/* LOOK FOR BILL */}
+
+              <Modal show={show} onHide={handleClose} size="md" centered>
+                <Modal.Header closeButton>
+                  <h5 className="modal-title" id="myLargeModalLabel">
+                    Search for Bill to utilize
+                  </h5>
+                </Modal.Header>
+                <form onSubmit={(e) => searchBillNo(e)}>
+                  <Modal.Body>
+                    <div className="form-group  justify-content-center d-flex flex-column">
+                      <label htmlFor="">BILL NO</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={utilData.newBillNo}
+                        onChange={(e) =>
+                          setUtilData({ ...utilData, newBillNo: e.target.value })
+                        }
+                        placeholder="Enter Bill No "
+                        required
+                      />
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <div>
+                      <button className="btn btn-sm btn-primary" type="submit">
+                        Search
+                      </button>
+                    </div>
+                  </Modal.Footer>
+                </form>
+              </Modal>
+            </>
           )
 
           }
