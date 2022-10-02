@@ -18,6 +18,9 @@ function AddTenant() {
   const [showDocumentModal, setShowDocumentModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [ac, setAC] = useState([]);
+
+
 
   const [countries, setCounties] = useState([]);
 
@@ -27,10 +30,29 @@ function AddTenant() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
+      setAC(res.data.data);
+    });
     getAllDocumentTypes();
     setCounties(data);
   }, []);
 
+  const [tmp, stmp] = useState([]);
+  const [chargeNames, setChargeNames] = useState([]);
+  const handleACchange = (e, i) => {
+    let id = e.target.value.split("-")[0];
+    let name = e.target.value.split("-")[1];
+    if (tmp?.includes(id)) {
+      //
+    } else {
+      stmp([...tmp, id]);
+    }
+    if (chargeNames.includes(name)) {
+    } else {
+      setChargeNames([...chargeNames, name]);
+    }
+  };
+  
 
   const getAllDocumentTypes = () => {
     requestsServiceService
@@ -503,38 +525,7 @@ function AddTenant() {
                               </select>
                             </div>
                           </div>
-                          <div className="col-lg-4">
-                            <div className="mb-3">
-                              <label htmlFor="id-front">
-                                <i className="font-14px mdi mdi-paperclip"></i>{" "}
-                                ID FRONT{" "}
-                                <strong className="text-danger">*</strong>
-                              </label>
-                              <input
-                                type="file"
-                                className="form-control"
-                                name="file"
-                                onChange={(e) => handleidchange(e)}
-                                required={true}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-4">
-                            <div className="mb-3">
-                              <label htmlFor="id-front">
-                                <i className="font-14px mdi mdi-paperclip"></i>{" "}
-                                ID BACK{" "}
-                                <strong className="text-danger">*</strong>
-                              </label>
-                              <input
-                                type="file"
-                                className="form-control"
-                                name="file"
-                                onChange={(e) => handleidchange2(e)}
-                                required={true}
-                              />
-                            </div>
-                          </div>
+                         
                         </div>
                       </div>
 
@@ -662,8 +653,15 @@ function AddTenant() {
                               </div>
                             </div>
                           </div>
+
                           <div className="col-12">
                             <div className="row">
+
+
+
+
+
+
                               <div className="col-lg-4 col-md-6">
                                 <div className="mb-4">
                                   <label htmlFor="basicpill-firstname-input">
@@ -681,6 +679,43 @@ function AddTenant() {
                                   />
                                 </div>
                               </div>
+                              <div className="col-lg-4">
+                            <div className="mb-3">
+                              <label htmlFor="id-front">
+                                <i className="font-14px mdi mdi-paperclip"></i>{" "}
+                                ID FRONT{" "}
+                                <strong className="text-danger">*</strong>
+                              </label>
+                              <input
+                                type="file"
+                                className="form-control"
+                                name="file"
+                                onChange={(e) => handleidchange(e)}
+                                required={true}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-lg-4">
+                            <div className="mb-3">
+                              <label htmlFor="id-front">
+                                <i className="font-14px mdi mdi-paperclip"></i>{" "}
+                                ID BACK{" "}
+                                <strong className="text-danger">*</strong>
+                              </label>
+                              <input
+                                type="file"
+                                className="form-control"
+                                name="file"
+                                onChange={(e) => handleidchange2(e)}
+                                required={true}
+                              />
+                            </div>
+                          </div>
+
+
+
+                              
                               <div className="col-4">
                                 <div className="row">
                                   <label htmlFor="" className="">
@@ -902,6 +937,40 @@ function AddTenant() {
                               </select>
                             </div>
                           </div>
+                          <div className="col-lg-4">
+                            <div className="mb-4">
+                              <label htmlFor="">Applicable charges</label>
+                              <br />
+                              <select
+                                name=""
+                                onChange={(e) => handleACchange(e)}
+                                id=""
+                                className={"form-control"}
+                              >
+                                                                <option>Select Applicable Charges</option>
+                                <option>Select Applicable Charges</option>
+
+                                {ac?.map((item) => (
+                                  <option value={item.id + "-" + item.name}>
+                                    {item.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="mb-4">
+                              <label htmlFor="basicpill-lastname-input ">
+                                Invoice Payment Priority
+                              </label>
+                              <div className="alert alert-info bg-soft">
+                                {chargeNames.length > 0
+                                  ? chargeNames.join("  -->  ")
+                                  : chargeNames}
+                              </div>
+                            </div>
+                            </div>
+                          
 
                           <div className="col-12">
                             <div className="row">

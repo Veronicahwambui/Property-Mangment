@@ -5,6 +5,7 @@ import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 import { Button, Modal } from "react-bootstrap";
 import { Link,useParams } from "react-router-dom";
+import AuthService from "../../services/auth.service";
 
 import ReactPaginate from "react-paginate";
 
@@ -81,7 +82,7 @@ const[visitationChargeDay,setvisitationChargeDay]=useState("")
 const[visitationChargeId,setvisitationChargeId]=useState("")
 const[invo,setInvo]= useState([])
 const [client, setClient] = useState([]);
-const clientId = useParams().id;
+
 
 const[]=useState("")
 const createGeneral =() =>{
@@ -89,7 +90,7 @@ const createGeneral =() =>{
 
    bouncedChequeChargeId: parseInt(bouncedChequeChargeId),
   chequeProcessingPeriod: chequeProcessingPeriod,
-  id: null,
+  id: clientId,
   invoicePaymentPriority:invoicePaymentPriority,
   landlordSettlementChargeId: landlordSettlementChargeId,
   penaltyChargeId: penaltyChargeId,
@@ -101,8 +102,9 @@ const createGeneral =() =>{
   visitationChargeDay: visitationChargeDay,
   visitationChargeId: visitationChargeId,
   });
+  // console.log(data)
   requestsServiceService.createSettings(data).then((res) => {
-    getAll(data)
+    getAll()
     $("#add-new-settings").modal("hide");
 
         if (res.data.status) {
@@ -149,6 +151,7 @@ const createGeneral =() =>{
   
 
 }
+let clientId= AuthService.getClientId()
 const getApplicable =() => {
   requestsServiceService.allApplicableCharges("TENANT").then((res) => {
     setInvo(res.data.data)
@@ -161,13 +164,7 @@ const getAll = () => {
     setClient(res.data.data.client);
   });
 }
-// const getAllClients = () => {
-//   requestsServiceService.getClients().then((res) => {
-//     console.log(res.data.data)
-//   }).catch(err => {
-//     console.log(err)
-//   })
-// }
+
 
 
 
@@ -467,13 +464,13 @@ const getAll = () => {
                   <div className={"d-flex"}>
                     <div className="card-body border-top">
                       <p className="p-0 m-0">
-                        <span className="text-muted">BouncedChequeChargeId </span>
-                        {client?.bouncedChequeChargeId}
+                        <span className="text-muted">BouncedChequeChargeId :</span>
+                        {client?.bouncedChequeCharge.name}
                       </p>
                     </div>
                     <div className="card-body border-top">
                       <p className="p-0 m-0">
- ChequeProcessingPeriod
+ ChequeProcessingPeriod :
                         <span className="text-muted"></span>
                         {client?.chequeProcessingPeriod}
                       </p>
@@ -481,7 +478,7 @@ const getAll = () => {
                     <div className="card-body border-top">
                       <p className="p-0 m-0">
                         <span className="text-muted">
-                        InvoicePaymentPriority.{" "}
+                        InvoicePaymentPriority:{" "}
                         </span>
                         {client?. invoicePaymentPriority}
                       </p>
@@ -489,30 +486,85 @@ const getAll = () => {
                    
                   </div>
                   <div className={"d-flex"}>
-                  <div className="card-body border-top">
+                  <div className="card-body ">
                       <p className="p-0 m-0">
-                        <span className="text-muted">  LandlordSettlementChargeId
+                        <span className="text-muted">  LandlordSettlementChargeId:
  </span>
-                        {client?.landlordSettlementChargeId}
+                        {client?.landlordSettlementCharge.name}
                       </p>
                     </div>
-                    <div className="card-body border-top">
+                    <div className="card-body ">
                       <p className="p-0 m-0">
-                      PenaltyChargeId
+                      PenaltyChargeId:
                         <span className="text-muted"></span>
-                        {client?.penaltyChargeId}
+                        {client?.penaltyCharge.name}
                     
                       </p>
                     </div>
-                    <div className="card-body border-top">
+                    <div className="card-body ">
                       <p className="p-0 m-0">
                         <span className="text-muted">
-                        PenaltyChargeRate.{" "}
+                        PenaltyChargeRate:{" "}
                         </span>
                         {client?.penaltyChargeRate}
                       </p>
                     </div>
                     </div>
+
+
+                    <div className={"d-flex"}>
+                  <div className="card-body ">
+                      <p className="p-0 m-0">
+                        <span className="text-muted"> PropertyTaxCharge:
+ </span>
+                        {client?.propertyTaxCharge.name}
+                      </p>
+                    </div>
+                    <di v className="card-body ">
+                      <p className="p-0 m-0">
+                      Sender:
+                        <span className="text-muted"></span>
+                        {client?.senderId}
+                    
+                      </p>
+                    </di>
+                    <div className="card-body ">
+                      <p className="p-0 m-0">
+                        <span className="text-muted">
+                        PropertyTaxRate:{" "}
+                        </span>
+                        {client?.propertyTaxRate}
+                      </p>
+                    </div>
+                    </div>
+
+                    <div className={"d-flex"}>
+                  <div className="card-body ">
+                      <p className="p-0 m-0">
+                        <span className="text-muted"> SettlementPeriod:
+ </span>
+                        {client?.settlementPeriod}
+                      </p>
+                    </div>
+                    <di v className="card-body ">
+                      <p className="p-0 m-0">
+                      VisitationChargeDay:
+                        <span className="text-muted"></span>
+                        {client?.visitationChargeDay}
+                    
+                      </p>
+                    </di>
+                    <div className="card-body ">
+                      <p className="p-0 m-0">
+                        <span className="text-muted">
+                        VisitationCharge :{" "}
+                        </span>
+                        {client?.visitationCharge.name}
+                      </p>
+                    </div>
+                    </div>
+                    
+                   
                    
                   </div>
                 </div>
@@ -578,7 +630,7 @@ const getAll = () => {
                       }}
                     >
                       <option>-------Select BouncedChequeChargeId -------</option>
-                      {invo.map((item) => (
+                      {invo?.map((item) => (
                         <option value={item.id} key={item.id}>
                         {item.name}</option>
                       ))}
@@ -615,7 +667,7 @@ const getAll = () => {
                       }}
                     >
                       <option>Select  InvoicePaymentPriority-----</option>
-                      {invo.map((item) => (
+                      {invo?.map((item) => (
                         <option value={item.id} key={item.id}>
                         {item.name}</option>
                       ))}
@@ -633,7 +685,7 @@ const getAll = () => {
                       }}
                     >
                       <option>---Select  LandlordSettlementChargeId-----</option>
-                      {invo.map((item) => (
+                      {invo?.map((item) => (
                         <option value={item.id} key={item.id}>
                         {item.name}</option>
                       ))}
@@ -654,7 +706,7 @@ const getAll = () => {
                       }}
                     >
                       <option>---Select  PenaltyChargeId-----</option>
-                      {invo.map((item) => (
+                      {invo?.map((item) => (
                         <option value={item.id} key={item.id}>
                         {item.name}</option>
                       ))}
@@ -706,7 +758,7 @@ const getAll = () => {
                       }}
                     >
                       <option value="">Select Applicable Charge Type --</option>
-                      {invo.map((item) => (
+                      {invo?.map((item) => (
                         <option value={item.id} key={item.id}>
                         {item.name}</option>
                       ))}
@@ -772,7 +824,8 @@ const getAll = () => {
                       }}
                     >
                       <option>Select VisitationChargeId ----</option>
-                      {invo.map((item) => (
+                      {invo
+                      ?.map((item) => (
                         <option value={item.id} key={item.id}>
                         {item.name}</option>
                       ))}

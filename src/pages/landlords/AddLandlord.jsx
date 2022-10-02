@@ -619,7 +619,7 @@ export default function AddLandlord() {
                               />
                             </div>
                           </div>
-                          <div className="col-lg-4">
+                          {/* <div className="col-lg-4">
                     <label for="">
                     InvoicePaymentPriority <strong class="text-danger">*</strong>
                     </label>
@@ -636,7 +636,7 @@ export default function AddLandlord() {
                         {item.name}</option>
                       ))}
                     </select>
-                  </div>
+                  </div> */}
                         </div>
                       </section>
 
