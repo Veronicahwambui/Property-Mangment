@@ -15,8 +15,10 @@ import AuthService from "../../services/auth.service";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
+import DatePickRange from "../../components/Datepicker";
 import Chart from "react-apexcharts";
 import numeral from "numeral"
+import ViewInvoice from "../../components/ViewInvoice";
 
 
 
@@ -913,8 +915,8 @@ const pieChart = {
   // invoice stuff   
   // * ==============================
   const [invoices, setinvoices] = useState([]);
-  const [activeInvoice] = useState({});
   const [size, setSize] = useState(10);
+  const [activeInvoice, setActiveInvoice] = useState({});
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [status, setStatus] = useState("");
@@ -942,7 +944,20 @@ const pieChart = {
     settransaction({});
     setinvoice_show(false);
   };
+  const [searchTerm, setSearchTerm] = useState("");
 
+  const [date, setDate] = useState({
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    endDate: new Date(),
+  });
+
+  const handleCallback = (sD, eD) => {
+    setDate({
+      ...date,
+      startDate: moment(sD).format("YYYY-MM-DD"),
+      endDate: moment(eD).format("YYYY-MM-DD"),
+    });
+  };
 
 
   useEffect(() => {
@@ -955,10 +970,10 @@ const pieChart = {
       endDate: endDate,
       // size: size,
       // page: page,
-      premiseId: userId,
-      search: status,
+      premiseId: parseInt(userId),
+      search: searchTerm,
     };
-    requestsServiceService.getParentInvoicesPrem(page, size, data).then((res) => {
+    requestsServiceService.getSortedInvoices(page, size , data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
     });
@@ -971,12 +986,10 @@ const pieChart = {
     let data = {
       startDate: startDate2,
       endDate: endDate2,
-      // size: size,
-      // page: page,
       premiseId: userId,
-      search: status.trim(),
+      search: searchTerm.trim(),
     };
-    requestsServiceService.getParentInvoicesPrem(page, size, data).then((res) => {
+    requestsServiceService.getSortedInvoices( page, size , data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
       setStatus('')
@@ -989,28 +1002,13 @@ const pieChart = {
     setPage(d);
   };
 
-  const total = () => {
-    let sum = 0;
-    let paid = 0;
-    paymentItems.map((item) => {
-      sum += item.billAmount;
-      paid += item.billPaidAmount;
-    });
-    return { sum: sum, paid: paid, balance: sum - paid };
-  };
-  const reset = () => {
-    setSize(100);
-    setPage(1);
-  };
+  
   const getOneInvoice = (id) => {
-    requestsServiceService.getParentInvoice(id).then((res) => {
-      settransaction(res.data.data.transaction);
-      setpaymentItems(res.data.data.transactionItems);
-    });
-    setTimeout(() => {
-      showInvoice();
-    }, 800);
+    let one = invoices.find(one => one.transactionItemId === id)
+    setActiveInvoice(one)
+    showInvoice();
   };
+
   let formatCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "KES",
@@ -1026,65 +1024,68 @@ const pieChart = {
   $(document).on("change", ".edate", addDate2);
 
 
-  // MESSAGE TEST
-  const [details, setDetails] = useState({
+ // MESSAGE TEST
+ const [details, setDetails] = useState({
+  message: "",
+  contact: "",
+  recipientName: "",
+  entity: null,
+  clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+  clientId: parseInt(AuthService.getClientId()),
+  entityType: "PREMISE",
+  createdBy: "",
+  senderId: "",
+  subject: "Invoice Payment",
+});
+const [mode, setmode] = useState("");
+const handleModeChange = (mode) => {
+  setmode(mode);
+};
+const handleClicked = (inv, mod) => {
+  let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
+    } balance is ${formatCurrency.format(
+      inv.billAmount - inv.billPaidAmount
+    )}. Click here to pay for it`;
+  let senderId =
+    JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
+      ? "REVENUESURE"
+      : JSON.parse(AuthService.getCurrentUserName()).client?.senderId;
+  setDetails({
+    ...details,
+    message: mes,
+    contact:
+      mod === "Email"
+        ? inv.transactionCustomerEmail
+        : inv.transaction?.tenancy?.tenant?.phoneNumber,
+    entity: inv.transaction?.tenancy?.id,
+    recipientName: inv.transactionCustomerName,
+    createdBy: inv.createdBy,
+    senderId: senderId,
+    subject: "Invoice Payment",
+  });
+  $(".email-overlay").removeClass("d-none");
+  setTimeout(function () {
+    $(".the-message-maker").addClass("email-overlay-transform");
+  }, 0);
+};
+useEffect(() => { }, [details, mode]);
+
+const clear2 = () => {
+  setDetails({
+    ...details,
     message: "",
     contact: "",
     recipientName: "",
     entity: null,
-    clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
-    clientId: parseInt(authService.getClientId()),
-    entityType: "TENANCY",
+    clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+    clientId: parseInt(AuthService.getClientId()),
+    entityType: "PREMISE",
     createdBy: "",
     senderId: "",
     subject: "Invoice Payment",
   });
+};
 
-  const [mode, setmode] = useState("");
-  const handleModeChange = (mode) => {
-    setmode(mode);
-  };
-  const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.tenantName}, your monthly invoice ${inv.transactionId
-      } has been generated . Click here to pay for it`;
-    let senderId =
-      JSON.parse(authService.getCurrentUserName()).client?.senderId === null
-        ? "REVENUESURE"
-        : JSON.parse(authService.getCurrentUserName()).client?.senderId;
-    setDetails({
-      ...details,
-      message: mes,
-      contact:
-        mod === "Email"
-          ? inv?.tenancy?.tenant?.email
-          : inv?.tenancy?.tenant?.phoneNumber,
-      entity: inv?.tenancy?.id,
-      recipientName: inv?.tenantName,
-      createdBy: authService.getCurrentUserName(),
-      senderId: senderId,
-      subject: "Invoice Payment",
-    });
-    $(".email-overlay").removeClass("d-none");
-    setTimeout(function () {
-      $(".the-message-maker").addClass("email-overlay-transform");
-    }, 0);
-  };
-
-  const clearDetails = () => {
-    setDetails({
-      ...details,
-      message: "",
-      contact: "",
-      recipientName: "",
-      entity: null,
-      clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
-      clientId: parseInt(authService.getClientId()),
-      entityType: "TENANCY",
-      createdBy: "",
-      senderId: "",
-      subject: "Invoice Payment",
-    });
-  };
 
   return (
     <div className="page-content">
@@ -2786,346 +2787,244 @@ const pieChart = {
             <div className="">
               <div className="container-fluid">
 
+              <Message details={details} mode={mode} clear={clear2} />
+               
                 <div className="row">
                   <div className="col-12">
                     <div className="card">
-                      <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                        <div
-                          className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                          role="toolbar"
-                        >
-                          <h4 className="card-title text-capitalize mb-0 ">
-                            Monthly Invoices
-                          </h4>
+                    <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                  <div
+                    className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                    role="toolbar"
+                  >
+                    <h4 className="card-title text-capitalize mb-0 ">
+                      All rent and Bills invoices
+                    </h4>
 
-                          <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
-                            <div>
-                              <form className="app-search d-none d-lg-block p-2">
-                                <div className="position-relative">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Search..."
-                                    onChange={(e) => setStatus(e.target.value)}
-                                  />
-                                  <span className="bx bx-search-alt"></span>
-                                </div>
-                              </form>
-                            </div>
-                            <div className="input-group d-flex justify-content-end align-items-center" id="datepicker1">
-                              <div className=" p-2">
-                                <span className="input-group-text">
-                                  <i className="mdi mdi-calendar">Start Date</i>
-                                </span>
-                                <input
-                                  type="text"
-                                  className="form-control mouse-pointer sdate"
-                                  placeholder={`${startDate}`}
-                                  name="dob"
-                                  readOnly
-                                  data-date-format="dd M, yyyy"
-                                  data-date-container="#datepicker1"
-                                  data-provide="datepicker"
-                                  data-date-autoclose="true"
-                                  data-date-end-date="+0d"
-                                />
-                              </div>
-                              <div className=" p-2">
-                                <span className="input-group-text">
-                                  <i className="mdi mdi-calendar">End Date: </i>
-                                </span>
-                                <input
-                                  type="text"
-                                  className="form-control mouse-pointer edate"
-                                  name="dob"
-                                  placeholder={`${endDate}`}
-                                  readOnly
-                                  data-date-format="dd M, yyyy"
-                                  data-date-container="#datepicker1"
-                                  data-provide="datepicker"
-                                  data-date-autoclose="true"
-                                />
-                              </div>
-
-                            </div>
-                            <button className="btn btn-primary" onClick={fetchDashData}>
-                              filter
-                            </button>
+                    <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                      <div>
+                        <form className="app-search d-none d-lg-block p-2">
+                          <div className="position-relative">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search..."
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <span className="bx bx-search-alt"></span>
                           </div>
-                        </div>
-
-                        <Message details={details} mode={mode} clear={clearDetails} />
-
+                        </form>
                       </div>
+                      <div
+                        className="input-group d-flex justify-content-end align-items-center"
+                        id="datepicker1"
+                      >
+                        <div
+                          style={{
+                            backgroundColor: "#fff",
+                            color: "#2C2F33",
+                            cursor: " pointer",
+                            padding: "7px 10px",
+                            border: "2px solid #ccc",
+                            width: " 100%",
+                          }}
+                        >
+                          <DatePickRange
+                            onCallback={handleCallback}
+                            startDate={moment(date.startDate).format(
+                              "YYYY-MM-DD"
+                            )}
+                            endDate={moment(date.endDate).format("YYYY-MM-DD")}
+                          />
+                        </div>
+                      </div>
+                      <button className="btn btn-primary" onClick={sort}>
+                        filter
+                      </button>
+                    </div>
+                  </div>
+                </div>
                       <div className="card-body">
-                        <div className="table-responsive overflow-visible">
-                          <table
-                            className="table align-middle table-hover  contacts-table table-striped "
-                            id="datatable-buttons"
-                          >
-                            <thead className="table-light">
-                              <tr className="table-dark">
-
-                                <th>Invoice Number</th>
-                                <th>Tenant</th>
-                                <th>Properties</th>
-                                <th>Hse/Unit</th>
-                                <th>Date Issued</th>
-                                <th>Payment Status</th>
-                                <th>Date Created</th>
-                                <th className="text-right">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {invoices.length > 0 &&
-                                invoices?.map((invoice, index) => (
-                                  <tr data-id={index} key={index}>
-
-                                    <td
-                                    >
-                                      {invoice.transactionId}
-                                    </td>
-                                    <td>{invoice.tenantName}</td>
-                                    <td>{invoice.premiseName}</td>
-                                    <td>{invoice.premiseUnitName}</td>
-                                    <td>
-                                      {moment(invoice.invoiceDate).format(
-                                        "MMMM Do YYYY"
-                                      )}
-                                    </td>
-                                    <td>
-                                      <StatusBadge type={invoice?.paymentStatus} />
-                                    </td>
-                                    <td>{moment(invoice.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
-
-                                    <td>
-                                      <div className="d-flex justify-content-end">
-                                        {/*<button type="button"*/}
-                                        {/*        className="btn btn-primary btn-sm waves-effect waves-light text-nowrap me-3"*/}
-                                        {/*        // onClick={() => getOneInvoice(invoice?.transaction.transactionId)}*/}
-                                        {/*        >Receive Payment*/}
-                                        {/*</button>*/}
-                                        <div className="dropdown">
-                                          <a
-                                            className="text-muted font-size-16"
-                                            role="button"
-                                            data-bs-toggle="dropdown"
-                                            aria-haspopup="true"
-                                          >
-                                            <i className="bx bx-dots-vertical-rounded"></i>
-                                          </a>
-                                          <div className="dropdown-menu dropdown-menu-end ">
-                                            <span
-                                              className="dropdown-item"
-                                              href="#"
-                                              onClick={() =>
-                                                getOneInvoice(invoice.transactionId)
-                                              }
+                  <div className="table-responsive">
+                    <table
+                      className="table align-middle table-hover  contacts-table table-striped "
+                    
+                    >
+                      <thead className="table-light">
+                        <tr className="table-light">
+                          <th>Invoice No</th>
+                          <th>Bill Ref</th>
+                          <th>Tenant</th>
+                          <th>Properties</th>
+                          <th>Hse/Unit</th>
+                          <th>Charge Name</th>
+                          <th>Bill Amount</th>
+                          <th>Paid Amount</th>
+                          <th>Total Balance</th>
+                          <th>Due Date</th>
+                          <th>Payment Status</th>
+                          <th>Date Created</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {invoices.length > 0 &&
+                          invoices?.map((invoice, index) => (
+                            <tr data-id={index} key={index}>
+                              <td>{invoice.transactionItemId}</td>
+                              <td>{invoice.billerBillNo}</td>
+                              <td>{invoice.transaction?.tenantName}</td>
+                              <td>{invoice.transaction.premiseName}</td>
+                              <td>{invoice.transaction.premiseUnitName}</td>
+                              <td>{invoice.applicableChargeName}</td>
+                              <td>
+                                {formatCurrency.format(invoice.billAmount)}
+                              </td>
+                              <td>
+                                {formatCurrency.format(invoice.billPaidAmount)}
+                              </td>
+                              <td className={"text-right"}>
+                                <span
+                                  className={
+                                    invoice.billPaidAmount > invoice.billAmount
+                                      ? "fw-semibold text-success"
+                                      : "fw-semibold text-danger"
+                                  }
+                                >
+                                  {formatCurrency.format(
+                                    invoice.billAmount - invoice.billPaidAmount
+                                  )}
+                                </span>
+                              </td>
+                              <td>
+                                {moment(invoice?.invoiceDate).format(
+                                  "DD-MM-YYYY"
+                                )}
+                              </td>
+                              <td>
+                                <StatusBadge type={invoice?.paymentStatus} />
+                              </td>
+                              <td>
+                                {moment(invoice.dateTimeCreated).format(
+                                  "YYYY-MM-DD HH:mm"
+                                )}
+                              </td>
+                              <td>
+                                        <div className="d-flex justify-content-end">
+                                          <div className="dropdown">
+                                            <a
+                                              className="text-muted font-size-16"
+                                              role="button"
+                                              data-bs-toggle="dropdown"
+                                              aria-haspopup="true"
                                             >
-                                              <i
-                                                className="font-size-15 mdi mdi-eye me-3 "
-                                                href="# "
-                                              ></i>
-                                              View
-                                            </span>
-                                            <a className="dropdown-item " href="# ">
-                                              <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                              Print
+                                              <i className="bx bx-dots-vertical-rounded"></i>
                                             </a>
-                                            <a className="dropdown-item "
-                                              onClick={() => {
-                                                handleModeChange("Email");
-                                                handleClicked(invoice, "Email");
-                                              }}>
-                                              <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                              Email Tenant
-                                            </a>
-                                            <a className="dropdown-item "
-                                              onClick={() => {
-                                                handleModeChange("SMS");
-                                                handleClicked(invoice, "SMS");
-                                              }}>
-                                              <i className="font-size-15 mdi mdi-chat me-3 "></i>
-                                              SMS Tenant
-                                            </a>
+                                            <div className="dropdown-menu dropdown-menu-end ">
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  getOneInvoice(
+                                                    invoice.transactionItemId
+                                                  );
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                View
+                                              </a>
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("Email");
+                                                  handleClicked(invoice, "Email");
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                                Email Tenant
+                                              </a>
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("SMS");
+                                                  handleClicked(invoice, "SMS");
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-chat me-3"></i>
+                                                Send as SMS
+                                              </a>
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                ))}
-                            </tbody>
-                            <tfoot className="table-dark">
-                              <tr>
-                                <th
-                                  className="text-capitalize text-nowrap"
-                                  colSpan="12"
-                                >
-                                  {invoices && invoices.length} Invoices
-                                </th>
-                              </tr>
-                            </tfoot>
-                          </table>
-                        </div>
-                        <div className="mt-4 mb-0 flex justify-between px-8">
-                          <select className="btn btn-md btn-primary" title="Select A range"
-                            onChange={(e) => sortSize(e)}
-                            value={size}
-                          >
-                            <option className="bs-title-option" value="">Select A range</option>
-                            <option value="10">10 Rows</option>
-                            <option value="30">30 Rows</option>
-                            <option value="50">50 Rows</option>
-                          </select>
-
-                          {pageCount !== 0 && (
-                            <p className=" font-medium text-xs text-gray-700">
-                              {" "}
-                              showing page{" "}
-                              <span className="text-green-700 text-opacity-100 font-bold text-sm">
-                                {page + 1}
-                              </span>{" "}
-                              of{" "}
-                              <span className="text-sm font-bold text-black">
-                                {pageCount}
-                              </span>{" "}
-                              pages
-                            </p>
-                          )}
-
-                          {pageCount !== 0 && (
-                            <ReactPaginate
-                              previousLabel={"prev"}
-                              nextLabel={"next"}
-                              breakLabel={"..."}
-                              pageCount={pageCount} // total number of pages needed
-                              marginPagesDisplayed={2}
-                              pageRangeDisplayed={1}
-                              onPageChange={handlePageClick}
-                              breakClassName={"page-item"}
-                              breakLinkClassName={"page-link"}
-                              containerClassName={"pagination"}
-                              pageClassName={"page-item"}
-                              pageLinkClassName={"page-link"}
-                              previousClassName={"page-item"}
-                              previousLinkClassName={"page-link"}
-                              nextClassName={"page-item"}
-                              nextLinkClassName={"page-link"}
-                              activeClassName={"active"}
-                            />
-                          )}
-                        </div>
-                      </div>
+                                      </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    
+                    </table>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center">
+                    {pageCount !== 0 && (
+                      <>
+                        <select
+                          className="btn btn-md btn-primary"
+                          title="Select A range"
+                          onChange={(e) => sortSize(e)}
+                          value={size}
+                        >
+                          <option className="bs-title-option" value="">
+                            Select A range
+                          </option>
+                          <option value="10">10 Rows</option>
+                          <option value="30">30 Rows</option>
+                          <option value="50">50 Rows</option>
+                        </select>
+                        <nav
+                          aria-label="Page navigation comments"
+                          className="mt-4"
+                        >
+                          <ReactPaginate
+                            previousLabel="<"
+                            nextLabel=">"
+                            breakLabel="..."
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link"
+                            pageCount={pageCount}
+                            pageRangeDisplayed={4}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            onPageChange={(data) => handlePageClick(data)}
+                            forcePage={page}
+                          />
+                        </nav>
+                      </>
+                    )}
+                  </div>
+                  {pageCount !== 0 && (
+                    <p className="font-medium  text-muted">
+                      showing page{" "}
+                      <span className="text-primary">
+                        {pageCount === 0 ? page : page + 1}
+                      </span>{" "}
+                      of<span className="text-primary"> {pageCount}</span> pages
+                    </p>
+                  )}
+                </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
-              <Modal.Header closeButton>
-                <h5 className="modal-title" id="myLargeModalLabel">
-                  Invoice Details
-                </h5>
-              </Modal.Header>
-              <Modal.Body>
-                <StatusBadge type={transaction?.paymentStatus} />
-                <div className="col-12">
-                  <address>
-                    <strong>Billed To:</strong>
-                    <br />
-                    {transaction?.tenantName} <br />
-                    {/*{activeInvoice?.transactionCustomerEmail}<br/>*/}
-                    {transaction?.premiseName} - {transaction?.premiseUnitName}
-                    <br />
-                    <br />
-                    {moment(transaction?.transaction?.invoiceDate).format(
-                      "dddd, MMMM Do YYYY, h:mm a"
-                    )}
-                  </address>
-                  {/*<p>Title: {activeInvoice?.transactionTitle}</p>*/}
-                  <p>Description: {transaction?.invoicePeriodDescription}</p>
-                </div>
-                <div className="col-12">
-                  <div className="py-2 mt-3">
-                    <h3 className="font-size-15 fw-bold">
-                      Charges Breakdown ({" "}
-                      <span className="text-primary fw-medium">
-                        {transaction?.transactionId}
-                      </span>{" "}
-                      )
-                    </h3>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <table className="table table-nowrap">
-                    <thead>
-                      <tr>
-                        <th style={{ width: "70px" }}>No.</th>
-                        <th>Charge name</th>
-                        <th>Quantity</th>
-                        <th>Unit Cost</th>
-                        <th>Paid Amount</th>
-                        <th></th>
-                        <th className={"text-end"}>Bill Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paymentItems?.length > 0 &&
-                        paymentItems?.map((item, index) => (
-                          <tr data-id={index} key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.applicableChargeName}</td>
-                            <td>{item.quantity}</td>
-                            <td>{formatCurrency.format(item.unitCost)}</td>
-                            <td>{formatCurrency.format(item.billPaidAmount)}</td>
-                            <td></td>
-                            <td className="text-end">
-                              {formatCurrency.format(item.billAmount)}
-                            </td>
-                          </tr>
-                        ))}
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td colSpan="2" className="text-end">
-                          Total
-                        </td>
-                        <td className="text-end fw-bold">
-                          {formatCurrency.format(total().sum)}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td colSpan="2" className="text-end">
-                          Paid
-                        </td>
-                        <td className="text-end fw-bold">
-                          {formatCurrency.format(total().paid)}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td colSpan="2" className="text-end">
-                          <strong>Balance</strong>
-                        </td>
-                        <td className="text-end fw-bold">
-                          {formatCurrency.format(total().balance)}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </Modal.Body>
-            </Modal>
+              {/*VIEW INVOICE*/}
+              <ViewInvoice show ={ invoice_show } closeInvoice={closeInvoice} activeInvoice={activeInvoice} />
+
           </>
         }
 

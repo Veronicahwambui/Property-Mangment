@@ -1,8 +1,9 @@
 /* global $ */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef } from "react";
 import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import { Modal } from "react-bootstrap";
+import { useReactToPrint } from 'react-to-print';
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
@@ -13,6 +14,7 @@ import Message from "../../components/Message";
 function Receipts() {
   const [statements, setstatements] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
+  const [activeInvoiceItems, setactiveInvoiceItems] = useState([]);
   const [startDate, setStartDate] = useState("01/12/2022");
   const [endDate, setEndDate] = useState("12/12/2022");
   let formatCurrency = new Intl.NumberFormat("en-US", {
@@ -55,10 +57,17 @@ function Receipts() {
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
-  const getOneInvoice = (bill) => {
-    let acc = statements.find((statement) => statement.billNo === bill);
-    setactiveInvoice(acc);
-    showInvoice();
+  const getOneInvoice = (id ) => {
+
+    requestsServiceService.getOneStatement(id).then((res) => {
+      setactiveInvoice(res.data.data.paymentStatement);
+      setactiveInvoiceItems(res.data.data.items);
+      showInvoice();
+      $("#spinner").addClass("d-none");
+    }).catch((err)=>{
+       showInvoice();
+    })
+
   };
 
   // MESSAGE TEST
@@ -123,6 +132,15 @@ function Receipts() {
     });
   };
 
+        // ^============ printing section   =====================
+
+        const componentRef = useRef(null);
+
+        const handlePrint = useReactToPrint({
+          content: () => componentRef.current,
+        });
+      
+
   return (
     <>
       <div className="page-content">
@@ -184,8 +202,9 @@ function Receipts() {
                           <th>ReceiptNo</th>
                           <th>Paid by</th>
                           <th>Tenant</th>
-                          <th>Bill amount</th>
-                          <th>Bill balance</th>
+                          <th>Receipt Amount</th>
+                          <th>Utilised Amount</th>
+                          <th>Utilised By</th>
                           <th>Payment mode</th>
                           <th>Payment ref</th>
                           <th>Date Created</th>
@@ -196,7 +215,7 @@ function Receipts() {
                         {currentStatements?.length > 0 &&
                           currentStatements?.map((statement, index) => (
                             <tr data-id={index} key={index}>
-                              <td>{statement.receiptNo}</td>
+                              <td>{ JSON.parse(statement.response).receiptNo}</td>
                               <td>{statement.paidBy}</td>
                               <td>
                                 {statement?.tenant?.tenantType ===
@@ -211,16 +230,15 @@ function Receipts() {
                               </td>
                               <td>
                                 {formatCurrency.format(
-                                  JSON.parse(statement.response).receiptInfo
-                                    .billAmount
+                                  statement.receiptAmount
                                 )}
                               </td>
                               <td>
                                 {formatCurrency.format(
-                                  JSON.parse(statement.response).receiptInfo
-                                    .billBalance
+                                  statement.utilisedAmount
                                 )}
                               </td>
+                              <td>{statement.utilisedBy}</td>
                               <td>{statement.paymentMode}</td>
                               <td>{statement.payReferenceNo}</td>
                               <td>
@@ -244,16 +262,13 @@ function Receipts() {
                                       <a
                                         className="dropdown-item cursor-pointer"
                                         onClick={() =>
-                                          getOneInvoice(statement.billNo)
+                                          getOneInvoice(statement.id)
                                         }
                                       >
                                         <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                         View
                                       </a>
-                                      <a className="dropdown-item " href="# ">
-                                        <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                        Print
-                                      </a>
+                                     
                                       <a
                                         className="dropdown-item "
                                         onClick={() => {
@@ -358,7 +373,9 @@ function Receipts() {
           </div>
         </div>
       </div>
+
       <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
+        <div  ref={componentRef} className="print-div" >
         <Modal.Header closeButton>
           <h5 className="modal-title" id="myLargeModalLabel">
             Receipt Details
@@ -367,45 +384,21 @@ function Receipts() {
         <Modal.Body>
           <div className="col-12">
             <address>
-              <strong>Billed To:</strong>
-              {activeInvoice.tenant?.tenantType === "INDIVIDUAL" ? (
-                <>
-                  <div>
-                    <br />
-                    {activeInvoice?.tenant?.firstName}{" "}
-                    {activeInvoice?.tenant?.lastName}
-                    {activeInvoice?.tenant?.otherName}
-                    <br />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <br />
-                    {activeInvoice?.tenant?.companyName}{" "}
-                    {activeInvoice?.tenant?.companyIncorporationNumber}{" "}
-                    {activeInvoice?.tenant?.companyAddress}
-                    <br />
-                  </div>
-                </>
-              )}
+              <strong>Paid By : </strong>
+              {activeInvoice?.paidBy}
               <br />
-              {activeInvoice?.tenant?.email}
               <br />
               <p>
-                Issue date:{" "}
+               <strong>Issue date : </strong> {" "}
                 {moment(activeInvoice.dateTimeCreated).format("DD-MM-YYYY")}
               </p>
-              <p>
-                Due date:{" "}
-                {moment(activeInvoice.invoiceDate).format("DD-MM-YYYY")}
-              </p>
+             
             </address>
           </div>
           <div className="col-12">
             <div className="py-2 mt-3">
               <h3 className="font-size-15 fw-bold">
-                Statement Details ({" "}
+                Statement Details ({"Receipt No : "}
                 <span className="text-primary fw-medium">
                   {activeInvoice?.receiptNo}
                 </span>{" "}
@@ -418,44 +411,59 @@ function Receipts() {
               <table className="table table-nowrap">
                 <thead>
                   <tr>
-                    <th>Receipt No</th>
-                    <th>Paid By</th>
-                    <th>Bill Amount</th>
-                    <th>Bill Balance</th>
                     <th>Payment Mode</th>
                     <th>Payment Ref</th>
+                    <th>Receipt Amount</th>
+                    <th>Utilised Amount</th>
+                    <th>Utilised By</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{activeInvoice?.receiptNo}</td>
-                    <td>{activeInvoice?.paidBy}</td>
-                    {Object.keys(activeInvoice).length > 0 ? (
-                      <>
-                        <td>
-                          {formatCurrency.format(
-                            JSON.parse(activeInvoice?.response).receiptInfo
-                              .billAmount
-                          )}
-                        </td>
-                        <td>
-                          {formatCurrency.format(
-                            JSON.parse(activeInvoice?.response).receiptInfo
-                              .billBalance
-                          )}
-                        </td>
-                      </>
-                    ) : (
-                      <></>
-                    )}
+
                     <td>{activeInvoice?.paymentMode}</td>
                     <td>{activeInvoice?.payReferenceNo}</td>
+                    <td>{formatCurrency.format(activeInvoice?.receiptAmount)}</td>
+                    <td>{formatCurrency.format(activeInvoice?.utilisedAmount)}</td>
+                    <td>{activeInvoice?.utilisedBy}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+
+          <div className="col-12 mt-4">
+          <h3 className="font-size-15 fw-bold">Receipt Items</h3>
+            <div className="table-responsive">
+              <table className="table table-nowrap">
+                <thead>
+                  <tr>
+                    <th>Item Id</th>
+                    <th>Title</th>
+                    <th>Decription</th>
+                    <th>Bill Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activeInvoiceItems?.map((item)=>(
+                  <tr key={item.id}>
+                    <td>{item.transactionItemId}</td>
+                    <td>{item.transactionTitle}</td>
+                    <td>{item.transactionDescription}</td>
+                    <td>{formatCurrency.format(item.amount)}</td>
+                    
+                  </tr>
+
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <button className="btn btn-success print-btn" onClick={handlePrint}>Print Receipt</button>
+
         </Modal.Body>
+        </div>
       </Modal>
     </>
   );

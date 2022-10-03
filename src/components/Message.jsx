@@ -234,6 +234,7 @@ export default function Message(props) {
           </div>
         </div>
       </div>
+      
       <div className="email-overlay d-none">
         <div className="card the-message-maker">
           <div className="card-header bg-primary message-white py-0">

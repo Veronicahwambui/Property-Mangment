@@ -633,6 +633,9 @@ class RequestsService {
   createInvoice(data) {
     return axiosInstance.post(baseUrl + "/payments/invoice/new", data);
   }
+  createNewInvoice(data) {
+    return axiosInstance.post(baseUrl + "/payments/entityInvoice/new", data);
+  }
   createBulkInvoice(data) {
     return axiosInstance.post(baseUrl + "/payments/invoice/new/bulk", data);
   }
@@ -652,6 +655,13 @@ class RequestsService {
     return axiosInstance.post(
       baseUrl +
         `/payments/invoice/transactions?page=${data.page}&size=${data.size}`,
+      data
+    );
+  }
+  getSortedInvoices(page , size ,data) {
+    return axiosInstance.post(
+      baseUrl +
+        `/payments/invoice/transactions?page=${page}&size=${size}`,
       data
     );
   }
@@ -812,6 +822,19 @@ class RequestsService {
     return axiosInstance.get(
       baseUrl +
         `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}`
+    );
+  }
+
+  getOneStatement(statementId) {
+    return axiosInstance.get(
+      baseUrl +
+        `/payments/statements/view?statementId=${statementId}`
+    );
+  }
+  getLandlordStatements(data) {
+    return axiosInstance.get(
+      baseUrl +
+        `/payments/statements?startDate=${data.startDate}&endDate=${data.endDate}&entityType=${data.entityType}&entityId=${data.id}&page=${data.page}&size=${data.size}`
     );
   }
 

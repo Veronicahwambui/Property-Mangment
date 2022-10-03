@@ -1,6 +1,7 @@
 /* global $ */
 
 import React, { useEffect } from "react";
+
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
@@ -16,6 +17,11 @@ import { Helmet } from "react-helmet";
 import Chart from "react-apexcharts";
 import numeral from "numeral";
 import DatePicker from "react-datepicker";
+import Message from "../../components/Message";
+
+import DatePickRange from "../../components/Datepicker";
+import ViewInvoice from "../../components/ViewInvoice";
+
 
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useState(1);
@@ -163,7 +169,7 @@ function ViewLandlord() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [premises, setPremises] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
   const getPremises = () => {
     let startdate = moment(new Date()).startOf("year").format("YYYY/MM/DD");
     let enddate = moment(endDate).format("YYYY/MM/DD");
@@ -231,10 +237,7 @@ function ViewLandlord() {
     //   setPremises(res.data.data);
     // });
   };
-  const sortSize = (e) => {
-    setSize(e.target.value);
-    setPage(0);
-  };
+
   const addDate = (date) => {
     console.log(date);
     setStartDate(new Date(date.target.value));
@@ -469,7 +472,7 @@ function ViewLandlord() {
 
   // const startingDate = new Date("2022-09-08T12:06:26.255Z");
   // const endingDate = new Date();
-  const months=[
+  const months = [
     "January",
     "February",
     "March",
@@ -487,7 +490,7 @@ function ViewLandlord() {
   const [year, setYear] = useState(new Date().getFullYear())
   const [month, setMonth] = useState(new Date().getMonth())
   const yearArray = generateArrayOfYears();
-  
+
 
   ///Settlements
 
@@ -550,7 +553,7 @@ function ViewLandlord() {
     var max = new Date().getFullYear()
     var min = max - 5
     var years = []
-    
+
     for (var i = max; i >= min; i--) {
       years.push(i)
     }
@@ -570,7 +573,7 @@ function ViewLandlord() {
     let x = new Date(`01 ${month} ${year}`)
     setsdate(moment(x).startOf("month").format("YYYY-MM-DD"))
     setedate(moment(x).endOf("month").format("YYYY-MM-DD"))
-  },[year, month])
+  }, [year, month])
 
 
 
@@ -975,14 +978,14 @@ function ViewLandlord() {
     },
   };
 
-  // STATEMENTS
+  // SETTLEMENTS
   const [statements, setstatements] = useState([]);
-  const [startDate2, setStartDate2] = useState("01/12/2022");
-  const [endDate2, setEndDate2] = useState("12/12/2022");
+  const [startDate2, setStartDate2] = useState(moment(new Date(new Date().getFullYear(), 0)).format("DD/MM/YYYY"));
+  const [endDate2, setEndDate2] = useState(moment(new Date()).format("DD/MM/YYYY"));
   const [page2, setPage2] = useState(0);
   const [size2, setSize2] = useState(10);
   const [pageCount2, setPageCount2] = useState(1);
-  const sortSize2 = (e) => {
+  const sortSize = (e) => {
     setSize(e.target.value);
   };
   useEffect(() => {
@@ -1002,6 +1005,293 @@ function ViewLandlord() {
       $("#spinner").addClass("d-none");
     });
   };
+
+  // * ==============================
+  // invoice stuff   
+  // * ==============================
+  const [invoices, setinvoices] = useState([]);
+  const [activeInvoice, setActiveInvoice] = useState({});
+  const [size3, setSize3] = useState(10);
+  const [pageCount3, setPageCount3] = useState(0);
+  const [page3, setPage3] = useState(0);
+  const [status, setStatus] = useState("");
+  const [startDate3, setStartDate3] = useState(
+    moment().startOf("month").format("YYYY-MM-DD")
+  );
+  const [endDate3, setEndDate3] = useState(
+    moment(new Date()).add(3, "M").format("YYYY-MM-DD")
+  );
+
+  const [invoice_show, setinvoice_show] = useState(false);
+  const showInvoice = () => setinvoice_show(true);
+  const [transaction, settransaction] = useState({});
+  const [paymentItems, setpaymentItems] = useState([]);
+
+
+  const closeInvoice = () => {
+    setinvoice_show(false);
+  };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [date, setDate] = useState({
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    endDate: new Date(),
+  });
+
+  const handleCallback = (sD, eD) => {
+    setDate({
+      ...date,
+      startDate: moment(sD).format("YYYY-MM-DD"),
+      endDate: moment(eD).format("YYYY-MM-DD"),
+    });
+  };
+
+
+  useEffect(() => {
+    getInvoices();
+  }, [size3, page3, activeInvoice, transaction, paymentItems]);
+
+  const sort2 = (event) => {
+
+    event.preventDefault();
+    let data = {
+      startDate: startDate3,
+      endDate: endDate3,
+      // size: size,
+      // page: page,
+      landlordId: parseInt(userId),
+      search: searchTerm,
+    };
+    requestsServiceService.getSortedInvoices(page3, size3, data).then((res) => {
+      setPageCount3(res.data.totalPages);
+      setinvoices(res.data.data);
+    });
+  };
+  const sortSize2 = (e) => {
+    setSize3(e.target.value);
+    setPage3(0);
+  };
+  const getInvoices = () => {
+    let data = {
+      startDate: startDate3,
+      endDate: endDate3,
+      landlordId: parseInt(userId),
+      search: searchTerm.trim(),
+    };
+    requestsServiceService.getSortedInvoices(page3, size3, data).then((res) => {
+      setPageCount3(res.data.totalPages);
+      setinvoices(res.data.data);
+      setStatus('')
+      window.scrollTo(0, 0);
+    });
+  };
+  const handlePageClick3 = (data) => {
+    console.log(data);
+    let d = data.selected;
+    setPage3(d);
+  };
+
+  const total = () => {
+    let sum = 0;
+    let paid = 0;
+    paymentItems.map((item) => {
+      sum += item.billAmount;
+      paid += item.billPaidAmount;
+    });
+    return { sum: sum, paid: paid, balance: sum - paid };
+  };
+  const reset = () => {
+    setSize3(100);
+    setPage3(1);
+  };
+  const getOneInvoice = (id) => {
+    let one = invoices.find(one => one.transactionItemId === id)
+    setActiveInvoice(one)
+    showInvoice();
+  };
+
+  // MESSAGE TEST
+  const [details, setDetails] = useState({
+    message: "",
+    contact: "",
+    recipientName: "",
+    entity: null,
+    clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+    clientId: parseInt(AuthService.getClientId()),
+    entityType: "LANDLORD",
+    createdBy: "",
+    senderId: "",
+    subject: "Invoice Payment",
+  });
+  const [mode, setmode] = useState("");
+  const handleModeChange = (mode) => {
+    setmode(mode);
+  };
+  const handleClicked = (inv, mod) => {
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
+      } balance is ${formatCurrency.format(
+        inv.billAmount - inv.billPaidAmount
+      )}. Click here to pay for it`;
+    let senderId =
+      JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
+        ? "REVENUESURE"
+        : JSON.parse(AuthService.getCurrentUserName()).client?.senderId;
+    setDetails({
+      ...details,
+      message: mes,
+      contact:
+        mod === "Email"
+          ? inv.transactionCustomerEmail
+          : inv.transaction?.tenancy?.tenant?.phoneNumber,
+      entity: inv.transaction?.landLord?.id,
+      recipientName: inv.transactionCustomerName,
+      createdBy: inv.createdBy,
+      senderId: senderId,
+      subject: "Invoice Payment",
+    });
+    $(".email-overlay").removeClass("d-none");
+    setTimeout(function () {
+      $(".the-message-maker").addClass("email-overlay-transform");
+    }, 0);
+  };
+  useEffect(() => { }, [details, mode]);
+
+  const clear2 = () => {
+    setDetails({
+      ...details,
+      message: "",
+      contact: "",
+      recipientName: "",
+      entity: null,
+      clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
+      clientId: parseInt(AuthService.getClientId()),
+      entityType: "LANDLORD",
+      createdBy: "",
+      senderId: "",
+      subject: "Invoice Payment",
+    });
+  };
+
+
+  // * ==============================
+  //  ! STATEMENTS PART   
+  // * ==============================
+  const [currentStatements, setCurrentStatements] = useState([]);
+  const [viewStatement, setViewStatement] = useState({});
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [statementdate, setstatementdate] = useState({
+    startDate: new Date(new Date().getFullYear(), 0),
+    endDate: new Date(),
+  });
+
+  // PAGINATION
+  const statsortSize = (e) => {
+    setstatSize(e.target.value);
+  };
+  const [statpage, setStatPage] = useState(0);
+  const [statsize, setstatSize] = useState(10);
+  const [statpageCount, setstatPageCount] = useState(1);
+
+  const [invoice_show2, setinvoice_show2] = useState(false);
+  const showInvoice2 = () => setinvoice_show2(true);
+  const closeInvoice2 = () => setinvoice_show2(false);
+
+  const handleStatPageClick = (event) => {
+    // const newOffset = (event.selected * size) % statements.length;
+    // setItemOffset(newOffset);
+    setStatPage(event.selected);
+  };
+  const getOneStatement = (bill) => {
+    let acc = currentStatements.find((statement) => statement.id === bill);
+    setActiveInvoice(acc);
+    showInvoice2()
+  };
+
+  useEffect(() => {
+    getLanlordStatements();
+  }, [statpage, statsize]);
+
+  const getLanlordStatements = () => {
+    let data = { startDate: moment(statementdate.startDate).format("YYYY/MM/DD"), endDate: moment(statementdate.endDate).format("YYYY/MM/DD"), page: statpage, size: statsize, id: userId , entityType : "LANDLORD" };
+    requestsServiceService.getLandlordStatements(data).then((res) => {
+      setCurrentStatements(res.data.data);
+      setstatPageCount(res.data.totalPages)
+    });
+  };
+
+
+  // ! utilizing part 
+
+  const [utilData, setUtilData] = useState({
+    newBillNo: "",
+    statementId: "",
+    tenantId: "",
+  });
+
+  const setUtilizeValues = (statementId, tenantId) => {
+    setUtilData({
+      ...utilData,
+      newBillNo: "",
+      statementId: statementId,
+      tenantId: tenantId,
+    });
+  };
+
+  const searchBillNo = async (e) => {
+    e.preventDefault();
+    handleClose();
+
+    await requestsServiceService
+      .viewTransactionItem(utilData.newBillNo)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.paymentStatus !== "PAID" && res.data.status === true) {
+          utilize();
+        } else {
+          setError({
+            ...error,
+            message: "ERROR: Bill is already paid",
+            color: "danger",
+          });
+        }
+        setTimeout(() => {
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        }, 2000);
+      });
+  };
+
+  const utilize = () => {
+    requestsServiceService.utilize(utilData).then((res) => {
+      if (res.data.status === true) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success",
+        });
+      } else {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      }
+      setTimeout(() => {
+        setError({
+          ...error,
+          message: "",
+          color: "",
+        });
+      }, 2000);
+    });
+  };
+
 
   return (
     <>
@@ -1120,7 +1410,27 @@ function ViewLandlord() {
                               : "nav-item cursor-pointer nav-link"
                           }
                         >
+                          Settlements
+                        </a>
+                        <a
+                          onClick={() => setActiveLink(8)}
+                          className={
+                            activeLink === 8
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
                           Statements
+                        </a>
+                        <a
+                          onClick={() => setActiveLink(7)}
+                          className={
+                            activeLink === 7
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
+                          invoices
                         </a>
                       </div>
                     </div>
@@ -2216,7 +2526,7 @@ function ViewLandlord() {
                         role="toolbar"
                       >
                         <h4 className="card-title text-capitalize mb-0 ">
-                          LandLord Statements
+                          LandLord Settlements
                         </h4>
                         <div className="d-flex justify-content-end align-items-center">
 
@@ -2294,7 +2604,7 @@ function ViewLandlord() {
                                 colSpan="3"
                               >
                                 {statements && statements?.length}{" "}
-                                Statements
+                                Settlements
                               </th>
                               <td className="text-nowrap text-right" colSpan="7">
                                 <span className="fw-semibold">
@@ -2366,6 +2676,547 @@ function ViewLandlord() {
 
           )
           }
+
+          {activeLink === 7 &&
+            <>
+
+              <div className="">
+                <div className="container-fluid">
+                  <Message details={details} mode={mode} clear={clear2} />
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="card">
+                        <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                          <div
+                            className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <h4 className="card-title text-capitalize mb-0 ">
+                              All rent and Bills invoices
+                            </h4>
+
+                            <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                              <div>
+                                <form className="app-search d-none d-lg-block p-2">
+                                  <div className="position-relative">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      placeholder="Search..."
+                                      onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                    <span className="bx bx-search-alt"></span>
+                                  </div>
+                                </form>
+                              </div>
+                              <div
+                                className="input-group d-flex justify-content-end align-items-center"
+                                id="datepicker1"
+                              >
+                                <div
+                                  style={{
+                                    backgroundColor: "#fff",
+                                    color: "#2C2F33",
+                                    cursor: " pointer",
+                                    padding: "7px 10px",
+                                    border: "2px solid #ccc",
+                                    width: " 100%",
+                                  }}
+                                >
+                                  <DatePickRange
+                                    onCallback={handleCallback}
+                                    startDate={moment(date.startDate).format(
+                                      "YYYY-MM-DD"
+                                    )}
+                                    endDate={moment(date.endDate).format("YYYY-MM-DD")}
+                                  />
+                                </div>
+                              </div>
+                              <button className="btn btn-primary" onClick={sort2}>
+                                filter
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="card-body">
+                          <div className="table-responsive">
+                            <table
+                              className="table align-middle table-hover  contacts-table table-striped "
+
+                            >
+                              <thead className="table-light">
+                                <tr className="table-light">
+                                  <th>Invoice No</th>
+                                  <th>Bill Ref</th>
+                                  <th>Tenant</th>
+                                  <th>Properties</th>
+                                  <th>Hse/Unit</th>
+                                  <th>Charge Name</th>
+                                  <th>Bill Amount</th>
+                                  <th>Paid Amount</th>
+                                  <th>Total Balance</th>
+                                  <th>Due Date</th>
+                                  <th>Payment Status</th>
+                                  <th>Date Created</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {invoices.length > 0 &&
+                                  invoices?.map((invoice, index) => (
+                                    <tr data-id={index} key={index}>
+                                      <td>{invoice.transactionItemId}</td>
+                                      <td>{invoice.billerBillNo}</td>
+                                      <td>{invoice.transaction?.tenantName}</td>
+                                      <td>{invoice.transaction.premiseName}</td>
+                                      <td>{invoice.transaction.premiseUnitName}</td>
+                                      <td>{invoice.applicableChargeName}</td>
+                                      <td>
+                                        {formatCurrency.format(invoice.billAmount)}
+                                      </td>
+                                      <td>
+                                        {formatCurrency.format(invoice.billPaidAmount)}
+                                      </td>
+                                      <td className={"text-right"}>
+                                        <span
+                                          className={
+                                            invoice.billPaidAmount > invoice.billAmount
+                                              ? "fw-semibold text-success"
+                                              : "fw-semibold text-danger"
+                                          }
+                                        >
+                                          {formatCurrency.format(
+                                            invoice.billAmount - invoice.billPaidAmount
+                                          )}
+                                        </span>
+                                      </td>
+                                      <td>
+                                        {moment(invoice?.invoiceDate).format(
+                                          "DD-MM-YYYY"
+                                        )}
+                                      </td>
+                                      <td>
+                                        <StatusBadge type={invoice?.paymentStatus} />
+                                      </td>
+                                      <td>
+                                        {moment(invoice.dateTimeCreated).format(
+                                          "YYYY-MM-DD HH:mm"
+                                        )}
+                                      </td>
+                                      <td>
+                                        <div className="d-flex justify-content-end">
+                                          <div className="dropdown">
+                                            <a
+                                              className="text-muted font-size-16"
+                                              role="button"
+                                              data-bs-toggle="dropdown"
+                                              aria-haspopup="true"
+                                            >
+                                              <i className="bx bx-dots-vertical-rounded"></i>
+                                            </a>
+                                            <div className="dropdown-menu dropdown-menu-end ">
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  getOneInvoice(
+                                                    invoice.transactionItemId
+                                                  );
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                                View
+                                              </a>
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("Email");
+                                                  handleClicked(invoice, "Email");
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                                Email Tenant
+                                              </a>
+                                              <a
+                                                className="dropdown-item cursor-pointer"
+                                                onClick={() => {
+                                                  handleModeChange("SMS");
+                                                  handleClicked(invoice, "SMS");
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-chat me-3"></i>
+                                                Send as SMS
+                                              </a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+
+                            </table>
+                          </div>
+                          <div className="d-flex justify-content-between align-items-center">
+                            {pageCount3 !== 0 && (
+                              <>
+                                <select
+                                  className="btn btn-md btn-primary"
+                                  title="Select A range"
+                                  onChange={(e) => sortSize2(e)}
+                                  value={size3}
+                                >
+                                  <option className="bs-title-option" value="">
+                                    Select A range
+                                  </option>
+                                  <option value="10">10 Rows</option>
+                                  <option value="30">30 Rows</option>
+                                  <option value="50">50 Rows</option>
+                                </select>
+                                <nav
+                                  aria-label="Page navigation comments"
+                                  className="mt-4"
+                                >
+                                  <ReactPaginate
+                                    previousLabel="<"
+                                    nextLabel=">"
+                                    breakLabel="..."
+                                    breakClassName="page-item"
+                                    breakLinkClassName="page-link"
+                                    pageCount={pageCount3}
+                                    pageRangeDisplayed={4}
+                                    marginPagesDisplayed={2}
+                                    containerClassName="pagination justify-content-center"
+                                    pageClassName="page-item"
+                                    pageLinkClassName="page-link"
+                                    previousClassName="page-item"
+                                    previousLinkClassName="page-link"
+                                    nextClassName="page-item"
+                                    nextLinkClassName="page-link"
+                                    activeClassName="active"
+                                    onPageChange={(data) => handlePageClick3(data)}
+                                    forcePage={page3}
+                                  />
+                                </nav>
+                              </>
+                            )}
+                          </div>
+                          {pageCount3 !== 0 && (
+                            <p className="font-medium  text-muted">
+                              showing page{" "}
+                              <span className="text-primary">
+                                {pageCount3 === 0 ? page : page3 + 1}
+                              </span>{" "}
+                              of<span className="text-primary"> {pageCount3}</span> pages
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/*VIEW INVOICE*/}
+              <ViewInvoice show={invoice_show} closeInvoice={closeInvoice} activeInvoice={activeInvoice} />
+
+            </>
+          }
+          {activeLink === 8 && (
+            <>
+              <div className="row">
+                <div className="col-12">
+                  <div className="card">
+                    <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                      <div
+                        className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                        role="toolbar"
+                      >
+                        <h4 className="card-title text-capitalize mb-0 ">
+                          landlord Statements
+                        </h4>
+                        <div className="d-flex justify-content-end align-items-center">
+                          <div>
+                            <div></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-body">
+                      <div className="table-responsive overflow-visible">
+                        {error.color !== "" && (
+                          <div
+                            className={"alert alert-" + error.color}
+                            role="alert"
+                          >
+                            {error.message}
+                          </div>
+                        )}
+                        <table
+                          className="table align-middle table-hover  contacts-table table-striped "
+                          id="datatable-buttons"
+                        >
+                          <thead className="table-light">
+                            <tr className="table-dark">
+                              <th>Bill No</th>
+                              <th>Receipt Amount</th>
+                              <th>Pay Reference No</th>
+                              <th>Payment Mode</th>
+                              <th>Paid By</th>
+                              <th>Tenant Name</th>
+                              <th>Utilized Amount</th>
+                              <th>Date Created</th>
+                              <th className="text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {currentStatements?.length > 0 &&
+                              currentStatements?.map((statement, index) => (
+                                <tr data-id={index} key={index}>
+                                  <td>
+                                    {
+                                      JSON.parse(statement.response).billNo
+
+                                    }
+                                  </td>
+                                  <td>
+                                    {formatCurrency.format(statement.receiptAmount)}
+                                  </td>
+                                  <td>{statement.payReferenceNo}</td>
+                                  <td>{statement.paymentMode}</td>
+                                  <td>{statement.paidBy}</td>
+                                  <td>
+                                    {statement?.tenant?.tenantType ===
+                                      "INDIVIDUAL" ? (
+                                      <>
+                                        {statement?.tenant?.firstName}{" "}
+                                        {statement?.tenant?.lastName}
+                                      </>
+                                    ) : (
+                                      <>{statement?.tenant?.companyName}</>
+                                    )}
+                                  </td>
+                                  <td>
+                                    {formatCurrency.format(
+                                      statement.utilisedAmount
+                                    )}
+                                  </td>
+                                  <td>
+                                    {moment(statement.dateTimeCreated).format(
+                                      "YYYY-MM-DD HH:mm"
+                                    )}
+                                  </td>
+
+                                  <td>
+                                    <div className="d-flex justify-content-end">
+                                      <div className="dropdown">
+                                        <a
+                                          className="text-muted font-size-16 cursor-pinter"
+                                          role="button"
+                                          data-bs-toggle="dropdown"
+                                          aria-haspopup="true"
+                                        >
+                                          <i className="bx bx-dots-vertical-rounded"></i>
+                                        </a>
+                                        <div className="dropdown-menu dropdown-menu-end ">
+                                          <span
+                                            className="dropdown-item cursor-pinter"
+                                            onClick={() =>
+                                              getOneStatement(statement.id)
+                                            }
+                                          >
+                                            <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                            View
+                                          </span>
+                                          {statement.utilisedAmount <
+                                            statement.receiptAmount && (
+                                              <a
+                                                className="dropdown-item  cursor-pointer"
+                                                onClick={() => {
+                                                  handleShow();
+                                                  setUtilizeValues(
+                                                    statement?.id,
+                                                    statement?.tenant?.id
+                                                  );
+                                                }}
+                                              >
+                                                <i className="font-size-15 mdi mdi-account-check me-3 "></i>
+                                                Utilize
+                                              </a>
+                                            )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                          <tfoot className="table-light">
+                            <tr>
+                              <th
+                                className="text-capitalize text-nowrap"
+                                colSpan="3"
+                              >
+                                {currentStatements && currentStatements?.length}{" "}
+                                Statements
+                              </th>
+                              <td className="text-nowrap text-right" colSpan="7">
+                                <span className="fw-semibold">
+                                  {/*{formatCurrency.format(total())}*/}
+                                </span>
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                        <div className="d-flex justify-content-between align-items-center">
+                          {statpageCount !== 0 && (
+                            <>
+                              <select
+                                className="btn btn-md btn-primary"
+                                title="Select A range"
+                                onChange={(e) => statsortSize(e)}
+                                value={statsize}
+                              >
+                                <option className="bs-title-option" value="">
+                                  Select A range
+                                </option>
+                                <option value="10">10 Rows</option>
+                                <option value="30">30 Rows</option>
+                                <option value="50">50 Rows</option>
+                              </select>
+                              <nav
+                                aria-label="Page navigation comments"
+                                className="mt-4"
+                              >
+                                <ReactPaginate
+                                  previousLabel="<"
+                                  nextLabel=">"
+                                  breakLabel="..."
+                                  breakClassName="page-item"
+                                  breakLinkClassName="page-link"
+                                  pageCount={statpageCount}
+                                  pageRangeDisplayed={4}
+                                  marginPagesDisplayed={2}
+                                  containerClassName="pagination justify-content-center"
+                                  pageClassName="page-item"
+                                  pageLinkClassName="page-link"
+                                  previousClassName="page-item"
+                                  previousLinkClassName="page-link"
+                                  nextClassName="page-item"
+                                  nextLinkClassName="page-link"
+                                  activeClassName="active"
+                                  onPageChange={(data) => handleStatPageClick(data)}
+                                />
+                              </nav>
+                            </>
+                          )}
+                        </div>
+                        {statpageCount !== 0 && (
+                          <p className="font-medium  text-muted">
+                            showing page{" "}
+                            <span className="text-primary">
+                              {statpageCount === 0 ? statpage : statpage + 1}
+                            </span>{" "}
+                            of
+                            <span className="text-primary"> {statpageCount}</span> pages
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/*VIEW INVOICE*/}
+              <Modal show={invoice_show2} onHide={closeInvoice2} size="lg" centered>
+                <Modal.Header closeButton>
+                  <h5 className="modal-title" id="myLargeModalLabel">
+                    Statement Details
+                  </h5>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="col-12">
+                  </div>
+                  <div className="col-12">
+                    <div className="py-2 mt-3">
+                      <h3 className="font-size-15 fw-bold">
+                        Statement Details ({" "}
+                        <span className="text-primary fw-medium">
+                          {activeInvoice?.receiptNo}
+                        </span>{" "}
+                        )
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="table-responsive">
+                      <table className="table table-nowrap">
+                        <thead>
+                          <tr>
+                            <th>Bill No</th>
+                            <th>Receipt Amount</th>
+                            <th>Pay Reference No</th>
+                            <th>Payment Mode</th>
+                            <th>Paid By</th>
+                            <th>Utilized Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{activeInvoice?.billNo}</td>
+                            <td>
+                              {formatCurrency.format(activeInvoice?.receiptAmount)}
+                            </td>
+                            <td>{activeInvoice?.payReferenceNo}</td>
+                            <td>{activeInvoice?.paymentMode}</td>
+                            <td>{activeInvoice?.paidBy}</td>
+                            <td>
+                              {formatCurrency.format(activeInvoice?.utilisedAmount)}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </Modal.Body>
+              </Modal>
+              {/* LOOK FOR BILL */}
+
+              <Modal show={show} onHide={handleClose} size="md" centered>
+                <Modal.Header closeButton>
+                  <h5 className="modal-title" id="myLargeModalLabel">
+                    Search for Bill to utilize
+                  </h5>
+                </Modal.Header>
+                <form onSubmit={(e) => searchBillNo(e)}>
+                  <Modal.Body>
+                    <div className="form-group  justify-content-center d-flex flex-column">
+                      <label htmlFor="">BILL NO</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={utilData.newBillNo}
+                        onChange={(e) =>
+                          setUtilData({ ...utilData, newBillNo: e.target.value })
+                        }
+                        placeholder="Enter Bill No "
+                        required
+                      />
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <div>
+                      <button className="btn btn-sm btn-primary" type="submit">
+                        Search
+                      </button>
+                    </div>
+                  </Modal.Footer>
+                </form>
+              </Modal>
+            </>
+          )
+
+          }
+
           {/*edit landlord modals*/}
           <Modal
             show={show_landlord}
@@ -3055,35 +3906,35 @@ function ViewLandlord() {
                         </select>
                       </div>
                       <div>
-                            <label htmlFor="">Time Period</label>
-                            <div className="d-flex">
-                              <div className="form-group m-2">
-                                <label htmlFor="">Select year</label>
-                                <select value={year}name="" id="" onChange={(e) => setYear(e.target.value)} className={"form-control"}>
-                                  {yearArray?.map((year) => (
-                                    <option value={year} key={year}>{year}</option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div className="form-group m-2">
-                                <label htmlFor="">Select Month</label>
-                                <select name="" id="" value={month}onChange={(e) => setMonth(e.target.value)} className={"form-control"}>
-                                  {months?.map((month) => (
-                                    <option value={month} key={month}>{month}</option>
-                                  ))}
-                                </select>
-                              </div>
-                            </div>
+                        <label htmlFor="">Time Period</label>
+                        <div className="d-flex">
+                          <div className="form-group m-2">
+                            <label htmlFor="">Select year</label>
+                            <select value={year} name="" id="" onChange={(e) => setYear(e.target.value)} className={"form-control"}>
+                              {yearArray?.map((year) => (
+                                <option value={year} key={year}>{year}</option>
+                              ))}
+                            </select>
                           </div>
-                          <div className="form-group">
-                            <label htmlFor="">Start Date</label>
-                            <input type="text" className={"form-control"} value={moment(sDate).format("LL")} disabled/>
+                          <div className="form-group m-2">
+                            <label htmlFor="">Select Month</label>
+                            <select name="" id="" value={month} onChange={(e) => setMonth(e.target.value)} className={"form-control"}>
+                              {months?.map((month) => (
+                                <option value={month} key={month}>{month}</option>
+                              ))}
+                            </select>
                           </div>
-                          <div className="form-group">
-                            <label htmlFor="">End Date</label>
-                            <input type="text" className={"form-control"} value={moment(eDate).format("LL")} disabled/>
-                          </div>
-                     
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="">Start Date</label>
+                        <input type="text" className={"form-control"} value={moment(sDate).format("LL")} disabled />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="">End Date</label>
+                        <input type="text" className={"form-control"} value={moment(eDate).format("LL")} disabled />
+                      </div>
+
                     </div>
                   </div>
                   <div class="modal-footer">
