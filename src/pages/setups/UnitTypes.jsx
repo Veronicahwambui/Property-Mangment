@@ -9,10 +9,10 @@ import moment from "moment";
 import ReactPaginate from "react-paginate";
 
 function UnitTypes() {
-  const [list, setList] = useState([]);
+  const [listUnit, setListUnit] = useState([]);
   const [activeId, setActiveId] = useState("");
-  const [createName, setCreateName] = useState("");
-  const [updateName, setUpdateName] = useState("");
+  const [createNam, setCreateNam] = useState("");
+  const [updateNam, setUpdateNam] = useState("");
   const [chargeTypes, setChargeTypes] = useState([]);
   const [selectedChargeTypes, setSelectedChargeTypes] = useState([]);
   const [chargeType, setChargeType] = useState("");
@@ -34,7 +34,7 @@ function UnitTypes() {
 
   useEffect(() => {
     fetchTypes();
-    fetchAll();
+    fetchAllUnit();
     let oldId = localStorage.getItem("activeId");
     setActiveId(oldId);
   }, []);
@@ -52,20 +52,20 @@ function UnitTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setUnitTypes(list.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(list.length / size));
-  }, [itemOffset, size, list]);
+    setUnitTypes(listUnit.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(listUnit.length / size));
+  }, [itemOffset, size, listUnit]);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * size) % list.length;
+    const newOffset = (event.selected * size) % listUnit.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
 
   // fetch list function
-  const fetchAll = () => {
+  const fetchAllUnit = () => {
     requestsServiceService.allUnitTypes().then((res) => {
-      setList(res.data.data);
+      setListUnit(res.data.data);
     });
   };
 
@@ -76,13 +76,13 @@ function UnitTypes() {
   };
 
   // create function
-  const create = () => {
+  const createUnit = () => {
     let data = JSON.stringify({
       active: true,
       clientId: parseInt(authService.getClientId()),
       id: null,
       monthCountForTenancyRenewal: monthCountForTenancyRenewal,
-      name: createName,
+      name: createNam,
       numberOfRooms: numberOfRooms,
       purpose: purpose,
       squarage: squarage,
@@ -92,8 +92,8 @@ function UnitTypes() {
     requestsServiceService
       .createUnitTypes(data)
       .then((res) => {
-        fetchAll();
-        $("#add-new-zone").modal("hide");
+        fetchAllUnit();
+        $("#add-new-unit").modal("hide");
 
         if (res.data.status) {
           setError({
@@ -114,7 +114,7 @@ function UnitTypes() {
         }, 3000);
       })
       .catch((res) => {
-        $("#add-new-zone").modal("hide");
+        $("#add-new-unit").modal("hide");
 
         setError({
           ...error,
@@ -137,20 +137,20 @@ function UnitTypes() {
   };
 
   // toggle function
-  const toggleStatus = () => {
+  const toggleStat = () => {
     requestsServiceService.toogleUnitType(activeId).then((res) => {
-      fetchAll();
+      fetchAllUnit();
     });
   };
 
   // update function
-  const Update = () => {
+  const UpdateUnit = () => {
     let data = JSON.stringify({
       active: true,
       clientId: authService.getClientId(),
       id: activeId,
       monthCountForTenancyRenewal: monthCountForTenancyRenewal,
-      name: updateName,
+      name: updateNam,
       numberOfRooms: numberOfRooms,
       purpose: purpose,
       squarage: squarage,
@@ -159,9 +159,9 @@ function UnitTypes() {
     requestsServiceService
       .updateUnitType(data)
       .then((res) => {
-        $("#update-modal").modal("hide");
+        $("#update-unit").modal("hide");
 
-        fetchAll();
+        fetchAllUnit();
 
         if (res.data.status) {
           setError({
@@ -182,7 +182,7 @@ function UnitTypes() {
         }, 3000);
       })
       .catch((res) => {
-        $("#update-modal").modal("hide");
+        $("#update-unit").modal("hide");
 
         setError({
           ...error,
@@ -329,7 +329,7 @@ function UnitTypes() {
                                       <a
                                         onClick={() => {
                                           setActiveId(val.id);
-                                          setUpdateName(val.name);
+                                          setUpdateNam(val.name);
                                           setMonthCountForTenancyRenewal(
                                             val.monthCountForTenancyRenewal
                                           );
@@ -338,7 +338,7 @@ function UnitTypes() {
                                           setSquarage(val.squarage);
                                         }}
                                         data-bs-toggle="modal"
-                                        data-bs-target="#update-modal"
+                                        data-bs-target="#update-unit"
                                         class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                         title="Edit "
                                       >
@@ -448,7 +448,7 @@ function UnitTypes() {
       {/* create modal */}
       <div
         class="modal fade"
-        id="add-new-zone"
+        id="add-new-unit"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"
@@ -460,7 +460,7 @@ function UnitTypes() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                create();
+                createUnit();
               }}
             >
               <div class="modal-header">
@@ -483,8 +483,8 @@ function UnitTypes() {
                       </label>
                       <input
                         required
-                        value={createName}
-                        onChange={(e) => setCreateName(e.target.value)}
+                        value={createNam}
+                        onChange={(e) => setCreateNam(e.target.value)}
                         type="text"
                         class="form-control"
                         placeholder="Enter unit type name"
@@ -592,7 +592,7 @@ function UnitTypes() {
       {/* update modal  */}
       <div
         class="modal fade"
-        id="update-modal"
+        id="update-unit"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"
@@ -604,7 +604,7 @@ function UnitTypes() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                Update();
+                UpdateUnit();
               }}
             >
               <div class="modal-header">
@@ -628,8 +628,8 @@ function UnitTypes() {
                       </label>
                       <input
                         required
-                        value={updateName}
-                        onChange={(e) => setUpdateName(e.target.value)}
+                        value={updateNam}
+                        onChange={(e) => setUpdateNam(e.target.value)}
                         type="text"
                         class="form-control"
                         placeholder="Enter update name"
@@ -765,7 +765,7 @@ function UnitTypes() {
                 type="button"
                 class="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={() => toggleStatus()}
+                onClick={() => toggleStat()}
               >
                 Yes
               </button>
@@ -803,7 +803,7 @@ function UnitTypes() {
                 type="button"
                 class="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={() => toggleStatus()}
+                onClick={() => toggleStat()}
               >
                 Yes
               </button>

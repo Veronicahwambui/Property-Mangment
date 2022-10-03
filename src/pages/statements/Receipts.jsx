@@ -35,8 +35,8 @@ function Receipts() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setCurrentStatements(statements.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(statements.length / size));
+    setCurrentStatements(statements?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(statements?.length / size));
   }, [itemOffset, size, statements]);
 
   const handlePageClick = (event) => {

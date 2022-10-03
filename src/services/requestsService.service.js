@@ -95,8 +95,8 @@ class RequestsService {
 
   // applicable charges
 
-  allApplicableCharges() {
-    return axiosInstance.get(baseUrl + "/setup/applicableCharges");
+  allApplicableCharges(entityType)  {
+    return axiosInstance.get(baseUrl + "/setup/applicableCharges?entityType=" + entityType);
   }
 
   applicableChargeTypes() {
@@ -352,8 +352,8 @@ class RequestsService {
 
   // document types Document
 
-  allDocumentTypes() {
-    return axiosInstance.get(baseUrl + "/setup/documentTypes");
+  allDocumentTypes(entityType) {
+    return axiosInstance.get(baseUrl + "/setup/documentTypes?entityType="+ entityType);
   }
 
   createDocumentTypes(data) {
@@ -1160,6 +1160,9 @@ class RequestsService {
   toogleRegenerateReference(invoiceNo){
 
     return axiosInstance.get(baseUrl+ "/payments/parents/item/" + invoiceNo + "/regenerateReference")
+  }
+  createSettings(data){
+    return axiosInstance.post(baseUrl + "/clients/settings", data);
   }
 }
 

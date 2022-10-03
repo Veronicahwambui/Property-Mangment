@@ -8,10 +8,10 @@ import moment from "moment";
 import ReactPaginate from "react-paginate";
 
 function PremiseUseTypes() {
-  const [list, setList] = useState([]);
+  const [lists, setLists] = useState([]);
   const [activeId, setActiveId] = useState("");
-  const [createName, setCreateName] = useState("");
-  const [updateName, setUpdateName] = useState("");
+  const [createNames, setCreateNames] = useState("");
+  const [updateNames, setUpdateNames] = useState("");
   const [error, setError] = useState({
     message: "",
     color: "",
@@ -30,12 +30,12 @@ function PremiseUseTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setPremiseUseTypes(list.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(list.length / size));
-  }, [itemOffset, size, list]);
+    setPremiseUseTypes(lists.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(lists.length / size));
+  }, [itemOffset, size, lists]);
 
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * size) % list.length;
+  const handlePageClicks = (event) => {
+    const newOffset = (event.selected * size) % lists.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
@@ -47,24 +47,24 @@ function PremiseUseTypes() {
   // fetch list function
   const fetchAll = () => {
     requestsServiceService.allPremiseUseTypes().then((res) => {
-      setList(res.data.data);
+      setLists(res.data.data);
     });
   };
 
   // create function
-  const create = () => {
+  const createPremise = () => {
     let data = JSON.stringify({
       active: true,
       clientId: authService.getClientId(),
       id: 0,
-      name: createName,
+      name: createNames,
     });
 
     requestsServiceService
       .createPremiseUseTypes(data)
       .then((res) => {
         fetchAll();
-        $("#add-new-zone").modal("hide");
+        $("#add-new-premise").modal("hide");
 
         if (res.data.status) {
           setError({
@@ -85,7 +85,7 @@ function PremiseUseTypes() {
         }, 3000);
       })
       .catch((res) => {
-        $("#add-new-zone").modal("hide");
+        $("#add-new-premise").modal("hide");
 
         setError({
           ...error,
@@ -145,18 +145,18 @@ function PremiseUseTypes() {
   };
 
   // update function
-  const Update = () => {
+  const UpdatePremise = () => {
     let data = JSON.stringify({
       active: true,
       clientId: authService.getClientId(),
       id: activeId,
-      name: updateName,
+      name: updateNames,
     });
     requestsServiceService
       .updatePremiseUseType(data)
       .then((res) => {
         fetchAll();
-        $("#update-modal").modal("hide");
+        $("#update-premise").modal("hide");
 
         if (res.data.status) {
           setError({
@@ -177,7 +177,7 @@ function PremiseUseTypes() {
         }, 3000);
       })
       .catch((res) => {
-        $("#update-modal").modal("hide");
+        $("#update-premise").modal("hide");
 
         setError({
           ...error,
@@ -190,6 +190,8 @@ function PremiseUseTypes() {
         }, 3000);
       });
   };
+
+  
 
   return (
     <>
@@ -231,11 +233,11 @@ function PremiseUseTypes() {
                     </div>
                     <div class="d-flex">
                       <button
-                        onClick={() => { setCreateName(''); fetchAll() }}
+                        onClick={() => { setCreateNames(''); fetchAll() }}
                         type="button"
                         class="btn btn-primary waves-effect btn-label waves-light me-3"
                         data-bs-toggle="modal"
-                        data-bs-target="#add-new-zone"
+                        data-bs-target="#add-new-premise"
                       >
                         <i class="mdi mdi-plus label-icon"></i> Add Property Use Type
                       </button>
@@ -294,10 +296,10 @@ function PremiseUseTypes() {
                                     <a
                                       onClick={() => {
                                         setActiveId(val.id);
-                                        setUpdateName(val.name);
+                                        setUpdateNames(val.name);
                                       }}
                                       data-bs-toggle="modal"
-                                      data-bs-target="#update-modal"
+                                      data-bs-target="#update-premise"
                                       class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                       title="Edit "
                                     >
@@ -369,7 +371,7 @@ function PremiseUseTypes() {
                               nextClassName="page-item"
                               nextLinkClassName="page-link"
                               activeClassName="active"
-                              onPageChange={(data) => handlePageClick(data)}
+                              onPageChange={(data) => handlePageClicks(data)}
                               forcePage={page}
                             />
                           </nav>
@@ -402,7 +404,7 @@ function PremiseUseTypes() {
       {/* create modal */}
       <div
         class="modal fade"
-        id="add-new-zone"
+        id="add-new-premise"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"
@@ -410,7 +412,14 @@ function PremiseUseTypes() {
         aria-hidden="true"
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
+
           <div class="modal-content">
+<form 
+ onSubmit={(e) =>{
+  e.preventDefault();
+              createPremise();
+            
+}} >
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
                 New  Property Use Type
@@ -422,14 +431,8 @@ function PremiseUseTypes() {
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-12">
-                  <div class="form-group mb-4">
-                    <label for=""> Property Use Type <strong class="text-danger">*</strong></label>
-                    <input value={createName} onChange={(e) => setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
-                  </div>
-                </div>
+           
+               
                 <div class="modal-body">
                   <div class="row">
                     <div class="col-12">
@@ -438,12 +441,13 @@ function PremiseUseTypes() {
                           {" "}
                           Premise Use Type <strong class="text-danger">*</strong>
                         </label>
-                        <input
-                          value={createName}
-                          onChange={(e) => setCreateName(e.target.value)}
+                        <input required
+                          value={createNames}
+                          onChange={(e) => setCreateNames(e.target.value)}
                           type="text"
                           class="form-control"
                           placeholder="Enter create name"
+                        
                         />
                       </div>
                     </div>
@@ -458,23 +462,24 @@ function PremiseUseTypes() {
                     Close
                   </button>
                   <button
-                    onClick={create}
-                    type="button"
+                  
+                    type="submit"
                     class="btn btn-primary"
                     data-bs-dismiss="modal"
                   >
                     Save
                   </button>
                 </div>
+                </form>
               </div>
+         
             </div>
-          </div>
-        </div>
+         
       </div>
       {/* edit modal  */}
       <div
         class="modal fade"
-        id="update-modal"
+        id="update-premise"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"
@@ -483,7 +488,7 @@ function PremiseUseTypes() {
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <form onSubmit={(e) => { e.preventDefault(); Update() }}>
+            <form onSubmit={(e) => { e.preventDefault(); UpdatePremise () }}>
 
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
@@ -501,7 +506,7 @@ function PremiseUseTypes() {
                   <div class="col-12">
                     <div class="form-group mb-4">
                       <label for="">Property Use Type <strong class="text-danger">*</strong></label>
-                      <input required value={updateName} onChange={(e) => setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
+                      <input required value={updateNames} onChange={(e) => setUpdateNames(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
                     </div>
                   </div>
 
@@ -540,8 +545,8 @@ function PremiseUseTypes() {
                         </label>
                         <input
                           required
-                          value={updateName}
-                          onChange={(e) => setUpdateName(e.target.value)}
+                          value={updateNames}
+                          onChange={(e) => setUpdateNames(e.target.value)}
                           type="text"
                           class="form-control"
                           placeholder="Enter update name"
@@ -643,6 +648,7 @@ function PremiseUseTypes() {
             </div>
 
           </div>
+
         </div>
 
       </div>

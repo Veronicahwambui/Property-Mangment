@@ -8,7 +8,7 @@ import moment from "moment";
 import ReactPaginate from "react-paginate";
 
 function DocumentTypes() {
-  const [list, setList] = useState([]);
+  const [lists, setLists] = useState([]);
   const [activeId, setActiveId] = useState("");
   const [createName, setCreateName] = useState("");
   const [updateName, setUpdateName] = useState("");
@@ -18,13 +18,13 @@ function DocumentTypes() {
   });
 
   useEffect(() => {
-    fetchAll();
+    fetchAllDocument();
   }, []);
 
   // fetch list function
-  const fetchAll = () => {
-    requestsServiceService.allDocumentTypes().then((res) => {
-      setList(res.data.data != null ? res.data.data : []);
+  const fetchAllDocument = () => {
+    requestsServiceService.allDocumentTypes("TENANT").then((res) => {
+      setLists(res.data.data != null ? res.data.data : []);
       // setList([])
     });
   };
@@ -42,18 +42,18 @@ function DocumentTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setDocumentTypes(list.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(list.length / size));
-  }, [itemOffset, size, list]);
+    setDocumentTypes(lists.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(lists.length / size));
+  }, [itemOffset, size, lists]);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * size) % list.length;
+    const newOffset = (event.selected * size) % lists.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
 
   // create function
-  const create = () => {
+  const createDocs = () => {
     let data = JSON.stringify({
       active: true,
       clientId: authService.getClientId(),
@@ -64,7 +64,7 @@ function DocumentTypes() {
     requestsServiceService
       .createDocumentTypes(data)
       .then((res) => {
-        fetchAll();
+        fetchAllDocument();
         $("#add-new-zone").modal("hide");
 
         if (res.data.status) {
@@ -111,12 +111,12 @@ function DocumentTypes() {
   // toggle function
   const toggleStatus = () => {
     requestsServiceService.toogleDocumentType(activeId).then((res) => {
-      fetchAll();
+      fetchAllDocument();
     });
   };
 
   // update function
-  const Update = () => {
+  const UpdateDocs = () => {
     let data = JSON.stringify({
       active: true,
       clientId: authService.getClientId(),
@@ -126,7 +126,7 @@ function DocumentTypes() {
     requestsServiceService
       .updateDocumentType(data)
       .then((res) => {
-        fetchAll();
+        fetchAllDocument();
         $("#update-modal").modal("hide");
 
         if (res.data.status) {
@@ -388,7 +388,7 @@ function DocumentTypes() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                create();
+                createDocs();
               }}
             >
               <div class="modal-header">
@@ -455,7 +455,7 @@ function DocumentTypes() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                Update();
+                UpdateDocs();
               }}
             >
               <div class="modal-header">

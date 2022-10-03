@@ -70,6 +70,13 @@ import ViewLandlordStatement from "./pages/statements/ViewLandlordStatement";
 import Settlements from "./pages/statements/Settlements";
 import authLoginService from "./services/authLogin.service";
 
+import LandordSetup from "./pages/setups/LandordSetup";
+import TenantSetup from "./pages/setups/TenantSetup";
+import Properties from "./pages/setups/Properties";
+import General from "./pages/setups/General";
+import Auctioneer from './pages/setups/Auctioneer'
+
+
 function Main() {
   useEffect(() => {
     setTimeout(function () {
@@ -133,6 +140,27 @@ function Main() {
                       <Route path="/addtenant" element={<AddTenant />} />
 
                       {/* set ups  */}
+                      <Route
+                        path="/landordsetup"
+                        element={<LandordSetup />}
+                      />
+                        <Route
+                        path="/tenantsetup"
+                        element={<TenantSetup />}
+                      />
+
+<Route
+                        path="/properties"
+                        element={<Properties />}
+                      />
+                      <Route
+                        path="/general"
+                        element={<General />}
+                      />
+                        <Route
+                        path="/auctioneer"
+                        element={<Auctioneer/>}
+                      />
                       <Route
                         path="/applicablecharges"
                         element={<ApplicableCharges />}

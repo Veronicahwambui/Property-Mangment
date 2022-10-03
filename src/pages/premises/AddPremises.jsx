@@ -32,6 +32,11 @@ function AddProperties() {
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
   const [fileNoShow, setFileNoShow] = useState(true);
   const [tenancyStatus, setTenancyStatus] = useState("")
+  const [ac, setAC] = useState([]);
+
+  const[chargePropertyTax,setChargePropertyTax]=useState(false)
+  const[collectElectricityDeposit,setCollectElectricityDeposit]=useState(false)
+
 
   const toogleShowUnitTypeChargesModal = () => {
     setShowUnitTypeChargesModal(!showUnitTypeChargesModal);
@@ -114,6 +119,9 @@ function AddProperties() {
     "plotNumber": undefined,
     "premiseName": undefined,
     "premiseTypeId": undefined,
+    "chargePropertyTax":chargePropertyTax,
+    "managementType": undefined,
+    "collectElectricityDeposit": collectElectricityDeposit,
     "premiseUseTypeId": undefined,
     "unitVacancyRestrictionStatus": undefined,
     "chargeFrequencyName":undefined 
@@ -338,6 +346,9 @@ function AddProperties() {
   })
 
   useEffect(() => {
+    requestsServiceService.allApplicableCharges("LANDLORD").then((res) => {
+      setAC(res.data.data);
+    });
     getEstates()
     getAgreementTypes()
     getPremiseTypes()
@@ -507,6 +518,22 @@ const getCaretakerType = ()=>{
     toogleShowNewDocumentModal();
   }
 
+  const [tmp, stmp] = useState([]);
+  const [chargeNames, setChargeNames] = useState([]);
+  const handleACchange = (e, i) => {
+    let id = e.target.value.split("-")[0];
+    let name = e.target.value.split("-")[1];
+    if (tmp?.includes(id)) {
+      //
+    } else {
+      stmp([...tmp, id]);
+    }
+    if (chargeNames.includes(name)) {
+    } else {
+      setChargeNames([...chargeNames, name]);
+    }
+  };
+  
   return (
     <>
       <div className="page-content">
@@ -608,7 +635,7 @@ const getCaretakerType = ()=>{
                           <div class="col-4 col-md-6">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                File No.<strong class="text-danger ">*</strong>
+                                File No.
                               </label>
                               <input
                                 type="text "
@@ -624,7 +651,7 @@ const getCaretakerType = ()=>{
                           <div class="col-lg-4 col-md-6">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                Plot No. <strong class="text-danger ">*</strong>
+                                Plot No. 
                               </label>
                               <input
                                 type="text "
@@ -715,6 +742,8 @@ const getCaretakerType = ()=>{
                             </div>
                           </div>
 
+
+
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-lastname-input ">
@@ -770,6 +799,135 @@ const getCaretakerType = ()=>{
                             </select>
                           </div>
                           </div>
+   {/* new */}
+   <div class="col-lg-4 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                              ManagementType   {" "}
+                              
+                              </label>
+                              <input
+                                type="text text-capitalize"
+                                class="form-control "
+                                value={general.managementType}
+                                onChange={handleGeneral}
+                                name='managementType'
+                                id="basicpill-firstname-input "
+                                placeholder="Enter Your managementType "
+                              />
+                            </div>
+                          </div>
+                          <div class="col-lg-4 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                                UtilityManagement Type{" "}
+                              </label>
+                              <input
+                                type="text text-capitalize"
+                                class="form-control "
+                                value={general.utilityManagementType}
+                                onChange={handleGeneral}
+                                name='UtilityManagementType'
+                                id="basicpill-firstname-input "
+                                placeholder="Enter UtilityManagement Type "
+                              />
+                            </div>
+                          </div>  
+                          <div class="col-lg-4 col-md-6 ">
+                         
+                          <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                                ChargePropertyTax{" "}
+                              </label>
+                              <select
+                      class="form-control"
+                      data-live-search="true"
+                      title=""
+                      required="required"
+                      onChange={(e) => {
+                        setChargePropertyTax(e.target.value);
+                      }}
+                    >
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                    </select>
+                            </div>
+                          </div>
+                          <div class="col-lg-4 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                                CollectElectricityDeposit{" "}
+                              </label>
+                              <select
+                      class="form-control"
+                      data-live-search="true"
+                      title=""
+                      required="required"
+                      onChange={(e) => {
+                        setCollectElectricityDeposit(e.target.value);
+                      }}
+                    >
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                    </select>
+                            </div>
+                          </div>
+                          {/* <div class="col-lg-4 col-md-6 ">
+                            <div class="mb-4 ">
+                              <label for="basicpill-firstname-input ">
+                                Properties Name{" "}
+                                <strong class="text-danger ">*</strong>
+                              </label>
+                              <input
+                                type="text text-capitalize"
+                                class="form-control "
+                                value={general.premiseName}
+                                onChange={handleGeneral}
+                                name='premiseName'
+                                id="basicpill-firstname-input "
+                                placeholder="Enter Your First Name "
+                              />
+                            </div>
+                          </div>
+                           */}
+
+
+
+
+
+
+
+                          <div className="col-lg-4">
+                            <div className="mb-4">
+                              <label htmlFor="">Applicable charges</label>
+                              <br />
+                              <select
+                                name=""
+                                onChange={(e) => handleACchange(e)}
+                                id=""
+                                className={"form-control"}
+                              >
+                                <option>Select Applicable Charges</option>
+                                {ac?.map((item) => (
+                                  <option value={item.id + "-" + item.name}>
+                                    {item.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="mb-4">
+                              <label htmlFor="basicpill-lastname-input ">
+                                Invoice Payment Priority
+                              </label>
+                              <div className="alert alert-info bg-soft">
+                                {chargeNames.length > 0
+                                  ? chargeNames.join("  -->  ")
+                                  : chargeNames}
+                              </div>
+                            </div>
+                            </div>
                         </div>
 
                         <div class="col-12">

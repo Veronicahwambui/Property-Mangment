@@ -28,6 +28,7 @@ export default function AddLandlord() {
     requestsServiceService.getDocumentTypes().then((res) => {
       setdocumentTypes(res.data.data);
     });
+  getApplicable()
   }, []);
 
   //landlord details
@@ -43,6 +44,9 @@ export default function AddLandlord() {
   const [idNumber, setidNumber] = useState("");
   const [remunerationPercentage, setremunerationPercentage] = useState(null);
   const [phoneNumber, setphoneNumber] = useState("");
+  const[invoicePaymentPriority ,setInvoicePaymentPriority]= useState("")
+
+  const[invo,setInvo]= useState([])
 
   //modals
   const [show, setShow] = useState(false);
@@ -160,6 +164,8 @@ export default function AddLandlord() {
       agreementPeriod: agreementPeriod,
       email: email,
       fileNumber: fileNumber,
+      invoicePaymentPriority:invoicePaymentPriority ,
+
       firstName: firstName,
       gender: gender,
       id: null,
@@ -246,6 +252,13 @@ export default function AddLandlord() {
     setPercentageRemuneration(0);
     setShow(false);
   };
+  const getApplicable =() => {
+    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
+      setInvo(res.data.data)
+      
+    
+    })
+  }
   return (
     <>
       <div className="page-content">
@@ -376,7 +389,6 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor=" ">
                                 ID Num.{" "}
-                                <strong className="text-danger">*</strong>
                               </label>
                               <input
                                 type="text "
@@ -385,7 +397,7 @@ export default function AddLandlord() {
                                 value={idNumber}
                                 onChange={(e) => setidNumber(e.target.value)}
                                 placeholder="Enter ID Num"
-                                required={true}
+                             
                               />
                             </div>
                           </div>
@@ -497,7 +509,7 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-email-input ">
                                 Email{" "}
-                                <strong className="text-danger ">*</strong>
+                                {/* <strong className="text-danger ">*</strong> */}
                               </label>
                               <input
                                 type="email "
@@ -506,7 +518,7 @@ export default function AddLandlord() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter Your Email ID "
-                                required={true}
+                                // required={true}
                               />
                             </div>
                           </div>
@@ -514,7 +526,6 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-email-input ">
                                 File Number{" "}
-                                <strong className="text-danger ">*</strong>
                               </label>
                               <input
                                 type="text"
@@ -523,7 +534,7 @@ export default function AddLandlord() {
                                 value={fileNumber}
                                 onChange={(e) => setFileNumber(e.target.value)}
                                 placeholder="Enter File Number "
-                                required={true}
+                            
                               />
                             </div>
                           </div>
@@ -538,13 +549,12 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor=" " className=" ">
                                 Agreement Type
-                                <strong className="text-danger ">*</strong>
                               </label>
                               {agreementTypes && (
                                 <div className="input-group" id="">
                                   <select
                                     className="form-control text-capitalize"
-                                    required={true}
+                                   
                                     onChange={(e) => {
                                       setlandLordAgreementTypeId(
                                         e.target.value
@@ -572,11 +582,9 @@ export default function AddLandlord() {
                               )}
                             </div>
                           </div>
-                          <div className="col-lg-3 col-md-4 col-sm-12 per-commision">
-                            <div className="mb-4 ">
+ <div className="col-lg-4">                            <div className="mb-4 ">
                               <label htmlFor="basicpill-lastname-input ">
                                 Percentage renumeration
-                                <strong className="text-danger ">*</strong>
                               </label>
                               <input
                                 type="number"
@@ -588,7 +596,7 @@ export default function AddLandlord() {
                                 }
                                 className="form-control "
                                 placeholder="Percentage renumeration % "
-                                required={true}
+                                
                               />
                             </div>
                           </div>
@@ -596,7 +604,6 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-lastname-input ">
                                 Agreement Period
-                                <strong className="text-danger ">*</strong>
                               </label>
                               <input
                                 type="number"
@@ -608,10 +615,28 @@ export default function AddLandlord() {
                                 }
                                 className="form-control "
                                 placeholder="Agreement period (months)"
-                                required={true}
+                               
                               />
                             </div>
                           </div>
+                          {/* <div className="col-lg-4">
+                    <label for="">
+                    InvoicePaymentPriority <strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control text-capitalize"
+                                           title="Select Applicable Charge Type"
+                      onChange={(e) => {
+                        setInvoicePaymentPriority(e.target.value);
+                      }}
+                    >
+                      <option>Select  InvoicePaymentPriority-----</option>
+                      {invo.map((item) => (
+                        <option value={item.id} key={item.id}>
+                        {item.name}</option>
+                      ))}
+                    </select>
+                  </div> */}
                         </div>
                       </section>
 

@@ -36,7 +36,7 @@ function CreateIssueTypes() {
     return ref.current;
   }
   useEffect(() => {
-    requestsServiceService.allApplicableCharges().then((res) => {
+    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
       setApplicableCharges(res.data.data);
     });
     requestsServiceService.getTemplateNames(clientId).then((res) => {

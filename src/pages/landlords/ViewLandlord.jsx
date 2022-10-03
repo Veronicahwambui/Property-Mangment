@@ -26,6 +26,7 @@ function ViewLandlord() {
   const [landlordtypes, setLandlordTypes] = useState([]);
   const [banks, setBanks] = useState([]);
   const [documentTypes, setdocumentTypes] = useState([]);
+  const[invoicePaymentPriority ,setInvoicePaymentPriority]= useState("")
   const [error, setError] = useState({
     message: "",
     color: ""
@@ -68,7 +69,7 @@ function ViewLandlord() {
   const [editBankId, setEditBankId] = useState(null);
   const [editBankName, setEditBankName] = useState("");
   const [editBankAccount, setEditBankAccount] = useState("");
-  const [editpercentageRemuneration, setEditPercentageRemuneration] =
+  const [editpercentageRemuneration, setEditPercentageRemuneration] =useState("");
     useState(null);
   const [acc_id, setacc_id] = useState(null);
 
@@ -267,6 +268,8 @@ function ViewLandlord() {
       fileNumber: editlandlordfilenumber,
       firstName: editlandlordfirstname,
       gender: editlandlordgender,
+      invoicePaymentPriority: invoicePaymentPriority,
+
       id: userId,
       idNumber: editlandlordidnumber,
       landLordAgreementTypeId: editlandlordagreementtype,
@@ -2455,7 +2458,7 @@ function ViewLandlord() {
                           seteditlandlordremuneration(e.target.value)
                         }
                         className="form-control"
-                        required={true}
+                       
                       />
                     </div>
                     <div className="form-group mb-4">
@@ -2467,6 +2470,19 @@ function ViewLandlord() {
                         type="number"
                         value={editagreementperiod}
                         onChange={(e) => seteditagreementperiod(e.target.value)}
+                        className="form-control"
+                       
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label htmlFor="">
+                      InvoicePaymentPriority{" "}
+                        <strong className="text-danger ">*</strong>
+                      </label>
+                      <input
+                        type="text"
+                        value={invoicePaymentPriority}
+                        onChange={(e) => setInvoicePaymentPriority(e.target.value)}
                         className="form-control"
                         required={true}
                       />

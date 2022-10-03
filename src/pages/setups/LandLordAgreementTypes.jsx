@@ -566,6 +566,7 @@ function LandLordAgreementTypes() {
           </div>
         </div>
       </div>
+      
     </>
   );
 }
