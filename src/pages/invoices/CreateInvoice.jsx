@@ -520,7 +520,8 @@ function CreateInvoice() {
                                   />
                                 </div>
                               </div>
-                              { invoiceFor === "TENANT" && <div className="col-12">
+                              { invoiceFor === "TENANT" && 
+                              <div className="col-12">
                                 <div className="mb-3">
                                   <label
                                     htmlFor="formrow-firstname-input"
@@ -562,7 +563,8 @@ function CreateInvoice() {
                                     </div>
                                   )}
                                 </div>
-                              </div> }
+                              </div> 
+                              }
 
                               <div className="row col-12">
                                 <div className="mb-3">
@@ -606,6 +608,8 @@ function CreateInvoice() {
                                 </div>
 
                               </div>
+                              
+                             { invoiceFor !== "TENANT" && 
                               <div className="row col-12">
                                 <div className="mb-3">
                                   <label
@@ -647,7 +651,9 @@ function CreateInvoice() {
                                   )}
                                 </div>
 
-                              </div>
+                              </div> 
+                             }
+
                             </div>
                             <div className="col-12">
                               <div className="mb-3">
