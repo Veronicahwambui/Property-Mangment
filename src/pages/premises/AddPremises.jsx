@@ -658,7 +658,7 @@ const getCaretakerType = ()=>{
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-lastname-input ">
-                                Estate <strong class="text-danger ">*</strong>
+                                Location <strong class="text-danger ">*</strong>
                               </label>
                               <select
                                 class="form-control text-capitalize"
@@ -666,7 +666,7 @@ const getCaretakerType = ()=>{
                                 name="estateId"
                                 onChange={handleGeneral}
                               >
-                                <option>Select estate</option>
+                                <option>Select location</option>
                                 {estates && estates?.sort((a, b) => a.name.localeCompare(b.name)).map((estate) => {
                                   return (
                                     <option value={estate.id} className="text-capitalize"> {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.county.name?.toLowerCase()?.replace(/_/g , " ")} </option>
@@ -750,7 +750,7 @@ const getCaretakerType = ()=>{
                               >
                                 <option> Select status</option>
                                 {tenancyStatuses && tenancyStatuses?.sort((a, b) => a.localeCompare(b))?.map((t) => (
-                                    <option value={t} className="text-capitalize"> {t?.toLowerCase()?.replace(/_/g , " ")}</option>
+                                    <option value={t} className="text-capitalize"> { t === "CURRENT" ? "Occupied" : t?.toLowerCase()?.replace(/_/g , " ")}</option>
                                 ))}
                               </select>
                             </div>
@@ -1469,7 +1469,7 @@ const getCaretakerType = ()=>{
                   }
                   <div className="col-md-4">
                     <label> Invoice Day </label>
-                    <input type="number" className="form-control" name="invoiceDay" required
+                    <input type="number" className="form-control" name="invoiceDay" required min={1} max={30}
                       onChange={(e) => handleChargechange(e, index)} />
                   </div>
 
