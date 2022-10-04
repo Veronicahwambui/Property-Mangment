@@ -607,7 +607,7 @@ const UpdatePremise = () => {
                               : "nav-item cursor-pointer nav-link"
                           }
                         >
-                            Premise Types <span className="sr-only"></span>
+                            Property Types <span className="sr-only"></span>
                         </a>
                        
                         <a
@@ -618,7 +618,7 @@ const UpdatePremise = () => {
                               : "nav-item cursor-pointer nav-link"
                           }
                         >
-                            Premise Use Types
+                            Property Use Types
                         </a>
                         <a
                           onClick={() => setActiveLink(3)}

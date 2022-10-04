@@ -216,7 +216,7 @@ export default function AddLandlord() {
       landlordDocuments.filter((landlorddoc) => landlorddoc.docName !== id)
     );
   };
-
+ 
   const handleFileRead = async (event) => {
     const file = event.target.files[0];
     const base64 = await convertBase64(file);
@@ -377,6 +377,7 @@ export default function AddLandlord() {
                             )}
                           </div>
                         </div>
+                        {landLordTypeName === "INDIVIDUAL" &&
                         <div className="row personal-landlord ">
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-4">
@@ -539,6 +540,88 @@ export default function AddLandlord() {
                             </div>
                           </div>
                         </div>
+}
+{landLordTypeName === "CORPORATE" &&
+                        <div className="row personal-landlord ">
+                          <div className="col-12">
+                            <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                              <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                                Corporate details
+                              </p>
+                            </div>
+                          </div>
+                         
+                          <div className="col-lg-3 col-md-6 ">
+                            <div className="mb-4 ">
+                              <label htmlFor="basicpill-firstname-input ">
+                                Company name{" "}
+                                <strong className="text-danger ">*</strong>
+                              </label>
+                              <input
+                                type="text "
+                                className="form-control"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                id="basicpill-firstname-input "
+                                placeholder="Enter Your First Name "
+                                required={true}
+                              />
+                            </div>
+                          </div>
+                       
+                       
+                          <div className="col-lg-3 col-md-6 ">
+                            <div className="mb-4 ">
+                              <label htmlFor="basicpill-phoneno-input ">
+                                Phone{" "}
+                                <strong className="text-danger ">*</strong>
+                              </label>
+                              <input
+                                type="text "
+                                className="form-control "
+                                id="basicpill-phoneno-input "
+                                value={phoneNumber}
+                                onChange={(e) => setphoneNumber(e.target.value)}
+                                placeholder="Enter Your Phone No. "
+                                required={true}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-3 col-md-6 ">
+                            <div className="mb-4 ">
+                              <label htmlFor="basicpill-email-input ">
+                                Email{" "}
+                                {/* <strong className="text-danger ">*</strong> */}
+                              </label>
+                              <input
+                                type="email "
+                                className="form-control "
+                                id="basicpill-email-input "
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter Your Email ID "
+                                // required={true}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-3 col-md-6 ">
+                            <div className="mb-4 ">
+                              <label htmlFor=" ">
+                                ID Num.{" "}
+                              </label>
+                              <input
+                                type="text "
+                                className="form-control "
+                                id=" "
+                                value={idNumber}
+                                onChange={(e) => setidNumber(e.target.value)}
+                                placeholder="Enter ID Num"
+                             
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        }
                         <div className="row">
                           <div className="bg-primary border-2 bg-soft p-3 mb-4">
                             <p className="fw-semibold mb-0 pb-0 text-uppercase">

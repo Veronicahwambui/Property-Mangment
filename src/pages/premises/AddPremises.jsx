@@ -685,7 +685,7 @@ const getCaretakerType = ()=>{
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-lastname-input ">
-                                Estate <strong class="text-danger ">*</strong>
+                                Location <strong class="text-danger ">*</strong>
                               </label>
                               <select
                                 class="form-control text-capitalize"
@@ -784,9 +784,9 @@ const getCaretakerType = ()=>{
                               </select>
                             </div>
                           </div>
-                          <div className="col-4 col-md-6">
+                          <div className="col-lg-4 col-md-6">
                           
-                          <div className="form-group">
+                          <div className="mb-4 ">
                             <label htmlFor="">Charge frequency</label>
                             <select
                               className="form-control"
@@ -806,15 +806,16 @@ const getCaretakerType = ()=>{
                               ManagementType   {" "}
                               
                               </label>
-                              <input
-                                type="text text-capitalize"
-                                class="form-control "
-                                value={general.managementType}
-                                onChange={handleGeneral}
-                                name='managementType'
-                                id="basicpill-firstname-input "
-                                placeholder="Enter Your managementType "
-                              />
+                              <select
+                              className="form-control"
+                              onChange={handleGeneral}
+                              name="ManagementType"
+                            >
+                              <option value="AGENT"> Select ManagementType</option>
+                              <option value="LANDLORD">Landlord</option>
+                              <option value="INRENT">Inrent</option>
+                              <option value="AGENT">Agent</option>
+                            </select>
                             </div>
                           </div>
                           <div class="col-lg-4 col-md-6 ">
@@ -822,15 +823,17 @@ const getCaretakerType = ()=>{
                               <label for="basicpill-firstname-input ">
                                 UtilityManagement Type{" "}
                               </label>
-                              <input
-                                type="text text-capitalize"
-                                class="form-control "
-                                value={general.utilityManagementType}
-                                onChange={handleGeneral}
-                                name='UtilityManagementType'
-                                id="basicpill-firstname-input "
-                                placeholder="Enter UtilityManagement Type "
-                              />
+                             
+                                 <select
+                      className="form-control"
+                              onChange={handleGeneral}
+                              name='UtilityManagementType'
+                            >
+                              <option value="LENT"> Select  UtilityManagement Type </option>
+                            
+                              <option value="INRENT">Inrent</option>
+                              <option value="LENT">Lent</option>
+                            </select>
                             </div>
                           </div>  
                           <div class="col-lg-4 col-md-6 ">
@@ -848,6 +851,7 @@ const getCaretakerType = ()=>{
                         setChargePropertyTax(e.target.value);
                       }}
                     >
+                      <option>Select ChargePropertyTax </option>
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </select>
@@ -867,6 +871,7 @@ const getCaretakerType = ()=>{
                         setCollectElectricityDeposit(e.target.value);
                       }}
                     >
+                        <option> Select CollectElectricityDeposit </option>
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </select>
@@ -899,7 +904,7 @@ const getCaretakerType = ()=>{
 
                           <div className="col-lg-4">
                             <div className="mb-4">
-                              <label htmlFor="">Applicable charges</label>
+                              <label htmlFor="">Invoice Payment Priority</label>
                               <br />
                               <select
                                 name=""
@@ -919,7 +924,7 @@ const getCaretakerType = ()=>{
                           <div className="row">
                             <div className="mb-4">
                               <label htmlFor="basicpill-lastname-input ">
-                                Invoice Payment Priority
+                                Applicable Charges
                               </label>
                               <div className="alert alert-info bg-soft">
                                 {chargeNames.length > 0
