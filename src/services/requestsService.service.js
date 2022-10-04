@@ -95,8 +95,10 @@ class RequestsService {
 
   // applicable charges
 
-  allApplicableCharges() {
-    return axiosInstance.get(baseUrl + "/setup/applicableCharges");
+  allApplicableCharges(entityType) {
+    return axiosInstance.get(
+      baseUrl + "/setup/applicableCharges?entityType=" + entityType
+    );
   }
 
   applicableChargeTypes() {
@@ -1180,6 +1182,9 @@ class RequestsService {
   }
   createStatements(data) {
     return axiosInstance.post(baseUrl + "/payments/statements/new", data);
+  }
+  getUnallocatedStatements(data) {
+    return axiosInstance.get(baseUrl + "/payments/statements/unallocated");
   }
 }
 

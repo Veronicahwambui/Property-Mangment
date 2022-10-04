@@ -70,6 +70,7 @@ import ViewLandlordStatement from "./pages/statements/ViewLandlordStatement";
 import Settlements from "./pages/statements/Settlements";
 import CreateStatement from "./pages/statements/CreateStatement";
 import authLoginService from "./services/authLogin.service";
+import UnallocatedPayments from "./pages/statements/UnallocatedPayments";
 
 function Main() {
   useEffect(() => {
@@ -133,16 +134,13 @@ function Main() {
                         path="/premise/:id/:one"
                         element={<OnePremiseUnit />}
                       />
-
                       <Route
                         path="/premise/:id/:one"
                         element={<OnePremiseUnit />}
                       />
-
                       {/* tenants  */}
                       <Route path="/alltenants" element={<AllTenants />} />
                       <Route path="/addtenant" element={<AddTenant />} />
-
                       {/* set ups  */}
                       <Route
                         path="/applicablecharges"
@@ -170,7 +168,6 @@ function Main() {
                         element={<CreateCreditNote />}
                       />
                       <Route path="/notes" element={<AllNotes />} />
-
                       {/* invoices */}
                       <Route
                         path="/createinvoice"
@@ -190,9 +187,7 @@ function Main() {
                       <Route path="/receipts" element={<Receipts />} />
                       {/* transactions  */}
                       <Route path="/trasactions" element={<Transactions />} />
-
                       {/* stystem users */}
-
                       <Route exact path="/adminlist" element={<AdminList />} />
                       <Route
                         exact
@@ -211,17 +206,13 @@ function Main() {
                       />
                       <Route path="/addadmin" element={<AddAdmin />} />
                       <Route path="/usertypes" element={<UserTypes />} />
-
                       <Route path="/allroles" element={<AllRoles />} />
-
                       {/* setup */}
                       <Route
                         path="/clientcounties"
                         element={<ClientCounties />}
                       />
-
                       <Route path="/clienttype" element={<ClientType />} />
-
                       <Route path="/adminlist" element={<AdminList />} />
                       <Route path="/addadmin" element={<AddAdmin />} />
                       <Route path="/clienttypes" element={<ClientType />} />
@@ -241,7 +232,6 @@ function Main() {
                       />
                       <Route path="/addlandlord" element={<AddLandlord />} />
                       <Route path="/statements" element={<Statements />} />
-
                       <Route
                         path="/landord-statements"
                         element={<LandlordStatements />}
@@ -252,9 +242,7 @@ function Main() {
                       />
                       <Route path="/issuestypes" element={<IssuesTypes />} />
                       <Route path="/issuestypes/:id" element={<IssueType />} />
-
                       <Route path="/uploads" element={<Uploads />} />
-
                       {/* messageer  */}
                       <Route path="/messages" element={<Messages />} />
                       <Route
@@ -287,6 +275,10 @@ function Main() {
                       <Route
                         path="/new-statement"
                         element={<CreateStatement />}
+                      />{" "}
+                      <Route
+                        path="/unallocated-payments"
+                        element={<UnallocatedPayments />}
                       />
                     </>
                   )}

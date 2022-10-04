@@ -197,15 +197,13 @@ export default function AddLandlord() {
     setCheck(false);
     setMissingItems([]);
     var temp = [];
-    // alert(JSON.stringify(landlordDetails));
-    var typename = landlordDetails.landLordTypeName;
-    // alert(JSON.stringify(mustdata));
     if (landlordDetails.landLordTypeName === "INDIVIDUAL") {
       let mustdata = {
         email: landlordDetails.email,
         fileNumber: landlordDetails.fileNumber,
         firstName: landlordDetails.firstName,
         gender: landlordDetails.gender,
+        phoneNumber: landlordDetails.phoneNumber,
       };
 
       Object.keys(mustdata).forEach((key, index) => {
@@ -246,16 +244,13 @@ export default function AddLandlord() {
       landLord: data,
       landLordAccounts: accounts,
     };
-    // if (temp.length < 1) {
-    //   alert("LESS THAN ZERO");
-    // }
     if (temp.length === 0) {
       setCheck(false);
+      createLandlord(new_t);
     }
     if (temp.length > 0) {
       setCheck(true);
     }
-    alert(temp.length);
   };
 
   useEffect(() => {
@@ -861,7 +856,7 @@ export default function AddLandlord() {
                                   </select>
                                 </div>
                               </div>
-                              {check && (
+                              {selectedItems.length > 0 && (
                                 <>
                                   <div className="alert alert-info bg-soft d-flex align-items-center text-capitalize">
                                     {selectedItems?.map((item, index) => (
@@ -1064,7 +1059,7 @@ export default function AddLandlord() {
                             </tfoot>
                           </table>
                         </div>
-                        {missingItems.length > 0 && (
+                        {check && (
                           <>
                             <Alert
                               variant={"danger"}
@@ -1072,7 +1067,7 @@ export default function AddLandlord() {
                             >
                               <p>MISSING REQUIRED FIELDS: </p>
                               <p>
-                                <b>{missingItems?.join(" , ")}</b>
+                                <b>{missingItems?.join(", ")}</b>
                               </p>
                             </Alert>
                           </>

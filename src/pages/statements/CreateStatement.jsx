@@ -1,12 +1,13 @@
 /* global $ */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 import { Modal, Badge, Button } from "react-bootstrap";
 
 export default function CreateStatement() {
+  const navigate = useNavigate();
   const [sDate, setsdate] = useState(new Date());
   const [eDate, setedate] = useState(new Date());
   const [chargeId, setchargeId] = useState(undefined);
@@ -260,21 +261,21 @@ export default function CreateStatement() {
     if (x !== []) {
       let sum = 0;
       x?.map((item) => {
-        sum += item.balance;
+        sum += parseInt(item.balance);
       });
       return sum;
     }
   };
 
-  const createStatement = () => {
-    console.log(recipient, recipientPerson);
+  const createStatement = (e) => {
+    e.preventDefault();
     var data = {
       allocations: datas,
       billNo: invoicePresent ? invNo : uuid().toString().toUpperCase(),
       landLordFileNumber: null,
       paidBy: null,
       payReferenceNo: null,
-      paymentMode: null,
+      paymentMode: paymentMode,
       receiptAmount: null,
       receiptNo: receiptNo === "" ? uuid().toString().toUpperCase() : receiptNo,
       tenancyFileNumber: null,
@@ -300,10 +301,40 @@ export default function CreateStatement() {
       };
       var x = Object.assign(data, d);
     }
-    console.log(x);
-    // requestsServiceService.createStatements(x).then((res) => {
-    //   console.log(res);
-    // });
+    requestsServiceService
+      .createStatements(x)
+      .then((res) => {
+        if (res.data.status === true) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+          setTimeout(() => {
+            navigate("/unallocated-payments", { replace: true });
+          }, 2000);
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          message: err.response.data.error,
+          color: "danger",
+        });
+      });
+    setTimeout(() => {
+      setError({
+        ...error,
+        message: "",
+        color: "",
+      });
+    }, 3500);
   };
   function uuid() {
     return "XXXXXXXXXXX".replace(/[XY]/g, function (c) {
@@ -375,13 +406,22 @@ export default function CreateStatement() {
               </div>
               <div className="card-body">
                 <div className="row">
+                  <div className="col-12">
+                    <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                      <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                        Select Recipient Type
+                      </p>
+                    </div>
+                  </div>
                   <div className="form-group">
                     <label htmlFor="">Select recipient</label>
+                    <strong className="text-danger">*</strong>
                     <select
                       name=""
                       id=""
                       onChange={(e) => setrecipient(e.target.value)}
                       className={"form-control"}
+                      disabled={recipient !== ""}
                     >
                       <option value={""}>--Select--</option>
                       <option value="TENANT">TENANT</option>
@@ -389,32 +429,49 @@ export default function CreateStatement() {
                       <option value="USER">AUCTIONEER</option>
                     </select>
                   </div>
-                  <div className="form-group mt-2">
-                    <br />
-                    <form onSubmit={searchRecipient}>
-                      {recipient !== "USER" && (
-                        <>
-                          <label htmlFor="">Search recipient</label>
-                          <input
-                            type="text"
-                            className={"form-control"}
-                            onChange={(e) => setSearchRecipient(e.target.value)}
-                            placeholder={"Search..."}
-                            required
-                          />
+                  <div className="col-12">
+                    {recipient !== "USER" && (
+                      <>
+                        <form onSubmit={searchRecipient}>
+                          <label htmlFor="" className={"mt-3 mb-3"}>
+                            Search Recipient
+                          </label>
+                          <strong className="text-danger">*</strong>
+                          <div className="app-search d-none d-lg-block d-flex">
+                            <div className="position-relative">
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder={"Search.."}
+                                required={true}
+                                onChange={(e) =>
+                                  setSearchRecipient(e.target.value)
+                                }
+                              />
+                              <span className="bx bx-search-alt"></span>
+                            </div>
+                          </div>
                           <button
                             type={"submit"}
+                            disabled={recipient === ""}
                             className={"btn btn-primary mt-2 btn-sm"}
                           >
                             Search
                           </button>
-                        </>
-                      )}
-                    </form>
+                        </form>
+                      </>
+                    )}
                   </div>
                   <br />
                   <>
-                    <div className={"row"}>
+                    <div className="col-12">
+                      <div className="bg-primary border-2 bg-soft p-3 mb-2 mt-4">
+                        <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                          Select Recipient
+                        </p>
+                      </div>
+                    </div>
+                    <div className={"row mt-2"}>
                       <div className="col-6">
                         {foundRecipients.length < 5 && (
                           <>
@@ -447,7 +504,7 @@ export default function CreateStatement() {
                               <>
                                 {foundRecipients?.map((item) => (
                                   <>
-                                    <div className={"mt-2"}>
+                                    <div className={"mt-2 text-capitalize"}>
                                       <input
                                         type="checkbox"
                                         onChange={(e) => {
@@ -461,7 +518,25 @@ export default function CreateStatement() {
                                         className={"form-check-label"}
                                         style={{ marginLeft: "5px" }}
                                       >
-                                        {item?.firstName} {item?.lastName}
+                                        {recipient === "TENANT" && (
+                                          <>
+                                            {item?.tenantType ===
+                                            "INDIVIDUAL" ? (
+                                              <>
+                                                {item.firstName + " "}
+                                                {item.lastName + " "}{" "}
+                                                {item.otherName}
+                                              </>
+                                            ) : (
+                                              <>{item.companyName + " "}</>
+                                            )}
+                                          </>
+                                        )}
+                                        {recipient !== "TENANT" && (
+                                          <>
+                                            {item?.firstName} {item?.lastName}
+                                          </>
+                                        )}
                                       </label>
                                     </div>
                                   </>
@@ -471,9 +546,13 @@ export default function CreateStatement() {
                           </>
                         )}
                       </div>
-                      {recipient === "TENANT" && (
-                        <div className="col-6 alert alert-info">
-                          <p>Tenancies ({tenancies?.length})</p>
+                      {recipient === "TENANT" && tenancies?.length > 0 && (
+                        <div className="col-6">
+                          <div className="bg-primary border-2 bg-soft p-3 mb-2 mt-4">
+                            <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                              Tenancies ({tenancies?.length})
+                            </p>
+                          </div>
                           {recipient === "TENANT" && (
                             <>
                               {tenancies?.map((item) => (
@@ -505,136 +584,74 @@ export default function CreateStatement() {
                   </>
                 </div>
                 <br />
-                {unpaidCharges?.length > 0 && (
-                  <div className="row">
-                    <div className="alert alert-info mt-3">
-                      <span>Charges ({unpaidCharges?.length})</span>
-                    </div>
-                    <div className="col-12">
-                      <table className="table table-striped">
-                        <thead>
-                          <tr>
-                            <th style={{ width: "70px" }}>No.</th>
-                            <th>Charge name</th>
-                            <th>Invoices</th>
-                            <th>Balance</th>
-                            <th>Total Paid</th>
-                            <th></th>
-                            <th className={"text-end"}>Bill Amount</th>
-                            <th className="" style={{ width: "150px" }}>
-                              Assign Amount
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {unpaidCharges?.length > 0 &&
-                            unpaidCharges?.map((item, index) => (
-                              <tr data-id={item.id} key={item.id}>
-                                <td>{index + 1}</td>
-                                <td>{item.status}</td>
-                                <td>{item.all}</td>
-                                <td>{formatCurrency(item.balance)}</td>
-                                <td>{formatCurrency(item.sum)}</td>
-                                {/*<td>{formatCurrency(item.billPaidAmount)}</td>*/}
-                                <td></td>
-                                <td className="text-end">
-                                  {formatCurrency(item.balance - item.sum)}
-                                </td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    className="form-control form-control-sm text-right"
-                                    // placeholder="Input amount"
-                                    placeholder="KES"
-                                    onChange={(e) => handleForm(e, index, item)}
-                                  />
-                                </td>
-                              </tr>
-                            ))}
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colSpan="2" className="text-end">
-                              Total
-                            </td>
-                            <td className="text-end fw-bold">
-                              {formatCurrency(total(unpaidCharges))}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colSpan="2" className="text-end">
-                              Paid
-                            </td>
-                            <td className="text-end fw-bold">
-                              {formatCurrency(debitTotal())}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colSpan="2" className="text-end">
-                              <strong>Balance</strong>
-                            </td>
-                            <td className="text-end fw-bold">
-                              {formatCurrency(
-                                total(unpaidCharges) - debitTotal()
-                              )}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td colSpan={"2"} className="text-end"></td>
-                            <td className="text-end fw-bold text-danger">
-                              {debitTotal() > total(unpaidCharges) ? (
-                                <>
-                                  <span>Amount exceeded!</span>
-                                </>
-                              ) : (
-                                <></>
-                              )}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-                <div className={"mb-2"}>
-                  <div className={"form-group"}>
-                    <label htmlFor="">Invoice Present?</label>
-                    <input
-                      type="checkbox"
-                      onChange={(e) => setInvoicePresent(!invoicePresent)}
-                    />
+                <div className="col-12">
+                  <div className="bg-primary border-2 bg-soft p-3 mb-2 mt-4">
+                    <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                      Payment Information
+                    </p>
                   </div>
                 </div>
-                <div>
-                  {!invoicePresent && (
-                    <>
+                <form onSubmit={createStatement} id={"create-statements"}>
+                  <div className="col-12">
+                    <div className={"mt-3"}>
                       <input
-                        type="text"
-                        placeholder={"Enter Invoice Number"}
-                        onChange={(e) => setinvNo(e.target.value)}
-                        className={"form-control"}
+                        type="checkbox"
+                        onChange={(e) => setInvoicePresent(!invoicePresent)}
+                        checked={invoicePresent}
+                        style={{ marginRight: "5px" }}
                       />
-                      <br />
+                      <label
+                        className={"form-check-label"}
+                        style={{ marginLeft: "5px" }}
+                      >
+                        Invoice Present?
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-12 mt-4">
+                    {invoicePresent && (
+                      <>
+                        <div className="">
+                          <label htmlFor="">Enter Invoice Number</label>
+                          <input
+                            type="text"
+                            placeholder={"Enter Invoice Number"}
+                            onChange={(e) => setinvNo(e.target.value)}
+                            className={"form-control"}
+                            required={invoicePresent ? true : false}
+                          />
+                        </div>
+                        <br />
+                      </>
+                    )}
+                  </div>
+                  <div className="col-12">
+                    <div className="form-group mb-3">
+                      <label htmlFor="">Select Payment Mode</label>
+                      <strong className="text-danger">*</strong>
+                      <select
+                        name=""
+                        id=""
+                        onChange={(e) => setpaymentMode(e.target.value)}
+                        className={"form-control"}
+                      >
+                        <option value={"CASH"}>--Select--</option>
+                        <option value="CASH">CASH</option>
+                        <option value="BANK">BANK</option>
+                        <option value="EFT">EFT</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <>
                       <label htmlFor="">Amount</label>
+                      <strong className="text-danger">*</strong>
                       <input
                         type="text"
                         placeholder={"Enter Amount"}
                         onChange={(e) => setreceiptAmount(e.target.value)}
                         className={"form-control"}
+                        required
                       />
                       <br />
                       <label htmlFor="">ReceiptNo</label>
@@ -645,12 +662,165 @@ export default function CreateStatement() {
                         className={"form-control"}
                       />
                     </>
+                  </div>
+                  {unpaidCharges?.length > 0 && (
+                    <>
+                      <div className="bg-primary border-2 bg-soft p-3 mb-2 mt-4">
+                        <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                          Applicable Charges ({unpaidCharges?.length})
+                        </p>
+                      </div>
+                      <div className="col-12">
+                        <table className="table table-striped">
+                          <thead>
+                            <tr>
+                              <th style={{ width: "70px" }}>No.</th>
+                              <th>Charge name</th>
+                              <th>Invoices</th>
+                              <th>Balance</th>
+                              <th>Total Paid</th>
+                              <th></th>
+                              <th className={"text-end"}>Bill Amount</th>
+                              <th className="" style={{ width: "150px" }}>
+                                Assign Amount
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {unpaidCharges?.length > 0 &&
+                              unpaidCharges?.map((item, index) => (
+                                <tr data-id={item.id} key={item.id}>
+                                  <td>{index + 1}</td>
+                                  <td>{item.status}</td>
+                                  <td>{item.all}</td>
+                                  <td>{formatCurrency(item.balance)}</td>
+                                  <td>{formatCurrency(item.sum)}</td>
+                                  {/*<td>{formatCurrency(item.billPaidAmount)}</td>*/}
+                                  <td></td>
+                                  <td className="text-end">
+                                    {formatCurrency(item.balance - item.sum)}
+                                  </td>
+                                  <td>
+                                    <input
+                                      type="text"
+                                      className="form-control form-control-sm text-right"
+                                      // placeholder="Input amount"
+                                      placeholder="KES"
+                                      onChange={(e) =>
+                                        handleForm(e, index, item)
+                                      }
+                                    />
+                                  </td>
+                                </tr>
+                              ))}
+                            <tr>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td colSpan="2" className="text-end">
+                                Total
+                              </td>
+                              <td className="text-end fw-bold">
+                                {formatCurrency(total(unpaidCharges))}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td colSpan="2" className="text-end">
+                                Paid
+                              </td>
+                              <td className="text-end fw-bold">
+                                {formatCurrency(debitTotal())}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td colSpan="2" className="text-end">
+                                {total(unpaidCharges) - debitTotal() > 0 ? (
+                                  <>
+                                    <strong className={"text-danger"}>
+                                      Balance
+                                    </strong>
+                                  </>
+                                ) : (
+                                  <>
+                                    <strong className={"text-success"}>
+                                      Balance
+                                    </strong>
+                                  </>
+                                )}
+                              </td>
+                              <td className="text-end fw-bold">
+                                {total(unpaidCharges) - debitTotal() > 0 ? (
+                                  <>
+                                    <strong className={"text-danger"}>
+                                      {formatCurrency(
+                                        total(unpaidCharges) - debitTotal()
+                                      )}
+                                    </strong>
+                                  </>
+                                ) : (
+                                  <>
+                                    <strong className={"text-success"}>
+                                      {formatCurrency(
+                                        total(unpaidCharges) - debitTotal()
+                                      )}
+                                    </strong>
+                                  </>
+                                )}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td colSpan={"2"} className="text-end"></td>
+                              <td className="text-end fw-bold text-danger">
+                                {debitTotal() > total(unpaidCharges) ? (
+                                  <>
+                                    <span>Amount exceeded!</span>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  )}
+                </form>
+                <div className="col-12">
+                  {error.color !== "" && (
+                    <div
+                      className={"mt-3 mb-4 alert alert-" + error.color}
+                      role="alert"
+                    >
+                      {error.message}
+                    </div>
                   )}
                 </div>
-                <div className={"col-3 mt-2"}>
-                  <Button variant="primary" onClick={createStatement}>
-                    Create Statement
-                  </Button>
+                <div className={"col-3"}>
+                  <div>
+                    <Button
+                      variant="primary"
+                      type={"submit"}
+                      form={"create-statements"}
+                      className={"mt-3"}
+                      disabled={foundRecipients.length < 1}
+                    >
+                      Create Statement
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
