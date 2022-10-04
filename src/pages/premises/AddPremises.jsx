@@ -706,7 +706,11 @@ const getCaretakerType = ()=>{
                                 onChange={handleGeneral}
 
                               >
-                                <option>select premise type</option>
+                                <option>select premise type
+                                 <div className="form-group">
+                                 <input type="text" className="form-control"/>
+                                  </div> 
+                                  </option>  
                                 {premiseTypes && premiseTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type) => (
                                   <option value={type.id} className="text-capitalize" > {type.name}</option>
                                 ))}
@@ -750,7 +754,7 @@ const getCaretakerType = ()=>{
                               >
                                 <option> Select status</option>
                                 {tenancyStatuses && tenancyStatuses?.sort((a, b) => a.localeCompare(b))?.map((t) => (
-                                    <option value={t} className="text-capitalize"> { t === "CURRENT" ? "Occupied" : t?.toLowerCase()?.replace(/_/g , " ")}</option>
+                                    <option value={t} className="text-capitalize"> { t === "CURRENT" ? "Occupied" : t === "OPEN" ? "Vaccant" : t?.toLowerCase()?.replace(/_/g , " ")}</option>
                                 ))}
                               </select>
                             </div>
@@ -863,7 +867,7 @@ const getCaretakerType = ()=>{
                                         <option value={null}>Select caretaker type</option>
                                         {caretakerTypes?.map((item)=>(
                                              <option value={item} className="text-capitalize">
-                                              {item?.toLowerCase()?.replace(/_/g , " ")}
+                                              { item === "SELF_COMMISSIONED" ? "Agent Commissioned" : item?.toLowerCase()?.replace(/_/g , " ")}
                                            </option>
                                         ))}
                                       
