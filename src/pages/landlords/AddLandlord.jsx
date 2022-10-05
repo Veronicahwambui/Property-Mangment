@@ -171,7 +171,7 @@ export default function AddLandlord() {
       id: null,
       idNumber: idNumber,
       landLordAgreementTypeId: landLordAgreementTypeId,
-      landLordTypeName: landLordTypeName,
+      landLordTypeName:"INDIVIDUAL ",
       lastName: lastName,
       otherName: otherName,
       phoneNumber: phoneNumber,
