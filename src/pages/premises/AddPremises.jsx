@@ -258,7 +258,6 @@ function AddProperties() {
 
  const [ obj, setObj] = useState({})
  const [ modalId, setModalId] = useState("")
- const [ modalNum, setModalNum] = useState("")
  const [ unitsNumModal, setUnitsNumModal ] = useState(false)
 
   const selectedUnitTypesChange = (event) => {
@@ -288,18 +287,25 @@ function AddProperties() {
   };
 
 
-  const handleUnitsModal = ()=>{
-   setObj({...obj ,[modalId]: modalNum });
+  const handleUnitsModal = (event)=>{
+   setObj({...obj ,[modalId]: new Array(parseInt(event.target.value)) });
+
+   Object.keys(obj).map( (key)=> {
+    console.log(obj[key]);
+     if ( Array.isArray( obj[key] )) {
+      
+  obj[key]?.map((e)=>{
+   console.log(e);
+ })
+     }
+   })
   }
-  
-  console.log(obj);
+
  
+// console.log(obj);
 
 
-  // console.log(obj);
 
-
-  
 
 
 
@@ -546,7 +552,7 @@ const getCaretakerType = ()=>{
                 <h4 class="mb-sm-0 font-size-18 text-capitalize">
                   Properties Registration
                 </h4>
-
+    
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
@@ -564,7 +570,7 @@ const getCaretakerType = ()=>{
             </div>
           </div>
           {/* <!-- end page title --> */}
-
+      
           {/* <!-- eTransactions table --> */}
          {Object.keys(landLordData)?.length > 0 && <div className="row">
             <div className="col-lg-12">
@@ -1595,10 +1601,10 @@ const getCaretakerType = ()=>{
       {/* adding a unit to premise  */}
       <Modal show={unitsNumModal} centered>
       <ModalBody>
-        <form onSubmit={(e)=>{ e.preventDefault(); setUnitsNumModal(false); handleUnitsModal()} }>
+        <form onSubmit={(e)=>{ e.preventDefault(); setUnitsNumModal(false)} }>
         <div className="form-group">
           <label> Enter number of units</label>
-          <input  type="number" required className="form-control"  onChange={(e)=> setModalNum(e.target.value)}/>
+          <input  type="number" required className="form-control"  onChange={(e)=> handleUnitsModal(e)}/>
         </div>
         <button className="btn btn-primary btn-sm mt-4">Submit</button>
         </form>
