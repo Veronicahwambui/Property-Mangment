@@ -254,26 +254,54 @@ function AddProperties() {
     }
   };
 
+   // ADDING PREMISES 
+
+ const [ obj, setObj] = useState({})
+ const [ modalId, setModalId] = useState("")
+ const [ modalNum, setModalNum] = useState("")
+ const [ unitsNumModal, setUnitsNumModal ] = useState(false)
+
   const selectedUnitTypesChange = (event) => {
-
-    console.log(event.target.value);
     let chargess = selectedunitTypes;
-
     let value = unitTypes.find(x => x.id == event.target.value);
-
-    console.log(value)
     if (value != undefined) {
+   
+      if (event.target.checked) {
+       chargess.push(value);
+      // modalId 
+      setModalId(value.id);
+      setUnitsNumModal(true);
+      setObj({ ...obj , [value.id]: 0 });
+      
+      //pop up modal 
 
-      if (event.target.checked)
-        chargess.push(value);
-      else
+       } else {
 
-        chargess.splice(chargess.indexOf(value), 1);
-
+      chargess.splice(chargess.indexOf(value), 1);
       setSelectedUnitTypes(chargess);
+      setObj({ ...obj , [value.id]: 0 });
+      setModalId(" ")
+     }
 
     }
+
   };
+
+
+  const handleUnitsModal = ()=>{
+   setObj({...obj ,[modalId]: modalNum });
+  }
+  
+  console.log(obj);
+ 
+
+
+  // console.log(obj);
+
+
+  
+
+
 
 
   const [estates, setEstates] = useState([])
@@ -986,6 +1014,8 @@ const getCaretakerType = ()=>{
                                 >
                                   {prem.name}
                                 </label>
+
+                              
                               </div>
                             </div>
                           )}
@@ -1561,6 +1591,19 @@ const getCaretakerType = ()=>{
         </ModalBody>
       </Modal>
       {/* <!-- end of ID modal --> */}
+
+      {/* adding a unit to premise  */}
+      <Modal show={unitsNumModal} centered>
+      <ModalBody>
+        <form onSubmit={(e)=>{ e.preventDefault(); setUnitsNumModal(false); handleUnitsModal()} }>
+        <div className="form-group">
+          <label> Enter number of units</label>
+          <input  type="number" required className="form-control"  onChange={(e)=> setModalNum(e.target.value)}/>
+        </div>
+        <button className="btn btn-primary btn-sm mt-4">Submit</button>
+        </form>
+      </ModalBody>
+      </Modal>
     </>
   );
 }
