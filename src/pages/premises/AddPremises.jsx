@@ -62,7 +62,7 @@ function AddProperties() {
           })
         } else {
           setLandLordAccounts(res.data.data.accounts)
-          setLandLordData(res.data.data.landLord) 
+          setLandLordData(res.data.data.landLord)
           let data = landlordData;
           data.landLordId = res.data.data.landLord.id
           setLandlordData(data);
@@ -116,7 +116,7 @@ function AddProperties() {
     "premiseTypeId": undefined,
     "premiseUseTypeId": undefined,
     "unitVacancyRestrictionStatus": undefined,
-    "chargeFrequencyName":undefined 
+    "chargeFrequencyName": undefined
   });
 
   const handleGeneral = (event) => {
@@ -142,7 +142,6 @@ function AddProperties() {
   });
 
 
-  const [premiseUnits, setPremiseUnits] = useState([])
 
   const [unit, setUnit] = useState({
     "active": true,
@@ -254,56 +253,59 @@ function AddProperties() {
     }
   };
 
-   // ADDING PREMISES 
+  // ADDING PREMISES 
 
- const [ obj, setObj] = useState({})
- const [ modalId, setModalId] = useState("")
- const [ unitsNumModal, setUnitsNumModal ] = useState(false)
+  const [premiseUnits, setPremiseUnits] = useState([])
+
+  const [modalId, setModalId] = useState("")
+  const [unitsNumModal, setUnitsNumModal] = useState(false)
 
   const selectedUnitTypesChange = (event) => {
     let chargess = selectedunitTypes;
     let value = unitTypes.find(x => x.id == event.target.value);
     if (value != undefined) {
-   
+
       if (event.target.checked) {
-       chargess.push(value);
-      // modalId 
-      setModalId(value.id);
-      setUnitsNumModal(true);
-      setObj({ ...obj , [value.id]: 0 });
-      
-      //pop up modal 
+        chargess.push(value);
+        // modalId 
+        setModalId(value.id);
+        setUnitsNumModal(true);
+        //pop up modal 
 
-       } else {
+      } else {
 
-      chargess.splice(chargess.indexOf(value), 1);
-      setSelectedUnitTypes(chargess);
-      setObj({ ...obj , [value.id]: 0 });
-      setModalId(" ")
-     }
+        chargess.splice(chargess.indexOf(value), 1);
+        setSelectedUnitTypes(chargess);
+        setPremiseUnits(premiseUnits.filter(ob => ob.unitTypeId !== value.id));
+        setModalId(" ")
+      }
 
     }
 
   };
 
+  const handleUnitsModal = (event) => {
+    setPremiseUnits([...premiseUnits, ... new Array(parseInt(event.target.value)).fill({
+      "active": true,
+      "unitTypeId": modalId,
+      "id": null,
+      "premiseId": null,
+      "status": "VACANT",
+      "unitName": "",
+    })]);
 
-  const handleUnitsModal = (event)=>{
-   setObj({...obj ,[modalId]: new Array(parseInt(event.target.value)) });
-
-   Object.keys(obj).map( (key)=> {
-    console.log(obj[key]);
-     if ( Array.isArray( obj[key] )) {
-      
-  obj[key]?.map((e)=>{
-   console.log(e);
- })
-     }
-   })
   }
 
- 
-// console.log(obj);
+  const handleNames = (event, i) => {
 
+    // console.log(premiseUnits);
+    let ne = premiseUnits.map((obj, index) => index == i ? { ...obj, unitName: event.target.value } : { ...obj })
+
+    setPremiseUnits(ne)
+
+  }
+
+  console.log(premiseUnits);
 
 
 
@@ -340,11 +342,11 @@ function AddProperties() {
     requestsServiceService.allDocumentTypes().then((res) => {
       let docs = res.data.data
       setDocumentTypes(res.data.data)
-  })
+    })
   }
 
   const getAllApplicableCharges = () => {
-    requestsServiceService.allApplicableCharges().then((res) =>
+    requestsServiceService.allApplicableCharges("TENANT").then((res) =>
       setApplicableCharges(res.data.data)
     )
   }
@@ -381,7 +383,7 @@ function AddProperties() {
     getAllUnitTypes()
     getAllTenancyStatuses()
     getCaretakerType()
-    
+
   }, [])
 
   const toogleShowNewDocumentModal = (event) => {
@@ -392,11 +394,11 @@ function AddProperties() {
     setNewUnitTypeModal(!newUnitTypeModal);
   }
 
-const getCaretakerType = ()=>{
-  requestsServiceService.getCaretakerTypes().then((res)=>{
-    setCaretakerTypes(res.data.data)
-  })
-}
+  const getCaretakerType = () => {
+    requestsServiceService.getCaretakerTypes().then((res) => {
+      setCaretakerTypes(res.data.data)
+    })
+  }
   const addAppCharge = (el) => {
     el.preventDefault();
     let unicahgsg = unitCharges;
@@ -501,7 +503,8 @@ const getCaretakerType = ()=>{
       "premiseCaretakerDTO": caretaker,
       "premiseDocuments": premiseDocuments,
       "premiseUnitTypeCharges": premiseUnitTypeCharges,
-      "premiseUnits": premiseUnits
+      "premiseUnits": premiseUnits,
+      
     }
 
     requestsServiceService.createPremise(data).then((res) => {
@@ -552,7 +555,7 @@ const getCaretakerType = ()=>{
                 <h4 class="mb-sm-0 font-size-18 text-capitalize">
                   Properties Registration
                 </h4>
-    
+
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
@@ -570,29 +573,29 @@ const getCaretakerType = ()=>{
             </div>
           </div>
           {/* <!-- end page title --> */}
-      
+
           {/* <!-- eTransactions table --> */}
-         {Object.keys(landLordData)?.length > 0 && <div className="row">
+          {Object.keys(landLordData)?.length > 0 && <div className="row">
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
                   <h4 className="font-weight-bold">The landlord chosen for this premise is  </h4>
                   <div className="row">
                     <div className="col-5">
-                    <p><strong>Name :</strong> {landLordData?.firstName} {landLordData?.lastName} {landLordData?.otherName}</p>
-                    <p><strong >Phone Number :</strong> {landLordData?.phoneNumber}</p>
-                    <p><strong>File No :</strong> {landLordData?.fileNumber}</p>
+                      <p><strong>Name :</strong> {landLordData?.firstName} {landLordData?.lastName} {landLordData?.otherName}</p>
+                      <p><strong >Phone Number :</strong> {landLordData?.phoneNumber}</p>
+                      <p><strong>File No :</strong> {landLordData?.fileNumber}</p>
                     </div>
                     <div className="col-5">
-                    <p><strong>Email :</strong> {landLordData?.email}</p>
-                    <p className="text-capitalize"><strong>File No :</strong> {landLordData?.landLordType?.toLowerCase()}</p>
-                    <p><strong>Agreement Period :</strong> {landLordData?.agreementPeriod}</p>
+                      <p><strong>Email :</strong> {landLordData?.email}</p>
+                      <p className="text-capitalize"><strong>File No :</strong> {landLordData?.landLordType?.toLowerCase()}</p>
+                      <p><strong>Agreement Period :</strong> {landLordData?.agreementPeriod}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div> }
+          </div>}
           <div className="row">
             <div className="col-lg-12">
               <div className="card">
@@ -619,8 +622,12 @@ const getCaretakerType = ()=>{
                           <li className="nav-item">
                             <a className="nav-link">2. Invoices Breakdown</a>
                           </li>
+
                           <li className="nav-item">
-                            <a className="nav-link">3. Document attachments</a>
+                            <a className="nav-link">3. Unit Addition</a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link">4. Document attachments</a>
                           </li>
                         </ul>
 
@@ -703,7 +710,7 @@ const getCaretakerType = ()=>{
                                 <option>Select location</option>
                                 {estates && estates?.sort((a, b) => a.name.localeCompare(b.name)).map((estate) => {
                                   return (
-                                    <option value={estate.id} className="text-capitalize"> {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.county.name?.toLowerCase()?.replace(/_/g , " ")} </option>
+                                    <option value={estate.id} className="text-capitalize"> {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.county.name?.toLowerCase()?.replace(/_/g, " ")} </option>
                                   )
                                 })}
 
@@ -741,10 +748,10 @@ const getCaretakerType = ()=>{
 
                               >
                                 <option>select premise type
-                                 <div className="form-group">
-                                 <input type="text" className="form-control"/>
-                                  </div> 
-                                  </option>  
+                                  <div className="form-group">
+                                    <input type="text" className="form-control" />
+                                  </div>
+                                </option>
                                 {premiseTypes && premiseTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type) => (
                                   <option value={type.id} className="text-capitalize" > {type.name}</option>
                                 ))}
@@ -780,33 +787,33 @@ const getCaretakerType = ()=>{
                                 <strong className="text-danger ">*</strong>
                               </label>
                               <select
-                                  className="form-control text-capitalize "
-                                  title="Select restriction status "
-                                  name='unitVacancyRestrictionStatus'
-                                  onChange={handleGeneral}
+                                className="form-control text-capitalize "
+                                title="Select restriction status "
+                                name='unitVacancyRestrictionStatus'
+                                onChange={handleGeneral}
 
                               >
                                 <option> Select status</option>
                                 {tenancyStatuses && tenancyStatuses?.sort((a, b) => a.localeCompare(b))?.map((t) => (
-                                    <option value={t} className="text-capitalize"> { t === "CURRENT" ? "Occupied" : t === "OPEN" ? "Vaccant" : t?.toLowerCase()?.replace(/_/g , " ")}</option>
+                                  <option value={t} className="text-capitalize"> {t === "CURRENT" ? "Occupied" : t === "OPEN" ? "Vaccant" : t?.toLowerCase()?.replace(/_/g, " ")}</option>
                                 ))}
                               </select>
                             </div>
                           </div>
                           <div className="col-4 col-md-6">
-                          
-                          <div className="form-group">
-                            <label htmlFor="">Charge frequency</label>
-                            <select
-                              className="form-control"
-                              onChange={handleGeneral}
-                              name="chargeFrequencyName"
-                            >
-                              <option value="YEAR"> Select frequency</option>
-                              <option value="MONTH">Monthly</option>
-                              <option value="YEAR">Yearly</option>
-                            </select>
-                          </div>
+
+                            <div className="form-group">
+                              <label htmlFor="">Charge frequency</label>
+                              <select
+                                className="form-control"
+                                onChange={handleGeneral}
+                                name="chargeFrequencyName"
+                              >
+                                <option value="YEAR"> Select frequency</option>
+                                <option value="MONTH">Monthly</option>
+                                <option value="YEAR">Yearly</option>
+                              </select>
+                            </div>
                           </div>
                         </div>
 
@@ -899,12 +906,12 @@ const getCaretakerType = ()=>{
                                         title="Select caretaker type"
                                       >
                                         <option value={null}>Select caretaker type</option>
-                                        {caretakerTypes?.map((item)=>(
-                                             <option value={item} className="text-capitalize">
-                                              { item === "SELF_COMMISSIONED" ? "Agent Commissioned" : item?.toLowerCase()?.replace(/_/g , " ")}
-                                           </option>
+                                        {caretakerTypes?.map((item) => (
+                                          <option value={item} className="text-capitalize">
+                                            {item === "SELF_COMMISSIONED" ? "Agent Commissioned" : item?.toLowerCase()?.replace(/_/g, " ")}
+                                          </option>
                                         ))}
-                                      
+
                                       </select>
                                     </div>
                                   </div>
@@ -1021,7 +1028,7 @@ const getCaretakerType = ()=>{
                                   {prem.name}
                                 </label>
 
-                              
+
                               </div>
                             </div>
                           )}
@@ -1231,10 +1238,10 @@ const getCaretakerType = ()=>{
                                       {premiseUnitTypeCharge.applicableChargeName}
                                     </td>
                                     <td className="text-capitalize">
-                                      {premiseUnitTypeCharge.applicableChargeType?.toLowerCase()?.replace(/_/g , " ")}
+                                      {premiseUnitTypeCharge.applicableChargeType?.toLowerCase()?.replace(/_/g, " ")}
                                     </td>
                                     <td className="text-capitalize">
-                                      {premiseUnitTypeCharge.unitTypeName?.toLowerCase()?.replace(/_/g , " ")}
+                                      {premiseUnitTypeCharge.unitTypeName?.toLowerCase()?.replace(/_/g, " ")}
                                     </td>
                                     <td>
                                       {premiseUnitTypeCharge.value}
@@ -1264,6 +1271,44 @@ const getCaretakerType = ()=>{
                                   ))
                                 ))}
 
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* adding premise units  */}
+                    <section className="step-cont d-none">
+                      <h3>Premise Units Addition </h3>
+                      <div class="row justify-content-center">
+                        <div class="col-12">
+                          <div class="table-responsive">
+                            <table
+                              class="table align-middle table-edits rent-invoicing dt-responsive"
+                              id="data-table"
+                            >
+                              <thead>
+                                <tr class="text-uppercase table-light">
+                                  <th>#</th>
+                                  <th>Unit name</th>
+                                  <th>Unit Type</th>
+
+                                </tr>
+                              </thead>
+                              <tbody>
+
+                                {premiseUnits.length > 0 && premiseUnits.map((unit, index) => (
+                                  <tr key={index}>
+                                    <td>{index + 1} </td>
+                                    <td> <input type="text" name="" id="" value={unit.unitName} onChange={(e) => handleNames(e, index)} /></td>
+                                    <td>
+                                      <select name="" id="" disabled >
+                                          <option value="">{ unitTypes?.filter( type => type.id == unit.unitTypeId)[0].name  }</option>
+                                      </select>
+                                    </td>
+                                  </tr>
+                                ))}
                               </tbody>
                             </table>
                           </div>
@@ -1400,7 +1445,7 @@ const getCaretakerType = ()=>{
       <Modal show={showDocumentModal} dialogClassName="my-modl">
         <form id="newContactPersonForm" onSubmit={addDocument}>
           <ModalHeader className='justify-content'>
-            <h3>New {docBody.documentOwnerTypeName?.toLowerCase()?.replace(/_/g , " ")} Document</h3>
+            <h3>New {docBody.documentOwnerTypeName?.toLowerCase()?.replace(/_/g, " ")} Document</h3>
             <span onClick={toogleShowNewDocumentModal}>X</span>
           </ModalHeader>
           <ModalBody className='row'>
@@ -1410,7 +1455,7 @@ const getCaretakerType = ()=>{
 
                 <select className='form-control text-capitalize' onChange={handleDocumentChange} name="documentTypeId" required>
                   <option>select document type</option>
-                  {documentTypes && documentTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((prem, index) => <option value={prem.id} className="text-capitalize">{prem.name?.toLowerCase()?.replace(/_/g , " ")}</option>)}
+                  {documentTypes && documentTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((prem, index) => <option value={prem.id} className="text-capitalize">{prem.name?.toLowerCase()?.replace(/_/g, " ")}</option>)}
                 </select>
               </div>
             </div>
@@ -1526,7 +1571,7 @@ const getCaretakerType = ()=>{
       </Modal>
 
       {/* <!-- enter landlord's id modal --> */}
-    
+
 
       <Modal show={fileNoShow} centered>
         <ModalBody>
@@ -1600,15 +1645,15 @@ const getCaretakerType = ()=>{
 
       {/* adding a unit to premise  */}
       <Modal show={unitsNumModal} centered>
-      <ModalBody>
-        <form onSubmit={(e)=>{ e.preventDefault(); setUnitsNumModal(false)} }>
-        <div className="form-group">
-          <label> Enter number of units</label>
-          <input  type="number" required className="form-control"  onChange={(e)=> handleUnitsModal(e)}/>
-        </div>
-        <button className="btn btn-primary btn-sm mt-4">Submit</button>
-        </form>
-      </ModalBody>
+        <ModalBody>
+          <form onSubmit={(e) => { e.preventDefault(); setUnitsNumModal(false) }}>
+            <div className="form-group">
+              <label> Enter number of units</label>
+              <input type="number" required className="form-control" onChange={(e) => handleUnitsModal(e)} />
+            </div>
+            <button className="btn btn-primary btn-sm mt-4">Submit</button>
+          </form>
+        </ModalBody>
       </Modal>
     </>
   );
