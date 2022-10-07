@@ -3,6 +3,8 @@ import requestsServiceService from "../../services/requestsService.service";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
+import Badge from "react-bootstrap/Badge";
+import Alert from "react-bootstrap/Alert";
 import { confirmAlert } from "react-confirm-alert";
 
 export default function AddLandlord() {
@@ -13,6 +15,8 @@ export default function AddLandlord() {
   const [landlordtypes, setlandlordtypes] = useState([]);
   const [documentTypes, setdocumentTypes] = useState([]);
   const [landlordDocuments, setLandlordDocuments] = useState([]);
+  const [selectedItems, setselectedItems] = useState([]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,26 +32,67 @@ export default function AddLandlord() {
     requestsServiceService.getDocumentTypes().then((res) => {
       setdocumentTypes(res.data.data);
     });
-  getApplicable()
   }, []);
 
   //landlord details
-  const [agreementPeriod, setagreementPeriod] = useState(null);
-  const [email, setEmail] = useState("");
-  const [fileNumber, setFileNumber] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [otherName, setOtherName] = useState("");
-  const [gender, setGender] = useState("");
-  const [landLordAgreementTypeId, setlandLordAgreementTypeId] = useState(null);
-  const [landLordTypeName, setLandLordTypeName] = useState("");
-  const [idNumber, setidNumber] = useState("");
-  const [remunerationPercentage, setremunerationPercentage] = useState(null);
-  const [phoneNumber, setphoneNumber] = useState("");
-  const[invoicePaymentPriority ,setInvoicePaymentPriority]= useState("")
-
-  const[invo,setInvo]= useState([])
-
+  const [landlordDetails, setLandLordDetails] = useState({
+    active: true,
+    agreementPeriod: 0,
+    companyAddress: "",
+    companyDateOfRegistration: "",
+    companyIncorporationNumber: "",
+    companyName: "",
+    country: "",
+    email: "",
+    fileNumber: "",
+    firstName: "",
+    gender: "",
+    id: null,
+    idNumber: "",
+    invoicePaymentPriority: "",
+    landLordAgreementTypeId: 0,
+    landLordTypeName: "INDIVIDUAL",
+    lastName: "",
+    otherName: "",
+    phoneNumber: "",
+    postalAddress: "",
+    remunerationPercentage: 0,
+    remunerationValue: 0,
+    town: "",
+  });
+  const onChangeLandlordDetails = (e) => {
+    if (e.target.name === "invoicePaymentPriority") {
+      let id = e.target.value.split("-")[0];
+      let name = e.target.value.split("-")[1];
+      let d = {
+        name: name,
+        id: id,
+      };
+      if (selectedItems.some((item) => item.id === id)) {
+        removeItems(id);
+      } else {
+        setselectedItems((selectedItems) => [...selectedItems, d]);
+        setLandLordDetails({
+          ...landlordDetails,
+          invoicePaymentPriority:
+            selectedItems.length > 0
+              ? selectedItems
+                  .map((a) => a.id)
+                  .join("-")
+                  .toString()
+              : "",
+        });
+      }
+    } else {
+      setLandLordDetails({
+        ...landlordDetails,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+  const removeItems = (x) => {
+    setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
+  };
   //modals
   const [show, setShow] = useState(false);
   const [docShow, setdocShow] = useState(false);
@@ -99,18 +144,6 @@ export default function AddLandlord() {
     setEditBankName(selectedAccount.bankName);
     handleEditAccountShow();
   };
-  const areAllFieldsFilled =
-    email !== "" &&
-    phoneNumber !== "" &&
-    remunerationPercentage !== undefined &&
-    phoneNumber !== "" &&
-    fileNumber !== "" &&
-    landLordAgreementTypeId !== null &&
-    agreementPeriod !== null;
-
-  useEffect(() => {
-    console.log(areAllFieldsFilled);
-  }, [areAllFieldsFilled]);
   const handleDocumentSubmit = (event) => {
     event.preventDefault();
     let data = {
@@ -157,33 +190,91 @@ export default function AddLandlord() {
     handleEditAccountClose();
   };
 
+  const [missingItems, setMissingItems] = useState([]);
+  const [check, setCheck] = useState(false);
   const handleSubmit = (event) => {
     event.preventDefault();
-    let data = {
-      active: true,
-      agreementPeriod: agreementPeriod,
-      email: email,
-      fileNumber: fileNumber,
-      invoicePaymentPriority:invoicePaymentPriority ,
+    setCheck(false);
+    setMissingItems([]);
+    var temp = [];
+    if (landlordDetails.landLordTypeName === "INDIVIDUAL") {
+      let mustdata = {
+        email: landlordDetails.email,
+        fileNumber: landlordDetails.fileNumber,
+        firstName: landlordDetails.firstName,
+        gender: landlordDetails.gender,
+        phoneNumber: landlordDetails.phoneNumber,
+      };
 
-      firstName: firstName,
-      gender: gender,
-      id: null,
-      idNumber: idNumber,
-      landLordAgreementTypeId: landLordAgreementTypeId,
-      landLordTypeName:"INDIVIDUAL ",
-      lastName: lastName,
-      otherName: otherName,
-      phoneNumber: phoneNumber,
-      remunerationPercentage: remunerationPercentage,
-    };
+      Object.keys(mustdata).forEach((key, index) => {
+        if (mustdata[key] === "") {
+          if (temp.includes(key)) {
+            console.log("KEYS PRESENT");
+          } else {
+            console.log("KEYS ABSENT");
+            temp.push(key);
+          }
+        }
+      });
+      setMissingItems((missingItems) => [...missingItems, temp]);
+    }
+    if (landlordDetails.landLordTypeName === "CORPORATE") {
+      let mustdata = {
+        companyName: landlordDetails.companyName,
+        town: landlordDetails.town,
+      };
+      Object.keys(mustdata).forEach((key, index) => {
+        if (mustdata[key] === "") {
+          if (temp.includes(key)) {
+          } else {
+            temp.push(key);
+          }
+        }
+      });
+      setMissingItems((missingItems) => [...missingItems, temp]);
+    }
+    let data = Object.assign(landlordDetails, {
+      invoicePaymentPriority: selectedItems
+        .map((a) => a.id)
+        .join("-")
+        .toString(),
+    });
     let new_t = {
       documents: landlordDocuments,
       landLord: data,
       landLordAccounts: accounts,
     };
+    if (temp.length === 0) {
+      setCheck(false);
+      createLandlord(new_t);
+    }
+    if (temp.length > 0) {
+      setCheck(true);
+    }
+  };
+
+  useEffect(() => {
+    console.log(check);
+  }, [check]);
+  // useEffect(() => {
+  //   let temp = [];
+  //   Object.keys(landlordDetails).forEach((key, index) => {
+  //     if (landlordDetails[key] === "") {
+  //       if (temp.includes(key)) {
+  //       } else {
+  //         temp.push(key);
+  //       }
+  //     }
+  //   });
+  //   setMissingItems(temp);
+  // }, [landlordDetails]);
+  useEffect(() => {
+    console.log(missingItems);
+  }, [missingItems]);
+
+  const createLandlord = (x) => {
     requestsServiceService
-      .createLandLord(new_t)
+      .createLandLord(x)
       .then((res) => {
         if (res.data.status === true) {
           confirmAlert({
@@ -216,7 +307,7 @@ export default function AddLandlord() {
       landlordDocuments.filter((landlorddoc) => landlorddoc.docName !== id)
     );
   };
- 
+
   const handleFileRead = async (event) => {
     const file = event.target.files[0];
     const base64 = await convertBase64(file);
@@ -243,22 +334,27 @@ export default function AddLandlord() {
       bankId: bankId,
       id: null,
       landLordId: null,
-      percentageRemuneration: remunerationPercentage,
+      percentageRemuneration: 0,
     };
     setAccounts((accounts) => [...accounts, data]);
     setbankAccountNumber("");
     setBankName("");
     setbankId(null);
-    setPercentageRemuneration(0);
     setShow(false);
   };
-  const getApplicable =() => {
-    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
-      setInvo(res.data.data)
-      
-    
-    })
-  }
+  const [ac, setAC] = useState([]);
+
+  useEffect(() => {
+    requestsServiceService.allApplicableCharges("LANDLORD").then((res) => {
+      setAC(res.data.data);
+    });
+  }, []);
+
+  const getDocName = (docId) => {
+    return documentTypes?.filter((x) => x.id === parseInt(docId))[0]?.name;
+  };
+
+  const [percentageAmount, setPercentAmount] = useState(false);
   return (
     <>
       <div className="page-content">
@@ -291,7 +387,7 @@ export default function AddLandlord() {
                 {error.message}
               </div>
             )}
-          
+
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
@@ -329,9 +425,8 @@ export default function AddLandlord() {
                       </div>
                     </nav>
                     {/*section add landlord details*/}
-                    <form id="my-form" onSubmit={handleSubmit}>
+                    <form id="my-form">
                       <section className={"step-cont active-step"}>
-                    
                         <p>
                           Fill in the form correctly. Fields with an Asterisk{" "}
                           <strong className="text-danger">*</strong> are
@@ -358,17 +453,17 @@ export default function AddLandlord() {
                               <div className="form-group mb-4">
                                 <select
                                   className="form-control text-capitalize"
-                                  value={landLordTypeName}
-                                  onChange={(e) =>
-                                    setLandLordTypeName(e.target.value)
-                                  }
-                                  required={true}
+                                  name={"landLordTypeName"}
+                                  onChange={(e) => onChangeLandlordDetails(e)}
                                 >
-                                  <option className="text-black font-semibold ">
+                                  <option
+                                    className="text-black font-semibold"
+                                    value={"INDIVIDUAL"}
+                                  >
                                     select landlord type
                                   </option>
                                   {landlordtypes.map((item, index) => (
-                                    <option value={item}>
+                                    <option value={item} key={index}>
                                       {item?.toLowerCase()?.replace(/_/g, " ")}
                                     </option>
                                   ))}
@@ -377,118 +472,187 @@ export default function AddLandlord() {
                             )}
                           </div>
                         </div>
-                        {landLordTypeName === "INDIVIDUAL" &&
                         <div className="row personal-landlord ">
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-4">
                               <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                                Personal details
+                                {landlordDetails?.landLordTypeName ===
+                                "INDIVIDUAL"
+                                  ? "Personal"
+                                  : "Corporate"}{" "}
+                                details
                               </p>
                             </div>
                           </div>
-                          <div className="col-lg-3 col-md-6 ">
-                            <div className="mb-4 ">
-                              <label htmlFor=" ">
-                                ID Num.{" "}
-                              </label>
-                              <input
-                                type="text "
-                                className="form-control "
-                                id=" "
-                                value={idNumber}
-                                onChange={(e) => setidNumber(e.target.value)}
-                                placeholder="Enter ID Num"
-                             
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-3 col-md-6 ">
-                            <div className="mb-4 ">
-                              <label htmlFor="basicpill-firstname-input ">
-                                First name{" "}
-                                <strong className="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                className="form-control"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                id="basicpill-firstname-input "
-                                placeholder="Enter Your First Name "
-                                required={true}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-3 col-md-6 ">
-                            <div className="mb-4 ">
-                              <label htmlFor="basicpill-lastname-input ">
-                                Last Name{" "}
-                                <strong className="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                className="form-control"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                id="basicpill-lastname-input "
-                                placeholder="Enter Your Last Name "
-                                required={true}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-3 col-md-6 ">
-                            <div className="mb-4 ">
-                              <label htmlFor=" ">Other Name(s)</label>
-                              <input
-                                type="text "
-                                className="form-control "
-                                value={otherName}
-                                onChange={(e) => setOtherName(e.target.value)}
-                                id=" "
-                                placeholder="Enter Your Other Name "
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-3 col-md-6">
-                            <label htmlFor=" " className=" ">
-                              Gender:{" "}
-                              <strong className="text-danger ">*</strong>
-                            </label>
-                            <div className="d-flex ">
-                              <div className="form-check me-3">
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="gender"
-                                  value={"male"}
-                                  onChange={(e) => setGender(e.target.value)}
-                                  id="gender-male"
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor="gender-male"
-                                >
-                                  Male
-                                </label>
+                          {landlordDetails?.landLordTypeName ===
+                            "INDIVIDUAL" && (
+                            <>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">ID Num. </label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    id=" "
+                                    name={"idNumber"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter ID Num"
+                                  />
+                                </div>
                               </div>
-                              <div className="form-check me-3">
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="gender"
-                                  value={"female"}
-                                  onChange={(e) => setGender(e.target.value)}
-                                  id="gender-female"
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor="gender-female"
-                                >
-                                  Female
-                                </label>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor="basicpill-firstname-input ">
+                                    First name{" "}
+                                    <strong className="text-danger ">*</strong>
+                                  </label>
+                                  <input
+                                    type="text "
+                                    className="form-control"
+                                    name={"firstName"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    id="basicpill-firstname-input "
+                                    required
+                                    placeholder="Enter Your First Name "
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor="basicpill-lastname-input ">
+                                    Last Name{" "}
+                                    <strong className="text-danger ">*</strong>
+                                  </label>
+                                  <input
+                                    type="text "
+                                    className="form-control"
+                                    name={"lastName"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    id="basicpill-lastname-input "
+                                    placeholder="Enter Your Last Name "
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">Other Name(s)</label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    name={"otherName"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    id=" "
+                                    placeholder="Enter Your Other Name "
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-3 col-md-6">
+                                <label htmlFor=" " className=" ">
+                                  Gender:{" "}
+                                  <strong className="text-danger ">*</strong>
+                                </label>
+                                <div className="d-flex ">
+                                  <div className="form-check me-3">
+                                    <input
+                                      className="form-check-input"
+                                      type="radio"
+                                      name="gender"
+                                      value={"male"}
+                                      onChange={(e) =>
+                                        onChangeLandlordDetails(e)
+                                      }
+                                      id="gender-male"
+                                    />
+                                    <label
+                                      className="form-check-label"
+                                      htmlFor="gender-male"
+                                    >
+                                      Male
+                                    </label>
+                                  </div>
+                                  <div className="form-check me-3">
+                                    <input
+                                      className="form-check-input"
+                                      type="radio"
+                                      name="gender"
+                                      value={"female"}
+                                      onChange={(e) =>
+                                        onChangeLandlordDetails(e)
+                                      }
+                                      id="gender-female"
+                                    />
+                                    <label
+                                      className="form-check-label"
+                                      htmlFor="gender-female"
+                                    >
+                                      Female
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor="basicpill-email-input ">
+                                    File Number{" "}
+                                    <strong className="text-danger ">*</strong>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control "
+                                    id="basicpill-email-input "
+                                    name={"fileNumber"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter File Number "
+                                  />
+                                </div>
+                              </div>
+                            </>
+                          )}
+                          {landlordDetails?.landLordTypeName ===
+                            "CORPORATE" && (
+                            <>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">Company Name. </label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    id=" "
+                                    name={"companyName"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter Company Name"
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">Company Location. </label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    id=" "
+                                    name={"town"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter Company Location"
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">Company Address. </label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    id=" "
+                                    name={"companyAddress"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter Company Address"
+                                  />
+                                </div>
+                              </div>
+                            </>
+                          )}
                           <div className="col-lg-3 col-md-6 ">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-phoneno-input ">
@@ -499,10 +663,9 @@ export default function AddLandlord() {
                                 type="text "
                                 className="form-control "
                                 id="basicpill-phoneno-input "
-                                value={phoneNumber}
-                                onChange={(e) => setphoneNumber(e.target.value)}
-                                placeholder="Enter Your Phone No. "
-                                required={true}
+                                name={"phoneNumber"}
+                                onChange={(e) => onChangeLandlordDetails(e)}
+                                placeholder="Enter Phone No. "
                               />
                             </div>
                           </div>
@@ -510,139 +673,40 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-email-input ">
                                 Email{" "}
-                                {/* <strong className="text-danger ">*</strong> */}
+                                <strong className="text-danger ">*</strong>
                               </label>
                               <input
-                                type="email "
+                                type="email"
                                 className="form-control "
                                 id="basicpill-email-input "
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter Your Email ID "
-                                // required={true}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-3 col-md-6 ">
-                            <div className="mb-4 ">
-                              <label htmlFor="basicpill-email-input ">
-                                File Number{" "}
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control "
-                                id="basicpill-email-input "
-                                value={fileNumber}
-                                onChange={(e) => setFileNumber(e.target.value)}
-                                placeholder="Enter File Number "
-                            
+                                name={"email"}
+                                onChange={(e) => onChangeLandlordDetails(e)}
+                                placeholder="Enter Email ID "
                               />
                             </div>
                           </div>
                         </div>
-}
-{landLordTypeName === "CORPORATE" &&
-                        <div className="row personal-landlord ">
-                          <div className="col-12">
-                            <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                              <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                                Corporate details
-                              </p>
-                            </div>
-                          </div>
-                         
-                          <div className="col-lg-3 col-md-6 ">
-                            <div className="mb-4 ">
-                              <label htmlFor="basicpill-firstname-input ">
-                                Company name{" "}
-                                <strong className="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                className="form-control"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                id="basicpill-firstname-input "
-                                placeholder="Enter Your First Name "
-                                required={true}
-                              />
-                            </div>
-                          </div>
-                       
-                       
-                          <div className="col-lg-3 col-md-6 ">
-                            <div className="mb-4 ">
-                              <label htmlFor="basicpill-phoneno-input ">
-                                Phone{" "}
-                                <strong className="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                className="form-control "
-                                id="basicpill-phoneno-input "
-                                value={phoneNumber}
-                                onChange={(e) => setphoneNumber(e.target.value)}
-                                placeholder="Enter Your Phone No. "
-                                required={true}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-3 col-md-6 ">
-                            <div className="mb-4 ">
-                              <label htmlFor="basicpill-email-input ">
-                                Email{" "}
-                                {/* <strong className="text-danger ">*</strong> */}
-                              </label>
-                              <input
-                                type="email "
-                                className="form-control "
-                                id="basicpill-email-input "
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter Your Email ID "
-                                // required={true}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-3 col-md-6 ">
-                            <div className="mb-4 ">
-                              <label htmlFor=" ">
-                                ID Num.{" "}
-                              </label>
-                              <input
-                                type="text "
-                                className="form-control "
-                                id=" "
-                                value={idNumber}
-                                onChange={(e) => setidNumber(e.target.value)}
-                                placeholder="Enter ID Num"
-                             
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        }
                         <div className="row">
-                          <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                            <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                              PROPERTY AGREEMENT DETAILS
-                            </p>
+                          <div className="col-12">
+                            <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                              <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                                PROPERTY AGREEMENT DETAILS
+                              </p>
+                            </div>
                           </div>
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <div className="mb-4 ">
                               <label htmlFor=" " className=" ">
                                 Agreement Type
+                                <strong className="text-danger ">*</strong>
                               </label>
                               {agreementTypes && (
                                 <div className="input-group" id="">
                                   <select
                                     className="form-control text-capitalize"
-                                   
-                                    onChange={(e) => {
-                                      setlandLordAgreementTypeId(
-                                        e.target.value
-                                      );
-                                    }}
+                                    required={true}
+                                    name={"landLordAgreementTypeId"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
                                   >
                                     <option className="text-black font-semibold">
                                       select agreement type
@@ -653,7 +717,7 @@ export default function AddLandlord() {
                                       )
                                       .map((aT) => {
                                         return (
-                                          <option value={aT.id}>
+                                          <option value={aT.id} key={aT.id}>
                                             {aT.name
                                               ?.toLowerCase()
                                               ?.replace(/_/g, " ")}
@@ -665,25 +729,7 @@ export default function AddLandlord() {
                               )}
                             </div>
                           </div>
- <div className="col-lg-4">                            <div className="mb-4 ">
-                              <label htmlFor="basicpill-lastname-input ">
-                                Percentage renumeration
-                              </label>
-                              <input
-                                type="number"
-                                min="1"
-                                max="99"
-                                value={remunerationPercentage}
-                                onChange={(e) =>
-                                  setremunerationPercentage(e.target.value)
-                                }
-                                className="form-control "
-                                placeholder="Percentage renumeration % "
-                                
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-lastname-input ">
                                 Agreement Period
@@ -692,34 +738,167 @@ export default function AddLandlord() {
                                 type="number"
                                 min="1"
                                 max="99"
-                                value={agreementPeriod}
-                                onChange={(e) =>
-                                  setagreementPeriod(e.target.value)
-                                }
+                                name={"agreementPeriod"}
+                                onChange={(e) => onChangeLandlordDetails(e)}
                                 className="form-control "
                                 placeholder="Agreement period (months)"
-                               
                               />
                             </div>
                           </div>
-                          {/* <div className="col-lg-4">
-                    <label for="">
-                    InvoicePaymentPriority <strong class="text-danger">*</strong>
-                    </label>
-                    <select
-                      class="form-control text-capitalize"
-                                           title="Select Applicable Charge Type"
-                      onChange={(e) => {
-                        setInvoicePaymentPriority(e.target.value);
-                      }}
-                    >
-                      <option>Select  InvoicePaymentPriority-----</option>
-                      {invo.map((item) => (
-                        <option value={item.id} key={item.id}>
-                        {item.name}</option>
-                      ))}
-                    </select>
-                  </div> */}
+                          <div className="row">
+                            <div className="col-lg-3 col-md-6 mb-4">
+                              <label htmlFor=" " className=" ">
+                                Select Renumeration Type:{" "}
+                                <strong className="text-danger ">*</strong>
+                              </label>
+                              <div className="d-flex ">
+                                <div className="form-check me-3">
+                                  <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    onChange={(e) => setPercentAmount(false)}
+                                    checked={percentageAmount === false}
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="gender-male"
+                                  >
+                                    Percentage
+                                  </label>
+                                </div>
+                                <div className="form-check me-3">
+                                  <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    onChange={(e) => setPercentAmount(true)}
+                                    checked={percentageAmount === true}
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="gender-female"
+                                  >
+                                    Amount
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-lg-3 col-md-6 mb-4">
+                              {!percentageAmount && (
+                                <>
+                                  <div className="mb-2">
+                                    <label htmlFor="basicpill-lastname-input ">
+                                      Renumeration Percentage
+                                    </label>
+                                    <input
+                                      type="number"
+                                      min="1"
+                                      name={"remunerationPercentage"}
+                                      onChange={(e) =>
+                                        onChangeLandlordDetails(e)
+                                      }
+                                      className="form-control "
+                                      placeholder="Renumeration %"
+                                    />
+                                  </div>
+                                </>
+                              )}
+
+                              {percentageAmount && (
+                                <>
+                                  <div className="mb-2">
+                                    <label htmlFor="basicpill-lastname-input ">
+                                      Renumeration Amount
+                                    </label>
+                                    <input
+                                      type={"text"}
+                                      name={"remunerationValue"}
+                                      onChange={(e) =>
+                                        onChangeLandlordDetails(e)
+                                      }
+                                      className="form-control "
+                                      placeholder="Renumeration Amount"
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-12">
+                              <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                                <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                                  INVOICE PAYMENT PRIORITY
+                                </p>
+                              </div>
+                            </div>
+                            <div className="mb-4">
+                              <div className="col-lg-4">
+                                <div className="mb-4">
+                                  <label htmlFor="">Applicable charges</label>
+                                  <br />
+                                  <select
+                                    name="invoicePaymentPriority"
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    id=""
+                                    className={"form-control"}
+                                  >
+                                    <option value="">
+                                      Select Applicable Charge
+                                    </option>
+                                    {ac?.map((item) => (
+                                      <option
+                                        value={item.id + "-" + item.name}
+                                        key={item.id}
+                                      >
+                                        {item.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+                              {selectedItems.length > 0 && (
+                                <>
+                                  <div className="alert alert-info bg-soft d-flex align-items-center text-capitalize">
+                                    {selectedItems?.map((item, index) => (
+                                      <>
+                                        <h5
+                                          className="ml-7px justify-content-center align-items-center"
+                                          key={item.id}
+                                        >
+                                          <Badge
+                                            className={
+                                              "bg-primary border-2 bg-soft text-black"
+                                            }
+                                            style={{
+                                              color: "black",
+                                            }}
+                                          >
+                                            {item.name}
+                                          </Badge>
+                                          <br />
+                                          <i
+                                            className="fa fa-trash cursor-pointer text-danger mt-1 mr-auto ml-auto"
+                                            onClick={() => removeItems(item.id)}
+                                          ></i>
+                                        </h5>
+                                        {index < selectedItems?.length - 1 && (
+                                          <i
+                                            style={{
+                                              fontSize: "20px",
+                                              margin: "0.5em",
+                                            }}
+                                            className={
+                                              "dripicons-arrow-thin-right mr-5 justify-content-center d-flex align-items-center"
+                                            }
+                                          />
+                                        )}
+                                      </>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </section>
 
@@ -738,7 +917,6 @@ export default function AddLandlord() {
                                   <th>#</th>
                                   <th>Bank</th>
                                   <th className="">Bank Acc</th>
-                                  <th className="">% Remuneration</th>
                                   <th>Status</th>
                                   <th>Actions</th>
                                   <th></th>
@@ -748,15 +926,12 @@ export default function AddLandlord() {
                                 {accounts.length > 0 &&
                                   accounts.map((account, index) => {
                                     return (
-                                      <tr data-id="1">
+                                      <tr data-id="1" key={index}>
                                         <td style={{ width: "80px" }}>
                                           {index + 1}
                                         </td>
                                         <td>{account.bankName}</td>
                                         <td>{account.bankAccountNumber}</td>
-                                        <td>
-                                          {account.percentageRemuneration}
-                                        </td>
                                         <td data-field="unit-num ">
                                           {account.active ? (
                                             <span className="badge-soft-success badge">
@@ -788,11 +963,14 @@ export default function AddLandlord() {
                                   })}
                               </tbody>
                               <tfoot>
-                                <tr>
-                                  <td colSpan="7" onClick={handleShow}>
+                                <tr className="" onClick={handleShow}>
+                                  <td
+                                    colSpan="7"
+                                    className="bg-light cursor-pointer"
+                                  >
                                     <span className="d-flex align-items-center ">
                                       <i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
-                                      <span className="pl-5 ">Add A Bank</span>
+                                      <span className="pl-5 ">Add a Bank</span>
                                     </span>
                                   </td>
                                 </tr>
@@ -811,11 +989,6 @@ export default function AddLandlord() {
                             </p>
                           </div>
                         </div>
-                        <h6>
-                          Upload document and don't forget to specify whose the
-                          document is for. ie{" "}
-                          <strong>Landlord or Premises</strong>
-                        </h6>
                         <div className="table-responsive table-responsive-md">
                           <table className="table table-editable-file align-middle table-edits">
                             <thead className="table-light">
@@ -824,8 +997,9 @@ export default function AddLandlord() {
                                 <th className="vertical-align-middle">
                                   Document owner
                                 </th>
+                                <th>Document Type</th>
                                 <th className="vertical-align-middle">
-                                  Document Type
+                                  Document Name
                                 </th>
                                 <th className="vertical-align-middle">
                                   Actions
@@ -834,8 +1008,7 @@ export default function AddLandlord() {
                               </tr>
                             </thead>
                             <tbody>
-                              {landlordDocuments != "" &&
-                                landlordDocuments.length > 0 &&
+                              {landlordDocuments.length > 0 &&
                                 landlordDocuments.map((doc, index) => {
                                   return (
                                     <tr data-id="1" key={index}>
@@ -843,6 +1016,11 @@ export default function AddLandlord() {
                                         {index + 1}
                                       </td>
                                       <td>{doc.documentOwnerTypeName}</td>
+                                      <td>
+                                        {documentTypes.length > 0
+                                          ? getDocName(doc.documentTypeId)
+                                          : ""}
+                                      </td>
                                       <td>{doc.docName}</td>
                                       <td className="text-right cell-change text-nowrap ">
                                         <div className="d-flex">
@@ -865,7 +1043,11 @@ export default function AddLandlord() {
                             </tbody>
                             <tfoot>
                               <tr>
-                                <td colSpan="7" onClick={handleDocShow}>
+                                <td
+                                  colSpan="7"
+                                  onClick={handleDocShow}
+                                  className="bg-light cursor-pointer"
+                                >
                                   <span className="d-flex align-items-center ">
                                     <i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
                                     <span className="pl-5 ">
@@ -877,6 +1059,19 @@ export default function AddLandlord() {
                             </tfoot>
                           </table>
                         </div>
+                        {check && (
+                          <>
+                            <Alert
+                              variant={"danger"}
+                              className={"text-capitalize"}
+                            >
+                              <p>MISSING REQUIRED FIELDS: </p>
+                              <p>
+                                <b>{missingItems?.join(", ")}</b>
+                              </p>
+                            </Alert>
+                          </>
+                        )}
                       </section>
                     </form>
                     <div className="button-navigators">
@@ -887,17 +1082,15 @@ export default function AddLandlord() {
                         <i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i>{" "}
                         Previous{" "}
                       </button>
-                      <button
-                        className="btn btn-primary waves-effect kev-nxt me-3"
-                        disabled={!areAllFieldsFilled}
-                      >
+                      <button className="btn btn-primary waves-effect kev-nxt me-3">
                         Next{" "}
                         <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
                       </button>
                       <button
-                        type="submit"
+                        // type="submit"
+                        onClick={handleSubmit}
                         className="btn btn-success kev-submit me-3 d-none"
-                        form={"my-form"}
+                        // form={"my-form"}
                       >
                         Submit{" "}
                         <i className="mdi mdi-check-all me-2 font-16px"></i>
@@ -1042,7 +1235,7 @@ export default function AddLandlord() {
                           <option className="text-black font-semibold ">
                             {editBankName}
                           </option>
-                          {banks.map((bank) => {
+                          {banks?.map((bank) => {
                             return (
                               <option
                                 key={bank.id}
@@ -1065,22 +1258,6 @@ export default function AddLandlord() {
                           value={editBankAccount}
                           onChange={(e) => setEditBankAccount(e.target.value)}
                           placeholder="Enter account number"
-                          required={true}
-                        />
-                      </div>
-                      <div className="form-group mb-4">
-                        <label htmlFor="">
-                          Percentage renumeration.{" "}
-                          <strong className="text-danger ">*</strong>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={editpercentageRemuneration}
-                          onChange={(e) =>
-                            setEditPercentageRemuneration(e.target.value)
-                          }
-                          placeholder="Enter % renumeration"
                           required={true}
                         />
                       </div>
