@@ -164,8 +164,22 @@ const getAll = () => {
     setClient(res.data.data.client);
   });
 }
-
-
+const [ac, setAC] = useState([]);
+const [tmp, stmp] = useState([]);
+const [chargeNames, setChargeNames] = useState([]);
+const handleACchange = (e, i) => {
+  let id = e.target.value.split("-")[0];
+  let name = e.target.value.split("-")[1];
+  if (tmp?.includes(id)) {
+    //
+  } else {
+    stmp([...tmp, id]);
+  }
+  if (chargeNames.includes(name)) {
+  } else {
+    setChargeNames([...chargeNames, name]);
+  }
+};
 
 
   return (
@@ -655,27 +669,40 @@ const getAll = () => {
                     </div>
                   </div>
 
+                  <div className="col-12">
+                           
+                              <label htmlFor=""> Invoice Payment Priority</label>
+                              <br />
+                              <select
+                                name=""
+                                onChange={(e) => handleACchange(e)}
+                                id=""
+                                className={"form-control"}
+                              >
+                                <option>Select Applicable Charges</option>
+                                {invo?.map((item) => (
+                                  <option value={item.id + "-" + item.name}>
+                                    {item.name}
+                                  </option>
+                                ))}
+                              </select>
+                            
+                          </div>
+                          <div className="row">
+                            <div className="mb-4">
+                              <label htmlFor="basicpill-lastname-input ">
+                               Applicable Charges
+                              </label>
+                              <div className="alert alert-info bg-soft">
+                                {chargeNames.length > 0
+                                  ? chargeNames.join("  -->  ")
+                                  : chargeNames}
+                              </div>
+                            </div>
+                            </div>
                   <div class="col-12">
                     <label for="">
-                    InvoicePaymentPriority <strong class="text-danger">*</strong>
-                    </label>
-                    <select
-                      class="form-control text-capitalize"
-                                           title="Select Applicable Charge Type"
-                      onChange={(e) => {
-                        setInvoicePaymentPriority(e.target.value);
-                      }}
-                    >
-                      <option>Select  InvoicePaymentPriority-----</option>
-                      {invo?.map((item) => (
-                        <option value={item.id} key={item.id}>
-                        {item.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div class="col-12">
-                    <label for="">
-                    landlordSettlementChargeId <strong class="text-danger">*</strong>
+                    Base(rent)Charge<strong class="text-danger">*</strong>
                     </label>
                     <select
                       class="form-control text-capitalize"
@@ -684,7 +711,7 @@ const getAll = () => {
                         setLandlordSettlementChargeId(e.target.value);
                       }}
                     >
-                      <option>---Select  LandlordSettlementChargeId-----</option>
+                      <option>---Select  Base(rent)Charge-----</option>
                       {invo?.map((item) => (
                         <option value={item.id} key={item.id}>
                         {item.name}</option>
@@ -695,7 +722,7 @@ const getAll = () => {
               
                   <div class="col-12">
                     <label for="">
-                   PenaltyChargeId <strong class="text-danger">*</strong>
+                   PenaltyCharge <strong class="text-danger">*</strong>
                     </label>
                     <select
                       class="form-control text-capitalize"
@@ -706,6 +733,43 @@ const getAll = () => {
                       }}
                     >
                       <option>---Select  PenaltyChargeId-----</option>
+                      {invo?.map((item) => (
+                        <option value={item.id} key={item.id}>
+                        {item.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">PenaltyChargeRate</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="30"
+                        class="form-control"
+                        placeholder="Enter PenaltyChargeRate"
+                        onChange={(event) =>
+                          setpenaltyChargeRate(event.target.value)
+                        }
+                        value={penaltyChargeRate}
+                      />
+                    </div>
+                  </div>
+                 
+                
+                  <div class="col-12">
+                    <label for="">
+                    PropertyTaxCharge<strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control text-capitalize"
+                                           title="Select Applicable Charge Type"
+                      onChange={(e) => {
+                        setPropertyTaxChargeId(e.target.value)
+                        (e.target.value);
+                      }}
+                    >
+                      <option value="">Select PropertyTaxCharge --</option>
                       {invo?.map((item) => (
                         <option value={item.id} key={item.id}>
                         {item.name}</option>
@@ -729,40 +793,59 @@ const getAll = () => {
                     </div>
                   </div>
                   <div class="col-12">
+                    <label for="">
+                    VisitationCharge<strong class="text-danger">*</strong>
+                    </label>
+                    <select
+                      class="form-control text-capitalize"
+                                           title="Select VisitationChargeId"
+                      onChange={(e) => {
+                        setvisitationChargeId(e.target.value)
+                        (e.target.value);
+                      }}
+                    >
+                      <option>Select VisitationCharge ----</option>
+                      {invo
+                      ?.map((item) => (
+                        <option value={item.id} key={item.id}>
+                        {item.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div class="col-12">
                     <div class="form-group mb-4">
-                      <label for="">PenaltyChargeRate</label>
+                      <label for="">VisitationChargeDay</label>
                       <input
-                        type="number"
-                        min="1"
-                        max="30"
+                        type="text"
                         class="form-control"
-                        placeholder="Enter PenaltyChargeRate"
+                        placeholder="Enter SettlementPeriod"
                         onChange={(event) =>
-                          setpenaltyChargeRate(event.target.value)
+                          setvisitationChargeDay(event.target.value)
                         }
-                        value={penaltyChargeRate}
+                        value={visitationChargeDay}
                       />
                     </div>
                   </div>
                 
                   <div class="col-12">
-                    <label for="">
-                    PropertyTaxChargeId <strong class="text-danger">*</strong>
-                    </label>
-                    <select
-                      class="form-control text-capitalize"
-                                           title="Select Applicable Charge Type"
-                      onChange={(e) => {
-                        setPropertyTaxChargeId(e.target.value)
-                        (e.target.value);
-                      }}
-                    >
-                      <option value="">Select Applicable Charge Type --</option>
-                      {invo?.map((item) => (
-                        <option value={item.id} key={item.id}>
-                        {item.name}</option>
-                      ))}
-                    </select>
+                    <div class="form-group mb-4">
+                      <label for="">SettlementPeriod</label>
+                      
+ <select
+                              className="form-control"
+                              onChange={(e) => {
+                                setsettlementPeriod(e.target.value)
+                                (e.target.value);
+                              }}
+                              name="settlementPeriod"
+                            >
+                              <option value="YEAR"> Select settlementPeriod </option>
+                              <option value="MONTH">Monthly</option>
+                              <option value="YEAR">Yearly</option>
+                            </select>
+
+
+                    </div>
                   </div>
                   <div class="col-12">
                     <div class="form-group mb-4">
@@ -778,59 +861,11 @@ const getAll = () => {
                       />
                     </div>
                   </div>
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">SettlementPeriod</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter SettlementPeriod"
-                        onChange={(event) =>
-                          setsettlementPeriod(event.target.value)
-                        }
-                        value={settlementPeriod}
-                      />
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">visitationChargeDay</label>
-                      <input
-                        type="number"
-                        max="30"
-                        min="1"
-                        class="form-control"
-                        placeholder="Enter visitationChargeDay"
-                        onChange={(event) =>
-                          setvisitationChargeDay(event.target.value)
-                        }
-                        value={visitationChargeDay}
-                      />
-                    </div>
-                  </div>
+              
 
                  
                   
-                  <div class="col-12">
-                    <label for="">
-                    visitationChargeId<strong class="text-danger">*</strong>
-                    </label>
-                    <select
-                      class="form-control text-capitalize"
-                                           title="Select VisitationChargeId"
-                      onChange={(e) => {
-                        setvisitationChargeId(e.target.value)
-                        (e.target.value);
-                      }}
-                    >
-                      <option>Select VisitationChargeId ----</option>
-                      {invo
-                      ?.map((item) => (
-                        <option value={item.id} key={item.id}>
-                        {item.name}</option>
-                      ))}
-                    </select>
-                  </div>
+                  
 
                  
                 

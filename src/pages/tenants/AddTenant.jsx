@@ -8,7 +8,7 @@ import requestsServiceService from "../../services/requestsService.service";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import data from '../data/coutries.json'
-
+import Badge from "react-bootstrap/Badge";
 function AddTenant() {
 
 
@@ -20,6 +20,7 @@ function AddTenant() {
 
   const [ac, setAC] = useState([]);
 
+  const [selectedItems, setselectedItems] = useState([]);
 
 
   const [countries, setCounties] = useState([]);
@@ -37,26 +38,43 @@ function AddTenant() {
     setCounties(data);
   }, []);
 
-  const [tmp, stmp] = useState([]);
-  const [chargeNames, setChargeNames] = useState([]);
-  const handleACchange = (e, i) => {
-    let id = e.target.value.split("-")[0];
-    let name = e.target.value.split("-")[1];
-    if (tmp?.includes(id)) {
-      //
+  const onChangeTenantDto = (e) => {
+    if (e.target.name === "invoicePaymentPriority") {
+      let id = e.target.value.split("-")[0];
+      let name = e.target.value.split("-")[1];
+      let d = {
+        name: name,
+        id: id,
+      };
+      if (selectedItems.some((item) => item.id === id)) {
+        removeItems(id);
+      } else {
+        setselectedItems((selectedItems) => [...selectedItems, d]);
+        setTenantDto({
+          ...tenantDto,
+          invoicePaymentPriority:
+            selectedItems.length > 0
+              ? selectedItems
+                  .map((a) => a.id)
+                  .join("-")
+                  .toString()
+              : "",
+        });
+      }
     } else {
-      stmp([...tmp, id]);
-    }
-    if (chargeNames.includes(name)) {
-    } else {
-      setChargeNames([...chargeNames, name]);
+      setTenantDto({
+        ...tenantDto,
+        [e.target.name]: e.target.value,
+      });
     }
   };
-  
+  const removeItems = (x) => {
+    setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
+  };
 
   const getAllDocumentTypes = () => {
     requestsServiceService
-      .allDocumentTypes()
+      .allDocumentTypes("TENANT")
       .then((res) => setDocumentTypes(res.data.data));
   };
 
@@ -752,7 +770,7 @@ function AddTenant() {
                                         }
                                         name="gender"
                                         id="formRadios2"
-                                        required
+                                     
                                       />
                                       <label
                                         className="form-check-label"
@@ -937,40 +955,86 @@ function AddTenant() {
                               </select>
                             </div>
                           </div>
-                          <div className="col-lg-4">
-                            <div className="mb-4">
-                              <label htmlFor="">Applicable charges</label>
-                              <br />
-                              <select
-                                name=""
-                                onChange={(e) => handleACchange(e)}
-                                id=""
-                                className={"form-control"}
-                              >
-                                                                <option>Select Applicable Charges</option>
-                                <option>Select Applicable Charges</option>
-
-                                {ac?.map((item) => (
-                                  <option value={item.id + "-" + item.name}>
-                                    {item.name}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="mb-4">
-                              <label htmlFor="basicpill-lastname-input ">
-                                Invoice Payment Priority
-                              </label>
-                              <div className="alert alert-info bg-soft">
-                                {chargeNames.length > 0
-                                  ? chargeNames.join("  -->  ")
-                                  : chargeNames}
+                          
+                          
+<div className="row">
+                            <div className="col-12">
+                              <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                                <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                                  INVOICE PAYMENT PRIORITY
+                                </p>
                               </div>
                             </div>
+                           
+                              <div className="col-lg-4">
+                                <div className="mb-4">
+                                  <label htmlFor="">Applicable charges</label>
+                                  <br />
+                                  <select
+                                    name="invoicePaymentPriority"
+                                    onChange={(e) => onChangeTenantDto(e)}
+                                    id=""
+                                    className={"form-control"}
+                                  >
+                                    <option value="">
+                                      Select Applicable Charge
+                                    </option>
+                                    {ac?.map((item) => (
+                                      <option
+                                        value={item.id + "-" + item.name}
+                                        key={item.id}
+                                      >
+                                        {item.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+                              {selectedItems.length > 0 && (
+                                <>
+                                  <div className="alert alert-info bg-soft d-flex align-items-center text-capitalize">
+                                    {selectedItems?.map((item, index) => (
+                                      <>
+                                        <h5
+                                          className="ml-7px justify-content-center align-items-center"
+                                          key={item.id}
+                                        >
+                                          <Badge
+                                            className={
+                                              "bg-primary border-2 bg-soft text-black"
+                                            }
+                                            style={{
+                                              color: "black",
+                                            }}
+                                          >
+                                            {item.name}
+                                          </Badge>
+                                          <br />
+                                          <i
+                                            className="fa fa-trash cursor-pointer text-danger mt-1 mr-auto ml-auto"
+                                            onClick={() => removeItems(item.id)}
+                                          ></i>
+                                        </h5>
+                                        {index < selectedItems?.length - 1 && (
+                                          <i
+                                            style={{
+                                              fontSize: "20px",
+                                              margin: "0.5em",
+                                            }}
+                                            className={
+                                              "dripicons-arrow-thin-right mr-5 justify-content-center d-flex align-items-center"
+                                            }
+                                          />
+                                        )}
+                                      </>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                       
                             </div>
-                          
+
+
 
                           <div className="col-12">
                             <div className="row">
@@ -987,7 +1051,7 @@ function AddTenant() {
                                     type="radio"
                                     name="roomamte"
                                     id=""
-                                    required
+                                 
                                   />
                                   <label
                                     className="form-check-label"
@@ -1004,7 +1068,7 @@ function AddTenant() {
                                     type="radio"
                                     name="roomamte"
                                     id=""
-                                    required
+                                    
                                   />
                                   <label
                                     className="form-check-label"
