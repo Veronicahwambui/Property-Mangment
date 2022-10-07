@@ -35,9 +35,8 @@ function CreateInvoice() {
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [auctioneers, setAuctioneers] = useState([])
-  const [auctioneer, setAuctioneer] = useState(null)
-  const [invoiceFor, setInvoiceFor] = useState('');
+  const [auctioneers, setAuctioneers] = useState([]);
+  const [invoiceFor, setInvoiceFor] = useState(undefined);
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     setloaded(false);
@@ -52,12 +51,19 @@ function CreateInvoice() {
       setAuctioneers(data.data)
     })
   }, []);
+  
+  useEffect(() => {
+    if (invoiceFor) {
+      requestsServiceService.allApplicableCharges(invoiceFor).then((res) => {
+        setapplicableCharges(res.data.data);
+      });
+    }
+  }, [invoiceFor]);
 
 
   useEffect(() => {
-    let found = applicableCharges.find(x => x.name === applicableChargeName)
-    if (found != undefined)
-      setexpectManualValues(found.expectManualValues);
+    let found = applicableCharges.find((x) => x.name === applicableChargeName);
+    if (found !== undefined) setexpectManualValues(found.expectManualValues);
   }, [applicableChargeName]);
 
   useEffect(() => {
@@ -121,15 +127,23 @@ function CreateInvoice() {
       .then((res) => {
         let temp = res.data.data.tenancies;
         if (res.data?.data?.tenancies?.length > 0) {
-          settenancies(temp);
-          setloading(false);
-          setloaded(true);
-          setIsChecked(true);
-          setError({
-            ...error,
-            message: "",
-            color: "",
-          });
+          if (temp.length === 1) {
+            settenancyId(res.data.data.tenancies[0]?.id);
+            settenancies(temp);
+            setloading(false);
+            setloaded(true);
+            setIsChecked(true);
+          } else {
+            settenancies(temp);
+            setloading(false);
+            setloaded(true);
+            setIsChecked(true);
+            setError({
+              ...error,
+              message: "",
+              color: "",
+            });
+          }
         } else {
           setloading(false);
           setError({
@@ -216,10 +230,8 @@ function CreateInvoice() {
   };
   const [tenantName, setTenantName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  useEffect(() => { }, [tenants, isChecked, custname]);
-
-  const autofill = (x,fileNumber ) => {
-
+  useEffect(() => {}, [tenants, isChecked, custname]);
+  const autofill = (x) => {
     setfetched(false);
     setloaded(true);
     setloading(true);
@@ -408,7 +420,6 @@ function CreateInvoice() {
     }
   };
   $(document).on("change", ".enddate", addDate);
-  
   return (
     <>
       <div className="page-content">
@@ -529,12 +540,39 @@ function CreateInvoice() {
                                     Tenancy.{" "}
                                     <strong className="text-danger">*</strong>
                                   </label>
-                                  {tenancies && (
+                                  {tenancies?.length === 1 && (
+                                    <>
+                                      <div className="form-group mb-4">
+                                        <select
+                                          className="form-control"
+                                          value={tenancyId}
+                                          required={true}
+                                          disabled
+                                        >
+                                          {tenancies?.map((item, index) => (
+                                            <>
+                                              {item.active && (
+                                                <option
+                                                  value={parseInt(item.id)}
+                                                  key={item.id}
+                                                >
+                                                  {item.premiseUnit?.unitName +
+                                                    " - " +
+                                                    item.premiseUnit?.unitType
+                                                      .name}
+                                                </option>
+                                              )}
+                                            </>
+                                          ))}
+                                        </select>
+                                      </div>
+                                    </>
+                                  )}
+                                  {tenancies?.length > 1 && (
                                     <div className="form-group mb-4">
                                       <select
                                         class="form-control"
                                         title="Select tenant"
-                                        data-live-search="true"
                                         value={tenancyId}
                                         onChange={(e) =>
                                           settenancyId(e.target.value)
@@ -544,19 +582,20 @@ function CreateInvoice() {
                                         <option className="text-black font-semibold ">
                                           select tenancy
                                         </option>
-                                        {tenancies.map((item, index) => (
-                                         <>
-                                         {item.active &&
-                                           <option
-                                           value={parseInt(item.id)}
-                                           key={item.id}
-                                         >
-                                           {item.premiseUnit?.unitName +
-                                             " - " +
-                                             item.premiseUnit?.unitType.name}
-                                         </option>
-                                         }
-                                         </>
+                                        {tenancies?.map((item, index) => (
+                                          <>
+                                            {item.active && (
+                                              <option
+                                                value={parseInt(item.id)}
+                                                key={item.id}
+                                              >
+                                                {item.premiseUnit?.unitName +
+                                                  " - " +
+                                                  item.premiseUnit?.unitType
+                                                    .name}
+                                              </option>
+                                            )}
+                                          </>
                                         ))}
                                       </select>
                                     </div>
@@ -578,7 +617,6 @@ function CreateInvoice() {
                                       <select
                                         class="form-control"
                                         title="Select tenant"
-                                        data-live-search="true"
                                         value={applicableChargeName}
                                         onChange={(e) =>
                                           setapplicableChargeName(
@@ -604,7 +642,6 @@ function CreateInvoice() {
                                     </div>
                                   )}
                                 </div>
-
                               </div>
                               <div className="row col-12">
                                 <div className="mb-3">
@@ -655,7 +692,7 @@ function CreateInvoice() {
                                   htmlFor="formrow-email-input"
                                   className="form-label"
                                 >
-                                  Title.{" "}
+                                  Invoice Period.{" "}
                                   <strong className="text-danger">*</strong>
                                 </label>
                                 <input
@@ -666,7 +703,7 @@ function CreateInvoice() {
                                   onChange={(e) =>
                                     setchargetitle(e.target.value)
                                   }
-                                  placeholder="Enter invoice title"
+                                  placeholder="Enter Invoice Period"
                                   required={true}
                                 />
                               </div>
@@ -738,7 +775,7 @@ function CreateInvoice() {
                                 </div>
                               </div>
                               <div className="row">
-                                {expectManualValues &&
+                                {expectManualValues && (
                                   <>
                                     <div className="col-md-6">
                                       <div className="mb-3">
@@ -747,7 +784,9 @@ function CreateInvoice() {
                                           className="form-label"
                                         >
                                           Unit cost.{" "}
-                                          <strong className="text-danger">*</strong>
+                                          <strong className="text-danger">
+                                            *
+                                          </strong>
                                         </label>
                                         <input
                                           type="number"
@@ -769,13 +808,17 @@ function CreateInvoice() {
                                           className="form-label"
                                         >
                                           Invoice amount.{" "}
-                                          <strong className="text-danger">*</strong>
+                                          <strong className="text-danger">
+                                            *
+                                          </strong>
                                         </label>
                                         <input
                                           type="text"
                                           className="form-control invoice-amount"
                                           value={"KES " + total}
-                                          onChange={(e) => settotal(e.target.value)}
+                                          onChange={(e) =>
+                                            settotal(e.target.value)
+                                          }
                                           id="formrow-password-input"
                                           placeholder="KES"
                                           required={true}
@@ -784,10 +827,18 @@ function CreateInvoice() {
                                       </div>
                                     </div>
                                   </>
-                                }   {applicableChargeName != "" && expectManualValues ?
-                                  <span className="alert alert-warning">This charge expects a unit cost entry</span> :
-                                  <span className="alert alert-warning">This charge will charge the default values set for the property</span>
-                                }
+                                )}{" "}
+                                {applicableChargeName != "" &&
+                                expectManualValues ? (
+                                  <span className="alert alert-warning">
+                                    This charge expects a unit cost entry
+                                  </span>
+                                ) : (
+                                  <span className="alert alert-warning">
+                                    This charge will charge the default values
+                                    set for the property
+                                  </span>
+                                )}
                               </div>
                             </div>
                             <div>
@@ -819,7 +870,6 @@ function CreateInvoice() {
         </div>
       </div>
 
-
       <Modal
         show={show}
         onHide={closeTenantModal}
@@ -840,12 +890,15 @@ function CreateInvoice() {
             </div>
             <div className="row justify-content-center ">
               <div className="col-xl-10">
-                <h4 className="text-primary">
-                  Create invoice for
-                </h4>
+                <h4 className="text-primary">Create invoice for</h4>
 
                 <div className="form-group col-6 mx-auto app-search">
-                  <select name="" id="" className="form-control" onChange={e => invoiceForHandler(e)} >
+                  <select
+                    name=""
+                    id=""
+                    className="form-control"
+                    onChange={(e) => setInvoiceFor(e.target.value)}
+                  >
                     <option value="">select invoice type </option>
                     <option value="TENANT">Tenant</option>
                     <option value="LANDLORD">Landlord</option>
@@ -854,111 +907,110 @@ function CreateInvoice() {
                 </div>
               </div>
               {/* SEARCHING FUNCTIONALITY  */}
-              {(invoiceFor !== 'AUCTIONEER' && invoiceFor !== '') && <div className="col-xl-10 mb-0">
-                <h4 className="text-primary ">
-                  Search for {invoiceFor?.toLocaleLowerCase()}
-                  <span style={{ marginLeft: "10px" }}>
-                    {loading && <i className="fa fa-refresh fa-spin" />}
-                    {loaded && (
-                      <>
-                        <i className="fa fa-check" />
-                      </>
-                    )}
-                  </span>
-                </h4>
-                <p className="text-muted font-size-14 mb-4 ">
-                  Search for the {invoiceFor?.toLocaleLowerCase()} and proceed with creating the invoice
-                </p>
-                <div className="row text-capitalize">
-                  <div className="col-12">
-                    <div>
-                      <form
-                        id={"invoice-tenant-form"}
-                        onSubmit={handleSubmit}
-                        className="app-search d-lg-block p-2 d-block"
-                      >
-                        <div className="position-relative">
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Search..."
-                            onChange={(e) => setTenantName(e.target.value)}
-                            required={true}
-                          />
-                          <span className="bx bx-search-alt"></span>
-                        </div>
-                      </form>
-                    </div>
-                    <div className="form-group">
-                      <div className="d-flex align-items-center justify-content-center">
-                        <div className="text-end">
-                          <button
-                            form={"invoice-tenant-form"}
-                            disabled={loading2}
-                            className="btn btn-primary btn-rounded"
-                            type="submit"
-                          >
-                            {loading2 && (
-                              <i
-                                className="fa fa-refresh fa-spin"
-                                style={{ marginRight: "5px" }}
-                              />
-                            )}
-                            {loading2 && (
-                              <>
-                                <span className="d-none d-sm-inline-block me-2">
-                                  Searching...
-                                </span>
-                              </>
-                            )}
-                            {!loading2 && (
-                              <>
-                                <span className="d-none d-sm-inline-block me-2">
-                                  Search
-                                </span>
-                              </>
-                            )}
-                          </button>
+              {invoiceFor !== "AUCTIONEER" && invoiceFor !== "" && (
+                <div className="col-xl-10 mb-0">
+                  <h4 className="text-primary ">
+                    Search for {invoiceFor}
+                    <span style={{ marginLeft: "10px" }}>
+                      {loading && <i className="fa fa-refresh fa-spin" />}
+                      {loaded && (
+                        <>
+                          <i className="fa fa-check" />
+                        </>
+                      )}
+                    </span>
+                  </h4>
+                  <p className="text-muted font-size-14 mb-4 ">
+                    Search for the {invoiceFor} and proceed with creating the
+                    invoice
+                  </p>
+                  <div className="row text-capitalize">
+                    <div className="col-12">
+                      <div>
+                        <form
+                          id={"invoice-tenant-form"}
+                          onSubmit={handleSubmit}
+                          className="app-search d-lg-block p-2 d-block"
+                        >
+                          <div className="position-relative">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search..."
+                              onChange={(e) => setTenantName(e.target.value)}
+                              required={true}
+                            />
+                            <span className="bx bx-search-alt"></span>
+                          </div>
+                        </form>
+                      </div>
+                      <div className="form-group">
+                        <div className="d-flex align-items-center justify-content-center">
+                          <div className="text-end">
+                            <button
+                              form={"invoice-tenant-form"}
+                              disabled={loading2}
+                              className="btn btn-primary btn-rounded"
+                              type="submit"
+                            >
+                              {loading2 && (
+                                <i
+                                  className="fa fa-refresh fa-spin"
+                                  style={{ marginRight: "5px" }}
+                                />
+                              )}
+                              {loading2 && (
+                                <>
+                                  <span className="d-none d-sm-inline-block me-2">
+                                    Searching...
+                                  </span>
+                                </>
+                              )}
+                              {!loading2 && (
+                                <>
+                                  <span className="d-none d-sm-inline-block me-2">
+                                    Search
+                                  </span>
+                                </>
+                              )}
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className={"mt-2 mb-2"}>
-                      {fetched && tenants.length < 1 && (
-                        <span className={"text-danger"}>{invoiceFor?.toLocaleLowerCase()} not found!</span>
-                      )}
-                      {fetched && tenants.length > 5 && (
-                        <span className={"text-danger"}>
-                          Too many results. Specify a {invoiceFor?.toLocaleLowerCase()} name
+                      <div className={"mt-2 mb-2"}>
+                        {fetched && tenants.length < 1 && (
+                          <span className={"text-danger"}>
+                            Tenant not found!
+                          </span>
+                        )}
+                        {fetched && tenants.length > 5 && (
+                          <span className={"text-danger"}>
+                            Too many results. Specify a tenant name
+                          </span>
+                        )}
+                        <span className={"text-" + error.color}>
+                          {error.message}
                         </span>
-                      )}
-                      <span className={"text-" + error.color}>
-                        {error.message}
-                      </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>}
+              )}
 
-              {invoiceFor === 'AUCTIONEER' && <div className="col-8">
-                <div className="form-group app-search">
-                  <label htmlFor="" className="text-primary"> Auctioneer to Invoice </label>
-                  <select name="" id="" className="form-control mt-2" onChange={e => AuctChange(e)}>
-                    <option value="">Select</option>
-                    {auctioneers?.map((auct) => (
-                      <option value={auct.user.id} >{auct.user.firstName} {auct.user.lastName}</option>
-                    ))}
-                  </select>
+              {invoiceFor === "AUCTIONEER" && (
+                <div className="col-8">
+                  <div className="form-group app-search">
+                    <label htmlFor="" className="text-primary">
+                      {" "}
+                      Auctioneer to Invoice{" "}
+                    </label>
+                    <select name="" id="" className="form-control mt-2">
+                      <option value="">Select</option>
+                    </select>
+                  </div>
                 </div>
-                <button
-                  className="btn btn-primary cursor-pointer"
-                  type={"button"}
-                  onClick={closeTenantModal}
-                >
-                  Continue
-                </button>
-              </div>}
-
-              <div className="">
+              )}
+              <div className="overflow-visible">
                 <table
                   className="table align-middle table-hover contacts-table table-striped "
                   id="datatable-buttons"
@@ -1071,7 +1123,6 @@ function CreateInvoice() {
         </Modal.Body>
       </Modal>
 
-
       <footer className="footer ">
         <div className="container-fluid ">
           <div className="row ">
@@ -1087,7 +1138,6 @@ function CreateInvoice() {
           </div>
         </div>
       </footer>
-
     </>
   );
 }

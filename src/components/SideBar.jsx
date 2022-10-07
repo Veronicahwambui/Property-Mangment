@@ -99,10 +99,20 @@ function SideBar() {
                   <NavLink to="/receipts">Payment Receipts</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/landord-statements">Landord Settlements</NavLink>
+                  <NavLink to="/landord-statements">
+                    Landlord Statements
+                  </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/settlements">Create New Statements</NavLink>
+                  <NavLink to="/new-statement">Create New Statements</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/unallocated-payments">
+                    Unallocated Payments
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/settlements">Settlements</NavLink>
                 </li>
               </ul>
             </li>
@@ -196,28 +206,28 @@ function SideBar() {
                 </li>
               </ul>
             </li>
-            {/* <li>
-                            <a href="javascript: void(0)" className="waves-effect has-arrow">
-                                <i className="bx bx-buildings"></i>
-                                <span>Clients</span>
-                            </a>
-                            <ul className="sub-menu" aria-expanded="false">
-                                <li><NavLink to="/clienttypes">Client types</NavLink></li>
-                            </ul>
-                            <ul className="sub-menu" aria-expanded="false">
-                                <li><NavLink to="/clients">Clients</NavLink></li>
-                            </ul>
-                            <ul className="sub-menu" aria-expanded="false">
-                                <li><NavLink to="/addclient">Add a client</NavLink></li>
-                            </ul>
-                        </li> */}
+            <li>
+              <a href="javascript: void(0)" className="waves-effect has-arrow">
+                <i className="bx bx-buildings"></i>
+                <span>Clients</span>
+              </a>
+              <ul className="sub-menu" aria-expanded="false">
+                <li><NavLink to="/clienttypes">Client types</NavLink></li>
+              </ul>
+              <ul className="sub-menu" aria-expanded="false">
+                <li><NavLink to="/clients">Clients</NavLink></li>
+              </ul>
+              <ul className="sub-menu" aria-expanded="false">
+                <li><NavLink to="/addclient">Add a client</NavLink></li>
+              </ul>
+            </li>
             <li>
               <a href="javascript: void(0)" className="waves-effect has-arrow">
                 <i className="mdi mdi-cog-outline"></i>
                 <span>Set ups</span>
               </a>
               <ul className="sub-menu" aria-expanded="false">
-              <li>
+                <li>
                   <NavLink to="/landordsetup">Landlords</NavLink>
                 </li>
                 <li>
@@ -233,7 +243,7 @@ function SideBar() {
                 <li>
                   <NavLink to="/auctioneer">Auctioneer </NavLink>
                 </li>
-               
+
 
                 {/* <li>
                   <NavLink to="/applicablecharges">Applicable Charges</NavLink>

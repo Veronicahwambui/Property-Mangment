@@ -14,7 +14,7 @@ import ReactPaginate from "react-paginate";
 
 function AllNotes() {
   const [notes, setnotes] = useState([]);
-  const[notesData,setNotesData ]=useState({})
+  const [notesData, setNotesData] = useState({});
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
@@ -29,21 +29,23 @@ function AllNotes() {
   };
   const getData = () => {
     $("#spinner").removeClass("d-none");
-    requestsServiceService.getNotes(noteType.toUpperCase(), page , size).then((res) => {
-      setnotes( res.data.data != null? res.data.data:[]);
-      // setNotesData(res.data.data);
-      setPage(res.data.page);
-      setSize(res.data.size);
-      setPageCount(res.data.totalPages);
-      $("#spinner").addClass("d-none");
-    });
+    requestsServiceService
+      .getNotes(noteType.toUpperCase(), page, size)
+      .then((res) => {
+        setnotes(res.data.data != null ? res.data.data : []);
+        // setNotesData(res.data.data);
+        setPage(res.data.page);
+        setSize(res.data.size);
+        setPageCount(res.data.totalPages);
+        $("#spinner").addClass("d-none");
+      });
   };
   useEffect(() => {
     // setnotes([]);
     getData();
-  }, [page , size ,noteType]);
+  }, [page, size, noteType]);
 
-  console.log(notesData)
+  console.log(notesData);
   // MESSAGE TEST
   const [details, setDetails] = useState({
     message: "",
@@ -134,8 +136,7 @@ function AllNotes() {
       subject: "",
     });
   };
-  
-  
+
   const sortSize = (e) => {
     setSize(e.target.value);
     setPage(0);
@@ -248,7 +249,7 @@ function AllNotes() {
               <div class="card">
                 <div class="card-body">
                   <div className="">
-                    <table className="table no-wrap nowrap w-100 table-striped">
+                    <table className="table no-wrap nowrap w-100 table-striped text-capitalize">
                       <thead className="table-dark">
                         <tr>
                           {noteType === "Credit" ? (
@@ -324,8 +325,17 @@ function AllNotes() {
                                           }
                                         </p>
                                       </td>
-                                      <td onClick={()=>setNotesData(notes[index])}  data-toggle="modal" data-target="#messageDetails">
-                                        {list.reason.substring(0, 50) + "...."}
+                                      <td
+                                        onClick={() =>
+                                          setNotesData(notes[index])
+                                        }
+                                        data-toggle="modal"
+                                        data-target="#messageDetails"
+                                      >
+                                        <a className={"cursor-pointer"}>
+                                          {list.reason.substring(0, 50) +
+                                            "...."}
+                                        </a>
                                       </td>
                                       <td>{formatCurrency(list.amount)}</td>
                                       <td>
@@ -401,8 +411,17 @@ function AllNotes() {
                                           "YYYY-MM-DD HH:mm"
                                         )}
                                       </td>
-                                      <td onClick={()=>setNotesData(notes[index])}  data-toggle="modal" data-target="#creditDetails">
-                                        {list.reason.substring(0, 70) + "..."}
+                                      <td
+                                        onClick={() =>
+                                          setNotesData(notes[index])
+                                        }
+                                        data-toggle="modal"
+                                        data-target="#creditDetails"
+                                      >
+                                        <a className={"cursor-pointer"}>
+                                          {list.reason.substring(0, 50) +
+                                            "...."}
+                                        </a>
                                       </td>
                                       <td>{formatCurrency(list.amount)}</td>
                                       <td>
@@ -462,7 +481,7 @@ function AllNotes() {
                             className="text-capitalize text-nowrap"
                             colSpan="3"
                           >
-                            { notes && notes?.length} {noteType} notes
+                            {notes && notes?.length} {noteType} notes
                           </th>
                           <td className="text-nowrap text-right" colSpan="6">
                             <span className="fw-semibold">
@@ -473,55 +492,55 @@ function AllNotes() {
                       </tfoot>
                     </table>
                     <div className="d-flex justify-content-between align-items-center">
+                      {pageCount !== 0 && (
+                        <>
+                          <select
+                            className="btn btn-md btn-primary"
+                            title="Select A range"
+                            onChange={(e) => sortSize(e)}
+                            // value={size}
+                          >
+                            <option value={10}>10 Rows</option>
+                            <option value={30}>30 Rows</option>
+                            <option value={50}>50 Rows</option>
+                          </select>
+                          <nav
+                            aria-label="Page navigation comments"
+                            className="mt-4"
+                          >
+                            <ReactPaginate
+                              previousLabel="<"
+                              nextLabel=">"
+                              breakLabel="..."
+                              breakClassName="page-item"
+                              breakLinkClassName="page-link"
+                              pageCount={pageCount}
+                              pageRangeDisplayed={4}
+                              marginPagesDisplayed={2}
+                              containerClassName="pagination justify-content-center"
+                              pageClassName="page-item"
+                              pageLinkClassName="page-link"
+                              previousClassName="page-item"
+                              previousLinkClassName="page-link"
+                              nextClassName="page-item"
+                              nextLinkClassName="page-link"
+                              activeClassName="active"
+                              onPageChange={(data) => handlePageClick(data)}
+                            />
+                          </nav>
+                        </>
+                      )}
+                    </div>
                     {pageCount !== 0 && (
-                      <>
-                        <select
-                          className="btn btn-md btn-primary"
-                          title="Select A range"
-                          onChange={(e) => sortSize(e)}
-                          // value={size}
-                        >
-                         
-                          <option value={10}>10 Rows</option>
-                          <option value={30}>30 Rows</option>
-                          <option value={50}>50 Rows</option>
-                        </select>
-                        <nav
-                          aria-label="Page navigation comments"
-                          className="mt-4"
-                        >
-                          <ReactPaginate
-                            previousLabel="<"
-                            nextLabel=">"
-                            breakLabel="..."
-                            breakClassName="page-item"
-                            breakLinkClassName="page-link"
-                            pageCount={pageCount}
-                            pageRangeDisplayed={4}
-                            marginPagesDisplayed={2}
-                            containerClassName="pagination justify-content-center"
-                            pageClassName="page-item"
-                            pageLinkClassName="page-link"
-                            previousClassName="page-item"
-                            previousLinkClassName="page-link"
-                            nextClassName="page-item"
-                            nextLinkClassName="page-link"
-                            activeClassName="active"
-                            onPageChange={(data) => handlePageClick(data)}
-                          />
-                        </nav>
-                      </>
+                      <p className="font-medium  text-muted">
+                        showing page{" "}
+                        <span className="text-primary">
+                          {pageCount === 0 ? page : page + 1}
+                        </span>{" "}
+                        of<span className="text-primary"> {pageCount}</span>{" "}
+                        pages
+                      </p>
                     )}
-                  </div>
-                  {pageCount !== 0 && (
-                    <p className="font-medium  text-muted">
-                      showing page{" "}
-                      <span className="text-primary">
-                        {pageCount === 0 ? page : page + 1}
-                      </span>{" "}
-                      of<span className="text-primary"> {pageCount}</span> pages
-                    </p>
-                  )}
                     <Message details={details} mode={mode} clear={clear} />
                   </div>
                 </div>
@@ -529,126 +548,158 @@ function AllNotes() {
             </div>
           </div>
 
-
-
           {/* <!-- end row --> */}
 
-
-
-
-
-                {/* <!-- message details modal --> */}
-                <div class="modal fade" id="messageDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content border-radius-0">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalCenterTitle">Credit Details</h5>
-                                <span class="close font-28 cursor-pointer" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </span>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div >
-                                            <div>
-                                                <div class="flex-grow-1  d-flex align-items-center justify-content-between mb-3 chat-user-box">
-                                                    <p class="user-title m-0 text-capitalize"> For :{ <Link
-                                          to={
-                                            "/tenant/" +
-                                            notesData.tenancy?.tenant?.id
-                                          }
-                                        >
-                                          {notesData.tenancy?.tenant?.tenantType ===
-                                          "COMPANY"
-                                            ? notesData.tenancy?.tenant?.companyName
-                                            : notesData.tenancy?.tenant?.firstName +
-                                              " " +
-                                              notesData.tenancy?.tenant?.lastName}
-                                        </Link>}</p>
-                                                    <p class="text-muted mt-1 pb-0">  Created on : {moment(notesData.dateTimeCreated).format(
-                                          "YYYY-MM-DD HH:mm"
-                                        )}</p>
-                                                    <p class="text-muted mt-1 pb-0"> Amount :{formatCurrency(notesData.amount)}
-                                          
-                                   </p>
-                                 
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                        <p class="text-muted mt-1 pb-0">Note Type :{notesData.noteType}
-                                    
-                                          
-                                          </p>
-                                          {/* <p class="text-muted mt-1 pb-0">Invoice :{notesData.parentInvoiceNumber}</p> */}
-                                            <h5 class="font-size-14">Reason</h5>
-
-                                            <p class="text-muted mt-3"> {notesData.reason}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
+          {/* <!-- message details modal --> */}
+          <div
+            class="modal fade"
+            id="messageDetails"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content border-radius-0">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalCenterTitle">
+                    Credit Details
+                  </h5>
+                  <span
+                    class="close font-28 cursor-pointer"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </span>
                 </div>
-                  {/* <!-- message details modal --> */}
-                  <div class="modal fade" id="creditDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content border-radius-0">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalCenterTitle">Debit Details</h5>
-                                <span class="close font-28 cursor-pointer" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </span>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div >
-                                        
-                                            <div>
-                                                <div class="flex-grow-1  d-flex align-items-center justify-content-between mb-3 chat-user-box">
-                                                    <p class="user-title m-0 text-capitalize"> For :{<Link
-                                          to={"/landlord/" + notesData.landLord?.id}
-                                        >
-                                          {notesData.landLord?.landLordType ===
-                                          "COMPANY"
-                                            ? notesData.landLord?.companyName
-                                            : notesData.landLord?.firstName +
-                                              " " +
-                                              notesData.landLord?.lastName}
-                                        </Link>}</p>
-                                                    <p class="text-muted mt-1 pb-0">  Created on : {moment(notesData.dateTimeCreated).format(
-                                          "YYYY-MM-DD HH:mm"
-                                        )}</p>
-                                                    <p class="text-muted mt-1 pb-0"> Amount :{formatCurrency(notesData.amount)}
-                                          
-                                   </p>
-                                 
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                        <p class="text-muted mt-1 pb-0">Note Type :{notesData.noteType}
-                                    
-                                          
-                                          </p>
-                                          {/* <p class="text-muted mt-1 pb-0">Invoice :{notesData.parentInvoiceNumber}</p> */}
-                                            <h5 class="font-size-14">Reason</h5>
-
-                                            <p class="text-muted mt-3"> {notesData.reason}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <div>
+                        <div>
+                          <div class="flex-grow-1  d-flex align-items-center justify-content-between mb-3 chat-user-box">
+                            <p class="user-title m-0 text-capitalize">
+                              {" "}
+                              For :
+                              {
+                                <Link
+                                  to={
+                                    "/tenant/" + notesData.tenancy?.tenant?.id
+                                  }
+                                >
+                                  {notesData.tenancy?.tenant?.tenantType ===
+                                  "COMPANY"
+                                    ? notesData.tenancy?.tenant?.companyName
+                                    : notesData.tenancy?.tenant?.firstName +
+                                      " " +
+                                      notesData.tenancy?.tenant?.lastName}
+                                </Link>
+                              }
+                            </p>
+                            <p class="text-muted mt-1 pb-0">
+                              {" "}
+                              Created on :{" "}
+                              {moment(notesData.dateTimeCreated).format(
+                                "YYYY-MM-DD HH:mm"
+                              )}
+                            </p>
+                            <p class="text-muted mt-1 pb-0">
+                              {" "}
+                              Amount :{formatCurrency(notesData.amount)}
+                            </p>
+                          </div>
                         </div>
+                      </div>
+                      <div class="flex-grow-1">
+                        <p class="text-muted mt-1 pb-0">
+                          Note Type :{notesData.noteType}
+                        </p>
+                        {/* <p class="text-muted mt-1 pb-0">Invoice :{notesData.parentInvoiceNumber}</p> */}
+                        <h5 class="font-size-14">Reason</h5>
+
+                        <p class="text-muted mt-3"> {notesData.reason}</p>
+                      </div>
                     </div>
+                  </div>
                 </div>
+              </div>
+            </div>
+          </div>
+          {/* <!-- message details modal --> */}
+          <div
+            class="modal fade"
+            id="creditDetails"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content border-radius-0">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalCenterTitle">
+                    Debit Details
+                  </h5>
+                  <span
+                    class="close font-28 cursor-pointer"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </span>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <div>
+                        <div>
+                          <div class="flex-grow-1  d-flex align-items-center justify-content-between mb-3 chat-user-box">
+                            <p class="user-title m-0 text-capitalize">
+                              {" "}
+                              For :
+                              {
+                                <Link
+                                  to={"/landlord/" + notesData.landLord?.id}
+                                >
+                                  {notesData.landLord?.landLordType ===
+                                  "COMPANY"
+                                    ? notesData.landLord?.companyName
+                                    : notesData.landLord?.firstName +
+                                      " " +
+                                      notesData.landLord?.lastName}
+                                </Link>
+                              }
+                            </p>
+                            <p class="text-muted mt-1 pb-0">
+                              {" "}
+                              Created on :{" "}
+                              {moment(notesData.dateTimeCreated).format(
+                                "YYYY-MM-DD HH:mm"
+                              )}
+                            </p>
+                            <p class="text-muted mt-1 pb-0">
+                              {" "}
+                              Amount :{formatCurrency(notesData.amount)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex-grow-1">
+                        <p class="text-muted mt-1 pb-0">
+                          Note Type :{notesData.noteType}
+                        </p>
+                        {/* <p class="text-muted mt-1 pb-0">Invoice :{notesData.parentInvoiceNumber}</p> */}
+                        <h5 class="font-size-14">Reason</h5>
+
+                        <p class="text-muted mt-3"> {notesData.reason}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         {/* <!-- container-fluid --> */}
       </div>
