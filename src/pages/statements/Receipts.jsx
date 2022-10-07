@@ -383,6 +383,13 @@ function Receipts() {
         </Modal.Header>
         <Modal.Body>
           <div className="col-12">
+          <address>
+              <strong>Billed To:</strong>
+              <br />
+              {activeInvoice?.user?.firstName}   {activeInvoice?.user?.lastName}<br />
+              {activeInvoice?.user?.email}
+              <br />
+            </address>
             <address>
               <strong>Paid By : </strong>
               {activeInvoice?.paidBy}
@@ -392,7 +399,11 @@ function Receipts() {
                <strong>Issue date : </strong> {" "}
                 {moment(activeInvoice.dateTimeCreated).format("DD-MM-YYYY")}
               </p>
-             
+      
+             <p>
+              <strong>Paid Via : </strong>
+              {activeInvoice.paymentMode}
+             </p>
             </address>
           </div>
           <div className="col-12">
@@ -406,7 +417,7 @@ function Receipts() {
               </h3>
             </div>
           </div>
-          <div className="col-12">
+          <div className="col-12 d-none">
             <div className="table-responsive">
               <table className="table table-nowrap">
                 <thead>
@@ -438,15 +449,17 @@ function Receipts() {
               <table className="table table-nowrap">
                 <thead>
                   <tr>
-                    <th>Item Id</th>
+                    <th>No.</th>
+                    <th>Bill No.</th>
                     <th>Title</th>
                     <th>Decription</th>
                     <th>Bill Amount</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {activeInvoiceItems?.map((item)=>(
+                  {activeInvoiceItems?.map((item, index)=>(
                   <tr key={item.id}>
+                    <td>{ index + 1 }</td>
                     <td>{item.transactionItemId}</td>
                     <td>{item.transactionTitle}</td>
                     <td>{item.transactionDescription}</td>
@@ -455,6 +468,43 @@ function Receipts() {
                   </tr>
 
                   ))}
+                  <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Total
+                  </td>
+                  <td className="text-end fw-bold">
+                    {formatCurrency.format(activeInvoice?.utilisedAmount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="text-end">
+                    Paid
+                  </td>
+                  <td className="text-end  fw-bold">
+                    {formatCurrency.format(activeInvoice?.receiptAmount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td colSpan="2" className="border-0 text-end">
+                    <strong>Balance</strong>
+                  </td>
+                  <td className="border-0 text-end">
+                    <h5 className="m-0 text-uppercase fw-bold">
+                      {" "}
+                      {formatCurrency.format(
+                        activeInvoice?.receiptAmount -
+                          activeInvoice?.utilisedAmount
+                      )}
+                    </h5>
+                  </td>
+                </tr>
+
                 </tbody>
               </table>
             </div>

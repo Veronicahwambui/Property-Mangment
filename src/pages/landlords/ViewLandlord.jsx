@@ -137,7 +137,6 @@ function ViewLandlord() {
 
   useEffect(() => {
     getlandlords();
-    getPremises();
     requestsServiceService.getAllAgreementTypes().then((res) => {
       setAgreementTypes(res.data.data);
     });
@@ -151,6 +150,7 @@ function ViewLandlord() {
       setdocumentTypes(res.data.data);
     });
     fetchCommunication();
+  
   }, []);
 
   const getlandlords = () => {
@@ -159,6 +159,7 @@ function ViewLandlord() {
       setLandlord(res.data.data.landLord);
       setAccountsData(res.data.data.accounts);
       setDocuments(res.data.data.documents);
+      getPremises();
     });
   };
 
@@ -170,22 +171,22 @@ function ViewLandlord() {
   const [endDate, setEndDate] = useState(new Date());
   const [premises, setPremises] = useState([]);
   // const [searchTerm, setSearchTerm] = useState("");
+
   const getPremises = () => {
-    let startdate = moment(new Date()).startOf("year").format("YYYY/MM/DD");
+    let startdat = moment(new Date()).startOf("year").format("YYYY/MM/DD");
     let enddate = moment(endDate).format("YYYY/MM/DD");
+
     let data = {
-      dateCreatedEnd: moment(endDate).format(),
-      dateCreatedStart: moment(startDate).format(),
+      dateCreatedEnd: moment(enddate).format(),
+      dateCreatedStart: moment(startdat).format(),
       landlordEmail: landlord?.email,
+      landlordPhoneNumber: landlord.phoneNumber
     };
     requestsServiceService.getLandLordPremises(data).then((res) => {
       setPremises(res.data.data);
     });
   };
-  useEffect(() => {
-    getPremises();
 
-  }, []);
   const handlePageClick = (data) => {
     let d = data.selected;
     setPage(d);
@@ -496,7 +497,7 @@ function ViewLandlord() {
 
 
   const fetchApplicableCharges = () => {
-    requestsServiceService.allApplicableCharges().then((res) => {
+    requestsServiceService.allApplicableCharges("LANDLORD").then((res) => {
       setCharges(res.data.data)
     });
   };
@@ -1040,11 +1041,8 @@ function ViewLandlord() {
   });
 
   const handleCallback = (sD, eD) => {
-    setDate({
-      ...date,
-      startDate: moment(sD).format("YYYY-MM-DD"),
-      endDate: moment(eD).format("YYYY-MM-DD"),
-    });
+    setStartDate3(moment(sD).format("YYYY-MM-DD"))
+    setEndDate3(moment(eD).format("YYYY-MM-DD"))
   };
 
 
@@ -1223,6 +1221,14 @@ function ViewLandlord() {
   };
 
 
+  const handleCallback2 = (sD, eD) => {
+    setstatementdate( {
+      ...statementdate ,
+      startDate : moment(sD).format("YYYY-MM-DD"),
+      endDate: moment(eD).format("YYYY-MM-DD")
+    }
+    )
+  };
   // ! utilizing part 
 
   const [utilData, setUtilData] = useState({
@@ -2725,10 +2731,10 @@ function ViewLandlord() {
                                 >
                                   <DatePickRange
                                     onCallback={handleCallback}
-                                    startDate={moment(date.startDate).format(
+                                    startDate={moment(startDate3).format(
                                       "YYYY-MM-DD"
                                     )}
-                                    endDate={moment(date.endDate).format("YYYY-MM-DD")}
+                                    endDate={moment(endDate3).format("YYYY-MM-DD")}
                                   />
                                 </div>
                               </div>
@@ -2934,11 +2940,35 @@ function ViewLandlord() {
                         <h4 className="card-title text-capitalize mb-0 ">
                           landlord Statements
                         </h4>
-                        <div className="d-flex justify-content-end align-items-center">
-                          <div>
-                            <div></div>
-                          </div>
-                        </div>
+                        <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                             
+                              <div
+                                className="input-group d-flex justify-content-end align-items-center"
+                                id="datepicker1"
+                              >
+                                <div
+                                  style={{
+                                    backgroundColor: "#fff",
+                                    color: "#2C2F33",
+                                    cursor: " pointer",
+                                    padding: "7px 10px",
+                                    border: "2px solid #ccc",
+                                    width: " 100%",
+                                  }}
+                                >
+                                  <DatePickRange
+                                    onCallback={handleCallback2}
+                                    startDate={moment(statementdate.startDate).format(
+                                      "YYYY-MM-DD"
+                                    )}
+                                    endDate={moment(statementdate.endDate).format("YYYY-MM-DD")}
+                                  />
+                                </div>
+                              </div>
+                              <button className="btn btn-primary" onClick={getLanlordStatements}>
+                                filter
+                              </button>
+                       </div>
                       </div>
                     </div>
                     <div className="card-body">

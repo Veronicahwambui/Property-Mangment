@@ -349,6 +349,10 @@ function CreateInvoice() {
                                   />
                                 </div>
                               </div>
+<<<<<<< HEAD
+=======
+                              { invoiceFor === "TENANT" && 
+>>>>>>> feature/invoiceTypes
                               <div className="col-12">
                                 <div className="mb-3">
                                   <label
@@ -419,7 +423,13 @@ function CreateInvoice() {
                                     </div>
                                   )}
                                 </div>
+<<<<<<< HEAD
                               </div>
+=======
+                              </div> 
+                              }
+
+>>>>>>> feature/invoiceTypes
                               <div className="row col-12">
                                 <div className="mb-3">
                                   <label
@@ -459,7 +469,58 @@ function CreateInvoice() {
                                     </div>
                                   )}
                                 </div>
+<<<<<<< HEAD
                               </div>
+=======
+
+                              </div>
+                              
+                             { invoiceFor !== "TENANT" && 
+                              <div className="row col-12">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-firstname-input"
+                                    className="form-label"
+                                  >
+                                    Preimise.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  { prems && (
+                                    <div className="form-group mb-4">
+                                      <select
+                                        class="form-control"
+                                        title="Select tenant"
+                                        data-live-search="true"
+                                        // value={applicableChargeName}
+                                        onChange={(e) =>
+                                          setPremId(
+                                            e.target.value
+                                          )
+                                        }
+                                        required={true}
+                                      >
+                                        <option className="text-black font-semibold ">
+                                          select premise
+                                        </option>
+                                        { prems.map(
+                                          (item, index) => (
+                                            <option
+                                              value={item.id}
+                                              key={index}
+                                            >
+                                              {item.premiseName}
+                                            </option>
+                                          )
+                                        )}
+                                      </select>
+                                    </div>
+                                  )}
+                                </div>
+
+                              </div> 
+                             }
+
+>>>>>>> feature/invoiceTypes
                             </div>
                             <div className="col-12">
                               <div className="mb-3">

@@ -472,6 +472,8 @@ export default function AddLandlord() {
                             )}
                           </div>
                         </div>
+                        
+                        { landLordTypeName  === "INDIVIDUAL" && 
                         <div className="row personal-landlord ">
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-4">
@@ -686,6 +688,20 @@ export default function AddLandlord() {
                             </div>
                           </div>
                         </div>
+                        }
+
+                        { landLordTypeName  === "CORPORATE" && 
+                        <div className="row corporate-landlord ">
+                          <div className="col-12">
+                            <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                              <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                                Corporate details
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        }
+
                         <div className="row">
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-4">
