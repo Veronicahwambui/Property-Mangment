@@ -7,7 +7,11 @@ import { Modal, ModalFooter } from "react-bootstrap";
 import CloseButton from "react-bootstrap/CloseButton";
 function CreateInvoice() {
   const [tenants, setTenants] = useState([]);
-
+  const [landlords, setLandlords] = useState([]);
+  const [dates, setDates] = useState({
+    startDate: new Date(new Date().getFullYear(), 1),
+    endDate: new Date(),
+  });
   // tenant details
   const [tenantId, settenantId] = useState(undefined);
   const [tenantEmail, settenantEmail] = useState("");
@@ -31,8 +35,9 @@ function CreateInvoice() {
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [auctioneers, setAuctioneers] = useState([]);
-  const [invoiceFor, setInvoiceFor] = useState(undefined);
+  const [auctioneers, setAuctioneers] = useState([])
+  const [auctioneer, setAuctioneer] = useState(null)
+  const [invoiceFor, setInvoiceFor] = useState('');
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     setloaded(false);
@@ -43,24 +48,16 @@ function CreateInvoice() {
     });
   };
   useEffect(() => {
-    requestsServiceService.allApplicableCharges().then((res) => {
-      setapplicableCharges(res.data.data);
-    });
     requestsServiceService.getAuctioneer().then(({ data }) => {
-      setAuctioneers(data.data);
-    });
+      setAuctioneers(data.data)
+    })
   }, []);
-  useEffect(() => {
-    if (invoiceFor) {
-      requestsServiceService.allApplicableCharges(invoiceFor).then((res) => {
-        setapplicableCharges(res.data.data);
-      });
-    }
-  }, [invoiceFor]);
+
 
   useEffect(() => {
-    let found = applicableCharges.find((x) => x.name === applicableChargeName);
-    if (found !== undefined) setexpectManualValues(found.expectManualValues);
+    let found = applicableCharges.find(x => x.name === applicableChargeName)
+    if (found != undefined)
+      setexpectManualValues(found.expectManualValues);
   }, [applicableChargeName]);
 
   useEffect(() => {
@@ -90,6 +87,24 @@ function CreateInvoice() {
       });
   };
 
+  const getLandlords = () => {
+    let page = 0,
+      size = 100;
+    let data = {
+      dateCreatedStart: moment().startOf("year").format("YYYY-MM-DD"),
+      dateCreatedEnd: moment(new Date()).format("YYYY-MM-DD"),
+      search: tenantName?.toLowerCase().trim(),
+    };
+    requestsServiceService
+      .getLandLords(page, size, data)
+      .then((res) => {
+        setLandlords(res.data.data);
+        setTenants(res.data.data);
+        setloading2(false);
+        setfetched(true);
+      });
+  };
+
   const [show, setshow] = useState(true);
   const showTenantModal = () => setshow(true);
   const closeTenantModal = () => setshow(false);
@@ -97,6 +112,8 @@ function CreateInvoice() {
   const [loaded, setloaded] = useState(false);
   const [loading2, setloading2] = useState(false);
   const [fetched, setfetched] = useState(false);
+  const [ prems, setPrems] = useState([]);
+  const [ premId, setPremId] = useState(undefined);
 
   const getId = (y) => {
     requestsServiceService
@@ -104,23 +121,15 @@ function CreateInvoice() {
       .then((res) => {
         let temp = res.data.data.tenancies;
         if (res.data?.data?.tenancies?.length > 0) {
-          if (temp.length === 1) {
-            settenancyId(res.data.data.tenancies[0]?.id);
-            settenancies(temp);
-            setloading(false);
-            setloaded(true);
-            setIsChecked(true);
-          } else {
-            settenancies(temp);
-            setloading(false);
-            setloaded(true);
-            setIsChecked(true);
-            setError({
-              ...error,
-              message: "",
-              color: "",
-            });
-          }
+          settenancies(temp);
+          setloading(false);
+          setloaded(true);
+          setIsChecked(true);
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
         } else {
           setloading(false);
           setError({
@@ -139,6 +148,52 @@ function CreateInvoice() {
         });
       });
   };
+
+
+  const getLandLordPrems = (fileNumber) => {
+
+    let data = JSON.stringify({
+      dateCreatedEnd: moment(dates.endDate).format("YYYY-MM-DD"),
+      dateCreatedStart: moment(dates.startDate).format("YYYY-MM-DD"),
+      fileNumber: fileNumber,
+      
+    })
+
+
+    requestsServiceService
+      .getLandLordPremises(data)
+      .then((res) => {
+        let temp = res.data.data !== null ? res.data.data : [];
+        if (res.data?.data?.length > 0) {
+          setPrems(temp);
+          setloading(false);
+          setloaded(true);
+          setIsChecked(true);
+          setError({
+            ...error,
+            message: "",
+            color: "",
+          });
+        } else {
+          setloading(false);
+          setError({
+            ...error,
+            message: "Landlord has no premises!",
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        setloading(false);
+        setError({
+          ...error,
+          message: "Landlord has no premises!",
+          color: "danger",
+        });
+      });
+  };
+
+
   const handleSubmit = (e) => {
     setfetched(false);
     e.preventDefault();
@@ -149,34 +204,87 @@ function CreateInvoice() {
     });
     setloaded(false);
     setloading2(true);
-    getTenants();
+    if (invoiceFor === "TENANT") {
+      getTenants();
+    } else {
+      getLandlords()
+    }
+
   };
   const redirectToInvoices = () => {
     window.location.href = "/#/invoices";
   };
   const [tenantName, setTenantName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  useEffect(() => {}, [tenants, isChecked, custname]);
-  const autofill = (x) => {
+  useEffect(() => { }, [tenants, isChecked, custname]);
+
+  const autofill = (x,fileNumber ) => {
+
     setfetched(false);
-    setloaded(false);
+    setloaded(true);
     setloading(true);
-    getId(x);
+    setPrems([]);
+    if (invoiceFor === "TENANT") {
+      getId(x);
+    } else {
+      getLandLordPrems(fileNumber); 
+    }
+
+
     let sel = tenants.find((tenant) => tenant.id === parseInt(x));
     let email = sel?.email;
     let phone = sel?.phoneNumber;
-    let name =
-      sel.tenantType === "INDIVIDUAL"
+    let name
+
+    if (invoiceFor === "TENANT") {
+      name = sel.tenantType === "INDIVIDUAL"
         ? sel?.firstName + sel?.lastName
         : sel?.companyName;
+    } else {
+      name = sel?.firstName + " " + sel?.lastName
+    }
+
     settenantId(x);
+
     settenantEmail(email);
     settenantPhone(phone);
     setcustname(name);
   };
 
+  const AuctChange = (e) => {
+    let sel = auctioneers.find((auct) => auct.user.id === parseInt(e.target.value));
+    let email = sel?.user.email;
+    let phone = sel?.user.phoneNumber;
+    let name = sel?.user.firstName + " " + sel?.user.lastName
+
+    setAuctioneer(e.target.value);
+    settenantEmail(email);
+    settenantPhone(phone);
+    setcustname(name);
+  }
+
+  const invoiceForHandler = (e) => {
+    setloaded(false)
+    setInvoiceFor(e.target.value)
+    requestsServiceService.allApplicableCharges(e.target.value).then((res) => {
+      setapplicableCharges(res.data.data !== null ? res.data.data : []);
+    });
+    setTenants([]);
+    setLandlords([]);
+    setPrems([]);
+  }
+
   const submitInvoice = (event) => {
     event.preventDefault();
+    if (invoiceFor === "TENANT") {
+      submitNormalInvoice()
+    } else {
+      submitEntityInvoice()
+    }
+  }
+
+ const submitNormalInvoice = ()=>{
+
     let data = {
       applicableChargeName: applicableChargeName,
       billAmount: total,
@@ -225,6 +333,68 @@ function CreateInvoice() {
         color: "",
       });
     }, 3500);
+  
+ }
+
+
+
+  const submitEntityInvoice = () => {
+  
+   
+    let landlordId = invoiceFor === "LANDLORD" ? tenantId : null
+    // let tentId = invoiceFor === "TENANT" ? tenantId : auctioneer
+
+    let data = {
+      "applicableChargeName": applicableChargeName,
+      "billAmount": total,
+      "invoiceDate": date,
+      "landlordId": landlordId ,
+      "parentTransactionId": null,
+      "premiseId": parseInt(premId),
+      "quantity": parseInt(quantity),
+      "transactionCustomerEmail": tenantEmail,
+      "transactionCustomerName": custname,
+      "transactionDescription": description,
+      "transactionTitle": chargetitle,
+      "unitCost": unitcost,
+      "userId": auctioneer
+    }
+
+    requestsServiceService
+      .createNewInvoice(data)
+      .then((res) => {
+        if (res.data.status === true) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+          setTimeout(() => {
+            navigate("/invoices", { replace: true });
+          }, 2000);
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setError({
+          ...error,
+          message: err.response.data.message,
+          color: "danger",
+        });
+      });
+    setTimeout(() => {
+      setError({
+        ...error,
+        message: "",
+        color: "",
+      });
+    }, 3500);
   };
 
   const addDate = (date) => {
@@ -238,6 +408,7 @@ function CreateInvoice() {
     }
   };
   $(document).on("change", ".enddate", addDate);
+  
   return (
     <>
       <div className="page-content">
@@ -302,9 +473,9 @@ function CreateInvoice() {
                                 <div className="mb-3">
                                   <label
                                     htmlFor="formrow-firstname-input"
-                                    className="form-label"
+                                    className="form-label text-capitalize"
                                   >
-                                    Tenant.{" "}
+                                    {invoiceFor?.toLowerCase()}
                                     <strong className="text-danger">*</strong>
                                   </label>
                                   <div className="form-group mb-4">
@@ -319,8 +490,8 @@ function CreateInvoice() {
                               </div>
                               <div className="col-md-6">
                                 <div className="mb-3">
-                                  <label htmlFor="" className="form-label">
-                                    Tenant's Email
+                                  <label htmlFor="" className="form-label text-capitalize">
+                                    {invoiceFor?.toLowerCase() + "'s"} Email
                                   </label>
                                   <input
                                     type={"text"}
@@ -335,9 +506,9 @@ function CreateInvoice() {
                                 <div className="mb-3">
                                   <label
                                     htmlFor="formrow-password-input"
-                                    className="form-label"
+                                    className="form-label text-capitalize"
                                   >
-                                    Tenant's Phone
+                                    {invoiceFor?.toLowerCase() + "'s"} Phone
                                   </label>
                                   <input
                                     type="text"
@@ -349,10 +520,7 @@ function CreateInvoice() {
                                   />
                                 </div>
                               </div>
-<<<<<<< HEAD
-=======
                               { invoiceFor === "TENANT" && 
->>>>>>> feature/invoiceTypes
                               <div className="col-12">
                                 <div className="mb-3">
                                   <label
@@ -362,39 +530,12 @@ function CreateInvoice() {
                                     Tenancy.{" "}
                                     <strong className="text-danger">*</strong>
                                   </label>
-                                  {tenancies?.length === 1 && (
-                                    <>
-                                      <div className="form-group mb-4">
-                                        <select
-                                          className="form-control"
-                                          value={tenancyId}
-                                          required={true}
-                                          disabled
-                                        >
-                                          {tenancies?.map((item, index) => (
-                                            <>
-                                              {item.active && (
-                                                <option
-                                                  value={parseInt(item.id)}
-                                                  key={item.id}
-                                                >
-                                                  {item.premiseUnit?.unitName +
-                                                    " - " +
-                                                    item.premiseUnit?.unitType
-                                                      .name}
-                                                </option>
-                                              )}
-                                            </>
-                                          ))}
-                                        </select>
-                                      </div>
-                                    </>
-                                  )}
-                                  {tenancies?.length > 1 && (
+                                  {tenancies && (
                                     <div className="form-group mb-4">
                                       <select
                                         class="form-control"
                                         title="Select tenant"
+                                        data-live-search="true"
                                         value={tenancyId}
                                         onChange={(e) =>
                                           settenancyId(e.target.value)
@@ -404,32 +545,27 @@ function CreateInvoice() {
                                         <option className="text-black font-semibold ">
                                           select tenancy
                                         </option>
-                                        {tenancies?.map((item, index) => (
-                                          <>
-                                            {item.active && (
-                                              <option
-                                                value={parseInt(item.id)}
-                                                key={item.id}
-                                              >
-                                                {item.premiseUnit?.unitName +
-                                                  " - " +
-                                                  item.premiseUnit?.unitType
-                                                    .name}
-                                              </option>
-                                            )}
-                                          </>
+                                        {tenancies.map((item, index) => (
+                                         <>
+                                         {item.active &&
+                                           <option
+                                           value={parseInt(item.id)}
+                                           key={item.id}
+                                         >
+                                           {item.premiseUnit?.unitName +
+                                             " - " +
+                                             item.premiseUnit?.unitType.name}
+                                         </option>
+                                         }
+                                         </>
                                         ))}
                                       </select>
                                     </div>
                                   )}
                                 </div>
-<<<<<<< HEAD
-                              </div>
-=======
                               </div> 
                               }
 
->>>>>>> feature/invoiceTypes
                               <div className="row col-12">
                                 <div className="mb-3">
                                   <label
@@ -444,6 +580,7 @@ function CreateInvoice() {
                                       <select
                                         class="form-control"
                                         title="Select tenant"
+                                        data-live-search="true"
                                         value={applicableChargeName}
                                         onChange={(e) =>
                                           setapplicableChargeName(
@@ -469,9 +606,6 @@ function CreateInvoice() {
                                     </div>
                                   )}
                                 </div>
-<<<<<<< HEAD
-                              </div>
-=======
 
                               </div>
                               
@@ -520,7 +654,6 @@ function CreateInvoice() {
                               </div> 
                              }
 
->>>>>>> feature/invoiceTypes
                             </div>
                             <div className="col-12">
                               <div className="mb-3">
@@ -528,7 +661,7 @@ function CreateInvoice() {
                                   htmlFor="formrow-email-input"
                                   className="form-label"
                                 >
-                                  Invoice Period.{" "}
+                                  Title.{" "}
                                   <strong className="text-danger">*</strong>
                                 </label>
                                 <input
@@ -539,7 +672,7 @@ function CreateInvoice() {
                                   onChange={(e) =>
                                     setchargetitle(e.target.value)
                                   }
-                                  placeholder="Enter Invoice Period"
+                                  placeholder="Enter invoice title"
                                   required={true}
                                 />
                               </div>
@@ -611,7 +744,7 @@ function CreateInvoice() {
                                 </div>
                               </div>
                               <div className="row">
-                                {expectManualValues && (
+                                {expectManualValues &&
                                   <>
                                     <div className="col-md-6">
                                       <div className="mb-3">
@@ -620,9 +753,7 @@ function CreateInvoice() {
                                           className="form-label"
                                         >
                                           Unit cost.{" "}
-                                          <strong className="text-danger">
-                                            *
-                                          </strong>
+                                          <strong className="text-danger">*</strong>
                                         </label>
                                         <input
                                           type="number"
@@ -644,17 +775,13 @@ function CreateInvoice() {
                                           className="form-label"
                                         >
                                           Invoice amount.{" "}
-                                          <strong className="text-danger">
-                                            *
-                                          </strong>
+                                          <strong className="text-danger">*</strong>
                                         </label>
                                         <input
                                           type="text"
                                           className="form-control invoice-amount"
                                           value={"KES " + total}
-                                          onChange={(e) =>
-                                            settotal(e.target.value)
-                                          }
+                                          onChange={(e) => settotal(e.target.value)}
                                           id="formrow-password-input"
                                           placeholder="KES"
                                           required={true}
@@ -663,18 +790,10 @@ function CreateInvoice() {
                                       </div>
                                     </div>
                                   </>
-                                )}{" "}
-                                {applicableChargeName != "" &&
-                                expectManualValues ? (
-                                  <span className="alert alert-warning">
-                                    This charge expects a unit cost entry
-                                  </span>
-                                ) : (
-                                  <span className="alert alert-warning">
-                                    This charge will charge the default values
-                                    set for the property
-                                  </span>
-                                )}
+                                }   {applicableChargeName != "" && expectManualValues ?
+                                  <span className="alert alert-warning">This charge expects a unit cost entry</span> :
+                                  <span className="alert alert-warning">This charge will charge the default values set for the property</span>
+                                }
                               </div>
                             </div>
                             <div>
@@ -706,6 +825,7 @@ function CreateInvoice() {
         </div>
       </div>
 
+
       <Modal
         show={show}
         onHide={closeTenantModal}
@@ -726,15 +846,12 @@ function CreateInvoice() {
             </div>
             <div className="row justify-content-center ">
               <div className="col-xl-10">
-                <h4 className="text-primary">Create invoice for</h4>
+                <h4 className="text-primary">
+                  Create invoice for
+                </h4>
 
                 <div className="form-group col-6 mx-auto app-search">
-                  <select
-                    name=""
-                    id=""
-                    className="form-control"
-                    onChange={(e) => setInvoiceFor(e.target.value)}
-                  >
+                  <select name="" id="" className="form-control" onChange={e => invoiceForHandler(e)} >
                     <option value="">select invoice type </option>
                     <option value="TENANT">Tenant</option>
                     <option value="LANDLORD">Landlord</option>
@@ -743,124 +860,140 @@ function CreateInvoice() {
                 </div>
               </div>
               {/* SEARCHING FUNCTIONALITY  */}
-              {invoiceFor !== "AUCTIONEER" && invoiceFor !== "" && (
-                <div className="col-xl-10 mb-0">
-                  <h4 className="text-primary ">
-                    Search for {invoiceFor}
-                    <span style={{ marginLeft: "10px" }}>
-                      {loading && <i className="fa fa-refresh fa-spin" />}
-                      {loaded && (
-                        <>
-                          <i className="fa fa-check" />
-                        </>
-                      )}
-                    </span>
-                  </h4>
-                  <p className="text-muted font-size-14 mb-4 ">
-                    Search for the {invoiceFor} and proceed with creating the
-                    invoice
-                  </p>
-                  <div className="row text-capitalize">
-                    <div className="col-12">
-                      <div>
-                        <form
-                          id={"invoice-tenant-form"}
-                          onSubmit={handleSubmit}
-                          className="app-search d-lg-block p-2 d-block"
-                        >
-                          <div className="position-relative">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Search..."
-                              onChange={(e) => setTenantName(e.target.value)}
-                              required={true}
-                            />
-                            <span className="bx bx-search-alt"></span>
-                          </div>
-                        </form>
-                      </div>
-                      <div className="form-group">
-                        <div className="d-flex align-items-center justify-content-center">
-                          <div className="text-end">
-                            <button
-                              form={"invoice-tenant-form"}
-                              disabled={loading2}
-                              className="btn btn-primary btn-rounded"
-                              type="submit"
-                            >
-                              {loading2 && (
-                                <i
-                                  className="fa fa-refresh fa-spin"
-                                  style={{ marginRight: "5px" }}
-                                />
-                              )}
-                              {loading2 && (
-                                <>
-                                  <span className="d-none d-sm-inline-block me-2">
-                                    Searching...
-                                  </span>
-                                </>
-                              )}
-                              {!loading2 && (
-                                <>
-                                  <span className="d-none d-sm-inline-block me-2">
-                                    Search
-                                  </span>
-                                </>
-                              )}
-                            </button>
-                          </div>
+              {(invoiceFor !== 'AUCTIONEER' && invoiceFor !== '') && <div className="col-xl-10 mb-0">
+                <h4 className="text-primary ">
+                  Search for {invoiceFor?.toLocaleLowerCase()}
+                  <span style={{ marginLeft: "10px" }}>
+                    {loading && <i className="fa fa-refresh fa-spin" />}
+                    {loaded && (
+                      <>
+                        <i className="fa fa-check" />
+                      </>
+                    )}
+                  </span>
+                </h4>
+                <p className="text-muted font-size-14 mb-4 ">
+                  Search for the {invoiceFor?.toLocaleLowerCase()} and proceed with creating the invoice
+                </p>
+                <div className="row text-capitalize">
+                  <div className="col-12">
+                    <div>
+                      <form
+                        id={"invoice-tenant-form"}
+                        onSubmit={handleSubmit}
+                        className="app-search d-lg-block p-2 d-block"
+                      >
+                        <div className="position-relative">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search..."
+                            onChange={(e) => setTenantName(e.target.value)}
+                            required={true}
+                          />
+                          <span className="bx bx-search-alt"></span>
+                        </div>
+                      </form>
+                    </div>
+                    <div className="form-group">
+                      <div className="d-flex align-items-center justify-content-center">
+                        <div className="text-end">
+                          <button
+                            form={"invoice-tenant-form"}
+                            disabled={loading2}
+                            className="btn btn-primary btn-rounded"
+                            type="submit"
+                          >
+                            {loading2 && (
+                              <i
+                                className="fa fa-refresh fa-spin"
+                                style={{ marginRight: "5px" }}
+                              />
+                            )}
+                            {loading2 && (
+                              <>
+                                <span className="d-none d-sm-inline-block me-2">
+                                  Searching...
+                                </span>
+                              </>
+                            )}
+                            {!loading2 && (
+                              <>
+                                <span className="d-none d-sm-inline-block me-2">
+                                  Search
+                                </span>
+                              </>
+                            )}
+                          </button>
                         </div>
                       </div>
-                      <div className={"mt-2 mb-2"}>
-                        {fetched && tenants.length < 1 && (
-                          <span className={"text-danger"}>
-                            Tenant not found!
-                          </span>
-                        )}
-                        {fetched && tenants.length > 5 && (
-                          <span className={"text-danger"}>
-                            Too many results. Specify a tenant name
-                          </span>
-                        )}
-                        <span className={"text-" + error.color}>
-                          {error.message}
+                    </div>
+                    <div className={"mt-2 mb-2"}>
+                      {fetched && tenants.length < 1 && (
+                        <span className={"text-danger"}>{invoiceFor?.toLocaleLowerCase()} not found!</span>
+                      )}
+                      {fetched && tenants.length > 5 && (
+                        <span className={"text-danger"}>
+                          Too many results. Specify a {invoiceFor?.toLocaleLowerCase()} name
                         </span>
-                      </div>
+                      )}
+                      <span className={"text-" + error.color}>
+                        {error.message}
+                      </span>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>}
 
-              {invoiceFor === "AUCTIONEER" && (
-                <div className="col-8">
-                  <div className="form-group app-search">
-                    <label htmlFor="" className="text-primary">
-                      {" "}
-                      Auctioneer to Invoice{" "}
-                    </label>
-                    <select name="" id="" className="form-control mt-2">
-                      <option value="">Select</option>
-                    </select>
-                  </div>
+              {invoiceFor === 'AUCTIONEER' && <div className="col-8">
+                <div className="form-group app-search">
+                  <label htmlFor="" className="text-primary"> Auctioneer to Invoice </label>
+                  <select name="" id="" className="form-control mt-2" onChange={e => AuctChange(e)}>
+                    <option value="">Select</option>
+                    {auctioneers?.map((auct) => (
+                      <option value={auct.user.id} >{auct.user.firstName} {auct.user.lastName}</option>
+                    ))}
+                  </select>
                 </div>
-              )}
-              <div className="overflow-visible">
+                <button
+                  className="btn btn-primary cursor-pointer"
+                  type={"button"}
+                  onClick={closeTenantModal}
+                >
+                  Continue
+                </button>
+              </div>}
+
+              <div className="">
                 <table
                   className="table align-middle table-hover contacts-table table-striped "
                   id="datatable-buttons"
                 >
-                  <thead className="table-light">
-                    {tenants.length > 0 && tenants.length <= 5 && (
-                      <tr>
-                        <th width="8px">Select</th>
-                        <th span={"col-6"}>Tenant Type</th>
-                        <th span={"col-3"}>Name</th>
-                        <th span={"col-3"}>Email</th>
-                      </tr>
-                    )}
-                  </thead>
+                  {invoiceFor === "TENANT" &&
+                    <thead className="table-light">
+                      {tenants.length > 0 && tenants.length <= 5 && (
+                        <tr>
+                          <th width="8px">Select</th>
+                          <th span={"col-6"}>Tenant Type</th>
+                          <th span={"col-3"}>Name</th>
+                          <th span={"col-3"}>Email</th>
+                        </tr>
+                      )}
+                    </thead>
+                  }
+
+                  {invoiceFor === "LANDLORD" &&
+                    <thead className="table-light">
+                      {tenants.length > 0 && tenants.length <= 5 && (
+                        <tr>
+                          <th width="8px">Select</th>
+                          <th span={"col-6"}>LandLord Type</th>
+                          <th span={"col-3"}>Name</th>
+                          <th span={"col-3"}>Email</th>
+                        </tr>
+                      )}
+                    </thead>
+                  }
                   <tbody>
                     {tenants.length > 0 && (
                       <>
@@ -876,29 +1009,35 @@ function CreateInvoice() {
                                         type="checkbox"
                                         id="formCheck1"
                                         onChange={() => {
-                                          autofill(tenant.id);
+                                          autofill(tenant.id, tenant.fileNumber);
                                         }}
                                         checked={
-                                          loaded && tenant.id === tenantId
+                                          tenant.id === tenantId
                                         }
                                       />
                                     </div>
                                   </div>
                                 </td>
-                                <td>{tenant.tenantType}</td>
-                                <td className="text-capitalize">
-                                  <a href="javascript:void(0)">
-                                    {tenant?.tenantType === "INDIVIDUAL" ? (
-                                      <>
-                                        {tenant.firstName + " "}
-                                        {tenant.lastName + " "}{" "}
-                                        {tenant.otherName}
-                                      </>
-                                    ) : (
-                                      <>{tenant.companyName + " "}</>
-                                    )}
-                                  </a>
-                                </td>
+                                <td>{invoiceFor === "TENANT" ? tenant.tenantType : tenant.landLordType}</td>
+
+                                {invoiceFor === "TENANT" ?
+                                  <td className="text-capitalize">
+                                    <a href="javascript:void(0)">
+                                      {tenant?.tenantType === "INDIVIDUAL" ? (
+                                        <>
+                                          {tenant.firstName + " "}
+                                          {tenant.lastName + " "}{" "}
+                                          {tenant.otherName}
+                                        </>
+                                      ) : (
+                                        <>{tenant.companyName + " "}</>
+                                      )}
+                                    </a>
+                                  </td> :
+                                  <td> {tenant.firstName + " "}
+                                    {tenant.lastName + " "}{" "}
+                                    {tenant.otherName}</td>
+                                }
                                 <td>{tenant.email}</td>
                               </tr>
                             ))}
@@ -912,7 +1051,17 @@ function CreateInvoice() {
                   className="col-12 d-flex justify-content-end"
                   style={{ minHeight: "40px", maxHeight: "50px" }}
                 >
-                  {loaded && (
+                  { loaded && tenancies.length > 0 && (
+                    <button
+                      className="btn btn-primary cursor-pointer"
+                      type={"button"}
+                      onClick={closeTenantModal}
+                    >
+                      Continue
+                    </button>
+                  )}
+
+                  { loaded && prems?.length >= 1  && (
                     <button
                       className="btn btn-primary cursor-pointer"
                       type={"button"}
@@ -927,6 +1076,7 @@ function CreateInvoice() {
           </div>
         </Modal.Body>
       </Modal>
+
 
       <footer className="footer ">
         <div className="container-fluid ">
@@ -943,6 +1093,7 @@ function CreateInvoice() {
           </div>
         </div>
       </footer>
+
     </>
   );
 }
