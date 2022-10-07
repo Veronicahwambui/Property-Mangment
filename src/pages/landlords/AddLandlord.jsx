@@ -77,9 +77,9 @@ export default function AddLandlord() {
           invoicePaymentPriority:
             selectedItems.length > 0
               ? selectedItems
-                .map((a) => a.id)
-                .join("-")
-                .toString()
+                  .map((a) => a.id)
+                  .join("-")
+                  .toString()
               : "",
         });
       }
@@ -472,14 +472,12 @@ export default function AddLandlord() {
                             )}
                           </div>
                         </div>
-                        
-                        { landLordTypeName  === "INDIVIDUAL" && 
                         <div className="row personal-landlord ">
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-4">
                               <p className="fw-semibold mb-0 pb-0 text-uppercase">
                                 {landlordDetails?.landLordTypeName ===
-                                  "INDIVIDUAL"
+                                "INDIVIDUAL"
                                   ? "Personal"
                                   : "Corporate"}{" "}
                                 details
@@ -488,173 +486,173 @@ export default function AddLandlord() {
                           </div>
                           {landlordDetails?.landLordTypeName ===
                             "INDIVIDUAL" && (
-                              <>
-                                <div className="col-lg-3 col-md-6 ">
-                                  <div className="mb-4 ">
-                                    <label htmlFor=" ">ID Num. </label>
-                                    <input
-                                      type="text "
-                                      className="form-control "
-                                      id=" "
-                                      name={"idNumber"}
-                                      onChange={(e) => onChangeLandlordDetails(e)}
-                                      placeholder="Enter ID Num"
-                                    />
-                                  </div>
+                            <>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">ID Num. </label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    id=" "
+                                    name={"idNumber"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter ID Num"
+                                  />
                                 </div>
-                                <div className="col-lg-3 col-md-6 ">
-                                  <div className="mb-4 ">
-                                    <label htmlFor="basicpill-firstname-input ">
-                                      First name{" "}
-                                      <strong className="text-danger ">*</strong>
-                                    </label>
-                                    <input
-                                      type="text "
-                                      className="form-control"
-                                      name={"firstName"}
-                                      onChange={(e) => onChangeLandlordDetails(e)}
-                                      id="basicpill-firstname-input "
-                                      required
-                                      placeholder="Enter Your First Name "
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-lg-3 col-md-6 ">
-                                  <div className="mb-4 ">
-                                    <label htmlFor="basicpill-lastname-input ">
-                                      Last Name{" "}
-                                      <strong className="text-danger ">*</strong>
-                                    </label>
-                                    <input
-                                      type="text "
-                                      className="form-control"
-                                      name={"lastName"}
-                                      onChange={(e) => onChangeLandlordDetails(e)}
-                                      id="basicpill-lastname-input "
-                                      placeholder="Enter Your Last Name "
-                                      required
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-lg-3 col-md-6 ">
-                                  <div className="mb-4 ">
-                                    <label htmlFor=" ">Other Name(s)</label>
-                                    <input
-                                      type="text "
-                                      className="form-control "
-                                      name={"otherName"}
-                                      onChange={(e) => onChangeLandlordDetails(e)}
-                                      id=" "
-                                      placeholder="Enter Your Other Name "
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-lg-3 col-md-6">
-                                  <label htmlFor=" " className=" ">
-                                    Gender:{" "}
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor="basicpill-firstname-input ">
+                                    First name{" "}
                                     <strong className="text-danger ">*</strong>
                                   </label>
-                                  <div className="d-flex ">
-                                    <div className="form-check me-3">
-                                      <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="gender"
-                                        value={"male"}
-                                        onChange={(e) =>
-                                          onChangeLandlordDetails(e)
-                                        }
-                                        id="gender-male"
-                                      />
-                                      <label
-                                        className="form-check-label"
-                                        htmlFor="gender-male"
-                                      >
-                                        Male
-                                      </label>
-                                    </div>
-                                    <div className="form-check me-3">
-                                      <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="gender"
-                                        value={"female"}
-                                        onChange={(e) =>
-                                          onChangeLandlordDetails(e)
-                                        }
-                                        id="gender-female"
-                                      />
-                                      <label
-                                        className="form-check-label"
-                                        htmlFor="gender-female"
-                                      >
-                                        Female
-                                      </label>
-                                    </div>
-                                  </div>
+                                  <input
+                                    type="text "
+                                    className="form-control"
+                                    name={"firstName"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    id="basicpill-firstname-input "
+                                    required
+                                    placeholder="Enter Your First Name "
+                                  />
                                 </div>
-                                <div className="col-lg-3 col-md-6 ">
-                                  <div className="mb-4 ">
-                                    <label htmlFor="basicpill-email-input ">
-                                      File Number{" "}
-                                      <strong className="text-danger ">*</strong>
-                                    </label>
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor="basicpill-lastname-input ">
+                                    Last Name{" "}
+                                    <strong className="text-danger ">*</strong>
+                                  </label>
+                                  <input
+                                    type="text "
+                                    className="form-control"
+                                    name={"lastName"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    id="basicpill-lastname-input "
+                                    placeholder="Enter Your Last Name "
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">Other Name(s)</label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    name={"otherName"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    id=" "
+                                    placeholder="Enter Your Other Name "
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-3 col-md-6">
+                                <label htmlFor=" " className=" ">
+                                  Gender:{" "}
+                                  <strong className="text-danger ">*</strong>
+                                </label>
+                                <div className="d-flex ">
+                                  <div className="form-check me-3">
                                     <input
-                                      type="text"
-                                      className="form-control "
-                                      id="basicpill-email-input "
-                                      name={"fileNumber"}
-                                      onChange={(e) => onChangeLandlordDetails(e)}
-                                      placeholder="Enter File Number "
+                                      className="form-check-input"
+                                      type="radio"
+                                      name="gender"
+                                      value={"male"}
+                                      onChange={(e) =>
+                                        onChangeLandlordDetails(e)
+                                      }
+                                      id="gender-male"
                                     />
+                                    <label
+                                      className="form-check-label"
+                                      htmlFor="gender-male"
+                                    >
+                                      Male
+                                    </label>
+                                  </div>
+                                  <div className="form-check me-3">
+                                    <input
+                                      className="form-check-input"
+                                      type="radio"
+                                      name="gender"
+                                      value={"female"}
+                                      onChange={(e) =>
+                                        onChangeLandlordDetails(e)
+                                      }
+                                      id="gender-female"
+                                    />
+                                    <label
+                                      className="form-check-label"
+                                      htmlFor="gender-female"
+                                    >
+                                      Female
+                                    </label>
                                   </div>
                                 </div>
-                              </>
-                            )}
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor="basicpill-email-input ">
+                                    File Number{" "}
+                                    <strong className="text-danger ">*</strong>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control "
+                                    id="basicpill-email-input "
+                                    name={"fileNumber"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter File Number "
+                                  />
+                                </div>
+                              </div>
+                            </>
+                          )}
                           {landlordDetails?.landLordTypeName ===
                             "CORPORATE" && (
-                              <>
-                                <div className="col-lg-3 col-md-6 ">
-                                  <div className="mb-4 ">
-                                    <label htmlFor=" ">Company Name. </label>
-                                    <input
-                                      type="text "
-                                      className="form-control "
-                                      id=" "
-                                      name={"companyName"}
-                                      onChange={(e) => onChangeLandlordDetails(e)}
-                                      placeholder="Enter Company Name"
-                                    />
-                                  </div>
+                            <>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">Company Name. </label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    id=" "
+                                    name={"companyName"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter Company Name"
+                                  />
                                 </div>
-                                <div className="col-lg-3 col-md-6 ">
-                                  <div className="mb-4 ">
-                                    <label htmlFor=" ">Company Location. </label>
-                                    <input
-                                      type="text "
-                                      className="form-control "
-                                      id=" "
-                                      name={"town"}
-                                      onChange={(e) => onChangeLandlordDetails(e)}
-                                      placeholder="Enter Company Location"
-                                    />
-                                  </div>
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">Company Location. </label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    id=" "
+                                    name={"town"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter Company Location"
+                                  />
                                 </div>
-                                <div className="col-lg-3 col-md-6 ">
-                                  <div className="mb-4 ">
-                                    <label htmlFor=" ">Company Address. </label>
-                                    <input
-                                      type="text "
-                                      className="form-control "
-                                      id=" "
-                                      name={"companyAddress"}
-                                      onChange={(e) => onChangeLandlordDetails(e)}
-                                      placeholder="Enter Company Address"
-                                    />
-                                  </div>
+                              </div>
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">Company Address. </label>
+                                  <input
+                                    type="text "
+                                    className="form-control "
+                                    id=" "
+                                    name={"companyAddress"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter Company Address"
+                                  />
                                 </div>
-                              </>
-                            )}
+                              </div>
+                            </>
+                          )}
                           <div className="col-lg-3 col-md-6 ">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-phoneno-input ">
@@ -675,7 +673,7 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-email-input ">
                                 Email{" "}
-                                {/* <strong className="text-danger ">*</strong> */}
+                                <strong className="text-danger ">*</strong>
                               </label>
                               <input
                                 type="email"
@@ -688,20 +686,6 @@ export default function AddLandlord() {
                             </div>
                           </div>
                         </div>
-                        }
-
-                        { landLordTypeName  === "CORPORATE" && 
-                        <div className="row corporate-landlord ">
-                          <div className="col-12">
-                            <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                              <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                                Corporate details
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        }
-
                         <div className="row">
                           <div className="col-12">
                             <div className="bg-primary border-2 bg-soft p-3 mb-4">
@@ -714,6 +698,7 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor=" " className=" ">
                                 Agreement Type
+                                <strong className="text-danger ">*</strong>
                               </label>
                               {agreementTypes && (
                                 <div className="input-group" id="">
@@ -914,24 +899,6 @@ export default function AddLandlord() {
                               )}
                             </div>
                           </div>
-                          {/* <div className="col-lg-4">
-                    <label for="">
-                    InvoicePaymentPriority <strong class="text-danger">*</strong>
-                    </label>
-                    <select
-                      class="form-control text-capitalize"
-                                           title="Select Applicable Charge Type"
-                      onChange={(e) => {
-                        setInvoicePaymentPriority(e.target.value);
-                      }}
-                    >
-                      <option>Select  InvoicePaymentPriority-----</option>
-                      {invo.map((item) => (
-                        <option value={item.id} key={item.id}>
-                        {item.name}</option>
-                      ))}
-                    </select>
-                  </div> */}
                         </div>
                       </section>
 
@@ -1123,7 +1090,7 @@ export default function AddLandlord() {
                         // type="submit"
                         onClick={handleSubmit}
                         className="btn btn-success kev-submit me-3 d-none"
-                      // form={"my-form"}
+                        // form={"my-form"}
                       >
                         Submit{" "}
                         <i className="mdi mdi-check-all me-2 font-16px"></i>
