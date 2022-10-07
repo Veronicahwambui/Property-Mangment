@@ -847,7 +847,7 @@ function AddProperties() {
                               </select>
                             </div>
                           </div>
-                          <div className="col-4 col-md-6">
+                          <div className="col-lg-4 col-md-6">
 
                             <div className="form-group">
                               <label htmlFor="">Charge frequency</label>
@@ -874,10 +874,9 @@ function AddProperties() {
                                 onChange={handleGeneral}
                                 name="ManagementType"
                               >
-                                <option value="AGENT"> Select ManagementType</option>
-                                <option value="LANDLORD">Landlord</option>
-                                <option value="INRENT">Inrent</option>
-                                <option value="AGENT">Agent</option>
+                                <option value="LET"> Select ManagementType</option>
+                                <option value="MANAGE">Manage</option>
+                                <option value="LET">let</option>
                               </select>
                             </div>
                           </div>
@@ -892,10 +891,12 @@ function AddProperties() {
                                 onChange={handleGeneral}
                                 name='UtilityManagementType'
                               >
-                                <option value="LENT"> Select  UtilityManagement Type </option>
+                                <option value="LANDORD"> Select  UtilityManagement Type </option>
 
-                                <option value="INRENT">Inrent</option>
-                                <option value="LENT">Lent</option>
+                               
+                                <option value="LANDLORD">Landlord</option>
+                                <option value="INRENT">InRent</option>
+                                <option value="AGENT">Agent</option>
                               </select>
                             </div>
                           </div>
