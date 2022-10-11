@@ -504,7 +504,6 @@ export default function AddLandlord() {
                                 <div className="mb-4 ">
                                   <label htmlFor="basicpill-firstname-input ">
                                     First name{" "}
-                                    <strong className="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text "
@@ -521,7 +520,6 @@ export default function AddLandlord() {
                                 <div className="mb-4 ">
                                   <label htmlFor="basicpill-lastname-input ">
                                     Last Name{" "}
-                                    <strong className="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text "
@@ -550,7 +548,6 @@ export default function AddLandlord() {
                               <div className="col-lg-3 col-md-6">
                                 <label htmlFor=" " className=" ">
                                   Gender:{" "}
-                                  <strong className="text-danger ">*</strong>
                                 </label>
                                 <div className="d-flex ">
                                   <div className="form-check me-3">
@@ -595,7 +592,6 @@ export default function AddLandlord() {
                                 <div className="mb-4 ">
                                   <label htmlFor="basicpill-email-input ">
                                     File Number{" "}
-                                    <strong className="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text"
@@ -698,7 +694,6 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor=" " className=" ">
                                 Agreement Type
-                                <strong className="text-danger ">*</strong>
                               </label>
                               {agreementTypes && (
                                 <div className="input-group" id="">
@@ -749,7 +744,6 @@ export default function AddLandlord() {
                             <div className="col-lg-3 col-md-6 mb-4">
                               <label htmlFor=" " className=" ">
                                 Select Renumeration Type:{" "}
-                                <strong className="text-danger ">*</strong>
                               </label>
                               <div className="d-flex ">
                                 <div className="form-check me-3">
