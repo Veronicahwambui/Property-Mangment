@@ -447,7 +447,6 @@ export default function AddLandlord() {
                               className="form-label"
                             >
                               Landlord type.{" "}
-                              <strong className="text-danger">*</strong>
                             </label>
                             {landlordtypes && (
                               <div className="form-group mb-4">
@@ -653,7 +652,6 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-phoneno-input ">
                                 Phone{" "}
-                                <strong className="text-danger ">*</strong>
                               </label>
                               <input
                                 type="text "
@@ -669,7 +667,6 @@ export default function AddLandlord() {
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-email-input ">
                                 Email{" "}
-                                <strong className="text-danger ">*</strong>
                               </label>
                               <input
                                 type="email"
