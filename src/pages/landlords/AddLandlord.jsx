@@ -446,7 +446,7 @@ export default function AddLandlord() {
                               htmlFor="landlord-type"
                               className="form-label"
                             >
-                              Landlord type.{" "}
+                              Landlord type.{" "}<strong class="text-danger ">*</strong>
                             </label>
                             {landlordtypes && (
                               <div className="form-group mb-4">
@@ -488,7 +488,7 @@ export default function AddLandlord() {
                             <>
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
-                                  <label htmlFor=" ">ID Num. </label>
+                                  <label htmlFor=" ">ID NO. </label>
                                   <input
                                     type="text "
                                     className="form-control "
@@ -502,7 +502,7 @@ export default function AddLandlord() {
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
                                   <label htmlFor="basicpill-firstname-input ">
-                                    First name{" "}
+                                    First name{" "}<strong class="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text "
@@ -512,13 +512,14 @@ export default function AddLandlord() {
                                     id="basicpill-firstname-input "
                                     required
                                     placeholder="Enter Your First Name "
+                                   
                                   />
                                 </div>
                               </div>
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
                                   <label htmlFor="basicpill-lastname-input ">
-                                    Last Name{" "}
+                                    Last Name{" "}<strong class="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text "
@@ -546,7 +547,7 @@ export default function AddLandlord() {
                               </div>
                               <div className="col-lg-3 col-md-6">
                                 <label htmlFor=" " className=" ">
-                                  Gender:{" "}
+                                  Gender:{" "}<strong class="text-danger ">*</strong>
                                 </label>
                                 <div className="d-flex ">
                                   <div className="form-check me-3">
@@ -559,6 +560,7 @@ export default function AddLandlord() {
                                         onChangeLandlordDetails(e)
                                       }
                                       id="gender-male"
+                                      required
                                     />
                                     <label
                                       className="form-check-label"
@@ -577,6 +579,7 @@ export default function AddLandlord() {
                                         onChangeLandlordDetails(e)
                                       }
                                       id="gender-female"
+                                      required
                                     />
                                     <label
                                       className="form-check-label"
@@ -590,7 +593,7 @@ export default function AddLandlord() {
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
                                   <label htmlFor="basicpill-email-input ">
-                                    File Number{" "}
+                                    File Number{" "}<strong class="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text"
@@ -599,6 +602,7 @@ export default function AddLandlord() {
                                     name={"fileNumber"}
                                     onChange={(e) => onChangeLandlordDetails(e)}
                                     placeholder="Enter File Number "
+                                  required={true}
                                   />
                                 </div>
                               </div>
@@ -651,7 +655,7 @@ export default function AddLandlord() {
                           <div className="col-lg-3 col-md-6 ">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-phoneno-input ">
-                                Phone{" "}
+                                Phone{" "}<strong class="text-danger ">*</strong>
                               </label>
                               <input
                                 type="text "
@@ -666,7 +670,7 @@ export default function AddLandlord() {
                           <div className="col-lg-3 col-md-6 ">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-email-input ">
-                                Email{" "}
+                                Email{" "}<strong class="text-danger ">*</strong>
                               </label>
                               <input
                                 type="email"
@@ -675,6 +679,7 @@ export default function AddLandlord() {
                                 name={"email"}
                                 onChange={(e) => onChangeLandlordDetails(e)}
                                 placeholder="Enter Email ID "
+                                required
                               />
                             </div>
                           </div>
