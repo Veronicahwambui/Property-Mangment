@@ -24,7 +24,6 @@ function CreateInvoice() {
   const [quantity, setquantity] = useState(0);
   const [custname, setcustname] = useState("");
   const [tenancies, settenancies] = useState([]);
-  const [userTypes, setuserTypes] = useState([]);
   const [tenancyId, settenancyId] = useState(undefined);
   const [applicableChargeName, setapplicableChargeName] = useState("");
   const [applicableCharges, setapplicableCharges] = useState([]);
@@ -37,6 +36,7 @@ function CreateInvoice() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [userType, setUserType] = useState(undefined);
+  const [userTypes, setuserTypes] = useState([]);
   const [auctioneers, setAuctioneers] = useState([])
   const [auctioneer, setAuctioneer] = useState(null)
   const [invoiceFor, setInvoiceFor] = useState('');
@@ -55,7 +55,7 @@ function CreateInvoice() {
     requestsServiceService.userTypeData().then((data) => {
       setuserTypes(data.data)
     });
-  
+
   }, []);
 
   useEffect(() => {
@@ -511,8 +511,8 @@ function CreateInvoice() {
                               <div className="col-md-6">
                                 <div className="mb-3">
                                   <label htmlFor="" className="form-label text-capitalize">
-                                   
-                                  {invoiceFor != "AUCTIONEER" ? invoiceFor?.toLowerCase() : userType?.toLowerCase() + "'s"} Email
+
+                                    {invoiceFor != "AUCTIONEER" ? invoiceFor?.toLowerCase() : userType?.toLowerCase() + "'s"} Email
                                   </label>
                                   <input
                                     type={"text"}
@@ -529,7 +529,7 @@ function CreateInvoice() {
                                     htmlFor="formrow-password-input"
                                     className="form-label text-capitalize"
                                   >
-                                  {invoiceFor != "AUCTIONEER" ? invoiceFor?.toLowerCase() : userType?.toLowerCase() + "'s"} Phone
+                                    {invoiceFor != "AUCTIONEER" ? invoiceFor?.toLowerCase() : userType?.toLowerCase() + "'s"} Phone
                                   </label>
                                   <input
                                     type="text"
@@ -964,35 +964,36 @@ function CreateInvoice() {
                 </div>
               </div>}
 
-              {invoiceFor === 'AUCTIONEER' && <div className="col-8">
-                
-                <div className="form-group app-search">
-                  <label htmlFor="" className="text-primary"> User Type </label>
-                  <select name="" id="" className="form-control mt-2" onChange={e => setUserType(e.target.value)}>
-                    <option value="">Select</option>
-                    {userTypes?.map((auct) => (
-                      <option value={auct.name} >{auct.name}</option>
-                    ))}
-                  </select>
-                </div>
+              {invoiceFor === 'AUCTIONEER' &&
+                <div className="col-8">
 
-                {userType !=undefined && <div className="form-group app-search">
-                  <label htmlFor="" className="text-primary"> User to Invoice </label>
-                  <select name="" id="" className="form-control mt-2" onChange={e => AuctChange(e)}>
-                    <option value="">Select</option>
-                    {auctioneers?.map((auct) => (
-                      <option value={auct.user.id} >{auct.user.firstName} {auct.user.lastName}</option>
-                    ))}
-                  </select>
+                  <div className="form-group app-search">
+                    <label htmlFor="" className="text-primary"> User Type </label>
+                    <select name="" id="" className="form-control mt-2" onChange={e => setUserType(e.target.value)}>
+                      <option value="">Select</option>
+                      {userTypes?.map((auct) => (
+                        <option value={auct.name} >{auct.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {userType != undefined && <div className="form-group app-search">
+                    <label htmlFor="" className="text-primary"> User to Invoice </label>
+                    <select name="" id="" className="form-control mt-2" onChange={e => AuctChange(e)}>
+                      <option value="">Select</option>
+                      {auctioneers?.map((auct) => (
+                        <option value={auct.user.id} >{auct.user.firstName} {auct.user.lastName}</option>
+                      ))}
+                    </select>
+                  </div>}
+                  <button
+                    className="btn btn-primary cursor-pointer"
+                    type={"button"}
+                    onClick={closeTenantModal}
+                  >
+                    Continue
+                  </button>
                 </div>}
-                <button
-                  className="btn btn-primary cursor-pointer"
-                  type={"button"}
-                  onClick={closeTenantModal}
-                >
-                  Continue
-                </button>
-              </div>}
 
               <div className="">
                 <table

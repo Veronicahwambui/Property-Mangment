@@ -63,7 +63,7 @@ function IssueType() {
 
   useEffect(() => {
     getIssueStates();
-    requestsServiceService.allApplicableCharges().then((res) => {
+    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
       setApplicableCharges(res.data.data);
     });
     requestsServiceService

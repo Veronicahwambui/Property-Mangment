@@ -241,7 +241,7 @@ function SideBar() {
                   <NavLink to="/general">General</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/auctioneer">Auctioneer </NavLink>
+                  <NavLink to="/auctioneer">Users </NavLink>
                 </li>
 
 
