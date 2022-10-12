@@ -40,8 +40,8 @@ function IssuesTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setIssueTypes(list.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(list.length / size));
+    setIssueTypes(list?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(list?.length / size));
   }, [itemOffset, size, list]);
 
   const handlePageClick = (event) => {
@@ -202,7 +202,7 @@ function IssuesTypes() {
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Issue Types</h4>
+                <h4 class="mb-sm-0 font-size-18">General Settings</h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
@@ -210,7 +210,7 @@ function IssuesTypes() {
                       <Link to="/">Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">Set Ups</li>
-                    <li class="breadcrumb-item active">Issue Types</li>
+                    <li class="breadcrumb-item active">General</li>
                   </ol>
                 </div>
               </div>
@@ -496,7 +496,7 @@ function IssuesTypes() {
                               </div>
                             </div>
                             <div class=" mt-4">
-                              <span>Charge Name : {client?.bouncedChequeCharge.name}</span>
+                              <span>Charge Name : {client?.bouncedChequeCharge?.name}</span>
                               <br />
                               <span>Processing Period : {client?.chequeProcessingPeriod} Days</span>
                             </div>
@@ -524,7 +524,7 @@ function IssuesTypes() {
                             </div>
                             <div class=" mt-4">
                               <span>
-                                Settlement(Rent) Charge Name : {client?.landlordSettlementCharge.name}
+                                Settlement(Rent) Charge Name : {client?.landlordSettlementCharge?.name}
                               </span>
 
                               <br />
@@ -554,13 +554,13 @@ function IssuesTypes() {
                               </div>
                             </div>
                             <div class=" mt-4">
-                              <span>Surcharge(Penalty) Charge Name : {client?.penaltyCharge.name}
+                              <span>Surcharge(Penalty) Charge Name : {client?.penaltyCharge?.name}
                               </span>
                               <br />
                               <span>Penalty Charge Rate : {client?.penaltyChargeRate} Days</span>
                               <br />
                               <br />
-                              <span>Visitation Charge :  {client?.visitationCharge.name}</span>
+                              <span>Visitation Charge :  {client?.visitationCharge?.name}</span>
                               <br />
                               <span>Visitation Charge Day :  Day {client?.visitationChargeDay}</span>
                             </div>
@@ -586,7 +586,7 @@ function IssuesTypes() {
                             </div>
                             <div class=" mt-4">
                               <span>
-                                {client?.invoicePaymentPriority.split(",").map((m, index) =>
+                                {client?.invoicePaymentPriority?.split(",").map((m, index) =>
                                   <>
                                     {invo?.map((item) => (
                                       item.id == m &&
@@ -631,7 +631,7 @@ function IssuesTypes() {
                             </div>
                             <div class=" mt-4">
                               <span>
-                                Property Tax Charge : {client?.propertyTaxCharge.name}
+                                Property Tax Charge : {client?.propertyTaxCharge?.name}
                               </span>
                               <br />
                               <span>
@@ -663,7 +663,7 @@ function IssuesTypes() {
                             </div>
                             <div class=" mt-4">
                               <span>
-                                SenderID : {client?.senderId}ID
+                                SenderID : {client?.senderId}
                               </span>
                               <br />
 
@@ -728,6 +728,7 @@ function IssuesTypes() {
                           onChange={(e) => {
                             setBouncedChequeChargeId(e.target.value);
                           }}
+                          value={client?.bouncedChequeCharge?.id}
                         >
                           <option>-------Select Bounced Cheque Charge -------</option>
                           {invo?.map((item) => (
@@ -796,6 +797,7 @@ function IssuesTypes() {
                           onChange={(e) => {
                             setLandlordSettlementChargeId(e.target.value);
                           }}
+                          value={client?.landlordSettlementCharge?.id}
                         >
                           <option>---Select  Base(rent)Charge-----</option>
                           {invo?.map((item) => (
@@ -817,6 +819,7 @@ function IssuesTypes() {
                             setPenaltyChargeId(e.target.value)
                               (e.target.value);
                           }}
+                          value={client?.penaltyCharge?.id}
                         >
                           <option>---Select  Sur-Charge-----</option>
                           {invo?.map((item) => (
@@ -837,7 +840,7 @@ function IssuesTypes() {
                             onChange={(event) =>
                               setpenaltyChargeRate(event.target.value)
                             }
-                            value={penaltyChargeRate}
+                            value={client?.penaltyChargeRate}
                           />
                         </div>
                       </div>
@@ -854,6 +857,7 @@ function IssuesTypes() {
                             setPropertyTaxChargeId(e.target.value)
                               (e.target.value);
                           }}
+                          value={client?.propertyTaxCharge?.id}
                         >
                           <option value="">Select PropertyTaxCharge --</option>
                           {invo?.map((item) => (
@@ -874,7 +878,7 @@ function IssuesTypes() {
                             onChange={(event) =>
                               setPropertyTaxRate(event.target.value)
                             }
-                            value={propertyTaxRate}
+                            value={client?.propertyTaxRate}
                           />
                         </div>
                       </div>
@@ -889,6 +893,7 @@ function IssuesTypes() {
                             setvisitationChargeId(e.target.value)
                               (e.target.value);
                           }}
+                          value={client?.visitationCharge?.id}
                         >
                           <option>Select VisitationCharge ----</option>
                           {invo
@@ -908,7 +913,7 @@ function IssuesTypes() {
                             onChange={(event) =>
                               setvisitationChargeDay(event.target.value)
                             }
-                            value={visitationChargeDay}
+                            value={client?.visitationChargeDay}
                           />
                         </div>
                       </div>
@@ -924,6 +929,7 @@ function IssuesTypes() {
                                 (e.target.value);
                             }}
                             name="settlementPeriod"
+                            value={client?.landlordSettlementPeriod}
                           >
                             <option value="YEAR"> Select settlementPeriod </option>
                             <option value="MONTH">Monthly</option>
@@ -943,7 +949,7 @@ function IssuesTypes() {
                             onChange={(event) =>
                               setSenderId(event.target.value)
                             }
-                            value={senderId}
+                            value={client?.senderId}
                           />
                         </div>
                       </div>
