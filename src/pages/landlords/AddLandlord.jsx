@@ -512,7 +512,7 @@ export default function AddLandlord() {
                                     id="basicpill-firstname-input "
                                     required
                                     placeholder="Enter Your First Name "
-                                    required
+                                   
                                   />
                                 </div>
                               </div>
