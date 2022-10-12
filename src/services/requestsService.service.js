@@ -30,8 +30,8 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/users/create", data);
   }
 
-  getData(type, data) {
-    return axiosInstance.get(baseUrl + "/users?type=" + type, data);
+  getData(type) {
+    return axiosInstance.get(baseUrl + "/users?type=" + type);
   }
   getAuctioneer() {
     return axiosInstance.get(baseUrl + "/users?type=AUCTIONEER");
@@ -1029,7 +1029,7 @@ class RequestsService {
 
   // LANDLORD PREMISES / DASHBOARD
   getLandLordPremises(data) {
-    return axiosInstance.post(baseUrl + "/premises/list/", data);
+    return axiosInstance.post(baseUrl + "/premises/list", data);
   }
   getLandlordDashboard(landlordId, sdate, edate) {
     return axiosInstance.get(

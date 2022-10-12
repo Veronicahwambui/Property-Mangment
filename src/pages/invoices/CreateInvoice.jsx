@@ -24,6 +24,7 @@ function CreateInvoice() {
   const [quantity, setquantity] = useState(0);
   const [custname, setcustname] = useState("");
   const [tenancies, settenancies] = useState([]);
+  const [userTypes, setuserTypes] = useState([]);
   const [tenancyId, settenancyId] = useState(undefined);
   const [applicableChargeName, setapplicableChargeName] = useState("");
   const [applicableCharges, setapplicableCharges] = useState([]);
@@ -35,6 +36,7 @@ function CreateInvoice() {
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [userType, setUserType] = useState(undefined);
   const [auctioneers, setAuctioneers] = useState([])
   const [auctioneer, setAuctioneer] = useState(null)
   const [invoiceFor, setInvoiceFor] = useState('');
@@ -47,11 +49,23 @@ function CreateInvoice() {
       color: "",
     });
   };
+
+
   useEffect(() => {
-    requestsServiceService.getAuctioneer().then(({ data }) => {
-      setAuctioneers(data.data)
-    })
+    requestsServiceService.userTypeData().then((data) => {
+      setuserTypes(data.data)
+    });
+  
   }, []);
+
+  useEffect(() => {
+    requestsServiceService.getData(userType).then(({ data }) => {
+      setAuctioneers(data.data)
+    });
+
+    getApplicableCharges(userType);
+
+  }, [userType]);
 
 
   useEffect(() => {
@@ -112,8 +126,8 @@ function CreateInvoice() {
   const [loaded, setloaded] = useState(false);
   const [loading2, setloading2] = useState(false);
   const [fetched, setfetched] = useState(false);
-  const [ prems, setPrems] = useState([]);
-  const [ premId, setPremId] = useState(undefined);
+  const [prems, setPrems] = useState([]);
+  const [premId, setPremId] = useState(undefined);
 
   const getId = (y) => {
     requestsServiceService
@@ -156,7 +170,7 @@ function CreateInvoice() {
       dateCreatedEnd: moment(dates.endDate).format("YYYY-MM-DD"),
       dateCreatedStart: moment(dates.startDate).format("YYYY-MM-DD"),
       fileNumber: fileNumber,
-      
+
     })
 
 
@@ -218,7 +232,7 @@ function CreateInvoice() {
   const [isChecked, setIsChecked] = useState(false);
   useEffect(() => { }, [tenants, isChecked, custname]);
 
-  const autofill = (x,fileNumber ) => {
+  const autofill = (x, fileNumber) => {
 
     setfetched(false);
     setloaded(true);
@@ -227,7 +241,7 @@ function CreateInvoice() {
     if (invoiceFor === "TENANT") {
       getId(x);
     } else {
-      getLandLordPrems(fileNumber); 
+      getLandLordPrems(fileNumber);
     }
 
 
@@ -266,14 +280,20 @@ function CreateInvoice() {
   const invoiceForHandler = (e) => {
     setloaded(false)
     setInvoiceFor(e.target.value)
-    requestsServiceService.allApplicableCharges(e.target.value).then((res) => {
-      setapplicableCharges(res.data.data !== null ? res.data.data : []);
-    });
+    getApplicableCharges(e.target.value)
     setTenants([]);
     setLandlords([]);
     setPrems([]);
   }
 
+
+
+
+  const getApplicableCharges = (value) => {
+    requestsServiceService.allApplicableCharges(value).then((res) => {
+      setapplicableCharges(res.data.data !== null ? res.data.data : []);
+    });
+  }
   const submitInvoice = (event) => {
     event.preventDefault();
     if (invoiceFor === "TENANT") {
@@ -283,7 +303,7 @@ function CreateInvoice() {
     }
   }
 
- const submitNormalInvoice = ()=>{
+  const submitNormalInvoice = () => {
 
     let data = {
       applicableChargeName: applicableChargeName,
@@ -333,14 +353,14 @@ function CreateInvoice() {
         color: "",
       });
     }, 3500);
-  
- }
+
+  }
 
 
 
   const submitEntityInvoice = () => {
-  
-   
+
+
     let landlordId = invoiceFor === "LANDLORD" ? tenantId : null
     // let tentId = invoiceFor === "TENANT" ? tenantId : auctioneer
 
@@ -348,7 +368,7 @@ function CreateInvoice() {
       "applicableChargeName": applicableChargeName,
       "billAmount": total,
       "invoiceDate": date,
-      "landlordId": landlordId ,
+      "landlordId": landlordId,
       "parentTransactionId": null,
       "premiseId": parseInt(premId),
       "quantity": parseInt(quantity),
@@ -408,7 +428,7 @@ function CreateInvoice() {
     }
   };
   $(document).on("change", ".enddate", addDate);
-  
+
   return (
     <>
       <div className="page-content">
@@ -475,7 +495,7 @@ function CreateInvoice() {
                                     htmlFor="formrow-firstname-input"
                                     className="form-label text-capitalize"
                                   >
-                                    {invoiceFor?.toLowerCase()}
+                                    {invoiceFor != "AUCTIONEER" ? invoiceFor?.toLowerCase() : userType?.toLowerCase()}
                                     <strong className="text-danger">*</strong>
                                   </label>
                                   <div className="form-group mb-4">
@@ -491,7 +511,8 @@ function CreateInvoice() {
                               <div className="col-md-6">
                                 <div className="mb-3">
                                   <label htmlFor="" className="form-label text-capitalize">
-                                    {invoiceFor?.toLowerCase() + "'s"} Email
+                                   
+                                  {invoiceFor != "AUCTIONEER" ? invoiceFor?.toLowerCase() : userType?.toLowerCase() + "'s"} Email
                                   </label>
                                   <input
                                     type={"text"}
@@ -508,7 +529,7 @@ function CreateInvoice() {
                                     htmlFor="formrow-password-input"
                                     className="form-label text-capitalize"
                                   >
-                                    {invoiceFor?.toLowerCase() + "'s"} Phone
+                                  {invoiceFor != "AUCTIONEER" ? invoiceFor?.toLowerCase() : userType?.toLowerCase() + "'s"} Phone
                                   </label>
                                   <input
                                     type="text"
@@ -520,50 +541,50 @@ function CreateInvoice() {
                                   />
                                 </div>
                               </div>
-                              { invoiceFor === "TENANT" && 
-                              <div className="col-12">
-                                <div className="mb-3">
-                                  <label
-                                    htmlFor="formrow-firstname-input"
-                                    className="form-label"
-                                  >
-                                    Tenancy.{" "}
-                                    <strong className="text-danger">*</strong>
-                                  </label>
-                                  {tenancies && (
-                                    <div className="form-group mb-4">
-                                      <select
-                                        class="form-control"
-                                        title="Select tenant"
-                                        data-live-search="true"
-                                        value={tenancyId}
-                                        onChange={(e) =>
-                                          settenancyId(e.target.value)
-                                        }
-                                        required={true}
-                                      >
-                                        <option className="text-black font-semibold ">
-                                          select tenancy
-                                        </option>
-                                        {tenancies.map((item, index) => (
-                                         <>
-                                         {item.active &&
-                                           <option
-                                           value={parseInt(item.id)}
-                                           key={item.id}
-                                         >
-                                           {item.premiseUnit?.unitName +
-                                             " - " +
-                                             item.premiseUnit?.unitType.name}
-                                         </option>
-                                         }
-                                         </>
-                                        ))}
-                                      </select>
-                                    </div>
-                                  )}
+                              {invoiceFor === "TENANT" &&
+                                <div className="col-12">
+                                  <div className="mb-3">
+                                    <label
+                                      htmlFor="formrow-firstname-input"
+                                      className="form-label"
+                                    >
+                                      Tenancy.{" "}
+                                      <strong className="text-danger">*</strong>
+                                    </label>
+                                    {tenancies && (
+                                      <div className="form-group mb-4">
+                                        <select
+                                          class="form-control"
+                                          title="Select tenant"
+                                          data-live-search="true"
+                                          value={tenancyId}
+                                          onChange={(e) =>
+                                            settenancyId(e.target.value)
+                                          }
+                                          required={true}
+                                        >
+                                          <option className="text-black font-semibold ">
+                                            select tenancy
+                                          </option>
+                                          {tenancies.map((item, index) => (
+                                            <>
+                                              {item.active &&
+                                                <option
+                                                  value={parseInt(item.id)}
+                                                  key={item.id}
+                                                >
+                                                  {item.premiseUnit?.unitName +
+                                                    " - " +
+                                                    item.premiseUnit?.unitType.name}
+                                                </option>
+                                              }
+                                            </>
+                                          ))}
+                                        </select>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              </div> 
                               }
 
                               <div className="row col-12">
@@ -608,51 +629,49 @@ function CreateInvoice() {
                                 </div>
 
                               </div>
-                              
-                             { invoiceFor !== "TENANT" && 
-                              <div className="row col-12">
-                                <div className="mb-3">
-                                  <label
-                                    htmlFor="formrow-firstname-input"
-                                    className="form-label"
-                                  >
-                                    Preimise.{" "}
-                                    <strong className="text-danger">*</strong>
-                                  </label>
-                                  { prems && (
-                                    <div className="form-group mb-4">
-                                      <select
-                                        class="form-control"
-                                        title="Select tenant"
-                                        data-live-search="true"
-                                        // value={applicableChargeName}
-                                        onChange={(e) =>
-                                          setPremId(
-                                            e.target.value
-                                          )
-                                        }
-                                        required={true}
-                                      >
-                                        <option className="text-black font-semibold ">
-                                          select premise
-                                        </option>
-                                        { prems.map(
-                                          (item, index) => (
-                                            <option
-                                              value={item.id}
-                                              key={index}
-                                            >
-                                              {item.premiseName}
-                                            </option>
-                                          )
-                                        )}
-                                      </select>
-                                    </div>
-                                  )}
-                                </div>
 
-                              </div> 
-                             }
+                              {invoiceFor !== "TENANT" &&
+                                <div className="row col-12">
+                                  <div className="mb-3">
+                                    <label
+                                      htmlFor="formrow-firstname-input"
+                                      className="form-label"
+                                    >
+                                      Preimise.{" "}
+                                    </label>
+                                    {prems && (
+                                      <div className="form-group mb-4">
+                                        <select
+                                          class="form-control"
+                                          title="Select tenant"
+                                          data-live-search="true"
+                                          // value={applicableChargeName}
+                                          onChange={(e) =>
+                                            setPremId(
+                                              e.target.value
+                                            )
+                                          }
+                                        >
+                                          <option className="text-black font-semibold ">
+                                            select premise
+                                          </option>
+                                          {prems.map(
+                                            (item, index) => (
+                                              <option
+                                                value={item.id}
+                                                key={index}
+                                              >
+                                                {item.premiseName}
+                                              </option>
+                                            )
+                                          )}
+                                        </select>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                </div>
+                              }
 
                             </div>
                             <div className="col-12">
@@ -855,7 +874,7 @@ function CreateInvoice() {
                     <option value="">select invoice type </option>
                     <option value="TENANT">Tenant</option>
                     <option value="LANDLORD">Landlord</option>
-                    <option value="AUCTIONEER">Auctioneer</option>
+                    <option value="AUCTIONEER">User</option>
                   </select>
                 </div>
               </div>
@@ -946,15 +965,26 @@ function CreateInvoice() {
               </div>}
 
               {invoiceFor === 'AUCTIONEER' && <div className="col-8">
+                
                 <div className="form-group app-search">
-                  <label htmlFor="" className="text-primary"> Auctioneer to Invoice </label>
+                  <label htmlFor="" className="text-primary"> User Type </label>
+                  <select name="" id="" className="form-control mt-2" onChange={e => setUserType(e.target.value)}>
+                    <option value="">Select</option>
+                    {userTypes?.map((auct) => (
+                      <option value={auct.name} >{auct.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {userType !=undefined && <div className="form-group app-search">
+                  <label htmlFor="" className="text-primary"> User to Invoice </label>
                   <select name="" id="" className="form-control mt-2" onChange={e => AuctChange(e)}>
                     <option value="">Select</option>
                     {auctioneers?.map((auct) => (
                       <option value={auct.user.id} >{auct.user.firstName} {auct.user.lastName}</option>
                     ))}
                   </select>
-                </div>
+                </div>}
                 <button
                   className="btn btn-primary cursor-pointer"
                   type={"button"}
@@ -1051,7 +1081,7 @@ function CreateInvoice() {
                   className="col-12 d-flex justify-content-end"
                   style={{ minHeight: "40px", maxHeight: "50px" }}
                 >
-                  { loaded && tenancies.length > 0 && (
+                  {loaded && tenancies.length > 0 && (
                     <button
                       className="btn btn-primary cursor-pointer"
                       type={"button"}
@@ -1061,7 +1091,7 @@ function CreateInvoice() {
                     </button>
                   )}
 
-                  { loaded && prems?.length >= 1  && (
+                  {loaded && prems?.length >= 1 && (
                     <button
                       className="btn btn-primary cursor-pointer"
                       type={"button"}

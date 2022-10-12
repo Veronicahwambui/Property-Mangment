@@ -8,6 +8,8 @@ import { Modal, Badge, Button } from "react-bootstrap";
 
 export default function CreateStatement() {
   const navigate = useNavigate();
+  const [userType, setUserType] = useState(undefined);
+  const [userTypes, setuserTypes] = useState([]);
   const [sDate, setsdate] = useState(new Date());
   const [eDate, setedate] = useState(new Date());
   const [chargeId, setchargeId] = useState(undefined);
@@ -23,6 +25,12 @@ export default function CreateStatement() {
     });
   };
 
+  useEffect(() => {
+    requestsServiceService.userTypeData().then((data) => {
+      setuserTypes(data.data)
+    });
+
+  }, []);
   //settlement modals
   function generateArrayOfYears() {
     var max = new Date().getFullYear();
@@ -115,7 +123,7 @@ export default function CreateStatement() {
           });
         }
       })
-      .catch((err) => {});
+      .catch((err) => { });
   };
   const months = [
     "January",
@@ -168,10 +176,10 @@ export default function CreateStatement() {
   };
 
   useEffect(() => {
-    if (recipient === "USER") {
       getAuctioneer();
-    }
-  }, [recipient === "USER"]);
+    
+  }, [userType]);
+
   const getTenants = (w, x, y, z) => {
     requestsServiceService.getAllTenants(w, x, y, z).then((res) => {
       setfoundRecipients(res.data.data);
@@ -183,7 +191,7 @@ export default function CreateStatement() {
     });
   };
   const getAuctioneer = () => {
-    requestsServiceService.getData("AUCTIONEER").then((res) => {
+    requestsServiceService.getData(userType).then((res) => {
       setfoundRecipients(res.data.data);
     });
   };
@@ -363,7 +371,7 @@ export default function CreateStatement() {
         <div className="row">
           <div className="col-12">
             <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-              <h4 className="mb-sm-0 font-size-18">New Statement</h4>
+              <h4 className="mb-sm-0 font-size-18">New Receipt</h4>
 
               <div className="page-title-right">
                 <ol className="breadcrumb m-0">
@@ -371,9 +379,9 @@ export default function CreateStatement() {
                     <Link to="/">Dashboards</Link>
                   </li>
                   <li className="breadcrumb-item">
-                    <a href="#">Statements</a>
+                    <a href="#">Receipt</a>
                   </li>
-                  <li className="breadcrumb-item active">Create Statements</li>
+                  <li className="breadcrumb-item active">Create Receipt</li>
                 </ol>
               </div>
             </div>
@@ -426,7 +434,7 @@ export default function CreateStatement() {
                       <option value={""}>--Select--</option>
                       <option value="TENANT">TENANT</option>
                       <option value="LANDLORD">LANDLORD</option>
-                      <option value="USER">AUCTIONEER</option>
+                      <option value="USER">USER</option>
                     </select>
                   </div>
                   <div className="col-12">
@@ -472,6 +480,17 @@ export default function CreateStatement() {
                       </div>
                     </div>
                     <div className={"row mt-2"}>
+                      {recipient === "USER" &&
+                        <div className="col-12">
+                          <label htmlFor="" className="text-primary"> User Type </label>
+                          <select name="" id="" className="form-control mt-2" onChange={e => setUserType(e.target.value)}>
+                            <option value="">Select</option>
+                            {userTypes?.map((auct) => (
+                              <option value={auct.name} >{auct.name}</option>
+                            ))}
+                          </select>
+                        </div>}
+
                       <div className="col-6">
                         {foundRecipients.length < 5 && (
                           <>
@@ -521,7 +540,7 @@ export default function CreateStatement() {
                                         {recipient === "TENANT" && (
                                           <>
                                             {item?.tenantType ===
-                                            "INDIVIDUAL" ? (
+                                              "INDIVIDUAL" ? (
                                               <>
                                                 {item.firstName + " "}
                                                 {item.lastName + " "}{" "}
@@ -818,7 +837,7 @@ export default function CreateStatement() {
                       className={"mt-3"}
                       disabled={foundRecipients.length < 1}
                     >
-                      Create Statement
+                      Receive Payment
                     </Button>
                   </div>
                 </div>

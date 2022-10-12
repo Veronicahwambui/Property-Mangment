@@ -484,13 +484,13 @@ function OneTenant() {
   useEffect(() => {
     fetchAll();
     getContactTypeName();
-  
+
     getStatus();
     createDoc();
     createDocumentTypes();
     getDocument();
     fetchCommunication();
- 
+
   }, []);
 
   const createDocumentTypes = (id) => {
@@ -583,7 +583,7 @@ function OneTenant() {
     style: "currency",
     currency: "KES",
   });
- 
+
   const [statements, setStatements] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
   const [invoice_show, setinvoice_show] = useState(false);
@@ -593,11 +593,26 @@ function OneTenant() {
     setActiveModal(0);
     setinvoice_show(false);
   };
+  const getTenantStatement = (e) => {
+    e.preventDefault();
+    getTenantStatements()
+  }
+
   const getTenantStatements = () => {
+
     let startdate = moment(startDate).format("YYYY/MM/DD");
     let enddate = moment(endDate).format("YYYY/MM/DD");
+
+    let data = {
+      startDate: startdate,
+      endDate: enddate,
+      entityType: 'TENANT',
+      id: userId,
+      page: 0,
+      size: 100000
+    }
     requestsServiceService
-      .getTenantStatements(userId, startdate, enddate)
+      .getLandlordStatements(data)
       .then((res) => {
         setStatements(res.data.data);
       });
@@ -678,7 +693,7 @@ function OneTenant() {
     });
   };
 
-    // * ==============================
+  // * ==============================
   // invoice stuff   
   // * ==============================
   const [invoices, setinvoices] = useState([]);
@@ -687,7 +702,7 @@ function OneTenant() {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [status, setStatus] = useState("");
-  
+
 
   const [startDate2, setStartDate2] = useState(
     moment().startOf("month").format("YYYY-MM-DD")
@@ -701,7 +716,7 @@ function OneTenant() {
   const [transaction, settransaction] = useState({});
   const [paymentItems, setpaymentItems] = useState([]);
 
- 
+
   const [date, setDate] = useState({
     startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     endDate: new Date(),
@@ -725,11 +740,11 @@ function OneTenant() {
   const sort = (event) => {
     event.preventDefault();
     let data = {
-      startDate: startDate,
-      endDate: endDate,
+      startDate: date.startDate,
+      endDate: date.endDate,
       // size: size,
       // page: page,
-      tenantId : parseInt(userId),
+      tenantId: parseInt(userId),
       search: searchTerm,
     };
     requestsServiceService.getSortedInvoices(0, 10, data).then((res) => {
@@ -743,12 +758,12 @@ function OneTenant() {
   };
   const getInvoices = () => {
     let data = {
-      startDate: startDate2,
-      endDate: endDate2,
-      tenantId:  parseInt(userId),
+      startDate: date.startDate,
+      endDate: date.endDate,
+      tenantId: parseInt(userId),
       search: searchTerm.trim(),
     };
-    requestsServiceService.getSortedInvoices( page, size , data).then((res) => {
+    requestsServiceService.getSortedInvoices(page, size, data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
       setStatus('')
@@ -771,8 +786,8 @@ function OneTenant() {
     return { sum: sum, paid: paid, balance: sum - paid };
   };
 
- 
- 
+
+
   const addDate = (date) => {
     setStartDate(new Date(date.target.value));
   };
@@ -789,8 +804,8 @@ function OneTenant() {
     showInvoice2();
   };
 
-   // MESSAGE TEST
-   const [details, setDetails] = useState({
+  // MESSAGE TEST
+  const [details, setDetails] = useState({
     message: "",
     contact: "",
     recipientName: "",
@@ -1257,7 +1272,7 @@ function OneTenant() {
     },
   };
   // Tenant graphs end =============================================
-  const handleSubmitTenancy= (event) => {
+  const handleSubmitTenancy = (event) => {
     event.preventDefault();
     getTenantStatements();
   };
@@ -1382,7 +1397,7 @@ function OneTenant() {
                       >
                         Statements
                       </a>
-                      <a
+                      {/* <a
                         onClick={() => setActiveLink(7)}
                         className={
                           activeLink === 7
@@ -1391,7 +1406,7 @@ function OneTenant() {
                         }
                       >
                         Receipts
-                      </a>
+                      </a> */}
                     </div >
                   </div >
                 </nav >
@@ -2251,7 +2266,7 @@ function OneTenant() {
 
                             <tbody class="table-hover">
                               {communication?.map((com, index) => (
-                                
+
 
                                 <tr data-id="1">
                                   <td>{index + 1}</td>
@@ -2294,16 +2309,16 @@ function OneTenant() {
                                     {com.createdBy}
                                   </td>
                                   <td class="the-msg the-msg-2">
-                                  <span>{JSON.parse(com.data).text}</span>
-                                           
-                                            </td>                                                
+                                    <span>{JSON.parse(com.data).text}</span>
+
+                                  </td>
 
                                   <td class="text-capitalize d-none d-md-table-cell">
                                     {moment(com.dateTimeCreated).format(
                                       "ddd MMM DD"
                                     )}
                                   </td>
-                               </tr>
+                                </tr>
                               ))}
                             </tbody>
                           </table>
@@ -2374,7 +2389,7 @@ function OneTenant() {
                               <input
                                 type="submit"
                                 className="btn btn-primary"
-                                onClick={handleSubmit}
+                                onClick={getTenantStatement}
                                 value="filter"
                               />
                             </div>
@@ -2743,239 +2758,239 @@ function OneTenant() {
             </div>
           )
         }
-     {activeLink === 8 &&
+        {activeLink === 8 &&
           <>
             <div className="">
               <div className="container-fluid">
-              <Message details={details} mode={mode} clear={clear2} />
+                <Message details={details} mode={mode} clear={clear2} />
 
                 <div className="row">
                   <div className="col-12">
                     <div className="card">
-                    <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                  <div
-                    className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
-                    <h4 className="card-title text-capitalize mb-0 ">
-                      All rent and Bills invoices
-                    </h4>
-
-                    <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
-                      <div>
-                        <form className="app-search d-none d-lg-block p-2">
-                          <div className="position-relative">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Search..."
-                              onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            <span className="bx bx-search-alt"></span>
-                          </div>
-                        </form>
-                      </div>
-                      <div
-                        className="input-group d-flex justify-content-end align-items-center"
-                        id="datepicker1"
-                      >
+                      <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                         <div
-                          style={{
-                            backgroundColor: "#fff",
-                            color: "#2C2F33",
-                            cursor: " pointer",
-                            padding: "7px 10px",
-                            border: "2px solid #ccc",
-                            width: " 100%",
-                          }}
+                          className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                          role="toolbar"
                         >
-                          <DatePickRange
-                            onCallback={handleCallback}
-                            startDate={moment(date.startDate).format(
-                              "YYYY-MM-DD"
-                            )}
-                            endDate={moment(date.endDate).format("YYYY-MM-DD")}
-                          />
+                          <h4 className="card-title text-capitalize mb-0 ">
+                            All rent and Bills invoices
+                          </h4>
+
+                          <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                            <div>
+                              <form className="app-search d-none d-lg-block p-2">
+                                <div className="position-relative">
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search..."
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                  />
+                                  <span className="bx bx-search-alt"></span>
+                                </div>
+                              </form>
+                            </div>
+                            <div
+                              className="input-group d-flex justify-content-end align-items-center"
+                              id="datepicker1"
+                            >
+                              <div
+                                style={{
+                                  backgroundColor: "#fff",
+                                  color: "#2C2F33",
+                                  cursor: " pointer",
+                                  padding: "7px 10px",
+                                  border: "2px solid #ccc",
+                                  width: " 100%",
+                                }}
+                              >
+                                <DatePickRange
+                                  onCallback={handleCallback}
+                                  startDate={moment(date.startDate).format(
+                                    "YYYY-MM-DD"
+                                  )}
+                                  endDate={moment(date.endDate).format("YYYY-MM-DD")}
+                                />
+                              </div>
+                            </div>
+                            <button className="btn btn-primary" onClick={sort}>
+                              filter
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <button className="btn btn-primary" onClick={sort}>
-                        filter
-                      </button>
-                    </div>
-                  </div>
-                </div>
                       <div className="card-body">
-                  <div className="table-responsive">
-                    <table
-                      className="table align-middle table-hover  contacts-table table-striped "
-                    
-                    >
-                      <thead className="table-light">
-                        <tr className="table-light">
-                          <th>Invoice No</th>
-                          <th>Bill Ref</th>
-                          <th>Tenant</th>
-                          <th>Properties</th>
-                          <th>Hse/Unit</th>
-                          <th>Charge Name</th>
-                          <th>Bill Amount</th>
-                          <th>Paid Amount</th>
-                          <th>Total Balance</th>
-                          <th>Due Date</th>
-                          <th>Payment Status</th>
-                          <th>Date Created</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {invoices.length > 0 &&
-                          invoices?.map((invoice, index) => (
-                            <tr data-id={index} key={index}>
-                              <td>{invoice.transactionItemId}</td>
-                              <td>{invoice.billerBillNo}</td>
-                              <td>{invoice.transaction?.tenantName}</td>
-                              <td>{invoice.transaction.premiseName}</td>
-                              <td>{invoice.transaction.premiseUnitName}</td>
-                              <td>{invoice.applicableChargeName}</td>
-                              <td>
-                                {formatCurrency.format(invoice.billAmount)}
-                              </td>
-                              <td>
-                                {formatCurrency.format(invoice.billPaidAmount)}
-                              </td>
-                              <td className={"text-right"}>
-                                <span
-                                  className={
-                                    invoice.billPaidAmount > invoice.billAmount
-                                      ? "fw-semibold text-success"
-                                      : "fw-semibold text-danger"
-                                  }
-                                >
-                                  {formatCurrency.format(
-                                    invoice.billAmount - invoice.billPaidAmount
-                                  )}
-                                </span>
-                              </td>
-                              <td>
-                                {moment(invoice?.invoiceDate).format(
-                                  "DD-MM-YYYY"
-                                )}
-                              </td>
-                              <td>
-                                <StatusBadge type={invoice?.paymentStatus} />
-                              </td>
-                              <td>
-                                {moment(invoice.dateTimeCreated).format(
-                                  "YYYY-MM-DD HH:mm"
-                                )}
-                              </td>
-                              <td>
-                                        <div className="d-flex justify-content-end">
-                                          <div className="dropdown">
+                        <div className="table-responsive">
+                          <table
+                            className="table align-middle table-hover  contacts-table table-striped "
+
+                          >
+                            <thead className="table-light">
+                              <tr className="table-light">
+                                <th>Invoice No</th>
+                                <th>Bill Ref</th>
+                                <th>Tenant</th>
+                                <th>Properties</th>
+                                <th>Hse/Unit</th>
+                                <th>Charge Name</th>
+                                <th>Bill Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Total Balance</th>
+                                <th>Due Date</th>
+                                <th>Payment Status</th>
+                                <th>Date Created</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {invoices.length > 0 &&
+                                invoices?.map((invoice, index) => (
+                                  <tr data-id={index} key={index}>
+                                    <td>{invoice.transactionItemId}</td>
+                                    <td>{invoice.billerBillNo}</td>
+                                    <td>{invoice.transaction?.tenantName}</td>
+                                    <td>{invoice.transaction.premiseName}</td>
+                                    <td>{invoice.transaction.premiseUnitName}</td>
+                                    <td>{invoice.applicableChargeName}</td>
+                                    <td>
+                                      {formatCurrency.format(invoice.billAmount)}
+                                    </td>
+                                    <td>
+                                      {formatCurrency.format(invoice.billPaidAmount)}
+                                    </td>
+                                    <td className={"text-right"}>
+                                      <span
+                                        className={
+                                          invoice.billPaidAmount > invoice.billAmount
+                                            ? "fw-semibold text-success"
+                                            : "fw-semibold text-danger"
+                                        }
+                                      >
+                                        {formatCurrency.format(
+                                          invoice.billAmount - invoice.billPaidAmount
+                                        )}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      {moment(invoice?.invoiceDate).format(
+                                        "DD-MM-YYYY"
+                                      )}
+                                    </td>
+                                    <td>
+                                      <StatusBadge type={invoice?.paymentStatus} />
+                                    </td>
+                                    <td>
+                                      {moment(invoice.dateTimeCreated).format(
+                                        "YYYY-MM-DD HH:mm"
+                                      )}
+                                    </td>
+                                    <td>
+                                      <div className="d-flex justify-content-end">
+                                        <div className="dropdown">
+                                          <a
+                                            className="text-muted font-size-16"
+                                            role="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-haspopup="true"
+                                          >
+                                            <i className="bx bx-dots-vertical-rounded"></i>
+                                          </a>
+                                          <div className="dropdown-menu dropdown-menu-end ">
                                             <a
-                                              className="text-muted font-size-16"
-                                              role="button"
-                                              data-bs-toggle="dropdown"
-                                              aria-haspopup="true"
+                                              className="dropdown-item cursor-pointer"
+                                              onClick={() => {
+                                                getOneInvoice(
+                                                  invoice.transactionItemId
+                                                );
+                                              }}
                                             >
-                                              <i className="bx bx-dots-vertical-rounded"></i>
+                                              <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                              View
                                             </a>
-                                            <div className="dropdown-menu dropdown-menu-end ">
-                                              <a
-                                                className="dropdown-item cursor-pointer"
-                                                onClick={() => {
-                                                  getOneInvoice(
-                                                    invoice.transactionItemId
-                                                  );
-                                                }}
-                                              >
-                                                <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                                View
-                                              </a>
-                                              <a
-                                                className="dropdown-item cursor-pointer"
-                                                onClick={() => {
-                                                  handleModeChange("Email");
-                                                  handleClicked(invoice, "Email");
-                                                }}
-                                              >
-                                                <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                                Email Tenant
-                                              </a>
-                                              <a
-                                                className="dropdown-item cursor-pointer"
-                                                onClick={() => {
-                                                  handleModeChange("SMS");
-                                                  handleClicked(invoice, "SMS");
-                                                }}
-                                              >
-                                                <i className="font-size-15 mdi mdi-chat me-3"></i>
-                                                Send as SMS
-                                              </a>
-                                            </div>
+                                            <a
+                                              className="dropdown-item cursor-pointer"
+                                              onClick={() => {
+                                                handleModeChange("Email");
+                                                handleClicked(invoice, "Email");
+                                              }}
+                                            >
+                                              <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                              Email Tenant
+                                            </a>
+                                            <a
+                                              className="dropdown-item cursor-pointer"
+                                              onClick={() => {
+                                                handleModeChange("SMS");
+                                                handleClicked(invoice, "SMS");
+                                              }}
+                                            >
+                                              <i className="font-size-15 mdi mdi-chat me-3"></i>
+                                              Send as SMS
+                                            </a>
                                           </div>
                                         </div>
-                                      </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    
-                    </table>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                    {pageCount !== 0 && (
-                      <>
-                        <select
-                          className="btn btn-md btn-primary"
-                          title="Select A range"
-                          onChange={(e) => sortSize(e)}
-                          value={size}
-                        >
-                          <option className="bs-title-option" value="">
-                            Select A range
-                          </option>
-                          <option value="10">10 Rows</option>
-                          <option value="30">30 Rows</option>
-                          <option value="50">50 Rows</option>
-                        </select>
-                        <nav
-                          aria-label="Page navigation comments"
-                          className="mt-4"
-                        >
-                          <ReactPaginate
-                            previousLabel="<"
-                            nextLabel=">"
-                            breakLabel="..."
-                            breakClassName="page-item"
-                            breakLinkClassName="page-link"
-                            pageCount={pageCount}
-                            pageRangeDisplayed={4}
-                            marginPagesDisplayed={2}
-                            containerClassName="pagination justify-content-center"
-                            pageClassName="page-item"
-                            pageLinkClassName="page-link"
-                            previousClassName="page-item"
-                            previousLinkClassName="page-link"
-                            nextClassName="page-item"
-                            nextLinkClassName="page-link"
-                            activeClassName="active"
-                            onPageChange={(data) => handlePageClick(data)}
-                            forcePage={page}
-                          />
-                        </nav>
-                      </>
-                    )}
-                  </div>
-                  {pageCount !== 0 && (
-                    <p className="font-medium  text-muted">
-                      showing page{" "}
-                      <span className="text-primary">
-                        {pageCount === 0 ? page : page + 1}
-                      </span>{" "}
-                      of<span className="text-primary"> {pageCount}</span> pages
-                    </p>
-                  )}
-                </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                            </tbody>
+
+                          </table>
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center">
+                          {pageCount !== 0 && (
+                            <>
+                              <select
+                                className="btn btn-md btn-primary"
+                                title="Select A range"
+                                onChange={(e) => sortSize(e)}
+                                value={size}
+                              >
+                                <option className="bs-title-option" value="">
+                                  Select A range
+                                </option>
+                                <option value="10">10 Rows</option>
+                                <option value="30">30 Rows</option>
+                                <option value="50">50 Rows</option>
+                              </select>
+                              <nav
+                                aria-label="Page navigation comments"
+                                className="mt-4"
+                              >
+                                <ReactPaginate
+                                  previousLabel="<"
+                                  nextLabel=">"
+                                  breakLabel="..."
+                                  breakClassName="page-item"
+                                  breakLinkClassName="page-link"
+                                  pageCount={pageCount}
+                                  pageRangeDisplayed={4}
+                                  marginPagesDisplayed={2}
+                                  containerClassName="pagination justify-content-center"
+                                  pageClassName="page-item"
+                                  pageLinkClassName="page-link"
+                                  previousClassName="page-item"
+                                  previousLinkClassName="page-link"
+                                  nextClassName="page-item"
+                                  nextLinkClassName="page-link"
+                                  activeClassName="active"
+                                  onPageChange={(data) => handlePageClick(data)}
+                                  forcePage={page}
+                                />
+                              </nav>
+                            </>
+                          )}
+                        </div>
+                        {pageCount !== 0 && (
+                          <p className="font-medium  text-muted">
+                            showing page{" "}
+                            <span className="text-primary">
+                              {pageCount === 0 ? page : page + 1}
+                            </span>{" "}
+                            of<span className="text-primary"> {pageCount}</span> pages
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -3766,19 +3781,19 @@ function OneTenant() {
                       //       --Select TenancyStatus--
                       //     </option>
                       // {tenantStatuses &&
-                        //       tenantStatuses.map((tenant, index) => {
-                        //         return (
-                        //           <option key={index} value={tenant}>
-                        //             {tenant}
-                        //           </option>
-                        //         );
-                        //       })}
-                        //   </select>
-                        // </div>
-                      }
-                    </div>
+                      //       tenantStatuses.map((tenant, index) => {
+                      //         return (
+                      //           <option key={index} value={tenant}>
+                      //             {tenant}
+                      //           </option>
+                      //         );
+                      //       })}
+                      //   </select>
+                      // </div>
+                    }
                   </div>
                 </div>
+              </div>
 
               <div class="modal-footer">
                 <button

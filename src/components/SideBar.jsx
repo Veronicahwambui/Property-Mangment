@@ -100,20 +100,20 @@ function SideBar() {
                 </li>
                 <li>
                   <NavLink to="/landord-statements">
-                    Landlord Statements
+                    Landlord Settlements
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/new-statement">Create New Statements</NavLink>
+                  <NavLink to="/new-statement">Receive Payment</NavLink>
                 </li>
                 <li>
                   <NavLink to="/unallocated-payments">
                     Unallocated Payments
                   </NavLink>
                 </li>
-                <li>
+                {/* <li>
                   <NavLink to="/settlements">Settlements</NavLink>
-                </li>
+                </li> */}
               </ul>
             </li>
 

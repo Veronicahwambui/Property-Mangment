@@ -984,8 +984,8 @@ const pieChart = {
   };
   const getInvoices = () => {
     let data = {
-      startDate: startDate2,
-      endDate: endDate2,
+      startDate: date.startDate,
+      endDate: date.endDate,
       premiseId: userId,
       search: searchTerm.trim(),
     };
