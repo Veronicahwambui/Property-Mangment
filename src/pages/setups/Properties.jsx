@@ -1542,6 +1542,7 @@ const UpdatePremise = () => {
             </form>
           </div>
         </div>
+        </div>
 
         {/* confirm deactivate  */}
         <div
@@ -1578,6 +1579,7 @@ const UpdatePremise = () => {
                 </button>
               </div>
             </div>
+          </div>
           </div>
 
           {/* confirm dactivate  */}
@@ -1989,8 +1991,8 @@ const UpdatePremise = () => {
 
       </div>
       </div>
-      </div>
-   </div>
+  
+  
     </>
   );
 }

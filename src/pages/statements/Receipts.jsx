@@ -10,13 +10,25 @@ import axios from "axios";
 import { confirmAlert } from "react-confirm-alert";
 import authService from "../../services/auth.service";
 import Message from "../../components/Message";
+import DatePickRange from "../../components/Datepicker";
 
 function Receipts() {
   const [statements, setstatements] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
   const [activeInvoiceItems, setactiveInvoiceItems] = useState([]);
-  const [startDate, setStartDate] = useState("01/12/2022");
-  const [endDate, setEndDate] = useState("12/12/2022");
+  
+  const [date, setDate] = useState({
+    startDate: moment(new Date()).startOf("year").format("MM/DD/YYYY"),
+    endDate: moment(new Date()).format("MM/DD/YYYY"),
+  });
+  const handleCallback = (sD, eD) => {
+    setDate({
+      ...date,
+      startDate: moment(sD).format("MM/DD/YYYY"),
+      endDate: moment(eD).format("MM/DD/YYYY"),
+    });
+  };
+  
   let formatCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "KES",
@@ -48,7 +60,7 @@ function Receipts() {
   };
 
   const getStatements = () => {
-    let data = { startDate: startDate, endDate: endDate };
+    let data = { startDate: date.startDate, endDate: date.endDate };
     requestsServiceService.getStatements(data).then((res) => {
       setstatements(res.data.data);
       $("#spinner").addClass("d-none");
@@ -187,6 +199,35 @@ function Receipts() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       Receipts
                     </h4>
+                    <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                     
+                     <div
+                       className="input-group d-flex justify-content-end align-items-center"
+                       id="datepicker1"
+                     >
+                       <div
+                         style={{
+                           backgroundColor: "#fff",
+                           color: "#2C2F33",
+                           cursor: " pointer",
+                           padding: "7px 10px",
+                           border: "2px solid #ccc",
+                           width: " 100%",
+                         }}
+                       >
+                         <DatePickRange
+                           onCallback={handleCallback}
+                           startDate={moment(date.startDate).format(
+                             "YYYY-MM-DD"
+                           )}
+                           endDate={moment(date.endDate).format("YYYY-MM-DD")}
+                         />
+                       </div>
+                     </div>
+                     <button className="btn btn-primary" onClick={getStatements}>
+                       filter
+                     </button>
+                   </div>
                   </div>
                 </div>
 

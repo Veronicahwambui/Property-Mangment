@@ -306,12 +306,12 @@ function Settlements() {
                   <div className="d-flex justify-content-end align-items-center">
                     <div>
                       <div>
-                        <button
+                        {/* <button
                           className={"btn btn-primary"}
                           onClick={showModal}
                         >
                           Create New Statement
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -320,7 +320,7 @@ function Settlements() {
               <div className="card-body">
                 <div className="col-12">
                   <div className="row">
-                    <label htmlFor="">Select a landlord?</label>
+                    <label htmlFor="">Landlords</label>
                     <div className="d-flex align-items-center flex-grow-1">
                       <div className="form-group d-flex">
                         <div
@@ -338,7 +338,7 @@ function Settlements() {
                             className="form-check-label"
                             htmlFor="debit-yes"
                           >
-                            Yes
+                            Specific
                           </label>
                         </div>
                         <div className={"form-check mb-3"}>
@@ -358,7 +358,7 @@ function Settlements() {
                             className="form-check-label"
                             htmlFor="debit-no"
                           >
-                            No
+                            All
                           </label>
                         </div>
                       </div>

@@ -1,6 +1,6 @@
 /* global $ */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
@@ -94,7 +94,15 @@ function LandlordStatements() {
                 </h4>
                 <div className="d-flex justify-content-end align-items-center">
                   <div>
-                    <div></div>
+                    <div>
+                   <NavLink to="/settlements">
+                   <button
+                          className={"btn btn-primary"}
+                        >
+                          Create New Settlement
+                        </button>
+                   </NavLink>
+                    </div>
                   </div>
                 </div>
               </div>

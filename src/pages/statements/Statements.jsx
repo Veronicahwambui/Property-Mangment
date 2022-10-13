@@ -7,12 +7,23 @@ import moment from "moment";
 import ReactPaginate from "react-paginate";
 import { confirmAlert } from "react-confirm-alert";
 import DatePicker from "react-datepicker";
+import DatePickRange from "../../components/Datepicker";
 
 function Statements() {
   const [statements, setstatements] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
-  const [startDate, setStartDate] = useState("01/12/2022");
-  const [endDate, setEndDate] = useState("12/12/2022");
+  
+  const [date, setDate] = useState({
+    startDate: moment(new Date()).startOf("year").format("MM/DD/YYYY"),
+    endDate: moment(new Date()).format("MM/DD/YYYY"),
+  });
+  const handleCallback = (sD, eD) => {
+    setDate({
+      ...date,
+      startDate: moment(sD).format("MM/DD/YYYY"),
+      endDate: moment(eD).format("MM/DD/YYYY"),
+    });
+  };
   let formatCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "KES",
@@ -48,8 +59,12 @@ function Statements() {
     setPage(event.selected);
   };
 
+  const getStatement = (e) => {
+    e.preventDefault();
+    getStatements();
+  }
   const getStatements = () => {
-    let data = { startDate: startDate, endDate: endDate };
+    let data = { startDate: date.startDate, endDate: date.endDate };
     requestsServiceService.getStatements(data).then((res) => {
       setstatements(res.data.data);
       $("#spinner").addClass("d-none");
@@ -181,10 +196,35 @@ function Statements() {
                     <h4 className="card-title text-capitalize mb-0 ">
                       Tenant Statements
                     </h4>
-                    <div className="d-flex justify-content-end align-items-center">
-                      <div>
-                        <div></div>
+                   
+                    <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
+                     
+                      <div
+                        className="input-group d-flex justify-content-end align-items-center"
+                        id="datepicker1"
+                      >
+                        <div
+                          style={{
+                            backgroundColor: "#fff",
+                            color: "#2C2F33",
+                            cursor: " pointer",
+                            padding: "7px 10px",
+                            border: "2px solid #ccc",
+                            width: " 100%",
+                          }}
+                        >
+                          <DatePickRange
+                            onCallback={handleCallback}
+                            startDate={moment(date.startDate).format(
+                              "YYYY-MM-DD"
+                            )}
+                            endDate={moment(date.endDate).format("YYYY-MM-DD")}
+                          />
+                        </div>
                       </div>
+                      <button className="btn btn-primary" onClick={getStatement}>
+                        filter
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -222,7 +262,7 @@ function Statements() {
                               <td>
                                 {
                                   JSON.parse(statement.response).billNo
-                                  
+
                                 }
                               </td>
                               <td>
@@ -233,7 +273,7 @@ function Statements() {
                               <td>{statement.paidBy}</td>
                               <td>
                                 {statement?.tenant?.tenantType ===
-                                "INDIVIDUAL" ? (
+                                  "INDIVIDUAL" ? (
                                   <>
                                     {statement?.tenant?.firstName}{" "}
                                     {statement?.tenant?.lastName}
@@ -276,20 +316,20 @@ function Statements() {
                                       </span>
                                       {statement.utilisedAmount <
                                         statement.receiptAmount && (
-                                        <a
-                                          className="dropdown-item  cursor-pointer"
-                                          onClick={() => {
-                                            handleShow();
-                                            setUtilizeValues(
-                                              statement?.id,
-                                              statement?.tenant?.id
-                                            );
-                                          }}
-                                        >
-                                          <i className="font-size-15 mdi mdi-account-check me-3 "></i>
-                                          Utilize
-                                        </a>
-                                      )}
+                                          <a
+                                            className="dropdown-item  cursor-pointer"
+                                            onClick={() => {
+                                              handleShow();
+                                              setUtilizeValues(
+                                                statement?.id,
+                                                statement?.tenant?.id
+                                              );
+                                            }}
+                                          >
+                                            <i className="font-size-15 mdi mdi-account-check me-3 "></i>
+                                            Utilize
+                                          </a>
+                                        )}
                                     </div>
                                   </div>
                                 </div>
