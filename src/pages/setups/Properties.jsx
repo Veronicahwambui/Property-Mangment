@@ -920,7 +920,7 @@ const UpdatePremise = () => {
                                         class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
                                         title="deactivate"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#confirm-deactivate"
+                                        data-bs-target="#confirm-deactivate2"
                                         onClick={() => setActiveId(val.id)}
                                       >
                                         Deactivate
@@ -930,7 +930,7 @@ const UpdatePremise = () => {
                                         class="btn btn-success btn-sm btn-rounded text-uppercase px-3 py-0 mx-3"
                                         title="deactivate"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#confirm-activate"
+                                        data-bs-target="#confirm-activate2"
                                         onClick={() => setActiveId(val.id)}
                                       >
                                         Activate
@@ -1041,7 +1041,7 @@ const UpdatePremise = () => {
                           type="button"
                           class="btn btn-primary waves-effect btn-label waves-light me-3"
                           data-bs-toggle="modal"
-                          data-bs-target="#add-new-zone"
+                          data-bs-target="#add-new-unit"
                         >
                           <i class="mdi mdi-plus label-icon"></i> Add Unit Type
                         </button>
@@ -1128,7 +1128,7 @@ const UpdatePremise = () => {
                                           class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
                                           title="deactivate"
                                           data-bs-toggle="modal"
-                                          data-bs-target="#confirm-deactivate"
+                                          data-bs-target="#confirm-deactivate3"
                                           onClick={() => setActiveId(val.id)}
                                         >
                                           Deactivate
@@ -1138,7 +1138,7 @@ const UpdatePremise = () => {
                                           class="btn btn-success btn-sm  btn-rounded text-uppercase px-3 py-0 mx-3"
                                           title="deactivate"
                                           data-bs-toggle="modal"
-                                          data-bs-target="#confirm-activate"
+                                          data-bs-target="#confirm-activate3"
                                           onClick={() => setActiveId(val.id)}
                                         >
                                           Activate
@@ -1503,7 +1503,7 @@ const UpdatePremise = () => {
 
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
-                  Update  Premise Use Type
+                  Update  Property Use Type
                 </h5>
                 <button
                   type="button"
@@ -1523,49 +1523,8 @@ const UpdatePremise = () => {
 
                 </div>
               </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                ></button>
-
-                <div class="modal-header">
-                  <h5 class="modal-title" id="staticBackdropLabel">
-                    Update Premise Use Type
-                  </h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="form-group mb-4">
-                        <label for="">
-                          Premise Use Type <strong class="text-danger">*</strong>
-                        </label>
-                        <input
-                          required
-                          value={updateNames}
-                          onChange={(e) => setUpdateNames(e.target.value)}
-                          type="text"
-                          class="form-control"
-                          placeholder="Enter update name"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              
+               
                 <div class="modal-footer">
                   <button
                     type="button"
@@ -1579,7 +1538,7 @@ const UpdatePremise = () => {
                   </button>
                 </div>
 
-              </div>
+         
             </form>
           </div>
         </div>
@@ -1587,7 +1546,7 @@ const UpdatePremise = () => {
         {/* confirm deactivate  */}
         <div
           class="modal fade"
-          id="confirm-deactivate"
+          id="confirm-deactivate2"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
           role="dialog"
@@ -1613,7 +1572,7 @@ const UpdatePremise = () => {
                   type="button"
                   class="btn btn-primary"
                   data-bs-dismiss="modal"
-                  onClick={() => toggleStatus()}
+                  onClick={() => toggleStatuses()}
                 >
                   Yes
                 </button>
@@ -1624,7 +1583,7 @@ const UpdatePremise = () => {
           {/* confirm dactivate  */}
           <div
             class="modal fade"
-            id="confirm-activate"
+            id="confirm-activate2"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
             role="dialog"
@@ -1954,7 +1913,7 @@ const UpdatePremise = () => {
       {/* confirm deactivate  */}
       <div
         class="modal fade"
-        id="confirm-deactivate"
+        id="confirm-deactivate3"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"
@@ -1992,7 +1951,7 @@ const UpdatePremise = () => {
       {/* confirm dactivate  */}
       <div
         class="modal fade"
-        id="confirm-activate"
+        id="confirm-activate3"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"

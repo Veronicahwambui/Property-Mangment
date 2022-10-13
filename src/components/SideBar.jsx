@@ -243,8 +243,8 @@ function SideBar() {
                 <li>
                   <NavLink to="/auctioneer">Auctioneer </NavLink>
                 </li>
-
-
+               
+                
                 {/* <li>
                   <NavLink to="/applicablecharges">Applicable Charges</NavLink>
                 </li>

@@ -63,7 +63,7 @@ function IssueType() {
 
   useEffect(() => {
     getIssueStates();
-    requestsServiceService.allApplicableCharges().then((res) => {
+    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
       setApplicableCharges(res.data.data);
     });
     requestsServiceService
@@ -541,7 +541,7 @@ function IssueType() {
                 </div>
                {isChecked&& <div className="form-group mb-4">
                   <label htmlFor="">Charges</label> <br />
-                  {applicableCharges.length > 0 && (
+                  {applicableCharges?.length > 0 && (
                     <div className="form-group mb-4">
                       <select
                         className="form-control text-capitalize"
