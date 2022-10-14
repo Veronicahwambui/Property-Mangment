@@ -405,6 +405,7 @@ const handleEditRole = (index, event) => {
   }
 };
 
+
 //  CLlents countries
 const [allCounties, setAllCounties] = useState([]);
 const [clientCounties, setClientCounties] = useState([]);
@@ -441,7 +442,7 @@ const handlPageClick = (event) => {
 
 //   const deactivate
 
-const deactivates= (id) => {
+const deactivates = (id) => {
   requestsServiceService.deactivateCounty(id).then((res) => {
     console.log(res);
     getClientCounties();
@@ -640,7 +641,7 @@ const [zones, setZones] = useState([]);
       active: true,
       clientCountyId: newCounty,
       id: zoneId,
-      name: editName,
+      name: editNames,
     });
 
     requestsServiceService
@@ -934,16 +935,7 @@ const [zones, setZones] = useState([]);
                           General 
                         </a>
                           
-                        <a
-                          onClick={() => setActiveLink(3)}
-                          className={
-                            activeLink === 3
-                              ? "nav-item nav-link active cursor-pointer"
-                              : "nav-item cursor-pointer nav-link"
-                          }
-                        >
-                         Roles and Permissions
-                        </a>
+                    
                       
                      
                         <a
@@ -1323,172 +1315,6 @@ const [zones, setZones] = useState([]);
                        
             )}
 
-{activeLink === 3 &&(
-  <div>
-   <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                  <div
-                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
-                    <div class="d-flex align-items-center flex-grow-1">
-                      <h4 class="mb-0  bg-transparent  p-0 m-0">
-                        Permissions Register
-                      </h4>
-                    </div>
-                    <div class="d-flex">
-                      <button
-                        type="button"
-                        class="btn btn-primary waves-effect btn-label waves-light me-3"
-                        data-bs-toggle="modal"
-                        data-bs-target="#add-new-role"
-                      >
-                        <i class="mdi mdi-plus label-icon"></i> Add A role
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-body">
-                  {error.color !== "" && (
-                    <div className={"alert alert-" + error.color} role="alert">
-                      {error.message}
-                    </div>
-                  )}
-                  <div class="table-responsive table-responsive-md">
-                    <table class="table table-editable align-middle table-edits">
-                      <thead class="table-light">
-                        <tr class="text-uppercase table-dark">
-                          <th>#</th>
-                          <th>Role Name</th>
-                          <th>Status</th>
-                          <th>Date Created</th>
-                          <th class="text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {allRoles &&
-                          allRoles?.map((role, index) => (
-                            <tr data-id={index} key={index}>
-                              <td style={{ width: "80px" }}>{index + 1}</td>
-                              <td data-field="estate">{role.name}</td>
-                              <td data-field="unit-num ">
-                                <span class="badge-soft-success badge">
-                                  Active
-                                </span>
-                              </td>
-                              <td>
-                                {moment(role.dateTimeCreated).format(
-                                  "YYYY-MM-DD HH:mm"
-                                )}
-                              </td>
-
-                              <td class="text-right">
-                                <div class="dropdown">
-                                  <a
-                                    class="text-muted font-size-16"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-haspopup="true"
-                                  >
-                                    <i class="bx bx-dots-vertical-rounded"></i>
-                                  </a>
-
-                                  <div class="dropdown-menu dropdown-menu-end text-capitalize">
-                                    <p
-                                      onClick={() => getOneRole(role.id)}
-                                      class="dropdown-item"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#role-permissions"
-                                      href="#"
-                                    >
-                                      <i class="font-size-15 mdi mdi-eye-outline me-3"></i>
-                                      View Permissions
-                                    </p>
-                                    <p
-                                      onClick={() => handleEdit(role.id)}
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#edit-role"
-                                      class="dropdown-item"
-                                      href="#"
-                                    >
-                                      <i class="font-size-15 mdi mdi-pencil me-3"></i>
-                                      Edit
-                                    </p>
-                                    {/* <a class="dropdown-item text-danger" href="#"><i class="font-size-15 mdi mdi-close-circle me-3"></i>Deactivate</a> */}
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                    <div className="d-flex justify-content-between align-items-center">
-                      {pageCount !== 0 && (
-                        <>
-                          <select
-                            className="btn btn-md btn-primary"
-                            title="Select A range"
-                            onChange={(e) => sortSize(e)}
-                            value={size}
-                          >
-                            <option className="bs-title-option" value="">
-                              Select A range
-                            </option>
-                            <option value="10">10 Rows</option>
-                            <option value="30">30 Rows</option>
-                            <option value="50">50 Rows</option>
-                          </select>
-                          <nav
-                            aria-label="Page navigation comments"
-                            className="mt-4"
-                          >
-                            <ReactPaginate
-                              previousLabel="<"
-                              nextLabel=">"
-                              breakLabel="..."
-                              breakClassName="page-item"
-                              breakLinkClassName="page-link"
-                              pageCount={pageCount}
-                              pageRangeDisplayed={4}
-                              marginPagesDisplayed={2}
-                              containerClassName="pagination justify-content-center"
-                              pageClassName="page-item"
-                              pageLinkClassName="page-link"
-                              previousClassName="page-item"
-                              previousLinkClassName="page-link"
-                              nextClassName="page-item"
-                              nextLinkClassName="page-link"
-                              activeClassName="active"
-                              onPageChange={(data) => handlePageClicks(data)}
-                              forcePage={page}
-                            />
-                          </nav>
-                        </>
-                      )}
-                    </div>
-                    {pageCount !== 0 && (
-                      <p className="font-medium  text-muted">
-                        showing page{" "}
-                        <span className="text-primary">
-                          {pageCount === 0 ? page : page + 1}
-                        </span>{" "}
-                        of
-                        <span className="text-primary"> {pageCount}</span> pages
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* <!-- end col --> */}
-          </div>
-
-
-  </div>
-
-)}
       
 
       {activeLink === 4 &&(
@@ -1571,7 +1397,7 @@ const [zones, setZones] = useState([]);
                                       title="deactivate"
                                       data-bs-toggle="modal"
                                       data-bs-target="#confirm-deactivate1"
-                                      onClick={() => setActiveId(county.id)}
+                                      onClick={() => setActiveId(cou.id)}
                                     >
                                       Deactivate
                                     </button>
@@ -1581,7 +1407,7 @@ const [zones, setZones] = useState([]);
                                       title="deactivate"
                                       data-bs-toggle="modal"
                                       data-bs-target="#confirm-activate1"
-                                      onClick={() => setActiveId(county.id)}
+                                      onClick={() => setActiveId(cou.id)}
                                     >
                                       Activate
                                     </button>
@@ -2831,276 +2657,7 @@ const [zones, setZones] = useState([]);
 
 
 
-        {/* <!-- Roles permission Modal --> */}
-      {/* <!-- modals --> */}
-      <div
-        class="modal fade"
-        id="role-permissions"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div
-          class="modal-dialog modal-dialog-centered modal-lg"
-          role="document"
-        >
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">
-                Role Permissions
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            {rolePriveledges.length !== 0 && (
-              <div class="modal-body">
-                <h6 class="text-info font-14px mb-2">
-                  {oneRole.name !== undefined && oneRole.name}
-                </h6>
-                <div class="plan-features">
-                  <div className="row">
-                    {rolePriveledges &&
-                      rolePriveledges.map((prive) => (
-                        <div className="col-4">
-                          <p key={prive}>
-                            <i class="bx bx-check text-primary"></i>{" "}
-                            {prive.toLowerCase().replace(/_/g, "  ")}{" "}
-                          </p>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-            )}
-            <div class="modal-footer">
-              <button
-                onClick={() => setRolePriveledges([])}
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* <!-- adding roles modal --> */}
-      <div
-        class="modal fade"
-        id="add-new-role"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div
-          class="modal-dialog modal-dialog-centered modal-lg"
-          role="document"
-        >
-          <div class="modal-content">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                AddARole();
-              }}
-            >
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  New Role
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">
-                        Role Name <strong class="text-danger">*</strong>
-                      </label>
-                      <input
-                        type="text"
-                        value={roleName}
-                        onChange={(e) => setRoleName(e.target.value)}
-                        class="form-control"
-                        placeholder="Enter the role Name"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-12 text-capitalize">
-                    <div class="form-group mb-0">
-                      <h6 class="font-16px text-info">
-                        Select permissions Specific to the role{" "}
-                        <strong class="text-danger">*</strong>
-                      </h6>
-                    </div>
-                  </div>
-                  <div class="col-12 text-capitalize">
-                    <div class="row">
-                      {privileges &&
-                        privileges.map((priv, index) => (
-                          <div class="col-4" key={priv.id}>
-                            <div class="form-check mb-3">
-                              <input
-                                class="form-check-input"
-                                onChange={(event) =>
-                                  handleRoleChange(index, event)
-                                }
-                                type="checkbox"
-                                id="formCheck1"
-                              />
-                              <label class="form-check-label" for="formCheck1">
-                                {priv.name.toLowerCase().replace(/_/g, " ")}
-                              </label>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  data-bs-dismiss="modavxbxcvd"
-                >
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      {/* <!-- editing roles modal --> */}
-
-      <div
-        class="modal fade"
-        id="edit-role"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div
-          class="modal-dialog modal-dialog-centered modal-lg"
-          role="document"
-        >
-          <div class="modal-content">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                editARole();
-              }}
-            >
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  Edit Role
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">
-                        Role Name <strong class="text-danger">*</strong>
-                      </label>
-                      <input
-                        type="text"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        class="form-control"
-                        placeholder="Enter the role Name"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-12 text-capitalize">
-                    <div class="form-group mb-0">
-                      <h6 class="font-16px text-info">
-                        Edit permissions Specific to the role{" "}
-                        <strong class="text-danger">*</strong>
-                      </h6>
-                    </div>
-                  </div>
-                  <div class="col-12 text-capitalize">
-                    <div class="row">
-                      {privileges &&
-                        privileges.map((priv, index) => (
-                          <div className="col-4">
-                            <div className="checkbox" key={priv.id}>
-                              <input
-                                checked={editPriveledges.includes(priv.name)}
-                                type="checkbox"
-                                id={index}
-                                onChange={(event) =>
-                                  handleEditRole(index, event)
-                                }
-                              />
-                              <label
-                                className="checkbox__label"
-                                htmlFor={index}
-                              >
-                                {priv.name.toLowerCase().replace(/_/g, " ")}
-                              </label>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  data-bs-dismiss="modal"
-                >
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+    
 
   {/* create modal */}
   <div
