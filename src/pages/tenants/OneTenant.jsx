@@ -1429,7 +1429,11 @@ function OneTenant() {
                         </div>
                         <div>
                           <h5 className="text-capitalize">
-                            {dashboardData?.clientName}
+                        
+
+                            {tenantData?.tenant?.tenantType === "COMPANY"
+                                  ? tenantData?.tenant?.companyName
+                                  :tenantData?.tenant?.firstName + " " + tenantData?.tenant?.lastName}
                             {tenantData?.tenant?.active ? (
                               <span className="badge badge-pill badge-soft-success font-size-11 mr-7px">
                                 Active

@@ -384,7 +384,7 @@ function AddProperties() {
   })
 
   useEffect(() => {
-    requestsServiceService.allApplicableCharges("LANDLORD").then((res) => {
+    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
       setAC(res.data.data);
     });
     getEstates()
@@ -1203,7 +1203,6 @@ function AddProperties() {
                                     <div class="mb-4 ">
                                       <label for="basicpill-email-input ">
                                         Email{" "}
-                                        <strong class="text-danger ">*</strong>
                                       </label>
                                       <input
                                         type="email "

@@ -364,8 +364,6 @@ function AddTenant() {
     console.log(docBody);
   }, [docBody, tenantDocuments]);
 
-  const isIdFilled = tenantDocuments.length > 1;
-
   const handleidchange = (event) => {
     if (event.target.name === "file") {
       let filereader = new FileReader();
@@ -684,7 +682,6 @@ function AddTenant() {
                                 <div className="mb-4">
                                   <label htmlFor="basicpill-firstname-input">
                                     ID Num/ PPT Num
-                                    <strong className="text-danger">*</strong>
                                   </label>
                                   <input
                                     type="text"
@@ -693,7 +690,7 @@ function AddTenant() {
                                     id="basicpill-firstname-input"
                                     name="idNumber"
                                     placeholder="Enter Id no "
-                                    required
+                                  
                                   />
                                 </div>
                               </div>
@@ -702,14 +699,13 @@ function AddTenant() {
                               <label htmlFor="id-front">
                                 <i className="font-14px mdi mdi-paperclip"></i>{" "}
                                 ID FRONT{" "}
-                                <strong className="text-danger">*</strong>
                               </label>
                               <input
                                 type="file"
                                 className="form-control"
                                 name="file"
                                 onChange={(e) => handleidchange(e)}
-                                required={true}
+                             
                               />
                             </div>
                           </div>
@@ -719,14 +715,13 @@ function AddTenant() {
                               <label htmlFor="id-front">
                                 <i className="font-14px mdi mdi-paperclip"></i>{" "}
                                 ID BACK{" "}
-                                <strong className="text-danger">*</strong>
                               </label>
                               <input
                                 type="file"
                                 className="form-control"
                                 name="file"
                                 onChange={(e) => handleidchange2(e)}
-                                required={true}
+                                
                               />
                             </div>
                           </div>
@@ -860,14 +855,13 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="">
                                 Nationality{" "}
-                                <strong className="text-danger">*</strong>
                               </label>
                               <select
                                 className="form-select"
                                 data-live-search="true"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="nationality"
-                                required={true}
+                             
                               >
                                 <option></option>
                                 {countries.length > 0 && countries.map((country, index) => (
@@ -880,14 +874,13 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="">
                                 Marital Status{" "}
-                                <strong className="text-danger">*</strong>
                               </label>
                               <select
                                 className=" form-select"
                                 title="Select Marital status"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="maritalStatus"
-                                required
+                          
                               >
                                 <option></option>
                                 <option selected value="Single">Single</option>
@@ -900,7 +893,6 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="basicpill-firstname-input">
                                 Email.{" "}
-                                <strong className="text-danger">*</strong>
                               </label>
                               <input
                                 type="email"
@@ -1040,7 +1032,6 @@ function AddTenant() {
                             <div className="row">
                               <label htmlFor="" className="">
                                 This tenant has a roommate?{" "}
-                                <strong className="text-danger">*</strong>
                               </label>
                               <div className="d-flex">
                                 <div className="form-check mb-3 pr-15px">
@@ -1508,7 +1499,6 @@ function AddTenant() {
                   </button>
                   <button
                     className="btn btn-primary waves-effect kev-nxt me-3"
-                    disabled={!isIdFilled}
                   >
                     Next{" "}
                     <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
