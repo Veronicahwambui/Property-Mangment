@@ -673,17 +673,18 @@ function TenantSetup() {
                   </div>
 
 
-                  <div className="form-group app-search">
-                    <label htmlFor="" className="text-primary"> User Type </label>
-                    <select name="" id="" className="form-control mt-2"
-                      value={userType}
-                      onChange={e => setUserType(e.target.value)}>
-                      <option value="">Select</option>
-                      {userTypes?.map((auct) => (
-                        <option value={auct.name} >{auct.name}</option>
-                      ))}
-                    </select>
-                  </div>
+                  {activeLink != 3 &&
+                    <div className="form-group app-search">
+                      <label htmlFor="" className="text-primary"> User Type </label>
+                      <select name="" id="" className="form-control mt-2"
+                        value={userType}
+                        onChange={e => setUserType(e.target.value)}>
+                        <option value="">Select</option>
+                        {userTypes?.map((auct) => (
+                          <option value={auct.name} >{auct.name}</option>
+                        ))}
+                      </select>
+                    </div>}
                 </div>
               </div>
               {
@@ -2077,7 +2078,7 @@ function TenantSetup() {
                           Yes
                         </button>
                       </div>
-                      </form>
+                    </form>
                   </div>
                 </div>
               </div>
