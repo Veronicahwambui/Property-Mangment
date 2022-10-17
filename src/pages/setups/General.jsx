@@ -38,8 +38,8 @@ function IssuesTypes() {
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
 
-    setIssueTypes(lists.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(lists.length / size));
+    setIssueTypes(lists?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(lists?.length / size));
   }, [itemOffset, size, lists]);
 
 
