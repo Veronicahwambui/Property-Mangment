@@ -582,68 +582,578 @@ function Properties() {
               </div>
             </div>
           </div>
-          {/* <!-- end page title --> */}
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-body pt-2 pb-3 align-items-center d-flex">
-                  <div
-                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
-                    <nav class="navbar navbar-expand-md navbar-white bg-white py-2">
+        </div>
+        {/* <!-- end page title --> */}
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body pt-2 pb-3 align-items-center d-flex">
+                <div
+                  class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                  role="toolbar"
+                >
+                  <nav class="navbar navbar-expand-md navbar-white bg-white py-2">
 
 
-                      <div
-                        className="collapse navbar-collapse justify-content-between"
-                        id="navbarNavAltMarkup"
-                      >
-                        <div className="navbar-nav">
-                          <a
-                            onClick={() => setActiveLink(1)}
-                            className={
-                              activeLink === 1
-                                ? "nav-item nav-link active cursor-pointer"
-                                : "nav-item cursor-pointer nav-link"
-                            }
-                          >
-                            Property Types <span className="sr-only"></span>
-                          </a>
+                    <div
+                      className="collapse navbar-collapse justify-content-between"
+                      id="navbarNavAltMarkup"
+                    >
+                      <div className="navbar-nav">
+                        <a
+                          onClick={() => setActiveLink(1)}
+                          className={
+                            activeLink === 1
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
+                          Property Types <span className="sr-only"></span>
+                        </a>
 
-                          <a
-                            onClick={() => setActiveLink(2)}
-                            className={
-                              activeLink === 2
-                                ? "nav-item nav-link active cursor-pointer"
-                                : "nav-item cursor-pointer nav-link"
-                            }
-                          >
-                            Property Use Types
-                          </a>
-                          <a
-                            onClick={() => setActiveLink(3)}
-                            className={
-                              activeLink === 3
-                                ? "nav-item nav-link active cursor-pointer"
-                                : "nav-item cursor-pointer nav-link"
-                            }
-                          >
-                            Unit Types
-                          </a>
+                        <a
+                          onClick={() => setActiveLink(2)}
+                          className={
+                            activeLink === 2
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
+                          Property Use Types
+                        </a>
+                        <a
+                          onClick={() => setActiveLink(3)}
+                          className={
+                            activeLink === 3
+                              ? "nav-item nav-link active cursor-pointer"
+                              : "nav-item cursor-pointer nav-link"
+                          }
+                        >
+                          Unit Types
+                        </a>
 
+
+                      </div>
+                    </div>
+                  </nav>
+                </div>
+              </div>
+            </div>
+
+            {activeLink === 1 && (
+              <div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                        <div
+                          class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                          role="toolbar"
+                        >
+                          <div class="d-flex align-items-center flex-grow-1">
+                            <h4 class="mb-0  bg-transparent  p-0 m-0">
+                              Property Type Register
+                            </h4>
+                          </div>
+
+
+                          <div class="d-flex">
+                            <button
+                              onClick={() => {
+                                setCreateName("");
+                                fetchAll();
+                              }}
+                              type="button"
+                              class="btn btn-primary waves-effect btn-label waves-light me-3"
+                              data-bs-toggle="modal"
+                              data-bs-target="#add-new-zone"
+                            >
+                              <i class="mdi mdi-plus label-icon"></i> Add Property Type
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        {error.color !== "" && (
+                          <div className={"alert alert-" + error.color} role="alert">
+                            {error.message}
+                          </div>
+                        )}
+                        <div class="table-responsive table-responsive-md">
+                          <table class="table table-editable align-middle table-edits">
+                            <thead class="table-light">
+                              <tr class="text-uppercase table-dark">
+                                <th>#</th>
+                                <th>Property Type</th>
+                                <th>Status</th>
+                                <th>Date Created</th>
+
+                                <th class="text-right">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {premiseTypes &&
+                                premiseTypes?.map((val, index) => {
+                                  return (
+                                    <tr data-id="1" key={val.id}>
+                                      <td style={{ width: "80px" }}>{index + 1}</td>
+                                      <td
+                                        data-field="unit-num "
+                                        className="text-capitalize"
+                                      >
+                                        {val.name}
+                                      </td>
+                                      <td data-field="unit-num ">
+                                        {val.active ? (
+                                          <span class="badge-soft-success badge">
+                                            Active
+                                          </span>
+                                        ) : (
+                                          <span class="badge-soft-danger badge">
+                                            Inactive
+                                          </span>
+                                        )}
+                                      </td>
+                                      <td>
+                                        {moment(val.dateTimeCreated).format(
+                                          "YYYY-MM-DD HH:mm"
+                                        )}
+                                      </td>
+
+                                      <td class="text-right cell-change text-nowrap ">
+                                        <div class="d-flex align-items-center">
+                                          <a
+                                            onClick={() => {
+                                              setActiveId(val.id);
+                                              setUpdateName(val.name);
+                                            }}
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#update-modal"
+                                            class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
+                                            title="Edit "
+                                          >
+                                            <i class="bx bx-edit-alt "></i>
+                                          </a>
+
+                                          {val.active ? (
+                                            <button
+                                              class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
+                                              title="deactivate"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#confirm-deactivate"
+                                              onClick={() => setActiveId(val.id)}
+                                            >
+                                              Deactivate
+                                            </button>
+                                          ) : (
+                                            <button
+                                              class="btn btn-success btn-sm btn-rounded text-uppercase px-3 py-0 mx-3"
+                                              title="deactivate"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#confirm-activate"
+                                              onClick={() => setActiveId(val.id)}
+                                            >
+                                              Activate
+                                            </button>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                            </tbody>
+                          </table>
+                          <div className="d-flex justify-content-between align-items-center">
+                            {pageCount !== 0 && (
+                              <>
+                                <select
+                                  className="btn btn-md btn-primary"
+                                  title="Select A range"
+                                  onChange={(e) => sortSize(e)}
+                                  value={size}
+                                >
+                                  <option className="bs-title-option" value="">
+                                    Select A range
+                                  </option>
+                                  <option value="10">10 Rows</option>
+                                  <option value="30">30 Rows</option>
+                                  <option value="50">50 Rows</option>
+                                </select>
+                                <nav
+                                  aria-label="Page navigation comments"
+                                  className="mt-4"
+                                >
+                                  <ReactPaginate
+                                    previousLabel="<"
+                                    nextLabel=">"
+                                    breakLabel="..."
+                                    breakClassName="page-item"
+                                    breakLinkClassName="page-link"
+                                    pageCount={pageCount}
+                                    pageRangeDisplayed={4}
+                                    marginPagesDisplayed={2}
+                                    containerClassName="pagination justify-content-center"
+                                    pageClassName="page-item"
+                                    pageLinkClassName="page-link"
+                                    previousClassName="page-item"
+                                    previousLinkClassName="page-link"
+                                    nextClassName="page-item"
+                                    nextLinkClassName="page-link"
+                                    activeClassName="active"
+                                    onPageChange={(data) => handlePageClick(data)}
+                                    forcePage={page}
+                                  />
+                                </nav>
+                              </>
+                            )}
+                          </div>
+                          {pageCount !== 0 && (
+                            <p className="font-medium  text-muted">
+                              showing page{" "}
+                              <span className="text-primary">
+                                {pageCount === 0 ? page : page + 1}
+                              </span>{" "}
+                              of
+                              <span className="text-primary"> {pageCount}</span> pages
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* <!-- end col --> */}
+                </div>
+              </div>
+            )}
+
+            {activeLink === 2 && (
+              <div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                        <div
+                          class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                          role="toolbar"
+                        >
+                          <div class="d-flex align-items-center flex-grow-1">
+                            <h4 class="mb-0  bg-transparent  p-0 m-0">
+                              Property Use Type Register
+                            </h4>
+                          </div>
+                          <div class="d-flex">
+                            <button
+                              onClick={() => { setCreateNames(''); fetchAllPremise() }}
+                              type="button"
+                              class="btn btn-primary waves-effect btn-label waves-light me-3"
+                              data-bs-toggle="modal"
+                              data-bs-target="#add-new-premise"
+                            >
+                              <i class="mdi mdi-plus label-icon"></i> Add Property Use Type
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        {error.color !== "" &&
+                          <div className={"alert alert-" + error.color} role="alert">
+                            {error.message}
+                          </div>
+                        }
+                        <div class="table-responsive table-responsive-md">
+                          <table class="table table-editable align-middle table-edits">
+                            <thead class="table-light">
+                              <tr class="text-uppercase table-dark">
+                                <th>#</th>
+                                <th>Property Use Type</th>
+                                <th>Status</th>
+                                <th>Date Created</th>
+
+                                <th class="text-right">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {premiseUseTypes &&
+                                premiseUseTypes?.map((val, index) => {
+                                  return (
+                                    <tr data-id="1" key={val.id}>
+                                      <td style={{ width: "80px" }}>{index + 1}</td>
+                                      <td
+                                        data-field="unit-num "
+                                        className="text-capitalize"
+                                      >
+                                        {val.name}
+                                      </td>
+                                      <td data-field="unit-num ">
+                                        {val.active ? (
+                                          <span class="badge-soft-success badge">
+                                            Active
+                                          </span>
+                                        ) : (
+                                          <span class="badge-soft-danger badge">
+                                            Inactive
+                                          </span>
+                                        )}
+                                      </td>
+                                      <td>
+                                        {moment(val.dateTimeCreated).format(
+                                          "YYYY-MM-DD HH:mm"
+                                        )}
+                                      </td>
+
+                                      <td class="text-right cell-change text-nowrap ">
+                                        <div class="d-flex align-items-center">
+                                          <a
+                                            onClick={() => {
+                                              setActiveId(val.id);
+                                              setUpdateNames(val.name);
+                                            }}
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#update-premise"
+                                            class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
+                                            title="Edit "
+                                          >
+                                            <i class="bx bx-edit-alt "></i>
+                                          </a>
+
+                                          {val.active ? (
+                                            <button
+                                              class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
+                                              title="deactivate"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#confirm-deactivate2"
+                                              onClick={() => setActiveId(val.id)}
+                                            >
+                                              Deactivate
+                                            </button>
+                                          ) : (
+                                            <button
+                                              class="btn btn-success btn-sm btn-rounded text-uppercase px-3 py-0 mx-3"
+                                              title="deactivate"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#confirm-activate2"
+                                              onClick={() => setActiveId(val.id)}
+                                            >
+                                              Activate
+                                            </button>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center">
+                          {pageCount !== 0 && (
+                            <>
+                              <select
+                                className="btn btn-md btn-primary"
+                                title="Select A range"
+                                onChange={(e) => sortSize(e)}
+                                value={size}
+                              >
+                                <option className="bs-title-option" value="">
+                                  Select A range
+                                </option>
+                                <option value="10">10 Rows</option>
+                                <option value="30">30 Rows</option>
+                                <option value="50">50 Rows</option>
+                              </select>
+                              <nav
+                                aria-label="Page navigation comments"
+                                className="mt-4"
+                              >
+                                <div class="d-flex align-items-center flex-grow-1">
+                                  <h4 class="mb-0  bg-transparent  p-0 m-0">
+                                    Property Use Type Register
+                                  </h4>
+                                </div>
+                                <div class="d-flex">
+                                  <button
+                                    onClick={() => { setCreateNames(''); fetchAllPremise() }}
+                                    type="button"
+                                    class="btn btn-primary waves-effect btn-label waves-light me-3"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#add-new-premise"
+                                  >
+                                    <i class="mdi mdi-plus label-icon"></i> Add Property Use Type
+                                  </button>
+                                </div>
+
+
+                                <div class="card-body">
+                                  {error.color !== "" &&
+                                    <div className={"alert alert-" + error.color} role="alert">
+                                      {error.message}
+                                    </div>
+                                  }
+                                  <div class="table-responsive table-responsive-md">
+                                    <table class="table table-editable align-middle table-edits">
+                                      <thead class="table-light">
+                                        <tr class="text-uppercase table-dark">
+                                          <th>#</th>
+                                          <th>Property Use Type</th>
+                                          <th>Status</th>
+                                          <th>Date Created</th>
+
+                                          <th class="text-right">Actions</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {premiseUseTypes &&
+                                          premiseUseTypes?.map((val, index) => {
+                                            return (
+                                              <tr data-id="1" key={val.id}>
+                                                <td style={{ width: "80px" }}>{index + 1}</td>
+                                                <td
+                                                  data-field="unit-num "
+                                                  className="text-capitalize"
+                                                >
+                                                  {val.name}
+                                                </td>
+                                                <td data-field="unit-num ">
+                                                  {val.active ? (
+                                                    <span class="badge-soft-success badge">
+                                                      Active
+                                                    </span>
+                                                  ) : (
+                                                    <span class="badge-soft-danger badge">
+                                                      Inactive
+                                                    </span>
+                                                  )}
+                                                </td>
+                                                <td>
+                                                  {moment(val.dateTimeCreated).format(
+                                                    "YYYY-MM-DD HH:mm"
+                                                  )}
+                                                </td>
+
+                                                <td class="text-right cell-change text-nowrap ">
+                                                  <div class="d-flex align-items-center">
+                                                    <a
+                                                      onClick={() => {
+                                                        setActiveId(val.id);
+                                                        setUpdateNames(val.name);
+                                                      }}
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#update-premise"
+                                                      class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
+                                                      title="Edit "
+                                                    >
+                                                      <i class="bx bx-edit-alt "></i>
+                                                    </a>
+
+                                                    {val.active ? (
+                                                      <button
+                                                        class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
+                                                        title="deactivate"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirm-deactivate"
+                                                        onClick={() => setActiveId(val.id)}
+                                                      >
+                                                        Deactivate
+                                                      </button>
+                                                    ) : (
+                                                      <button
+                                                        class="btn btn-success btn-sm btn-rounded text-uppercase px-3 py-0 mx-3"
+                                                        title="deactivate"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirm-activate"
+                                                        onClick={() => setActiveId(val.id)}
+                                                      >
+                                                        Activate
+                                                      </button>
+                                                    )}
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            );
+                                          })}
+                                      </tbody>
+                                    </table>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                      {pageCount !== 0 && (
+                                        <>
+                                          <select
+                                            className="btn btn-md btn-primary"
+                                            title="Select A range"
+                                            onChange={(e) => sortSize(e)}
+                                            value={size}
+                                          >
+                                            <option className="bs-title-option" value="">
+                                              Select A range
+                                            </option>
+                                            <option value="10">10 Rows</option>
+                                            <option value="30">30 Rows</option>
+                                            <option value="50">50 Rows</option>
+                                          </select>
+                                          <nav
+                                            aria-label="Page navigation comments"
+                                            className="mt-4"
+                                          >
+                                            <ReactPaginate
+                                              previousLabel="<"
+                                              nextLabel=">"
+                                              breakLabel="..."
+                                              breakClassName="page-item"
+                                              breakLinkClassName="page-link"
+                                              pageCount={pageCount}
+                                              pageRangeDisplayed={4}
+                                              marginPagesDisplayed={2}
+                                              containerClassName="pagination justify-content-center"
+                                              pageClassName="page-item"
+                                              pageLinkClassName="page-link"
+                                              previousClassName="page-item"
+                                              previousLinkClassName="page-link"
+                                              nextClassName="page-item"
+                                              nextLinkClassName="page-link"
+                                              activeClassName="active"
+                                              onPageChange={(data) => handlePageClicks(data)}
+                                              forcePage={page}
+                                            />
+                                          </nav>
+                                        </>
+                                      )}
+                                    </div>
+                                    {pageCount !== 0 && (
+                                      <p className="font-medium  text-muted">
+                                        showing page{" "}
+                                        <span className="text-primary">
+                                          {pageCount === 0 ? page : page + 1}
+                                        </span>{" "}
+                                        of
+                                        <span className="text-primary"> {pageCount}</span> pages
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </nav>
+                            </>
+
+                          )}
 
                         </div>
                       </div>
-                    </nav>
+                    </div>
                   </div>
                 </div>
               </div>
+            )}
 
-              {activeLink === 1 && (
-                <div>
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="card">
+            {activeLink === 3 && (
+              <div>
+
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <div className="card-body">
+                        {error.color !== "" && (
+                          <div className={"alert alert-" + error.color} role="alert">
+                            {error.message}
+                          </div>
+                        )}
                         <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                           <div
                             class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
@@ -651,50 +1161,49 @@ function Properties() {
                           >
                             <div class="d-flex align-items-center flex-grow-1">
                               <h4 class="mb-0  bg-transparent  p-0 m-0">
-                                Property Type Register
+                                Unit Types
                               </h4>
                             </div>
-
-
                             <div class="d-flex">
                               <button
                                 onClick={() => {
-                                  setCreateName("");
-                                  fetchAll();
+                                  setMonthCountForTenancyRenewal("");
+                                  setPurpose("");
+                                  setNumberOfRooms("");
+                                  setSquarage("");
                                 }}
                                 type="button"
                                 class="btn btn-primary waves-effect btn-label waves-light me-3"
                                 data-bs-toggle="modal"
-                                data-bs-target="#add-new-zone"
+                                data-bs-target="#add-new-unit"
                               >
-                                <i class="mdi mdi-plus label-icon"></i> Add Property Type
+                                <i class="mdi mdi-plus label-icon"></i> Add Unit Type
                               </button>
                             </div>
                           </div>
                         </div>
                         <div class="card-body">
-                          {error.color !== "" && (
-                            <div className={"alert alert-" + error.color} role="alert">
-                              {error.message}
-                            </div>
-                          )}
                           <div class="table-responsive table-responsive-md">
                             <table class="table table-editable align-middle table-edits">
                               <thead class="table-light">
                                 <tr class="text-uppercase table-dark">
                                   <th>#</th>
-                                  <th>Property Type</th>
+                                  <th>Unit Type</th>
+                                  <th>purpose</th>
+                                  <th>no of rooms</th>
+                                  <th>unit size</th>
+                                  <th>months to renewal</th>
                                   <th>Status</th>
                                   <th>Date Created</th>
 
-                                  <th class="text-right">Actions</th>
+                                  <th class="text-center">Actions</th>
                                 </tr>
                               </thead>
                               <tbody>
-                                {premiseTypes &&
-                                  premiseTypes?.map((val, index) => {
+                                {unitTypes &&
+                                  unitTypes?.map((val, index) => {
                                     return (
-                                      <tr data-id="1" key={val.id}>
+                                      <tr data-id="1" key={index}>
                                         <td style={{ width: "80px" }}>{index + 1}</td>
                                         <td
                                           data-field="unit-num "
@@ -702,6 +1211,14 @@ function Properties() {
                                         >
                                           {val.name}
                                         </td>
+                                        <td className="text-capitalize">
+                                          {val.purpose}
+                                        </td>
+                                        <td>{val.numberOfRooms} rooms</td>
+                                        <td>
+                                          {val.squarage} M <sup>2</sup>
+                                        </td>
+                                        <td>{val.monthCountForTenancyRenewal}</td>
                                         <td data-field="unit-num ">
                                           {val.active ? (
                                             <span class="badge-soft-success badge">
@@ -719,15 +1236,21 @@ function Properties() {
                                           )}
                                         </td>
 
-                                        <td class="text-right cell-change text-nowrap ">
-                                          <div class="d-flex align-items-center">
+                                        <td class="text-center cell-change text-nowrap ">
+                                          <div class="d-flex align-items-center justify-content-between">
                                             <a
                                               onClick={() => {
                                                 setActiveId(val.id);
-                                                setUpdateName(val.name);
+                                                setUpdateNam(val.name);
+                                                setMonthCountForTenancyRenewal(
+                                                  val.monthCountForTenancyRenewal
+                                                );
+                                                setPurpose(val.purpose);
+                                                setNumberOfRooms(val.numberOfRooms);
+                                                setSquarage(val.squarage);
                                               }}
                                               data-bs-toggle="modal"
-                                              data-bs-target="#update-modal"
+                                              data-bs-target="#update-unit"
                                               class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                               title="Edit "
                                             >
@@ -739,17 +1262,17 @@ function Properties() {
                                                 class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
                                                 title="deactivate"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#confirm-deactivate"
+                                                data-bs-target="#confirm-deactivate3"
                                                 onClick={() => setActiveId(val.id)}
                                               >
                                                 Deactivate
                                               </button>
                                             ) : (
                                               <button
-                                                class="btn btn-success btn-sm btn-rounded text-uppercase px-3 py-0 mx-3"
+                                                class="btn btn-success btn-sm  btn-rounded text-uppercase px-3 py-0 mx-3"
                                                 title="deactivate"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#confirm-activate"
+                                                data-bs-target="#confirm-activate3"
                                                 onClick={() => setActiveId(val.id)}
                                               >
                                                 Activate
@@ -782,943 +1305,856 @@ function Properties() {
                                     aria-label="Page navigation comments"
                                     className="mt-4"
                                   >
-                                    <ReactPaginate
-                                      previousLabel="<"
-                                      nextLabel=">"
-                                      breakLabel="..."
-                                      breakClassName="page-item"
-                                      breakLinkClassName="page-link"
-                                      pageCount={pageCount}
-                                      pageRangeDisplayed={4}
-                                      marginPagesDisplayed={2}
-                                      containerClassName="pagination justify-content-center"
-                                      pageClassName="page-item"
-                                      pageLinkClassName="page-link"
-                                      previousClassName="page-item"
-                                      previousLinkClassName="page-link"
-                                      nextClassName="page-item"
-                                      nextLinkClassName="page-link"
-                                      activeClassName="active"
-                                      onPageChange={(data) => handlePageClick(data)}
-                                      forcePage={page}
-                                    />
+                                    <div class="d-flex align-items-center flex-grow-1">
+                                      <h4 class="mb-0  bg-transparent  p-0 m-0">
+                                        Unit Types
+                                      </h4>
+                                    </div>
+                                    <div class="d-flex">
+                                      <button
+                                        onClick={() => {
+                                          setMonthCountForTenancyRenewal("");
+                                          setPurpose("");
+                                          setNumberOfRooms("");
+                                          setSquarage("");
+                                        }}
+                                        type="button"
+                                        class="btn btn-primary waves-effect btn-label waves-light me-3"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#add-new-zone"
+                                      >
+                                        <i class="mdi mdi-plus label-icon"></i> Add Unit Type
+                                      </button>
+                                    </div>
                                   </nav>
                                 </>
                               )}
+
+                              <div class="card-body">
+                                <div class="table-responsive table-responsive-md">
+                                  <table class="table table-editable align-middle table-edits">
+                                    <thead class="table-light">
+                                      <tr class="text-uppercase table-dark">
+                                        <th>#</th>
+                                        <th>Unit Type</th>
+                                        <th>purpose</th>
+                                        <th>no of rooms</th>
+                                        <th>unit size</th>
+                                        <th>months to renewal</th>
+                                        <th>Status</th>
+                                        <th>Date Created</th>
+
+                                        <th class="text-center">Actions</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {unitTypes &&
+                                        unitTypes?.map((val, index) => {
+                                          return (
+                                            <tr data-id="1" key={index}>
+                                              <td style={{ width: "80px" }}>{index + 1}</td>
+                                              <td
+                                                data-field="unit-num "
+                                                className="text-capitalize"
+                                              >
+                                                {val.name}
+                                              </td>
+                                              <td className="text-capitalize">
+                                                {val.purpose}
+                                              </td>
+                                              <td>{val.numberOfRooms} rooms</td>
+                                              <td>
+                                                {val.squarage} M <sup>2</sup>
+                                              </td>
+                                              <td>{val.monthCountForTenancyRenewal}</td>
+                                              <td data-field="unit-num ">
+                                                {val.active ? (
+                                                  <span class="badge-soft-success badge">
+                                                    Active
+                                                  </span>
+                                                ) : (
+                                                  <span class="badge-soft-danger badge">
+                                                    Inactive
+                                                  </span>
+                                                )}
+                                              </td>
+                                              <td>
+                                                {moment(val.dateTimeCreated).format(
+                                                  "YYYY-MM-DD HH:mm"
+                                                )}
+                                              </td>
+
+                                              <td class="text-center cell-change text-nowrap ">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                  <a
+                                                    onClick={() => {
+                                                      setActiveId(val.id);
+                                                      setUpdateNam(val.name);
+                                                      setMonthCountForTenancyRenewal(
+                                                        val.monthCountForTenancyRenewal
+                                                      );
+                                                      setPurpose(val.purpose);
+                                                      setNumberOfRooms(val.numberOfRooms);
+                                                      setSquarage(val.squarage);
+                                                    }}
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#update-unit"
+                                                    class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
+                                                    title="Edit "
+                                                  >
+                                                    <i class="bx bx-edit-alt "></i>
+                                                  </a>
+
+                                                  {val.active ? (
+                                                    <button
+                                                      class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
+                                                      title="deactivate"
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#confirm-deactivate"
+                                                      onClick={() => setActiveId(val.id)}
+                                                    >
+                                                      Deactivate
+                                                    </button>
+                                                  ) : (
+                                                    <button
+                                                      class="btn btn-success btn-sm  btn-rounded text-uppercase px-3 py-0 mx-3"
+                                                      title="deactivate"
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#confirm-activate"
+                                                      onClick={() => setActiveId(val.id)}
+                                                    >
+                                                      Activate
+                                                    </button>
+                                                  )}
+                                                </div>
+                                              </td>
+                                            </tr>
+                                          );
+                                        })}
+                                    </tbody>
+                                  </table>
+                                  <div className="d-flex justify-content-between align-items-center">
+                                    {pageCount !== 0 && (
+                                      <>
+                                        <select
+                                          className="btn btn-md btn-primary"
+                                          title="Select A range"
+                                          onChange={(e) => sortSize(e)}
+                                          value={size}
+                                        >
+                                          <option className="bs-title-option" value="">
+                                            Select A range
+                                          </option>
+                                          <option value="10">10 Rows</option>
+                                          <option value="30">30 Rows</option>
+                                          <option value="50">50 Rows</option>
+                                        </select>
+                                        <nav
+                                          aria-label="Page navigation comments"
+                                          className="mt-4"
+                                        >
+                                          <ReactPaginate
+                                            previousLabel="<"
+                                            nextLabel=">"
+                                            breakLabel="..."
+                                            breakClassName="page-item"
+                                            breakLinkClassName="page-link"
+                                            pageCount={pageCount}
+                                            pageRangeDisplayed={4}
+                                            marginPagesDisplayed={2}
+                                            containerClassName="pagination justify-content-center"
+                                            pageClassName="page-item"
+                                            pageLinkClassName="page-link"
+                                            previousClassName="page-item"
+                                            previousLinkClassName="page-link"
+                                            nextClassName="page-item"
+                                            nextLinkClassName="page-link"
+                                            activeClassName="active"
+                                            onPageChange={(data) => handlePageClic(data)}
+                                            forcePage={page}
+                                          />
+                                        </nav>
+                                      </>
+                                    )}
+                                  </div>
+                                  {pageCount !== 0 && (
+                                    <p className="font-medium  text-muted">
+                                      showing page{" "}
+                                      <span className="text-primary">
+                                        {pageCount === 0 ? page : page + 1}
+                                      </span>{" "}
+                                      of
+                                      <span className="text-primary">
+                                        {" "}
+                                        {pageCount}
+                                      </span>{" "}
+                                      pages
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                              {/* <!-- end row --> */}
+                            </div >
+                            {/* <!-- container-fluid --> */}
+                          </div >
+                        </div >
+                      </div >
+                    </div >
+                  </div >
+                </div>
+            )}
+
+
+                {/* <!-- modals --> */}
+
+                {/* create modal */}
+                <div
+                  class="modal fade"
+                  id="add-new-zone"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          create();
+                        }}
+                      >
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="staticBackdropLabel">
+                            New  Property Type
+                          </h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="form-group mb-4">
+                                <label for=""> Property Type <strong class="text-danger">*</strong> </label>
+                                <input required value={createName} onChange={(e) => setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
+                              </div>
                             </div>
-                            {pageCount !== 0 && (
-                              <p className="font-medium  text-muted">
-                                showing page{" "}
-                                <span className="text-primary">
-                                  {pageCount === 0 ? page : page + 1}
-                                </span>{" "}
-                                of
-                                <span className="text-primary"> {pageCount}</span> pages
-                              </p>
-                            )}
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    {/* <!-- end col --> */}
-                  </div>
-                </div>
-              )}
-
-              {activeLink === 2 && (
-                <div>
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="card">
-                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                          <div
-                            class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                            role="toolbar"
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal"
                           >
-                            <div class="d-flex align-items-center flex-grow-1">
-                              <h4 class="mb-0  bg-transparent  p-0 m-0">
-                                Property Use Type Register
-                              </h4>
-                            </div>
-                            <div class="d-flex">
-                              <button
-                                onClick={() => { setCreateNames(''); fetchAllPremise() }}
-                                type="button"
-                                class="btn btn-primary waves-effect btn-label waves-light me-3"
-                                data-bs-toggle="modal"
-                                data-bs-target="#add-new-premise"
-                              >
-                                <i class="mdi mdi-plus label-icon"></i> Add Property Use Type
-                              </button>
-                            </div>
-                          </div>
+                            Close
+                          </button>
+                          <button type="submit" class="btn btn-primary">
+                            Save
+                          </button>
                         </div>
-                        <div class="card-body">
-                          {error.color !== "" &&
-                            <div className={"alert alert-" + error.color} role="alert">
-                              {error.message}
-                            </div>
-                          }
-                          <div class="table-responsive table-responsive-md">
-                            <table class="table table-editable align-middle table-edits">
-                              <thead class="table-light">
-                                <tr class="text-uppercase table-dark">
-                                  <th>#</th>
-                                  <th>Property Use Type</th>
-                                  <th>Status</th>
-                                  <th>Date Created</th>
-
-                                  <th class="text-right">Actions</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {premiseUseTypes &&
-                                  premiseUseTypes?.map((val, index) => {
-                                    return (
-                                      <tr data-id="1" key={val.id}>
-                                        <td style={{ width: "80px" }}>{index + 1}</td>
-                                        <td
-                                          data-field="unit-num "
-                                          className="text-capitalize"
-                                        >
-                                          {val.name}
-                                        </td>
-                                        <td data-field="unit-num ">
-                                          {val.active ? (
-                                            <span class="badge-soft-success badge">
-                                              Active
-                                            </span>
-                                          ) : (
-                                            <span class="badge-soft-danger badge">
-                                              Inactive
-                                            </span>
-                                          )}
-                                        </td>
-                                        <td>
-                                          {moment(val.dateTimeCreated).format(
-                                            "YYYY-MM-DD HH:mm"
-                                          )}
-                                        </td>
-
-                                        <td class="text-right cell-change text-nowrap ">
-                                          <div class="d-flex align-items-center">
-                                            <a
-                                              onClick={() => {
-                                                setActiveId(val.id);
-                                                setUpdateNames(val.name);
-                                              }}
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#update-premise"
-                                              class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
-                                              title="Edit "
-                                            >
-                                              <i class="bx bx-edit-alt "></i>
-                                            </a>
-
-                                            {val.active ? (
-                                              <button
-                                                class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
-                                                title="deactivate"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#confirm-deactivate"
-                                                onClick={() => setActiveId(val.id)}
-                                              >
-                                                Deactivate
-                                              </button>
-                                            ) : (
-                                              <button
-                                                class="btn btn-success btn-sm btn-rounded text-uppercase px-3 py-0 mx-3"
-                                                title="deactivate"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#confirm-activate"
-                                                onClick={() => setActiveId(val.id)}
-                                              >
-                                                Activate
-                                              </button>
-                                            )}
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                              </tbody>
-                            </table>
-                            <div className="d-flex justify-content-between align-items-center">
-                              {pageCount !== 0 && (
-                                <>
-                                  <select
-                                    className="btn btn-md btn-primary"
-                                    title="Select A range"
-                                    onChange={(e) => sortSize(e)}
-                                    value={size}
-                                  >
-                                    <option className="bs-title-option" value="">
-                                      Select A range
-                                    </option>
-                                    <option value="10">10 Rows</option>
-                                    <option value="30">30 Rows</option>
-                                    <option value="50">50 Rows</option>
-                                  </select>
-                                  <nav
-                                    aria-label="Page navigation comments"
-                                    className="mt-4"
-                                  >
-                                    <ReactPaginate
-                                      previousLabel="<"
-                                      nextLabel=">"
-                                      breakLabel="..."
-                                      breakClassName="page-item"
-                                      breakLinkClassName="page-link"
-                                      pageCount={pageCount}
-                                      pageRangeDisplayed={4}
-                                      marginPagesDisplayed={2}
-                                      containerClassName="pagination justify-content-center"
-                                      pageClassName="page-item"
-                                      pageLinkClassName="page-link"
-                                      previousClassName="page-item"
-                                      previousLinkClassName="page-link"
-                                      nextClassName="page-item"
-                                      nextLinkClassName="page-link"
-                                      activeClassName="active"
-                                      onPageChange={(data) => handlePageClicks(data)}
-                                      forcePage={page}
-                                    />
-                                  </nav>
-                                </>
-                              )}
-                            </div>
-                            {pageCount !== 0 && (
-                              <p className="font-medium  text-muted">
-                                showing page{" "}
-                                <span className="text-primary">
-                                  {pageCount === 0 ? page : page + 1}
-                                </span>{" "}
-                                of
-                                <span className="text-primary"> {pageCount}</span> pages
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      </form>
                     </div>
-                    {/* <!-- end col --> */}
                   </div>
 
-
                 </div>
-
-              )}
-              {activeLink === 3 && (
-                <div>
-
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="card">
-                        <div className="card-body">
-                          {error.color !== "" && (
-                            <div className={"alert alert-" + error.color} role="alert">
-                              {error.message}
-                            </div>
-                          )}
-                          <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                            <div
-                              class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                              role="toolbar"
-                            >
-                              <div class="d-flex align-items-center flex-grow-1">
-                                <h4 class="mb-0  bg-transparent  p-0 m-0">
-                                  Unit Types
-                                </h4>
-                              </div>
-                              <div class="d-flex">
-                                <button
-                                  onClick={() => {
-                                    setMonthCountForTenancyRenewal("");
-                                    setPurpose("");
-                                    setNumberOfRooms("");
-                                    setSquarage("");
-                                  }}
-                                  type="button"
-                                  class="btn btn-primary waves-effect btn-label waves-light me-3"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#add-new-zone"
-                                >
-                                  <i class="mdi mdi-plus label-icon"></i> Add Unit Type
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="card-body">
-                            <div class="table-responsive table-responsive-md">
-                              <table class="table table-editable align-middle table-edits">
-                                <thead class="table-light">
-                                  <tr class="text-uppercase table-dark">
-                                    <th>#</th>
-                                    <th>Unit Type</th>
-                                    <th>purpose</th>
-                                    <th>no of rooms</th>
-                                    <th>unit size</th>
-                                    <th>months to renewal</th>
-                                    <th>Status</th>
-                                    <th>Date Created</th>
-
-                                    <th class="text-center">Actions</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {unitTypes &&
-                                    unitTypes?.map((val, index) => {
-                                      return (
-                                        <tr data-id="1" key={index}>
-                                          <td style={{ width: "80px" }}>{index + 1}</td>
-                                          <td
-                                            data-field="unit-num "
-                                            className="text-capitalize"
-                                          >
-                                            {val.name}
-                                          </td>
-                                          <td className="text-capitalize">
-                                            {val.purpose}
-                                          </td>
-                                          <td>{val.numberOfRooms} rooms</td>
-                                          <td>
-                                            {val.squarage} M <sup>2</sup>
-                                          </td>
-                                          <td>{val.monthCountForTenancyRenewal}</td>
-                                          <td data-field="unit-num ">
-                                            {val.active ? (
-                                              <span class="badge-soft-success badge">
-                                                Active
-                                              </span>
-                                            ) : (
-                                              <span class="badge-soft-danger badge">
-                                                Inactive
-                                              </span>
-                                            )}
-                                          </td>
-                                          <td>
-                                            {moment(val.dateTimeCreated).format(
-                                              "YYYY-MM-DD HH:mm"
-                                            )}
-                                          </td>
-
-                                          <td class="text-center cell-change text-nowrap ">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                              <a
-                                                onClick={() => {
-                                                  setActiveId(val.id);
-                                                  setUpdateNam(val.name);
-                                                  setMonthCountForTenancyRenewal(
-                                                    val.monthCountForTenancyRenewal
-                                                  );
-                                                  setPurpose(val.purpose);
-                                                  setNumberOfRooms(val.numberOfRooms);
-                                                  setSquarage(val.squarage);
-                                                }}
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#update-unit"
-                                                class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
-                                                title="Edit "
-                                              >
-                                                <i class="bx bx-edit-alt "></i>
-                                              </a>
-
-                                              {val.active ? (
-                                                <button
-                                                  class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
-                                                  title="deactivate"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#confirm-deactivate"
-                                                  onClick={() => setActiveId(val.id)}
-                                                >
-                                                  Deactivate
-                                                </button>
-                                              ) : (
-                                                <button
-                                                  class="btn btn-success btn-sm  btn-rounded text-uppercase px-3 py-0 mx-3"
-                                                  title="deactivate"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#confirm-activate"
-                                                  onClick={() => setActiveId(val.id)}
-                                                >
-                                                  Activate
-                                                </button>
-                                              )}
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      );
-                                    })}
-                                </tbody>
-                              </table>
-                              <div className="d-flex justify-content-between align-items-center">
-                                {pageCount !== 0 && (
-                                  <>
-                                    <select
-                                      className="btn btn-md btn-primary"
-                                      title="Select A range"
-                                      onChange={(e) => sortSize(e)}
-                                      value={size}
-                                    >
-                                      <option className="bs-title-option" value="">
-                                        Select A range
-                                      </option>
-                                      <option value="10">10 Rows</option>
-                                      <option value="30">30 Rows</option>
-                                      <option value="50">50 Rows</option>
-                                    </select>
-                                    <nav
-                                      aria-label="Page navigation comments"
-                                      className="mt-4"
-                                    >
-                                      <ReactPaginate
-                                        previousLabel="<"
-                                        nextLabel=">"
-                                        breakLabel="..."
-                                        breakClassName="page-item"
-                                        breakLinkClassName="page-link"
-                                        pageCount={pageCount}
-                                        pageRangeDisplayed={4}
-                                        marginPagesDisplayed={2}
-                                        containerClassName="pagination justify-content-center"
-                                        pageClassName="page-item"
-                                        pageLinkClassName="page-link"
-                                        previousClassName="page-item"
-                                        previousLinkClassName="page-link"
-                                        nextClassName="page-item"
-                                        nextLinkClassName="page-link"
-                                        activeClassName="active"
-                                        onPageChange={(data) => handlePageClic(data)}
-                                        forcePage={page}
-                                      />
-                                    </nav>
-                                  </>
-                                )}
-                              </div>
-                              {pageCount !== 0 && (
-                                <p className="font-medium  text-muted">
-                                  showing page{" "}
-                                  <span className="text-primary">
-                                    {pageCount === 0 ? page : page + 1}
-                                  </span>{" "}
-                                  of
-                                  <span className="text-primary">
-                                    {" "}
-                                    {pageCount}
-                                  </span>{" "}
-                                  pages
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- end col --> */}
-                  </div>
-                </div>
-              )}
-              {/* <!-- end row --> */}
-            </div>
-            {/* <!-- container-fluid --> */}
-          </div>
-
-          {/* <!-- modals --> */}
-
-          {/* create modal */}
-          <div
-            class="modal fade"
-            id="add-new-zone"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    create();
-                  }}
+                {/* edit modal  */}
+                <div
+                  class="modal fade"
+                  id="update-premise"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
                 >
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">
-                      New  Property Type
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for=""> Property Type <strong class="text-danger">*</strong> </label>
-                          <input required value={createName} onChange={(e) => setCreateName(e.target.value)} type="text" class="form-control" placeholder="Enter create name" />
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <form onSubmit={(e) => { e.preventDefault(); UpdatePremise() }}>
+
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="staticBackdropLabel">
+                            Update  Property Use Type
+                          </h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                      Save
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-          {/* edit modal  */}
-          <div
-            class="modal fade"
-            id="update-modal"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    Update();
-                  }}
-                >
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">
-                      Update  Property Type
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">Property Type <strong class="text-danger">*</strong></label>
-                          <input required value={updateName} onChange={(e) => setUpdateName(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                      Save
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+                        <div class="modal-body">
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="form-group mb-4">
+                                <label for="">Property Use Type <strong class="text-danger">*</strong></label>
+                                <input required value={updateNames} onChange={(e) => setUpdateNames(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
+                              </div>
+                            </div>
 
-          {/* confirm deactivate  */}
-          <div
-            class="modal fade"
-            id="confirm-deactivate"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-body">
-                  <center>
-                    <h5>Deactivate this  property type?</h5>
-                  </center>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-light"
-                    data-bs-dismiss="modal"
-                  >
-                    no
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    onClick={() => toggleStatus()}
-                  >
-                    Yes
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* confirm dactivate  */}
-          <div
-            class="modal fade"
-            id="confirm-activate"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-body">
-                  <center>
-                    <h5>Activate this  property type?</h5>
-                  </center>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-light"
-                    data-bs-dismiss="modal"
-                  >
-                    no
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    onClick={() => toggleStatus()}
-                  >
-                    Yes
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* create modal */}
-          <div
-            class="modal fade"
-            id="add-new-premise"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-
-              <div class="modal-content">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    createPremise();
-
-                  }} >
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">
-                      New  Property Use Type
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-
-
-                  <div class="modal-body">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">
-                            {" "}
-                            Premise Use Type <strong class="text-danger">*</strong>
-                          </label>
-                          <input required
-                            value={createNames}
-                            onChange={(e) => setCreateNames(e.target.value)}
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter create name"
-
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button
-
-                      type="submit"
-                      class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </form>
-              </div>
-
-            </div>
-
-          </div>
-          {/* edit modal  */}
-          <div
-            class="modal fade"
-            id="update-premise"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <form onSubmit={(e) => { e.preventDefault(); UpdatePremise() }}>
-
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">
-                      Update  Premise Use Type
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">Property Use Type <strong class="text-danger">*</strong></label>
-                          <input required value={updateNames} onChange={(e) => setUpdateNames(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button
-                      type="submit"
-                      class="btn btn-primary"
-                    ></button>
-
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="staticBackdropLabel">
-                        Update Premise Use Type
-                      </h5>
-                      <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="form-group mb-4">
-                            <label for="">
-                              Premise Use Type <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              required
-                              value={updateNames}
-                              onChange={(e) => setUpdateNames(e.target.value)}
-                              type="text"
-                              class="form-control"
-                              placeholder="Enter update name"
-                            />
                           </div>
                         </div>
+
+
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal"
+                          >
+                            no
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-bs-dismiss="modal"
+                            onClick={() => toggleStatus()}
+                          >
+                            Yes
+                          </button>
+                        </div>
+
+
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                {/* confirm deactivate  */}
+                <div
+                  class="modal fade"
+                  id="confirm-deactivate2"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-body">
+                        <center>
+                          <h5>Deactivate this  property use type?</h5>
+                        </center>
                       </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button
-                        type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal"
-                      >
-                        Close
-                      </button>
-                      <button type="submit" class="btn btn-primary">
-                        Save
-                      </button>
-                    </div>
-
-                  </div>
-                </form>
-              </div>
-            </div>
-
-            {/* confirm deactivate  */}
-            <div
-              class="modal fade"
-              id="confirm-deactivate"
-              data-bs-backdrop="static"
-              data-bs-keyboard="false"
-              role="dialog"
-              aria-labelledby="staticBackdropLabel"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                  <div class="modal-body">
-                    <center>
-                      <h5>Deactivate this  property use type?</h5>
-                    </center>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      no
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      onClick={() => toggleStatus()}
-                    >
-                      Yes
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* confirm dactivate  */}
-              <div
-                class="modal fade"
-                id="confirm-activate"
-                data-bs-backdrop="static"
-                data-bs-keyboard="false"
-                role="dialog"
-                aria-labelledby="staticBackdropLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-body">
-                      <center>
-                        <h5>Activate this  property use type?</h5>
-                      </center>
-                    </div>
-                    <div class="modal-footer">
-                      <button
-                        type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal"
-                      >
-                        no
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        data-bs-dismiss="modal"
-                        onClick={() => toggleStatuses()}
-                      >
-                        Yes
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* create modal */}
-              <div
-                class="modal fade"
-                id="add-new-unit"
-                data-bs-backdrop="static"
-                data-bs-keyboard="false"
-                role="dialog"
-                aria-labelledby="staticBackdropLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        createUnit();
-                      }}
-                    >
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">
-                          New Unit Type
-                        </h5>
+                      <div class="modal-footer">
                         <button
                           type="button"
-                          class="btn-close"
+                          class="btn btn-light"
                           data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
+                        >
+                          no
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-dismiss="modal"
+                          onClick={() => toggleStatuses()}
+                        >
+                          Yes
+                        </button>
+                      </div >
+                    </div >
+                  </div >
+                </div >
+
+                {/* confirm dactivate  */}
+                < div
+                  class="modal fade"
+                  id="confirm-activate2"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
                       <div class="modal-body">
-                        <div class="row">
-                          <div class="col-12">
-                            <div class="form-group mb-4">
+                        <center>
+                          <h5>Activate this  property type?</h5>
+                        </center>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-light"
+                          data-bs-dismiss="modal"
+                        >
+                          no
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-dismiss="modal"
+                          onClick={() => toggleStatus()}
+                        >
+                          Yes
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div >
+
+                {/* create modal */}
+                < div
+                  class="modal fade"
+                  id="add-new-premise"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+
+                    <div class="modal-content">
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          createPremise();
+
+                        }} >
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="staticBackdropLabel">
+                            New  Property Use Type
+                          </h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+
+
+                        <div class="modal-body">
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="form-group mb-4">
+                                <label for="">
+                                  {" "}
+                                  Premise Use Type <strong class="text-danger">*</strong>
+                                </label>
+                                <input required
+                                  value={createNames}
+                                  onChange={(e) => setCreateNames(e.target.value)}
+                                  type="text"
+                                  class="form-control"
+                                  placeholder="Enter create name"
+
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal"
+                          >
+                            Close
+                          </button>
+                          <button
+
+                            type="submit"
+                            class="btn btn-primary"
+                            data-bs-dismiss="modal"
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+
+                  </div>
+
+                </div >
+                {/* edit modal  */}
+                < div
+                  class="modal fade"
+                  id="update-premise"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <form onSubmit={(e) => { e.preventDefault(); UpdatePremise() }}>
+
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="staticBackdropLabel">
+                            Update  Premise Use Type
+                          </h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="form-group mb-4">
+                                <label for="">Property Use Type <strong class="text-danger">*</strong></label>
+                                <input required value={updateNames} onChange={(e) => setUpdateNames(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal"
+                          >
+                            Close
+                          </button>
+                          <button
+                            type="submit"
+                            class="btn btn-primary"
+                          ></button>
+
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">
+                              Update Premise Use Type
+                            </h5>
+                            <button
+                              type="button"
+                              class="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            ></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                              <div class="col-12">
+                                <div class="form-group mb-4">
+                                  <label for="">
+                                    Premise Use Type <strong class="text-danger">*</strong>
+                                  </label>
+                                  <input
+                                    required
+                                    value={updateNames}
+                                    onChange={(e) => setUpdateNames(e.target.value)}
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Enter update name"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-light"
+                              data-bs-dismiss="modal"
+                            >
+                              Close
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                              Save
+                            </button>
+                          </div>
+
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                {/* confirm deactivate  */}
+                <div
+                  class="modal fade"
+                  id="confirm-deactivate"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-body">
+                        <center>
+                          <h5>Deactivate this  property use type?</h5>
+                        </center>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-light"
+                          data-bs-dismiss="modal"
+                        >
+                          no
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-dismiss="modal"
+                          onClick={() => toggleStatus()}
+                        >
+                          Yes
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* confirm dactivate  */}
+                <div
+                  class="modal fade"
+                  id="confirm-activate"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-body">
+                        <center>
+                          <h5>Activate this  property use type?</h5>
+                        </center>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-light"
+                          data-bs-dismiss="modal"
+                        >
+                          no
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-dismiss="modal"
+                          onClick={() => toggleStatuses()}
+                        >
+                          Yes
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* create modal */}
+                <div
+                  class="modal fade"
+                  id="add-new-unit"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          createUnit();
+                        }}
+                      >
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="staticBackdropLabel">
+                            New Unit Type
+                          </h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="form-group mb-4">
+                                <label for="">
+                                  Unit Type Name <strong class="text-danger">*</strong>
+                                </label>
+                                <input
+                                  required
+                                  value={createNam}
+                                  onChange={(e) => setCreateNam(e.target.value)}
+                                  type="text"
+                                  class="form-control"
+                                  placeholder="Enter unit type name"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-12">
                               <label for="">
-                                Unit Type Name <strong class="text-danger">*</strong>
+                                Charge Type <strong class="text-danger">*</strong>{" "}
+                              </label>
+                              <select
+                                class=" form-control"
+                                multiple
+                                onChange={(e) => setChargeTypes1(e)}
+                              >
+                                {chargeTypes &&
+                                  chargeTypes
+                                    .sort((a, b) => a.name.localeCompare(b.name))
+                                    ?.map((charge, index) => {
+                                      return (
+                                        <option
+                                          key={index}
+                                          value={charge.id}
+                                          selected={selectedChargeTypes.includes(
+                                            charge.name
+                                          )}
+                                        >
+                                          {charge.name}
+                                        </option>
+                                      );
+                                    })}
+                              </select>
+                            </div>
+
+                            <div className="form-group">
+                              <label htmlFor="">
+                                Purpose <strong class="text-danger">*</strong>
                               </label>
                               <input
                                 required
-                                value={createNam}
-                                onChange={(e) => setCreateNam(e.target.value)}
                                 type="text"
-                                class="form-control"
-                                placeholder="Enter unit type name"
+                                value={purpose}
+                                className="form-control"
+                                onChange={(event) => setPurpose(event.target.value)}
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="">
+                                Number of Rooms <strong class="text-danger">*</strong>
+                              </label>
+                              <input
+                                required
+                                type="text"
+                                value={numberOfRooms}
+                                className="form-control"
+                                onChange={(event) => setNumberOfRooms(event.target.value)}
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="">
+                                unit size in M<sup>2</sup>{" "}
+                                <strong class="text-danger">*</strong>
+                              </label>
+                              <input
+                                required
+                                type="text"
+                                value={squarage}
+                                className="form-control"
+                                onChange={(event) => setSquarage(event.target.value)}
+                              />
+                            </div>
+
+                            <div className="form-group">
+                              <label htmlFor="">
+                                Months to renewal <strong class="text-danger">*</strong>
+                              </label>
+                              <input
+                                required
+                                type="text"
+                                value={monthCountForTenancyRenewal}
+                                className="form-control"
+                                onChange={(event) =>
+                                  setMonthCountForTenancyRenewal(event.target.value)
+                                }
                               />
                             </div>
                           </div>
-                          <div class="col-12">
-                            <label for="">
-                              Charge Type <strong class="text-danger">*</strong>{" "}
-                            </label>
-                            <select
-                              class=" form-control"
-                              multiple
-                              onChange={(e) => setChargeTypes1(e)}
-                            >
-                              {chargeTypes &&
-                                chargeTypes
-                                  .sort((a, b) => a.name.localeCompare(b.name))
-                                  ?.map((charge, index) => {
+                        </div>
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal"
+                          >
+                            Close
+                          </button>
+                          <button type="submit" class="btn btn-primary">
+                            Create
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                {/* update modal  */}
+                <div
+                  class="modal fade"
+                  id="update-unit"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          UpdateUnit();
+                        }}
+                      >
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="staticBackdropLabel">
+                            Update Unit Type
+                          </h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="form-group mb-4">
+                                <label for="">
+                                  {" "}
+                                  Unit Type Name <strong class="text-danger">*</strong>
+                                </label>
+                                <input
+                                  required
+                                  value={updateNam}
+                                  onChange={(e) => setUpdateNam(e.target.value)}
+                                  type="text"
+                                  class="form-control"
+                                  placeholder="Enter update name"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-12">
+                              <label for="">
+                                Charge Type <strong class="text-danger">*</strong>{" "}
+                              </label>
+                              <select
+                                class="form-control"
+                                data-live-search="true"
+                                title="Select Applicable Charge Type"
+                                multiple
+                                onChange={(e) => setChargeTypes1(e)}
+                              >
+                                {chargeTypes &&
+                                  chargeTypes.map((charge, index) => {
                                     return (
                                       <option
                                         key={index}
@@ -1726,213 +2162,156 @@ function Properties() {
                                         selected={selectedChargeTypes.includes(
                                           charge.name
                                         )}
+                                        className="text-capitalize"
                                       >
                                         {charge.name}
                                       </option>
                                     );
                                   })}
-                            </select>
-                          </div>
+                              </select>
+                            </div>
 
-                          <div className="form-group">
-                            <label htmlFor="">
-                              Purpose <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              required
-                              type="text"
-                              value={purpose}
-                              className="form-control"
-                              onChange={(event) => setPurpose(event.target.value)}
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="">
-                              Number of Rooms <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              required
-                              type="text"
-                              value={numberOfRooms}
-                              className="form-control"
-                              onChange={(event) => setNumberOfRooms(event.target.value)}
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="">
-                              unit size in M<sup>2</sup>{" "}
-                              <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              required
-                              type="text"
-                              value={squarage}
-                              className="form-control"
-                              onChange={(event) => setSquarage(event.target.value)}
-                            />
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="">
-                              Months to renewal <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              required
-                              type="text"
-                              value={monthCountForTenancyRenewal}
-                              className="form-control"
-                              onChange={(event) =>
-                                setMonthCountForTenancyRenewal(event.target.value)
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn btn-light"
-                          data-bs-dismiss="modal"
-                        >
-                          Close
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                          Create
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              {/* update modal  */}
-              <div
-                class="modal fade"
-                id="update-unit"
-                data-bs-backdrop="static"
-                data-bs-keyboard="false"
-                role="dialog"
-                aria-labelledby="staticBackdropLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        UpdateUnit();
-                      }}
-                    >
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">
-                          Update Unit Type
-                        </h5>
-                        <button
-                          type="button"
-                          class="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div class="modal-body">
-                        <div class="row">
-                          <div class="col-12">
-                            <div class="form-group mb-4">
-                              <label for="">
-                                {" "}
-                                Unit Type Name <strong class="text-danger">*</strong>
+                            <div className="form-group">
+                              <label htmlFor="">
+                                Purpose <strong class="text-danger">*</strong>
                               </label>
                               <input
                                 required
-                                value={updateNam}
-                                onChange={(e) => setUpdateNam(e.target.value)}
                                 type="text"
-                                class="form-control"
-                                placeholder="Enter update name"
+                                value={purpose}
+                                className="form-control"
+                                onChange={(event) => setPurpose(event.target.value)}
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="">
+                                Number of Rooms <strong class="text-danger">*</strong>
+                              </label>
+                              <input
+                                required
+                                type="text"
+                                value={numberOfRooms}
+                                className="form-control"
+                                onChange={(event) => setNumberOfRooms(event.target.value)}
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="">
+                                unit size in M<sup>2</sup>{" "}
+                                <strong class="text-danger">*</strong>
+                              </label>
+                              <input
+                                required
+                                type="text"
+                                value={squarage}
+                                className="form-control"
+                                onChange={(event) => setSquarage(event.target.value)}
+                              />
+                            </div>
+
+                            <div className="form-group">
+                              <label htmlFor="">
+                                Months to renewal <strong class="text-danger">*</strong>
+                              </label>
+                              <input
+                                required
+                                type="text"
+                                value={monthCountForTenancyRenewal}
+                                className="form-control"
+                                onChange={(event) =>
+                                  setMonthCountForTenancyRenewal(event.target.value)
+                                }
                               />
                             </div>
                           </div>
-                          <div class="col-12">
-                            <label for="">
-                              Charge Type <strong class="text-danger">*</strong>{" "}
-                            </label>
-                            <select
-                              class="form-control"
-                              data-live-search="true"
-                              title="Select Applicable Charge Type"
-                              multiple
-                              onChange={(e) => setChargeTypes1(e)}
-                            >
-                              {chargeTypes &&
-                                chargeTypes.map((charge, index) => {
-                                  return (
-                                    <option
-                                      key={index}
-                                      value={charge.id}
-                                      selected={selectedChargeTypes.includes(
-                                        charge.name
-                                      )}
-                                      className="text-capitalize"
-                                    >
-                                      {charge.name}
-                                    </option>
-                                  );
-                                })}
-                            </select>
-                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal"
+                          >
+                            Close
+                          </button>
+                          <button type="submit" class="btn btn-primary">
+                            Update
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
 
-                          <div className="form-group">
-                            <label htmlFor="">
-                              Purpose <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              required
-                              type="text"
-                              value={purpose}
-                              className="form-control"
-                              onChange={(event) => setPurpose(event.target.value)}
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="">
-                              Number of Rooms <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              required
-                              type="text"
-                              value={numberOfRooms}
-                              className="form-control"
-                              onChange={(event) => setNumberOfRooms(event.target.value)}
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="">
-                              unit size in M<sup>2</sup>{" "}
-                              <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              required
-                              type="text"
-                              value={squarage}
-                              className="form-control"
-                              onChange={(event) => setSquarage(event.target.value)}
-                            />
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="">
-                              Months to renewal <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              required
-                              type="text"
-                              value={monthCountForTenancyRenewal}
-                              className="form-control"
-                              onChange={(event) =>
-                                setMonthCountForTenancyRenewal(event.target.value)
-                              }
-                            />
+                {/* confirm deactivate  */}
+                <div
+                  class="modal fade"
+                  id="confirm-deactivate3"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-body">
+                        <center>
+                          <h5>Deactivate this Unit type?</h5>
+                        </center>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-light"
+                          data-bs-dismiss="modal"
+                        />
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-body">
+                              <center>
+                                <h5>Deactivate this Unit type?</h5>
+                              </center>
+                            </div>
+                            <div class="modal-footer">
+                              <button
+                                type="button"
+                                class="btn btn-light"
+                                data-bs-dismiss="modal"
+                              >
+                                no
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                onClick={() => toggleStat()}
+                              >
+                                Yes
+                              </button>
+                            </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* confirm dactivate  */}
+                <div
+                  class="modal fade"
+                  id="confirm-activate3"
+                  data-bs-backdrop="static"
+                  data-bs-keyboard="false"
+                  role="dialog"
+                  aria-labelledby="staticBackdropLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-body">
+                        <center>
+                          <h5>Activate this Unit type?</h5>
+                        </center>
                       </div>
                       <div class="modal-footer">
                         <button
@@ -1940,100 +2319,53 @@ function Properties() {
                           class="btn btn-light"
                           data-bs-dismiss="modal"
                         >
-                          Close
+                          no
                         </button>
-                        <button type="submit" class="btn btn-primary">
-                          Update
-                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-dismiss="modal"
+                          onClick={() => toggleStat()}
+                        />
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-body">
+                              <center>
+                                <h5>Activate this Unit type?</h5>
+                              </center>
+                            </div>
+                            <div class="modal-footer">
+                              <button
+                                type="button"
+                                class="btn btn-light"
+                                data-bs-dismiss="modal"
+                              >
+                                no
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                onClick={() => toggleStat()}
+                              >
+                                Yes
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </form>
-                  </div>
-                </div>
+
+
+                    </div >
+                  </div >
+                </div >
               </div>
-
-              {/* confirm deactivate  */}
-              <div
-                class="modal fade"
-                id="confirm-deactivate"
-                data-bs-backdrop="static"
-                data-bs-keyboard="false"
-                role="dialog"
-                aria-labelledby="staticBackdropLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-body">
-                      <center>
-                        <h5>Deactivate this Unit type?</h5>
-                      </center>
-                    </div>
-                    <div class="modal-footer">
-                      <button
-                        type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal"
-                      >
-                        no
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        data-bs-dismiss="modal"
-                        onClick={() => toggleStat()}
-                      >
-                        Yes
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* confirm dactivate  */}
-              <div
-                class="modal fade"
-                id="confirm-activate"
-                data-bs-backdrop="static"
-                data-bs-keyboard="false"
-                role="dialog"
-                aria-labelledby="staticBackdropLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-body">
-                      <center>
-                        <h5>Activate this Unit type?</h5>
-                      </center>
-                    </div>
-                    <div class="modal-footer">
-                      <button
-                        type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal"
-                      >
-                        no
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        data-bs-dismiss="modal"
-                        onClick={() => toggleStat()}
-                      >
-                        Yes
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-            </div>
+            )}
           </div>
         </div>
       </div>
     </>
-  );
+  )
 }
 
 export default Properties;

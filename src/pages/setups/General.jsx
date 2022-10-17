@@ -13,10 +13,7 @@ function IssuesTypes() {
   const [issueTypes, setIssueTypes] = useState([]);
   const [activeId, setActiveId] = useState("");
   const [activeLink, setActiveLink] = useState(1);
-  const [error, setError] = useState({
-    message: "",
-    color: "",
-  });
+
 
 
 
@@ -36,23 +33,25 @@ function IssuesTypes() {
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(1);
   const [itemOffset, setItemOffset] = useState(0);
-  const [list, setlist] = useState([]);
+  const [lists, setlists] = useState([]);
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setIssueTypes(list?.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(list?.length / size));
-  }, [itemOffset, size, list]);
 
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * size) % list.length;
+    setIssueTypes(lists.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(lists.length / size));
+  }, [itemOffset, size, lists]);
+
+
+  const handlePageClicks = (event) => {
+    const newOffset = (event.selected * size) % lists.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
 
   const getIssueTypes = () => {
     requestsServiceService.getTenancyIssuesTypes().then((res) => {
-      setlist(res.data.data);
+      setlists(res.data.data);
       $("#spinner").addClass("d-none");
     });
   };
@@ -135,12 +134,12 @@ function IssuesTypes() {
         });
 
         setTimeout(() => {
-          clear();
+          cleared();
         }, 3000);
       });
   };
 
-  const clear = () => {
+  const cleared = () => {
     setError({
       ...error,
       message: "",
@@ -182,11 +181,694 @@ function IssuesTypes() {
   };
 
 
+  // ALL Roles
+  const [allRoles, setAllRoles] = useState([]);
+  const [roleName, setRoleName] = useState("");
+  const [oneRole, setOneRole] = useState([]);
+  const [editName, setEditName] = useState("");
+  const [privileges, setPrivileges] = useState([]);
+  const [roleAdd, setRoleAdd] = useState(true);
+  const [priveledgeNames, setPrivilegeNames] = useState([]);
+  const [rolePriveledges, setRolePriveledges] = useState([]);
+  const [editPriveledges, setEditPriveledges] = useState([]);
+  const [roleID, setRoleID] = useState("");
+  const [error, setError] = useState({
+    message: "",
+    color: "",
+  });
+
+  useEffect(() => {
+    getAllRoles();
+    getAllPreviledges();
+  }, []);
+
+  // PAGINATION
+  const sortSizes = (e) => {
+    setSize(parseInt(e.target.value));
+    setPage(0);
+    setItemOffset(0);
+  };
+  // const [page, setPage] = useState(0);
+  // const [size, setSize] = useState(10);
+  // const [pageCount, setPageCount] = useState(1);
+  // const [itemOffset, setItemOffset] = useState(0);
+  const [lis, setlis] = useState([]);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setAllRoles(lis.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(lis.length / size));
+  }, [itemOffset, size, lis]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * size) % lis.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
+
+  useEffect(() => {
+    getAllRoles();
+    //    getAllPreviledges()
+  }, [roleAdd]);
+
+  // get all priveledges
+  const getAllPreviledges = () => {
+    requestsServiceService
+      .getAllPreviledges()
+      .then((res) => {
+        // console.log(res.data.data);
+        setPrivileges(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleEdit = (id) => {
+    getOneRole(id);
+
+    setRoleID(id);
+  };
+
+  // add a new role
+  const AddARole = () => {
+    const data = JSON.stringify({
+      id: null,
+      name: roleName,
+      permissions: priveledgeNames,
+    });
+
+    requestsServiceService
+      .AddRole(data)
+      .then((res) => {
+        setPrivilegeNames([]);
+        getAllRoles();
+
+        $("#add-new-role").modal("hide");
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+
+        setTimeout(() => {
+          clears();
+        }, 3000);
+      });
+
+    setRoleAdd(!roleAdd);
+    setPrivilegeNames([]);
+    setRoleName("");
+  };
+
+  const clears = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+  };
+
+  // fetch one role
+  const getOneRole = (iD) => {
+    requestsServiceService
+      .getOneRole(iD)
+      .then((res) => {
+        setOneRole(res.data.data);
+        setRolePriveledges(res.data.data.permissions);
+        setEditPriveledges(res.data.data.permissions);
+        setEditName(res.data.data.name);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  //   get all roles
+
+  const getAllRoles = () => {
+    requestsServiceService
+      .getAllRoles()
+      .then((res) => {
+        setlis(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  //  edit a role
+  const editARole = () => {
+    const data = JSON.stringify({
+      id: roleID,
+      name: editName,
+      permissions: editPriveledges,
+    });
+    requestsServiceService
+      .EditRole(data)
+      .then((res) => {
+        getAllRoles();
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      });
+  };
+  const handleRoleChange = (index, event) => {
+    const { checked, value } = event.target;
+
+    if (checked) {
+      setPrivilegeNames([...priveledgeNames, privileges[index].name]);
+    } else {
+      setPrivilegeNames(
+        priveledgeNames.filter(
+          (priveledgeName) => priveledgeName !== privileges[index].name
+        )
+      );
+    }
+  };
+
+  const handleEditRole = (index, event) => {
+    const { checked, value } = event.target;
+
+    if (checked) {
+      setEditPriveledges([...editPriveledges, privileges[index].name]);
+    } else {
+      setEditPriveledges(
+        editPriveledges.filter(
+          (priveledgeName) => priveledgeName !== privileges[index].name
+        )
+      );
+    }
+  };
+
+
+  //  CLlents countries
+  const [allCounties, setAllCounties] = useState([]);
+  const [clientCounties, setClientCounties] = useState([]);
+  const [selectedCounty, setSelectedCounty] = useState("");
+
+
+  useEffect(() => {
+    getClientCounties();
+    getCounties();
+  }, []);
+  // PAGINATION
+  // const sotSize = (e) => {
+  //   setSize(parseInt(e.target.value));
+  //   setPage(0);
+  //   setItemOffset(0);
+  // };
+  // const [page, setPage] = useState(0);
+  // const [size, setSize] = useState(10);
+  // const [pageCount, setPageCount] = useState(1);
+  // const [itemOffset, setItemOffset] = useState(0);
+  const [listed, setlisted] = useState([]);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setClientCounties(listed.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(listed.length / size));
+  }, [itemOffset, size, listed]);
+
+  const handlPageClick = (event) => {
+    const newOffset = (event.selected * size) % listed.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
+
+  //   const deactivate
+
+  const deactivates = (id) => {
+    requestsServiceService.deactivateCounty(id).then((res) => {
+      console.log(res);
+      getClientCounties();
+    });
+  };
+
+  // create client county
+  const createCounty = () => {
+    const data = JSON.stringify({
+      active: true,
+      clientId: authService.getClientId(),
+      countyId: selectedCounty,
+      id: 0,
+    });
+
+    requestsServiceService
+      .createCounty(data)
+      .then((res) => {
+        getClientCounties();
+
+        $("#add-new-country").modal("hide");
+
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#add-new-country").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      });
+  };
+
+  const clear = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+  };
+
+  // get client counties
+  const getClientCounties = () => {
+    requestsServiceService.getClientCounties().then((res) => {
+      setlisted(res.data.data);
+    });
+  };
+  //  get all counties
+  const getCounties = () => {
+    requestsServiceService.getAllCounties().then((res) => {
+      setAllCounties(res.data.data);
+    });
+  };
+
+
+  //====== All Zones=============
+  const [zones, setZones] = useState([]);
+  const [zoneName, setZoneName] = useState("");
+
+
+  const [editNames, setEditNames] = useState("");
+  const [newCounty, setNewCounty] = useState("");
+  const [zoneId, setZoneId] = useState("");
+
+  const handleEdits = (name, id, zonId) => {
+    setEditNames(name);
+    setNewCounty(id);
+    setZoneId(zonId);
+  };
+
+  console.log(newCounty);
+
+  useEffect(() => {
+    getZones();
+    getClientCounties();
+  }, []);
+
+  // PAGINATION
+  // const sortSize = (e) => {
+  //   setSize(parseInt(e.target.value));
+  //   setPage(0);
+  //   setItemOffset(0);
+  // };
+  // const [page, setPage] = useState(0);
+  // const [size, setSize] = useState(10);
+  // const [pageCount, setPageCount] = useState(1);
+  // const [itemOffset, setItemOffset] = useState(0);
+  const [list, setlist] = useState([]);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setZones(list.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(list.length / size));
+  }, [itemOffset, size, list]);
+
+  const handlePageClck = (event) => {
+    const newOffset = (event.selected * size) % list.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
+
+  // get client counties
+  // const getClientCounties = () => {
+  //   requestsServiceService.getClientCounties().then((res) => {
+  //     setClientCounties(res.data.data);
+  //   });
+  // };
+  // console.log(zones);
+  // create zone
+
+  const createZone = () => {
+    let data = JSON.stringify({
+      active: true,
+      clientCountyId: parseInt(selectedCounty),
+      id: 0,
+      name: zoneName,
+    });
+
+    requestsServiceService
+      .createZone(data)
+      .then((res) => {
+        getZones();
+        $("#add-new-zone").modal("hide");
+
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clea();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#add-new-zone").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      });
+  };
+
+  const clea = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+  };
+  // get all zones
+
+  const getZones = () => {
+    requestsServiceService.getAllZones().then((res) => {
+      console.log(res.data);
+      setlist(res.data.data);
+    });
+  };
+
+  // update zone
+
+  const updateZone = () => {
+    let data = JSON.stringify({
+      active: true,
+      clientCountyId: newCounty,
+      id: zoneId,
+      name: editNames,
+    });
+
+    requestsServiceService
+      .editZone(data)
+      .then((res) => {
+        // console.log(res.data);
+        getZones();
+        $("#edit-zone").modal("hide");
+
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#edit-zone").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      });
+  };
+
+  //   const deactivate
+
+  const deactivte = (id) => {
+    requestsServiceService.deactivateZone(id).then((res) => {
+      getZones();
+    });
+  };
+
+  //=============== All Estates=========================
+
+  const [estates, setEstates] = useState([]);
+
+  const [estateName, setEstateName] = useState("");
+
+  const [selectedZone, setSelectedZone] = useState("");
+
+  const handleEdit1 = (name, id, zonId) => {
+    setEditName1(name);
+    setNewZone(id);
+    setEstateId(zonId);
+  };
+
+  const [editName1, setEditName1] = useState("");
+  const [newZone, setNewZone] = useState("");
+  const [estateId, setEstateId] = useState("");
+
+
+  useEffect(() => {
+    getZones();
+    getEstates();
+  }, []);
+
+  // PAGINATION
+  const sortSize1 = (e) => {
+    setSize(parseInt(e.target.value));
+    setPage(0);
+    setItemOffset(0);
+  };
+  // const [page, setPage] = useState(0);
+  // const [size, setSize] = useState(10);
+  // const [pageCount, setPageCount] = useState(1);
+  // const [itemOffset, setItemOffset] = useState(0);
+  const [list1, setlist1] = useState([]);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setEstates(list1.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(list1.length / size));
+  }, [itemOffset, size, list1]);
+
+  const handlePageClick1 = (event) => {
+    const newOffset = (event.selected * size) % list1.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
+
+  // get all zones
+
+  const getZones1 = () => {
+    requestsServiceService.getAllZones().then((res) => {
+      setZones(res.data.data);
+    });
+  };
+
+  // create estate
+
+  const createEstates = () => {
+    let data = JSON.stringify({
+      active: true,
+      id: null,
+      name: estateName,
+      zoneId: newZone,
+    });
+    requestsServiceService
+      .createEstate(data)
+      .then((res) => {
+        getEstates();
+        $("#add-new-estate").modal("hide");
+
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clear1();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#add-new-estate").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      });
+  };
+
+  const clear1 = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+  };
+  // get all estates
+
+  const getEstates = () => {
+    requestsServiceService.getAllEstates().then((res) => {
+      setlist1(res.data.data);
+    });
+  };
+
+  //   const deactivate
+
+  const deactivate1 = (id) => {
+    requestsServiceService.deactivateEstate(id).then((res) => {
+      getEstates();
+    });
+  };
+
+  // update zone
+
+  const updateEstate = () => {
+    let data = JSON.stringify({
+      active: true,
+      id: estateId,
+      name: editName,
+      zoneId: newZone,
+    });
+
+    requestsServiceService
+      .editEstate(data)
+      .then((res) => {
+        getEstates();
+        $("#edit-estate").modal("hide");
+
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#edit-estate").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      });
+  };
+
+
+
+
+
+
+
+
+
   return (
     <>
       <div class="page-content">
         <div class="container-fluid">
-          <div id="spinner" className={""}>
+          {/* <div id="spinner" className={""}>
             <div id="status">
               <div className="spinner-chase">
                 <div className="chase-dot"></div>
@@ -197,7 +879,7 @@ function IssuesTypes() {
                 <div className="chase-dot"></div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* <!-- start page title --> */}
           <div class="row">
             <div class="col-12">
@@ -227,8 +909,7 @@ function IssuesTypes() {
                     <nav class="navbar navbar-expand-md navbar-white bg-white py-2">
 
 
-                      <div
-                        className="collapse navbar-collapse justify-content-between"
+                      <div className="collapse navbar-collapse justify-content-between"
                         id="navbarNavAltMarkup"
                       >
                         <div className="navbar-nav">
@@ -254,8 +935,46 @@ function IssuesTypes() {
                             General
                           </a>
 
+
+
+
+                          <a
+                            onClick={() => setActiveLink(4)}
+                            className={
+                              activeLink === 4
+                                ? "nav-item nav-link active cursor-pointer"
+                                : "nav-item cursor-pointer nav-link"
+                            }
+                          >
+                            Client Countries
+                          </a>
+
+                          <a
+                            onClick={() => setActiveLink(5)}
+                            className={
+                              activeLink === 5
+                                ? "nav-item nav-link active cursor-pointer"
+                                : "nav-item cursor-pointer nav-link"
+                            }
+                          >
+                            Zones
+                          </a>
+                          <a
+                            onClick={() => setActiveLink(6)}
+                            className={
+                              activeLink === 6
+                                ? "nav-item nav-link active cursor-pointer"
+                                : "nav-item cursor-pointer nav-link"
+                            }
+                          >
+                            Estates
+                          </a>
+
+
                         </div>
                       </div>
+
+
                     </nav>
                   </div>
                 </div>
@@ -936,7 +1655,6 @@ function IssuesTypes() {
                             <option value="YEAR">Yearly</option>
                           </select>
 
-
                         </div>
                       </div>
                       <div class="col-12">
@@ -956,105 +1674,122 @@ function IssuesTypes() {
 
                     </div>
                   </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                      Create
-                    </button>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">SMS SenderId</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter SenderId"
+                        onChange={(event) =>
+                          setSenderId(event.target.value)
+                        }
+                        value={client?.senderId}
+                      />
+                    </div>
                   </div>
-                </form>
+
+              
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Create
+                </button>
               </div>
-            </div>
+            </form>
           </div>
+        </div>
+      </div>
 
 
 
 
 
 
-          {/*deactivate activate modals*/}
-          {/* confirm deactivate  */}
-          <div
-            class="modal fade"
-            id="confirm-deactivate"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-body">
-                  <center>
-                    <h5>Deactivate this Issue Type ?</h5>
-                  </center>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-light"
-                    data-bs-dismiss="modal"
-                  >
-                    no
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    onClick={() => deactivate(activeId)}
-                  >
-                    Yes
-                  </button>
-                </div>
-              </div>
+      {/*deactivate activate modals*/}
+      {/* confirm deactivate  */}
+      <div
+        class="modal fade"
+        id="confirm-deactivate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <center>
+                <h5>Deactivate this Issue Type ?</h5>
+              </center>
             </div>
-          </div>
-          {/* confirm dactivate  */}
-          <div
-            class="modal fade"
-            id="confirm-activate"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-body">
-                  <center>
-                    <h5>Activate this Issue Type?</h5>
-                  </center>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-light"
-                    data-bs-dismiss="modal"
-                  >
-                    no
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    onClick={() => deactivate(activeId)}
-                  >
-                    Yes
-                  </button>
-                </div>
-              </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivate(activeId)}
+              >
+                Yes
+              </button>
             </div>
           </div>
         </div>
       </div>
+      {/* confirm dactivate  */}
+      <div
+        class="modal fade"
+        id="confirm-activate"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <center>
+                <h5>Activate this Issue Type?</h5>
+              </center>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => deactivate(activeId)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div >
+      </div >
     </>
   );
 }
