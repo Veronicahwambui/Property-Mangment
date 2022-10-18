@@ -18,7 +18,7 @@ function Settlements() {
   }, []);
   const [charges, setcharges] = useState([]);
   const getCharges = () => {
-    requestsServiceService.allApplicableCharges().then((res) => {
+    requestsServiceService.allApplicableCharges("LANDLORD").then((res) => {
       setcharges(res.data.data);
     });
   };
