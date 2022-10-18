@@ -613,7 +613,7 @@ export default function AddLandlord() {
                             <>
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
-                                  <label htmlFor=" ">Company Name. </label>
+                                  <label htmlFor=" ">Company Name. <strong class="text-danger ">*</strong></label>
                                   <input
                                     type="text "
                                     className="form-control "
@@ -670,7 +670,7 @@ export default function AddLandlord() {
                           <div className="col-lg-3 col-md-6 ">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-email-input ">
-                                Email{" "}<strong class="text-danger ">*</strong>
+                                Email{" "}
                               </label>
                               <input
                                 type="email"

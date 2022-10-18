@@ -411,7 +411,7 @@ const UpdatePremise = () => {
  };
 
  const fetchTypes = () => {
-   requestsServiceService.allApplicableCharges().then((res) => {
+   requestsServiceService.allApplicableCharges("TENANT").then((res) => {
      setChargeTypes(res.data.data);
    });
  };
