@@ -694,7 +694,8 @@ function AddProperties() {
                           <div class="col-4 col-md-6">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                File No.
+                                File No.  <strong class="text-danger ">*</strong>
+
                               </label>
                               <input
                                 type="text "
@@ -766,7 +767,6 @@ function AddProperties() {
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
                                 Address{" "}
-                                <strong class="text-danger ">*</strong>
                               </label>
                               <input
                                 type="text text-capitalize"
@@ -792,7 +792,7 @@ function AddProperties() {
                                 onChange={handleGeneral}
 
                               >
-                                <option>select premise type
+                                <option>select property type
                                   <div className="form-group">
                                     <input type="text" className="form-control" />
                                   </div>
@@ -850,7 +850,7 @@ function AddProperties() {
                           <div className="col-lg-4 col-md-6">
 
                             <div className="form-group">
-                              <label htmlFor="">Charge frequency</label>
+                              <label htmlFor="">Charge Duration</label>
                               <select
                                 className="form-control"
                                 onChange={handleGeneral}
@@ -866,15 +866,15 @@ function AddProperties() {
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                ManagementType   {" "}
+                                Management Type   {" "}
 
                               </label>
                               <select
                                 className="form-control"
                                 onChange={handleGeneral}
                                 name="ManagementType"
-                              >
-                                <option value="LET"> Select ManagementType</option>
+                              > 
+                                <option value="LET"> Select Management Type</option>
                                 <option value="MANAGE">Manage</option>
                                 <option value="LET">let</option>
                               </select>
@@ -883,7 +883,7 @@ function AddProperties() {
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                UtilityManagement Type{" "}
+                                Utility Management Type{" "}
                               </label>
 
                               <select
@@ -904,7 +904,7 @@ function AddProperties() {
 
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                ChargePropertyTax{" "}
+                                Property Tax{" "}
                               </label>
                               <select
                                 class="form-control"
@@ -915,16 +915,16 @@ function AddProperties() {
                                   setChargePropertyTax(e.target.value);
                                 }}
                               >
-                                <option>Select ChargePropertyTax </option>
-                                <option value="true">True</option>
-                                <option value="false">False</option>
+                                <option>Select Charge Property Tax </option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
                               </select>
                             </div>
                           </div>
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                CollectElectricityDeposit{" "}
+                                Collect Electricity Deposit{" "}
                               </label>
                               <select
                                 class="form-control"
@@ -935,7 +935,7 @@ function AddProperties() {
                                   setCollectElectricityDeposit(e.target.value);
                                 }}
                               >
-                                <option> Select CollectElectricityDeposit </option>
+                                <option> Select Collect Electricity Deposit </option>
                                 <option value="true">True</option>
                                 <option value="false">False</option>
                               </select>

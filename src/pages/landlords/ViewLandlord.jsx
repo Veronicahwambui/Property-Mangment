@@ -1302,10 +1302,10 @@ function ViewLandlord() {
             {/*</div>*/}
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18"></h4>
+                <h4 class="mb-sm-0 font-size-18"> LandLord Information</h4>
 
                 <div class="page-title-right">
-                  <ol class="breadcrumb m-0">
+                  {/* <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
                       <Link to="/">Dashboard </Link>
                     </li>
@@ -1315,7 +1315,9 @@ function ViewLandlord() {
                     <li class="breadcrumb-item active">
                       {landlord.firstName && landlord.lastName}
                     </li>
-                  </ol>
+                  </ol> */}
+
+                
                 </div>
               </div>
             </div>
@@ -1419,7 +1421,7 @@ function ViewLandlord() {
                               : "nav-item cursor-pointer nav-link"
                           }
                         >
-                          invoices
+                          Invoices
                         </a>
                       </div>
                     </div>
