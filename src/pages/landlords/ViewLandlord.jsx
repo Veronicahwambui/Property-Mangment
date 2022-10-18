@@ -2779,14 +2779,6 @@ function ViewLandlord() {
                                           )}
                                         </span>
                                       </td>
-
-
-
-
-                                      const [fileNumber, setFileNumber] = useState("");
-                                      
-
-
                                       <td>
                                         {moment(invoice?.invoiceDate).format(
                                           "DD-MM-YYYY"
