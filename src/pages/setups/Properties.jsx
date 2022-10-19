@@ -537,6 +537,7 @@ function Properties() {
       });
   };
 
+<<<<<<< HEAD
   const setChargeTypes1 = (el) => {
     let options = el.target.options;
     let userGroups = [];
@@ -550,6 +551,212 @@ function Properties() {
 
     setSelectedChargeTypes(userGroups);
   };
+=======
+      setTimeout(() => {
+        clear();
+      }, 3000);
+    });
+};
+ // UnitTypes
+
+ const [listUnit, setListUnit] = useState([]);
+//  const [activeId, setActiveId] = useState("");
+ const [createNam, setCreateNam] = useState("");
+ const [updateNam, setUpdateNam] = useState("");
+ const [chargeTypes, setChargeTypes] = useState([]);
+ const [selectedChargeTypes, setSelectedChargeTypes] = useState([]);
+ const [chargeType, setChargeType] = useState("");
+ const [createArr, setCreateArr] = useState();
+ const [updateArr, setUpdateArr] = useState([]);
+
+ const [numberOfRooms, setNumberOfRooms] = useState("");
+ const [purpose, setPurpose] = useState("");
+ const [squarage, setSquarage] = useState("");
+ const [monthCountForTenancyRenewal, setMonthCountForTenancyRenewal] =
+   useState("");
+
+ useEffect(() => {
+   localStorage.setItem("activeId", activeId);
+ }, [activeId]);
+
+ useEffect(() => {
+   fetchTypes();
+   fetchAllUnit();
+   let oldId = localStorage.getItem("activeId");
+   setActiveId(oldId);
+ }, []);
+ // PAGINATION
+//  const sortSize = (e) => {
+//    setSize(parseInt(e.target.value));
+//    setPage(0);
+//    setItemOffset(0);
+//  };
+//  const [page, setPage] = useState(0);
+//  const [size, setSize] = useState(10);
+//  const [pageCount, setPageCount] = useState(1);
+//  const [itemOffset, setItemOffset] = useState(0);
+ const [unitTypes, setUnitTypes] = useState([]);
+
+ useEffect(() => {
+   const endOffset = parseInt(itemOffset) + parseInt(size);
+   setUnitTypes(listUnit.slice(itemOffset, endOffset));
+   setPageCount(Math.ceil(listUnit.length / size));
+ }, [itemOffset, size, listUnit]);
+
+ const handlePageClic = (event) => {
+   const newOffset = (event.selected * size) % listUnit.length;
+   setItemOffset(newOffset);
+   setPage(event.selected);
+ };
+
+ // fetch list function
+ const fetchAllUnit = () => {
+   requestsServiceService.allUnitTypes().then((res) => {
+     setListUnit(res.data.data);
+   });
+ };
+
+ const fetchTypes = () => {
+   requestsServiceService.allApplicableCharges("TENANT").then((res) => {
+     setChargeTypes(res.data.data);
+   });
+ };
+
+ // create function
+ const createUnit = () => {
+   let data = JSON.stringify({
+     active: true,
+     clientId: parseInt(authService.getClientId()),
+     id: null,
+     monthCountForTenancyRenewal: monthCountForTenancyRenewal,
+     name: createNam,
+     numberOfRooms: numberOfRooms,
+     purpose: purpose,
+     squarage: squarage,
+     unitTypeApplicableCharges: selectedChargeTypes,
+   });
+
+   requestsServiceService
+     .createUnitTypes(data)
+     .then((res) => {
+       fetchAllUnit();
+       $("#add-new-unit").modal("hide");
+
+       if (res.data.status) {
+         setError({
+           ...error,
+           message: res.data.message,
+           color: "success",
+         });
+       } else {
+         setError({
+           ...error,
+           message: res.data.message,
+           color: "warning",
+         });
+       }
+
+       setTimeout(() => {
+         clear();
+       }, 3000);
+     })
+     .catch((res) => {
+       $("#add-new-unit").modal("hide");
+
+       setError({
+         ...error,
+         message: res.data.message,
+         color: "danger",
+       });
+
+       setTimeout(() => {
+         cleared();
+       }, 3000);
+     });
+ };
+
+ const cleared = () => {
+   setError({
+     ...error,
+     message: "",
+     color: "",
+   });
+ };
+
+ // toggle function
+ const toggleStat = () => {
+   requestsServiceService.toogleUnitType(activeId).then((res) => {
+     fetchAllUnit();
+   });
+ };
+
+ // update function
+ const UpdateUnit = () => {
+   let data = JSON.stringify({
+     active: true,
+     clientId: authService.getClientId(),
+     id: activeId,
+     monthCountForTenancyRenewal: monthCountForTenancyRenewal,
+     name: updateNam,
+     numberOfRooms: numberOfRooms,
+     purpose: purpose,
+     squarage: squarage,
+     unitTypeApplicableCharges: selectedChargeTypes,
+   });
+   requestsServiceService
+     .updateUnitType(data)
+     .then((res) => {
+       $("#update-unit").modal("hide");
+
+       fetchAllUnit();
+
+       if (res.data.status) {
+         setError({
+           ...error,
+           message: res.data.message,
+           color: "success",
+         });
+       } else {
+         setError({
+           ...error,
+           message: res.data.message,
+           color: "warning",
+         });
+       }
+
+       setTimeout(() => {
+         clear();
+       }, 3000);
+     })
+     .catch((res) => {
+       $("#update-unit").modal("hide");
+
+       setError({
+         ...error,
+         message: res.data.message,
+         color: "danger",
+       });
+
+       setTimeout(() => {
+         clear();
+       }, 3000);
+     });
+ };
+
+ const setChargeTypes1 = (el) => {
+   let options = el.target.options;
+   let userGroups = [];
+
+   for (var i = 0, l = options.length; i < l; i++) {
+     if (options[i].selected) {
+       console.log("option ++ " + options[i].value);
+       userGroups.push(parseInt(options[i].value));
+     }
+   }
+
+   setSelectedChargeTypes(userGroups);
+ };
+>>>>>>> feature/Changes
 
 
 

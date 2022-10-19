@@ -454,7 +454,7 @@ const createAgreementType = (event) => {
           color: "success",
         });
         getAgreementTypes();
-        handleClose();
+   
       }
       setTimeout(() => {
         setError({
@@ -462,6 +462,7 @@ const createAgreementType = (event) => {
           message: "",
           color: "",
         });
+        handleClose();
       }, 2000);
     })
     .catch((err) => {
@@ -907,7 +908,7 @@ const handleEdit = (id, name) => {
                                         class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
                                         title="deactivate"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#confirm-deactivate"
+                                        data-bs-target="#confirm-deactivate3"
                                         onClick={() => setActiveId(val.id)}
                                       >
                                         Deactivate
@@ -917,7 +918,7 @@ const handleEdit = (id, name) => {
                                         class="btn btn-success btn-sm btn-rounded  text-uppercase px-3 py-0 mx-3"
                                         title="deactivate"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#confirm-activate"
+                                        data-bs-target="#confirm-activate3"
                                         onClick={() => setActiveId(val.id)}
                                       >
                                         Activate
@@ -1063,7 +1064,7 @@ const handleEdit = (id, name) => {
                                    setActiveId(aT.id);
                                  }}
                                  data-bs-toggle="modal"
-                                 data-bs-target="#update-modal"
+                                 data-bs-target="#update-agree"
                                  className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
                                  title="Edit "
                                >
@@ -1074,7 +1075,7 @@ const handleEdit = (id, name) => {
                                    class="btn btn-danger btn-sm btn-rounded  text-uppercase px-2 mx-3"
                                    title="deactivate"
                                    data-bs-toggle="modal"
-                                   data-bs-target="#confirm-deactivate"
+                                   data-bs-target="#confirm-deactivate2"
                                    onClick={() => setActiveId(aT.id)}
                                  >
                                    Deactivate
@@ -1084,7 +1085,7 @@ const handleEdit = (id, name) => {
                                    class="btn btn-success btn-sm btn-rounded w-5 text-uppercase px-3 mx-3"
                                    title="deactivate"
                                    data-bs-toggle="modal"
-                                   data-bs-target="#confirm-activate"
+                                   data-bs-target="#confirm-activate2"
                                    onClick={() => setActiveId(aT.id)}
                                  >
                                    Activate
@@ -1759,7 +1760,7 @@ const handleEdit = (id, name) => {
       {/* confirm deactivate  */}
       <div
         class="modal fade"
-        id="confirm-deactivate"
+        id="confirm-deactivate3"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"
@@ -1797,7 +1798,7 @@ const handleEdit = (id, name) => {
       {/* confirm dactivate  */}
       <div
         class="modal fade"
-        id="confirm-activate"
+        id="confirm-activate3"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"
@@ -1939,7 +1940,7 @@ const handleEdit = (id, name) => {
       {/* confirm deactivate  */}
       <div
         class="modal fade"
-        id="confirm-deactivate"
+        id="confirm-deactivate2"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"
@@ -1976,7 +1977,7 @@ const handleEdit = (id, name) => {
       {/* confirm dactivate  */}
       <div
         class="modal fade"
-        id="confirm-activate"
+        id="confirm-activate2"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"

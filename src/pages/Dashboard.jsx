@@ -665,7 +665,7 @@ function Dashboard() {
 
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title mb-0">Collections by Premise Type</h4>
+                                <h4 class="card-title mb-0">Collections by Property Type</h4>
                                 <div class="row">
                                     <div class="col-sm-7">
                                         <div>

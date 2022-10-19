@@ -694,7 +694,8 @@ function AddProperties() {
                           <div class="col-4 col-md-6">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                File No.
+                                File No.  <strong class="text-danger ">*</strong>
+
                               </label>
                               <input
                                 type="text "
@@ -766,7 +767,6 @@ function AddProperties() {
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
                                 Address{" "}
-                                <strong class="text-danger ">*</strong>
                               </label>
                               <input
                                 type="text text-capitalize"
@@ -792,7 +792,7 @@ function AddProperties() {
                                 onChange={handleGeneral}
 
                               >
-                                <option>select premise type
+                                <option>select property type
                                   <div className="form-group">
                                     <input type="text" className="form-control" />
                                   </div>
@@ -850,7 +850,7 @@ function AddProperties() {
                           <div className="col-lg-4 col-md-6">
 
                             <div className="form-group">
-                              <label htmlFor="">Charge frequency</label>
+                              <label htmlFor="">Charge Duration</label>
                               <select
                                 className="form-control"
                                 onChange={handleGeneral}
@@ -866,15 +866,15 @@ function AddProperties() {
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                ManagementType   {" "}
+                                Management Type   {" "}
 
                               </label>
                               <select
                                 className="form-control"
                                 onChange={handleGeneral}
                                 name="ManagementType"
-                              >
-                                <option value="LET"> Select ManagementType</option>
+                              > 
+                                <option value="LET"> Select Management Type</option>
                                 <option value="MANAGE">Manage</option>
                                 <option value="LET">let</option>
                               </select>
@@ -883,7 +883,7 @@ function AddProperties() {
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                UtilityManagement Type{" "}
+                                Utility Management Type{" "}
                               </label>
 
                               <select
@@ -904,7 +904,7 @@ function AddProperties() {
 
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                ChargePropertyTax{" "}
+                                Property Tax{" "}
                               </label>
                               <select
                                 class="form-control"
@@ -915,16 +915,16 @@ function AddProperties() {
                                   setChargePropertyTax(e.target.value);
                                 }}
                               >
-                                <option>Select ChargePropertyTax </option>
-                                <option value="true">True</option>
-                                <option value="false">False</option>
+                                <option>Select Charge Property Tax </option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
                               </select>
                             </div>
                           </div>
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                CollectElectricityDeposit{" "}
+                                Collect Electricity Deposit{" "}
                               </label>
                               <select
                                 class="form-control"
@@ -935,7 +935,7 @@ function AddProperties() {
                                   setCollectElectricityDeposit(e.target.value);
                                 }}
                               >
-                                <option> Select CollectElectricityDeposit </option>
+                                <option> Select Collect Electricity Deposit </option>
                                 <option value="true">True</option>
                                 <option value="false">False</option>
                               </select>
@@ -1431,8 +1431,8 @@ function AddProperties() {
                               class="table align-middle table-edits rent-invoicing dt-responsive"
                               id="data-table"
                             >
-                              <thead>
-                                <tr class="text-uppercase table-light">
+                              <thead  className="table-light">
+                                <tr class="text-uppercase table-dark">
                                   {/* <th>#</th> */}
                                   <th>Item type</th>
                                   <th>When to Charge</th>
@@ -1442,9 +1442,17 @@ function AddProperties() {
                               </thead>
 
                               <tfoot class="table-light">
-                                <tr >
+                                <tr  className="" onClick={toogleShowUnitTypeChargesModal}>
 
-                                  <button type="button" onClick={toogleShowUnitTypeChargesModal}>Add Charges</button>
+                                  <td
+                                    colSpan="7"
+                                    className="bg-light cursor-pointer"
+                                  >
+                                    <span className="d-flex align-items-center ">
+                                      <i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
+                                      <span className="pl-5 ">Add Charges</span>
+                                    </span>
+                                  </td>
                                 </tr>
                               </tfoot>
                               <tbody>
@@ -1540,9 +1548,7 @@ function AddProperties() {
                     <section className="step-cont d-none">
                       <h3>Document Attachments</h3>
                       <form>
-                        <h6>
-                          Upload documents
-                        </h6>
+                       
                         <div class="table-responsive table-responsive-md">
                           <table className="table table-editable-file align-middle table-edits ">
                             <thead className="table-light ">
@@ -1570,8 +1576,13 @@ function AddProperties() {
                             </tbody>
                             <tfoot>
                               <tr>
-                                <td colSpan="7">
-                                  <button type="button" data-id="PREMISE" onClick={newDocument}>Add Premise Documents</button>
+                                <td colSpan="7" className="bg-light cursor-pointer" onClick={newDocument}  data-id="PREMISE">
+                                  <span className="d-flex align-items-center ">
+                                    <i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
+                                    <span className="pl-5 ">
+                                    Add Property Documents
+                                    </span>
+                                  </span>
                                 </td>
                               </tr>
                             </tfoot>
@@ -1596,11 +1607,11 @@ function AddProperties() {
       </div>
 
 
-      <Modal show={newUnitTypeModal} dialogClassName="my-modal">
+      <Modal show={newUnitTypeModal} dialogClassName="my-modal" onHide={toogleNewUnitTypeModal} centered>
         <form onSubmit={addUnitType}>
-          <ModalHeader className='justify-content'>
+          <ModalHeader className='justify-content' closeButton>
             <h3>New Unit Type</h3>
-            <span onClick={toogleNewUnitTypeModal}>X</span>
+           
           </ModalHeader>
           <ModalBody>
             <div className="row">
@@ -1662,11 +1673,11 @@ function AddProperties() {
 
 
       {/* docs modal */}
-      <Modal show={showDocumentModal} dialogClassName="my-modl">
+      <Modal show={showDocumentModal} dialogClassName="my-modl" onHide={toogleShowNewDocumentModal} centered>
         <form id="newContactPersonForm" onSubmit={addDocument}>
-          <ModalHeader className='justify-content'>
+          <ModalHeader className='justify-content' closeButton>
             <h3>New {docBody.documentOwnerTypeName?.toLowerCase()?.replace(/_/g, " ")} Document</h3>
-            <span onClick={toogleShowNewDocumentModal}>X</span>
+           
           </ModalHeader>
           <ModalBody className='row'>
             <div className="col-md-6">
@@ -1706,11 +1717,11 @@ function AddProperties() {
 
 
 
-      <Modal show={showUnitTypeChargesModal} dialogClassName="my-modal">
+      <Modal show={showUnitTypeChargesModal} dialogClassName="my-modal"  onHide={toogleShowUnitTypeChargesModal} centered>
         <form id="newContactPersonForm" onSubmit={addAppCharge}>
-          <ModalHeader className='justify-content'>
+          <ModalHeader className='justify-content' closeButton>
             <h3>Invoice Breakdown</h3>
-            <span onClick={toogleShowUnitTypeChargesModal}>X</span>
+ 
           </ModalHeader>
           <ModalBody className='row'>
             <div className="col-md-4">

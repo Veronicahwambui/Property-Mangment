@@ -1521,10 +1521,10 @@ function AddTenant() {
                 SUBMIT
               </button>
 
-              <Modal show={showNewContactPeronModal}>
-                <ModalHeader className="justify-content">
+              <Modal show={showNewContactPeronModal}  onHide={toogleShowNewContactPeronModal} centered>
+                <ModalHeader className="justify-content" closeButton>
                   <h3>Add a new {contactPersonBody.contactPersonTypeName}</h3>
-                  <span onClick={toogleShowNewContactPeronModal}>X</span>
+                  
                 </ModalHeader>
                 <ModalBody>
                   <form id="newContactPersonForm" className="row">
@@ -1621,10 +1621,10 @@ function AddTenant() {
                 </ModalFooter>
               </Modal>
 
-              <Modal show={showAssignUnits}>
-                <ModalHeader className="justify-content">
+              <Modal show={showAssignUnits} onHide={toogleShowAssignUnits} centered>
+                <ModalHeader className="justify-content" closeButton>
                   <h3>Assign a Unit to the Tenant</h3>
-                  <span onClick={toogleShowAssignUnits}>X</span>
+               
                 </ModalHeader>
                 <ModalBody>
                   <form id="newContactPersonForm" className="row">
@@ -1763,10 +1763,10 @@ function AddTenant() {
                 </ModalFooter>
               </Modal>
 
-              <Modal show={showDocumentModal}>
-                <ModalHeader className="justify-content">
+              <Modal show={showDocumentModal}  onHide={toogleShowNewDocumentModal} centered>
+                <ModalHeader className="justify-content" closeButton>
                   <h3>New {docBody.documentOwnerTypeName} Document</h3>
-                  <span onClick={toogleShowNewDocumentModal}>X</span>
+         
                 </ModalHeader>
                 <ModalBody>
                   <form id="newContactPersonForm" className="row">
