@@ -52,7 +52,7 @@ function UnitTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setUnitTypes(listUnit.slice(itemOffset, endOffset));
+    setUnitTypes(listUnit?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(listUnit.length / size));
   }, [itemOffset, size, listUnit]);
 

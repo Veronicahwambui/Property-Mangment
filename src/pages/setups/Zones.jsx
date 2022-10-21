@@ -46,7 +46,7 @@ function Zones() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setZones(list.slice(itemOffset, endOffset));
+    setZones(list?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(list.length / size));
   }, [itemOffset, size, list]);
 

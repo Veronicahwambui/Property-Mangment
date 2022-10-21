@@ -31,6 +31,7 @@ function TenantSetup() {
   const [incomeType, setIncomeType] = useState("");
   const [lineFeeId, setLineFeeId] = useState("");
   const [lineChartAccountNo, setLineChartAccountNo] = useState("");
+
   const [chargeDueAfterDays, setChargeDueAfterDays] = useState("")
   const[entityType, setEntityType]=useState("");
 
@@ -63,22 +64,17 @@ function TenantSetup() {
     setPage(event.selected);
   };
 
-
   useEffect(() => {
     requestsServiceService.userTypeData().then((data) => {
       setuserTypes(data.data);
       setUserType(data.data[0].name);
     });
-
   }, []);
 
   useEffect(() => {
-
     fetchAll();
     fetchAllDocument();
-
   }, [userType]);
-
 
   // fetch list function
   const fetchAll = () => {
@@ -252,7 +248,7 @@ function TenantSetup() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setDocumentTypes(lists.slice(itemOffset, endOffset));
+    setDocumentTypes(lists?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(lists.length / size));
   }, [itemOffset, size, lists]);
 
@@ -270,7 +266,6 @@ function TenantSetup() {
       id: 0,
       name: createNames,
       entityType: "AUCTIONEER",
-
     });
 
     requestsServiceService
@@ -375,7 +370,6 @@ function TenantSetup() {
       });
   };
 
-
   const [allRoles, setAllRoles] = useState([]);
   const [roleName, setRoleName] = useState("");
   const [oneRole, setOneRole] = useState([]);
@@ -410,7 +404,7 @@ function TenantSetup() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setAllRoles(lis.slice(itemOffset, endOffset));
+    setAllRoles(lis?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(lis.length / size));
   }, [itemOffset, size, lis]);
 
@@ -599,7 +593,6 @@ function TenantSetup() {
     }
   };
 
-
   return (
     <>
       <div class="page-content">
@@ -632,8 +625,6 @@ function TenantSetup() {
                     role="toolbar"
                   >
                     <nav class="navbar navbar-expand-md navbar-white bg-white py-2">
-
-
                       <div
                         className="collapse navbar-collapse justify-content-between"
                         id="navbarNavAltMarkup"
@@ -671,97 +662,134 @@ function TenantSetup() {
                           >
                             Roles and Permissions
                           </a>
-
                         </div>
                       </div>
                     </nav>
                   </div>
 
-
-                  {activeLink != 3 &&
+                  {activeLink != 3 && (
                     <div className="form-group app-search">
-                      <label htmlFor="" className="text-primary"> User Type </label>
-                      <select name="" id="" className="form-control mt-2"
+                      <label htmlFor="" className="text-primary">
+                        {" "}
+                        User Type{" "}
+                      </label>
+                      <select
+                        name=""
+                        id=""
+                        className="form-control mt-2"
                         value={userType}
-                        onChange={e => setUserType(e.target.value)}>
+                        onChange={(e) => setUserType(e.target.value)}
+                      >
                         <option value="">Select</option>
                         {userTypes?.map((auct) => (
-                          <option value={auct.name} >{auct.name}</option>
+                          <option value={auct.name}>{auct.name}</option>
                         ))}
                       </select>
-                    </div>}
+                    </div>
+                  )}
                 </div>
               </div>
-              {
-                activeLink === 1 && (
-                  <div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="card calc-h-3px">
-                          <div>
-                            <div className="row">
-                              <div className="col-12">
-                                <div className="card-body bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                                  <div
-                                    className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                                    role="toolbar"
-                                  >
-                                    <div className="d-flex align-items-center flex-grow-1">
-                                      <h4 className="mb-0  bg-transparent  p-0 m-0">
-                                        Applicable Charges
-                                      </h4>
-                                    </div>
-                                    <div class="d-flex">
-                                      <button
-                                        onClick={() => {
-                                          setManualVal(false);
-                                          chargeTypes && setChargeType(chargeTypes[0]);
-                                          fetchTypes();
-                                        }}
-                                        type="button"
-                                        class="btn btn-primary waves-effect btn-label waves-light me-3"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#add-new-charge"
-                                      >
-                                        <i class="mdi mdi-plus label-icon"></i> Add Applicable
-                                        Charge
-                                      </button>
-                                    </div>
+              {activeLink === 1 && (
+                <div>
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="card calc-h-3px">
+                        <div>
+                          <div className="row">
+                            <div className="col-12">
+                              <div className="card-body bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                                <div
+                                  className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                                  role="toolbar"
+                                >
+                                  <div className="d-flex align-items-center flex-grow-1">
+                                    <h4 className="mb-0  bg-transparent  p-0 m-0">
+                                      Applicable Charges
+                                    </h4>
+                                  </div>
+                                  <div class="d-flex">
+                                    <button
+                                      onClick={() => {
+                                        setManualVal(false);
+                                        chargeTypes &&
+                                          setChargeType(chargeTypes[0]);
+                                        fetchTypes();
+                                      }}
+                                      type="button"
+                                      class="btn btn-primary waves-effect btn-label waves-light me-3"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#add-new-charge"
+                                    >
+                                      <i class="mdi mdi-plus label-icon"></i>{" "}
+                                      Add Applicable Charge
+                                    </button>
                                   </div>
                                 </div>
+                              </div>
 
-                                <div>
-                                  <div class="card-body">
-                                    {error.color !== "" &&
-                                      <div className={"alert alert-" + error.color} role="alert">
-                                        {error.message}
-                                      </div>
-                                    }
-                                    <div class="table-responsive table-responsive-md">
-                                      <table class="table table-editable align-middle table-edits">
-                                        <thead class="table-light">
-                                          <tr class="text-uppercase table-dark">
-                                            <th>#</th>
-                                            <th>Property Type</th>
-                                            <th>Charge type</th>
-                                            <th>Accept Manual Values</th>
-                                            <th>Status</th>
-                                            <th>Date Created</th>
-                                            <th class="text-center">Actions</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-
-                                          {list && list.map((val, index) => {
+                              <div>
+                                <div class="card-body">
+                                  {error.color !== "" && (
+                                    <div
+                                      className={"alert alert-" + error.color}
+                                      role="alert"
+                                    >
+                                      {error.message}
+                                    </div>
+                                  )}
+                                  <div class="table-responsive table-responsive-md">
+                                    <table class="table table-editable align-middle table-edits">
+                                      <thead class="table-light">
+                                        <tr class="text-uppercase table-dark">
+                                          <th>#</th>
+                                          <th>Property Type</th>
+                                          <th>Charge type</th>
+                                          <th>Accept Manual Values</th>
+                                          <th>Status</th>
+                                          <th>Date Created</th>
+                                          <th class="text-center">Actions</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {list &&
+                                          list.map((val, index) => {
                                             return (
                                               <tr data-id="1" key={val}>
-                                                <td style={{ width: "80px" }}>{index + 1}</td>
-                                                <td className='text-capitalize'>{val.name}</td>
-                                                <td className='text-capitalize'>{val.applicableChargeType != null && val.applicableChargeType.toLowerCase().replace(/_/g, " ")}</td>
-                                                <td>{val.expectManualValues ? "Yes" : "No"} </td>
+                                                <td style={{ width: "80px" }}>
+                                                  {index + 1}
+                                                </td>
+                                                <td className="text-capitalize">
+                                                  {val.name}
+                                                </td>
+                                                <td className="text-capitalize">
+                                                  {val.applicableChargeType !=
+                                                    null &&
+                                                    val.applicableChargeType
+                                                      .toLowerCase()
+                                                      .replace(/_/g, " ")}
+                                                </td>
+                                                <td>
+                                                  {val.expectManualValues
+                                                    ? "Yes"
+                                                    : "No"}{" "}
+                                                </td>
 
-                                                <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
-                                                <td>{moment(val.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                                                <td data-field="unit-num ">
+                                                  {val.active ? (
+                                                    <span class="badge-soft-success badge">
+                                                      Active
+                                                    </span>
+                                                  ) : (
+                                                    <span class="badge-soft-danger badge">
+                                                      Inactive
+                                                    </span>
+                                                  )}
+                                                </td>
+                                                <td>
+                                                  {moment(
+                                                    val.dateTimeCreated
+                                                  ).format("YYYY-MM-DD HH:mm")}
+                                                </td>
                                                 <td class="text-center cell-change text-nowrap ">
                                                   <div class="d-flex align-items-center justify-content-between">
 
@@ -770,89 +798,101 @@ function TenantSetup() {
                                                       setUpdateCheck(val.updateCheck);
 }} data-bs-toggle="modal"
                                                       data-bs-target="#update-charge" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
-
-                                                    {val.active ? <button
-                                                      class="btn btn-danger btn-sm text-uppercase px-2 mx-3"
-                                                      title="deactivate"
-                                                      data-bs-toggle="modal"
-                                                      data-bs-target="#confirm-deactivate"
-                                                      onClick={() => setActiveId(val.id)}
-                                                    >
-                                                      Deactivate
-                                                    </button> : <button
-                                                      class="btn btn-success btn-sm  text-uppercase px-3 py-0 mx-3"
-                                                      title="deactivate"
-                                                      data-bs-toggle="modal"
-                                                      data-bs-target="#confirm-activate"
-                                                      onClick={() => setActiveId(val.id)}
-                                                    >
-                                                      Activate
-                                                    </button>}
-
+               {val.active ? (
+                                                      <button
+                                                        class="btn btn-danger btn-sm text-uppercase px-2 mx-3"
+                                                        title="deactivate"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirm-deactivate"
+                                                        onClick={() =>
+                                                          setActiveId(val.id)
+                                                        }
+                                                      >
+                                                        Deactivate
+                                                      </button>
+                                                    ) : (
+                                                      <button
+                                                        class="btn btn-success btn-sm  text-uppercase px-3 py-0 mx-3"
+                                                        title="deactivate"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirm-activate"
+                                                        onClick={() =>
+                                                          setActiveId(val.id)
+                                                        }
+                                                      >
+                                                        Activate
+                                                      </button>
+                                                    )}
                                                   </div>
-
-
                                                 </td>
                                               </tr>
                                             );
                                           })}
-                                        </tbody>
-                                      </table>
-                                      <div className="d-flex justify-content-between align-items-center">
-                                        {pageCount !== 0 && (
-                                          <>
-                                            <select
-                                              className="btn btn-md btn-primary"
-                                              title="Select A range"
-                                              onChange={(e) => sortSize(e)}
-                                              value={size}
-                                            >
-                                              <option className="bs-title-option" value="">
-                                                Select A range
-                                              </option>
-                                              <option value="10">10 Rows</option>
-                                              <option value="30">30 Rows</option>
-                                              <option value="50">50 Rows</option>
-                                            </select>
-                                            <nav
-                                              aria-label="Page navigation comments"
-                                              className="mt-4"
-                                            >
-                                              <ReactPaginate
-                                                previousLabel="<"
-                                                nextLabel=">"
-                                                breakLabel="..."
-                                                breakClassName="page-item"
-                                                breakLinkClassName="page-link"
-                                                pageCount={pageCount}
-                                                pageRangeDisplayed={4}
-                                                marginPagesDisplayed={2}
-                                                containerClassName="pagination justify-content-center"
-                                                pageClassName="page-item"
-                                                pageLinkClassName="page-link"
-                                                previousClassName="page-item"
-                                                previousLinkClassName="page-link"
-                                                nextClassName="page-item"
-                                                nextLinkClassName="page-link"
-                                                activeClassName="active"
-                                                onPageChange={(data) => handlePageClick(data)}
-                                                forcePage={page}
-                                              />
-                                            </nav>
-                                          </>
-                                        )}
-                                      </div>
+                                      </tbody>
+                                    </table>
+                                    <div className="d-flex justify-content-between align-items-center">
                                       {pageCount !== 0 && (
-                                        <p className="font-medium  text-muted">
-                                          showing page{" "}
-                                          <span className="text-primary">
-                                            {pageCount === 0 ? page : page + 1}
-                                          </span>{" "}
-                                          of
-                                          <span className="text-primary"> {pageCount}</span> pages
-                                        </p>
+                                        <>
+                                          <select
+                                            className="btn btn-md btn-primary"
+                                            title="Select A range"
+                                            onChange={(e) => sortSize(e)}
+                                            value={size}
+                                          >
+                                            <option
+                                              className="bs-title-option"
+                                              value=""
+                                            >
+                                              Select A range
+                                            </option>
+                                            <option value="10">10 Rows</option>
+                                            <option value="30">30 Rows</option>
+                                            <option value="50">50 Rows</option>
+                                          </select>
+                                          <nav
+                                            aria-label="Page navigation comments"
+                                            className="mt-4"
+                                          >
+                                            <ReactPaginate
+                                              previousLabel="<"
+                                              nextLabel=">"
+                                              breakLabel="..."
+                                              breakClassName="page-item"
+                                              breakLinkClassName="page-link"
+                                              pageCount={pageCount}
+                                              pageRangeDisplayed={4}
+                                              marginPagesDisplayed={2}
+                                              containerClassName="pagination justify-content-center"
+                                              pageClassName="page-item"
+                                              pageLinkClassName="page-link"
+                                              previousClassName="page-item"
+                                              previousLinkClassName="page-link"
+                                              nextClassName="page-item"
+                                              nextLinkClassName="page-link"
+                                              activeClassName="active"
+                                              onPageChange={(data) =>
+                                                handlePageClick(data)
+                                              }
+                                              forcePage={page}
+                                            />
+                                          </nav>
+                                        </>
                                       )}
                                     </div>
+                                    {pageCount !== 0 && (
+                                      <p className="font-medium  text-muted">
+                                        showing page{" "}
+                                        <span className="text-primary">
+                                          {pageCount === 0 ? page : page + 1}
+                                        </span>{" "}
+                                        of
+                                        <span className="text-primary">
+                                          {" "}
+                                          {pageCount}
+                                        </span>{" "}
+                                        pages
+                                      </p>
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -862,8 +902,8 @@ function TenantSetup() {
                       </div>
                     </div>
                   </div>
-                )
-              }
+                </div>
+              )}
 
               {activeLink === 2 && (
                 <div>
@@ -890,15 +930,18 @@ function TenantSetup() {
                                 data-bs-toggle="modal"
                                 data-bs-target="#add-new-zone"
                               >
-                                <i class="mdi mdi-plus label-icon"></i> Add Document
-                                Type
+                                <i class="mdi mdi-plus label-icon"></i> Add
+                                Document Type
                               </button>
                             </div>
                           </div>
                         </div>
                         <div class="card-body">
                           {error.color !== "" && (
-                            <div className={"alert alert-" + error.color} role="alert">
+                            <div
+                              className={"alert alert-" + error.color}
+                              role="alert"
+                            >
                               {error.message}
                             </div>
                           )}
@@ -919,7 +962,9 @@ function TenantSetup() {
                                   documentTypes?.map((val, index) => {
                                     return (
                                       <tr data-id="1" key={val.id}>
-                                        <td style={{ width: "80px" }}>{index + 1}</td>
+                                        <td style={{ width: "80px" }}>
+                                          {index + 1}
+                                        </td>
                                         <td
                                           data-field="unit-num "
                                           className="text-capitalize"
@@ -966,7 +1011,9 @@ function TenantSetup() {
                                                 title="deactivate"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#confirm-deactivate"
-                                                onClick={() => setActiveId(val.id)}
+                                                onClick={() =>
+                                                  setActiveId(val.id)
+                                                }
                                               >
                                                 Deactivate
                                               </button>
@@ -976,7 +1023,9 @@ function TenantSetup() {
                                                 title="deactivate"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#confirm-activate"
-                                                onClick={() => setActiveId(val.id)}
+                                                onClick={() =>
+                                                  setActiveId(val.id)
+                                                }
                                               >
                                                 Activate
                                               </button>
@@ -997,7 +1046,10 @@ function TenantSetup() {
                                     onChange={(e) => sortSize(e)}
                                     value={size}
                                   >
-                                    <option className="bs-title-option" value="">
+                                    <option
+                                      className="bs-title-option"
+                                      value=""
+                                    >
                                       Select A range
                                     </option>
                                     <option value="10">10 Rows</option>
@@ -1025,7 +1077,9 @@ function TenantSetup() {
                                       nextClassName="page-item"
                                       nextLinkClassName="page-link"
                                       activeClassName="active"
-                                      onPageChange={(data) => handlePageClicks(data)}
+                                      onPageChange={(data) =>
+                                        handlePageClicks(data)
+                                      }
                                       forcePage={page}
                                     />
                                   </nav>
@@ -1039,7 +1093,11 @@ function TenantSetup() {
                                   {pageCount === 0 ? page : page + 1}
                                 </span>{" "}
                                 of
-                                <span className="text-primary"> {pageCount}</span> pages
+                                <span className="text-primary">
+                                  {" "}
+                                  {pageCount}
+                                </span>{" "}
+                                pages
                               </p>
                             )}
                           </div>
@@ -1049,9 +1107,7 @@ function TenantSetup() {
                     {/* <!-- end col --> */}
                   </div>
                 </div>
-              )
-              }
-
+              )}
 
               {activeLink === 3 && (
                 <div>
@@ -1075,14 +1131,18 @@ function TenantSetup() {
                                 data-bs-toggle="modal"
                                 data-bs-target="#add-new-role"
                               >
-                                <i class="mdi mdi-plus label-icon"></i> Add A role
+                                <i class="mdi mdi-plus label-icon"></i> Add A
+                                role
                               </button>
                             </div>
                           </div>
                         </div>
                         <div class="card-body">
                           {error.color !== "" && (
-                            <div className={"alert alert-" + error.color} role="alert">
+                            <div
+                              className={"alert alert-" + error.color}
+                              role="alert"
+                            >
                               {error.message}
                             </div>
                           )}
@@ -1101,7 +1161,9 @@ function TenantSetup() {
                                 {allRoles &&
                                   allRoles?.map((role, index) => (
                                     <tr data-id={index} key={index}>
-                                      <td style={{ width: "80px" }}>{index + 1}</td>
+                                      <td style={{ width: "80px" }}>
+                                        {index + 1}
+                                      </td>
                                       <td data-field="estate">{role.name}</td>
                                       <td data-field="unit-num ">
                                         <span class="badge-soft-success badge">
@@ -1127,7 +1189,9 @@ function TenantSetup() {
 
                                           <div class="dropdown-menu dropdown-menu-end text-capitalize">
                                             <p
-                                              onClick={() => getOneRole(role.id)}
+                                              onClick={() =>
+                                                getOneRole(role.id)
+                                              }
                                               class="dropdown-item"
                                               data-bs-toggle="modal"
                                               data-bs-target="#role-permissions"
@@ -1137,7 +1201,9 @@ function TenantSetup() {
                                               View Permissions
                                             </p>
                                             <p
-                                              onClick={() => handleEdit(role.id)}
+                                              onClick={() =>
+                                                handleEdit(role.id)
+                                              }
                                               data-bs-toggle="modal"
                                               data-bs-target="#edit-role"
                                               class="dropdown-item"
@@ -1163,7 +1229,10 @@ function TenantSetup() {
                                     onChange={(e) => sortSize(e)}
                                     value={size}
                                   >
-                                    <option className="bs-title-option" value="">
+                                    <option
+                                      className="bs-title-option"
+                                      value=""
+                                    >
                                       Select A range
                                     </option>
                                     <option value="10">10 Rows</option>
@@ -1191,7 +1260,9 @@ function TenantSetup() {
                                       nextClassName="page-item"
                                       nextLinkClassName="page-link"
                                       activeClassName="active"
-                                      onPageChange={(data) => handlePageClicks(data)}
+                                      onPageChange={(data) =>
+                                        handlePageClicks(data)
+                                      }
                                       forcePage={page}
                                     />
                                   </nav>
@@ -1205,7 +1276,11 @@ function TenantSetup() {
                                   {pageCount === 0 ? page : page + 1}
                                 </span>{" "}
                                 of
-                                <span className="text-primary"> {pageCount}</span> pages
+                                <span className="text-primary">
+                                  {" "}
+                                  {pageCount}
+                                </span>{" "}
+                                pages
                               </p>
                             )}
                           </div>
@@ -1214,10 +1289,7 @@ function TenantSetup() {
                     </div>
                     {/* <!-- end col --> */}
                   </div>
-
-
                 </div>
-
               )}
 
               {/* <!-- end row --> */}
@@ -1281,7 +1353,9 @@ function TenantSetup() {
                               <input
                               
                                 value={chargeDueAfterDays}
-                                onChange={(e) => setChargeDueAfterDays(e.target.value)}
+                                onChange={(e) =>
+                                  setChargeDueAfterDays(e.target.value)
+                                }
                                 type="number"
                                 class="form-control"
                                 placeholder="Enter ChargeDueAfterDays"
@@ -1296,7 +1370,9 @@ function TenantSetup() {
                                 type="text"
                                 class="form-control"
                                 placeholder="Enter IncomeType"
-                                onChange={(event) => setIncomeType(event.target.value)}
+                                onChange={(event) =>
+                                  setIncomeType(event.target.value)
+                                }
                                 value={incomeType}
                               />
                             </div>
@@ -1308,7 +1384,9 @@ function TenantSetup() {
                                 type="text"
                                 class="form-control"
                                 placeholder="Enter LineFeeId"
-                                onChange={(event) => setLineFeeId(event.target.value)}
+                                onChange={(event) =>
+                                  setLineFeeId(event.target.value)
+                                }
                                 value={lineFeeId}
                               />
                             </div>
@@ -1448,7 +1526,9 @@ function TenantSetup() {
                               <input
                                 required
                                 value={chargeDueAfterDays}
-                                onChange={(e) => setChargeDueAfterDays(e.target.value)}
+                                onChange={(e) =>
+                                  setChargeDueAfterDays(e.target.value)
+                                }
                                 type="number"
                                 class="form-control"
                                 placeholder="Enter ChargeDueAfterDays"
@@ -1462,7 +1542,9 @@ function TenantSetup() {
                               <input
                                 type="text"
                                 class="form-control"
-                                onChange={(event) => setIncomeType(event.target.value)}
+                                onChange={(event) =>
+                                  setIncomeType(event.target.value)
+                                }
                                 value={incomeType}
                               />
                             </div>
@@ -1473,7 +1555,9 @@ function TenantSetup() {
                               <input
                                 type="text"
                                 class="form-control"
-                                onChange={(event) => setLineFeeId(event.target.value)}
+                                onChange={(event) =>
+                                  setLineFeeId(event.target.value)
+                                }
                                 value={lineFeeId}
                               />
                             </div>
@@ -1522,7 +1606,9 @@ function TenantSetup() {
                               class="form-control text-capitalize"
                               data-live-search="true"
                               title="Select Applicable Charge Type"
-                              onChange={(e) => setUpdateChargeType(e.target.value)}
+                              onChange={(e) =>
+                                setUpdateChargeType(e.target.value)
+                              }
                             >
                               {chargeTypes &&
                                 chargeTypes.map((charge) => {
@@ -1531,7 +1617,9 @@ function TenantSetup() {
                                       key={charge}
                                       value={charge}
                                       selected={
-                                        charge === updateChargeType ? "selected" : ""
+                                        charge === updateChargeType
+                                          ? "selected"
+                                          : ""
                                       }
                                       className="text-capitalize"
                                     >
@@ -1620,7 +1708,7 @@ function TenantSetup() {
                   <div class="modal-content">
                     <div class="modal-body">
                       <center>
-                        <h5>Deactivate this  property type?</h5>
+                        <h5>Deactivate this property type?</h5>
                       </center>
                     </div>
                     <div class="modal-footer">
@@ -1658,7 +1746,7 @@ function TenantSetup() {
                   <div class="modal-content">
                     <div class="modal-body">
                       <center>
-                        <h5>Activate this  property type?</h5>
+                        <h5>Activate this property type?</h5>
                       </center>
                     </div>
                     <div class="modal-footer">
@@ -1716,9 +1804,8 @@ function TenantSetup() {
                             <div class="form-group mb-4">
                               <label for="">
                                 {" "}
-                                Document Type <strong class="text-danger">
-                                  *
-                                </strong>{" "}
+                                Document Type{" "}
+                                <strong class="text-danger">*</strong>{" "}
                               </label>
                               <input
                                 required
@@ -1782,7 +1869,8 @@ function TenantSetup() {
                           <div class="col-12">
                             <div class="form-group mb-4">
                               <label for="">
-                                Document Type <strong class="text-danger">*</strong>
+                                Document Type{" "}
+                                <strong class="text-danger">*</strong>
                               </label>
                               <input
                                 required
@@ -2023,8 +2111,13 @@ function TenantSetup() {
                                         type="checkbox"
                                         id="formCheck1"
                                       />
-                                      <label class="form-check-label" for="formCheck1">
-                                        {priv.name.toLowerCase().replace(/_/g, " ")}
+                                      <label
+                                        class="form-check-label"
+                                        for="formCheck1"
+                                      >
+                                        {priv.name
+                                          .toLowerCase()
+                                          .replace(/_/g, " ")}
                                       </label>
                                     </div>
                                   </div>
@@ -2138,7 +2231,9 @@ function TenantSetup() {
                                 <div className="col-4">
                                   <div className="checkbox" key={priv.id}>
                                     <input
-                                      checked={editPriveledges.includes(priv.name)}
+                                      checked={editPriveledges.includes(
+                                        priv.name
+                                      )}
                                       type="checkbox"
                                       id={index}
                                       onChange={(event) =>
@@ -2149,7 +2244,9 @@ function TenantSetup() {
                                       className="checkbox__label"
                                       htmlFor={index}
                                     >
-                                      {priv.name.toLowerCase().replace(/_/g, " ")}
+                                      {priv.name
+                                        .toLowerCase()
+                                        .replace(/_/g, " ")}
                                     </label>
                                   </div>
                                 </div>
@@ -2177,11 +2274,10 @@ function TenantSetup() {
                   </div>
                 </div>
               </div>
-
-            </div >
-          </div >
-        </div >
-      </div >
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

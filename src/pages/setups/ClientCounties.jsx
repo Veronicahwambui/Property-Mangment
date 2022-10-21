@@ -35,7 +35,7 @@ function ClientCounties() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setClientCounties(list.slice(itemOffset, endOffset));
+    setClientCounties(list?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(list.length / size));
   }, [itemOffset, size, list]);
 

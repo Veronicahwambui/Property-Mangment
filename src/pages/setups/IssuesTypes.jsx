@@ -29,7 +29,7 @@ function IssuesTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setIssueTypes(list.slice(itemOffset, endOffset));
+    setIssueTypes(list?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(list.length / size));
   }, [itemOffset, size, list]);
 

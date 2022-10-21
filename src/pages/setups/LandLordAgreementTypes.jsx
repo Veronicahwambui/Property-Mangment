@@ -41,7 +41,7 @@ function LandLordAgreementTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setAgreementTypes(list.slice(itemOffset, endOffset));
+    setAgreementTypes(list?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(list.length / size));
   }, [itemOffset, size, list]);
 
@@ -566,7 +566,6 @@ function LandLordAgreementTypes() {
           </div>
         </div>
       </div>
-      
     </>
   );
 }
