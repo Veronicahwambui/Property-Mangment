@@ -1529,13 +1529,13 @@ function LandlordSetup() {
                           value="true"
                           selected={newManualVal ? "selected" : ""}
                         >
-                          True
+                        Yes
                         </option>
                         <option
                           value="false"
                           selected={!newManualVal ? "selected" : ""}
                         >
-                          False
+                          No
                         </option>
                       </select>
                     </div>
@@ -1548,6 +1548,8 @@ function LandlordSetup() {
                         title="Select Applicable Charge Type"
                         onChange={(e) => setUpdateChargeType(e.target.value)}
                       >
+                     <option>Select Charge Type</option>
+
                         {chargeTypes &&
                           chargeTypes.map((charge) => {
                             return (
@@ -1606,7 +1608,7 @@ function LandlordSetup() {
             <div class="modal-content">
               <div class="modal-body">
                 <center>
-                  <h5>Deactivate this premise type?</h5>
+                  <h5>Deactivate this Applicable Charges?</h5>
                 </center>
               </div>
               <div class="modal-footer">
@@ -1630,43 +1632,7 @@ function LandlordSetup() {
           </div>
         </div>
 
-        {/* confirm deactivate  */}
-        <div
-          class="modal fade"
-          id="confirm-deactivate"
-          data-bs-backdrop="static"
-          data-bs-keyboard="false"
-          role="dialog"
-          aria-labelledby="staticBackdropLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-body">
-                <center>
-                  <h5>Deactivate this property type?</h5>
-                </center>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  no
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-bs-dismiss="modal"
-                  onClick={() => toggleStatus()}
-                >
-                  Yes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      
 
         {/* confirm dactivate  */}
         <div
@@ -1682,7 +1648,7 @@ function LandlordSetup() {
             <div class="modal-content">
               <div class="modal-body">
                 <center>
-                  <h5>Activate this property type?</h5>
+                  <h5>Activate this Applicable Charges ?</h5>
                 </center>
               </div>
               <div class="modal-footer">
