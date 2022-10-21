@@ -146,7 +146,7 @@ function ViewLandlord() {
     requestsServiceService.getBanks().then((res) => {
       setBanks(res.data.data);
     });
-    requestsServiceService.getDocumentTypes().then((res) => {
+    requestsServiceService.allDocumentTypes("LANDLORD").then((res) => {
       setdocumentTypes(res.data.data);
     });
     fetchCommunication();
