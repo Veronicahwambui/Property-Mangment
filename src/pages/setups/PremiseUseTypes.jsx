@@ -30,7 +30,7 @@ function PremiseUseTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setPremiseUseTypes(lists.slice(itemOffset, endOffset));
+    setPremiseUseTypes(lists?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(lists.length / size));
   }, [itemOffset, size, lists]);
 
@@ -191,8 +191,6 @@ function PremiseUseTypes() {
       });
   };
 
-  
-
   return (
     <>
       <div class="page-content">
@@ -201,17 +199,19 @@ function PremiseUseTypes() {
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Registered  Property Use Type</h4>
+                <h4 class="mb-sm-0 font-size-18">
+                  Registered Property Use Type
+                </h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
-                      <Link to='/'>Dashboard </Link>
+                      <Link to="/">Dashboard </Link>
                     </li>
-                    <li class="breadcrumb-item">
-                      Set Ups
+                    <li class="breadcrumb-item">Set Ups</li>
+                    <li class="breadcrumb-item active">
+                      Registered Property Use Types
                     </li>
-                    <li class="breadcrumb-item active">Registered  Property Use Types</li>
                   </ol>
                 </div>
               </div>
@@ -233,23 +233,27 @@ function PremiseUseTypes() {
                     </div>
                     <div class="d-flex">
                       <button
-                        onClick={() => { setCreateNames(''); fetchAll() }}
+                        onClick={() => {
+                          setCreateNames("");
+                          fetchAll();
+                        }}
                         type="button"
                         class="btn btn-primary waves-effect btn-label waves-light me-3"
                         data-bs-toggle="modal"
                         data-bs-target="#add-new-premise"
                       >
-                        <i class="mdi mdi-plus label-icon"></i> Add Property Use Type
+                        <i class="mdi mdi-plus label-icon"></i> Add Property Use
+                        Type
                       </button>
                     </div>
                   </div>
                 </div>
                 <div class="card-body">
-                  {error.color !== "" &&
+                  {error.color !== "" && (
                     <div className={"alert alert-" + error.color} role="alert">
                       {error.message}
                     </div>
-                  }
+                  )}
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
                       <thead class="table-light">
@@ -412,87 +416,16 @@ function PremiseUseTypes() {
         aria-hidden="true"
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
-
           <div class="modal-content">
-<form 
- onSubmit={(e) =>{
-  e.preventDefault();
-              createPremise();
-            
-}} >
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">
-                New  Property Use Type
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-           
-               
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="form-group mb-4">
-                        <label for="">
-                          {" "}
-                          Premise Use Type <strong class="text-danger">*</strong>
-                        </label>
-                        <input required
-                          value={createNames}
-                          onChange={(e) => setCreateNames(e.target.value)}
-                          type="text"
-                          class="form-control"
-                          placeholder="Enter create name"
-                        
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-light"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                  
-                    type="submit"
-                    class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                  >
-                    Save
-                  </button>
-                </div>
-                </form>
-              </div>
-         
-            </div>
-         
-      </div>
-      {/* edit modal  */}
-      <div
-        class="modal fade"
-        id="update-premise"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <form onSubmit={(e) => { e.preventDefault(); UpdatePremise () }}>
-
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                createPremise();
+              }}
+            >
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
-                  Update  Premise Use Type
+                  New Property Use Type
                 </h5>
                 <button
                   type="button"
@@ -501,15 +434,25 @@ function PremiseUseTypes() {
                   aria-label="Close"
                 ></button>
               </div>
+
               <div class="modal-body">
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group mb-4">
-                      <label for="">Property Use Type <strong class="text-danger">*</strong></label>
-                      <input required value={updateNames} onChange={(e) => setUpdateNames(e.target.value)} type="text" class="form-control" placeholder="Enter update name" />
+                      <label for="">
+                        {" "}
+                        Premise Use Type <strong class="text-danger">*</strong>
+                      </label>
+                      <input
+                        required
+                        value={createNames}
+                        onChange={(e) => setCreateNames(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter create name"
+                      />
                     </div>
                   </div>
-
                 </div>
               </div>
               <div class="modal-footer">
@@ -523,7 +466,72 @@ function PremiseUseTypes() {
                 <button
                   type="submit"
                   class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      {/* edit modal  */}
+      <div
+        class="modal fade"
+        id="update-premise"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                UpdatePremise();
+              }}
+            >
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Update Premise Use Type
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
                 ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        Property Use Type <strong class="text-danger">*</strong>
+                      </label>
+                      <input
+                        required
+                        value={updateNames}
+                        onChange={(e) => setUpdateNames(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter update name"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary"></button>
 
                 <div class="modal-header">
                   <h5 class="modal-title" id="staticBackdropLabel">
@@ -541,7 +549,8 @@ function PremiseUseTypes() {
                     <div class="col-12">
                       <div class="form-group mb-4">
                         <label for="">
-                          Premise Use Type <strong class="text-danger">*</strong>
+                          Premise Use Type{" "}
+                          <strong class="text-danger">*</strong>
                         </label>
                         <input
                           required
@@ -567,7 +576,6 @@ function PremiseUseTypes() {
                     Save
                   </button>
                 </div>
-
               </div>
             </form>
           </div>
@@ -587,7 +595,7 @@ function PremiseUseTypes() {
             <div class="modal-content">
               <div class="modal-body">
                 <center>
-                  <h5>Deactivate this  property use type?</h5>
+                  <h5>Deactivate this property use type?</h5>
                 </center>
               </div>
               <div class="modal-footer">
@@ -624,7 +632,7 @@ function PremiseUseTypes() {
               <div class="modal-content">
                 <div class="modal-body">
                   <center>
-                    <h5>Activate this  property use type?</h5>
+                    <h5>Activate this property use type?</h5>
                   </center>
                 </div>
                 <div class="modal-footer">
@@ -646,11 +654,8 @@ function PremiseUseTypes() {
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </>
   );

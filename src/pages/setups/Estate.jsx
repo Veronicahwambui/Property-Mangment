@@ -46,7 +46,7 @@ function Estate() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setEstates(list.slice(itemOffset, endOffset));
+    setEstates(list?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(list.length / size));
   }, [itemOffset, size, list]);
 

@@ -42,7 +42,7 @@ function DocumentTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setDocumentTypes(lists.slice(itemOffset, endOffset));
+    setDocumentTypes(lists?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(lists.length / size));
   }, [itemOffset, size, lists]);
 

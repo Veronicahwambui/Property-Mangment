@@ -233,7 +233,7 @@ function LandlordSetup() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffsets) + parseInt(size);
-    setDocumentTypes(lists.slice(itemOffsets, endOffset));
+    setDocumentTypes(lists?.slice(itemOffsets, endOffset));
     setPageCounts(Math.ceil(lists.length / size));
   }, [itemOffsets, size, lists]);
 

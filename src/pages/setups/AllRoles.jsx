@@ -39,7 +39,7 @@ function AllRoles() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setAllRoles(list.slice(itemOffset, endOffset));
+    setAllRoles(list?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(list.length / size));
   }, [itemOffset, size, list]);
 
