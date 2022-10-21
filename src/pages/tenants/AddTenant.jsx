@@ -7,11 +7,9 @@ import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
-import data from '../data/coutries.json'
+import data from "../data/coutries.json";
 import Badge from "react-bootstrap/Badge";
 function AddTenant() {
-
-
   const [showNewContactPeronModal, setShowNewContactPeronModal] =
     useState(false);
   const [showAssignUnits, setShowAssignUnits] = useState(false);
@@ -21,7 +19,6 @@ function AddTenant() {
   const [ac, setAC] = useState([]);
 
   const [selectedItems, setselectedItems] = useState([]);
-
 
   const [countries, setCounties] = useState([]);
 
@@ -81,9 +78,9 @@ function AddTenant() {
   const onPremiseChange = (event) => {
     let vals = event.target.value.split(":");
 
-    requestsServiceService.findVacatPremise(vals[0]).then((res) =>
-      setUnits(res.data.data != null ? res.data.data : [])
-    )
+    requestsServiceService
+      .findVacatPremise(vals[0])
+      .then((res) => setUnits(res.data.data != null ? res.data.data : []));
 
     setTenancyBody({ ...tenancyBody, premise: vals[0] });
     setTenancyBody({ ...tenancyBody, premiseName: vals[1] });
@@ -121,26 +118,22 @@ function AddTenant() {
   $(document).on("change", ".startdate", updateCompanyDateOfRegistration);
   $(document).on("change", ".enddate", updateDoB);
 
+  const handleAssignmentChange1 = (event) => {
+    setTenancyBody({
+      ...tenancyBody,
+      ["startDate"]: moment(event.target.value).format("YYYY-MM-DD"),
+    });
+  };
 
-  const handleAssignmentChange1 = (event) =>{
-
-  setTenancyBody({
-    ...tenancyBody,
-    ['startDate']: moment(event.target.value).format("YYYY-MM-DD"),
-  });
-}
-
-  const handleAssignmentChange2 = (event) =>{
-
-  setTenancyBody({
-    ...tenancyBody,
-    ['tenancyRenewalDate']: moment(event.target.value).format("YYYY-MM-DD"),
-  });
-}
+  const handleAssignmentChange2 = (event) => {
+    setTenancyBody({
+      ...tenancyBody,
+      ["tenancyRenewalDate"]: moment(event.target.value).format("YYYY-MM-DD"),
+    });
+  };
 
   $(document).on("change", ".enddate1", handleAssignmentChange1);
   $(document).on("change", ".enddate2", handleAssignmentChange2);
-
 
   const [tenancyDTOS, setTenancyDTOS] = useState([]);
   const [tenantKins, setTenantKins] = useState([]);
@@ -272,41 +265,43 @@ function AddTenant() {
     contacts.push.apply(contacts, tenantKins);
 
     let dara = JSON.stringify({
-      "tenancyDTOS": tenancyDTOS,
-      "tenantContactPersons": contacts,
-      "tenantDTO": tenantDto,
-      "tenantDocuments": tenantDocuments
-    })
-    requestsServiceService.createTenant(dara).then((res) => {
-
-      if (res.data.status == true) {
-        confirmAlert({
-          message: res.data.message,
-          buttons: [{
-            label: "OK",
-            onClick: (e) => navigate("/alltenants", { replace: true })
-          }
-          ]
-        })
-      } else {
-        confirmAlert({
-          message: res.data.message,
-          buttons: [{ label: "OK" }]
-        })
-      }
-    }).catch((err) => {
-      confirmAlert({
-        message: err.data.message,
-        buttons: [{ label: "OK" }]
+      tenancyDTOS: tenancyDTOS,
+      tenantContactPersons: contacts,
+      tenantDTO: tenantDto,
+      tenantDocuments: tenantDocuments,
+    });
+    requestsServiceService
+      .createTenant(dara)
+      .then((res) => {
+        if (res.data.status == true) {
+          confirmAlert({
+            message: res.data.message,
+            buttons: [
+              {
+                label: "OK",
+                onClick: (e) => navigate("/alltenants", { replace: true }),
+              },
+            ],
+          });
+        } else {
+          confirmAlert({
+            message: res.data.message,
+            buttons: [{ label: "OK" }],
+          });
+        }
       })
-        .catch((err) => {
+      .catch((err) => {
+        confirmAlert({
+          message: err.data.message,
+          buttons: [{ label: "OK" }],
+        }).catch((err) => {
           confirmAlert({
             message: err.message,
             buttons: [{ label: "OK" }],
           });
         });
-    });
-  }
+      });
+  };
   const newContactPerson = (event) => {
     setContactPersonBody({
       ...contactPersonBody,
@@ -374,7 +369,8 @@ function AddTenant() {
         let data = {
           document: filereader.result,
           docName: "ID CARD FRONT",
-          documentOwnerTypeName: "TENANT", documentTypeId: 1
+          documentOwnerTypeName: "TENANT",
+          documentTypeId: 1,
         };
         tenantDocuments.push(data);
         setDocBody({ data });
@@ -394,7 +390,8 @@ function AddTenant() {
         let data = {
           document: filereader.result,
           docName: "ID CARD BACK",
-          documentOwnerTypeName: "TENANT", documentTypeId: 2
+          documentOwnerTypeName: "TENANT",
+          documentTypeId: 2,
         };
         tenantDocuments.push(data);
         setDocBody({ data });
@@ -425,9 +422,8 @@ function AddTenant() {
   };
 
   const toogleShowAssignUnits = () => {
-    setShowAssignUnits(!showAssignUnits)
+    setShowAssignUnits(!showAssignUnits);
   };
-
 
   const handleSearchPremise = (e) => {
     e.preventDefault();
@@ -446,7 +442,6 @@ function AddTenant() {
       setPremises(res.data.data);
     });
   };
-
 
   return (
     <div className="page-content">
@@ -505,7 +500,9 @@ function AddTenant() {
                         </a>
                       </li>
                       <li className="nav-item">
-                        <a className="nav-link">2. Kin ,Referees & Dependents</a>
+                        <a className="nav-link">
+                          2. Kin ,Referees & Dependents
+                        </a>
                       </li>
 
                       <li className="nav-item">
@@ -530,7 +527,10 @@ function AddTenant() {
                         <div className="row">
                           <div className="col-lg-4">
                             <div className="mb-3">
-                              <label className="form-label">Tenant type</label>
+                              <label className="form-label">
+                                Tenant type
+                                <strong className="text-danger">*</strong>
+                              </label>
                               <select
                                 onChange={handleTenantDtoChange}
                                 name="tenantTypeName"
@@ -541,7 +541,6 @@ function AddTenant() {
                               </select>
                             </div>
                           </div>
-                         
                         </div>
                       </div>
 
@@ -607,7 +606,6 @@ function AddTenant() {
                                 type="email"
                                 className="form-control"
                                 placeholder="Enter tenants email address"
-
                                 name="email"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 required
@@ -672,12 +670,6 @@ function AddTenant() {
 
                           <div className="col-12">
                             <div className="row">
-
-
-
-
-
-
                               <div className="col-lg-4 col-md-6">
                                 <div className="mb-4">
                                   <label htmlFor="basicpill-firstname-input">
@@ -690,45 +682,39 @@ function AddTenant() {
                                     id="basicpill-firstname-input"
                                     name="idNumber"
                                     placeholder="Enter Id no "
-                                  
                                   />
                                 </div>
                               </div>
                               <div className="col-lg-4">
-                            <div className="mb-3">
-                              <label htmlFor="id-front">
-                                <i className="font-14px mdi mdi-paperclip"></i>{" "}
-                                ID FRONT{" "}
-                              </label>
-                              <input
-                                type="file"
-                                className="form-control"
-                                name="file"
-                                onChange={(e) => handleidchange(e)}
-                             
-                              />
-                            </div>
-                          </div>
+                                <div className="mb-3">
+                                  <label htmlFor="id-front">
+                                    <i className="font-14px mdi mdi-paperclip"></i>{" "}
+                                    ID FRONT{" "}
+                                  </label>
+                                  <input
+                                    type="file"
+                                    className="form-control"
+                                    name="file"
+                                    onChange={(e) => handleidchange(e)}
+                                  />
+                                </div>
+                              </div>
 
-                          <div className="col-lg-4">
-                            <div className="mb-3">
-                              <label htmlFor="id-front">
-                                <i className="font-14px mdi mdi-paperclip"></i>{" "}
-                                ID BACK{" "}
-                              </label>
-                              <input
-                                type="file"
-                                className="form-control"
-                                name="file"
-                                onChange={(e) => handleidchange2(e)}
-                                
-                              />
-                            </div>
-                          </div>
+                              <div className="col-lg-4">
+                                <div className="mb-3">
+                                  <label htmlFor="id-front">
+                                    <i className="font-14px mdi mdi-paperclip"></i>{" "}
+                                    ID BACK{" "}
+                                  </label>
+                                  <input
+                                    type="file"
+                                    className="form-control"
+                                    name="file"
+                                    onChange={(e) => handleidchange2(e)}
+                                  />
+                                </div>
+                              </div>
 
-
-
-                              
                               <div className="col-4">
                                 <div className="row">
                                   <label htmlFor="" className="">
@@ -765,7 +751,6 @@ function AddTenant() {
                                         }
                                         name="gender"
                                         id="formRadios2"
-                                     
                                       />
                                       <label
                                         className="form-check-label"
@@ -820,7 +805,7 @@ function AddTenant() {
                                 type="text"
                                 className="form-control"
                                 id=""
-                                placeholder="Enter Your Last Name"
+                                placeholder="Enter Your Other Name"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="otherName"
                               />
@@ -830,7 +815,6 @@ function AddTenant() {
                             <div className="mb-4">
                               <label htmlFor="" className="">
                                 Date of Birth
-                                <strong className="text-danger">*</strong>
                               </label>
                               <div className="input-group" id="datepicker1">
                                 <input
@@ -853,37 +837,39 @@ function AddTenant() {
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
-                              <label htmlFor="">
-                                Nationality{" "}
-                              </label>
+                              <label htmlFor="">Nationality </label>
                               <select
                                 className="form-select"
                                 data-live-search="true"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="nationality"
-                             
                               >
-                                <option></option>
-                                {countries.length > 0 && countries.map((country, index) => (
-                                   <option key={index+country.code} value={country.name}>{country.name}</option>
-                                ))}
+                                <option value={""}>Select Nationality</option>
+                                {countries.length > 0 &&
+                                  countries.map((country, index) => (
+                                    <option
+                                      key={index + country.code}
+                                      value={country.name}
+                                    >
+                                      {country.name}
+                                    </option>
+                                  ))}
                               </select>
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
                             <div className="mb-4">
-                              <label htmlFor="">
-                                Marital Status{" "}
-                              </label>
+                              <label htmlFor="">Marital Status </label>
                               <select
                                 className=" form-select"
                                 title="Select Marital status"
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="maritalStatus"
-                          
                               >
                                 <option></option>
-                                <option selected value="Single">Single</option>
+                                <option selected value="Single">
+                                  Single
+                                </option>
                                 <option value="Married">Married</option>
                               </select>
                             </div>
@@ -898,10 +884,9 @@ function AddTenant() {
                                 type="email"
                                 className="form-control"
                                 id="Enter tenants email address"
-                                placeholder="Enter property plot No."
+                                placeholder="Enter email."
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="email"
-                                required
                               />
                             </div>
                           </div>
@@ -915,7 +900,7 @@ function AddTenant() {
                                 type="text"
                                 className="form-control"
                                 id="Enter tenants Phone Number"
-                                placeholder="Enter property plot No."
+                                placeholder="Enter tenants Phone Number."
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="phoneNumber"
                                 required
@@ -947,9 +932,8 @@ function AddTenant() {
                               </select>
                             </div>
                           </div>
-                          
-                          
-<div className="row">
+
+                          <div className="row">
                             <div className="col-12">
                               <div className="bg-primary border-2 bg-soft p-3 mb-4">
                                 <p className="fw-semibold mb-0 pb-0 text-uppercase">
@@ -957,76 +941,73 @@ function AddTenant() {
                                 </p>
                               </div>
                             </div>
-                           
-                              <div className="col-lg-4">
-                                <div className="mb-4">
-                                  <label htmlFor="">Applicable charges</label>
-                                  <br />
-                                  <select
-                                    name="invoicePaymentPriority"
-                                    onChange={(e) => onChangeTenantDto(e)}
-                                    id=""
-                                    className={"form-control"}
-                                  >
-                                    <option value="">
-                                      Select Applicable Charge
+
+                            <div className="col-lg-4">
+                              <div className="mb-4">
+                                <label htmlFor="">Applicable charges</label>
+                                <br />
+                                <select
+                                  name="invoicePaymentPriority"
+                                  onChange={(e) => onChangeTenantDto(e)}
+                                  id=""
+                                  className={"form-control"}
+                                >
+                                  <option value="">
+                                    Select Applicable Charge
+                                  </option>
+                                  {ac?.map((item) => (
+                                    <option
+                                      value={item.id + "-" + item.name}
+                                      key={item.id}
+                                    >
+                                      {item.name}
                                     </option>
-                                    {ac?.map((item) => (
-                                      <option
-                                        value={item.id + "-" + item.name}
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                            {selectedItems.length > 0 && (
+                              <>
+                                <div className="alert alert-info bg-soft d-flex align-items-center text-capitalize">
+                                  {selectedItems?.map((item, index) => (
+                                    <>
+                                      <h5
+                                        className="ml-7px justify-content-center align-items-center"
                                         key={item.id}
                                       >
-                                        {item.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </div>
-                              </div>
-                              {selectedItems.length > 0 && (
-                                <>
-                                  <div className="alert alert-info bg-soft d-flex align-items-center text-capitalize">
-                                    {selectedItems?.map((item, index) => (
-                                      <>
-                                        <h5
-                                          className="ml-7px justify-content-center align-items-center"
-                                          key={item.id}
+                                        <Badge
+                                          className={
+                                            "bg-primary border-2 bg-soft text-black"
+                                          }
+                                          style={{
+                                            color: "black",
+                                          }}
                                         >
-                                          <Badge
-                                            className={
-                                              "bg-primary border-2 bg-soft text-black"
-                                            }
-                                            style={{
-                                              color: "black",
-                                            }}
-                                          >
-                                            {item.name}
-                                          </Badge>
-                                          <br />
-                                          <i
-                                            className="fa fa-trash cursor-pointer text-danger mt-1 mr-auto ml-auto"
-                                            onClick={() => removeItems(item.id)}
-                                          ></i>
-                                        </h5>
-                                        {index < selectedItems?.length - 1 && (
-                                          <i
-                                            style={{
-                                              fontSize: "20px",
-                                              margin: "0.5em",
-                                            }}
-                                            className={
-                                              "dripicons-arrow-thin-right mr-5 justify-content-center d-flex align-items-center"
-                                            }
-                                          />
-                                        )}
-                                      </>
-                                    ))}
-                                  </div>
-                                </>
-                              )}
-                       
-                            </div>
-
-
+                                          {item.name}
+                                        </Badge>
+                                        <br />
+                                        <i
+                                          className="fa fa-trash cursor-pointer text-danger mt-1 mr-auto ml-auto"
+                                          onClick={() => removeItems(item.id)}
+                                        ></i>
+                                      </h5>
+                                      {index < selectedItems?.length - 1 && (
+                                        <i
+                                          style={{
+                                            fontSize: "20px",
+                                            margin: "0.5em",
+                                          }}
+                                          className={
+                                            "dripicons-arrow-thin-right mr-5 justify-content-center d-flex align-items-center"
+                                          }
+                                        />
+                                      )}
+                                    </>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
 
                           <div className="col-12">
                             <div className="row">
@@ -1042,7 +1023,6 @@ function AddTenant() {
                                     type="radio"
                                     name="roomamte"
                                     id=""
-                                 
                                   />
                                   <label
                                     className="form-check-label"
@@ -1059,7 +1039,6 @@ function AddTenant() {
                                     type="radio"
                                     name="roomamte"
                                     id=""
-                                    
                                   />
                                   <label
                                     className="form-check-label"
@@ -1468,19 +1447,19 @@ function AddTenant() {
                               ))}
                           </tbody>
                           <tfoot>
-
-
                             <tr>
-                              <td colSpan="7 " class="bg-light  cursor-pointer" >
-
+                              <td colSpan="7 " class="bg-light  cursor-pointer">
                                 <span class="d-flex align-items-center ">
                                   <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
-                                  <span class="pl-5 " data-id="TENANT" onClick={newDocument}>
+                                  <span
+                                    class="pl-5 "
+                                    data-id="TENANT"
+                                    onClick={newDocument}
+                                  >
                                     Add Tenancy Documents
                                   </span>
                                 </span>
                               </td>
-
                             </tr>
                           </tfoot>
                         </table>
@@ -1497,9 +1476,7 @@ function AddTenant() {
                     <i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i>{" "}
                     Previous{" "}
                   </button>
-                  <button
-                    className="btn btn-primary waves-effect kev-nxt me-3"
-                  >
+                  <button className="btn btn-primary waves-effect kev-nxt me-3">
                     Next{" "}
                     <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
                   </button>
@@ -1521,10 +1498,13 @@ function AddTenant() {
                 SUBMIT
               </button>
 
-              <Modal show={showNewContactPeronModal}  onHide={toogleShowNewContactPeronModal} centered>
+              <Modal
+                show={showNewContactPeronModal}
+                onHide={toogleShowNewContactPeronModal}
+                centered
+              >
                 <ModalHeader className="justify-content" closeButton>
                   <h3>Add a new {contactPersonBody.contactPersonTypeName}</h3>
-                  
                 </ModalHeader>
                 <ModalBody>
                   <form id="newContactPersonForm" className="row">
@@ -1621,14 +1601,16 @@ function AddTenant() {
                 </ModalFooter>
               </Modal>
 
-              <Modal show={showAssignUnits} onHide={toogleShowAssignUnits} centered>
+              <Modal
+                show={showAssignUnits}
+                onHide={toogleShowAssignUnits}
+                centered
+              >
                 <ModalHeader className="justify-content" closeButton>
                   <h3>Assign a Unit to the Tenant</h3>
-               
                 </ModalHeader>
                 <ModalBody>
                   <form id="newContactPersonForm" className="row">
-
                     <div className="form-group row col-12">
                       <div className="form-group mb-4">
                         <label htmlFor=""> Property Name</label>
@@ -1641,108 +1623,114 @@ function AddTenant() {
                         />
                       </div>
                       <div class="col-3 ">
-                        <button type="button" onClick={handleSearchPremise} class="btn btn-primary btn-block w-100 btn-lg">
+                        <button
+                          type="button"
+                          onClick={handleSearchPremise}
+                          class="btn btn-primary btn-block w-100 btn-lg"
+                        >
                           <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
                           <div class="d-none">Search</div>
                         </button>
                       </div>
                     </div>
 
-
-                    {premises.length > 0 && <div className="col-md-6">
-                      <div className="mb-4">
-                        <label htmlFor="basicpill-firstname-input">
-                          Premises<strong className="text-danger">*</strong>
-                        </label>
-
-                        <select
-                          className="form-control"
-                          onChange={onPremiseChange}
-                          name="premise"
-                        >
-                          <option></option>
-                          {premises?.map((prem, index) => (
-                            <option value={prem.id + ":" + prem.premiseName}>
-                              {prem.premiseName}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>}
-                    {units.length > 0 && <>
+                    {premises.length > 0 && (
                       <div className="col-md-6">
                         <div className="mb-4">
-                          <label htmlFor="basicpill-lastname-input">
-                            Unit <strong className="text-danger">*</strong>
+                          <label htmlFor="basicpill-firstname-input">
+                            Premises<strong className="text-danger">*</strong>
                           </label>
+
                           <select
                             className="form-control"
-                            onChange={handleAssignmentChange}
-                            name="premiseUnitId"
+                            onChange={onPremiseChange}
+                            name="premise"
                           >
                             <option></option>
-                            {units &&
-                              units.map((prem, index) => (
-                                <option value={prem.id + ":" + prem.unitName}>
-                                  {prem.unitName}
-                                </option>
-                              ))}
+                            {premises?.map((prem, index) => (
+                              <option value={prem.id + ":" + prem.premiseName}>
+                                {prem.premiseName}
+                              </option>
+                            ))}
                           </select>
                         </div>
                       </div>
-                      <div className="col-md-6">
-                        <div className="mb-4">
-                          <label htmlFor="">Unit Condition</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id=""
-                            placeholder=""
-                            onChange={(e) => handleAssignmentChange(e)}
-                            name="unitCondition"
-                          />
+                    )}
+                    {units.length > 0 && (
+                      <>
+                        <div className="col-md-6">
+                          <div className="mb-4">
+                            <label htmlFor="basicpill-lastname-input">
+                              Unit <strong className="text-danger">*</strong>
+                            </label>
+                            <select
+                              className="form-control"
+                              onChange={handleAssignmentChange}
+                              name="premiseUnitId"
+                            >
+                              <option></option>
+                              {units &&
+                                units.map((prem, index) => (
+                                  <option value={prem.id + ":" + prem.unitName}>
+                                    {prem.unitName}
+                                  </option>
+                                ))}
+                            </select>
+                          </div>
                         </div>
-                      </div>
-                      <div className=" col-md-6" id="datepicker14">
-                        <div className="mb-4">
-                          <label htmlFor="">Start Date</label>
-                          <input
-                            type="text"
-                            className="form-control mouse-pointer enddate1"
-                            id=""
-                            placeholder="Enter StartDate"
-                            readOnly
-                            data-date-format="dd M, yyyy"
-                            data-date-container="#datepicker14"
-                            data-provide="datepicker"
-                            data-date-autoclose="true"
-                            onChange={(e) => handleAssignmentChange(e)}
-                            name="startDate"
-                            required
-                          />
+                        <div className="col-md-6">
+                          <div className="mb-4">
+                            <label htmlFor="">Unit Condition</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id=""
+                              placeholder=""
+                              onChange={(e) => handleAssignmentChange(e)}
+                              name="unitCondition"
+                            />
+                          </div>
                         </div>
-
-                      </div>
-                      <div className="col-md-6" id="datepicker1O4">
-                        <div className="mb-4">
-                          <label htmlFor="">TenancyRenewalDate</label>
-                          <input
-                            type="text"
-                            className="form-control  mouse-pointer enddate1"
-                            id=""
-                            placeholder="Enter TenancyRenewalDate"
-                            readOnly
-                            data-date-format="dd M, yyyy"
-                            data-date-container="#datepicker14"
-                            data-provide="datepicker"
-                            data-date-autoclose="true"
-                            onChange={(e) => handleAssignmentChange(e)}
-                            name="tenancyRenewalDate"
-                            required
-                          />
+                        <div className=" col-md-6" id="datepicker14">
+                          <div className="mb-4">
+                            <label htmlFor="">Start Date</label>
+                            <input
+                              type="text"
+                              className="form-control mouse-pointer enddate1"
+                              id=""
+                              placeholder="Enter StartDate"
+                              readOnly
+                              data-date-format="dd M, yyyy"
+                              data-date-container="#datepicker14"
+                              data-provide="datepicker"
+                              data-date-autoclose="true"
+                              onChange={(e) => handleAssignmentChange(e)}
+                              name="startDate"
+                              required
+                            />
+                          </div>
                         </div>
-                      </div>
-                    </>}
+                        <div className="col-md-6" id="datepicker1O4">
+                          <div className="mb-4">
+                            <label htmlFor="">TenancyRenewalDate</label>
+                            <input
+                              type="text"
+                              className="form-control  mouse-pointer enddate1"
+                              id=""
+                              placeholder="Enter TenancyRenewalDate"
+                              readOnly
+                              data-date-format="dd M, yyyy"
+                              data-date-container="#datepicker14"
+                              data-provide="datepicker"
+                              data-date-autoclose="true"
+                              onChange={(e) => handleAssignmentChange(e)}
+                              name="tenancyRenewalDate"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </form>
                 </ModalBody>
                 <ModalFooter>
@@ -1763,10 +1751,13 @@ function AddTenant() {
                 </ModalFooter>
               </Modal>
 
-              <Modal show={showDocumentModal}  onHide={toogleShowNewDocumentModal} centered>
+              <Modal
+                show={showDocumentModal}
+                onHide={toogleShowNewDocumentModal}
+                centered
+              >
                 <ModalHeader className="justify-content" closeButton>
                   <h3>New {docBody.documentOwnerTypeName} Document</h3>
-         
                 </ModalHeader>
                 <ModalBody>
                   <form id="newContactPersonForm" className="row">

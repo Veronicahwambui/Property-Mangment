@@ -32,8 +32,7 @@ function TenantSetup() {
   const [lineFeeId, setLineFeeId] = useState("");
   const [lineChartAccountNo, setLineChartAccountNo] = useState("");
 
-  const [chargeDueAfterDays, setChargeDueAfterDays] = useState("")
-
+  const [chargeDueAfterDays, setChargeDueAfterDays] = useState("");
 
   useEffect(() => {
     fetchTypes();
@@ -169,7 +168,6 @@ function TenantSetup() {
       name: updateName,
       refundable: updateCheck,
       entityType: userType,
-
     });
     requestsServiceService
       .updateApplicableCharges(data)
@@ -789,19 +787,37 @@ function TenantSetup() {
                                                 </td>
                                                 <td class="text-center cell-change text-nowrap ">
                                                   <div class="d-flex align-items-center justify-content-between">
+                                                    <a
+                                                      onClick={() => {
+                                                        setActiveId(val.id);
+                                                        setUpdateName(val.name);
+                                                        setUpdateChargeType(
+                                                          val.applicableChargeType
+                                                        );
+                                                        setNewManualVal(
+                                                          val.expectManualValues
+                                                        );
+                                                        setIncomeType(
+                                                          val.incomeType
+                                                        );
+                                                        setLineFeeId(
+                                                          val.lineFeeId
+                                                        );
+                                                        setLineChartAccountNo(
+                                                          val.lineChartAccountNo
+                                                        );
 
-                                                    <a onClick={() => {
-                                                      setActiveId(val.id);
-                                                      setUpdateName(val.name);
-                                                      setUpdateChargeType(val.applicableChargeType);
-                                                      setNewManualVal(val.expectManualValues);
-                                                      setIncomeType(val.incomeType);
-                                                      setLineFeeId(val.lineFeeId);
-                                                      setLineChartAccountNo(val.lineChartAccountNo);
-
-                                                      setUpdateCheck(val.updateCheck);
-                                                    }} data-bs-toggle="modal"
-                                                      data-bs-target="#update-charge" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
+                                                        setUpdateCheck(
+                                                          val.updateCheck
+                                                        );
+                                                      }}
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#update-charge"
+                                                      class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
+                                                      title="Edit "
+                                                    >
+                                                      <i class="bx bx-edit-alt "></i>
+                                                    </a>
                                                     {val.active ? (
                                                       <button
                                                         class="btn btn-danger btn-sm text-uppercase px-2 mx-3"
@@ -998,7 +1014,6 @@ function TenantSetup() {
                                               onClick={() => {
                                                 setActiveId(val.id);
                                                 setUpdateNames(val.name);
-
                                               }}
                                               data-bs-toggle="modal"
                                               data-bs-target="#update-modal"
@@ -1209,7 +1224,7 @@ function TenantSetup() {
                                               }
                                               data-bs-toggle="modal"
                                               data-bs-target="#edit-role"
-                                              class="dropdown-item"
+                                              class="dropdown-item cursor-pointer"
                                               href="#"
                                             >
                                               <i class="font-size-15 mdi mdi-pencil me-3"></i>
@@ -1350,11 +1365,8 @@ function TenantSetup() {
                           </div>
                           <div class="col-12">
                             <div class="form-group mb-4">
-                              <label for="">
-                                ChargeDueAfterDays{" "}
-                              </label>
+                              <label for="">ChargeDueAfterDays </label>
                               <input
-
                                 value={chargeDueAfterDays}
                                 onChange={(e) =>
                                   setChargeDueAfterDays(e.target.value)
@@ -2153,7 +2165,7 @@ function TenantSetup() {
 
               <div
                 class="modal fade"
-                id="edit-role"
+                id=""
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 tabindex="-1"
@@ -2193,7 +2205,7 @@ function TenantSetup() {
               {/* confirm dactivate  */}
               <div
                 class="modal fade"
-                id="confirm-activate"
+                id="edit-role"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 role="dialog"
@@ -2201,79 +2213,100 @@ function TenantSetup() {
                 aria-hidden="true"
               >
                 <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-body">
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="form-group mb-4">
-                            <label for="">
-                              Role Name <strong class="text-danger">*</strong>
-                            </label>
-                            <input
-                              type="text"
-                              value={editName}
-                              onChange={(e) => setEditName(e.target.value)}
-                              class="form-control"
-                              placeholder="Enter the role Name"
-                              required
-                            />
+                  <div className="modal-content">
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        editARole();
+                      }}
+                    >
+                      <div className="modal-header">
+                        <h5 className="modal-title" id="staticBackdropLabel">
+                          Edit Role
+                        </h5>
+                        {/*<button*/}
+                        {/*  type="button"*/}
+                        {/*  className="btn btn-primary"*/}
+                        {/*  data-bs-dismiss="modal"*/}
+                        {/*  onClick={() => toggleStatuses()}*/}
+                        {/*>*/}
+                        {/*  Yes*/}
+                        {/*</button>*/}
+                      </div>
+                      <div className="modal-body">
+                        <div className="row">
+                          <div className="col-12">
+                            <div className="form-group mb-4">
+                              <label htmlFor="">
+                                Role Name{" "}
+                                <strong className="text-danger">*</strong>
+                              </label>
+                              <input
+                                type="text"
+                                value={editName}
+                                onChange={(e) => setEditName(e.target.value)}
+                                className="form-control"
+                                placeholder="Enter the role Name"
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-12 text-capitalize">
-                          <div class="form-group mb-0">
-                            <h6 class="font-16px text-info">
-                              Edit permissions Specific to the role{" "}
-                              <strong class="text-danger">*</strong>
-                            </h6>
+                          <div className="col-12 text-capitalize">
+                            <div className="form-group mb-0">
+                              <h6 className="font-16px text-info">
+                                Edit permissions Specific to the role{" "}
+                                <strong className="text-danger">*</strong>
+                              </h6>
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-12 text-capitalize">
-                          <div class="row">
-                            {privileges &&
-                              privileges.map((priv, index) => (
-                                <div className="col-4">
-                                  <div className="checkbox" key={priv.id}>
-                                    <input
-                                      checked={editPriveledges.includes(
-                                        priv.name
-                                      )}
-                                      type="checkbox"
-                                      id={index}
-                                      onChange={(event) =>
-                                        handleEditRole(index, event)
-                                      }
-                                    />
-                                    <label
-                                      className="checkbox__label"
-                                      htmlFor={index}
-                                    >
-                                      {priv.name
-                                        .toLowerCase()
-                                        .replace(/_/g, " ")}
-                                    </label>
+                          <div className="col-12 text-capitalize">
+                            <div className="row">
+                              {privileges &&
+                                privileges.map((priv, index) => (
+                                  <div className="col-4">
+                                    <div className="checkbox" key={priv.id}>
+                                      <input
+                                        checked={editPriveledges.includes(
+                                          priv.name
+                                        )}
+                                        type="checkbox"
+                                        id={index}
+                                        onChange={(event) =>
+                                          handleEditRole(index, event)
+                                        }
+                                      />
+                                      <label
+                                        className="checkbox__label"
+                                        htmlFor={index}
+                                      >
+                                        {priv.name
+                                          .toLowerCase()
+                                          .replace(/_/g, " ")}
+                                      </label>
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                ))}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button
-                        type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal"
-                      >
-                        no
-                      </button>
-                      <button
-                        type="submit"
-                        class="btn btn-primary"
-                        data-bs-dismiss="modal"
-                      >
-                        Save
-                      </button>
-                    </div>
+                      <div className="modal-footer">
+                        <button
+                          type="button"
+                          className="btn btn-light"
+                          data-bs-dismiss="modal"
+                        >
+                          no
+                        </button>
+                        <button
+                          type="submit"
+                          className="btn btn-primary"
+                          data-bs-dismiss="modal"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>

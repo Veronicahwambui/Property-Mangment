@@ -93,7 +93,7 @@ function IssuesTypes() {
       penaltyChargeId: penaltyChargeId,
       penaltyChargeRate: penaltyChargeRate,
       propertyTaxChargeId: propertyTaxChargeId,
-      propertyTaxRate: propertyTaxRate,
+      propertyTaxRate: pcharge,
       senderId: senderId,
       settlementPeriod: settlementPeriod,
       visitationChargeDay: visitationChargeDay,
@@ -529,6 +529,8 @@ function IssuesTypes() {
 
   console.log(newCounty);
 
+  const [pcharge, setPTaxRate] = useState("");
+
   useEffect(() => {
     getZones();
     getClientCounties();
@@ -846,7 +848,6 @@ function IssuesTypes() {
         });
       });
   };
-
   return (
     <>
       <div class="page-content">
@@ -3019,10 +3020,8 @@ function IssuesTypes() {
                           max="30"
                           className="form-control"
                           placeholder="Enter PropertyTaxRate"
-                          onChange={(event) =>
-                            setPropertyTaxRate(event.target.value)
-                          }
-                          value={client?.propertyTaxRate}
+                          onChange={(e) => setPTaxRate(e.target.value)}
+                          defaultValue={client?.propertyTaxRate}
                         />
                       </div>
                       <div className="form-group mb-4">
