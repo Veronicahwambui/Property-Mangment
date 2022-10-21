@@ -494,7 +494,7 @@ function OneTenant() {
   }, []);
 
   const createDocumentTypes = (id) => {
-    requestsServiceService.getDocumentTypes(id).then((res) => {
+    requestsServiceService.allDocumentTypes("TENANT").then((res) => {
       setDocumentTypes(res.data.data);
     });
   };
