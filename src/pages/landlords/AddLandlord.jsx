@@ -235,7 +235,7 @@ export default function AddLandlord() {
     }
     let data = Object.assign(landlordDetails, {
       invoicePaymentPriority: selectedItems
-        .map((a) => a.id)
+        ?.map((a) => a.id)
         .join("-")
         .toString(),
     });
@@ -446,7 +446,8 @@ export default function AddLandlord() {
                               htmlFor="landlord-type"
                               className="form-label"
                             >
-                              Landlord type.{" "}<strong class="text-danger ">*</strong>
+                              Landlord type.{" "}
+                              <strong class="text-danger ">*</strong>
                             </label>
                             {landlordtypes && (
                               <div className="form-group mb-4">
@@ -461,7 +462,7 @@ export default function AddLandlord() {
                                   >
                                     select landlord type
                                   </option>
-                                  {landlordtypes.map((item, index) => (
+                                  {landlordtypes?.map((item, index) => (
                                     <option value={item} key={index}>
                                       {item?.toLowerCase()?.replace(/_/g, " ")}
                                     </option>
@@ -502,7 +503,8 @@ export default function AddLandlord() {
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
                                   <label htmlFor="basicpill-firstname-input ">
-                                    First name{" "}<strong class="text-danger ">*</strong>
+                                    First name{" "}
+                                    <strong class="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text "
@@ -512,14 +514,14 @@ export default function AddLandlord() {
                                     id="basicpill-firstname-input "
                                     required
                                     placeholder="Enter Your First Name "
-                                   
                                   />
                                 </div>
                               </div>
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
                                   <label htmlFor="basicpill-lastname-input ">
-                                    Last Name{" "}<strong class="text-danger ">*</strong>
+                                    Last Name{" "}
+                                    <strong class="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text "
@@ -547,7 +549,8 @@ export default function AddLandlord() {
                               </div>
                               <div className="col-lg-3 col-md-6">
                                 <label htmlFor=" " className=" ">
-                                  Gender:{" "}<strong class="text-danger ">*</strong>
+                                  Gender:{" "}
+                                  <strong class="text-danger ">*</strong>
                                 </label>
                                 <div className="d-flex ">
                                   <div className="form-check me-3">
@@ -593,7 +596,8 @@ export default function AddLandlord() {
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
                                   <label htmlFor="basicpill-email-input ">
-                                    File Number{" "}<strong class="text-danger ">*</strong>
+                                    File Number{" "}
+                                    <strong class="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text"
@@ -602,7 +606,7 @@ export default function AddLandlord() {
                                     name={"fileNumber"}
                                     onChange={(e) => onChangeLandlordDetails(e)}
                                     placeholder="Enter File Number "
-                                  required={true}
+                                    required={true}
                                   />
                                 </div>
                               </div>
@@ -613,7 +617,10 @@ export default function AddLandlord() {
                             <>
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
-                                  <label htmlFor=" ">Company Name. <strong class="text-danger ">*</strong></label>
+                                  <label htmlFor=" ">
+                                    Company Name.{" "}
+                                    <strong class="text-danger ">*</strong>
+                                  </label>
                                   <input
                                     type="text "
                                     className="form-control "
@@ -655,7 +662,7 @@ export default function AddLandlord() {
                           <div className="col-lg-3 col-md-6 ">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-phoneno-input ">
-                                Phone{" "}<strong class="text-danger ">*</strong>
+                                Phone <strong class="text-danger ">*</strong>
                               </label>
                               <input
                                 type="text "
@@ -709,10 +716,10 @@ export default function AddLandlord() {
                                       select agreement type
                                     </option>
                                     {agreementTypes
-                                      .sort((a, b) =>
+                                      ?.sort((a, b) =>
                                         a.name.localeCompare(b.name)
                                       )
-                                      .map((aT) => {
+                                      ?.map((aT) => {
                                         return (
                                           <option value={aT.id} key={aT.id}>
                                             {aT.name
@@ -920,7 +927,7 @@ export default function AddLandlord() {
                               </thead>
                               <tbody>
                                 {accounts.length > 0 &&
-                                  accounts.map((account, index) => {
+                                  accounts?.map((account, index) => {
                                     return (
                                       <tr data-id="1" key={index}>
                                         <td style={{ width: "80px" }}>
@@ -1005,7 +1012,7 @@ export default function AddLandlord() {
                             </thead>
                             <tbody>
                               {landlordDocuments.length > 0 &&
-                                landlordDocuments.map((doc, index) => {
+                                landlordDocuments?.map((doc, index) => {
                                   return (
                                     <tr data-id="1" key={index}>
                                       <td style={{ width: "80px" }}>
@@ -1134,7 +1141,7 @@ export default function AddLandlord() {
                             ?.sort((a, b) =>
                               a.bankName.localeCompare(b.bankName)
                             )
-                            .map((bank) => {
+                            ?.map((bank) => {
                               return (
                                 <option
                                   key={bank.id}
@@ -1312,7 +1319,7 @@ export default function AddLandlord() {
                             select..
                           </option>
                           {documentTypes
-                            .sort((a, b) => a.name.localeCompare(b.name))
+                            ?.sort((a, b) => a.name.localeCompare(b.name))
                             ?.map((dT) => {
                               return (
                                 <option key={dT.id} value={dT.id}>
