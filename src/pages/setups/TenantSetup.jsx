@@ -18,6 +18,8 @@ function TenantSetup() {
   const [updateChargeType, setUpdateChargeType] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const [updateCheck, setUpdateCheck] = useState(false);
+  const[entityType, setEntityType]=useState("");
+
 
   const [error, setError] = useState({
     message: "",
@@ -152,6 +154,7 @@ function TenantSetup() {
       lineFeeId: lineFeeId,
       name: updateName,
       refundable: updateCheck,
+      entityType: entityType,
     });
     requestsServiceService
       .updateApplicableCharges(data)
@@ -312,6 +315,7 @@ function TenantSetup() {
       clientId: authService.getClientId(),
       id: activeId,
       name: updateNames,
+      entityType: entityType,
     });
     requestsServiceService
       .updateDocumentType(data)
@@ -538,6 +542,10 @@ function TenantSetup() {
                                                         setLineChartAccountNo(
                                                           val.lineChartAccountNo
                                                         );
+                                                        setEntityType(val.entityType);
+                                                      
+                                                        setUpdateCheck(val.updateCheck);
+
                                                       }}
                                                       data-bs-toggle="modal"
                                                       data-bs-target="#update-charge"
@@ -743,6 +751,7 @@ function TenantSetup() {
                                               onClick={() => {
                                                 setActiveId(val.id);
                                                 setUpdateNames(val.name);
+                                                setEntityType(val.entityType);
                                               }}
                                               data-bs-toggle="modal"
                                               data-bs-target="#update-modal"
@@ -915,10 +924,9 @@ function TenantSetup() {
                         <div class="form-group mb-4">
                           <label for="">
                             ChargeDueAfterDays{" "}
-                            <strong class="text-danger">*</strong>{" "}
                           </label>
                           <input
-                            required
+                        
                             value={chargeDueAfterDays}
                             onChange={(e) =>
                               setChargeDueAfterDays(e.target.value)
@@ -983,8 +991,8 @@ function TenantSetup() {
                           setManualVal(e.target.value);
                         }}
                       >
-                        <option value="true">True</option>
-                        <option value="false">False</option>
+                     <option value="true">Yes</option>
+                        <option value="false" selected>No</option>
                       </select>
                     </div>
                     <div class="col-12">
@@ -1000,6 +1008,8 @@ function TenantSetup() {
                           setChargeType(e.target.value);
                         }}
                       >
+                          <option>Select Charge Type</option>
+
                         {chargeTypes &&
                           chargeTypes?.map((charge) => {
                             return (

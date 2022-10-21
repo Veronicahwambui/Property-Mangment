@@ -32,6 +32,8 @@ function TenantSetup() {
   const [lineFeeId, setLineFeeId] = useState("");
   const [lineChartAccountNo, setLineChartAccountNo] = useState("");
   const [chargeDueAfterDays, setChargeDueAfterDays] = useState("")
+  const[entityType, setEntityType]=useState("");
+
 
   useEffect(() => {
     fetchTypes();
@@ -173,6 +175,8 @@ function TenantSetup() {
       lineFeeId: lineFeeId,
       name: updateName,
       refundable: updateCheck,
+      entityType: userType,
+
     });
     requestsServiceService
       .updateApplicableCharges(data)
@@ -330,6 +334,7 @@ function TenantSetup() {
       clientId: authService.getClientId(),
       id: activeId,
       name: updateNames,
+      entityType:userType,
     });
     requestsServiceService
       .updateDocumentType(data)
@@ -760,7 +765,10 @@ function TenantSetup() {
                                                 <td class="text-center cell-change text-nowrap ">
                                                   <div class="d-flex align-items-center justify-content-between">
 
-                                                    <a onClick={() => { setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType); setNewManualVal(val.expectManualValues); setIncomeType(val.incomeType); setLineFeeId(val.lineFeeId); setLineChartAccountNo(val.lineChartAccountNo) }} data-bs-toggle="modal"
+                                                    <a onClick={() => { setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType); setNewManualVal(val.expectManualValues); setIncomeType(val.incomeType); setLineFeeId(val.lineFeeId); setLineChartAccountNo(val.lineChartAccountNo); setUserType(val.userType);
+                                                      
+                                                      setUpdateCheck(val.updateCheck);
+}} data-bs-toggle="modal"
                                                       data-bs-target="#update-charge" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
 
                                                     {val.active ? <button
@@ -941,6 +949,8 @@ function TenantSetup() {
                                               onClick={() => {
                                                 setActiveId(val.id);
                                                 setUpdateNames(val.name);
+                                                setUserType(val.userType);
+
                                               }}
                                               data-bs-toggle="modal"
                                               data-bs-target="#update-modal"
@@ -1267,10 +1277,9 @@ function TenantSetup() {
                             <div class="form-group mb-4">
                               <label for="">
                                 ChargeDueAfterDays{" "}
-                                <strong class="text-danger">*</strong>{" "}
                               </label>
                               <input
-                                required
+                              
                                 value={chargeDueAfterDays}
                                 onChange={(e) => setChargeDueAfterDays(e.target.value)}
                                 type="number"
@@ -1331,8 +1340,8 @@ function TenantSetup() {
                                 setManualVal(e.target.value);
                               }}
                             >
-                              <option value="true">True</option>
-                              <option value="false">False</option>
+                              <option value="true">Yes</option>
+                              <option value="false">No</option>
                             </select>
                           </div>
                           <div class="col-12">
@@ -1348,6 +1357,8 @@ function TenantSetup() {
                                 setChargeType(e.target.value);
                               }}
                             >
+                            <option>Select Charge Type</option>
+
                               {chargeTypes &&
                                 chargeTypes.map((charge) => {
                                   return (
