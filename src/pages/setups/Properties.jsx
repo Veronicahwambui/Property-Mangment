@@ -34,12 +34,12 @@ function Properties() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setPremiseTypes(list.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(list.length / size));
+    setPremiseTypes(list?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(list?.length / size));
   }, [itemOffset, size, list]);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * size) % list.length;
+    const newOffset = (event.selected * size) % list?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
@@ -191,12 +191,12 @@ function Properties() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setPremiseUseTypes(lists.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(lists.length / size));
+    setPremiseUseTypes(lists?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(lists?.length / size));
   }, [itemOffset, size, lists]);
 
   const handlePageClicks = (event) => {
-    const newOffset = (event.selected * size) % lists.length;
+    const newOffset = (event.selected * size) % lists?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
@@ -1900,7 +1900,7 @@ function Properties() {
                           onChange={(e) => setChargeTypes1(e)}
                         >
                           {chargeTypes &&
-                            chargeTypes.map((charge, index) => {
+                            chargeTypes?.map((charge, index) => {
                               return (
                                 <option
                                   key={index}
