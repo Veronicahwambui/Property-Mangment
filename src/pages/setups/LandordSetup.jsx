@@ -391,11 +391,11 @@ function LandlordSetup() {
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
     setAgreementTypes(listn?.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(listn.length / size));
+    setPageCount(Math.ceil(listn?.length / size));
   }, [itemOffset, size, listn]);
 
   const handlePageClic = (event) => {
-    const newOffset = (event.selected * size) % listn.length;
+    const newOffset = (event.selected * size) % listn?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
