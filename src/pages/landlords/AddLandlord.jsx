@@ -199,9 +199,9 @@ export default function AddLandlord() {
     var temp = [];
     if (landlordDetails.landLordTypeName === "INDIVIDUAL") {
       let mustdata = {
-        email: landlordDetails.email,
         fileNumber: landlordDetails.fileNumber,
         firstName: landlordDetails.firstName,
+        lastName: landlordDetails.lastName,
         gender: landlordDetails.gender,
         phoneNumber: landlordDetails.phoneNumber,
       };
@@ -221,7 +221,7 @@ export default function AddLandlord() {
     if (landlordDetails.landLordTypeName === "CORPORATE") {
       let mustdata = {
         companyName: landlordDetails.companyName,
-        town: landlordDetails.town,
+        phoneNumber: landlordDetails.phoneNumber,
       };
       Object.keys(mustdata).forEach((key, index) => {
         if (mustdata[key] === "") {
@@ -686,7 +686,6 @@ export default function AddLandlord() {
                                 name={"email"}
                                 onChange={(e) => onChangeLandlordDetails(e)}
                                 placeholder="Enter Email ID "
-                                required
                               />
                             </div>
                           </div>
