@@ -13,13 +13,10 @@ function IssuesTypes() {
   const [issueTypes, setIssueTypes] = useState([]);
   const [activeId, setActiveId] = useState("");
   const [activeLink, setActiveLink] = useState(1);
-  
-
-
 
   useEffect(() => {
     getIssueTypes();
-    getAll()
+    getAll();
     getApplicable();
   }, []);
 
@@ -41,7 +38,6 @@ function IssuesTypes() {
     setIssueTypes(lists?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(lists?.length / size));
   }, [itemOffset, size, lists]);
-
 
   const handlePageClicks = (event) => {
     const newOffset = (event.selected * size) % lists.length;
@@ -66,27 +62,25 @@ function IssuesTypes() {
 
   //  general  settings
 
-
-  const [bouncedChequeChargeId, setBouncedChequeChargeId] = useState("")
-  const [chequeProcessingPeriod, setChequeProcessingPeriod] = useState("")
-  const [invoicePaymentPriority, setInvoicePaymentPriority] = useState("")
-  const [landlordSettlementChargeId, setLandlordSettlementChargeId] = useState("")
-  const [penaltyChargeId, setPenaltyChargeId] = useState("")
-  const [penaltyChargeRate, setpenaltyChargeRate] = useState("")
-  const [propertyTaxChargeId, setPropertyTaxChargeId] = useState("")
-  const [senderId, setSenderId] = useState("")
-  const [propertyTaxRate, setPropertyTaxRate] = useState("")
-  const [settlementPeriod, setsettlementPeriod] = useState("")
-  const [visitationChargeDay, setvisitationChargeDay] = useState("")
-  const [visitationChargeId, setvisitationChargeId] = useState("")
-  const [invo, setInvo] = useState([])
+  const [bouncedChequeChargeId, setBouncedChequeChargeId] = useState("");
+  const [chequeProcessingPeriod, setChequeProcessingPeriod] = useState("");
+  const [invoicePaymentPriority, setInvoicePaymentPriority] = useState("");
+  const [landlordSettlementChargeId, setLandlordSettlementChargeId] =
+    useState("");
+  const [penaltyChargeId, setPenaltyChargeId] = useState("");
+  const [penaltyChargeRate, setpenaltyChargeRate] = useState("");
+  const [propertyTaxChargeId, setPropertyTaxChargeId] = useState("");
+  const [senderId, setSenderId] = useState("");
+  const [propertyTaxRate, setPropertyTaxRate] = useState("");
+  const [settlementPeriod, setsettlementPeriod] = useState("");
+  const [visitationChargeDay, setvisitationChargeDay] = useState("");
+  const [visitationChargeId, setvisitationChargeId] = useState("");
+  const [invo, setInvo] = useState([]);
   const [client, setClient] = useState([]);
 
-
-  const [] = useState("")
+  const [] = useState("");
   const createGeneral = () => {
     let data = JSON.stringify({
-
       bouncedChequeChargeId: parseInt(bouncedChequeChargeId),
       chequeProcessingPeriod: chequeProcessingPeriod,
       id: clientId,
@@ -102,28 +96,30 @@ function IssuesTypes() {
       visitationChargeId: visitationChargeId,
     });
     // console.log(data)
-    requestsServiceService.createSettings(data).then((res) => {
-      getAll()
-      $("#add-new-settings").modal("hide");
+    requestsServiceService
+      .createSettings(data)
+      .then((res) => {
+        getAll();
+        $("#add-new-settings").modal("hide");
 
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success",
-        });
-      } else {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning",
-        });
-      }
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-      setTimeout(() => {
-        clear();
-      }, 3000);
-    })
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
       .catch((res) => {
         $("#add-new-settings").modal("hide");
 
@@ -145,24 +141,18 @@ function IssuesTypes() {
       message: "",
       color: "",
     });
-
-
-
-
-  }
-  let clientId = AuthService.getClientId()
+  };
+  let clientId = AuthService.getClientId();
   const getApplicable = () => {
     requestsServiceService.allApplicableCharges("TENANT").then((res) => {
-      setInvo(res.data.data)
-
-
-    })
-  }
+      setInvo(res.data.data);
+    });
+  };
   const getAll = () => {
     requestsServiceService.getClient(clientId).then((res) => {
       setClient(res.data.data.client);
     });
-  }
+  };
   const [ac, setAC] = useState([]);
   const [tmp, stmp] = useState([]);
   const [chargeNames, setChargeNames] = useState([]);
@@ -180,351 +170,346 @@ function IssuesTypes() {
     }
   };
 
-
-// ALL Roles
-const [allRoles, setAllRoles] = useState([]);
-const [roleName, setRoleName] = useState("");
-const [oneRole, setOneRole] = useState([]);
-const [editName, setEditName] = useState("");
-const [privileges, setPrivileges] = useState([]);
-const [roleAdd, setRoleAdd] = useState(true);
-const [priveledgeNames, setPrivilegeNames] = useState([]);
-const [rolePriveledges, setRolePriveledges] = useState([]);
-const [editPriveledges, setEditPriveledges] = useState([]);
-const [roleID, setRoleID] = useState("");
-const [error, setError] = useState({
-  message: "",
-  color: "",
-});
-
-useEffect(() => {
-  getAllRoles();
-  getAllPreviledges();
-}, []);
-
-// PAGINATION
-const sortSizes = (e) => {
-  setSize(parseInt(e.target.value));
-  setPage(0);
-  setItemOffset(0);
-};
-// const [page, setPage] = useState(0);
-// const [size, setSize] = useState(10);
-// const [pageCount, setPageCount] = useState(1);
-// const [itemOffset, setItemOffset] = useState(0);
-const [lis, setlis] = useState([]);
-
-useEffect(() => {
-  const endOffset = parseInt(itemOffset) + parseInt(size);
-  setAllRoles(lis.slice(itemOffset, endOffset));
-  setPageCount(Math.ceil(lis.length / size));
-}, [itemOffset, size, lis]);
-
-const handlePageClick = (event) => {
-  const newOffset = (event.selected * size) % lis.length;
-  setItemOffset(newOffset);
-  setPage(event.selected);
-};
-
-useEffect(() => {
-  getAllRoles();
-  //    getAllPreviledges()
-}, [roleAdd]);
-
-// get all priveledges
-const getAllPreviledges = () => {
-  requestsServiceService
-    .getAllPreviledges()
-    .then((res) => {
-      // console.log(res.data.data);
-      setPrivileges(res.data.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
-const handleEdit = (id) => {
-  getOneRole(id);
-
-  setRoleID(id);
-};
-
-// add a new role
-const AddARole = () => {
-  const data = JSON.stringify({
-    id: null,
-    name: roleName,
-    permissions: priveledgeNames,
-  });
-
-  requestsServiceService
-    .AddRole(data)
-    .then((res) => {
-      setPrivilegeNames([]);
-      getAllRoles();
-
-      $("#add-new-role").modal("hide");
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success",
-        });
-      } else {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning",
-        });
-      }
-
-      setTimeout(() => {
-        clear();
-      }, 3000);
-    })
-    .catch((res) => {
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger",
-      });
-
-      setTimeout(() => {
-        clears();
-      }, 3000);
-    });
-
-  setRoleAdd(!roleAdd);
-  setPrivilegeNames([]);
-  setRoleName("");
-};
-
-const clears = () => {
-  setError({
-    ...error,
+  // ALL Roles
+  const [allRoles, setAllRoles] = useState([]);
+  const [roleName, setRoleName] = useState("");
+  const [oneRole, setOneRole] = useState([]);
+  const [editName, setEditName] = useState("");
+  const [privileges, setPrivileges] = useState([]);
+  const [roleAdd, setRoleAdd] = useState(true);
+  const [priveledgeNames, setPrivilegeNames] = useState([]);
+  const [rolePriveledges, setRolePriveledges] = useState([]);
+  const [editPriveledges, setEditPriveledges] = useState([]);
+  const [roleID, setRoleID] = useState("");
+  const [error, setError] = useState({
     message: "",
     color: "",
   });
-};
 
-// fetch one role
-const getOneRole = (iD) => {
-  requestsServiceService
-    .getOneRole(iD)
-    .then((res) => {
-      setOneRole(res.data.data);
-      setRolePriveledges(res.data.data.permissions);
-      setEditPriveledges(res.data.data.permissions);
-      setEditName(res.data.data.name);
-    })
-    .catch((err) => {
-      console.log(err);
+  useEffect(() => {
+    getAllRoles();
+    getAllPreviledges();
+  }, []);
+
+  // PAGINATION
+  const sortSizes = (e) => {
+    setSize(parseInt(e.target.value));
+    setPage(0);
+    setItemOffset(0);
+  };
+  // const [page, setPage] = useState(0);
+  // const [size, setSize] = useState(10);
+  // const [pageCount, setPageCount] = useState(1);
+  // const [itemOffset, setItemOffset] = useState(0);
+  const [lis, setlis] = useState([]);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setAllRoles(lis.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(lis.length / size));
+  }, [itemOffset, size, lis]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * size) % lis.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
+
+  useEffect(() => {
+    getAllRoles();
+    //    getAllPreviledges()
+  }, [roleAdd]);
+
+  // get all priveledges
+  const getAllPreviledges = () => {
+    requestsServiceService
+      .getAllPreviledges()
+      .then((res) => {
+        // console.log(res.data.data);
+        setPrivileges(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleEdit = (id) => {
+    getOneRole(id);
+
+    setRoleID(id);
+  };
+
+  // add a new role
+  const AddARole = () => {
+    const data = JSON.stringify({
+      id: null,
+      name: roleName,
+      permissions: priveledgeNames,
     });
-};
 
-//   get all roles
+    requestsServiceService
+      .AddRole(data)
+      .then((res) => {
+        setPrivilegeNames([]);
+        getAllRoles();
 
-const getAllRoles = () => {
-  requestsServiceService
-    .getAllRoles()
-    .then((res) => {
-      setlis(res.data.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
+        $("#add-new-role").modal("hide");
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-//  edit a role
-const editARole = () => {
-  const data = JSON.stringify({
-    id: roleID,
-    name: editName,
-    permissions: editPriveledges,
-  });
-  requestsServiceService
-    .EditRole(data)
-    .then((res) => {
-      getAllRoles();
-      if (res.data.status) {
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((res) => {
         setError({
           ...error,
           message: res.data.message,
-          color: "success",
+          color: "danger",
         });
-      } else {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning",
-        });
-      }
 
-      setTimeout(() => {
-        clear();
-      }, 3000);
-    })
-    .catch((res) => {
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger",
+        setTimeout(() => {
+          clears();
+        }, 3000);
       });
 
-      setTimeout(() => {
-        clear();
-      }, 3000);
+    setRoleAdd(!roleAdd);
+    setPrivilegeNames([]);
+    setRoleName("");
+  };
+
+  const clears = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
     });
-};
-const handleRoleChange = (index, event) => {
-  const { checked, value } = event.target;
+  };
 
-  if (checked) {
-    setPrivilegeNames([...priveledgeNames, privileges[index].name]);
-  } else {
-    setPrivilegeNames(
-      priveledgeNames.filter(
-        (priveledgeName) => priveledgeName !== privileges[index].name
-      )
-    );
-  }
-};
+  // fetch one role
+  const getOneRole = (iD) => {
+    requestsServiceService
+      .getOneRole(iD)
+      .then((res) => {
+        setOneRole(res.data.data);
+        setRolePriveledges(res.data.data.permissions);
+        setEditPriveledges(res.data.data.permissions);
+        setEditName(res.data.data.name);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-const handleEditRole = (index, event) => {
-  const { checked, value } = event.target;
+  //   get all roles
 
-  if (checked) {
-    setEditPriveledges([...editPriveledges, privileges[index].name]);
-  } else {
-    setEditPriveledges(
-      editPriveledges.filter(
-        (priveledgeName) => priveledgeName !== privileges[index].name
-      )
-    );
-  }
-};
+  const getAllRoles = () => {
+    requestsServiceService
+      .getAllRoles()
+      .then((res) => {
+        setlis(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
+  //  edit a role
+  const editARole = () => {
+    const data = JSON.stringify({
+      id: roleID,
+      name: editName,
+      permissions: editPriveledges,
+    });
+    requestsServiceService
+      .EditRole(data)
+      .then((res) => {
+        getAllRoles();
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-//  CLlents countries
-const [allCounties, setAllCounties] = useState([]);
-const [clientCounties, setClientCounties] = useState([]);
-const [selectedCounty, setSelectedCounty] = useState("");
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
 
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      });
+  };
+  const handleRoleChange = (index, event) => {
+    const { checked, value } = event.target;
 
-useEffect(() => {
-  getClientCounties();
-  getCounties();
-}, []);
-// PAGINATION
-// const sotSize = (e) => {
-//   setSize(parseInt(e.target.value));
-//   setPage(0);
-//   setItemOffset(0);
-// };
-// const [page, setPage] = useState(0);
-// const [size, setSize] = useState(10);
-// const [pageCount, setPageCount] = useState(1);
-// const [itemOffset, setItemOffset] = useState(0);
-const [listed, setlisted] = useState([]);
+    if (checked) {
+      setPrivilegeNames([...priveledgeNames, privileges[index].name]);
+    } else {
+      setPrivilegeNames(
+        priveledgeNames.filter(
+          (priveledgeName) => priveledgeName !== privileges[index].name
+        )
+      );
+    }
+  };
 
-useEffect(() => {
-  const endOffset = parseInt(itemOffset) + parseInt(size);
-  setClientCounties(listed.slice(itemOffset, endOffset));
-  setPageCount(Math.ceil(listed.length / size));
-}, [itemOffset, size, listed]);
+  const handleEditRole = (index, event) => {
+    const { checked, value } = event.target;
 
-const handlPageClick = (event) => {
-  const newOffset = (event.selected * size) % listed.length;
-  setItemOffset(newOffset);
-  setPage(event.selected);
-};
+    if (checked) {
+      setEditPriveledges([...editPriveledges, privileges[index].name]);
+    } else {
+      setEditPriveledges(
+        editPriveledges.filter(
+          (priveledgeName) => priveledgeName !== privileges[index].name
+        )
+      );
+    }
+  };
 
-//   const deactivate
+  //  CLlents countries
+  const [allCounties, setAllCounties] = useState([]);
+  const [clientCounties, setClientCounties] = useState([]);
+  const [selectedCounty, setSelectedCounty] = useState("");
 
-const deactivates = (id) => {
-  requestsServiceService.deactivateCounty(id).then((res) => {
-    console.log(res);
+  useEffect(() => {
     getClientCounties();
-  });
-};
+    getCounties();
+  }, []);
+  // PAGINATION
+  // const sotSize = (e) => {
+  //   setSize(parseInt(e.target.value));
+  //   setPage(0);
+  //   setItemOffset(0);
+  // };
+  // const [page, setPage] = useState(0);
+  // const [size, setSize] = useState(10);
+  // const [pageCount, setPageCount] = useState(1);
+  // const [itemOffset, setItemOffset] = useState(0);
+  const [listed, setlisted] = useState([]);
 
-// create client county
-const createCounty = () => {
-  const data = JSON.stringify({
-    active: true,
-    clientId: authService.getClientId(),
-    countyId: selectedCounty,
-    id: 0,
-  });
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setClientCounties(listed.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(listed.length / size));
+  }, [itemOffset, size, listed]);
 
-  requestsServiceService
-    .createCounty(data)
-    .then((res) => {
+  const handlPageClick = (event) => {
+    const newOffset = (event.selected * size) % listed.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
+
+  //   const deactivate
+
+  const deactivates = (id) => {
+    requestsServiceService.deactivateCounty(id).then((res) => {
+      console.log(res);
       getClientCounties();
-
-      $("#add-new-country").modal("hide");
-
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success",
-        });
-      } else {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning",
-        });
-      }
-
-      setTimeout(() => {
-        clear();
-      }, 3000);
-    })
-    .catch((res) => {
-      $("#add-new-country").modal("hide");
-
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger",
-      });
-
-      setTimeout(() => {
-        clear();
-      }, 3000);
     });
-};
+  };
 
-const clear = () => {
-  setError({
-    ...error,
-    message: "",
-    color: "",
-  });
-};
+  // create client county
+  const createCounty = () => {
+    const data = JSON.stringify({
+      active: true,
+      clientId: authService.getClientId(),
+      countyId: selectedCounty,
+      id: 0,
+    });
 
-// get client counties
-const getClientCounties = () => {
-  requestsServiceService.getClientCounties().then((res) => {
-    setlisted(res.data.data);
-  });
-};
-//  get all counties
-const getCounties = () => {
-  requestsServiceService.getAllCounties().then((res) => {
-    setAllCounties(res.data.data);
-  });
-};
+    requestsServiceService
+      .createCounty(data)
+      .then((res) => {
+        getClientCounties();
 
+        $("#add-new-country").modal("hide");
 
-//====== All Zones=============
-const [zones, setZones] = useState([]);
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#add-new-country").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      });
+  };
+
+  const clear = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+  };
+
+  // get client counties
+  const getClientCounties = () => {
+    requestsServiceService.getClientCounties().then((res) => {
+      setlisted(res.data.data);
+    });
+  };
+  //  get all counties
+  const getCounties = () => {
+    requestsServiceService.getAllCounties().then((res) => {
+      setAllCounties(res.data.data);
+    });
+  };
+
+  //====== All Zones=============
+  const [zones, setZones] = useState([]);
   const [zoneName, setZoneName] = useState("");
 
- 
   const [editNames, setEditNames] = useState("");
   const [newCounty, setNewCounty] = useState("");
   const [zoneId, setZoneId] = useState("");
@@ -691,9 +676,9 @@ const [zones, setZones] = useState([]);
   //=============== All Estates=========================
 
   const [estates, setEstates] = useState([]);
- 
+
   const [estateName, setEstateName] = useState("");
- 
+
   const [selectedZone, setSelectedZone] = useState("");
 
   const handleEdit1 = (name, id, zonId) => {
@@ -705,7 +690,6 @@ const [zones, setZones] = useState([]);
   const [editName1, setEditName1] = useState("");
   const [newZone, setNewZone] = useState("");
   const [estateId, setEstateId] = useState("");
-
 
   useEffect(() => {
     getZones();
@@ -856,14 +840,6 @@ const [zones, setZones] = useState([]);
       });
   };
 
-
-
-
-
-
-
-
-
   return (
     <>
       <div class="page-content">
@@ -907,81 +883,72 @@ const [zones, setZones] = useState([]);
                     role="toolbar"
                   >
                     <nav class="navbar navbar-expand-md navbar-white bg-white py-2">
+                      <div
+                        className="collapse navbar-collapse justify-content-between"
+                        id="navbarNavAltMarkup"
+                      >
+                        <div className="navbar-nav">
+                          <a
+                            onClick={() => setActiveLink(1)}
+                            className={
+                              activeLink === 1
+                                ? "nav-item nav-link active cursor-pointer"
+                                : "nav-item cursor-pointer nav-link"
+                            }
+                          >
+                            Issues Types<span className="sr-only"></span>
+                          </a>
 
+                          <a
+                            onClick={() => setActiveLink(2)}
+                            className={
+                              activeLink === 2
+                                ? "nav-item nav-link active cursor-pointer"
+                                : "nav-item cursor-pointer nav-link"
+                            }
+                          >
+                            General
+                          </a>
 
-                    <div className="collapse navbar-collapse justify-content-between"
-                      id="navbarNavAltMarkup"
-                    >
-                      <div className="navbar-nav">
-                        <a
-                          onClick={() => setActiveLink(1)}
-                          className={
-                            activeLink === 1
-                              ? "nav-item nav-link active cursor-pointer"
-                              : "nav-item cursor-pointer nav-link"
-                          }
-                        >
-                          Issues Types<span className="sr-only"></span>
-                        </a>
-                       
-                        <a
-                          onClick={() => setActiveLink(2)}
-                          className={
-                            activeLink === 2
-                              ? "nav-item nav-link active cursor-pointer"
-                              : "nav-item cursor-pointer nav-link"
-                          }
-                        >
-                          General 
-                        </a>
-                          
-                    
-                      
-                     
-                        <a
-                          onClick={() => setActiveLink(4)}
-                          className={
-                            activeLink === 4
-                              ? "nav-item nav-link active cursor-pointer"
-                              : "nav-item cursor-pointer nav-link"
-                          }
-                        >
-                       Client Countries
-                        </a>
+                          <a
+                            onClick={() => setActiveLink(4)}
+                            className={
+                              activeLink === 4
+                                ? "nav-item nav-link active cursor-pointer"
+                                : "nav-item cursor-pointer nav-link"
+                            }
+                          >
+                            Client Countries
+                          </a>
 
-                        <a
-                          onClick={() => setActiveLink(5)}
-                          className={
-                            activeLink === 5
-                              ? "nav-item nav-link active cursor-pointer"
-                              : "nav-item cursor-pointer nav-link"
-                          }
-                        >
-                         Zones
-                        </a>
-                        <a
-                          onClick={() => setActiveLink(6)}
-                          className={
-                            activeLink === 6
-                              ? "nav-item nav-link active cursor-pointer"
-                              : "nav-item cursor-pointer nav-link"
-                          }
-                        >
-                         Estates
-                        </a>
-                        
-
+                          <a
+                            onClick={() => setActiveLink(5)}
+                            className={
+                              activeLink === 5
+                                ? "nav-item nav-link active cursor-pointer"
+                                : "nav-item cursor-pointer nav-link"
+                            }
+                          >
+                            Zones
+                          </a>
+                          <a
+                            onClick={() => setActiveLink(6)}
+                            className={
+                              activeLink === 6
+                                ? "nav-item nav-link active cursor-pointer"
+                                : "nav-item cursor-pointer nav-link"
+                            }
+                          >
+                            Estates
+                          </a>
+                        </div>
                       </div>
-                    </div>
-
-
                     </nav>
                   </div>
                 </div>
               </div>
               {/* <!-- end page title --> */}
               {activeLink === 1 && (
-
                 <div>
                   <div class="row">
                     <div class="col-12">
@@ -1002,8 +969,8 @@ const [zones, setZones] = useState([]);
                                   type="button"
                                   className="btn btn-primary waves-effect btn-label waves-light me-3"
                                 >
-                                  <i className="mdi mdi-plus label-icon"></i> Add Issue
-                                  Type
+                                  <i className="mdi mdi-plus label-icon"></i>{" "}
+                                  Add Issue Type
                                 </button>
                               </Link>
                             </div>
@@ -1032,10 +999,16 @@ const [zones, setZones] = useState([]);
                                       key={index}
                                       className={"text-uppercase"}
                                     >
-                                      <td style={{ width: "80px" }}>{index + 1}</td>
+                                      <td style={{ width: "80px" }}>
+                                        {index + 1}
+                                      </td>
                                       <td data-field="unit-num ">{iT.name}</td>
-                                      <td data-field="unit-num ">{iT.initialStatus}</td>
-                                      <td data-field="unit-num ">{iT.resolveStatus}</td>
+                                      <td data-field="unit-num ">
+                                        {iT.initialStatus}
+                                      </td>
+                                      <td data-field="unit-num ">
+                                        {iT.resolveStatus}
+                                      </td>
                                       <td data-field="unit-num ">
                                         {iT.active ? (
                                           <span class="badge-soft-success badge">
@@ -1064,7 +1037,7 @@ const [zones, setZones] = useState([]);
                                               className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                               data-bs-toggle="modal"
                                               data-bs-target="#edit"
-                                              onClick={() => { }}
+                                              onClick={() => {}}
                                               style={{ marginLeft: "8px" }}
                                             >
                                               View Details
@@ -1107,7 +1080,10 @@ const [zones, setZones] = useState([]);
                                     onChange={(e) => sortSize(e)}
                                     value={size}
                                   >
-                                    <option className="bs-title-option" value="">
+                                    <option
+                                      className="bs-title-option"
+                                      value=""
+                                    >
                                       Select A range
                                     </option>
                                     <option value="10">10 Rows</option>
@@ -1135,7 +1111,9 @@ const [zones, setZones] = useState([]);
                                       nextClassName="page-item"
                                       nextLinkClassName="page-link"
                                       activeClassName="active"
-                                      onPageChange={(data) => handlePageClick(data)}
+                                      onPageChange={(data) =>
+                                        handlePageClick(data)
+                                      }
                                       forcePage={page}
                                     />
                                   </nav>
@@ -1149,1690 +1127,34 @@ const [zones, setZones] = useState([]);
                                   {pageCount === 0 ? page : page + 1}
                                 </span>{" "}
                                 of
-                                <span className="text-primary"> {pageCount}</span> pages
+                                <span className="text-primary">
+                                  {" "}
+                                  {pageCount}
+                                </span>{" "}
+                                pages
                               </p>
                             )}
                           </div>
                         </div>
-               
-                    {/* <!-- end col --> */}
+
+                        {/* <!-- end col --> */}
+                      </div>
+                    </div>
                   </div>
-                </div>
-                </div>
                 </div>
               )}
 
-
-
-          
-{activeLink === 2 && (
-    <div>
-      <div className="row">
-        <div className="col-12 row">
-          <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-            <div
-              className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-              role="toolbar"
-            >
-              <div className="d-flex align-items-center flex-grow-1">
-                <h4 className="mb-0  bg-transparent  p-0 m-0">
-
-                </h4>
-              </div>
-              <div className="d-flex align-items-center flex-grow-1"></div>
-              <div className="d-flex">
-                <button
-                  type="button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#add-new-settings"
-
-                  className="btn btn-primary dropdown-toggle option-selector"
-                >
-                  <i className="dripicons-plus font-size-16"></i>{" "}
-                  <span className="pl-1 d-md-inline">
-                    Add General Settings
-                  </span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-
-
-
-
-
-          <div class="col-sm-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-
-                  <div class="avatar-xs-2 me-3">
-                    <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
-                      <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
-                    </span>
-                  </div>
-
-                  <div class="d-flex flex-column">
-                    <span className='text-capitalize'>Bounced Cheque Settings</span>
-                  </div>
-                </div>
-                <div class=" mt-4">
-                  <span>Charge Name : {client?.bouncedChequeCharge?.name}</span>
-                  <br />
-                  <span>Processing Period : {client?.chequeProcessingPeriod} Days</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-
-          <div class="col-sm-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-
-                  <div class="avatar-xs-2 me-3">
-                    <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
-                      <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
-                    </span>
-                  </div>
-
-                  <div class="d-flex flex-column">
-                    <span className='text-capitalize'>Landlord Settlement Settings</span>
-                  </div>
-                </div>
-                <div class=" mt-4">
-                  <span>
-                    Settlement(Rent) Charge Name : {client?.landlordSettlementCharge?.name}
-                  </span>
-
-                  <br />
-
-                  <span>
-                    Settlement Period : {client?.settlementPeriod}ly
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="col-sm-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-
-                  <div class="avatar-xs-2 me-3">
-                    <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
-                      <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
-                    </span>
-                  </div>
-
-                  <div class="d-flex flex-column">
-                    <span className='text-capitalize'>Surcharge Settings</span>
-                  </div>
-                </div>
-                <div class=" mt-4">
-                  <span>Surcharge(Penalty) Charge Name : {client?.penaltyCharge?.name}
-                  </span>
-                  <br />
-                  <span>Penalty Charge Rate : {client?.penaltyChargeRate} Days</span>
-                  <br />
-                  <br />
-                  <span>Visitation Charge :  {client?.visitationCharge?.name}</span>
-                  <br />
-                  <span>Visitation Charge Day :  Day {client?.visitationChargeDay}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="col-sm-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-
-                  <div class="avatar-xs-2 me-3">
-                    <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
-                      <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
-                    </span>
-                  </div>
-
-                  <div class="d-flex flex-column">
-                    <span className='text-capitalize'>Tenant Invoice Payment Priority Settings</span>
-                  </div>
-                </div>
-                <div class=" mt-4">
-                  <span>
-                    {client?.invoicePaymentPriority?.split(",").map((m, index) =>
-                      <>
-                        {invo?.map((item) => (
-                          item.id == m &&
-                          <span>
-                            {index + 1 < client?.invoicePaymentPriority.split(",").length ?
-                              item.name + " => "
-                              :
-                              item.name
-                            }
-                          </span>
-                        )
-
-                        )}
-                      </>
-                    )
-                    }
-                  </span>
-                  <br />
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-
-
-          <div class="col-sm-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-
-                  <div class="avatar-xs-2 me-3">
-                    <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
-                      <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
-                    </span>
-                  </div>
-
-                  <div class="d-flex flex-column">
-                    <span className='text-capitalize'>Property Tax Settings</span>
-                  </div>
-                </div>
-                <div class=" mt-4">
-                  <span>
-                    Property Tax Charge : {client?.propertyTaxCharge?.name}
-                  </span>
-                  <br />
-                  <span>
-                    Property Tax Rate : {client?.propertyTaxRate} %
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-
-
-          <div class="col-sm-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-
-                  <div class="avatar-xs-2 me-3">
-                    <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
-                      <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
-                    </span>
-                  </div>
-
-                  <div class="d-flex flex-column">
-                    <span className='text-capitalize'>Messaging Settings</span>
-                  </div>
-                </div>
-                <div class=" mt-4">
-                  <span>
-                    SenderID : {client?.senderId}
-                  </span>
-                  <br />
-
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-        </div>
-      </div>
-    </div>
-
-  )}
-
-      
-
-      {activeLink === 4 &&(
-<div>
-
-<div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                  <div
-                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
-                    <div class="d-flex align-items-center flex-grow-1">
-                      <h4 class="mb-0  bg-transparent  p-0 m-0">
-                        County Register
-                      </h4>
-                    </div>
-                    <div class="d-flex">
-                      <button
-                        onClick={() => {
-                          allCounties && setSelectedCounty(allCounties[0].id);
-                        }}
-                        type="button"
-                        class="btn btn-primary waves-effect btn-label waves-light me-3"
-                        data-bs-toggle="modal"
-                        data-bs-target="#add-new-country"
-                      >
-                        <i class="mdi mdi-plus label-icon"></i> Add a county
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-body">
-                  {error.color !== "" && (
-                    <div className={"alert alert-" + error.color} role="alert">
-                      {error.message}
-                    </div>
-                  )}
-                  <div class="table-responsive table-responsive-md">
-                    <table class="table table-editable align-middle table-edits">
-                      <thead class="table-light">
-                        <tr class="text-uppercase table-dark">
-                          <th>#</th>
-                          <th>County</th>
-                          <th>Status</th>
-                          <th>Date Created</th>
-                          <th class="text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {clientCounties &&
-                          clientCounties?.map((cou, index) => {
-                            let county = cou.county;
-                            return (
-                              <tr data-id="1" key={county.id}>
-                                <td style={{ width: "80px" }}>{index + 1}</td>
-                                <td data-field="unit-num ">{county.name}</td>
-                                <td data-field="unit-num ">
-                                  {cou.active ? (
-                                    <span class="badge-soft-success badge">
-                                      Active
-                                    </span>
-                                  ) : (
-                                    <span class="badge-soft-danger badge">
-                                      Inactive
-                                    </span>
-                                  )}
-                                </td>
-                                <td>
-                                  {moment(cou.dateTimeCreated).format(
-                                    "YYYY-MM-DD HH:mm"
-                                  )}
-                                </td>
-
-                                <td class=" align-items-center text-right cell-change text-nowrap ">
-                                  {cou.active ? (
-                                    <button
-                                      class="btn btn-danger btn-sm btn-rounded  text-uppercase px-2 mx-3"
-                                      title="deactivate"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#confirm-deactivate1"
-                                      onClick={() => setActiveId(cou.id)}
-                                    >
-                                      Deactivate
-                                    </button>
-                                  ) : (
-                                    <button
-                                      class="btn btn-success btn-sm btn-rounded w-5 text-uppercase px-3 mx-3"
-                                      title="deactivate"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#confirm-activate1"
-                                      onClick={() => setActiveId(cou.id)}
-                                    >
-                                      Activate
-                                    </button>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })}
-
-                        <tr class="cloneCharges d-none">
-                          <td style={{ width: "80px" }} class="categoryIndex ">
-                            #
-                          </td>
-                          <td>
-                            <input
-                              type="text "
-                              class="form-control "
-                              placeholder="estate Name"
-                            />
-                          </td>
-
-                          <td>
-                            <select
-                              class="form-select"
-                              style={{ width: "130px" }}
-                            >
-                              <option value="">Nairobi</option>
-                              <option value="">Mombasa</option>
-                              <option value="">Nakuru</option>
-                            </select>
-                          </td>
-                          <td>-</td>
-                          <td>-</td>
-                          <td>-</td>
-
-                          <td class="text-right cell-change d-flex align-items-center justify-content-end">
-                            <button
-                              class="btn btn-primary btn-sm text-uppercase px-3 save-new-btn mx-3 "
-                              title="save "
-                            >
-                              Add
-                            </button>
-                            <a
-                              class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent cancel-new-category "
-                              title="Cancel "
-                            >
-                              <i class="bx bx-x "></i>
-                            </a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <div className="d-flex justify-content-between align-items-center">
-                      {pageCount !== 0 && (
-                        <>
-                          <select
-                            className="btn btn-md btn-primary"
-                            title="Select A range"
-                            onChange={(e) => sortSize(e)}
-                            value={size}
-                          >
-                            <option className="bs-title-option" value="">
-                              Select A range
-                            </option>
-                            <option value="10">10 Rows</option>
-                            <option value="30">30 Rows</option>
-                            <option value="50">50 Rows</option>
-                          </select>
-                          <nav
-                            aria-label="Page navigation comments"
-                            className="mt-4"
-                          >
-                            <ReactPaginate
-                              previousLabel="<"
-                              nextLabel=">"
-                              breakLabel="..."
-                              breakClassName="page-item"
-                              breakLinkClassName="page-link"
-                              pageCount={pageCount}
-                              pageRangeDisplayed={4}
-                              marginPagesDisplayed={2}
-                              containerClassName="pagination justify-content-center"
-                              pageClassName="page-item"
-                              pageLinkClassName="page-link"
-                              previousClassName="page-item"
-                              previousLinkClassName="page-link"
-                              nextClassName="page-item"
-                              nextLinkClassName="page-link"
-                              activeClassName="active"
-                              onPageChange={(data) => handlPageClick(data)}
-                              forcePage={page}
-                            />
-                          </nav>
-                        </>
-                      )}
-                    </div>
-                    {pageCount !== 0 && (
-                      <p className="font-medium  text-muted">
-                        showing page{" "}
-                        <span className="text-primary">
-                          {pageCount === 0 ? page : page + 1}
-                        </span>{" "}
-                        of
-                        <span className="text-primary"> {pageCount}</span> pages
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* <!-- end col --> */}
-          </div>
-
-
-
-
-</div>
-
-
-        )}
-
-
-{activeLink === 5 &&(
-  <div>
-      <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                  <div
-                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
-                    <div class="d-flex align-items-center flex-grow-1">
-                      <h4 class="mb-0  bg-transparent  p-0 m-0">
-                        Zone Register
-                      </h4>
-                    </div>
-                    <div class="d-flex">
-                      <button
-                        onClick={() => {
-                          setZoneName("");
-                          clientCounties &&
-                            setSelectedCounty(clientCounties[0].id);
-                          getClientCounties();
-                        }}
-                        type="button"
-                        class="btn btn-primary waves-effect btn-label waves-light me-3"
-                        data-bs-toggle="modal"
-                        data-bs-target="#add-new-zone"
-                      >
-                        <i class="mdi mdi-plus label-icon"></i> Add Zone
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-body">
-                  {error.color !== "" && (
-                    <div className={"alert alert-" + error.color} role="alert">
-                      {error.message}
-                    </div>
-                  )}
-                  <div class="table-responsive table-responsive-md">
-                    <table class="table table-editable align-middle table-edits">
-                      <thead class="table-light">
-                        <tr class="text-uppercase table-dark">
-                          <th>#</th>
-                          <th>Zone</th>
-                          <th>County</th>
-                          <th>Status</th>
-                          <th>Date Created</th>
-                          <th class="text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {zones &&
-                          zones.map((zon, index) => {
-                            return (
-                              <tr data-id="1" key={zon.id}>
-                                <td style={{ width: "80px" }}>{index + 1}</td>
-                                <td
-                                  data-field="unit-numv "
-                                  className="text-capitalize"
-                                >
-                                  {zon.name}
-                                </td>
-                                <td
-                                  data-field="unit-numv "
-                                  className="text-capitalize"
-                                >
-                                  {zon?.clientCounty.county.name
-                                    ?.toLowerCase()
-                                    ?.replace(/_/g, " ")}
-                                </td>
-                                <td data-field="unit-num ">
-                                  {zon.active ? (
-                                    <span class="badge-soft-success badge">
-                                      Active
-                                    </span>
-                                  ) : (
-                                    <span class="badge-soft-danger badge">
-                                      Inactive
-                                    </span>
-                                  )}
-                                </td>
-                                <td>
-                                  {moment(zon.dateTimeCreated).format(
-                                    "YYYY-MM-DD HH:mm"
-                                  )}
-                                </td>
-
-                                <td class="text-right cell-change text-nowrap ">
-                                  <div className="d-flex align-items-center">
-                                    <a
-                                      onClick={() => {
-                                        handleEdits(
-                                          zon.name,
-                                          zon.clientCounty.id,
-                                          zon.id
-                                        );
-                                      }}
-                                      class="btn btn-light btn-sm btn-rounded waves-effect btn-circle btn-transparent edit "
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#edit-zone"
-                                      title="Edit "
-                                    >
-                                      <i class="bx bx-edit-alt "></i>
-                                    </a>
-                                    {zon.active ? (
-                                      <button
-                                        class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
-                                        title="deactivate"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#confirm-deactivate2"
-                                        onClick={() => setActiveId(zon.id)}
-                                      >
-                                        Deactivate
-                                      </button>
-                                    ) : (
-                                      <button
-                                        class="btn btn-success btn-sm w-5 text-uppercase px-3 mx-3"
-                                        title="deactivate"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#confirm-activate2"
-                                        onClick={() => setActiveId(zon.id)}
-                                      >
-                                        Activate
-                                      </button>
-                                    )}
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                    <div className="d-flex justify-content-between align-items-center">
-                      {pageCount !== 0 && (
-                        <>
-                          <select
-                            className="btn btn-md btn-primary"
-                            title="Select A range"
-                            onChange={(e) => sortSize(e)}
-                            value={size}
-                          >
-                            <option className="bs-title-option" value="">
-                              Select A range
-                            </option>
-                            <option value="10">10 Rows</option>
-                            <option value="30">30 Rows</option>
-                            <option value="50">50 Rows</option>
-                          </select>
-                          <nav
-                            aria-label="Page navigation comments"
-                            className="mt-4"
-                          >
-                            <ReactPaginate
-                              previousLabel="<"
-                              nextLabel=">"
-                              breakLabel="..."
-                              breakClassName="page-item"
-                              breakLinkClassName="page-link"
-                              pageCount={pageCount}
-                              pageRangeDisplayed={4}
-                              marginPagesDisplayed={2}
-                              containerClassName="pagination justify-content-center"
-                              pageClassName="page-item"
-                              pageLinkClassName="page-link"
-                              previousClassName="page-item"
-                              previousLinkClassName="page-link"
-                              nextClassName="page-item"
-                              nextLinkClassName="page-link"
-                              activeClassName="active"
-                              onPageChange={(data) => handlePageClck(data)}
-                              forcePage={page}
-                            />
-                          </nav>
-                        </>
-                      )}
-                    </div>
-                    {pageCount !== 0 && (
-                      <p className="font-medium  text-muted">
-                        showing page{" "}
-                        <span className="text-primary">
-                          {pageCount === 0 ? page : page + 1}
-                        </span>{" "}
-                        of
-                        <span className="text-primary"> {pageCount}</span> pages
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* <!-- end col --> */}
-          </div>
-
-  </div>
-)}
-
-{activeLink === 6 &&(
-
-
-<div>
-<div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                  <div
-                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
-                  >
-                    <div class="d-flex align-items-center flex-grow-1">
-                      <h4 class="mb-0  bg-transparent  p-0 m-0">
-                        Estate Register
-                      </h4>
-                    </div>
-                    <div class="d-flex">
-                      <button
-                        onClick={() => {
-                          zones && setSelectedZone(zones[0].id);
-                          setEstateName("");
-                          getZones1();
-                        }}
-                        type="button"
-                        class="btn btn-primary waves-effect btn-label waves-light me-3"
-                        data-bs-toggle="modal"
-                        data-bs-target="#add-new-estate"
-                      >
-                        <i class="mdi mdi-plus label-icon"></i> Add Estate
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-body">
-                  {error.color !== "" && (
-                    <div className={"alert alert-" + error.color} role="alert">
-                      {error.message}
-                    </div>
-                  )}
-                  <div class="table-responsive table-responsive-md">
-                    <table class="table table-editable align-middle table-edits">
-                      <thead class="table-light">
-                        <tr class="text-uppercase table-dark">
-                          <th>#</th>
-                          <th>Estate</th>
-                          <th>Zone</th>
-                          <th>County</th>
-                          <th>Status</th>
-                          <th>Date Created</th>
-
-                          <th class="text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {estates &&
-                          estates.map((estate, index) => {
-                            return (
-                              <tr data-id="1" key={estate.id}>
-                                <td style={{ width: "80px" }}>{index + 1}</td>
-                                <td className="text-capitalize">
-                                  {estate.name}
-                                </td>
-                                <td className="text-capitalize">
-                                  {estate.zone.name}
-                                </td>
-                                <td className="text-capitalize">
-                                  {estate.zone.clientCounty.county.name.toLowerCase()}
-                                </td>
-                                <td>
-                                  {estate.active ? (
-                                    <span class="badge-soft-success badge">
-                                      Active
-                                    </span>
-                                  ) : (
-                                    <span class="badge-soft-danger badge">
-                                      Inactive
-                                    </span>
-                                  )}
-                                </td>
-                                <td>
-                                  {moment(estate.dateTimeCreated).format(
-                                    "YYYY-MM-DD HH:mm"
-                                  )}
-                                </td>
-
-                                <td class="text-right cell-change text-nowrap">
-                                  <div className=" align-items-center d-flex">
-                                    <a
-                                      onClick={() => {
-                                        handleEdit1(
-                                          estate.name,
-                                          estate.zone.id,
-                                          estate.id
-                                        );
-                                      }}
-                                      class="btn btn-light btn-sm btn-rounded waves-effect btn-circle btn-transparent edit"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#edit-estate"
-                                      title="Edit "
-                                    >
-                                      <i class="bx bx-edit-alt "></i>
-                                    </a>
-                                    {estate.active ? (
-                                      <button
-                                        class="btn btn-danger btn-sm btn-rounded  text-uppercase px-2 mx-3"
-                                        title="deactivate"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#confirm-deactivate3"
-                                        onClick={() => setActiveId(estate.id)}
-                                      >
-                                        Deactivate
-                                      </button>
-                                    ) : (
-                                      <button
-                                        class="btn btn-success btn-sm w-5 text-uppercase px-3 mx-3"
-                                        title="deactivate"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#confirm-activate3"
-                                        onClick={() => setActiveId(estate.id)}
-                                      >
-                                        Activate
-                                      </button>
-                                    )}
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                    <div className="d-flex justify-content-between align-items-center">
-                      {pageCount !== 0 && (
-                        <>
-                          <select
-                            className="btn btn-md btn-primary"
-                            title="Select A range"
-                            onChange={(e) => sortSize(e)}
-                            value={size}
-                          >
-                            <option className="bs-title-option" value="">
-                              Select A range
-                            </option>
-                            <option value="10">10 Rows</option>
-                            <option value="30">30 Rows</option>
-                            <option value="50">50 Rows</option>
-                          </select>
-                          <nav
-                            aria-label="Page navigation comments"
-                            className="mt-4"
-                          >
-                            <ReactPaginate
-                              previousLabel="<"
-                              nextLabel=">"
-                              breakLabel="..."
-                              breakClassName="page-item"
-                              breakLinkClassName="page-link"
-                              pageCount={pageCount}
-                              pageRangeDisplayed={4}
-                              marginPagesDisplayed={2}
-                              containerClassName="pagination justify-content-center"
-                              pageClassName="page-item"
-                              pageLinkClassName="page-link"
-                              previousClassName="page-item"
-                              previousLinkClassName="page-link"
-                              nextClassName="page-item"
-                              nextLinkClassName="page-link"
-                              activeClassName="active"
-                              onPageChange={(data) => handlePageClick1(data)}
-                              forcePage={page}
-                            />
-                          </nav>
-                        </>
-                      )}
-                    </div>
-                    {pageCount !== 0 && (
-                      <p className="font-medium  text-muted">
-                        showing page{" "}
-                        <span className="text-primary">
-                          {pageCount === 0 ? page : page + 1}
-                        </span>{" "}
-                        of
-                        <span className="text-primary"> {pageCount}</span> pages
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* <!-- end col --> */}
-          </div>
-</div>
-)}
-
-
-          {/* <!-- end row --> */}
-        </div>
-        {/* <!-- container-fluid --> */}
-      </div>
-
-      {/*MODALS*/}
-
-
-            {/* <!-- modals --> */}
-            <div
-        class="modal fade"
-        id="add-new-estate"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                createEstates();
-              }}
-            >
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  New Estate
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">
-                        Estate Name <strong class="text-danger">*</strong>
-                      </label>
-                      <input
-                        required
-                        value={estateName}
-                        onChange={(e) => setEstateName(e.target.value)}
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter estate name"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <label for=""> Zone </label>
-                    <select
-                      class="form-control"
-                      data-live-search="true"
-                      title="Select county where the zone is"
-                      onChange={(e) => setNewZone(e.target.value)}
-                    >
-                      <option value="">Select Estate</option>
-                      {zones &&
-                        zones.map((zon, index) => (
-                          <option key={index} value={zon.id}>
-                            {zon.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="submit" class="btn btn-primary">
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      {/* edit zone  */}
-
-      <div
-        class="modal fade"
-        id="edit-estate"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                updateEstate();
-              }}
-            >
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  Edit Estate
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">
-                        Estate Name <strong class="text-danger">*</strong>
-                      </label>
-                      <input
-                        required
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter estate name"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <label for=""> Zone </label>
-                    <select
-                      class="form-control"
-                      data-live-search="true"
-                      title="Select county where the zone is"
-                      onChange={(e) => setSelectedZone(e.target.value)}
-                    >
-                      {zones &&
-                        zones.map((zon, index) => {
-                          let zone = zon;
-
-                          return (
-                            <option
-                              key={index}
-                              value={zone.id}
-                              selected={zone.id === newZone ? "selected" : ""}
-                            >
-                              {zone.name}
-                            </option>
-                          );
-                        })}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="submit" class="btn btn-primary">
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      {/* confirm deactivate  */}
-      <div
-        class="modal fade"
-        id="confirm-deactivate3"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body">
-              <center>
-                <h5>Deactivate this Estate ?</h5>
-              </center>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                no
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivate1(activeId)}
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* confirm dactivate  */}
-      <div
-        class="modal fade"
-        id="confirm-activate3"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body">
-              <center>
-                <h5>Activate this Estate ?</h5>
-              </center>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                no
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivate1(activeId)}
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-       {/* <!-- modals --> */}
-       <div
-        class="modal fade"
-        id="add-new-zone"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                createZone();
-              }}
-            >
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  New Zone
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">
-                        Zone Name <strong class="text-danger">*</strong>
-                      </label>
-                      <input
-                        required
-                        value={zoneName}
-                        onChange={(e) => setZoneName(e.target.value)}
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter zone name"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <label for="">
-                      County <strong class="text-danger">*</strong>
-                    </label>
-                    <select
-                      class="form-control"
-                      data-live-search="true"
-                      title="Select county where the zone is"
-                      onChange={(e) => setSelectedCounty(e.target.value)}
-                    >
-                      <option value=""> Select County</option>
-                      {clientCounties &&
-                        clientCounties.map((cou, index) => {
-                          let county = cou.county;
-                          return (
-                            <option key={index} value={cou.id}>
-                              {county.name}
-                            </option>
-                          );
-                        })}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="submit" class="btn btn-primary">
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      {/* edit zone  */}
-      <div
-        class="modal fade"
-        id="edit-zone"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                updateZone();
-              }}
-            >
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  Edit Zone
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">
-                        Zone Name <strong class="text-danger">*</strong>
-                      </label>
-                      <input
-                        required
-                        value={editNames}
-                        onChange={(e) => setEditNames(e.target.value)}
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter zone name"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="col-12">
-                    <label for="">
-                      County <strong class="text-danger">*</strong>
-                    </label>
-                    <select
-                      class="form-control"
-                      data-live-search="true"
-                      title="Select county where the zone is"
-                      onChange={(e) => setNewCounty(e.target.value)}
-                    >
-                      {clientCounties &&
-                        clientCounties.map((cou, index) => {
-                          let county = cou.county;
-                          return (
-                            <option
-                              key={index}
-                              value={cou.id}
-                              selected={cou.id === newCounty ? "selected" : ""}
-                            >
-                              {county.name}
-                            </option>
-                          );
-                        })}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="submit" class="btn btn-primary">
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      {/* edit zone  */}
-      <div
-        class="modal fade"
-        id="edit-zone"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">
-                Edit Zone
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-12">
-                  <div class="form-group mb-4">
-                    <label for="">Zone Name</label>
-                    <input
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      type="text"
-                      class="form-control"
-                      placeholder="Enter zone name"
-                    />
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <label for="">County</label>
-                  <select
-                    class="form-control"
-                    data-live-search="true"
-                    title="Select county where the zone is"
-                    onChange={(e) => setNewCounty(e.target.value)}
-                  >
-                    <option> County</option>
-                    {clientCounties &&
-                      clientCounties.map((cou, index) => {
-                        let county = cou.county;
-                        return (
-
-                          <option
-                            key={index}
-                            value={cou.id}
-                            selected={cou.id === newCounty ? "selected" : ""}
-                          >
-                            {county.name}
-                          </option>
-                        );
-                      })}
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                onClick={updateZone}
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* confirm deactivate  */}
-      <div
-        class="modal fade"
-        id="confirm-deactivate2"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body">
-              <center>
-                <h5>Deactivate this Zone ?</h5>
-              </center>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                no
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivte(activeId)}
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* confirm dactivate  */}
-      <div
-        class="modal fade"
-        id="confirm-activate2"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body">
-              <center>
-                <h5>Activate this Zone ?</h5>
-              </center>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                no
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivte(activeId)}
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-   {/* <!-- modals --> */}
-   <div
-        class="modal fade"
-        id="add-new-country"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                createCounty();
-              }}
-            >
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  New County
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-12">
-                    <label for="">County</label>
-                    <select
-                      class="form-control"
-                      data-live-search="true"
-                      title="Select county where the zone is"
-                      onChange={(e) => setSelectedCounty(e.target.value)}
-                    >
-                      <option>Select County</option>
-                      {allCounties &&
-                        allCounties.map((county) => {
-                          return (
-                            <option key={county.id} value={county.id}>
-                              {county.name}
-                            </option>
-                          );
-                        })}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="submit" class="btn btn-primary">
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      {/* confirm deactivate  */}
-      <div
-        class="modal fade"
-        id="confirm-deactivate1"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body">
-              <center>
-                <h5>Deactivate this county?</h5>
-              </center>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                no
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivates(activeId)}
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* confirm dactivate  */}
-      <div
-        class="modal fade"
-        id="confirm-activate1"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body">
-              <center>
-                <h5>Activate this county?</h5>
-              </center>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                no
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => deactivates(activeId)}
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
-    
-
-  {/* create modal */}
-  <div
-        class="modal fade"
-        id="add-new-settings"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                createGeneral();
-              }}
-            >
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  General Settings
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  
-                  <div class="col-12">
-                    <label for="">
-                    BouncedChequeChargeId <strong class="text-danger">*</strong>
-                    </label>
-                    <select
-                      class="form-control text-capitalize"
-                                           title="Select Applicable Charge Type"
-                      onChange={(e) => {
-                        setBouncedChequeChargeId(e.target.value);
-                      }}
-                    >
-                      <option>-------Select BouncedChequeChargeId -------</option>
-                      {invo?.map((item) => (
-                        <option value={item.id} key={item.id}>
-                        {item.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">
-                      ChequeProcessingPeriod{" "}
-                        <strong class="text-danger">*</strong>{" "}
-                      </label>
-                      <input
-                        required
-                        min="1"
-                        max="30"
-                        value={chequeProcessingPeriod}
-                        onChange={(e) => setChequeProcessingPeriod(e.target.value)}
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter  ChequeProcessingPeriod"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-12">
-                           
-                              <label htmlFor=""> Invoice Payment Priority</label>
-                              <br />
-                              <select
-                                name=""
-                                onChange={(e) => handleACchange(e)}
-                                id=""
-                                className={"form-control"}
-                              >
-                                <option>Select Applicable Charges</option>
-                                {invo?.map((item) => (
-                                  <option value={item.id + "-" + item.name}>
-                                    {item.name}
-                                  </option>
-                                ))}
-                              </select>
-                            
+              {activeLink === 2 && (
+                <div>
+                  <div className="row">
+                    <div className="col-12 row">
+                      <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                        <div
+                          className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                          role="toolbar"
+                        >
+                          <div className="d-flex align-items-center flex-grow-1">
+                            <h4 className="mb-0  bg-transparent  p-0 m-0"></h4>
                           </div>
                           <div className="d-flex align-items-center flex-grow-1"></div>
                           <div className="d-flex">
@@ -2840,7 +1162,6 @@ const [zones, setZones] = useState([]);
                               type="button"
                               data-bs-toggle="modal"
                               data-bs-target="#add-new-settings"
-
                               className="btn btn-primary dropdown-toggle option-selector"
                             >
                               <i className="dripicons-plus font-size-16"></i>{" "}
@@ -2852,16 +1173,10 @@ const [zones, setZones] = useState([]);
                         </div>
                       </div>
 
-
-
-
-
-
                       <div class="col-sm-4">
                         <div class="card">
                           <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-
                               <div class="avatar-xs-2 me-3">
                                 <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
                                   <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
@@ -2869,26 +1184,30 @@ const [zones, setZones] = useState([]);
                               </div>
 
                               <div class="d-flex flex-column">
-                                <span className='text-capitalize'>Bounced Cheque Settings</span>
+                                <span className="text-capitalize">
+                                  Bounced Cheque Settings
+                                </span>
                               </div>
                             </div>
                             <div class=" mt-4">
-                              <span>Charge Name : {client?.bouncedChequeCharge?.name}</span>
+                              <span>
+                                Charge Name :{" "}
+                                {client?.bouncedChequeCharge?.name}
+                              </span>
                               <br />
-                              <span>Processing Period : {client?.chequeProcessingPeriod} Days</span>
+                              <span>
+                                Processing Period :{" "}
+                                {client?.chequeProcessingPeriod} Days
+                              </span>
                             </div>
                           </div>
                         </div>
                       </div>
 
-
-
-
                       <div class="col-sm-4">
                         <div class="card">
                           <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-
                               <div class="avatar-xs-2 me-3">
                                 <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
                                   <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
@@ -2896,12 +1215,15 @@ const [zones, setZones] = useState([]);
                               </div>
 
                               <div class="d-flex flex-column">
-                                <span className='text-capitalize'>Landlord Settlement Settings</span>
+                                <span className="text-capitalize">
+                                  Landlord Settlement Settings
+                                </span>
                               </div>
                             </div>
                             <div class=" mt-4">
                               <span>
-                                Settlement(Rent) Charge Name : {client?.landlordSettlementCharge?.name}
+                                Settlement(Rent) Charge Name :{" "}
+                                {client?.landlordSettlementCharge?.name}
                               </span>
 
                               <br />
@@ -2914,12 +1236,10 @@ const [zones, setZones] = useState([]);
                         </div>
                       </div>
 
-
                       <div class="col-sm-4">
                         <div class="card">
                           <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-
                               <div class="avatar-xs-2 me-3">
                                 <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
                                   <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
@@ -2927,30 +1247,41 @@ const [zones, setZones] = useState([]);
                               </div>
 
                               <div class="d-flex flex-column">
-                                <span className='text-capitalize'>Surcharge Settings</span>
+                                <span className="text-capitalize">
+                                  Surcharge Settings
+                                </span>
                               </div>
                             </div>
                             <div class=" mt-4">
-                              <span>Surcharge(Penalty) Charge Name : {client?.penaltyCharge?.name}
+                              <span>
+                                Surcharge(Penalty) Charge Name :{" "}
+                                {client?.penaltyCharge?.name}
                               </span>
                               <br />
-                              <span>Penalty Charge Rate : {client?.penaltyChargeRate} Days</span>
+                              <span>
+                                Penalty Charge Rate :{" "}
+                                {client?.penaltyChargeRate} Days
+                              </span>
                               <br />
                               <br />
-                              <span>Visitation Charge :  {client?.visitationCharge?.name}</span>
+                              <span>
+                                Visitation Charge :{" "}
+                                {client?.visitationCharge?.name}
+                              </span>
                               <br />
-                              <span>Visitation Charge Day :  Day {client?.visitationChargeDay}</span>
+                              <span>
+                                Visitation Charge Day : Day{" "}
+                                {client?.visitationChargeDay}
+                              </span>
                             </div>
                           </div>
                         </div>
                       </div>
 
-
                       <div class="col-sm-4">
                         <div class="card">
                           <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-
                               <div class="avatar-xs-2 me-3">
                                 <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
                                   <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
@@ -2958,28 +1289,32 @@ const [zones, setZones] = useState([]);
                               </div>
 
                               <div class="d-flex flex-column">
-                                <span className='text-capitalize'>Tenant Invoice Payment Priority Settings</span>
+                                <span className="text-capitalize">
+                                  Tenant Invoice Payment Priority Settings
+                                </span>
                               </div>
                             </div>
                             <div class=" mt-4">
                               <span>
-                                {client?.invoicePaymentPriority?.split(",").map((m, index) =>
-                                  <>
-                                    {invo?.map((item) => (
-                                      item.id == m &&
-                                      <span>
-                                        {index + 1 < client?.invoicePaymentPriority.split(",").length ?
-                                          item.name + " => "
-                                          :
-                                          item.name
-                                        }
-                                      </span>
-                                    )
-
-                                    )}
-                                  </>
-                                )
-                                }
+                                {client?.invoicePaymentPriority
+                                  ?.split(",")
+                                  .map((m, index) => (
+                                    <>
+                                      {invo?.map(
+                                        (item) =>
+                                          item.id == m && (
+                                            <span>
+                                              {index + 1 <
+                                              client?.invoicePaymentPriority.split(
+                                                ","
+                                              ).length
+                                                ? item.name + " => "
+                                                : item.name}
+                                            </span>
+                                          )
+                                      )}
+                                    </>
+                                  ))}
                               </span>
                               <br />
                             </div>
@@ -2987,15 +1322,10 @@ const [zones, setZones] = useState([]);
                         </div>
                       </div>
 
-
-
-
-
                       <div class="col-sm-4">
                         <div class="card">
                           <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-
                               <div class="avatar-xs-2 me-3">
                                 <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
                                   <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
@@ -3003,12 +1333,15 @@ const [zones, setZones] = useState([]);
                               </div>
 
                               <div class="d-flex flex-column">
-                                <span className='text-capitalize'>Property Tax Settings</span>
+                                <span className="text-capitalize">
+                                  Property Tax Settings
+                                </span>
                               </div>
                             </div>
                             <div class=" mt-4">
                               <span>
-                                Property Tax Charge : {client?.propertyTaxCharge?.name}
+                                Property Tax Charge :{" "}
+                                {client?.propertyTaxCharge?.name}
                               </span>
                               <br />
                               <span>
@@ -3019,15 +1352,10 @@ const [zones, setZones] = useState([]);
                         </div>
                       </div>
 
-
-
-
-
                       <div class="col-sm-4">
                         <div class="card">
                           <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-
                               <div class="avatar-xs-2 me-3">
                                 <span class="avatar-title rounded-circle bg-danger bg-soft text-danger font-size-18">
                                   <i class="mdi mdi-wrench h2 mb-0 pb-0 text-danger"></i>
@@ -3035,59 +1363,706 @@ const [zones, setZones] = useState([]);
                               </div>
 
                               <div class="d-flex flex-column">
-                                <span className='text-capitalize'>Messaging Settings</span>
+                                <span className="text-capitalize">
+                                  Messaging Settings
+                                </span>
                               </div>
                             </div>
                             <div class=" mt-4">
-                              <span>
-                                SenderID : {client?.senderId}
-                              </span>
+                              <span>SenderID : {client?.senderId}</span>
                               <br />
-
                             </div>
                           </div>
                         </div>
                       </div>
-
-
-                      </form>
                     </div>
-               
                   </div>
                 </div>
-               
-      
+              )}
 
-       
+              {activeLink === 4 && (
+                <div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="card">
+                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                          <div
+                            class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <div class="d-flex align-items-center flex-grow-1">
+                              <h4 class="mb-0  bg-transparent  p-0 m-0">
+                                County Register
+                              </h4>
+                            </div>
+                            <div class="d-flex">
+                              <button
+                                onClick={() => {
+                                  allCounties &&
+                                    setSelectedCounty(allCounties[0].id);
+                                }}
+                                type="button"
+                                class="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#add-new-country"
+                              >
+                                <i class="mdi mdi-plus label-icon"></i> Add a
+                                county
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          {error.color !== "" && (
+                            <div
+                              className={"alert alert-" + error.color}
+                              role="alert"
+                            >
+                              {error.message}
+                            </div>
+                          )}
+                          <div class="table-responsive table-responsive-md">
+                            <table class="table table-editable align-middle table-edits">
+                              <thead class="table-light">
+                                <tr class="text-uppercase table-dark">
+                                  <th>#</th>
+                                  <th>County</th>
+                                  <th>Status</th>
+                                  <th>Date Created</th>
+                                  <th class="text-right">Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {clientCounties &&
+                                  clientCounties?.map((cou, index) => {
+                                    let county = cou.county;
+                                    return (
+                                      <tr data-id="1" key={county.id}>
+                                        <td style={{ width: "80px" }}>
+                                          {index + 1}
+                                        </td>
+                                        <td data-field="unit-num ">
+                                          {county.name}
+                                        </td>
+                                        <td data-field="unit-num ">
+                                          {cou.active ? (
+                                            <span class="badge-soft-success badge">
+                                              Active
+                                            </span>
+                                          ) : (
+                                            <span class="badge-soft-danger badge">
+                                              Inactive
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          {moment(cou.dateTimeCreated).format(
+                                            "YYYY-MM-DD HH:mm"
+                                          )}
+                                        </td>
+
+                                        <td class=" align-items-center text-right cell-change text-nowrap ">
+                                          {cou.active ? (
+                                            <button
+                                              class="btn btn-danger btn-sm btn-rounded  text-uppercase px-2 mx-3"
+                                              title="deactivate"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#confirm-deactivate1"
+                                              onClick={() =>
+                                                setActiveId(cou.id)
+                                              }
+                                            >
+                                              Deactivate
+                                            </button>
+                                          ) : (
+                                            <button
+                                              class="btn btn-success btn-sm btn-rounded w-5 text-uppercase px-3 mx-3"
+                                              title="deactivate"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#confirm-activate1"
+                                              onClick={() =>
+                                                setActiveId(cou.id)
+                                              }
+                                            >
+                                              Activate
+                                            </button>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+
+                                <tr class="cloneCharges d-none">
+                                  <td
+                                    style={{ width: "80px" }}
+                                    class="categoryIndex "
+                                  >
+                                    #
+                                  </td>
+                                  <td>
+                                    <input
+                                      type="text "
+                                      class="form-control "
+                                      placeholder="estate Name"
+                                    />
+                                  </td>
+
+                                  <td>
+                                    <select
+                                      class="form-select"
+                                      style={{ width: "130px" }}
+                                    >
+                                      <option value="">Nairobi</option>
+                                      <option value="">Mombasa</option>
+                                      <option value="">Nakuru</option>
+                                    </select>
+                                  </td>
+                                  <td>-</td>
+                                  <td>-</td>
+                                  <td>-</td>
+
+                                  <td class="text-right cell-change d-flex align-items-center justify-content-end">
+                                    <button
+                                      class="btn btn-primary btn-sm text-uppercase px-3 save-new-btn mx-3 "
+                                      title="save "
+                                    >
+                                      Add
+                                    </button>
+                                    <a
+                                      class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent cancel-new-category "
+                                      title="Cancel "
+                                    >
+                                      <i class="bx bx-x "></i>
+                                    </a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <div className="d-flex justify-content-between align-items-center">
+                              {pageCount !== 0 && (
+                                <>
+                                  <select
+                                    className="btn btn-md btn-primary"
+                                    title="Select A range"
+                                    onChange={(e) => sortSize(e)}
+                                    value={size}
+                                  >
+                                    <option
+                                      className="bs-title-option"
+                                      value=""
+                                    >
+                                      Select A range
+                                    </option>
+                                    <option value="10">10 Rows</option>
+                                    <option value="30">30 Rows</option>
+                                    <option value="50">50 Rows</option>
+                                  </select>
+                                  <nav
+                                    aria-label="Page navigation comments"
+                                    className="mt-4"
+                                  >
+                                    <ReactPaginate
+                                      previousLabel="<"
+                                      nextLabel=">"
+                                      breakLabel="..."
+                                      breakClassName="page-item"
+                                      breakLinkClassName="page-link"
+                                      pageCount={pageCount}
+                                      pageRangeDisplayed={4}
+                                      marginPagesDisplayed={2}
+                                      containerClassName="pagination justify-content-center"
+                                      pageClassName="page-item"
+                                      pageLinkClassName="page-link"
+                                      previousClassName="page-item"
+                                      previousLinkClassName="page-link"
+                                      nextClassName="page-item"
+                                      nextLinkClassName="page-link"
+                                      activeClassName="active"
+                                      onPageChange={(data) =>
+                                        handlPageClick(data)
+                                      }
+                                      forcePage={page}
+                                    />
+                                  </nav>
+                                </>
+                              )}
+                            </div>
+                            {pageCount !== 0 && (
+                              <p className="font-medium  text-muted">
+                                showing page{" "}
+                                <span className="text-primary">
+                                  {pageCount === 0 ? page : page + 1}
+                                </span>{" "}
+                                of
+                                <span className="text-primary">
+                                  {" "}
+                                  {pageCount}
+                                </span>{" "}
+                                pages
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* <!-- end col --> */}
+                  </div>
+                </div>
+              )}
+
+              {activeLink === 5 && (
+                <div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="card">
+                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                          <div
+                            class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <div class="d-flex align-items-center flex-grow-1">
+                              <h4 class="mb-0  bg-transparent  p-0 m-0">
+                                Zone Register
+                              </h4>
+                            </div>
+                            <div class="d-flex">
+                              <button
+                                onClick={() => {
+                                  setZoneName("");
+                                  clientCounties &&
+                                    setSelectedCounty(clientCounties[0].id);
+                                  getClientCounties();
+                                }}
+                                type="button"
+                                class="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#add-new-zone"
+                              >
+                                <i class="mdi mdi-plus label-icon"></i> Add Zone
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          {error.color !== "" && (
+                            <div
+                              className={"alert alert-" + error.color}
+                              role="alert"
+                            >
+                              {error.message}
+                            </div>
+                          )}
+                          <div class="table-responsive table-responsive-md">
+                            <table class="table table-editable align-middle table-edits">
+                              <thead class="table-light">
+                                <tr class="text-uppercase table-dark">
+                                  <th>#</th>
+                                  <th>Zone</th>
+                                  <th>County</th>
+                                  <th>Status</th>
+                                  <th>Date Created</th>
+                                  <th class="text-right">Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {zones &&
+                                  zones.map((zon, index) => {
+                                    return (
+                                      <tr data-id="1" key={zon.id}>
+                                        <td style={{ width: "80px" }}>
+                                          {index + 1}
+                                        </td>
+                                        <td
+                                          data-field="unit-numv "
+                                          className="text-capitalize"
+                                        >
+                                          {zon.name}
+                                        </td>
+                                        <td
+                                          data-field="unit-numv "
+                                          className="text-capitalize"
+                                        >
+                                          {zon?.clientCounty.county.name
+                                            ?.toLowerCase()
+                                            ?.replace(/_/g, " ")}
+                                        </td>
+                                        <td data-field="unit-num ">
+                                          {zon.active ? (
+                                            <span class="badge-soft-success badge">
+                                              Active
+                                            </span>
+                                          ) : (
+                                            <span class="badge-soft-danger badge">
+                                              Inactive
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          {moment(zon.dateTimeCreated).format(
+                                            "YYYY-MM-DD HH:mm"
+                                          )}
+                                        </td>
+
+                                        <td class="text-right cell-change text-nowrap ">
+                                          <div className="d-flex align-items-center">
+                                            <a
+                                              onClick={() => {
+                                                handleEdits(
+                                                  zon.name,
+                                                  zon.clientCounty.id,
+                                                  zon.id
+                                                );
+                                              }}
+                                              class="btn btn-light btn-sm btn-rounded waves-effect btn-circle btn-transparent edit "
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#edit-zone"
+                                              title="Edit "
+                                            >
+                                              <i class="bx bx-edit-alt "></i>
+                                            </a>
+                                            {zon.active ? (
+                                              <button
+                                                class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-deactivate2"
+                                                onClick={() =>
+                                                  setActiveId(zon.id)
+                                                }
+                                              >
+                                                Deactivate
+                                              </button>
+                                            ) : (
+                                              <button
+                                                class="btn btn-success btn-sm w-5 text-uppercase px-3 mx-3"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-activate2"
+                                                onClick={() =>
+                                                  setActiveId(zon.id)
+                                                }
+                                              >
+                                                Activate
+                                              </button>
+                                            )}
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                              </tbody>
+                            </table>
+                            <div className="d-flex justify-content-between align-items-center">
+                              {pageCount !== 0 && (
+                                <>
+                                  <select
+                                    className="btn btn-md btn-primary"
+                                    title="Select A range"
+                                    onChange={(e) => sortSize(e)}
+                                    value={size}
+                                  >
+                                    <option
+                                      className="bs-title-option"
+                                      value=""
+                                    >
+                                      Select A range
+                                    </option>
+                                    <option value="10">10 Rows</option>
+                                    <option value="30">30 Rows</option>
+                                    <option value="50">50 Rows</option>
+                                  </select>
+                                  <nav
+                                    aria-label="Page navigation comments"
+                                    className="mt-4"
+                                  >
+                                    <ReactPaginate
+                                      previousLabel="<"
+                                      nextLabel=">"
+                                      breakLabel="..."
+                                      breakClassName="page-item"
+                                      breakLinkClassName="page-link"
+                                      pageCount={pageCount}
+                                      pageRangeDisplayed={4}
+                                      marginPagesDisplayed={2}
+                                      containerClassName="pagination justify-content-center"
+                                      pageClassName="page-item"
+                                      pageLinkClassName="page-link"
+                                      previousClassName="page-item"
+                                      previousLinkClassName="page-link"
+                                      nextClassName="page-item"
+                                      nextLinkClassName="page-link"
+                                      activeClassName="active"
+                                      onPageChange={(data) =>
+                                        handlePageClck(data)
+                                      }
+                                      forcePage={page}
+                                    />
+                                  </nav>
+                                </>
+                              )}
+                            </div>
+                            {pageCount !== 0 && (
+                              <p className="font-medium  text-muted">
+                                showing page{" "}
+                                <span className="text-primary">
+                                  {pageCount === 0 ? page : page + 1}
+                                </span>{" "}
+                                of
+                                <span className="text-primary">
+                                  {" "}
+                                  {pageCount}
+                                </span>{" "}
+                                pages
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* <!-- end col --> */}
+                  </div>
+                </div>
+              )}
+
+              {activeLink === 6 && (
+                <div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="card">
+                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                          <div
+                            class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <div class="d-flex align-items-center flex-grow-1">
+                              <h4 class="mb-0  bg-transparent  p-0 m-0">
+                                Estate Register
+                              </h4>
+                            </div>
+                            <div class="d-flex">
+                              <button
+                                onClick={() => {
+                                  zones && setSelectedZone(zones[0].id);
+                                  setEstateName("");
+                                  getZones1();
+                                }}
+                                type="button"
+                                class="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#add-new-estate"
+                              >
+                                <i class="mdi mdi-plus label-icon"></i> Add
+                                Estate
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          {error.color !== "" && (
+                            <div
+                              className={"alert alert-" + error.color}
+                              role="alert"
+                            >
+                              {error.message}
+                            </div>
+                          )}
+                          <div class="table-responsive table-responsive-md">
+                            <table class="table table-editable align-middle table-edits">
+                              <thead class="table-light">
+                                <tr class="text-uppercase table-dark">
+                                  <th>#</th>
+                                  <th>Estate</th>
+                                  <th>Zone</th>
+                                  <th>County</th>
+                                  <th>Status</th>
+                                  <th>Date Created</th>
+
+                                  <th class="text-right">Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {estates &&
+                                  estates.map((estate, index) => {
+                                    return (
+                                      <tr data-id="1" key={estate.id}>
+                                        <td style={{ width: "80px" }}>
+                                          {index + 1}
+                                        </td>
+                                        <td className="text-capitalize">
+                                          {estate.name}
+                                        </td>
+                                        <td className="text-capitalize">
+                                          {estate.zone.name}
+                                        </td>
+                                        <td className="text-capitalize">
+                                          {estate.zone.clientCounty.county.name.toLowerCase()}
+                                        </td>
+                                        <td>
+                                          {estate.active ? (
+                                            <span class="badge-soft-success badge">
+                                              Active
+                                            </span>
+                                          ) : (
+                                            <span class="badge-soft-danger badge">
+                                              Inactive
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          {moment(
+                                            estate.dateTimeCreated
+                                          ).format("YYYY-MM-DD HH:mm")}
+                                        </td>
+
+                                        <td class="text-right cell-change text-nowrap">
+                                          <div className=" align-items-center d-flex">
+                                            <a
+                                              onClick={() => {
+                                                handleEdit1(
+                                                  estate.name,
+                                                  estate.zone.id,
+                                                  estate.id
+                                                );
+                                              }}
+                                              class="btn btn-light btn-sm btn-rounded waves-effect btn-circle btn-transparent edit"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#edit-estate"
+                                              title="Edit "
+                                            >
+                                              <i class="bx bx-edit-alt "></i>
+                                            </a>
+                                            {estate.active ? (
+                                              <button
+                                                class="btn btn-danger btn-sm btn-rounded  text-uppercase px-2 mx-3"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-deactivate3"
+                                                onClick={() =>
+                                                  setActiveId(estate.id)
+                                                }
+                                              >
+                                                Deactivate
+                                              </button>
+                                            ) : (
+                                              <button
+                                                class="btn btn-success btn-sm w-5 text-uppercase px-3 mx-3"
+                                                title="deactivate"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirm-activate3"
+                                                onClick={() =>
+                                                  setActiveId(estate.id)
+                                                }
+                                              >
+                                                Activate
+                                              </button>
+                                            )}
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                              </tbody>
+                            </table>
+                            <div className="d-flex justify-content-between align-items-center">
+                              {pageCount !== 0 && (
+                                <>
+                                  <select
+                                    className="btn btn-md btn-primary"
+                                    title="Select A range"
+                                    onChange={(e) => sortSize(e)}
+                                    value={size}
+                                  >
+                                    <option
+                                      className="bs-title-option"
+                                      value=""
+                                    >
+                                      Select A range
+                                    </option>
+                                    <option value="10">10 Rows</option>
+                                    <option value="30">30 Rows</option>
+                                    <option value="50">50 Rows</option>
+                                  </select>
+                                  <nav
+                                    aria-label="Page navigation comments"
+                                    className="mt-4"
+                                  >
+                                    <ReactPaginate
+                                      previousLabel="<"
+                                      nextLabel=">"
+                                      breakLabel="..."
+                                      breakClassName="page-item"
+                                      breakLinkClassName="page-link"
+                                      pageCount={pageCount}
+                                      pageRangeDisplayed={4}
+                                      marginPagesDisplayed={2}
+                                      containerClassName="pagination justify-content-center"
+                                      pageClassName="page-item"
+                                      pageLinkClassName="page-link"
+                                      previousClassName="page-item"
+                                      previousLinkClassName="page-link"
+                                      nextClassName="page-item"
+                                      nextLinkClassName="page-link"
+                                      activeClassName="active"
+                                      onPageChange={(data) =>
+                                        handlePageClick1(data)
+                                      }
+                                      forcePage={page}
+                                    />
+                                  </nav>
+                                </>
+                              )}
+                            </div>
+                            {pageCount !== 0 && (
+                              <p className="font-medium  text-muted">
+                                showing page{" "}
+                                <span className="text-primary">
+                                  {pageCount === 0 ? page : page + 1}
+                                </span>{" "}
+                                of
+                                <span className="text-primary">
+                                  {" "}
+                                  {pageCount}
+                                </span>{" "}
+                                pages
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* <!-- end col --> */}
+                  </div>
+                </div>
+              )}
+
               {/* <!-- end row --> */}
             </div>
             {/* <!-- container-fluid --> */}
-         
-         
+          </div>
 
           {/*MODALS*/}
 
-          {/* create modal */}
+          {/* <!-- modals --> */}
           <div
             class="modal fade"
-            id="add-new-settings"
+            id="add-new-estate"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
             role="dialog"
             aria-labelledby="staticBackdropLabel"
             aria-hidden="true"
           >
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    createGeneral();
+                    createEstates();
                   }}
                 >
                   <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">
-                      General Settings
+                      New Estate
                     </h5>
                     <button
                       type="button"
@@ -3098,243 +2073,38 @@ const [zones, setZones] = useState([]);
                   </div>
                   <div class="modal-body">
                     <div class="row">
-
-                      <div class="col-12">
-                        <label for="">
-                          Bounced Cheque Charge  <strong class="text-danger">*</strong>
-                        </label>
-                        <select
-                          class="form-control text-capitalize"
-                          title="Select Applicable Charge Type"
-                          onChange={(e) => {
-                            setBouncedChequeChargeId(e.target.value);
-                          }}
-                          value={client?.bouncedChequeCharge?.id}
-                        >
-                          <option>-------Select Bounced Cheque Charge -------</option>
-                          {invo?.map((item) => (
-                            <option value={item.id} key={item.id}>
-                              {item.name}</option>
-                          ))}
-                        </select>
-                      </div>
                       <div class="col-12">
                         <div class="form-group mb-4">
                           <label for="">
-                            Cheque Processing Period{" "}
-                            <strong class="text-danger">*</strong>{" "}
+                            Estate Name <strong class="text-danger">*</strong>
                           </label>
                           <input
                             required
-                            min="1"
-                            max="30"
-                            value={chequeProcessingPeriod}
-                            onChange={(e) => setChequeProcessingPeriod(e.target.value)}
-                            type="number"
+                            value={estateName}
+                            onChange={(e) => setEstateName(e.target.value)}
+                            type="text"
                             class="form-control"
-                            placeholder="Enter  ChequeProcessingPeriod"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-12">
-
-                        <label htmlFor=""> Invoice Payment Priority</label>
-                        <br />
-                        <select
-                          name=""
-                          onChange={(e) => handleACchange(e)}
-                          id=""
-                          className={"form-control"}
-                        >
-                          <option>Select Applicable Charges</option>
-                          {invo?.map((item) => (
-                            <option value={item.id + "-" + item.name}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-
-                      </div>
-                      <div className="row">
-                        <div className="mb-4">
-                          <label htmlFor="basicpill-lastname-input ">
-                            Charges
-                          </label>
-                          <div className="alert alert-info bg-soft">
-                            {chargeNames.length > 0
-                              ? chargeNames.join("  -->  ")
-                              : chargeNames}
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <label for="">
-                          Base(Rent) Charge<strong class="text-danger">*</strong>
-                        </label>
-                        <select
-                          class="form-control text-capitalize"
-                          title="Select Applicable Charge Type"
-                          onChange={(e) => {
-                            setLandlordSettlementChargeId(e.target.value);
-                          }}
-                          value={client?.landlordSettlementCharge?.id}
-                        >
-                          <option>---Select  Base(rent)Charge-----</option>
-                          {invo?.map((item) => (
-                            <option value={item.id} key={item.id}>
-                              {item.name}</option>
-                          ))}
-                        </select>
-                      </div>
-
-
-                      <div class="col-12">
-                        <label for="">
-                          Sur-Charge <strong class="text-danger">*</strong>
-                        </label>
-                        <select
-                          class="form-control text-capitalize"
-                          title="Select Applicable Charge Type"
-                          onChange={(e) => {
-                            setPenaltyChargeId(e.target.value)
-                              (e.target.value);
-                          }}
-                          value={client?.penaltyCharge?.id}
-                        >
-                          <option>---Select  Sur-Charge-----</option>
-                          {invo?.map((item) => (
-                            <option value={item.id} key={item.id}>
-                              {item.name}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">Sur-Charge Rate</label>
-                          <input
-                            type="number"
-                            min="1"
-                            max="30"
-                            class="form-control"
-                            placeholder="Enter PenaltyChargeRate"
-                            onChange={(event) =>
-                              setpenaltyChargeRate(event.target.value)
-                            }
-                            value={client?.penaltyChargeRate}
-                          />
-                        </div>
-                      </div>
-
-
-                      <div class="col-12">
-                        <label for="">
-                          Property Tax <strong class="text-danger">*</strong>
-                        </label>
-                        <select
-                          class="form-control text-capitalize"
-                          title="Select Applicable Charge Type"
-                          onChange={(e) => {
-                            setPropertyTaxChargeId(e.target.value)
-                              (e.target.value);
-                          }}
-                          value={client?.propertyTaxCharge?.id}
-                        >
-                          <option value="">Select PropertyTaxCharge --</option>
-                          {invo?.map((item) => (
-                            <option value={item.id} key={item.id}>
-                              {item.name}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">Property Tax Rate</label>
-                          <input
-                            type="number"
-                            min="1"
-                            max="30"
-                            class="form-control"
-                            placeholder="Enter PropertyTaxRate"
-                            onChange={(event) =>
-                              setPropertyTaxRate(event.target.value)
-                            }
-                            value={client?.propertyTaxRate}
+                            placeholder="Enter estate name"
                           />
                         </div>
                       </div>
                       <div class="col-12">
-                        <label for="">
-                          Visitation Charge<strong class="text-danger">*</strong>
-                        </label>
+                        <label for=""> Zone </label>
                         <select
-                          class="form-control text-capitalize"
-                          title="Select VisitationChargeId"
-                          onChange={(e) => {
-                            setvisitationChargeId(e.target.value)
-                              (e.target.value);
-                          }}
-                          value={client?.visitationCharge?.id}
+                          class="form-control"
+                          data-live-search="true"
+                          title="Select county where the zone is"
+                          onChange={(e) => setNewZone(e.target.value)}
                         >
-                          <option>Select VisitationCharge ----</option>
-                          {invo
-                            ?.map((item) => (
-                              <option value={item.id} key={item.id}>
-                                {item.name}</option>
+                          <option value="">Select Estate</option>
+                          {zones &&
+                            zones.map((zon, index) => (
+                              <option key={index} value={zon.id}>
+                                {zon.name}
+                              </option>
                             ))}
                         </select>
                       </div>
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">Visitation Charge Day</label>
-                          <input
-                            type="number" min={1} max={31}
-                            class="form-control"
-                            placeholder="Enter SettlementPeriod"
-                            onChange={(event) =>
-                              setvisitationChargeDay(event.target.value)
-                            }
-                            value={client?.visitationChargeDay}
-                          />
-                        </div>
-                      </div>
-
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">Settlement Period</label>
-
-                          <select
-                            className="form-control"
-                            onChange={(e) => {
-                              setsettlementPeriod(e.target.value)
-                                (e.target.value);
-                            }}
-                            name="settlementPeriod"
-                            value={client?.landlordSettlementPeriod}
-                          >
-                            <option value="YEAR"> Select settlementPeriod </option>
-                            <option value="MONTH">Monthly</option>
-                            <option value="YEAR">Yearly</option>
-                          </select>
-
-
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">SMS SenderId</label>
-                          <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter SenderId"
-                            onChange={(event) =>
-                              setSenderId(event.target.value)
-                            }
-                            value={client?.senderId}
-                          />
-                        </div>
-                      </div>
-
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -3346,7 +2116,7 @@ const [zones, setZones] = useState([]);
                       Close
                     </button>
                     <button type="submit" class="btn btn-primary">
-                      Create
+                      Save
                     </button>
                   </div>
                 </form>
@@ -3354,16 +2124,102 @@ const [zones, setZones] = useState([]);
             </div>
           </div>
 
+          {/* edit zone  */}
 
+          <div
+            class="modal fade"
+            id="edit-estate"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    updateEstate();
+                  }}
+                >
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                      Edit Estate
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group mb-4">
+                          <label for="">
+                            Estate Name <strong class="text-danger">*</strong>
+                          </label>
+                          <input
+                            required
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter estate name"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label for=""> Zone </label>
+                        <select
+                          class="form-control"
+                          data-live-search="true"
+                          title="Select county where the zone is"
+                          onChange={(e) => setSelectedZone(e.target.value)}
+                        >
+                          {zones &&
+                            zones.map((zon, index) => {
+                              let zone = zon;
 
+                              return (
+                                <option
+                                  key={index}
+                                  value={zone.id}
+                                  selected={
+                                    zone.id === newZone ? "selected" : ""
+                                  }
+                                >
+                                  {zone.name}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
 
-
-
-          {/*deactivate activate modals*/}
           {/* confirm deactivate  */}
           <div
             class="modal fade"
-            id="confirm-deactivate"
+            id="confirm-deactivate3"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
             role="dialog"
@@ -3374,7 +2230,7 @@ const [zones, setZones] = useState([]);
               <div class="modal-content">
                 <div class="modal-body">
                   <center>
-                    <h5>Deactivate this Issue Type ?</h5>
+                    <h5>Deactivate this Estate ?</h5>
                   </center>
                 </div>
                 <div class="modal-footer">
@@ -3389,7 +2245,7 @@ const [zones, setZones] = useState([]);
                     type="button"
                     class="btn btn-primary"
                     data-bs-dismiss="modal"
-                    onClick={() => deactivate(activeId)}
+                    onClick={() => deactivate1(activeId)}
                   >
                     Yes
                   </button>
@@ -3400,7 +2256,7 @@ const [zones, setZones] = useState([]);
           {/* confirm dactivate  */}
           <div
             class="modal fade"
-            id="confirm-activate"
+            id="confirm-activate3"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
             role="dialog"
@@ -3411,7 +2267,7 @@ const [zones, setZones] = useState([]);
               <div class="modal-content">
                 <div class="modal-body">
                   <center>
-                    <h5>Activate this Issue Type?</h5>
+                    <h5>Activate this Estate ?</h5>
                   </center>
                 </div>
                 <div class="modal-footer">
@@ -3426,7 +2282,7 @@ const [zones, setZones] = useState([]);
                     type="button"
                     class="btn btn-primary"
                     data-bs-dismiss="modal"
-                    onClick={() => deactivate(activeId)}
+                    onClick={() => deactivate1(activeId)}
                   >
                     Yes
                   </button>
@@ -3435,10 +2291,863 @@ const [zones, setZones] = useState([]);
             </div>
           </div>
 
-       
-      
+          {/* <!-- modals --> */}
+          <div
+            class="modal fade"
+            id="add-new-zone"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    createZone();
+                  }}
+                >
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                      New Zone
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group mb-4">
+                          <label for="">
+                            Zone Name <strong class="text-danger">*</strong>
+                          </label>
+                          <input
+                            required
+                            value={zoneName}
+                            onChange={(e) => setZoneName(e.target.value)}
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter zone name"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label for="">
+                          County <strong class="text-danger">*</strong>
+                        </label>
+                        <select
+                          class="form-control"
+                          data-live-search="true"
+                          title="Select county where the zone is"
+                          onChange={(e) => setSelectedCounty(e.target.value)}
+                        >
+                          <option value=""> Select County</option>
+                          {clientCounties &&
+                            clientCounties.map((cou, index) => {
+                              let county = cou.county;
+                              return (
+                                <option key={index} value={cou.id}>
+                                  {county.name}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          {/* edit zone  */}
+          <div
+            class="modal fade"
+            id="edit-zone"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    updateZone();
+                  }}
+                >
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                      Edit Zone
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group mb-4">
+                          <label for="">
+                            Zone Name <strong class="text-danger">*</strong>
+                          </label>
+                          <input
+                            required
+                            value={editNames}
+                            onChange={(e) => setEditNames(e.target.value)}
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter zone name"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="col-12">
+                        <label for="">
+                          County <strong class="text-danger">*</strong>
+                        </label>
+                        <select
+                          class="form-control"
+                          data-live-search="true"
+                          title="Select county where the zone is"
+                          onChange={(e) => setNewCounty(e.target.value)}
+                        >
+                          {clientCounties &&
+                            clientCounties.map((cou, index) => {
+                              let county = cou.county;
+                              return (
+                                <option
+                                  key={index}
+                                  value={cou.id}
+                                  selected={
+                                    cou.id === newCounty ? "selected" : ""
+                                  }
+                                >
+                                  {county.name}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          {/* edit zone  */}
+          <div
+            class="modal fade"
+            id="edit-zone"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">
+                    Edit Zone
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group mb-4">
+                        <label for="">Zone Name</label>
+                        <input
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          type="text"
+                          class="form-control"
+                          placeholder="Enter zone name"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="">County</label>
+                      <select
+                        class="form-control"
+                        data-live-search="true"
+                        title="Select county where the zone is"
+                        onChange={(e) => setNewCounty(e.target.value)}
+                      >
+                        <option> County</option>
+                        {clientCounties &&
+                          clientCounties.map((cou, index) => {
+                            let county = cou.county;
+                            return (
+                              <option
+                                key={index}
+                                value={cou.id}
+                                selected={
+                                  cou.id === newCounty ? "selected" : ""
+                                }
+                              >
+                                {county.name}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-light"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={updateZone}
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* confirm deactivate  */}
+          <div
+            class="modal fade"
+            id="confirm-deactivate2"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <center>
+                    <h5>Deactivate this Zone ?</h5>
+                  </center>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-light"
+                    data-bs-dismiss="modal"
+                  >
+                    no
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    onClick={() => deactivte(activeId)}
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* confirm dactivate  */}
+          <div
+            class="modal fade"
+            id="confirm-activate2"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <center>
+                    <h5>Activate this Zone ?</h5>
+                  </center>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-light"
+                    data-bs-dismiss="modal"
+                  >
+                    no
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    onClick={() => deactivte(activeId)}
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <!-- modals --> */}
+          <div
+            class="modal fade"
+            id="add-new-country"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    createCounty();
+                  }}
+                >
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                      New County
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-12">
+                        <label for="">County</label>
+                        <select
+                          class="form-control"
+                          data-live-search="true"
+                          title="Select county where the zone is"
+                          onChange={(e) => setSelectedCounty(e.target.value)}
+                        >
+                          <option>Select County</option>
+                          {allCounties &&
+                            allCounties.map((county) => {
+                              return (
+                                <option key={county.id} value={county.id}>
+                                  {county.name}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          {/* confirm deactivate  */}
+          <div
+            class="modal fade"
+            id="confirm-deactivate1"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <center>
+                    <h5>Deactivate this county?</h5>
+                  </center>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-light"
+                    data-bs-dismiss="modal"
+                  >
+                    no
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    onClick={() => deactivates(activeId)}
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* confirm dactivate  */}
+          <div
+            class="modal fade"
+            id="confirm-activate1"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <center>
+                    <h5>Activate this county?</h5>
+                  </center>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-light"
+                    data-bs-dismiss="modal"
+                  >
+                    no
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    onClick={() => deactivates(activeId)}
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* create modal */}
+
+          {/* <!-- end row --> */}
+        </div>
+        {/* <!-- container-fluid --> */}
+
+        {/*MODALS*/}
+
+        {/* create modal */}
+        <div
+          class="modal fade"
+          id="add-new-settings"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div
+            class="modal-dialog modal-dialog-centered modal-lg"
+            role="document"
+          >
+            <div class="modal-content">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  createGeneral();
+                }}
+              >
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">
+                    General Settings
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <label for="">
+                        Bounced Cheque Charge{" "}
+                        <strong class="text-danger">*</strong>
+                      </label>
+                      <select
+                        class="form-control text-capitalize"
+                        title="Select Applicable Charge Type"
+                        onChange={(e) => {
+                          setBouncedChequeChargeId(e.target.value);
+                        }}
+                        value={client?.bouncedChequeCharge?.id}
+                      >
+                        <option>
+                          -------Select Bounced Cheque Charge -------
+                        </option>
+                        {invo?.map((item) => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group mb-4">
+                        <label for="">
+                          Cheque Processing Period{" "}
+                          <strong class="text-danger">*</strong>{" "}
+                        </label>
+                        <input
+                          required
+                          min="1"
+                          max="30"
+                          value={chequeProcessingPeriod}
+                          onChange={(e) =>
+                            setChequeProcessingPeriod(e.target.value)
+                          }
+                          type="number"
+                          class="form-control"
+                          placeholder="Enter  ChequeProcessingPeriod"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-12">
+                      <label htmlFor=""> Invoice Payment Priority</label>
+                      <br />
+                      <select
+                        name=""
+                        onChange={(e) => handleACchange(e)}
+                        id=""
+                        className={"form-control"}
+                      >
+                        <option>Select Applicable Charges</option>
+                        {invo?.map((item) => (
+                          <option value={item.id + "-" + item.name}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="row">
+                      <div className="mb-4">
+                        <label htmlFor="basicpill-lastname-input ">
+                          Charges
+                        </label>
+                        <div className="alert alert-info bg-soft">
+                          {chargeNames.length > 0
+                            ? chargeNames.join("  -->  ")
+                            : chargeNames}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <label for="">
+                        Base(Rent) Charge<strong class="text-danger">*</strong>
+                      </label>
+                      <select
+                        class="form-control text-capitalize"
+                        title="Select Applicable Charge Type"
+                        onChange={(e) => {
+                          setLandlordSettlementChargeId(e.target.value);
+                        }}
+                        value={client?.landlordSettlementCharge?.id}
+                      >
+                        <option>---Select Base(rent)Charge-----</option>
+                        {invo?.map((item) => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="">
+                        Sur-Charge <strong class="text-danger">*</strong>
+                      </label>
+                      <select
+                        class="form-control text-capitalize"
+                        title="Select Applicable Charge Type"
+                        onChange={(e) => {
+                          setPenaltyChargeId(e.target.value)(e.target.value);
+                        }}
+                        value={client?.penaltyCharge?.id}
+                      >
+                        <option>---Select Sur-Charge-----</option>
+                        {invo?.map((item) => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group mb-4">
+                        <label for="">Sur-Charge Rate</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="30"
+                          class="form-control"
+                          placeholder="Enter PenaltyChargeRate"
+                          onChange={(event) =>
+                            setpenaltyChargeRate(event.target.value)
+                          }
+                          value={client?.penaltyChargeRate}
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="">
+                        Property Tax <strong class="text-danger">*</strong>
+                      </label>
+                      <select
+                        class="form-control text-capitalize"
+                        title="Select Applicable Charge Type"
+                        onChange={(e) => {
+                          setPropertyTaxChargeId(e.target.value)(
+                            e.target.value
+                          );
+                        }}
+                        value={client?.propertyTaxCharge?.id}
+                      >
+                        <option value="">Select PropertyTaxCharge --</option>
+                        {invo?.map((item) => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group mb-4">
+                        <label for="">Property Tax Rate</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="30"
+                          class="form-control"
+                          placeholder="Enter PropertyTaxRate"
+                          onChange={(event) =>
+                            setPropertyTaxRate(event.target.value)
+                          }
+                          value={client?.propertyTaxRate}
+                        />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <label for="">
+                        Visitation Charge<strong class="text-danger">*</strong>
+                      </label>
+                      <select
+                        class="form-control text-capitalize"
+                        title="Select VisitationChargeId"
+                        onChange={(e) => {
+                          setvisitationChargeId(e.target.value)(e.target.value);
+                        }}
+                        value={client?.visitationCharge?.id}
+                      >
+                        <option>Select VisitationCharge ----</option>
+                        {invo?.map((item) => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group mb-4">
+                        <label for="">Visitation Charge Day</label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={31}
+                          class="form-control"
+                          placeholder="Enter SettlementPeriod"
+                          onChange={(event) =>
+                            setvisitationChargeDay(event.target.value)
+                          }
+                          value={client?.visitationChargeDay}
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-group mb-4">
+                        <label for="">Settlement Period</label>
+
+                        <select
+                          className="form-control"
+                          onChange={(e) => {
+                            setsettlementPeriod(e.target.value)(e.target.value);
+                          }}
+                          name="settlementPeriod"
+                          value={client?.landlordSettlementPeriod}
+                        >
+                          <option value="YEAR">
+                            {" "}
+                            Select settlementPeriod{" "}
+                          </option>
+                          <option value="MONTH">Monthly</option>
+                          <option value="YEAR">Yearly</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group mb-4">
+                        <label for="">SMS SenderId</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="Enter SenderId"
+                          onChange={(event) => setSenderId(event.target.value)}
+                          value={client?.senderId}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-light"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    Create
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/*deactivate activate modals*/}
+        {/* confirm deactivate  */}
+        <div
+          class="modal fade"
+          id="confirm-deactivate"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <center>
+                  <h5>Deactivate this Issue Type ?</h5>
+                </center>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  no
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => deactivate(activeId)}
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* confirm dactivate  */}
+        <div
+          class="modal fade"
+          id="confirm-activate"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <center>
+                  <h5>Activate this Issue Type?</h5>
+                </center>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  no
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => deactivate(activeId)}
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-     
     </>
   );
 }
