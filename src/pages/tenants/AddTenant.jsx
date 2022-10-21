@@ -157,7 +157,7 @@ function AddTenant() {
   const [tenancyBody, setTenancyBody] = useState({
     active: true,
     id: undefined,
-    monthsToTenancyRenewal: undefined,
+    tenancyRenewalDate: undefined,
     premiseUnitId: undefined,
     startDate: undefined,
     tenancyCharges: [],
@@ -403,6 +403,12 @@ function AddTenant() {
   };
 
   const handleAssignmentChange = (event) => {
+    if (event.target.name === "tenancyRenewalDate") {
+      setTenancyBody({
+        ...tenancyBody,
+        [event.target.name]: moment(event.target.value).format("YYYY-MM-DD"),
+      });
+    }
     if (event.target.name === "premiseUnitId") {
       let vals = event.target.value.split(":");
       let bod = tenancyBody;
@@ -1120,6 +1126,62 @@ function AddTenant() {
                       <div className="row">
                         <div className="col-12">
                           <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                            <p className="fw-semibold mb-0 pb-0">
+                              Next of Kin, details
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="table-responsive table-responsive-md mb-4">
+                          <table className="table table-editable-2 align-middle table-edits">
+                            <thead className="table-light">
+                              <tr className="text-uppercase table-dark">
+                                <th>#</th>
+                                <th>First name</th>
+                                <th className="">Other name</th>
+                                <th className="">Last name</th>
+                                <th className="">Relationship</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {tenantKins &&
+                                tenantKins.map((dependent, index) => (
+                                  <tr>
+                                    <td>{index + 1}</td>
+                                    <td>{dependent.firstName}</td>
+                                    <td>{dependent.otherName}</td>
+                                    <td>{dependent.lastName}</td>
+                                    <td>{dependent.relationship}</td>
+                                    <td></td>
+                                  </tr>
+                                ))}
+                            </tbody>
+                            <tfoot>
+                              <tr className="">
+                                <td
+                                  colSpan="7"
+                                  className="bg-light add-field-2 cursor-pinter "
+                                >
+                                  <span className="d-flex align-items-center ">
+                                    <i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
+                                    <span
+                                      className="pl-5 "
+                                      data-id="NEXT_OF_KIN"
+                                      onClick={newContactPerson}
+                                    >
+                                      Add New
+                                    </span>
+                                  </span>
+                                </td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-12">
+                          <div className="bg-primary border-2 bg-soft p-3 mb-4">
                             <p className="fw-semibold mb-0 pb-0">Referees</p>
                           </div>
                         </div>
@@ -1130,8 +1192,8 @@ function AddTenant() {
                               <tr className="text-uppercase table-dark">
                                 <th>#</th>
                                 <th>First name</th>
-                                <th className="">Middle name</th>
-                                <th className="">other names</th>
+                                <th className="">Other name</th>
+                                <th className="">Last names</th>
                                 <th className="">Relationship</th>
                                 <th></th>
                               </tr>
@@ -1180,63 +1242,6 @@ function AddTenant() {
                         <div className="col-12">
                           <div className="bg-primary border-2 bg-soft p-3 mb-4">
                             <p className="fw-semibold mb-0 pb-0">
-                              Next of Kin, details
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="table-responsive table-responsive-md mb-4">
-                          <table className="table table-editable-2 align-middle table-edits">
-                            <thead className="table-light">
-                              <tr className="text-uppercase table-dark">
-                                <th>#</th>
-                                <th>First name</th>
-                                <th className="">Middle name</th>
-                                <th className="">other names</th>
-                                <th className="">Relationship</th>
-                                <th></th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {tenantKins &&
-                                tenantKins.map((dependent, index) => (
-                                  <tr>
-                                    <td>{index + 1}</td>
-                                    <td>{dependent.firstName}</td>
-                                    <td>{dependent.otherName}</td>
-                                    <td>{dependent.lastName}</td>
-                                    <td>{dependent.relationship}</td>
-                                    <td></td>
-                                  </tr>
-                                ))}
-                            </tbody>
-                            <tfoot>
-                              <tr className="">
-                                <td
-                                  colSpan="7"
-                                  className="bg-light add-field-2 cursor-pinter "
-                                >
-                                  <span class="d-flex align-items-center ">
-                                    <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
-                                    <span
-                                      class="pl-5 "
-                                      data-id="NEXT_OF_KIN"
-                                      onClick={newContactPerson}
-                                    >
-                                      Add New
-                                    </span>
-                                  </span>
-                                </td>
-                              </tr>
-                            </tfoot>
-                          </table>
-                        </div>
-                      </div>
-
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="bg-primary border-2 bg-soft p-3 mb-4">
-                            <p className="fw-semibold mb-0 pb-0">
                               Dependents details
                             </p>
                           </div>
@@ -1247,8 +1252,8 @@ function AddTenant() {
                               <tr className="text-uppercase table-dark">
                                 <th>#</th>
                                 <th>First name</th>
-                                <th className="">Middle name</th>
-                                <th className="">other names</th>
+                                <th className="">Other names</th>
+                                <th className="">Last name</th>
                                 <th className="">Relationship</th>
                                 <th></th>
                               </tr>
@@ -1259,8 +1264,8 @@ function AddTenant() {
                                   <tr>
                                     <td>{index + 1}</td>
                                     <td>{dependent.firstName}</td>
-                                    <td>{dependent.otherName}</td>
                                     <td>{dependent.lastName}</td>
+                                    <td>{dependent.otherName}</td>
                                     <td>{dependent.relationship}</td>
                                     <td></td>
                                   </tr>
@@ -1308,7 +1313,7 @@ function AddTenant() {
                                     {/* <th className="">Rent</th>
                                     <th className="">Deposit</th> */}
                                     <th className="">Start Date</th>
-                                    <th className="">Renewal Months</th>
+                                    <th className="">Renewal Date</th>
                                     <th></th>
                                   </tr>
                                 </thead>
@@ -1321,9 +1326,7 @@ function AddTenant() {
                                         <td>{dependent.unitName}</td>
                                         <td>{dependent.unitCondition}</td>
                                         <td>{dependent.startDate}</td>
-                                        <td>
-                                          {dependent.monthsToTenancyRenewal}
-                                        </td>
+                                        <td>{dependent.tenancyRenewalDate}</td>
                                         <td></td>
                                       </tr>
                                     ))}
