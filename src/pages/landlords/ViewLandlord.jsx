@@ -68,7 +68,7 @@ function ViewLandlord() {
 
   //documents create
   const [docName, setdocName] = useState("");
-  const [document, setdocument] = useState("");
+  const [documenta, setdocument] = useState("");
   const [documentTypeId, setdocumentTypeId] = useState(null);
 
   //accounts edit
@@ -382,7 +382,7 @@ function ViewLandlord() {
     event.preventDefault();
     let data = JSON.stringify({
       docName: docName,
-      document: document,
+      document: documenta,
       documentOwnerTypeName: "LANDLORD",
       documentTypeId: documentTypeId,
       id: null,

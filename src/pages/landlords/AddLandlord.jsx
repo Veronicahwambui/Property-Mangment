@@ -114,7 +114,7 @@ export default function AddLandlord() {
 
   // document details
   const [docName, setdocName] = useState("");
-  const [document, setdocument] = useState("");
+  const [document1, setdocument] = useState("");
   const [documentTypeId, setdocumentTypeId] = useState(null);
 
   const [bankAccountNumber, setbankAccountNumber] = useState("");
@@ -148,7 +148,7 @@ export default function AddLandlord() {
     event.preventDefault();
     let data = {
       docName: docName,
-      document: document,
+      document: document1,
       documentOwnerTypeName: "LANDLORD",
       documentTypeId: documentTypeId,
       id: null,
