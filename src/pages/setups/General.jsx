@@ -8,6 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import AuthService from "../../services/auth.service";
 
 import ReactPaginate from "react-paginate";
+import Badge from "react-bootstrap/Badge";
 
 function IssuesTypes() {
   const [issueTypes, setIssueTypes] = useState([]);
@@ -84,7 +85,10 @@ function IssuesTypes() {
       bouncedChequeChargeId: parseInt(bouncedChequeChargeId),
       chequeProcessingPeriod: chequeProcessingPeriod,
       id: clientId,
-      invoicePaymentPriority: invoicePaymentPriority,
+      invoicePaymentPriority: selectedItems
+        .map((a) => a.id)
+        .join("-")
+        .toString(),
       landlordSettlementChargeId: landlordSettlementChargeId,
       penaltyChargeId: penaltyChargeId,
       penaltyChargeRate: penaltyChargeRate,
@@ -95,19 +99,18 @@ function IssuesTypes() {
       visitationChargeDay: visitationChargeDay,
       visitationChargeId: visitationChargeId,
     });
-    // console.log(data)
     requestsServiceService
       .createSettings(data)
       .then((res) => {
         getAll();
-        $("#add-new-settings").modal("hide");
-
         if (res.data.status) {
           setError({
             ...error,
             message: res.data.message,
             color: "success",
           });
+          $("#general-settings")[0].reset();
+          $("#add-new-settings").modal("hide");
         } else {
           setError({
             ...error,
@@ -156,20 +159,24 @@ function IssuesTypes() {
   const [ac, setAC] = useState([]);
   const [tmp, stmp] = useState([]);
   const [chargeNames, setChargeNames] = useState([]);
+  const [selectedItems, setselectedItems] = useState([]);
+
   const handleACchange = (e, i) => {
     let id = e.target.value.split("-")[0];
     let name = e.target.value.split("-")[1];
-    if (tmp?.includes(id)) {
-      //
+    let d = {
+      name: name,
+      id: id,
+    };
+    if (selectedItems.some((item) => item.id === id)) {
+      removeItems(id);
     } else {
-      stmp([...tmp, id]);
-    }
-    if (chargeNames.includes(name)) {
-    } else {
-      setChargeNames([...chargeNames, name]);
+      setselectedItems((selectedItems) => [...selectedItems, d]);
     }
   };
-
+  const removeItems = (x) => {
+    setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
+  };
   // ALL Roles
   const [allRoles, setAllRoles] = useState([]);
   const [roleName, setRoleName] = useState("");
@@ -2796,6 +2803,7 @@ function IssuesTypes() {
           >
             <div class="modal-content">
               <form
+                id={"general-settings"}
                 onSubmit={(e) => {
                   e.preventDefault();
                   createGeneral();
@@ -2857,24 +2865,11 @@ function IssuesTypes() {
                         />
                       </div>
                       <div className="form-group mb-4">
-                        <label htmlFor=""> Invoice Payment Priority</label>
-                        <br />
-                        <select
-                          name=""
-                          onChange={(e) => handleACchange(e)}
-                          id=""
-                          className={"form-control"}
-                        >
-                          <option>Select Applicable Charges</option>
-                          {invo?.map((item) => (
-                            <option value={item.id + "-" + item.name}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="form-group mb-4">
-                        <label htmlFor=""> Invoice Payment Priority</label>
+                        <label htmlFor="">
+                          {" "}
+                          Invoice Payment Priority
+                          <strong className="text-danger">*</strong>{" "}
+                        </label>
                         <br />
                         <select
                           name=""
@@ -2894,11 +2889,47 @@ function IssuesTypes() {
                         <label htmlFor="basicpill-lastname-input ">
                           Charges
                         </label>
-                        <div className="alert alert-info bg-soft">
-                          {chargeNames.length > 0
-                            ? chargeNames.join("  -->  ")
-                            : chargeNames}
-                        </div>
+                        {selectedItems.length > 0 && (
+                          <>
+                            <div className="alert alert-info bg-soft d-flex align-items-center text-capitalize">
+                              {selectedItems?.map((item, index) => (
+                                <>
+                                  <h5
+                                    className="ml-7px justify-content-center align-items-center"
+                                    key={item.id}
+                                  >
+                                    <Badge
+                                      className={
+                                        "bg-primary border-2 bg-soft text-black"
+                                      }
+                                      style={{
+                                        color: "black",
+                                      }}
+                                    >
+                                      {item.name}
+                                    </Badge>
+                                    <br />
+                                    <i
+                                      className="fa fa-trash cursor-pointer text-danger mt-1 mr-auto ml-auto"
+                                      onClick={() => removeItems(item.id)}
+                                    ></i>
+                                  </h5>
+                                  {index < selectedItems?.length - 1 && (
+                                    <i
+                                      style={{
+                                        fontSize: "20px",
+                                        margin: "0.5em",
+                                      }}
+                                      className={
+                                        "dripicons-arrow-thin-right mr-5 justify-content-center d-flex align-items-center"
+                                      }
+                                    />
+                                  )}
+                                </>
+                              ))}
+                            </div>
+                          </>
+                        )}
                       </div>
                       <div className="form-group mb4">
                         <label htmlFor="">
