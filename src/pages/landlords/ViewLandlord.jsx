@@ -68,7 +68,7 @@ function ViewLandlord() {
 
   //documents create
   const [docName, setdocName] = useState("");
-  const [document, setdocument] = useState("");
+  const [documenta, setdocument] = useState("");
   const [documentTypeId, setdocumentTypeId] = useState(null);
 
   //accounts edit
@@ -146,7 +146,7 @@ function ViewLandlord() {
     requestsServiceService.getBanks().then((res) => {
       setBanks(res.data.data);
     });
-    requestsServiceService.getDocumentTypes().then((res) => {
+    requestsServiceService.allDocumentTypes("LANDLORD").then((res) => {
       setdocumentTypes(res.data.data);
     });
     fetchCommunication();
@@ -382,7 +382,7 @@ function ViewLandlord() {
     event.preventDefault();
     let data = JSON.stringify({
       docName: docName,
-      document: document,
+      document: documenta,
       documentOwnerTypeName: "LANDLORD",
       documentTypeId: documentTypeId,
       id: null,
