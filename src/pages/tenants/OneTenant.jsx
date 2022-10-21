@@ -471,7 +471,8 @@ function OneTenant() {
     });
 
     requestsServiceService.createDocuments(data).then((res) => {
-      // setTenantDocs(res.data.data)
+
+      console.log("done");
       getDocument();
     });
   };
@@ -479,8 +480,22 @@ function OneTenant() {
   const getDocument = () => {
     requestsServiceService.fetchDocuments("TENANT", id).then((res) => {
       setTenantDocs(res.data.data);
-    });
+    })
+    .catch((res) => {
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger",
+      });
+
+      setTimeout(() => {
+        clearTenant();
+      }, 3000);
+    });;
   };
+
+
+  
   useEffect(() => {
     fetchAll();
     getContactTypeName();
@@ -496,6 +511,17 @@ function OneTenant() {
   const createDocumentTypes = (id) => {
     requestsServiceService.allDocumentTypes("TENANT").then((res) => {
       setDocumentTypes(res.data.data);
+    })
+    .catch((res) => {
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger",
+      });
+
+      setTimeout(() => {
+        clearTenant();
+      }, 3000);
     });
   };
 
