@@ -40,7 +40,7 @@ function IssuesTypes() {
   }, [itemOffset, size, lists]);
 
   const handlePageClicks = (event) => {
-    const newOffset = (event.selected * size) % lists.length;
+    const newOffset = (event.selected * size) % lists?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
@@ -205,12 +205,12 @@ function IssuesTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setAllRoles(lis.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(lis.length / size));
+    setAllRoles(lis?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(lis?.length / size));
   }, [itemOffset, size, lis]);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * size) % lis.length;
+    const newOffset = (event.selected * size) % lis?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
@@ -417,12 +417,12 @@ function IssuesTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setClientCounties(listed.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(listed.length / size));
+    setClientCounties(listed?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(listed?.length / size));
   }, [itemOffset, size, listed]);
 
   const handlPageClick = (event) => {
-    const newOffset = (event.selected * size) % listed.length;
+    const newOffset = (event.selected * size) % listed?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
@@ -541,12 +541,12 @@ function IssuesTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setZones(list.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(list.length / size));
+    setZones(list?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(list?.length / size));
   }, [itemOffset, size, list]);
 
   const handlePageClck = (event) => {
-    const newOffset = (event.selected * size) % list.length;
+    const newOffset = (event.selected * size) % list?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
@@ -710,12 +710,12 @@ function IssuesTypes() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setEstates(list1.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(list1.length / size));
+    setEstates(list1?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(list1?.length / size));
   }, [itemOffset, size, list1]);
 
   const handlePageClick1 = (event) => {
-    const newOffset = (event.selected * size) % list1.length;
+    const newOffset = (event.selected * size) % list1?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };

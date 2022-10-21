@@ -46,12 +46,12 @@ function ApplicableCharges() {
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setApplicableCharges(list.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(list.length / size));
+    setApplicableCharges(list?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(list?.length / size));
   }, [itemOffset, size, list]);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * size) % list.length;
+    const newOffset = (event.selected * size) % list?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
   };
@@ -249,11 +249,11 @@ function ApplicableCharges() {
                 </div>
               </div>
               <div class="card-body">
-                {error.color !== "" &&
+                {error.color !== "" && (
                   <div className={"alert alert-" + error.color} role="alert">
                     {error.message}
                   </div>
-                }
+                )}
                 <div class="table-responsive table-responsive-md">
                   <table class="table table-editable align-middle table-edits">
                     <thead class="table-light">
@@ -268,48 +268,86 @@ function ApplicableCharges() {
                       </tr>
                     </thead>
                     <tbody>
+                      {list &&
+                        list.map((val, index) => {
+                          return (
+                            <tr data-id="1" key={val}>
+                              <td style={{ width: "80px" }}>{index + 1}</td>
+                              <td className="text-capitalize">{val.name}</td>
+                              <td className="text-capitalize">
+                                {val.applicableChargeType != null &&
+                                  val.applicableChargeType
+                                    .toLowerCase()
+                                    .replace(/_/g, " ")}
+                              </td>
+                              <td>{val.expectManualValues ? "Yes" : "No"} </td>
 
-                      {list && list.map((val, index) => {
-                        return (
-                          <tr data-id="1" key={val}>
-                            <td style={{ width: "80px" }}>{index + 1}</td>
-                            <td className='text-capitalize'>{val.name}</td>
-                            <td className='text-capitalize'>{val.applicableChargeType != null && val.applicableChargeType.toLowerCase().replace(/_/g, " ")}</td>
-                            <td>{val.expectManualValues ? "Yes" : "No"} </td>
+                              <td data-field="unit-num ">
+                                {val.active ? (
+                                  <span class="badge-soft-success badge">
+                                    Active
+                                  </span>
+                                ) : (
+                                  <span class="badge-soft-danger badge">
+                                    Inactive
+                                  </span>
+                                )}
+                              </td>
+                              <td>
+                                {moment(val.dateTimeCreated).format(
+                                  "YYYY-MM-DD HH:mm"
+                                )}
+                              </td>
+                              <td class="text-center cell-change text-nowrap ">
+                                <div class="d-flex align-items-center justify-content-between">
+                                  <a
+                                    onClick={() => {
+                                      setActiveId(val.id);
+                                      setUpdateName(val.name);
+                                      setUpdateChargeType(
+                                        val.applicableChargeType
+                                      );
+                                      setNewManualVal(val.expectManualValues);
+                                      setIncomeType(val.incomeType);
+                                      setLineFeeId(val.lineFeeId);
+                                      setLineChartAccountNo(
+                                        val.lineChartAccountNo
+                                      );
+                                    }}
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#update-modal"
+                                    class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
+                                    title="Edit "
+                                  >
+                                    <i class="bx bx-edit-alt "></i>
+                                  </a>
 
-                            <td data-field="unit-num ">{val.active ? <span class="badge-soft-success badge">Active</span> : <span class="badge-soft-danger badge">Inactive</span>}</td>
-                            <td>{moment(val.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
-                            <td class="text-center cell-change text-nowrap ">
-                              <div class="d-flex align-items-center justify-content-between">
-
-                                <a onClick={() => { setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType); setNewManualVal(val.expectManualValues); setIncomeType(val.incomeType); setLineFeeId(val.lineFeeId); setLineChartAccountNo(val.lineChartAccountNo) }} data-bs-toggle="modal"
-                                  data-bs-target="#update-modal" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
-
-                                {val.active ? <button
-                                  class="btn btn-danger btn-sm text-uppercase px-2 mx-3"
-                                  title="deactivate"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#confirm-deactivate"
-                                  onClick={() => setActiveId(val.id)}
-                                >
-                                  Deactivate
-                                </button> : <button
-                                  class="btn btn-success btn-sm  text-uppercase px-3 py-0 mx-3"
-                                  title="deactivate"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#confirm-activate"
-                                  onClick={() => setActiveId(val.id)}
-                                >
-                                  Activate
-                                </button>}
-
-                              </div>
-
-
-                            </td>
-                          </tr>
-                        );
-                      })}
+                                  {val.active ? (
+                                    <button
+                                      class="btn btn-danger btn-sm text-uppercase px-2 mx-3"
+                                      title="deactivate"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#confirm-deactivate"
+                                      onClick={() => setActiveId(val.id)}
+                                    >
+                                      Deactivate
+                                    </button>
+                                  ) : (
+                                    <button
+                                      class="btn btn-success btn-sm  text-uppercase px-3 py-0 mx-3"
+                                      title="deactivate"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#confirm-activate"
+                                      onClick={() => setActiveId(val.id)}
+                                    >
+                                      Activate
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                   <div className="d-flex justify-content-between align-items-center">
@@ -738,7 +776,7 @@ function ApplicableCharges() {
           <div class="modal-content">
             <div class="modal-body">
               <center>
-                <h5>Deactivate this  property type?</h5>
+                <h5>Deactivate this property type?</h5>
               </center>
             </div>
             <div class="modal-footer">
@@ -776,7 +814,7 @@ function ApplicableCharges() {
           <div class="modal-content">
             <div class="modal-body">
               <center>
-                <h5>Activate this  property type?</h5>
+                <h5>Activate this property type?</h5>
               </center>
             </div>
             <div class="modal-footer">
