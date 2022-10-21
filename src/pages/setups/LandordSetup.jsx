@@ -30,6 +30,7 @@ function LandlordSetup() {
   const [lineFeeId, setLineFeeId] = useState("");
   const [lineChartAccountNo, setLineChartAccountNo] = useState("");
   const [chargeDueAfterDays, setChargeDueAfterDays] = useState("");
+  const[entityType, setEntityType]=useState("");
 
   useEffect(() => {
     fetchTypes();
@@ -154,6 +155,8 @@ function LandlordSetup() {
       lineFeeId: lineFeeId,
       name: updateName,
       refundable: updateCheck,
+      entityType: entityType,
+    
     });
     requestsServiceService
       .updateApplicableCharges(data)
@@ -314,6 +317,7 @@ function LandlordSetup() {
       clientId: authService.getClientId(),
       id: activeId,
       name: updateNames,
+      entityType:entityType,
     });
     requestsServiceService
       .updateDocumentType(data)
@@ -739,6 +743,10 @@ function LandlordSetup() {
                                                         setLineChartAccountNo(
                                                           val.lineChartAccountNo
                                                         );
+                                                        setEntityType(val.entityType);
+                                                      
+                                                        setUpdateCheck(val.updateCheck);
+
                                                       }}
                                                       data-bs-toggle="modal"
                                                       data-bs-target="#update-charge"
@@ -944,6 +952,7 @@ function LandlordSetup() {
                                               onClick={() => {
                                                 setActiveId(val.id);
                                                 setUpdateNames(val.name);
+                                                setEntityType(val.entityType);
                                               }}
                                               data-bs-toggle="modal"
                                               data-bs-target="#update-modal"
@@ -1289,10 +1298,9 @@ function LandlordSetup() {
                       <div class="form-group mb-4">
                         <label for="">
                           ChargeDueAfterDays{" "}
-                          <strong class="text-danger">*</strong>{" "}
                         </label>
                         <input
-                          required
+                          
                           value={chargeDueAfterDays}
                           onChange={(e) =>
                             setChargeDueAfterDays(e.target.value)
@@ -1356,8 +1364,8 @@ function LandlordSetup() {
                           setManualVal(e.target.value);
                         }}
                       >
-                        <option value="true">True</option>
-                        <option value="false">False</option>
+                        <option value="true">Yes</option>
+                        <option value="false" selected>No</option>
                       </select>
                     </div>
                     <div class="col-12">
@@ -1373,6 +1381,7 @@ function LandlordSetup() {
                           setChargeType(e.target.value);
                         }}
                       >
+                        <option>Select Charge Type</option>
                         {chargeTypes &&
                           chargeTypes.map((charge) => {
                             return (
