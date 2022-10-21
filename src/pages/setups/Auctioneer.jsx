@@ -33,12 +33,10 @@ function TenantSetup() {
   const [lineChartAccountNo, setLineChartAccountNo] = useState("");
 
   const [chargeDueAfterDays, setChargeDueAfterDays] = useState("")
-  const[entityType, setEntityType]=useState("");
 
 
   useEffect(() => {
     fetchTypes();
-    fetchAll();
   }, []);
   // PAGINATION
   const sortSize = (e) => {
@@ -50,11 +48,9 @@ function TenantSetup() {
   const [size, setSize] = useState(10);
   const [pageCount, setPageCount] = useState(1);
   const [itemOffset, setItemOffset] = useState(0);
-  const [applicableCharges, setApplicableCharges] = useState([]);
 
   useEffect(() => {
     const endOffset = parseInt(itemOffset) + parseInt(size);
-    setApplicableCharges(list?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(list?.length / size));
   }, [itemOffset, size, list]);
 
@@ -72,13 +68,14 @@ function TenantSetup() {
   }, []);
 
   useEffect(() => {
-    fetchAll();
-    fetchAllDocument();
+    if (userType != "") {
+      fetchAll();
+      fetchAllDocument();
+    }
   }, [userType]);
 
   // fetch list function
   const fetchAll = () => {
-    setList([]);
     requestsServiceService.allApplicableCharges(userType).then((res) => {
       setList(res.data.data);
     });
@@ -265,7 +262,7 @@ function TenantSetup() {
       clientId: authService.getClientId(),
       id: 0,
       name: createNames,
-      entityType: "AUCTIONEER",
+      entityType: userType,
     });
 
     requestsServiceService
@@ -329,7 +326,7 @@ function TenantSetup() {
       clientId: authService.getClientId(),
       id: activeId,
       name: updateNames,
-      entityType:userType,
+      entityType: userType,
     });
     requestsServiceService
       .updateDocumentType(data)
@@ -793,12 +790,19 @@ function TenantSetup() {
                                                 <td class="text-center cell-change text-nowrap ">
                                                   <div class="d-flex align-items-center justify-content-between">
 
-                                                    <a onClick={() => { setActiveId(val.id); setUpdateName(val.name); setUpdateChargeType(val.applicableChargeType); setNewManualVal(val.expectManualValues); setIncomeType(val.incomeType); setLineFeeId(val.lineFeeId); setLineChartAccountNo(val.lineChartAccountNo); setUserType(val.userType);
-                                                      
+                                                    <a onClick={() => {
+                                                      setActiveId(val.id);
+                                                      setUpdateName(val.name);
+                                                      setUpdateChargeType(val.applicableChargeType);
+                                                      setNewManualVal(val.expectManualValues);
+                                                      setIncomeType(val.incomeType);
+                                                      setLineFeeId(val.lineFeeId);
+                                                      setLineChartAccountNo(val.lineChartAccountNo);
+
                                                       setUpdateCheck(val.updateCheck);
-}} data-bs-toggle="modal"
+                                                    }} data-bs-toggle="modal"
                                                       data-bs-target="#update-charge" class="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit " title="Edit "><i class="bx bx-edit-alt "></i></a>
-               {val.active ? (
+                                                    {val.active ? (
                                                       <button
                                                         class="btn btn-danger btn-sm text-uppercase px-2 mx-3"
                                                         title="deactivate"
@@ -994,7 +998,6 @@ function TenantSetup() {
                                               onClick={() => {
                                                 setActiveId(val.id);
                                                 setUpdateNames(val.name);
-                                                setUserType(val.userType);
 
                                               }}
                                               data-bs-toggle="modal"
@@ -1351,7 +1354,7 @@ function TenantSetup() {
                                 ChargeDueAfterDays{" "}
                               </label>
                               <input
-                              
+
                                 value={chargeDueAfterDays}
                                 onChange={(e) =>
                                   setChargeDueAfterDays(e.target.value)
@@ -1435,7 +1438,7 @@ function TenantSetup() {
                                 setChargeType(e.target.value);
                               }}
                             >
-                            <option>Select Charge Type</option>
+                              <option>Select Charge Type</option>
 
                               {chargeTypes &&
                                 chargeTypes.map((charge) => {
