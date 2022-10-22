@@ -823,7 +823,7 @@ function TenantSetup() {
                                                         class="btn btn-danger btn-sm text-uppercase px-2 mx-3"
                                                         title="deactivate"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#confirm-deactivate"
+                                                        data-bs-target="#confirm-deactivate2"
                                                         onClick={() =>
                                                           setActiveId(val.id)
                                                         }
@@ -835,7 +835,7 @@ function TenantSetup() {
                                                         class="btn btn-success btn-sm  text-uppercase px-3 py-0 mx-3"
                                                         title="deactivate"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#confirm-activate"
+                                                        data-bs-target="#confirm-activate2"
                                                         onClick={() =>
                                                           setActiveId(val.id)
                                                         }
@@ -1028,7 +1028,7 @@ function TenantSetup() {
                                                 class="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
                                                 title="deactivate"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#confirm-deactivate"
+                                                data-bs-target="#confirm-deactivate1"
                                                 onClick={() =>
                                                   setActiveId(val.id)
                                                 }
@@ -1040,7 +1040,7 @@ function TenantSetup() {
                                                 class="btn btn-success btn-sm btn-rounded  text-uppercase px-3 py-0 mx-3"
                                                 title="deactivate"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#confirm-activate"
+                                                data-bs-target="#confirm-activate1"
                                                 onClick={() =>
                                                   setActiveId(val.id)
                                                 }
@@ -1433,8 +1433,8 @@ function TenantSetup() {
                                 setManualVal(e.target.value);
                               }}
                             >
-                              <option value="true">Yes</option>
-                              <option value="false">No</option>
+                              <option value="No">Yes</option>
+                              <option value="Yes" selected>No</option>
                             </select>
                           </div>
                           <div class="col-12">
@@ -1536,7 +1536,6 @@ function TenantSetup() {
                             <div class="form-group mb-4">
                               <label for="">
                                 ChargeDueAfterDays{" "}
-                                <strong class="text-danger">*</strong>{" "}
                               </label>
                               <input
                                 required
@@ -1604,13 +1603,13 @@ function TenantSetup() {
                                 value="true"
                                 selected={newManualVal ? "selected" : ""}
                               >
-                                True
+                                Yes
                               </option>
                               <option
                                 value="false"
                                 selected={!newManualVal ? "selected" : ""}
                               >
-                                False
+                                No
                               </option>
                             </select>
                           </div>
@@ -1674,7 +1673,7 @@ function TenantSetup() {
               {/* confirm deactivate  */}
               <div
                 class="modal fade"
-                id="confirm-deactivate"
+                id="confirm-deactivate2"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 role="dialog"
@@ -1685,7 +1684,7 @@ function TenantSetup() {
                   <div class="modal-content">
                     <div class="modal-body">
                       <center>
-                        <h5>Deactivate this premise type?</h5>
+                        <h5>Deactivate this Applicable Charges?</h5>
                       </center>
                     </div>
                     <div class="modal-footer">
@@ -1710,47 +1709,12 @@ function TenantSetup() {
               </div>
 
               {/* confirm deactivate  */}
-              <div
-                class="modal fade"
-                id="confirm-deactivate"
-                data-bs-backdrop="static"
-                data-bs-keyboard="false"
-                role="dialog"
-                aria-labelledby="staticBackdropLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-body">
-                      <center>
-                        <h5>Deactivate this property type?</h5>
-                      </center>
-                    </div>
-                    <div class="modal-footer">
-                      <button
-                        type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal"
-                      >
-                        no
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        data-bs-dismiss="modal"
-                        onClick={() => toggleStatus()}
-                      >
-                        Yes
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            
 
               {/* confirm dactivate  */}
               <div
                 class="modal fade"
-                id="confirm-activate"
+                id="confirm-activate2"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 role="dialog"
@@ -1761,7 +1725,7 @@ function TenantSetup() {
                   <div class="modal-content">
                     <div class="modal-body">
                       <center>
-                        <h5>Activate this property type?</h5>
+                        <h5>Activate this Applicable Charges?</h5>
                       </center>
                     </div>
                     <div class="modal-footer">
@@ -1919,7 +1883,7 @@ function TenantSetup() {
               {/* confirm deactivate  */}
               <div
                 class="modal fade"
-                id="confirm-deactivate"
+                id="confirm-deactivate1"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 role="dialog"
@@ -1945,7 +1909,7 @@ function TenantSetup() {
                         type="button"
                         class="btn btn-primary"
                         data-bs-dismiss="modal"
-                        onClick={() => toggleStatuses()}
+                        onClick={() => toggleStatuses ()}
                       >
                         Yes
                       </button>
@@ -1957,7 +1921,7 @@ function TenantSetup() {
               {/* confirm dactivate  */}
               <div
                 class="modal fade"
-                id="confirm-activate"
+                id="confirm-activate1"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 role="dialog"
@@ -1983,7 +1947,7 @@ function TenantSetup() {
                         type="button"
                         class="btn btn-primary"
                         data-bs-dismiss="modal"
-                        onClick={() => toggleStatuses()}
+                        onClick={() =>toggleStatuses ()}
                       >
                         Yes
                       </button>
