@@ -182,7 +182,7 @@ function Landlords() {
                           data-bs-toggle="modal"
                           data-bs-target="#add-new-client"
                         >
-                          <i className="mdi mdi-plus label-icon"></i> Add a
+                          <i className="mdi mdi-plus label-icon"></i> Add 
                           Landlord
                         </button>
                       </Link>
