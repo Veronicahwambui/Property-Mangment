@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import requestsServiceService from "../../services/requestsService.service";
 import { confirmAlert } from "react-confirm-alert";
 import Badge from "react-bootstrap/Badge";
+import authService from "../../services/auth.service";
+
 function AddProperties() {
 
   const [landlordData, setLandlordData] = useState({
@@ -357,13 +359,21 @@ function AddProperties() {
 
   const getAllApplicableCharges = () => {
     requestsServiceService.allApplicableCharges("TENANT").then((res) =>
-      setApplicableCharges(res.data.data)
+      setApplicableCharges(res.data.data),
+     
     )
   }
+
+  const fetchTypes = () => {
+    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
+      setChargeTypes(res.data.data);
+    });
+  };
 
   const getAllUnitTypes = () => {
     requestsServiceService.allUnitTypes().then((res) =>
       setUnitTypes(res.data.data)
+    
     )
   }
   const [tenancyStatuses, setTenancyStatuses] = useState([]);
@@ -396,6 +406,7 @@ function AddProperties() {
     getAllUnitTypes()
     getAllTenancyStatuses()
     getCaretakerType()
+    fetchTypes()
 
   }, [])
 
@@ -589,6 +600,213 @@ function AddProperties() {
   const removeItems = (x) => {
     setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
   };
+
+
+
+
+  // =======Property==================
+
+
+  const [createName, setCreateName] = useState("");
+  const [createNames, setCreateNames] = useState("");
+
+    // create function
+    const create = () => {
+      let data = JSON.stringify({
+        active: true,
+        clientId: authService.getClientId(),
+        id: 0,
+        name: createName,
+      });
+  
+      requestsServiceService
+        .createPremiseTypes(data)
+        .then((res) => {
+          getPremiseTypes();
+          $("#add-new-property").modal("hide");
+  
+          if (res.data.status) {
+            setError({
+              ...error,
+              message: res.data.message,
+              color: "success",
+            });
+          } else {
+            setError({
+              ...error,
+              message: res.data.message,
+              color: "warning",
+            });
+          }
+  
+          setTimeout(() => {
+            clears();
+          }, 3000);
+        })
+        .catch((res) => {
+          $("#add-new-property").modal("hide");
+  
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+  
+          setTimeout(() => {
+            clears();
+          }, 3000);
+        });
+    };
+  
+    const clears = () => {
+      setError({
+        ...error,
+        message: "",
+        color: "",
+      });
+    };
+  // create function
+  const createPremise = () => {
+    let data = JSON.stringify({
+      active: true,
+      clientId: authService.getClientId(),
+      id: 0,
+      name: createNames,
+    });
+
+    requestsServiceService
+      .createPremiseUseTypes(data)
+      .then((res) => {
+        getPremiseUseTypes();
+        $("#add-new-premise").modal("hide");
+
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          cleared();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#add-new-premise").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+
+        setTimeout(() => {
+          cleared();
+        }, 3000);
+      });
+    }
+      const cleared = () => {
+        setError({
+          ...error,
+          message: "",
+          color: "",
+        });
+  };
+
+  // ========Add Unit  types=======
+
+
+  const [createNam, setCreateNam] = useState("");
+  const [numberOfRooms, setNumberOfRooms] = useState("");
+  const [purpose, setPurpose] = useState("");
+  const [squarage, setSquarage] = useState("");
+  const [monthCountForTenancyRenewal, setMonthCountForTenancyRenewal] =
+    useState("");
+    const [chargeTypes, setChargeTypes] = useState([]);
+    const [selectedChargeTypes, setSelectedChargeTypes] = useState([]);
+
+     // create function
+  const createUnit = () => {
+    let data = JSON.stringify({
+      active: true,
+      clientId: parseInt(authService.getClientId()),
+      id: null,
+      monthCountForTenancyRenewal: monthCountForTenancyRenewal,
+      name: createNam,
+      numberOfRooms: numberOfRooms,
+      purpose: purpose,
+      squarage: squarage,
+      unitTypeApplicableCharges: selectedChargeTypes,
+    });
+
+    requestsServiceService
+      .createUnitTypes(data)
+      .then((res) => {
+        getAllUnitTypes();
+        $("#add-new-unit").modal("hide");
+
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          cleareds();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#add-new-unit").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+
+        setTimeout(() => {
+          cleareds();
+        }, 3000);
+      });
+  };
+
+  const cleareds = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+  };
+  const setChargeTypes1 = (el) => {
+    let options = el.target.options;
+    let userGroups = [];
+
+    for (var i = 0, l = options.length; i < l; i++) {
+      if (options[i].selected) {
+        console.log("option ++ " + options[i].value);
+        userGroups.push(parseInt(options[i].value));
+      }
+    }
+
+    setSelectedChargeTypes(userGroups);
+  };
+
+
   return (
     <>
       <div className="page-content">
@@ -779,12 +997,18 @@ function AddProperties() {
                               />
                             </div>
                           </div>
-                          <div class="col-lg-4 col-md-6 ">
+                          
+                          <div class="col-lg-3 col-md-6 ">
+                            
                             <div class="mb-4 ">
+                         
+
+
                               <label for="basicpill-lastname-input ">
                                 Properties Type{" "}
                                 <strong class="text-danger ">*</strong>
                               </label>
+                              
                               <select
                                 class="form-control text-capitalize"
                                 title="Select Building type "
@@ -792,20 +1016,35 @@ function AddProperties() {
                                 onChange={handleGeneral}
 
                               >
-                                <option>select property type
+                                <option>select property type </option>
                                   <div className="form-group">
                                     <input type="text" className="form-control" />
+
+                          
                                   </div>
-                                </option>
+                            
+
+                            
+                               
+ 
                                 {premiseTypes && premiseTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type) => (
                                   <option value={type.id} className="text-capitalize" > {type.name}</option>
                                 ))}
 
                               </select>
+                      
+                                   
+                          
                             </div>
+                            <div className="md-2">
+                              <button  className="btn btn-primary btn-sm mt-4" data-bs-toggle="modal"
+                          data-bs-target="#add-new-property"> Add New</button>   
+                              </div>
                           </div>
+                      
+                      
 
-
+                       
 
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
@@ -825,6 +1064,11 @@ function AddProperties() {
                                   <option value={type.id} className="text-capitalize"> {type.name}</option>
                                 ))}
                               </select>
+
+<div className="d-flex align-itens-center justify-content-around">
+                              <button  className="btn btn-primary btn-sm mt-4" data-bs-toggle="modal"
+                          data-bs-target="#add-new-premise"> Add New</button>   
+</div>
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6 ">
@@ -1228,7 +1472,18 @@ function AddProperties() {
                               Units/ Hse Types on offer At the properties
                             </p>
                           </div>
+                     
+                      
                         </div>
+                        
+
+                        <button  onClick={() => {
+                                    setMonthCountForTenancyRenewal("");
+                                    setPurpose("");
+                                    setNumberOfRooms("");
+                                    setSquarage("");
+                                  }} className="btn btn-primary btn-sm mt-4" data-bs-toggle="modal"
+                          data-bs-target="#add-new-unit"> Add New</button> 
 
                         <div class="row">
                           {unitTypes && unitTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((prem, index) =>
@@ -1886,6 +2141,300 @@ function AddProperties() {
           </form>
         </ModalBody>
       </Modal>
+
+
+
+
+{/* /====Property model */}
+
+  {/* create modal */}
+  <div
+            class="modal fade"
+            id="add-new-property"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    create();
+                    setCreateName("");
+                  }}
+                >
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                      New Property Type
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group mb-4">
+                          <label for="">
+                            {" "}
+                            Property Type <strong class="text-danger">
+                              *
+                            </strong>{" "}
+                          </label>
+                          <input
+                            required
+                            value={createName}
+                            onChange={(e) => setCreateName(e.target.value)}
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter Property Type Name"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+      <div
+            class="modal fade"
+            id="add-new-premise"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    createPremise();
+                    setCreateNames("");
+                  }}
+                >
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                      New Property Use Type
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group mb-4">
+                          <label for="">
+                            {" "}
+                            Property Use Type{" "}
+                            <strong class="text-danger">*</strong>
+                          </label>
+                          <input
+                            required
+                            value={createNames}
+                            onChange={(e) => setCreateNames(e.target.value)}
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter Property Use Type Name"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-primary"
+                      data-bs-dismiss="modal"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+              {/* create modal */}
+              <div
+            class="modal fade"
+            id="add-new-unit"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    createUnit();
+                  }}
+                >
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                      New Unit Type
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group mb-4">
+                          <label for="">
+                            Unit Type Name{" "}
+                            <strong class="text-danger">*</strong>
+                          </label>
+                          <input
+                            required
+                            value={createNam}
+                            onChange={(e) => setCreateNam(e.target.value)}
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter unit type name"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label for="">
+                          Charge Type <strong class="text-danger">*</strong>{" "}
+                        </label>
+                        <select
+                          class=" form-control"
+                          multiple
+                          onChange={(e) => setChargeTypes1(e)}
+                        >
+                          {chargeTypes &&
+                            chargeTypes
+                              ?.sort((a, b) => a.name.localeCompare(b.name))
+                              ?.map((charge, index) => {
+                                return (
+                                  <option
+                                    key={index}
+                                    value={charge.id}
+                                    selected={selectedChargeTypes.includes(
+                                      charge.name
+                                    )}
+                                  >
+                                    {charge.name}
+                                  </option>
+                                );
+                              })}
+                        </select>
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="">
+                          Purpose <strong class="text-danger">*</strong>
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          value={purpose}
+                          className="form-control"
+                          onChange={(event) => setPurpose(event.target.value)}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="">
+                          Number of Rooms <strong class="text-danger">*</strong>
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          value={numberOfRooms}
+                          className="form-control"
+                          onChange={(event) =>
+                            setNumberOfRooms(event.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="">
+                          unit size in M<sup>2</sup>{" "}
+                          <strong class="text-danger">*</strong>
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          value={squarage}
+                          className="form-control"
+                          onChange={(event) => setSquarage(event.target.value)}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="">
+                          Months to renewal{" "}
+                          <strong class="text-danger">*</strong>
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          value={monthCountForTenancyRenewal}
+                          className="form-control"
+                          onChange={(event) =>
+                            setMonthCountForTenancyRenewal(event.target.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Create
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
     </>
   );
 }

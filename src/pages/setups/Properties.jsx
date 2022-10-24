@@ -1514,7 +1514,7 @@ function Properties() {
                         <div class="form-group mb-4">
                           <label for="">
                             {" "}
-                            Premise Use Type{" "}
+                            Property Use Type{" "}
                             <strong class="text-danger">*</strong>
                           </label>
                           <input
