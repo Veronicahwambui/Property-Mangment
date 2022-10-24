@@ -1,7 +1,7 @@
 /* global $ */
 
 import React, { useState } from "react";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'react-bootstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
 import { useEffect } from "react";
 import requestsServiceService from "../../services/requestsService.service";
 import { confirmAlert } from "react-confirm-alert";
@@ -9,15 +9,14 @@ import Badge from "react-bootstrap/Badge";
 import authService from "../../services/auth.service";
 
 function AddProperties() {
-
   const [landlordData, setLandlordData] = useState({
-    "active": true,
-    "agreementPeriod": undefined,
-    "landLordAgreementTypeId": undefined,
-    "landLordId": undefined,
-    "premiseId": undefined,
-    "remunerationPercentage": undefined
-  })
+    active: true,
+    agreementPeriod: undefined,
+    landLordAgreementTypeId: undefined,
+    landLordId: undefined,
+    premiseId: undefined,
+    remunerationPercentage: undefined,
+  });
 
   const [landlordfileNumber, setLandlordfileNumber] = useState("");
   const [documentTypes, setDocumentTypes] = useState([]);
@@ -29,115 +28,122 @@ function AddProperties() {
   const [landLordData, setLandLordData] = useState({});
   const [uniqueChargeId, setUniqueChargeIds] = useState([]);
   const [agreementTypes, setAgreementTypes] = useState([]);
-  const [showDocumentModal, setShowDocumentModal] = useState(false)
-  const [newUnitTypeModal, setNewUnitTypeModal] = useState(false)
-  const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] = useState(false)
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [newUnitTypeModal, setNewUnitTypeModal] = useState(false);
+  const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] =
+    useState(false);
   const [fileNoShow, setFileNoShow] = useState(true);
-  const [tenancyStatus, setTenancyStatus] = useState("")
+  const [tenancyStatus, setTenancyStatus] = useState("");
   const [ac, setAC] = useState([]);
   const [selectedItems, setselectedItems] = useState([]);
 
-  const [chargePropertyTax, setChargePropertyTax] = useState(false)
-  const [collectElectricityDeposit, setCollectElectricityDeposit] = useState(false)
-
+  const [chargePropertyTax, setChargePropertyTax] = useState(false);
+  const [collectElectricityDeposit, setCollectElectricityDeposit] =
+    useState(false);
 
   const toogleShowUnitTypeChargesModal = () => {
     setShowUnitTypeChargesModal(!showUnitTypeChargesModal);
-  }
+  };
 
   const [error, setError] = useState({
     message: "",
-    color: ""
+    color: "",
   });
 
   const redirectToCreateLandlord = () => {
-    window.location.href = "/#/addlandlord"
-  }
+    window.location.href = "/#/addlandlord";
+  };
 
   const redirectToProperties = () => {
-    window.location.href = "/#/premisesregister"
-  }
+    window.location.href = "/#/premisesregister";
+  };
 
   const saveLandLordFileNumber = () => {
-
     if (landlordfileNumber != "") {
-      requestsServiceService.findByFile(landlordfileNumber).then((res) => {
-        if (res.data.status === false) {
-          setError({
-            ...error,
-            message: res.data.message,
-            color: "danger"
-          })
-        } else {
-          setLandLordAccounts(res.data.data.accounts)
-          setLandLordData(res.data.data.landLord)
-          let data = landlordData;
-          data.landLordId = res.data.data.landLord.id
-          setLandlordData(data);
-          setLandlordData({
-            "active": true,
-            "agreementPeriod": res.data.data.landLord.agreementPeriod,
-            "landLordAgreementTypeId": res.data.data.landLord.landLordAgreementType.id,
-            "landLordId": res.data.data.landLord.id,
-            "premiseId": undefined,
-            "remunerationPercentage": res.data.data.landLord.remunerationPercentage
-          })
+      requestsServiceService
+        .findByFile(landlordfileNumber)
+        .then((res) => {
+          if (res.data.status === false) {
+            setError({
+              ...error,
+              message: res.data.message,
+              color: "danger",
+            });
+          } else {
+            setLandLordAccounts(res.data.data.accounts);
+            setLandLordData(res.data.data.landLord);
+            let data = landlordData;
+            data.landLordId = res.data.data.landLord.id;
+            setLandlordData(data);
+            setLandlordData({
+              active: true,
+              agreementPeriod: res.data.data.landLord.agreementPeriod,
+              landLordAgreementTypeId:
+                res.data.data.landLord.landLordAgreementType.id,
+              landLordId: res.data.data.landLord.id,
+              premiseId: undefined,
+              remunerationPercentage:
+                res.data.data.landLord.remunerationPercentage,
+            });
 
+            setError({
+              ...error,
+              message: res.data.message,
+              color: "success",
+            });
+            setTimeout(() => {
+              setFileNoShow(false);
+            }, 1500);
+          }
+        })
+        .catch((err) => {
           setError({
             ...error,
-            message: res.data.message,
-            color: "success"
+            message: err.message,
+            color: "danger",
           });
-          setTimeout(() => {
-            setFileNoShow(false);
-          }, 1500)
-        }
-      }).catch((err) => {
-        setError({
-          ...error,
-          message: err.message,
-          color: "danger"
-        })
-      })
+        });
     }
-  }
+  };
 
   const removeUnitType = (el, index) => {
     let data = selectedunitTypes;
     data.splice(index, 1);
     const updatedUnits = data.filter((unit, idx) => idx != index);
     setSelectedUnitTypes(updatedUnits);
-  }
-
-
+  };
 
   const [general, setGeneral] = useState({
-    "active": true,
-    "address": undefined,
-    "estateId": undefined,
-    "fileNumber": undefined,
-    "id": undefined,
-    "landLordId": [],
-    "landlordFileNumber": [],
-    "plotNumber": undefined,
-    "premiseName": undefined,
-    "premiseTypeId": undefined,
-    "chargePropertyTax": chargePropertyTax,
-    "managementType": undefined,
-    "collectElectricityDeposit": collectElectricityDeposit,
-    "premiseUseTypeId": undefined,
-    "unitVacancyRestrictionStatus": undefined,
-    "invoicePaymentPriority": undefined,
-    "chargeFrequencyName": undefined
+    active: true,
+    address: undefined,
+    estateId: undefined,
+    fileNumber: undefined,
+    id: undefined,
+    landLordId: [],
+    landlordFileNumber: [],
+    plotNumber: undefined,
+    premiseName: undefined,
+    premiseTypeId: undefined,
+    chargePropertyTax: chargePropertyTax,
+    managementType: undefined,
+    collectElectricityDeposit: collectElectricityDeposit,
+    premiseUseTypeId: undefined,
+    unitVacancyRestrictionStatus: undefined,
+    invoicePaymentPriority: undefined,
+    chargeFrequencyName: undefined,
   });
 
   const handleGeneral = (event) => {
-    if (event.target.name === "estateId" ||
+    if (
+      event.target.name === "estateId" ||
       event.target.name === "premiseTypeId" ||
-      event.target.name === "premiseUseTypeId")
-      setGeneral({ ...general, [event.target.name]: parseInt(event.target.value) });
-    else
-      setGeneral({ ...general, [event.target.name]: event.target.value });
+      event.target.name === "premiseUseTypeId"
+    )
+      setGeneral({
+        ...general,
+        [event.target.name]: parseInt(event.target.value),
+      });
+    else setGeneral({ ...general, [event.target.name]: event.target.value });
   };
   console.log(general);
 
@@ -150,65 +156,67 @@ function AddProperties() {
     gender: "",
     phoneNumber: "",
     email: "",
-    active: true
+    active: true,
   });
 
-
-
   const [unit, setUnit] = useState({
-    "active": true,
-    "id": undefined,
-    "premiseId": undefined,
-    "unitName": undefined,
-    "unitTypeId": undefined
-  })
+    active: true,
+    id: undefined,
+    premiseId: undefined,
+    unitName: undefined,
+    unitTypeId: undefined,
+  });
 
-  const [selectedApplicableCharges, setSelectedApplicableCharges] = useState([]);
+  const [selectedApplicableCharges, setSelectedApplicableCharges] = useState(
+    []
+  );
 
-  const [selectedunitTypes, setSelectedUnitTypes] = useState([])
+  const [selectedunitTypes, setSelectedUnitTypes] = useState([]);
 
   const [unitType, setUnitType] = useState({
-    "unitTypeName": undefined,
-    "squarage": undefined,
-    "unitTypeId": undefined,
-    "monthCountForTenancyRenewal": undefined,
-    "numberOfRooms": undefined,
-    "purpose": undefined,
-  })
+    unitTypeName: undefined,
+    squarage: undefined,
+    unitTypeId: undefined,
+    monthCountForTenancyRenewal: undefined,
+    numberOfRooms: undefined,
+    purpose: undefined,
+  });
 
-
-  const [premiseUnitTypeCharges, setPremiseUnitTypeCharges] = useState([])
+  const [premiseUnitTypeCharges, setPremiseUnitTypeCharges] = useState([]);
 
   const handleChargechange = (event, index) => {
     if (event.target.name === "charge") {
       let unitAppCharge = [];
-      let chargee = selectedApplicableCharges.find(charge => charge.id === parseInt(event.target.value));
+      let chargee = selectedApplicableCharges.find(
+        (charge) => charge.id === parseInt(event.target.value)
+      );
       for (var i = 0; i < selectedunitTypes.length; i++) {
         let chargeBody = {
-          "active": true,
-          "applicableChargeId": chargee.id,
-          "chargeConstraint": "ZERO_BALANCE",
-          "constraintChargeId": undefined,
-          "id": undefined,
-          "invoiceDay": undefined,
+          active: true,
+          applicableChargeId: chargee.id,
+          chargeConstraint: "ZERO_BALANCE",
+          constraintChargeId: undefined,
+          id: undefined,
+          invoiceDay: undefined,
 
-          "applicableChargeName": chargee.name,
-          "applicableChargeType": chargee.applicableChargeType,
+          applicableChargeName: chargee.name,
+          applicableChargeType: chargee.applicableChargeType,
 
-          "unitTypeName": selectedunitTypes[i].name,
-          "landlordCollectionAccountId": undefined,
-          "monthCountForTenancyRenewal": selectedunitTypes[i].monthCountForTenancyRenewal,
-          "numberOfRooms": selectedunitTypes[i].numberOfRooms,
-          "premiseId": undefined,
-          "purpose": selectedunitTypes[i].purpose,
-          "rateCharge": undefined,
-          "squarage": selectedunitTypes[i].squarage,
-          "unitTypeId": selectedunitTypes[i].id,
-          "value": undefined,
+          unitTypeName: selectedunitTypes[i].name,
+          landlordCollectionAccountId: undefined,
+          monthCountForTenancyRenewal:
+            selectedunitTypes[i].monthCountForTenancyRenewal,
+          numberOfRooms: selectedunitTypes[i].numberOfRooms,
+          premiseId: undefined,
+          purpose: selectedunitTypes[i].purpose,
+          rateCharge: undefined,
+          squarage: selectedunitTypes[i].squarage,
+          unitTypeId: selectedunitTypes[i].id,
+          value: undefined,
 
-          "clientCollectionAccountId": undefined,
-          "collectedToClientAccount": undefined,
-        }
+          clientCollectionAccountId: undefined,
+          collectedToClientAccount: undefined,
+        };
         unitAppCharge.push(chargeBody);
       }
 
@@ -217,21 +225,24 @@ function AddProperties() {
       let unitAppCharge = unitCharges;
 
       if (event.target.name === "collectedToClientAccount")
-        unitAppCharge[index][event.target.name] = event.target.value === "client";
-      else
-        unitAppCharge[index][event.target.name] = event.target.value;
+        unitAppCharge[index][event.target.name] =
+          event.target.value === "client";
+      else unitAppCharge[index][event.target.name] = event.target.value;
 
       setUnitCharges(unitAppCharge);
     }
   };
 
   const handlelandlordDataChange = (event) => {
-    setLandlordData({ ...landlordData, [event.target.name]: parseInt(event.target.value) });
+    setLandlordData({
+      ...landlordData,
+      [event.target.name]: parseInt(event.target.value),
+    });
   };
 
   const handleUnitTypeChange = (event) => {
     if (event.target.name === "unitTypeId") {
-      let d = event.target.value.split(':');
+      let d = event.target.value.split(":");
       let type = unitType;
       type.unitTypeId = d[0];
       type.unitTypeName = d[1];
@@ -245,124 +256,111 @@ function AddProperties() {
   };
 
   const selectedApplicableChargeChange = (event) => {
-
     console.log(event.target.value);
     let chargess = selectedApplicableCharges;
 
-    let value = applicableCharges.find(x => x.id == event.target.value);
+    let value = applicableCharges.find((x) => x.id == event.target.value);
 
-    console.log(value)
+    console.log(value);
     if (value != undefined) {
-
-      if (event.target.checked)
-        chargess.push(value);
-      else
-
-        chargess.splice(chargess.indexOf(value), 1);
+      if (event.target.checked) chargess.push(value);
+      else chargess.splice(chargess.indexOf(value), 1);
 
       setSelectedApplicableCharges(chargess);
-
     }
   };
 
-  // ADDING PREMISES 
+  // ADDING PREMISES
 
-  const [premiseUnits, setPremiseUnits] = useState([])
+  const [premiseUnits, setPremiseUnits] = useState([]);
 
-  const [modalId, setModalId] = useState("")
-  const [unitsNumModal, setUnitsNumModal] = useState(false)
+  const [modalId, setModalId] = useState("");
+  const [unitsNumModal, setUnitsNumModal] = useState(false);
 
   const selectedUnitTypesChange = (event) => {
     let chargess = selectedunitTypes;
-    let value = unitTypes.find(x => x.id == event.target.value);
+    let value = unitTypes.find((x) => x.id == event.target.value);
     if (value != undefined) {
-
       if (event.target.checked) {
         chargess.push(value);
-        // modalId 
+        // modalId
         setModalId(value.id);
         setUnitsNumModal(true);
-        //pop up modal 
-
+        //pop up modal
       } else {
-
         chargess.splice(chargess.indexOf(value), 1);
         setSelectedUnitTypes(chargess);
-        setPremiseUnits(premiseUnits.filter(ob => ob.unitTypeId !== value.id));
-        setModalId(" ")
+        setPremiseUnits(
+          premiseUnits.filter((ob) => ob.unitTypeId !== value.id)
+        );
+        setModalId(" ");
       }
-
     }
-
   };
 
   const handleUnitsModal = (event) => {
-    setPremiseUnits([...premiseUnits, ... new Array(parseInt(event.target.value)).fill({
-      "active": true,
-      "unitTypeId": modalId,
-      "id": null,
-      "premiseId": null,
-      "status": "VACANT",
-      "unitName": "",
-    })]);
-
-  }
+    setPremiseUnits([
+      ...premiseUnits,
+      ...new Array(parseInt(event.target.value)).fill({
+        active: true,
+        unitTypeId: modalId,
+        id: null,
+        premiseId: null,
+        status: "VACANT",
+        unitName: "",
+      }),
+    ]);
+  };
 
   const handleNames = (event, i) => {
-
     // console.log(premiseUnits);
-    let ne = premiseUnits.map((obj, index) => index == i ? { ...obj, unitName: event.target.value } : { ...obj })
+    let ne = premiseUnits.map((obj, index) =>
+      index == i ? { ...obj, unitName: event.target.value } : { ...obj }
+    );
 
-    setPremiseUnits(ne)
-
-  }
+    setPremiseUnits(ne);
+  };
 
   console.log(premiseUnits);
 
-
-
-
-
-
-  const [estates, setEstates] = useState([])
+  const [estates, setEstates] = useState([]);
   const getEstates = () => {
     requestsServiceService.getAllEstates().then((res) => {
-      setEstates(res.data.data)
-    })
-  }
+      setEstates(res.data.data);
+    });
+  };
   const getAgreementTypes = () => {
     requestsServiceService.getAllAgreementTypes().then((res) => {
-      setAgreementTypes(res.data.data)
-    })
-  }
+      setAgreementTypes(res.data.data);
+    });
+  };
 
-  const [premiseTypes, setPremiseTypes] = useState([])
+  const [premiseTypes, setPremiseTypes] = useState([]);
   const getPremiseTypes = () => {
     requestsServiceService.allPremiseTypes().then((res) => {
-      setPremiseTypes(res.data.data)
-    })
-  }
+      setPremiseTypes(res.data.data);
+    });
+  };
 
-  const [premiseUseTypes, setPremiseUseTypes] = useState([])
+  const [premiseUseTypes, setPremiseUseTypes] = useState([]);
   const getPremiseUseTypes = () => {
     requestsServiceService.allPremiseUseTypes().then((res) => {
-      setPremiseUseTypes(res.data.data)
-    })
-  }
+      setPremiseUseTypes(res.data.data);
+    });
+  };
 
   const getAllDocumentTypes = () => {
     requestsServiceService.allDocumentTypes("LANDLORD").then((res) => {
-      let docs = res.data.data
-      setDocumentTypes(res.data.data)
-    })
-  }
+      let docs = res.data.data;
+      setDocumentTypes(res.data.data);
+    });
+  };
 
   const getAllApplicableCharges = () => {
-    requestsServiceService.allApplicableCharges("TENANT").then((res) =>
-      setApplicableCharges(res.data.data),
-     
-    )
-  }
+    requestsServiceService
+      .allApplicableCharges("TENANT")
+      .then((res) => setApplicableCharges(res.data.data));
+  };
 
   const fetchTypes = () => {
     requestsServiceService.allApplicableCharges("TENANT").then((res) => {
@@ -371,58 +369,56 @@ function AddProperties() {
   };
 
   const getAllUnitTypes = () => {
-    requestsServiceService.allUnitTypes().then((res) =>
-      setUnitTypes(res.data.data)
-    
-    )
-  }
+    requestsServiceService
+      .allUnitTypes()
+      .then((res) => setUnitTypes(res.data.data));
+  };
   const [tenancyStatuses, setTenancyStatuses] = useState([]);
   const getAllTenancyStatuses = () => {
     requestsServiceService.getTenancyStatuses().then((res) => {
-      setTenancyStatuses(res.data.data)
-    })
-  }
+      setTenancyStatuses(res.data.data);
+    });
+  };
 
-  const [premiseDocuments, setPremiseDocuments] = useState([])
+  const [premiseDocuments, setPremiseDocuments] = useState([]);
   const [docBody, setDocBody] = useState({
-    "docName": undefined,
-    "document": undefined,
-    "documentOwnerTypeName": undefined,
-    "documentTypeId": undefined,
-    "id": undefined,
-    "ownerEntityId": undefined
-  })
+    docName: undefined,
+    document: undefined,
+    documentOwnerTypeName: undefined,
+    documentTypeId: undefined,
+    id: undefined,
+    ownerEntityId: undefined,
+  });
 
   useEffect(() => {
     requestsServiceService.allApplicableCharges("TENANT").then((res) => {
       setAC(res.data.data);
     });
-    getEstates()
-    getAgreementTypes()
-    getPremiseTypes()
-    getPremiseUseTypes()
-    getAllDocumentTypes()
-    getAllApplicableCharges()
-    getAllUnitTypes()
-    getAllTenancyStatuses()
-    getCaretakerType()
-    fetchTypes()
-
-  }, [])
+    getEstates();
+    getAgreementTypes();
+    getPremiseTypes();
+    getPremiseUseTypes();
+    getAllDocumentTypes();
+    getAllApplicableCharges();
+    getAllUnitTypes();
+    getAllTenancyStatuses();
+    getCaretakerType();
+    fetchTypes();
+  }, []);
 
   const toogleShowNewDocumentModal = (event) => {
     setShowDocumentModal(!showDocumentModal);
-  }
+  };
 
   const toogleNewUnitTypeModal = (event) => {
     setNewUnitTypeModal(!newUnitTypeModal);
-  }
+  };
 
   const getCaretakerType = () => {
     requestsServiceService.getCaretakerTypes().then((res) => {
-      setCaretakerTypes(res.data.data)
-    })
-  }
+      setCaretakerTypes(res.data.data);
+    });
+  };
   const addAppCharge = (el) => {
     el.preventDefault();
     let unicahgsg = unitCharges;
@@ -431,9 +427,7 @@ function AddProperties() {
     for (var i = 0; i < unicahgsg.length; i++)
       premiseUnitType.push(unicahgsg[i]);
 
-
-
-    let vals = premiseUnitType.map(cha => cha.applicableChargeId)
+    let vals = premiseUnitType.map((cha) => cha.applicableChargeId);
 
     setUniqueChargeIds(vals);
 
@@ -441,31 +435,27 @@ function AddProperties() {
 
     setUnitCharges([]);
     toogleShowUnitTypeChargesModal();
-  }
-
+  };
 
   const addDocument = (el) => {
     el.preventDefault();
     let data = docBody;
     if (data.documentOwnerTypeName === "PREMISE") {
-
       let kins = premiseDocuments;
       kins.push(data);
       setPremiseDocuments(kins);
-
     }
 
     toogleShowNewDocumentModal();
     setDocBody({
-      "docName": undefined,
-      "document": undefined,
-      "documentOwnerTypeName": undefined,
-      "documentTypeId": undefined,
-      "id": undefined,
-      "ownerEntityId": undefined
+      docName: undefined,
+      document: undefined,
+      documentOwnerTypeName: undefined,
+      documentTypeId: undefined,
+      id: undefined,
+      ownerEntityId: undefined,
     });
-
-  }
+  };
 
   const addUnitType = (el) => {
     el.preventDefault();
@@ -477,15 +467,12 @@ function AddProperties() {
 
     toogleNewUnitTypeModal();
     setUnitType({
-      "unitTypeName": undefined,
-      "unitTypeId": undefined
+      unitTypeName: undefined,
+      unitTypeId: undefined,
     });
-
-  }
-
+  };
 
   const handleDocumentChange = (event) => {
-
     if (event.target.name === "file") {
       let filereader = new FileReader();
 
@@ -495,15 +482,10 @@ function AddProperties() {
         setDocBody({ ...docBody, document: filereader.result });
       };
       filereader.onerror = function (error) {
-        console.log('Error: ', error);
+        console.log("Error: ", error);
       };
-
-    }
-    else
-      setDocBody({ ...docBody, [event.target.name]: event.target.value });
-
-  }
-
+    } else setDocBody({ ...docBody, [event.target.name]: event.target.value });
+  };
 
   $("#landlord-type").on("change", function () {
     var theSeledtedValue = $(this).val();
@@ -523,50 +505,50 @@ function AddProperties() {
     gen["premiseLandLord"] = landlords;
 
     let data = {
-      "premise": gen,
-      "premiseCaretakerDTO": caretaker,
-      "premiseDocuments": premiseDocuments,
-      "premiseUnitTypeCharges": premiseUnitTypeCharges,
-      "premiseUnits": premiseUnits,
+      premise: gen,
+      premiseCaretakerDTO: caretaker,
+      premiseDocuments: premiseDocuments,
+      premiseUnitTypeCharges: premiseUnitTypeCharges,
+      premiseUnits: premiseUnits,
+    };
 
-    }
-
-    requestsServiceService.createPremise(data).then((res) => {
-
-      if (res.data.status == true) {
-        confirmAlert({
-          message: res.data.message,
-          buttons: [{
-            label: "OK",
-            onClick: (e) => window.location.href = "/#/premisesregister"
-          }
-          ]
-        })
-      } else {
-        confirmAlert({
-          message: res.data.message,
-          buttons: [{ label: "OK" }]
-        })
-      }
-    }).catch((err) => {
-      confirmAlert({
-        message: err.message,
-        buttons: [{ label: "OK" }]
+    requestsServiceService
+      .createPremise(data)
+      .then((res) => {
+        if (res.data.status == true) {
+          confirmAlert({
+            message: res.data.message,
+            buttons: [
+              {
+                label: "OK",
+                onClick: (e) => (window.location.href = "/#/premisesregister"),
+              },
+            ],
+          });
+        } else {
+          confirmAlert({
+            message: res.data.message,
+            buttons: [{ label: "OK" }],
+          });
+        }
       })
-    })
-  }
+      .catch((err) => {
+        confirmAlert({
+          message: err.message,
+          buttons: [{ label: "OK" }],
+        });
+      });
+  };
 
   const newUnitType = (event) => {
     toogleNewUnitTypeModal();
-  }
-
+  };
 
   const newDocument = (event) => {
-
-    setDocBody({ ...docBody, "documentOwnerTypeName": event.target.dataset.id });
+    setDocBody({ ...docBody, documentOwnerTypeName: event.target.dataset.id });
 
     toogleShowNewDocumentModal();
-  }
+  };
   const onChangeGeneral = (e) => {
     if (e.target.name === "invoicePaymentPriority") {
       let id = e.target.value.split("-")[0];
@@ -584,9 +566,9 @@ function AddProperties() {
           invoicePaymentPriority:
             selectedItems.length > 0
               ? selectedItems
-                .map((a) => a.id)
-                .join("-")
-                .toString()
+                  .map((a) => a.id)
+                  .join("-")
+                  .toString()
               : "",
         });
       }
@@ -601,70 +583,66 @@ function AddProperties() {
     setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
   };
 
-
-
-
   // =======Property==================
-
 
   const [createName, setCreateName] = useState("");
   const [createNames, setCreateNames] = useState("");
 
-    // create function
-    const create = () => {
-      let data = JSON.stringify({
-        active: true,
-        clientId: authService.getClientId(),
-        id: 0,
-        name: createName,
-      });
-  
-      requestsServiceService
-        .createPremiseTypes(data)
-        .then((res) => {
-          getPremiseTypes();
-          $("#add-new-property").modal("hide");
-  
-          if (res.data.status) {
-            setError({
-              ...error,
-              message: res.data.message,
-              color: "success",
-            });
-          } else {
-            setError({
-              ...error,
-              message: res.data.message,
-              color: "warning",
-            });
-          }
-  
-          setTimeout(() => {
-            clears();
-          }, 3000);
-        })
-        .catch((res) => {
-          $("#add-new-property").modal("hide");
-  
+  // create function
+  const create = () => {
+    let data = JSON.stringify({
+      active: true,
+      clientId: authService.getClientId(),
+      id: 0,
+      name: createName,
+    });
+
+    requestsServiceService
+      .createPremiseTypes(data)
+      .then((res) => {
+        getPremiseTypes();
+        $("#add-new-property").modal("hide");
+
+        if (res.data.status) {
           setError({
             ...error,
             message: res.data.message,
-            color: "danger",
+            color: "success",
           });
-  
-          setTimeout(() => {
-            clears();
-          }, 3000);
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+
+        setTimeout(() => {
+          clears();
+        }, 3000);
+      })
+      .catch((res) => {
+        $("#add-new-property").modal("hide");
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
         });
-    };
-  
-    const clears = () => {
-      setError({
-        ...error,
-        message: "",
-        color: "",
+
+        setTimeout(() => {
+          clears();
+        }, 3000);
       });
-    };
+  };
+
+  const clears = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
+  };
   // create function
   const createPremise = () => {
     let data = JSON.stringify({
@@ -711,17 +689,16 @@ function AddProperties() {
           cleared();
         }, 3000);
       });
-    }
-      const cleared = () => {
-        setError({
-          ...error,
-          message: "",
-          color: "",
-        });
+  };
+  const cleared = () => {
+    setError({
+      ...error,
+      message: "",
+      color: "",
+    });
   };
 
   // ========Add Unit  types=======
-
 
   const [createNam, setCreateNam] = useState("");
   const [numberOfRooms, setNumberOfRooms] = useState("");
@@ -729,10 +706,10 @@ function AddProperties() {
   const [squarage, setSquarage] = useState("");
   const [monthCountForTenancyRenewal, setMonthCountForTenancyRenewal] =
     useState("");
-    const [chargeTypes, setChargeTypes] = useState([]);
-    const [selectedChargeTypes, setSelectedChargeTypes] = useState([]);
+  const [chargeTypes, setChargeTypes] = useState([]);
+  const [selectedChargeTypes, setSelectedChargeTypes] = useState([]);
 
-     // create function
+  // create function
   const createUnit = () => {
     let data = JSON.stringify({
       active: true,
@@ -806,7 +783,6 @@ function AddProperties() {
     setSelectedChargeTypes(userGroups);
   };
 
-
   return (
     <>
       <div className="page-content">
@@ -838,27 +814,47 @@ function AddProperties() {
           {/* <!-- end page title --> */}
 
           {/* <!-- eTransactions table --> */}
-          {Object.keys(landLordData)?.length > 0 && <div className="row">
-            <div className="col-lg-12">
-              <div className="card">
-                <div className="card-body">
-                  <h4 className="font-weight-bold">The landlord chosen for this premise is  </h4>
-                  <div className="row">
-                    <div className="col-5">
-                      <p><strong>Name :</strong> {landLordData?.firstName} {landLordData?.lastName} {landLordData?.otherName}</p>
-                      <p><strong >Phone Number :</strong> {landLordData?.phoneNumber}</p>
-                      <p><strong>File No :</strong> {landLordData?.fileNumber}</p>
-                    </div>
-                    <div className="col-5">
-                      <p><strong>Email :</strong> {landLordData?.email}</p>
-                      <p className="text-capitalize"><strong>File No :</strong> {landLordData?.landLordType?.toLowerCase()}</p>
-                      <p><strong>Agreement Period :</strong> {landLordData?.agreementPeriod}</p>
+          {Object.keys(landLordData)?.length > 0 && (
+            <div className="row">
+              <div className="col-lg-12">
+                <div className="card">
+                  <div className="card-body">
+                    <h4 className="font-weight-bold">
+                      The landlord chosen for this premise is{" "}
+                    </h4>
+                    <div className="row">
+                      <div className="col-5">
+                        <p>
+                          <strong>Name :</strong> {landLordData?.firstName}{" "}
+                          {landLordData?.lastName} {landLordData?.otherName}
+                        </p>
+                        <p>
+                          <strong>Phone Number :</strong>{" "}
+                          {landLordData?.phoneNumber}
+                        </p>
+                        <p>
+                          <strong>File No :</strong> {landLordData?.fileNumber}
+                        </p>
+                      </div>
+                      <div className="col-5">
+                        <p>
+                          <strong>Email :</strong> {landLordData?.email}
+                        </p>
+                        <p className="text-capitalize">
+                          <strong>File No :</strong>{" "}
+                          {landLordData?.landLordType?.toLowerCase()}
+                        </p>
+                        <p>
+                          <strong>Agreement Period :</strong>{" "}
+                          {landLordData?.agreementPeriod}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>}
+          )}
           <div className="row">
             <div className="col-lg-12">
               <div className="card">
@@ -869,18 +865,28 @@ function AddProperties() {
                   </p>
                   <div className="create-property" id="kev-step-form">
                     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-
-                      <button className="navbar-toggler" type="button" data-toggle="collapse"
-                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                      <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                      >
                         <span className="navbar-toggler-icon"></span>
                       </button>
 
-                      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                      <div
+                        className="collapse navbar-collapse"
+                        id="navbarSupportedContent"
+                      >
                         <ul className="navbar-nav mr-auto">
                           <li className="nav-item active">
-                            <a className="nav-link active">1. Property Details <span
-                              className="sr-only">(current)</span></a>
+                            <a className="nav-link active">
+                              1. Property Details{" "}
+                              <span className="sr-only">(current)</span>
+                            </a>
                           </li>
                           <li className="nav-item">
                             <a className="nav-link">2. Invoices Breakdown</a>
@@ -893,7 +899,6 @@ function AddProperties() {
                             <a className="nav-link">4. Document attachments</a>
                           </li>
                         </ul>
-
                       </div>
                     </nav>
 
@@ -912,8 +917,7 @@ function AddProperties() {
                           <div class="col-4 col-md-6">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                File No.  <strong class="text-danger ">*</strong>
-
+                                File No. <strong class="text-danger ">*</strong>
                               </label>
                               <input
                                 type="text "
@@ -934,7 +938,7 @@ function AddProperties() {
                               <input
                                 type="text "
                                 value={general.plotNumber}
-                                name='plotNumber'
+                                name="plotNumber"
                                 onChange={handleGeneral}
                                 class="form-control "
                                 id="basicpill-firstname-input "
@@ -953,7 +957,7 @@ function AddProperties() {
                                 class="form-control "
                                 value={general.premiseName}
                                 onChange={handleGeneral}
-                                name='premiseName'
+                                name="premiseName"
                                 id="basicpill-firstname-input "
                                 placeholder="Enter Your First Name "
                               />
@@ -972,12 +976,25 @@ function AddProperties() {
                                 onChange={handleGeneral}
                               >
                                 <option>Select location</option>
-                                {estates && estates?.sort((a, b) => a.name.localeCompare(b.name)).map((estate) => {
-                                  return (
-                                    <option value={estate.id} className="text-capitalize"> {estate.name} - {estate.zone.name} - {estate.zone.clientCounty.county.name?.toLowerCase()?.replace(/_/g, " ")} </option>
-                                  )
-                                })}
-
+                                {estates &&
+                                  estates
+                                    ?.sort((a, b) =>
+                                      a.name.localeCompare(b.name)
+                                    )
+                                    .map((estate) => {
+                                      return (
+                                        <option
+                                          value={estate.id}
+                                          className="text-capitalize"
+                                        >
+                                          {" "}
+                                          {estate.name} - {estate.zone.name} -{" "}
+                                          {estate.zone.clientCounty.county.name
+                                            ?.toLowerCase()
+                                            ?.replace(/_/g, " ")}{" "}
+                                        </option>
+                                      );
+                                    })}
                               </select>
                             </div>
                           </div>
@@ -991,63 +1008,68 @@ function AddProperties() {
                                 class="form-control "
                                 value={general.address}
                                 onChange={handleGeneral}
-                                name='address'
+                                name="address"
                                 id="basicpill-firstname-input "
                                 placeholder="Enter Your Address "
                               />
                             </div>
                           </div>
-                          
-                          <div class="col-lg-3 col-md-6 ">
-                            
-                            <div class="mb-4 ">
-                         
-
-
-                              <label for="basicpill-lastname-input ">
-                                Properties Type{" "}
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              
-                              <select
-                                class="form-control text-capitalize"
-                                title="Select Building type "
-                                name='premiseTypeId'
-                                onChange={handleGeneral}
-
-                              >
-                                <option>select property type </option>
-                                  <div className="form-group">
-                                    <input type="text" className="form-control" />
-
-                          
-                                  </div>
-                            
-
-                            
-                               
- 
-                                {premiseTypes && premiseTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type) => (
-                                  <option value={type.id} className="text-capitalize" > {type.name}</option>
-                                ))}
-
-                              </select>
-                      
-                                   
-                          
-                            </div>
-                            <div className="md-2">
-                              <button  className="btn btn-primary btn-sm mt-4" data-bs-toggle="modal"
-                          data-bs-target="#add-new-property"> Add New</button>   
-                              </div>
-                          </div>
-                      
-                      
-
-                       
 
                           <div class="col-lg-4 col-md-6 ">
-                            <div class="mb-4 ">
+                            <div class="row ">
+                              <div className="md-4">
+                                <label for="basicpill-lastname-input ">
+                                  Properties Type{" "}
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+
+                                <select
+                                  class="form-control text-capitalize"
+                                  title="Select Building type "
+                                  name="premiseTypeId"
+                                  onChange={handleGeneral}
+                                >
+                                  <option>select property type </option>
+                                  <div className="form-group">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                    />
+                                    
+                                  </div>
+
+                                  {premiseTypes &&
+                                    premiseTypes
+                                      ?.sort((a, b) =>
+                                        a.name.localeCompare(b.name)
+                                      )
+                                      ?.map((type) => (
+                                        <option
+                                          value={type.id}
+                                          className="text-capitalize"
+                                        >
+                                          {" "}
+                                          {type.name}
+                                        </option>
+                                      ))}
+                                </select>
+                              </div>
+                              <div className="d-flex align-itens-center justify-content-around mb-4">
+                              <button
+                                className="btn btn-primary btn-sm mt-4"
+                                data-bs-toggle="modal"
+                                data-bs-target="#add-new-property"
+                              > <i class="mdi mdi-plus label-icon"></i>
+                                {" "}
+                                Property Type
+                              </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-4 col-md-6 ">
+                           <div class="row ">
+                            <div class="mb-8">
                               <label for="basicpill-lastname-input ">
                                 Property Use type
                                 <strong class="text-danger ">*</strong>
@@ -1055,20 +1077,37 @@ function AddProperties() {
                               <select
                                 class="form-control text-capitalize "
                                 title="Select Premise use type "
-                                name='premiseUseTypeId'
+                                name="premiseUseTypeId"
                                 onChange={handleGeneral}
-
                               >
                                 <option>Select property use type </option>
-                                {premiseUseTypes && premiseUseTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type) => (
-                                  <option value={type.id} className="text-capitalize"> {type.name}</option>
-                                ))}
+                                {premiseUseTypes &&
+                                  premiseUseTypes
+                                    ?.sort((a, b) =>
+                                      a.name.localeCompare(b.name)
+                                    )
+                                    ?.map((type) => (
+                                      <option
+                                        value={type.id}
+                                        className="text-capitalize"
+                                      >
+                                        {" "}
+                                        {type.name}
+                                      </option>
+                                    ))}
                               </select>
 
-<div className="d-flex align-itens-center justify-content-around">
-                              <button  className="btn btn-primary btn-sm mt-4" data-bs-toggle="modal"
-                          data-bs-target="#add-new-premise"> Add New</button>   
-</div>
+                              <div className="d-flex align-itens-center justify-content-around -4">
+                                <button
+                                  className="btn btn-primary btn-sm mt-4"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#add-new-premise"
+                                ><i class="mdi mdi-plus label-icon"></i>
+                                  {" "}
+                                  Proprty Use Type{" "}
+                                </button>
+                              </div>
+                              </div>
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6 ">
@@ -1080,19 +1119,32 @@ function AddProperties() {
                               <select
                                 className="form-control text-capitalize "
                                 title="Select restriction status "
-                                name='unitVacancyRestrictionStatus'
+                                name="unitVacancyRestrictionStatus"
                                 onChange={handleGeneral}
-
                               >
                                 <option> Select status</option>
-                                {tenancyStatuses && tenancyStatuses?.sort((a, b) => a.localeCompare(b))?.map((t) => (
-                                  <option value={t} className="text-capitalize"> {t === "CURRENT" ? "Occupied" : t === "OPEN" ? "Vaccant" : t?.toLowerCase()?.replace(/_/g, " ")}</option>
-                                ))}
+                                {tenancyStatuses &&
+                                  tenancyStatuses
+                                    ?.sort((a, b) => a.localeCompare(b))
+                                    ?.map((t) => (
+                                      <option
+                                        value={t}
+                                        className="text-capitalize"
+                                      >
+                                        {" "}
+                                        {t === "CURRENT"
+                                          ? "Occupied"
+                                          : t === "OPEN"
+                                          ? "Vaccant"
+                                          : t
+                                              ?.toLowerCase()
+                                              ?.replace(/_/g, " ")}
+                                      </option>
+                                    ))}
                               </select>
                             </div>
                           </div>
                           <div className="col-lg-4 col-md-6">
-
                             <div className="form-group">
                               <label htmlFor="">Charge Duration</label>
                               <select
@@ -1110,15 +1162,17 @@ function AddProperties() {
                           <div class="col-lg-4 col-md-6 ">
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
-                                Management Type   {" "}
-
+                                Management Type{" "}
                               </label>
                               <select
                                 className="form-control"
                                 onChange={handleGeneral}
                                 name="ManagementType"
-                              > 
-                                <option value="LET"> Select Management Type</option>
+                              >
+                                <option value="LET">
+                                  {" "}
+                                  Select Management Type
+                                </option>
                                 <option value="MANAGE">Manage</option>
                                 <option value="LET">let</option>
                               </select>
@@ -1133,11 +1187,13 @@ function AddProperties() {
                               <select
                                 className="form-control"
                                 onChange={handleGeneral}
-                                name='UtilityManagementType'
+                                name="UtilityManagementType"
                               >
-                                <option value="LANDORD"> Select  UtilityManagement Type </option>
+                                <option value="LANDORD">
+                                  {" "}
+                                  Select UtilityManagement Type{" "}
+                                </option>
 
-                               
                                 <option value="LANDLORD">Landlord</option>
                                 <option value="INRENT">InRent</option>
                                 <option value="AGENT">Agent</option>
@@ -1145,7 +1201,6 @@ function AddProperties() {
                             </div>
                           </div>
                           <div class="col-lg-4 col-md-6 ">
-
                             <div class="mb-4 ">
                               <label for="basicpill-firstname-input ">
                                 Property Tax{" "}
@@ -1179,7 +1234,10 @@ function AddProperties() {
                                   setCollectElectricityDeposit(e.target.value);
                                 }}
                               >
-                                <option> Select Collect Electricity Deposit </option>
+                                <option>
+                                  {" "}
+                                  Select Collect Electricity Deposit{" "}
+                                </option>
                                 <option value="true">True</option>
                                 <option value="false">False</option>
                               </select>
@@ -1370,13 +1428,21 @@ function AddProperties() {
                                         name="caretakerTypeName"
                                         title="Select caretaker type"
                                       >
-                                        <option value={null}>Select caretaker type</option>
+                                        <option value={null}>
+                                          Select caretaker type
+                                        </option>
                                         {caretakerTypes?.map((item) => (
-                                          <option value={item} className="text-capitalize">
-                                            {item === "SELF_COMMISSIONED" ? "Agent Commissioned" : item?.toLowerCase()?.replace(/_/g, " ")}
+                                          <option
+                                            value={item}
+                                            className="text-capitalize"
+                                          >
+                                            {item === "SELF_COMMISSIONED"
+                                              ? "Agent Commissioned"
+                                              : item
+                                                  ?.toLowerCase()
+                                                  ?.replace(/_/g, " ")}
                                           </option>
                                         ))}
-
                                       </select>
                                     </div>
                                   </div>
@@ -1437,7 +1503,6 @@ function AddProperties() {
                                         value={caretaker.phone}
                                         name="phoneNumber"
                                         onChange={handleCaretaker}
-
                                         id="basicpill-phoneno-input "
                                         placeholder="Enter Your Phone No. "
                                       />
@@ -1472,41 +1537,46 @@ function AddProperties() {
                               Units/ Hse Types on offer At the properties
                             </p>
                           </div>
-                     
-                      
                         </div>
-                        
 
-                        <button  onClick={() => {
-                                    setMonthCountForTenancyRenewal("");
-                                    setPurpose("");
-                                    setNumberOfRooms("");
-                                    setSquarage("");
-                                  }} className="btn btn-primary btn-sm mt-4" data-bs-toggle="modal"
-                          data-bs-target="#add-new-unit"> Add New</button> 
+                        <button
+                          onClick={() => {
+                            setMonthCountForTenancyRenewal("");
+                            setPurpose("");
+                            setNumberOfRooms("");
+                            setSquarage("");
+                          }}
+                          className="btn btn-primary btn-sm mt-4"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-new-unit"
+                        ><i class="mdi mdi-plus label-icon"></i>
+                          {" "}
+                          Unit Type
+                        </button>
 
                         <div class="row">
-                          {unitTypes && unitTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((prem, index) =>
-                            <div class="col-4">
-                              <div class="form-check form-check-primary mb-3">
-                                <input
-                                  class="form-check-input"
-                                  type="checkbox"
-                                  name="selectedUnitTypes"
-                                  value={prem.id}
-                                  onChange={selectedUnitTypesChange}
-                                />
-                                <label
-                                  class="form-check-label"
-                                  for="monthlyRent"
-                                >
-                                  {prem.name}
-                                </label>
-
-
-                              </div>
-                            </div>
-                          )}
+                          {unitTypes &&
+                            unitTypes
+                              ?.sort((a, b) => a.name.localeCompare(b.name))
+                              ?.map((prem, index) => (
+                                <div class="col-4">
+                                  <div class="form-check form-check-primary mb-3">
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      name="selectedUnitTypes"
+                                      value={prem.id}
+                                      onChange={selectedUnitTypesChange}
+                                    />
+                                    <label
+                                      class="form-check-label"
+                                      for="monthlyRent"
+                                    >
+                                      {prem.name}
+                                    </label>
+                                  </div>
+                                </div>
+                              ))}
                         </div>
 
                         {/* <div class="table-responsive table-responsive-md mb-5">
@@ -1590,30 +1660,37 @@ function AddProperties() {
                                 <i>Applicable Charges</i>
                               </p>
                               <div class="row border-right-1">
-                                {applicableCharges && applicableCharges?.sort((a, b) => a.name.localeCompare(b.name))?.map((charge, index) => (
-                                  <>
-                                    {charge.applicableChargeType === "MONTHLY_CHARGE" &&
-                                      <div class="col-6">
-                                        <div class="form-check form-check-primary mb-3">
-                                          <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            name="monthlyCharges"
-                                            value={charge.id}
-                                            onChange={selectedApplicableChargeChange}
-                                          />
-                                          <label
-                                            class="form-check-label"
-                                            for="monthlyRent"
-                                          >
-                                            {charge.name}
-                                          </label>
-                                        </div>
-                                      </div>
-                                    }
-                                  </>
-                                ))
-                                }
+                                {applicableCharges &&
+                                  applicableCharges
+                                    ?.sort((a, b) =>
+                                      a.name.localeCompare(b.name)
+                                    )
+                                    ?.map((charge, index) => (
+                                      <>
+                                        {charge.applicableChargeType ===
+                                          "MONTHLY_CHARGE" && (
+                                          <div class="col-6">
+                                            <div class="form-check form-check-primary mb-3">
+                                              <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="monthlyCharges"
+                                                value={charge.id}
+                                                onChange={
+                                                  selectedApplicableChargeChange
+                                                }
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="monthlyRent"
+                                              >
+                                                {charge.name}
+                                              </label>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </>
+                                    ))}
                               </div>
                             </div>
                             <div class="col-4 col-md-4 col-sm-12 h-100">
@@ -1621,28 +1698,37 @@ function AddProperties() {
                                 <i>Deposits</i>
                               </p>
                               <div class="row border-right-1">
-                                {applicableCharges && applicableCharges?.sort((a, b) => a.name.localeCompare(b.name))?.map((charge, index) => (
-                                  <>
-                                    {charge.applicableChargeType === "DEPOSIT_CHARGE" && <div class="col-6">
-                                      <div class="form-check form-check-primary mb-3">
-                                        <input
-                                          class="form-check-input"
-                                          type="checkbox"
-                                          name="monthlyRent"
-                                          value={charge.id}
-                                          onChange={selectedApplicableChargeChange}
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="monthlyRent"
-                                        >
-                                          {charge.name}
-                                        </label>
-                                      </div>
-                                    </div>}
-                                  </>
-                                ))
-                                }
+                                {applicableCharges &&
+                                  applicableCharges
+                                    ?.sort((a, b) =>
+                                      a.name.localeCompare(b.name)
+                                    )
+                                    ?.map((charge, index) => (
+                                      <>
+                                        {charge.applicableChargeType ===
+                                          "DEPOSIT_CHARGE" && (
+                                          <div class="col-6">
+                                            <div class="form-check form-check-primary mb-3">
+                                              <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="monthlyRent"
+                                                value={charge.id}
+                                                onChange={
+                                                  selectedApplicableChargeChange
+                                                }
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="monthlyRent"
+                                              >
+                                                {charge.name}
+                                              </label>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </>
+                                    ))}
                               </div>
                             </div>
                           </div>
@@ -1686,7 +1772,7 @@ function AddProperties() {
                               class="table align-middle table-edits rent-invoicing dt-responsive"
                               id="data-table"
                             >
-                              <thead  className="table-light">
+                              <thead className="table-light">
                                 <tr class="text-uppercase table-dark">
                                   {/* <th>#</th> */}
                                   <th>Item type</th>
@@ -1697,8 +1783,10 @@ function AddProperties() {
                               </thead>
 
                               <tfoot class="table-light">
-                                <tr  className="" onClick={toogleShowUnitTypeChargesModal}>
-
+                                <tr
+                                  className=""
+                                  onClick={toogleShowUnitTypeChargesModal}
+                                >
                                   <td
                                     colSpan="7"
                                     className="bg-light cursor-pointer"
@@ -1711,49 +1799,57 @@ function AddProperties() {
                                 </tr>
                               </tfoot>
                               <tbody>
-
-                                {premiseUnitTypeCharges.length > 0 && premiseUnitTypeCharges.map((premiseUnitTypeCharge, index) => (
-                                  <tr className="text-capitalize">
-                                    {/* <td>
+                                {premiseUnitTypeCharges.length > 0 &&
+                                  premiseUnitTypeCharges.map(
+                                    (premiseUnitTypeCharge, index) => (
+                                      <tr className="text-capitalize">
+                                        {/* <td>
                                       {index + 1}
                                     </td> */}
-                                    <td className="text-capitalize">
-                                      {premiseUnitTypeCharge.applicableChargeName}
-                                    </td>
-                                    <td className="text-capitalize">
-                                      {premiseUnitTypeCharge.applicableChargeType?.toLowerCase()?.replace(/_/g, " ")}
-                                    </td>
-                                    <td className="text-capitalize">
-                                      {premiseUnitTypeCharge.unitTypeName?.toLowerCase()?.replace(/_/g, " ")}
-                                    </td>
-                                    <td>
-                                      {premiseUnitTypeCharge.value}
-                                    </td>
-                                  </tr>
-                                ))}
+                                        <td className="text-capitalize">
+                                          {
+                                            premiseUnitTypeCharge.applicableChargeName
+                                          }
+                                        </td>
+                                        <td className="text-capitalize">
+                                          {premiseUnitTypeCharge.applicableChargeType
+                                            ?.toLowerCase()
+                                            ?.replace(/_/g, " ")}
+                                        </td>
+                                        <td className="text-capitalize">
+                                          {premiseUnitTypeCharge.unitTypeName
+                                            ?.toLowerCase()
+                                            ?.replace(/_/g, " ")}
+                                        </td>
+                                        <td>{premiseUnitTypeCharge.value}</td>
+                                      </tr>
+                                    )
+                                  )}
 
-                                {selectedApplicableCharges && selectedApplicableCharges.map((premiseUnitTypeCharge, indeewx) => (
-                                  premiseUnitTypeCharge.expectManualValues && selectedunitTypes.map((unitTypee, indeewx) => (
-                                    <tr>
-                                      {/* <td>
+                                {selectedApplicableCharges &&
+                                  selectedApplicableCharges.map(
+                                    (premiseUnitTypeCharge, indeewx) =>
+                                      premiseUnitTypeCharge.expectManualValues &&
+                                      selectedunitTypes.map(
+                                        (unitTypee, indeewx) => (
+                                          <tr>
+                                            {/* <td>
                                         {indeewx + 1}
                                       </td> */}
-                                      <td>
-                                        {premiseUnitTypeCharge.name}
-                                      </td>
-                                      <td>
-                                        {premiseUnitTypeCharge.applicableChargeType}
-                                      </td>
-                                      <td>
-                                        {unitTypee.name}
-                                      </td>
-                                      <td>
-                                        -
-                                      </td>
-                                    </tr>
-                                  ))
-                                ))}
-
+                                            <td>
+                                              {premiseUnitTypeCharge.name}
+                                            </td>
+                                            <td>
+                                              {
+                                                premiseUnitTypeCharge.applicableChargeType
+                                              }
+                                            </td>
+                                            <td>{unitTypee.name}</td>
+                                            <td>-</td>
+                                          </tr>
+                                        )
+                                      )
+                                  )}
                               </tbody>
                             </table>
                           </div>
@@ -1776,22 +1872,39 @@ function AddProperties() {
                                   <th>#</th>
                                   <th>Unit name</th>
                                   <th>Unit Type</th>
-
                                 </tr>
                               </thead>
                               <tbody>
-
-                                {premiseUnits.length > 0 && premiseUnits.map((unit, index) => (
-                                  <tr key={index}>
-                                    <td>{index + 1} </td>
-                                    <td> <input type="text" name="" id="" value={unit.unitName} onChange={(e) => handleNames(e, index)} /></td>
-                                    <td>
-                                      <select name="" id="" disabled >
-                                        <option value="">{unitTypes?.filter(type => type.id == unit.unitTypeId)[0].name}</option>
-                                      </select>
-                                    </td>
-                                  </tr>
-                                ))}
+                                {premiseUnits.length > 0 &&
+                                  premiseUnits.map((unit, index) => (
+                                    <tr key={index}>
+                                      <td>{index + 1} </td>
+                                      <td>
+                                        {" "}
+                                        <input
+                                          type="text"
+                                          name=""
+                                          id=""
+                                          value={unit.unitName}
+                                          onChange={(e) =>
+                                            handleNames(e, index)
+                                          }
+                                        />
+                                      </td>
+                                      <td>
+                                        <select name="" id="" disabled>
+                                          <option value="">
+                                            {
+                                              unitTypes?.filter(
+                                                (type) =>
+                                                  type.id == unit.unitTypeId
+                                              )[0].name
+                                            }
+                                          </option>
+                                        </select>
+                                      </td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>
@@ -1803,53 +1916,75 @@ function AddProperties() {
                     <section className="step-cont d-none">
                       <h3>Document Attachments</h3>
                       <form>
-                       
                         <div class="table-responsive table-responsive-md">
                           <table className="table table-editable-file align-middle table-edits ">
                             <thead className="table-light ">
                               <tr className="text-uppercase table-dark ">
                                 <th className="vertical-align-middle ">#</th>
-                                <th className="vertical-align-middle ">Document Type</th>
-                                <th className="vertical-align-middle ">Document Name</th>
-                                <th className="vertical-align-middle ">Actions</th>
+                                <th className="vertical-align-middle ">
+                                  Document Type
+                                </th>
+                                <th className="vertical-align-middle ">
+                                  Document Name
+                                </th>
+                                <th className="vertical-align-middle ">
+                                  Actions
+                                </th>
                                 <th className="text-right "></th>
                               </tr>
                             </thead>
                             <tbody>
-
-                              {premiseDocuments && premiseDocuments.map((dependent, index) => (
-                                <tr>
-                                  <td>{index + 1}</td>
-                                  <td>{dependent.documentOwnerTypeName}</td>
-                                  <td>{dependent.docName}</td>
-                                  <td></td>
-                                </tr>
-                              ))
-
-                              }
-
+                              {premiseDocuments &&
+                                premiseDocuments.map((dependent, index) => (
+                                  <tr>
+                                    <td>{index + 1}</td>
+                                    <td>{dependent.documentOwnerTypeName}</td>
+                                    <td>{dependent.docName}</td>
+                                    <td></td>
+                                  </tr>
+                                ))}
                             </tbody>
                             <tfoot>
                               <tr>
-                                <td colSpan="7" className="bg-light cursor-pointer" onClick={newDocument}  data-id="PREMISE">
+                                <td
+                                  colSpan="7"
+                                  className="bg-light cursor-pointer"
+                                  onClick={newDocument}
+                                  data-id="PREMISE"
+                                >
                                   <span className="d-flex align-items-center ">
                                     <i className="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
                                     <span className="pl-5 ">
-                                    Add Property Documents
+                                      Add Property Documents
                                     </span>
                                   </span>
                                 </td>
                               </tr>
                             </tfoot>
                           </table>
-
                         </div>
                       </form>
                     </section>
                     <div className="button-navigators">
-                      <button disabled className="btn btn-primary waves-effect kev-prev me-2"><i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i> Previous </button>
-                      <button className="btn btn-primary waves-effect kev-nxt me-2">Next <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i></button>
-                      <button type='button' className="btn btn-success kev-submit me-2 d-none" onClick={submit}>Submit <i className="mdi mdi-check-all me-2 font-16px"></i></button>
+                      <button
+                        disabled
+                        className="btn btn-primary waves-effect kev-prev me-2"
+                      >
+                        <i className="mdi-arrow-left mdi font-16px ms-2 me-2"></i>{" "}
+                        Previous{" "}
+                      </button>
+                      <button className="btn btn-primary waves-effect kev-nxt me-2">
+                        Next{" "}
+                        <i className="mdi mdi-arrow-right font-16px ms-2 me-2"></i>
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-success kev-submit me-2 d-none"
+                        onClick={submit}
+                      >
+                        Submit{" "}
+                        <i className="mdi mdi-check-all me-2 font-16px"></i>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1861,27 +1996,37 @@ function AddProperties() {
         </div>
       </div>
 
-
-      <Modal show={newUnitTypeModal} dialogClassName="my-modal" onHide={toogleNewUnitTypeModal} centered>
+      <Modal
+        show={newUnitTypeModal}
+        dialogClassName="my-modal"
+        onHide={toogleNewUnitTypeModal}
+        centered
+      >
         <form onSubmit={addUnitType}>
-          <ModalHeader className='justify-content' closeButton>
+          <ModalHeader className="justify-content" closeButton>
             <h3>New Unit Type</h3>
-           
           </ModalHeader>
           <ModalBody>
             <div className="row">
               <div className="col-md-6">
                 <div className="mb-4">
-                  <label htmlFor="basicpill-firstname-input">Unit Type<strong className="text-danger">*</strong></label>
+                  <label htmlFor="basicpill-firstname-input">
+                    Unit Type<strong className="text-danger">*</strong>
+                  </label>
 
                   <select
-                    className='form-control' required
+                    className="form-control"
+                    required
                     onChange={handleUnitTypeChange}
-                    name="unitTypeId">
+                    name="unitTypeId"
+                  >
                     <option></option>
-                    {unitTypes && unitTypes.map((prem, index) =>
-                      <option value={prem.id + ':' + prem.name}>{prem.name}</option>
-                    )}
+                    {unitTypes &&
+                      unitTypes.map((prem, index) => (
+                        <option value={prem.id + ":" + prem.name}>
+                          {prem.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>
@@ -1889,59 +2034,109 @@ function AddProperties() {
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">No. Of Rooms</label>
-                  <input type="number" className="form-control"
-                    onChange={handleUnitTypeChange} name="numberOfRooms" required />
+                  <input
+                    type="number"
+                    className="form-control"
+                    onChange={handleUnitTypeChange}
+                    name="numberOfRooms"
+                    required
+                  />
                 </div>
               </div>
 
               <div className="col-md-6">
                 <div className="mb-4">
-                  <label htmlFor="">UNIT SIZE M<sup>2</sup></label>
-                  <input type="number" className="form-control"
-                    onChange={handleUnitTypeChange} name="squarage" required />
+                  <label htmlFor="">
+                    UNIT SIZE M<sup>2</sup>
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    onChange={handleUnitTypeChange}
+                    name="squarage"
+                    required
+                  />
                 </div>
               </div>
 
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">Purpose</label>
-                  <input type="text" className="form-control"
-                    onChange={handleUnitTypeChange} name="purpose" required />
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={handleUnitTypeChange}
+                    name="purpose"
+                    required
+                  />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="mb-4">
                   <label htmlFor="">TENANCY RENEWAL</label>
-                  <input type="number" className="form-control" required
-                    onChange={handleUnitTypeChange} name="monthCountForTenancyRenewal" />
+                  <input
+                    type="number"
+                    className="form-control"
+                    required
+                    onChange={handleUnitTypeChange}
+                    name="monthCountForTenancyRenewal"
+                  />
                 </div>
               </div>
             </div>
-
           </ModalBody>
           <ModalFooter>
-            <button className='btn btn-basic' type="button" onClick={toogleNewUnitTypeModal}>Close</button>
-            <button className='btn btn-success' type="submit">Add</button>
+            <button
+              className="btn btn-basic"
+              type="button"
+              onClick={toogleNewUnitTypeModal}
+            >
+              Close
+            </button>
+            <button className="btn btn-success" type="submit">
+              Add
+            </button>
           </ModalFooter>
         </form>
       </Modal>
 
-
       {/* docs modal */}
-      <Modal show={showDocumentModal} dialogClassName="my-modl" onHide={toogleShowNewDocumentModal} centered>
+      <Modal
+        show={showDocumentModal}
+        dialogClassName="my-modl"
+        onHide={toogleShowNewDocumentModal}
+        centered
+      >
         <form id="newContactPersonForm" onSubmit={addDocument}>
-          <ModalHeader className='justify-content' closeButton>
-            <h3>New {docBody.documentOwnerTypeName?.toLowerCase()?.replace(/_/g, " ")} Document</h3>
-           
+          <ModalHeader className="justify-content" closeButton>
+            <h3>
+              New{" "}
+              {docBody.documentOwnerTypeName?.toLowerCase()?.replace(/_/g, " ")}{" "}
+              Document
+            </h3>
           </ModalHeader>
-          <ModalBody className='row'>
+          <ModalBody className="row">
             <div className="col-md-6">
               <div className="mb-4">
-                <label htmlFor="basicpill-firstname-input">Document Type<strong className="text-danger">*</strong></label>
+                <label htmlFor="basicpill-firstname-input">
+                  Document Type<strong className="text-danger">*</strong>
+                </label>
 
-                <select className='form-control text-capitalize' onChange={handleDocumentChange} name="documentTypeId" required>
+                <select
+                  className="form-control text-capitalize"
+                  onChange={handleDocumentChange}
+                  name="documentTypeId"
+                  required
+                >
                   <option>select document type</option>
-                  {documentTypes && documentTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((prem, index) => <option value={prem.id} className="text-capitalize">{prem.name?.toLowerCase()?.replace(/_/g, " ")}</option>)}
+                  {documentTypes &&
+                    documentTypes
+                      ?.sort((a, b) => a.name.localeCompare(b.name))
+                      ?.map((prem, index) => (
+                        <option value={prem.id} className="text-capitalize">
+                          {prem.name?.toLowerCase()?.replace(/_/g, " ")}
+                        </option>
+                      ))}
                 </select>
               </div>
             </div>
@@ -1949,123 +2144,213 @@ function AddProperties() {
             <div className="col-md-6">
               <div className="mb-4">
                 <label htmlFor="">Doc Name</label>
-                <input type="text" className="form-control" id="" placeholder="" required
-                  onChange={(e) => handleDocumentChange(e)} name="docName" />
+                <input
+                  type="text"
+                  className="form-control"
+                  id=""
+                  placeholder=""
+                  required
+                  onChange={(e) => handleDocumentChange(e)}
+                  name="docName"
+                />
               </div>
             </div>
 
             <div className="col-md-12">
-              <label className="input-group-text bg-info text-white cursor-pointer" htmlFor="id-front">
+              <label
+                className="input-group-text bg-info text-white cursor-pointer"
+                htmlFor="id-front"
+              >
                 <i className="font-14px mdi mdi-paperclip"></i> Document
               </label>
-              <input type="file" className="form-control" name="file" required
-                onChange={(e) => handleDocumentChange(e)} />
-
+              <input
+                type="file"
+                className="form-control"
+                name="file"
+                required
+                onChange={(e) => handleDocumentChange(e)}
+              />
             </div>
           </ModalBody>
           <ModalFooter>
-            <button className='btn btn-basic' type="button" onClick={toogleShowNewDocumentModal}>Close</button>
-            <button className='btn btn-success' type="submit">Add</button>
+            <button
+              className="btn btn-basic"
+              type="button"
+              onClick={toogleShowNewDocumentModal}
+            >
+              Close
+            </button>
+            <button className="btn btn-success" type="submit">
+              Add
+            </button>
           </ModalFooter>
         </form>
       </Modal>
 
-
-
-      <Modal show={showUnitTypeChargesModal} dialogClassName="my-modal"  onHide={toogleShowUnitTypeChargesModal} centered>
+      <Modal
+        show={showUnitTypeChargesModal}
+        dialogClassName="my-modal"
+        onHide={toogleShowUnitTypeChargesModal}
+        centered
+      >
         <form id="newContactPersonForm" onSubmit={addAppCharge}>
-          <ModalHeader className='justify-content' closeButton>
+          <ModalHeader className="justify-content" closeButton>
             <h3>Invoice Breakdown</h3>
- 
           </ModalHeader>
-          <ModalBody className='row'>
+          <ModalBody className="row">
             <div className="col-md-4">
               <div className="mb-4">
-                <label htmlFor="basicpill-firstname-input">Applicable Charge Type<strong className="text-danger">*</strong></label>
+                <label htmlFor="basicpill-firstname-input">
+                  Applicable Charge Type
+                  <strong className="text-danger">*</strong>
+                </label>
 
-                <select className='form-control' onChange={(e) => handleChargechange(e, 0)} name="charge" required>
+                <select
+                  className="form-control"
+                  onChange={(e) => handleChargechange(e, 0)}
+                  name="charge"
+                  required
+                >
                   <option></option>
-                  {selectedApplicableCharges && selectedApplicableCharges?.sort((a, b) => a.name.localeCompare(b.name))?.map((prem, index) => (
-                    !prem.expectManualValues &&
-                    <option value={prem.id}>{prem.name}</option>))}
+                  {selectedApplicableCharges &&
+                    selectedApplicableCharges
+                      ?.sort((a, b) => a.name.localeCompare(b.name))
+                      ?.map(
+                        (prem, index) =>
+                          !prem.expectManualValues && (
+                            <option value={prem.id}>{prem.name}</option>
+                          )
+                      )}
                 </select>
               </div>
             </div>
             <hr></hr>
             <h3>Charge Values</h3>
 
-            {unitCharges && unitCharges.map((unitCharge, index) => (
-              <div className="card border border-primary">
-                <div className="row card-body">
-                  <div className="col-md-4">
-                    <label htmlFor="">Unit Type</label>
-                    <input type="text" className="form-control" id="" placeholder="" required
-                      disabled value={unitCharge.unitTypeName} name="docName" />
-                  </div>
-
-                  <div className="col-md-4">
-                    <label> Charge Value </label>
-                    <input type="number" className="form-control" name="value" required
-                      onChange={(e) => handleChargechange(e, index)} />
-                  </div>
-
-                  <div className="col-md-4">
-                    <label> Collected to: </label>
-                    <select className='form-control' required onChange={(e) => handleChargechange(e, index)}
-                      name="collectedToClientAccount">
-                      <option></option>
-                      <option value="client">Client Account</option>
-                      <option value="landlord">LandLord Account</option>
-                    </select>
-                  </div>
-
-                  {unitCharge["collectedToClientAccount"] == true ?
+            {unitCharges &&
+              unitCharges.map((unitCharge, index) => (
+                <div className="card border border-primary">
+                  <div className="row card-body">
                     <div className="col-md-4">
-                      <label> Client Collection Acc </label>
-                      <select className='form-control' required onChange={(e) => handleChargechange(e, index)}
-                        name="clientCollectionAccountId">
+                      <label htmlFor="">Unit Type</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id=""
+                        placeholder=""
+                        required
+                        disabled
+                        value={unitCharge.unitTypeName}
+                        name="docName"
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label> Charge Value </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        name="value"
+                        required
+                        onChange={(e) => handleChargechange(e, index)}
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label> Collected to: </label>
+                      <select
+                        className="form-control"
+                        required
+                        onChange={(e) => handleChargechange(e, index)}
+                        name="collectedToClientAccount"
+                      >
                         <option></option>
-                        {landLordAccounts && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
+                        <option value="client">Client Account</option>
+                        <option value="landlord">LandLord Account</option>
                       </select>
                     </div>
-                    :
-                    <div className="col-md-4">
-                      <label>LandLord Collection Acc </label>
-                      <select className='form-control' required onChange={(e) => handleChargechange(e, index)}
-                        name="landlordCollectionAccountId">
-                        <option></option>
-                        {landLordAccounts && landLordAccounts.map((prem, index) => <option value={prem.id}>{prem.bankAccountNumber + ' - ' + prem.bank.bankName}</option>)}
-                      </select>
-                    </div>
-                  }
-                  <div className="col-md-4">
-                    <label> Invoice Day </label>
-                    <input type="number" className="form-control" name="invoiceDay" required min={1} max={30}
-                      onChange={(e) => handleChargechange(e, index)} />
-                  </div>
 
+                    {unitCharge["collectedToClientAccount"] == true ? (
+                      <div className="col-md-4">
+                        <label> Client Collection Acc </label>
+                        <select
+                          className="form-control"
+                          required
+                          onChange={(e) => handleChargechange(e, index)}
+                          name="clientCollectionAccountId"
+                        >
+                          <option></option>
+                          {landLordAccounts &&
+                            landLordAccounts.map((prem, index) => (
+                              <option value={prem.id}>
+                                {prem.bankAccountNumber +
+                                  " - " +
+                                  prem.bank.bankName}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    ) : (
+                      <div className="col-md-4">
+                        <label>LandLord Collection Acc </label>
+                        <select
+                          className="form-control"
+                          required
+                          onChange={(e) => handleChargechange(e, index)}
+                          name="landlordCollectionAccountId"
+                        >
+                          <option></option>
+                          {landLordAccounts &&
+                            landLordAccounts.map((prem, index) => (
+                              <option value={prem.id}>
+                                {prem.bankAccountNumber +
+                                  " - " +
+                                  prem.bank.bankName}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    )}
+                    <div className="col-md-4">
+                      <label> Invoice Day </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        name="invoiceDay"
+                        required
+                        min={1}
+                        max={30}
+                        onChange={(e) => handleChargechange(e, index)}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))
-            }
+              ))}
           </ModalBody>
           <ModalFooter>
-            <button className='btn btn-basic' type="button" onClick={toogleShowUnitTypeChargesModal}>Close</button>
-            <button className='btn btn-success' type="submit">Add</button>
+            <button
+              className="btn btn-basic"
+              type="button"
+              onClick={toogleShowUnitTypeChargesModal}
+            >
+              Close
+            </button>
+            <button className="btn btn-success" type="submit">
+              Add
+            </button>
           </ModalFooter>
         </form>
       </Modal>
 
       {/* <!-- enter landlord's id modal --> */}
 
-
       <Modal show={fileNoShow} centered>
         <ModalBody>
-          {error.color !== "" &&
+          {error.color !== "" && (
             <div className={"alert alert-" + error.color} role="alert">
               {error.message}
             </div>
-          }
+          )}
           <div class="text-center mb-4 ">
             <div class="avatar-md mx-auto mb-4 ">
               <div class="avatar-title bg-light rounded-circle text-primary h1 ">
@@ -2077,16 +2362,18 @@ function AddProperties() {
               <div class="col-xl-10 ">
                 <h4 class="text-primary ">Landlord's File No.</h4>
                 <p class="text-muted font-size-14 mb-4 ">
-                  Enter the landlords file number if the landlord is already registered in the
-                  system. If this is a new landlord, click cancel.
+                  Enter the landlords file number if the landlord is already
+                  registered in the system. If this is a new landlord, click
+                  cancel.
                 </p>
 
                 <form onSubmit={(e) => e.preventDefault()}>
                   <div class="row ">
                     <div class="col-9">
                       <div class="mb-3 ">
-                        <label for="digit1-input " class="visually-hidden ">File
-                          No.</label>
+                        <label for="digit1-input " class="visually-hidden ">
+                          File No.
+                        </label>
                         <input
                           type="text "
                           class="form-control form-control-lg text-center two-step "
@@ -2099,7 +2386,10 @@ function AddProperties() {
                       </div>
                     </div>
                     <div class="col-3 ">
-                      <button class="btn btn-primary btn-block w-100 btn-lg" onClick={saveLandLordFileNumber}>
+                      <button
+                        class="btn btn-primary btn-block w-100 btn-lg"
+                        onClick={saveLandLordFileNumber}
+                      >
                         <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
                         <div class="d-none">Search</div>
                       </button>
@@ -2109,14 +2399,20 @@ function AddProperties() {
                       {/*<button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToCreateLandlord}>*/}
                       {/*  <i class="bx bx-edit font-size-16 align-middle me-2 ">New Landlord</i>*/}
                       {/*</button>*/}
-                      <button className="btn btn-secondary btn-block mt-3 text-center w-100" onClick={redirectToCreateLandlord}>
+                      <button
+                        className="btn btn-secondary btn-block mt-3 text-center w-100"
+                        onClick={redirectToCreateLandlord}
+                      >
                         <i className="mdi mdi-account-multiple-plus font-size-16 align-middle me-2 "></i>
                         Its a new landlord
                       </button>
                     </div>
 
                     <div class="col-12 ">
-                      <button class="btn btn-primary btn-block w-100 btn-lg" onClick={redirectToProperties}>
+                      <button
+                        class="btn btn-primary btn-block w-100 btn-lg"
+                        onClick={redirectToProperties}
+                      >
                         Cancel
                       </button>
                     </div>
@@ -2132,309 +2428,311 @@ function AddProperties() {
       {/* adding a unit to premise  */}
       <Modal show={unitsNumModal} centered>
         <ModalBody>
-          <form onSubmit={(e) => { e.preventDefault(); setUnitsNumModal(false) }}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setUnitsNumModal(false);
+            }}
+          >
             <div className="form-group">
               <label> Enter number of units</label>
-              <input type="number" required className="form-control" onChange={(e) => handleUnitsModal(e)} />
+              <input
+                type="number"
+                required
+                className="form-control"
+                onChange={(e) => handleUnitsModal(e)}
+              />
             </div>
             <button className="btn btn-primary btn-sm mt-4">Submit</button>
           </form>
         </ModalBody>
       </Modal>
 
+      {/* /====Property model */}
 
-
-
-{/* /====Property model */}
-
-  {/* create modal */}
-  <div
-            class="modal fade"
-            id="add-new-property"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    create();
-                    setCreateName("");
-                  }}
-                >
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">
-                      New Property Type
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">
-                            {" "}
-                            Property Type <strong class="text-danger">
-                              *
-                            </strong>{" "}
-                          </label>
-                          <input
-                            required
-                            value={createName}
-                            onChange={(e) => setCreateName(e.target.value)}
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter Property Type Name"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                      Save
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+      {/* create modal */}
       <div
-            class="modal fade"
-            id="add-new-premise"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    createPremise();
-                    setCreateNames("");
-                  }}
-                >
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">
-                      New Property Use Type
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-
-                  <div class="modal-body">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">
-                            {" "}
-                            Property Use Type{" "}
-                            <strong class="text-danger">*</strong>
-                          </label>
-                          <input
-                            required
-                            value={createNames}
-                            onChange={(e) => setCreateNames(e.target.value)}
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter Property Use Type Name"
-                          />
-                        </div>
-                      </div>
+        class="modal fade"
+        id="add-new-property"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                create();
+                setCreateName("");
+              }}
+            >
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  New Property Type
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        {" "}
+                        Property Type <strong class="text-danger">
+                          *
+                        </strong>{" "}
+                      </label>
+                      <input
+                        required
+                        value={createName}
+                        onChange={(e) => setCreateName(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Property Type Name"
+                      />
                     </div>
                   </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button
-                      type="submit"
-                      class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </form>
+                </div>
               </div>
-            </div>
-          </div>
-
-              {/* create modal */}
-              <div
-            class="modal fade"
-            id="add-new-unit"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    createUnit();
-                  }}
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
                 >
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">
-                      New Unit Type
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="form-group mb-4">
-                          <label for="">
-                            Unit Type Name{" "}
-                            <strong class="text-danger">*</strong>
-                          </label>
-                          <input
-                            required
-                            value={createNam}
-                            onChange={(e) => setCreateNam(e.target.value)}
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter unit type name"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <label for="">
-                          Charge Type <strong class="text-danger">*</strong>{" "}
-                        </label>
-                        <select
-                          class=" form-control"
-                          multiple
-                          onChange={(e) => setChargeTypes1(e)}
-                        >
-                          {chargeTypes &&
-                            chargeTypes
-                              ?.sort((a, b) => a.name.localeCompare(b.name))
-                              ?.map((charge, index) => {
-                                return (
-                                  <option
-                                    key={index}
-                                    value={charge.id}
-                                    selected={selectedChargeTypes.includes(
-                                      charge.name
-                                    )}
-                                  >
-                                    {charge.name}
-                                  </option>
-                                );
-                              })}
-                        </select>
-                      </div>
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div
+        class="modal fade"
+        id="add-new-premise"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                createPremise();
+                setCreateNames("");
+              }}
+            >
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  New Property Use Type
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
 
-                      <div className="form-group">
-                        <label htmlFor="">
-                          Purpose <strong class="text-danger">*</strong>
-                        </label>
-                        <input
-                          required
-                          type="text"
-                          value={purpose}
-                          className="form-control"
-                          onChange={(event) => setPurpose(event.target.value)}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="">
-                          Number of Rooms <strong class="text-danger">*</strong>
-                        </label>
-                        <input
-                          required
-                          type="text"
-                          value={numberOfRooms}
-                          className="form-control"
-                          onChange={(event) =>
-                            setNumberOfRooms(event.target.value)
-                          }
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="">
-                          unit size in M<sup>2</sup>{" "}
-                          <strong class="text-danger">*</strong>
-                        </label>
-                        <input
-                          required
-                          type="text"
-                          value={squarage}
-                          className="form-control"
-                          onChange={(event) => setSquarage(event.target.value)}
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label htmlFor="">
-                          Months to renewal{" "}
-                          <strong class="text-danger">*</strong>
-                        </label>
-                        <input
-                          required
-                          type="text"
-                          value={monthCountForTenancyRenewal}
-                          className="form-control"
-                          onChange={(event) =>
-                            setMonthCountForTenancyRenewal(event.target.value)
-                          }
-                        />
-                      </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        {" "}
+                        Property Use Type <strong class="text-danger">*</strong>
+                      </label>
+                      <input
+                        required
+                        value={createNames}
+                        onChange={(e) => setCreateNames(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Property Use Type Name"
+                      />
                     </div>
                   </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-light"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                      Create
-                    </button>
-                  </div>
-                </form>
+                </div>
               </div>
-            </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
           </div>
+        </div>
+      </div>
+
+      {/* create modal */}
+      <div
+        class="modal fade"
+        id="add-new-unit"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                createUnit();
+              }}
+            >
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  New Unit Type
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        Unit Type Name <strong class="text-danger">*</strong>
+                      </label>
+                      <input
+                        required
+                        value={createNam}
+                        onChange={(e) => setCreateNam(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter unit type name"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label for="">
+                      Charge Type <strong class="text-danger">*</strong>{" "}
+                    </label>
+                    <select
+                      class=" form-control"
+                      multiple
+                      onChange={(e) => setChargeTypes1(e)}
+                    >
+                      {chargeTypes &&
+                        chargeTypes
+                          ?.sort((a, b) => a.name.localeCompare(b.name))
+                          ?.map((charge, index) => {
+                            return (
+                              <option
+                                key={index}
+                                value={charge.id}
+                                selected={selectedChargeTypes.includes(
+                                  charge.name
+                                )}
+                              >
+                                {charge.name}
+                              </option>
+                            );
+                          })}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="">
+                      Purpose <strong class="text-danger">*</strong>
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      value={purpose}
+                      className="form-control"
+                      onChange={(event) => setPurpose(event.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="">
+                      Number of Rooms <strong class="text-danger">*</strong>
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      value={numberOfRooms}
+                      className="form-control"
+                      onChange={(event) => setNumberOfRooms(event.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="">
+                      unit size in M<sup>2</sup>{" "}
+                      <strong class="text-danger">*</strong>
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      value={squarage}
+                      className="form-control"
+                      onChange={(event) => setSquarage(event.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="">
+                      Months to renewal <strong class="text-danger">*</strong>
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      value={monthCountForTenancyRenewal}
+                      className="form-control"
+                      onChange={(event) =>
+                        setMonthCountForTenancyRenewal(event.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Create
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
