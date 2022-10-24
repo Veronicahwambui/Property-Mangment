@@ -614,7 +614,6 @@ function AddTenant() {
                                 placeholder="Enter tenants email address"
                                 name="email"
                                 onChange={(e) => handleTenantDtoChange(e)}
-                                required
                               />
                             </div>
                           </div>
@@ -1625,11 +1624,11 @@ function AddTenant() {
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
                       </div>
-                      <div class="col-3 ">
+                      <div class="col-3">
                         <button
                           type="button"
                           onClick={handleSearchPremise}
-                          class="btn btn-primary btn-block w-100 btn-lg"
+                          class="btn btn-primary btn-block w-100 btn-lg mb-4"
                         >
                           <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
                           <div class="d-none">Search</div>
