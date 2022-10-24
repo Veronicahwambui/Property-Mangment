@@ -3313,7 +3313,7 @@ function ViewLandlord() {
                             ?.replace(/_/g, " ")}
                         </option>
                         {landlordtypes
-                          .sort((a, b) => a.localeCompare(b))
+                          ?.sort((a, b) => a.localeCompare(b))
                           ?.map((item, index) => (
                             <option value={item}>
                               {item?.toLowerCase()?.replace(/_/g, " ")}
@@ -3338,7 +3338,7 @@ function ViewLandlord() {
                           {edittypename?.toLowerCase()?.replace(/_/g, " ")}
                         </option>
                         {agreementtypes
-                          .sort((a, b) => a.name.localeCompare(b.name))
+                          ?.sort((a, b) => a.name.localeCompare(b.name))
                           ?.map((item, index) => (
                             <option value={item.id}>
                               {item.name?.toLowerCase()?.replace(/_/g, " ")}
@@ -3579,7 +3579,7 @@ function ViewLandlord() {
                           {editBankName}
                         </option>
                         {banks
-                          .sort((a, b) => a.bankName.localeCompare(b.bankName))
+                          ?.sort((a, b) => a.bankName.localeCompare(b.bankName))
                           ?.map((bank) => {
                             return (
                               <option
@@ -3675,7 +3675,7 @@ function ViewLandlord() {
                           select..
                         </option>
                         {banks
-                          .sort((a, b) => a.bankName.localeCompare(b.bankName))
+                          ?.sort((a, b) => a.bankName.localeCompare(b.bankName))
                           ?.map((bank) => {
                             return (
                               <option
@@ -3772,7 +3772,7 @@ function ViewLandlord() {
                           select document type..
                         </option>
                         {documentTypes
-                          .sort((a, b) => a.name.localeCompare(b.name))
+                          ?.sort((a, b) => a.name.localeCompare(b.name))
                           ?.map((dT) => {
                             return (
                               <option key={dT.id} value={dT.id}>
