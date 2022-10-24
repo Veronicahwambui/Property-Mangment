@@ -95,8 +95,10 @@ class RequestsService {
 
   // applicable charges
 
-  allApplicableCharges(entityType)  {
-    return axiosInstance.get(baseUrl + "/setup/applicableCharges?entityType="+ entityType)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+  allApplicableCharges(entityType) {
+    return axiosInstance.get(
+      baseUrl + "/setup/applicableCharges?entityType=" + entityType
+    );
   }
 
   applicableChargeTypes() {
@@ -352,8 +354,13 @@ class RequestsService {
 
   // document types Document
 
-  allDocumentTypes(entityType) {
-    return axiosInstance.get(baseUrl + "/setup/documentTypes?entityType="+ entityType);
+  allDocumentTypes(entityType, active) {
+    return axiosInstance.get(
+      baseUrl +
+        "/setup/documentTypes?entityType=" +
+        entityType +
+        (active ? "&active=" + active : "")
+    );
   }
 
   createDocumentTypes(data) {
@@ -658,10 +665,9 @@ class RequestsService {
       data
     );
   }
-  getSortedInvoices(page , size ,data) {
+  getSortedInvoices(page, size, data) {
     return axiosInstance.post(
-      baseUrl +
-        `/payments/invoice/transactions?page=${page}&size=${size}`,
+      baseUrl + `/payments/invoice/transactions?page=${page}&size=${size}`,
       data
     );
   }
@@ -827,8 +833,7 @@ class RequestsService {
 
   getOneStatement(statementId) {
     return axiosInstance.get(
-      baseUrl +
-        `/payments/statements/view?statementId=${statementId}`
+      baseUrl + `/payments/statements/view?statementId=${statementId}`
     );
   }
   getLandlordStatements(data) {
@@ -1207,7 +1212,7 @@ class RequestsService {
   getUnallocatedStatements(data) {
     return axiosInstance.get(baseUrl + "/payments/statements/unallocated");
   }
-  createSettings(data){
+  createSettings(data) {
     return axiosInstance.post(baseUrl + "/clients/settings", data);
   }
 }
