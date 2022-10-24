@@ -540,7 +540,7 @@ function OneTenant() {
 
   const createDocumentTypes = (id) => {
     requestsServiceService
-      .allDocumentTypes("TENANT")
+      .allDocumentTypes("TENANT", true)
       .then((res) => {
         setDocumentTypes(res.data.data);
       })

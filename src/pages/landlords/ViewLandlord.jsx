@@ -22,7 +22,6 @@ import Message from "../../components/Message";
 import DatePickRange from "../../components/Datepicker";
 import ViewInvoice from "../../components/ViewInvoice";
 
-
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useState(1);
   const [landlord, setLandlord] = useState([]);
@@ -32,10 +31,10 @@ function ViewLandlord() {
   const [landlordtypes, setLandlordTypes] = useState([]);
   const [banks, setBanks] = useState([]);
   const [documentTypes, setdocumentTypes] = useState([]);
-  const[invoicePaymentPriority ,setInvoicePaymentPriority]= useState("")
+  const [invoicePaymentPriority, setInvoicePaymentPriority] = useState("");
   const [error, setError] = useState({
     message: "",
-    color: ""
+    color: "",
   });
   const { id } = useParams();
   const userId = id;
@@ -75,8 +74,9 @@ function ViewLandlord() {
   const [editBankId, setEditBankId] = useState(null);
   const [editBankName, setEditBankName] = useState("");
   const [editBankAccount, setEditBankAccount] = useState("");
-  const [editpercentageRemuneration, setEditPercentageRemuneration] =useState("");
-    useState(null);
+  const [editpercentageRemuneration, setEditPercentageRemuneration] =
+    useState("");
+  useState(null);
   const [acc_id, setacc_id] = useState(null);
 
   const editBankAccountDetails = (value) => {
@@ -146,7 +146,7 @@ function ViewLandlord() {
     requestsServiceService.getBanks().then((res) => {
       setBanks(res.data.data);
     });
-    requestsServiceService.allDocumentTypes("LANDLORD").then((res) => {
+    requestsServiceService.allDocumentTypes("LANDLORD", true).then((res) => {
       setdocumentTypes(res.data.data);
     });
     fetchCommunication();
@@ -160,7 +160,6 @@ function ViewLandlord() {
       setDocuments(res.data.data.documents);
 
       setPremises(res.data.data.premises);
-
     });
   };
 
@@ -172,7 +171,7 @@ function ViewLandlord() {
   const [endDate, setEndDate] = useState(new Date());
   const [premises, setPremises] = useState([]);
   // const [searchTerm, setSearchTerm] = useState("");
-  
+
   const handlePageClick = (data) => {
     let d = data.selected;
     setPage(d);
@@ -187,9 +186,7 @@ function ViewLandlord() {
   };
   const deactivate2 = () => {
     requestsServiceService.togglePremiseStatus(activeId).then(() => {
-
       window.location.reload();
-
     });
   };
   const sort = (event) => {
@@ -249,7 +246,6 @@ function ViewLandlord() {
   const showEditLandLord = () => {
     console.log("clicked");
   };
-
 
   const handlelandlordsubmit = (event) => {
     event.preventDefault();
@@ -454,10 +450,9 @@ function ViewLandlord() {
   const [periodAlias, setPeriodAlias] = useState("");
   const [chargeId, setChargeId] = useState("");
   const [charges, setCharges] = useState([]);
-  const [landlordId, setLandlordId] = useState("")
+  const [landlordId, setLandlordId] = useState("");
   const [sDate, setsdate] = useState(new Date());
   const [eDate, setedate] = useState(new Date());
-
 
   // const startingDate = new Date("2022-09-08T12:06:26.255Z");
   // const endingDate = new Date();
@@ -474,98 +469,84 @@ function ViewLandlord() {
     "October",
     "November",
     "December",
-  ]
+  ];
 
-  const [year, setYear] = useState(new Date().getFullYear())
-  const [month, setMonth] = useState(new Date().getMonth())
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth());
   const yearArray = generateArrayOfYears();
-
 
   ///Settlements
 
-
   const fetchApplicableCharges = () => {
     requestsServiceService.allApplicableCharges("LANDLORD").then((res) => {
-      setCharges(res.data.data)
+      setCharges(res.data.data);
     });
   };
 
-
   const settlement = () => {
     let data = JSON.stringify({
-
       chargeId: chargeId,
       endDate: eDate,
-      "landlordId": [
-
-
-      ],
+      landlordId: [],
       periodAlias: periodAlias,
       startDate: sDate,
-
-
     });
-    requestsServiceService.createSettlements(data).then((res) => {
-      console.log(res.data)
-      fetchApplicableCharges()
+    requestsServiceService
+      .createSettlements(data)
+      .then((res) => {
+        console.log(res.data);
+        fetchApplicableCharges();
 
-      if (res.data.status) {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "success"
-        })
-      } else {
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning"
-        })
-      }
-
-      setTimeout(() => {
-        clear()
-      }, 3000)
-
-    }).catch((res) => {
-
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger"
+        setTimeout(() => {
+          clear();
+        }, 3000);
       })
-
-    })
-  }
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      });
+  };
   function generateArrayOfYears() {
-    var max = new Date().getFullYear()
-    var min = max - 5
-    var years = []
+    var max = new Date().getFullYear();
+    var min = max - 5;
+    var years = [];
 
     for (var i = max; i >= min; i--) {
-      years.push(i)
+      years.push(i);
     }
-    return years
+    return years;
   }
 
   const clear = () => {
     setError({
       ...error,
       message: "",
-      color: ""
-
+      color: "",
     });
     // console.log(data)
-  }
+  };
   useEffect(() => {
-    let x = new Date(`01 ${month} ${year}`)
-    setsdate(moment(x).startOf("month").format("YYYY-MM-DD"))
-    setedate(moment(x).endOf("month").format("YYYY-MM-DD"))
-  }, [year, month])
-
-
-
+    let x = new Date(`01 ${month} ${year}`);
+    setsdate(moment(x).startOf("month").format("YYYY-MM-DD"));
+    setedate(moment(x).endOf("month").format("YYYY-MM-DD"));
+  }, [year, month]);
 
   // LANDLORD DASHBOARD
   const colors = [
@@ -591,7 +572,6 @@ function ViewLandlord() {
   useEffect(() => {
     fetchDashData();
     fetchApplicableCharges();
-
   }, [userId, landlord]);
   // fetch data
   const fetchDashData = () => {
@@ -969,8 +949,12 @@ function ViewLandlord() {
 
   // SETTLEMENTS
   const [statements, setstatements] = useState([]);
-  const [startDate2, setStartDate2] = useState(moment(new Date(new Date().getFullYear(), 0)).format("DD/MM/YYYY"));
-  const [endDate2, setEndDate2] = useState(moment(new Date()).format("DD/MM/YYYY"));
+  const [startDate2, setStartDate2] = useState(
+    moment(new Date(new Date().getFullYear(), 0)).format("DD/MM/YYYY")
+  );
+  const [endDate2, setEndDate2] = useState(
+    moment(new Date()).format("DD/MM/YYYY")
+  );
   const [page2, setPage2] = useState(0);
   const [size2, setSize2] = useState(10);
   const [pageCount2, setPageCount2] = useState(1);
@@ -986,17 +970,19 @@ function ViewLandlord() {
   };
 
   const getStatements = () => {
-    requestsServiceService.getAllSettlements(page2, size2, startDate2, endDate2, userId).then((res) => {
-      setstatements(res.data.data !== null ? res.data.data : []);
-      setPage2(res.data.page)
-      setSize2(res.data.size)
-      setPageCount2(res.data.totalPages)
-      $("#spinner").addClass("d-none");
-    });
+    requestsServiceService
+      .getAllSettlements(page2, size2, startDate2, endDate2, userId)
+      .then((res) => {
+        setstatements(res.data.data !== null ? res.data.data : []);
+        setPage2(res.data.page);
+        setSize2(res.data.size);
+        setPageCount2(res.data.totalPages);
+        $("#spinner").addClass("d-none");
+      });
   };
 
   // * ==============================
-  // invoice stuff   
+  // invoice stuff
   // * ==============================
   const [invoices, setinvoices] = useState([]);
   const [activeInvoice, setActiveInvoice] = useState({});
@@ -1015,7 +1001,6 @@ function ViewLandlord() {
   const showInvoice = () => setinvoice_show(true);
   const [transaction, settransaction] = useState({});
   const [paymentItems, setpaymentItems] = useState([]);
-
 
   const closeInvoice = () => {
     setinvoice_show(false);
@@ -1036,13 +1021,11 @@ function ViewLandlord() {
     });
   };
 
-
   useEffect(() => {
     getInvoices();
   }, [size3, page3, activeInvoice, transaction, paymentItems]);
 
   const sort2 = (event) => {
-
     event.preventDefault();
     let data = {
       startDate: startDate3,
@@ -1071,7 +1054,7 @@ function ViewLandlord() {
     requestsServiceService.getSortedInvoices(page3, size3, data).then((res) => {
       setPageCount3(res.data.totalPages);
       setinvoices(res.data.data);
-      setStatus('')
+      setStatus("");
       window.scrollTo(0, 0);
     });
   };
@@ -1095,8 +1078,8 @@ function ViewLandlord() {
     setPage3(1);
   };
   const getOneInvoice = (id) => {
-    let one = invoices.find(one => one.transactionItemId === id)
-    setActiveInvoice(one)
+    let one = invoices.find((one) => one.transactionItemId === id);
+    setActiveInvoice(one);
     showInvoice();
   };
 
@@ -1118,10 +1101,11 @@ function ViewLandlord() {
     setmode(mode);
   };
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
-      } balance is ${formatCurrency.format(
-        inv.billAmount - inv.billPaidAmount
-      )}. Click here to pay for it`;
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${
+      inv.billerBillNo
+    } balance is ${formatCurrency.format(
+      inv.billAmount - inv.billPaidAmount
+    )}. Click here to pay for it`;
     let senderId =
       JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
@@ -1144,7 +1128,7 @@ function ViewLandlord() {
       $(".the-message-maker").addClass("email-overlay-transform");
     }, 0);
   };
-  useEffect(() => { }, [details, mode]);
+  useEffect(() => {}, [details, mode]);
 
   const clear2 = () => {
     setDetails({
@@ -1162,9 +1146,8 @@ function ViewLandlord() {
     });
   };
 
-
   // * ==============================
-  //  ! STATEMENTS PART   
+  //  ! STATEMENTS PART
   // * ==============================
   const [currentStatements, setCurrentStatements] = useState([]);
   const [viewStatement, setViewStatement] = useState({});
@@ -1196,7 +1179,7 @@ function ViewLandlord() {
   const getOneStatement = (bill) => {
     let acc = currentStatements.find((statement) => statement.id === bill);
     setActiveInvoice(acc);
-    showInvoice2()
+    showInvoice2();
   };
 
   useEffect(() => {
@@ -1204,15 +1187,21 @@ function ViewLandlord() {
   }, [statpage, statsize]);
 
   const getLanlordStatements = () => {
-    let data = { startDate: moment(statementdate.startDate).format("YYYY/MM/DD"), endDate: moment(statementdate.endDate).format("YYYY/MM/DD"), page: statpage, size: statsize, id: userId , entityType : "LANDLORD" };
+    let data = {
+      startDate: moment(statementdate.startDate).format("YYYY/MM/DD"),
+      endDate: moment(statementdate.endDate).format("YYYY/MM/DD"),
+      page: statpage,
+      size: statsize,
+      id: userId,
+      entityType: "LANDLORD",
+    };
     requestsServiceService.getLandlordStatements(data).then((res) => {
       setCurrentStatements(res.data.data);
-      setstatPageCount(res.data.totalPages)
+      setstatPageCount(res.data.totalPages);
     });
   };
 
-
-  // ! utilizing part 
+  // ! utilizing part
 
   const [utilData, setUtilData] = useState({
     newBillNo: "",
@@ -1281,7 +1270,6 @@ function ViewLandlord() {
     });
   };
 
-
   return (
     <>
       <div className="page-content">
@@ -1316,8 +1304,6 @@ function ViewLandlord() {
                       {landlord.firstName && landlord.lastName}
                     </li>
                   </ol> */}
-
-                
                 </div>
               </div>
             </div>
@@ -1426,7 +1412,6 @@ function ViewLandlord() {
                       </div>
                     </div>
                   </nav>
-
                 </div>
               </div>
             </div>
@@ -1971,7 +1956,11 @@ function ViewLandlord() {
                                               </span>
                                             )}
                                           </td>
-                                          <td>{moment(acc.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                                          <td>
+                                            {moment(acc.dateTimeCreated).format(
+                                              "YYYY-MM-DD HH:mm"
+                                            )}
+                                          </td>
 
                                           <td className="text-right cell-change ">
                                             <div className="d-flex align-items-center">
@@ -2121,7 +2110,11 @@ function ViewLandlord() {
                                                 </span>
                                               )}
                                             </td>
-                                            <td>{moment(doc.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                                            <td>
+                                              {moment(
+                                                doc.dateTimeCreated
+                                              ).format("YYYY-MM-DD HH:mm")}
+                                            </td>
 
                                             <td className="text-right cell-change ">
                                               <div className="d-flex align-items-center">
@@ -2275,7 +2268,6 @@ function ViewLandlord() {
                                   </td>
                                   <td class="the-msg the-msg-2">
                                     <span>{JSON.parse(com.data).text}</span>
-
                                   </td>
                                   <td class="text-capitalize d-none d-md-table-cell">
                                     {moment(com.dateTimeCreated).format(
@@ -2391,7 +2383,11 @@ function ViewLandlord() {
                                   <td className="text-danger">
                                     {premise.fileNumber}
                                   </td>
-                                  <td>{moment(premise.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                                  <td>
+                                    {moment(premise.dateTimeCreated).format(
+                                      "YYYY-MM-DD HH:mm"
+                                    )}
+                                  </td>
 
                                   <td>
                                     {premise.active ? (
@@ -2520,18 +2516,19 @@ function ViewLandlord() {
                           LandLord Settlements
                         </h4>
                         <div className="d-flex justify-content-end align-items-center">
-
                           <div className="d-flex">
                             <button
                               type="button"
                               className="btn btn-primary waves-effect btn-label waves-light me-3"
                               data-bs-toggle="modal"
-
                               data-bs-target="#add-sett"
-                              onClick={() => { setChargeId(""); setPeriodAlias("") }}
+                              onClick={() => {
+                                setChargeId("");
+                                setPeriodAlias("");
+                              }}
                             >
-                              <i className="mdi mdi-plus label-icon"></i>{" "}
-                              Add Settlement
+                              <i className="mdi mdi-plus label-icon"></i> Add
+                              Settlement
                             </button>
                           </div>
                         </div>
@@ -2568,17 +2565,44 @@ function ViewLandlord() {
                             {statements?.length > 0 &&
                               statements?.map((statement, index) => (
                                 <tr key={index}>
-                                  <td className="text-nowrap">{statement.reference}</td>
-                                  <td className="text-capitalize">{statement.premise.premiseName}</td>
-                                  <td className="text-capitalize text-nowrap">{statement.landLord.firstName} {statement.landLord.lastName}</td>
-                                  <td className="text-nowrap">{statement.landLordAgreementType.name}</td>
+                                  <td className="text-nowrap">
+                                    {statement.reference}
+                                  </td>
+                                  <td className="text-capitalize">
+                                    {statement.premise.premiseName}
+                                  </td>
+                                  <td className="text-capitalize text-nowrap">
+                                    {statement.landLord.firstName}{" "}
+                                    {statement.landLord.lastName}
+                                  </td>
+                                  <td className="text-nowrap">
+                                    {statement.landLordAgreementType.name}
+                                  </td>
                                   <td>{statement.clientCommissionRate} % </td>
-                                  <td>{formatCurrency.format(statement.clientCommission)}</td>
-                                  <td>{formatCurrency.format(statement.totalDebitNotes)}</td>
-                                  <td>{formatCurrency.format(statement.amountPaidOut)}</td>
+                                  <td>
+                                    {formatCurrency.format(
+                                      statement.clientCommission
+                                    )}
+                                  </td>
+                                  <td>
+                                    {formatCurrency.format(
+                                      statement.totalDebitNotes
+                                    )}
+                                  </td>
+                                  <td>
+                                    {formatCurrency.format(
+                                      statement.amountPaidOut
+                                    )}
+                                  </td>
                                   <td className="text-right text-nowrap">
-                                    <Link to={"/landord-statements/" + statement.reference}>
-                                      <button type="button"
+                                    <Link
+                                      to={
+                                        "/landord-statements/" +
+                                        statement.reference
+                                      }
+                                    >
+                                      <button
+                                        type="button"
                                         className="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                       >
                                         View Details
@@ -2594,10 +2618,12 @@ function ViewLandlord() {
                                 className="text-capitalize text-nowrap"
                                 colSpan="3"
                               >
-                                {statements && statements?.length}{" "}
-                                Settlements
+                                {statements && statements?.length} Settlements
                               </th>
-                              <td className="text-nowrap text-right" colSpan="7">
+                              <td
+                                className="text-nowrap text-right"
+                                colSpan="7"
+                              >
                                 <span className="fw-semibold">
                                   {/*{formatCurrency.format(total())}*/}
                                 </span>
@@ -2642,7 +2668,9 @@ function ViewLandlord() {
                                   nextClassName="page-item"
                                   nextLinkClassName="page-link"
                                   activeClassName="active"
-                                  onPageChange={(data) => handlePageClick2(data)}
+                                  onPageChange={(data) =>
+                                    handlePageClick2(data)
+                                  }
                                 />
                               </nav>
                             </>
@@ -2655,7 +2683,11 @@ function ViewLandlord() {
                               {pageCount2 === 0 ? page2 : page2 + 1}
                             </span>{" "}
                             of
-                            <span className="text-primary"> {pageCount2}</span> pages
+                            <span className="text-primary">
+                              {" "}
+                              {pageCount2}
+                            </span>{" "}
+                            pages
                           </p>
                         )}
                       </div>
@@ -2664,13 +2696,10 @@ function ViewLandlord() {
                 </div>
               </div>
             </div>
+          )}
 
-          )
-          }
-
-          {activeLink === 7 &&
+          {activeLink === 7 && (
             <>
-
               <div className="">
                 <div className="container-fluid">
                   <Message details={details} mode={mode} clear={clear2} />
@@ -2694,7 +2723,9 @@ function ViewLandlord() {
                                       type="text"
                                       className="form-control"
                                       placeholder="Search..."
-                                      onChange={(e) => setSearchTerm(e.target.value)}
+                                      onChange={(e) =>
+                                        setSearchTerm(e.target.value)
+                                      }
                                     />
                                     <span className="bx bx-search-alt"></span>
                                   </div>
@@ -2719,11 +2750,16 @@ function ViewLandlord() {
                                     startDate={moment(date.startDate).format(
                                       "YYYY-MM-DD"
                                     )}
-                                    endDate={moment(date.endDate).format("YYYY-MM-DD")}
+                                    endDate={moment(date.endDate).format(
+                                      "YYYY-MM-DD"
+                                    )}
                                   />
                                 </div>
                               </div>
-                              <button className="btn btn-primary" onClick={sort2}>
+                              <button
+                                className="btn btn-primary"
+                                onClick={sort2}
+                              >
                                 filter
                               </button>
                             </div>
@@ -2731,10 +2767,7 @@ function ViewLandlord() {
                         </div>
                         <div className="card-body">
                           <div className="table-responsive">
-                            <table
-                              className="table align-middle table-hover  contacts-table table-striped "
-
-                            >
+                            <table className="table align-middle table-hover  contacts-table table-striped ">
                               <thead className="table-light">
                                 <tr className="table-light">
                                   <th>Invoice No</th>
@@ -2760,24 +2793,32 @@ function ViewLandlord() {
                                       <td>{invoice.billerBillNo}</td>
                                       <td>{invoice.transaction?.tenantName}</td>
                                       <td>{invoice.transaction.premiseName}</td>
-                                      <td>{invoice.transaction.premiseUnitName}</td>
+                                      <td>
+                                        {invoice.transaction.premiseUnitName}
+                                      </td>
                                       <td>{invoice.applicableChargeName}</td>
                                       <td>
-                                        {formatCurrency.format(invoice.billAmount)}
+                                        {formatCurrency.format(
+                                          invoice.billAmount
+                                        )}
                                       </td>
                                       <td>
-                                        {formatCurrency.format(invoice.billPaidAmount)}
+                                        {formatCurrency.format(
+                                          invoice.billPaidAmount
+                                        )}
                                       </td>
                                       <td className={"text-right"}>
                                         <span
                                           className={
-                                            invoice.billPaidAmount > invoice.billAmount
+                                            invoice.billPaidAmount >
+                                            invoice.billAmount
                                               ? "fw-semibold text-success"
                                               : "fw-semibold text-danger"
                                           }
                                         >
                                           {formatCurrency.format(
-                                            invoice.billAmount - invoice.billPaidAmount
+                                            invoice.billAmount -
+                                              invoice.billPaidAmount
                                           )}
                                         </span>
                                       </td>
@@ -2787,7 +2828,9 @@ function ViewLandlord() {
                                         )}
                                       </td>
                                       <td>
-                                        <StatusBadge type={invoice?.paymentStatus} />
+                                        <StatusBadge
+                                          type={invoice?.paymentStatus}
+                                        />
                                       </td>
                                       <td>
                                         {moment(invoice.dateTimeCreated).format(
@@ -2821,7 +2864,10 @@ function ViewLandlord() {
                                                 className="dropdown-item cursor-pointer"
                                                 onClick={() => {
                                                   handleModeChange("Email");
-                                                  handleClicked(invoice, "Email");
+                                                  handleClicked(
+                                                    invoice,
+                                                    "Email"
+                                                  );
                                                 }}
                                               >
                                                 <i className="font-size-15 mdi mdi-email me-3 "></i>
@@ -2844,7 +2890,6 @@ function ViewLandlord() {
                                     </tr>
                                   ))}
                               </tbody>
-
                             </table>
                           </div>
                           <div className="d-flex justify-content-between align-items-center">
@@ -2884,7 +2929,9 @@ function ViewLandlord() {
                                     nextClassName="page-item"
                                     nextLinkClassName="page-link"
                                     activeClassName="active"
-                                    onPageChange={(data) => handlePageClick3(data)}
+                                    onPageChange={(data) =>
+                                      handlePageClick3(data)
+                                    }
                                     forcePage={page3}
                                   />
                                 </nav>
@@ -2897,7 +2944,12 @@ function ViewLandlord() {
                               <span className="text-primary">
                                 {pageCount3 === 0 ? page : page3 + 1}
                               </span>{" "}
-                              of<span className="text-primary"> {pageCount3}</span> pages
+                              of
+                              <span className="text-primary">
+                                {" "}
+                                {pageCount3}
+                              </span>{" "}
+                              pages
                             </p>
                           )}
                         </div>
@@ -2908,10 +2960,13 @@ function ViewLandlord() {
               </div>
 
               {/*VIEW INVOICE*/}
-              <ViewInvoice show={invoice_show} closeInvoice={closeInvoice} activeInvoice={activeInvoice} />
-
+              <ViewInvoice
+                show={invoice_show}
+                closeInvoice={closeInvoice}
+                activeInvoice={activeInvoice}
+              />
             </>
-          }
+          )}
           {activeLink === 8 && (
             <>
               <div className="row">
@@ -2964,20 +3019,19 @@ function ViewLandlord() {
                               currentStatements?.map((statement, index) => (
                                 <tr data-id={index} key={index}>
                                   <td>
-                                    {
-                                      JSON.parse(statement.response).billNo
-
-                                    }
+                                    {JSON.parse(statement.response).billNo}
                                   </td>
                                   <td>
-                                    {formatCurrency.format(statement.receiptAmount)}
+                                    {formatCurrency.format(
+                                      statement.receiptAmount
+                                    )}
                                   </td>
                                   <td>{statement.payReferenceNo}</td>
                                   <td>{statement.paymentMode}</td>
                                   <td>{statement.paidBy}</td>
                                   <td>
                                     {statement?.tenant?.tenantType ===
-                                      "INDIVIDUAL" ? (
+                                    "INDIVIDUAL" ? (
                                       <>
                                         {statement?.tenant?.firstName}{" "}
                                         {statement?.tenant?.lastName}
@@ -3020,20 +3074,20 @@ function ViewLandlord() {
                                           </span>
                                           {statement.utilisedAmount <
                                             statement.receiptAmount && (
-                                              <a
-                                                className="dropdown-item  cursor-pointer"
-                                                onClick={() => {
-                                                  handleShow();
-                                                  setUtilizeValues(
-                                                    statement?.id,
-                                                    statement?.tenant?.id
-                                                  );
-                                                }}
-                                              >
-                                                <i className="font-size-15 mdi mdi-account-check me-3 "></i>
-                                                Utilize
-                                              </a>
-                                            )}
+                                            <a
+                                              className="dropdown-item  cursor-pointer"
+                                              onClick={() => {
+                                                handleShow();
+                                                setUtilizeValues(
+                                                  statement?.id,
+                                                  statement?.tenant?.id
+                                                );
+                                              }}
+                                            >
+                                              <i className="font-size-15 mdi mdi-account-check me-3 "></i>
+                                              Utilize
+                                            </a>
+                                          )}
                                         </div>
                                       </div>
                                     </div>
@@ -3050,7 +3104,10 @@ function ViewLandlord() {
                                 {currentStatements && currentStatements?.length}{" "}
                                 Statements
                               </th>
-                              <td className="text-nowrap text-right" colSpan="7">
+                              <td
+                                className="text-nowrap text-right"
+                                colSpan="7"
+                              >
                                 <span className="fw-semibold">
                                   {/*{formatCurrency.format(total())}*/}
                                 </span>
@@ -3095,7 +3152,9 @@ function ViewLandlord() {
                                   nextClassName="page-item"
                                   nextLinkClassName="page-link"
                                   activeClassName="active"
-                                  onPageChange={(data) => handleStatPageClick(data)}
+                                  onPageChange={(data) =>
+                                    handleStatPageClick(data)
+                                  }
                                 />
                               </nav>
                             </>
@@ -3108,7 +3167,11 @@ function ViewLandlord() {
                               {statpageCount === 0 ? statpage : statpage + 1}
                             </span>{" "}
                             of
-                            <span className="text-primary"> {statpageCount}</span> pages
+                            <span className="text-primary">
+                              {" "}
+                              {statpageCount}
+                            </span>{" "}
+                            pages
                           </p>
                         )}
                       </div>
@@ -3118,15 +3181,19 @@ function ViewLandlord() {
               </div>
 
               {/*VIEW INVOICE*/}
-              <Modal show={invoice_show2} onHide={closeInvoice2} size="lg" centered>
+              <Modal
+                show={invoice_show2}
+                onHide={closeInvoice2}
+                size="lg"
+                centered
+              >
                 <Modal.Header closeButton>
                   <h5 className="modal-title" id="myLargeModalLabel">
                     Statement Details
                   </h5>
                 </Modal.Header>
                 <Modal.Body>
-                  <div className="col-12">
-                  </div>
+                  <div className="col-12"></div>
                   <div className="col-12">
                     <div className="py-2 mt-3">
                       <h3 className="font-size-15 fw-bold">
@@ -3155,13 +3222,17 @@ function ViewLandlord() {
                           <tr>
                             <td>{activeInvoice?.billNo}</td>
                             <td>
-                              {formatCurrency.format(activeInvoice?.receiptAmount)}
+                              {formatCurrency.format(
+                                activeInvoice?.receiptAmount
+                              )}
                             </td>
                             <td>{activeInvoice?.payReferenceNo}</td>
                             <td>{activeInvoice?.paymentMode}</td>
                             <td>{activeInvoice?.paidBy}</td>
                             <td>
-                              {formatCurrency.format(activeInvoice?.utilisedAmount)}
+                              {formatCurrency.format(
+                                activeInvoice?.utilisedAmount
+                              )}
                             </td>
                           </tr>
                         </tbody>
@@ -3187,7 +3258,10 @@ function ViewLandlord() {
                         className="form-control"
                         value={utilData.newBillNo}
                         onChange={(e) =>
-                          setUtilData({ ...utilData, newBillNo: e.target.value })
+                          setUtilData({
+                            ...utilData,
+                            newBillNo: e.target.value,
+                          })
                         }
                         placeholder="Enter Bill No "
                         required
@@ -3204,9 +3278,7 @@ function ViewLandlord() {
                 </form>
               </Modal>
             </>
-          )
-
-          }
+          )}
 
           {/*edit landlord modals*/}
           <Modal
@@ -3300,7 +3372,6 @@ function ViewLandlord() {
                           seteditlandlordremuneration(e.target.value)
                         }
                         className="form-control"
-                       
                       />
                     </div>
                     <div className="form-group mb-4">
@@ -3313,18 +3384,19 @@ function ViewLandlord() {
                         value={editagreementperiod}
                         onChange={(e) => seteditagreementperiod(e.target.value)}
                         className="form-control"
-                       
                       />
                     </div>
                     <div className="form-group mb-4">
                       <label htmlFor="">
-                      InvoicePaymentPriority{" "}
+                        InvoicePaymentPriority{" "}
                         <strong className="text-danger ">*</strong>
                       </label>
                       <input
                         type="text"
                         value={invoicePaymentPriority}
-                        onChange={(e) => setInvoicePaymentPriority(e.target.value)}
+                        onChange={(e) =>
+                          setInvoicePaymentPriority(e.target.value)
+                        }
                         className="form-control"
                         required={true}
                       />
@@ -3574,7 +3646,7 @@ function ViewLandlord() {
             </form>
           </Modal>
           {/*add accounts modal*/}
-          < Modal
+          <Modal
             show={show_doc}
             onHide={docclose}
             className={"modal fade"}
@@ -3610,7 +3682,9 @@ function ViewLandlord() {
                                 key={bank.id}
                                 value={bank.id + ":" + bank.bankName}
                               >
-                                {bank.bankName?.toLowerCase()?.replace(/_/g, " ")}
+                                {bank.bankName
+                                  ?.toLowerCase()
+                                  ?.replace(/_/g, " ")}
                               </option>
                             );
                           })}
@@ -3666,9 +3740,9 @@ function ViewLandlord() {
                 </Button>
               </Modal.Footer>
             </form>
-          </Modal >
+          </Modal>
           {/*add documents*/}
-          < Modal
+          <Modal
             show={docShow}
             onHide={handleDocClose}
             className={"modal fade"}
@@ -3710,7 +3784,8 @@ function ViewLandlord() {
                     </div>
                     <div className="form-group mb-4">
                       <label htmlFor="">
-                        Document Name. <strong className="text-danger ">*</strong>
+                        Document Name.{" "}
+                        <strong className="text-danger ">*</strong>
                       </label>
                       <input
                         type="text"
@@ -3763,7 +3838,7 @@ function ViewLandlord() {
                 </Button>
               </Modal.Footer>
             </form>
-          </Modal >
+          </Modal>
           <div
             className="modal fade"
             id="confirm-deactivate"
@@ -3856,12 +3931,11 @@ function ViewLandlord() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-
                   }}
                 >
                   <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">
-                      new  settlement
+                      new settlement
                     </h5>
                     <button
                       type="button"
@@ -3873,7 +3947,6 @@ function ViewLandlord() {
 
                   <div class="modal-body">
                     <div class="row">
-
                       <div class="col-12">
                         <label for="">
                           Charges <strong class="text-danger">*</strong>
@@ -3885,15 +3958,13 @@ function ViewLandlord() {
                           onChange={(e) => setChargeId(e.target.value)}
                         >
                           <option value=""> Charges</option>
-                          {
-                            charges?.map((cou, index) => {
-
-                              return (
-                                <option key={index} value={cou.id}>
-                                  {cou.name}
-                                </option>
-                              );
-                            })}
+                          {charges?.map((cou, index) => {
+                            return (
+                              <option key={index} value={cou.id}>
+                                {cou.name}
+                              </option>
+                            );
+                          })}
                         </select>
                       </div>
                       <div>
@@ -3901,17 +3972,33 @@ function ViewLandlord() {
                         <div className="d-flex">
                           <div className="form-group m-2">
                             <label htmlFor="">Select year</label>
-                            <select value={year} name="" id="" onChange={(e) => setYear(e.target.value)} className={"form-control"}>
+                            <select
+                              value={year}
+                              name=""
+                              id=""
+                              onChange={(e) => setYear(e.target.value)}
+                              className={"form-control"}
+                            >
                               {yearArray?.map((year) => (
-                                <option value={year} key={year}>{year}</option>
+                                <option value={year} key={year}>
+                                  {year}
+                                </option>
                               ))}
                             </select>
                           </div>
                           <div className="form-group m-2">
                             <label htmlFor="">Select Month</label>
-                            <select name="" id="" value={month} onChange={(e) => setMonth(e.target.value)} className={"form-control"}>
+                            <select
+                              name=""
+                              id=""
+                              value={month}
+                              onChange={(e) => setMonth(e.target.value)}
+                              className={"form-control"}
+                            >
                               {months?.map((month) => (
-                                <option value={month} key={month}>{month}</option>
+                                <option value={month} key={month}>
+                                  {month}
+                                </option>
                               ))}
                             </select>
                           </div>
@@ -3919,13 +4006,22 @@ function ViewLandlord() {
                       </div>
                       <div className="form-group">
                         <label htmlFor="">Start Date</label>
-                        <input type="text" className={"form-control"} value={moment(sDate).format("LL")} disabled />
+                        <input
+                          type="text"
+                          className={"form-control"}
+                          value={moment(sDate).format("LL")}
+                          disabled
+                        />
                       </div>
                       <div className="form-group">
                         <label htmlFor="">End Date</label>
-                        <input type="text" className={"form-control"} value={moment(eDate).format("LL")} disabled />
+                        <input
+                          type="text"
+                          className={"form-control"}
+                          value={moment(eDate).format("LL")}
+                          disabled
+                        />
                       </div>
-
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -3936,8 +4032,12 @@ function ViewLandlord() {
                     >
                       Close
                     </button>
-                    <button type="button" class="btn btn-primary"
-                      data-bs-dismiss="modal" onClick={() => settlement()}>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-dismiss="modal"
+                      onClick={() => settlement()}
+                    >
                       Save
                     </button>
                   </div>
@@ -3945,7 +4045,6 @@ function ViewLandlord() {
               </div>
             </div>
           </div>
-
 
           {/* confirm ACCOUNT  */}
           <div
@@ -4033,9 +4132,8 @@ function ViewLandlord() {
             {/* <!-- apexcharts --> */}
             <script src="./assets/libs/apexcharts/apexcharts.min.js "></script>
           </Helmet>
-
-        </div >
-      </div >
+        </div>
+      </div>
     </>
   );
 }

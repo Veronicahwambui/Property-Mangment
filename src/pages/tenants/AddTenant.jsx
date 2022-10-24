@@ -72,7 +72,7 @@ function AddTenant() {
 
   const getAllDocumentTypes = () => {
     requestsServiceService
-      .allDocumentTypes("TENANT")
+      .allDocumentTypes("TENANT", true)
       .then((res) => setDocumentTypes(res.data.data));
   };
 

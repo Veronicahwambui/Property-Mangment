@@ -570,7 +570,7 @@ function Properties() {
   const [editDocTypeName, setEditDocTypeName] = useState("");
 
   const fetchAllDocument = () => {
-    requestsServiceService.allDocumentTypes("PREMISE").then((res) => {
+    requestsServiceService.allDocumentTypes("PREMISE", true).then((res) => {
       setDocumentTypes(res.data.data != null ? res.data.data : []);
     });
   };
