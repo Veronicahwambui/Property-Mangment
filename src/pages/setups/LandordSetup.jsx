@@ -1364,8 +1364,8 @@ function LandlordSetup() {
                           setManualVal(e.target.value);
                         }}
                       >
-                        <option value="true">Yes</option>
-                        <option value="false" selected>No</option>
+                        <option value="No">Yes</option>
+                        <option value="Yes" selected>No</option>
                       </select>
                     </div>
                     <div class="col-12">
