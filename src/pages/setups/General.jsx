@@ -157,7 +157,7 @@ function IssuesTypes() {
       setSenderId(res.data.data.client.senderId);
       setsettlementPeriod(res.data.data.client.landlordSettlementPeriod)
       setvisitationChargeDay(res.data.data.client.visitationChargeDay)
-      setvisitationChargeId(res.data.data.client.visitationCharge)
+      setvisitationChargeId(res.data.data.client.visitationCharge.id)
       setPTaxRate(res.data.data.client.propertyTaxRate)
       setPropertyTaxChargeId(res.data.data.client.propertyTaxCharge.id)
       
