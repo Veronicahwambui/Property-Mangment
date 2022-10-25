@@ -357,11 +357,10 @@ function AddProperties() {
   };
 
   const getAllApplicableCharges = () => {
-    requestsServiceService.allApplicableCharges("TENANT").then((res) =>
-      setApplicableCharges(res.data.data),
-
-    )
-  }
+    requestsServiceService
+      .allApplicableCharges("TENANT")
+      .then((res) => setApplicableCharges(res.data.data));
+  };
 
   const fetchTypes = () => {
     requestsServiceService.allApplicableCharges("TENANT").then((res) => {
@@ -370,11 +369,10 @@ function AddProperties() {
   };
 
   const getAllUnitTypes = () => {
-    requestsServiceService.allUnitTypes().then((res) =>
-      setUnitTypes(res.data.data)
-
-    )
-  }
+    requestsServiceService
+      .allUnitTypes()
+      .then((res) => setUnitTypes(res.data.data));
+  };
   const [tenancyStatuses, setTenancyStatuses] = useState([]);
   const getAllTenancyStatuses = () => {
     requestsServiceService.getTenancyStatuses().then((res) => {
@@ -396,18 +394,17 @@ function AddProperties() {
     requestsServiceService.allApplicableCharges("TENANT").then((res) => {
       setAC(res.data.data);
     });
-    getEstates()
-    getAgreementTypes()
-    getPremiseTypes()
-    getPremiseUseTypes()
-    getAllDocumentTypes()
-    getAllApplicableCharges()
-    getAllUnitTypes()
-    getAllTenancyStatuses()
-    getCaretakerType()
-    fetchTypes()
-
-  }, [])
+    getEstates();
+    getAgreementTypes();
+    getPremiseTypes();
+    getPremiseUseTypes();
+    getAllDocumentTypes();
+    getAllApplicableCharges();
+    getAllUnitTypes();
+    getAllTenancyStatuses();
+    getCaretakerType();
+    fetchTypes();
+  }, []);
 
   const toogleShowNewDocumentModal = (event) => {
     setShowDocumentModal(!showDocumentModal);
@@ -569,9 +566,9 @@ function AddProperties() {
           invoicePaymentPriority:
             selectedItems.length > 0
               ? selectedItems
-                .map((a) => a.id)
-                .join("-")
-                .toString()
+                  .map((a) => a.id)
+                  .join("-")
+                  .toString()
               : "",
         });
       }
@@ -586,11 +583,7 @@ function AddProperties() {
     setselectedItems([...selectedItems.filter((item) => item.id !== x)]);
   };
 
-
-
-
   // =======Property==================
-
 
   const [createName, setCreateName] = useState("");
   const [createNames, setCreateNames] = useState("");
@@ -696,7 +689,7 @@ function AddProperties() {
           cleared();
         }, 3000);
       });
-  }
+  };
   const cleared = () => {
     setError({
       ...error,
@@ -706,7 +699,6 @@ function AddProperties() {
   };
 
   // ========Add Unit  types=======
-
 
   const [createNam, setCreateNam] = useState("");
   const [numberOfRooms, setNumberOfRooms] = useState("");
@@ -790,7 +782,6 @@ function AddProperties() {
 
     setSelectedChargeTypes(userGroups);
   };
-
 
   return (
     <>
@@ -1024,61 +1015,66 @@ function AddProperties() {
                             </div>
                           </div>
 
-                          <div class="col-lg-3 col-md-6 ">
+                          <div class="col-lg-4 col-md-6">
+                            <div className="d-flex gap-2 align-items-end w-100 justify-content-between">
+                              <div className="w-75">
+                                <label for="basicpill-lastname-input ">
+                                  Properties Type{" "}
+                                  <strong class="text-danger ">*</strong>
+                                </label>
 
-                            <div class="mb-4 ">
+                                <select
+                                  class="form-control text-capitalize"
+                                  title="Select Building type "
+                                  name="premiseTypeId"
+                                  onChange={handleGeneral}
+                                >
+                                  <option>select property type </option>
+                                  <div className="form-group">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                    />
+                                    
+                                  </div>
 
-
-
-                              <label for="basicpill-lastname-input ">
-                                Properties Type{" "}
-                                <strong class="text-danger ">*</strong>
-                              </label>
-
-                              <select
-                                class="form-control text-capitalize"
-                                title="Select Building type "
-                                name="premiseTypeId"
-                                onChange={handleGeneral}
-                              >
-                                <option>select property type </option>
-                                <div className="form-group">
-                                  <input type="text" className="form-control" />
-
-
-                                </div>
-
-
-
-
-
-                                {premiseTypes && premiseTypes?.sort((a, b) => a.name.localeCompare(b.name))?.map((type) => (
-                                  <option value={type.id} className="text-capitalize" > {type.name}</option>
-                                ))}
-
-                              </select>
-
-
-
-                            </div>
-                            <div className="md-2">
-                              <button className="btn btn-primary btn-sm mt-4" data-bs-toggle="modal"
-                                data-bs-target="#add-new-property"> Add New</button>
+                                  {premiseTypes &&
+                                    premiseTypes
+                                      ?.sort((a, b) =>
+                                        a.name.localeCompare(b.name)
+                                      )
+                                      ?.map((type) => (
+                                        <option
+                                          value={type.id}
+                                          className="text-capitalize"
+                                        >
+                                          {" "}
+                                          {type.name}
+                                        </option>
+                                      ))}
+                                </select>
+                              </div>
+                              <div className="">
+                              <button
+                                className="btn btn-primary text-nowrap btn-sm py-2 w-100"
+                                data-bs-toggle="modal"
+                                data-bs-target="#add-new-property"
+                              > <i class="mdi mdi-plus label-icon"></i>
+                                Property Type
+                              </button>
+                              </div>
                             </div>
                           </div>
 
-
-
-
-
                           <div class="col-lg-4 col-md-6 ">
-                            <div class="mb-4 ">
+                            <div className="d-flex gap-2 align-items-end justify-content-between w-100">
+                            <div class="w-75">
                               <label for="basicpill-lastname-input ">
                                 Property Use type
                                 <strong class="text-danger ">*</strong>
                               </label>
                               <select
-                                class="form-control text-capitalize "
+                                class="form-control text-capitalize"
                                 title="Select Premise use type "
                                 name="premiseUseTypeId"
                                 onChange={handleGeneral}
@@ -1100,12 +1096,20 @@ function AddProperties() {
                                     ))}
                               </select>
 
-                              <div className="d-flex align-itens-center justify-content-around">
-                                <button className="btn btn-primary btn-sm mt-4" data-bs-toggle="modal"
-                                  data-bs-target="#add-new-premise"> Add New</button>
+                            </div>
+                              <div className="">
+                                <button
+                                  className="btn  text-nowrap btn-primary btn-sm py-2"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#add-new-premise"
+                                ><i class="mdi mdi-plus label-icon"></i>
+                  
+                                  Proprty Use Type
+                                </button>
                               </div>
                             </div>
                           </div>
+
                           <div className="col-lg-4 col-md-6 ">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-lastname-input ">
@@ -1131,8 +1135,8 @@ function AddProperties() {
                                         {t === "CURRENT"
                                           ? "Occupied"
                                           : t === "OPEN"
-                                            ? "Vaccant"
-                                            : t
+                                          ? "Vaccant"
+                                          : t
                                               ?.toLowerCase()
                                               ?.replace(/_/g, " ")}
                                       </option>
@@ -1435,8 +1439,8 @@ function AddProperties() {
                                             {item === "SELF_COMMISSIONED"
                                               ? "Agent Commissioned"
                                               : item
-                                                ?.toLowerCase()
-                                                ?.replace(/_/g, " ")}
+                                                  ?.toLowerCase()
+                                                  ?.replace(/_/g, " ")}
                                           </option>
                                         ))}
                                       </select>
@@ -1533,18 +1537,22 @@ function AddProperties() {
                               Units/ Hse Types on offer At the properties
                             </p>
                           </div>
-
-
                         </div>
 
-
-                        <button onClick={() => {
-                          setMonthCountForTenancyRenewal("");
-                          setPurpose("");
-                          setNumberOfRooms("");
-                          setSquarage("");
-                        }} className="btn btn-primary btn-sm mt-4" data-bs-toggle="modal"
-                          data-bs-target="#add-new-unit"> Add New</button>
+                        <button
+                          onClick={() => {
+                            setMonthCountForTenancyRenewal("");
+                            setPurpose("");
+                            setNumberOfRooms("");
+                            setSquarage("");
+                          }}
+                          className="btn btn-primary btn-sm mt-4"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-new-unit"
+                        ><i class="mdi mdi-plus label-icon"></i>
+                          {" "}
+                          Unit Type
+                        </button>
 
                         <div class="row">
                           {unitTypes &&
@@ -1661,26 +1669,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "MONTHLY_CHARGE" && (
-                                            <div class="col-6">
-                                              <div class="form-check form-check-primary mb-3">
-                                                <input
-                                                  class="form-check-input"
-                                                  type="checkbox"
-                                                  name="monthlyCharges"
-                                                  value={charge.id}
-                                                  onChange={
-                                                    selectedApplicableChargeChange
-                                                  }
-                                                />
-                                                <label
-                                                  class="form-check-label"
-                                                  for="monthlyRent"
-                                                >
-                                                  {charge.name}
-                                                </label>
-                                              </div>
+                                          <div class="col-6">
+                                            <div class="form-check form-check-primary mb-3">
+                                              <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="monthlyCharges"
+                                                value={charge.id}
+                                                onChange={
+                                                  selectedApplicableChargeChange
+                                                }
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="monthlyRent"
+                                              >
+                                                {charge.name}
+                                              </label>
                                             </div>
-                                          )}
+                                          </div>
+                                        )}
                                       </>
                                     ))}
                               </div>
@@ -1699,26 +1707,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "DEPOSIT_CHARGE" && (
-                                            <div class="col-6">
-                                              <div class="form-check form-check-primary mb-3">
-                                                <input
-                                                  class="form-check-input"
-                                                  type="checkbox"
-                                                  name="monthlyRent"
-                                                  value={charge.id}
-                                                  onChange={
-                                                    selectedApplicableChargeChange
-                                                  }
-                                                />
-                                                <label
-                                                  class="form-check-label"
-                                                  for="monthlyRent"
-                                                >
-                                                  {charge.name}
-                                                </label>
-                                              </div>
+                                          <div class="col-6">
+                                            <div class="form-check form-check-primary mb-3">
+                                              <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="monthlyRent"
+                                                value={charge.id}
+                                                onChange={
+                                                  selectedApplicableChargeChange
+                                                }
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="monthlyRent"
+                                              >
+                                                {charge.name}
+                                              </label>
                                             </div>
-                                          )}
+                                          </div>
+                                        )}
                                       </>
                                     ))}
                               </div>
@@ -2440,9 +2448,6 @@ function AddProperties() {
         </ModalBody>
       </Modal>
 
-
-
-
       {/* /====Property model */}
 
       {/* create modal */}
@@ -2549,8 +2554,7 @@ function AddProperties() {
                     <div class="form-group mb-4">
                       <label for="">
                         {" "}
-                        Property Use Type{" "}
-                        <strong class="text-danger">*</strong>
+                        Property Use Type <strong class="text-danger">*</strong>
                       </label>
                       <input
                         required
@@ -2619,8 +2623,7 @@ function AddProperties() {
                   <div class="col-12">
                     <div class="form-group mb-4">
                       <label for="">
-                        Unit Type Name{" "}
-                        <strong class="text-danger">*</strong>
+                        Unit Type Name <strong class="text-danger">*</strong>
                       </label>
                       <input
                         required
@@ -2681,9 +2684,7 @@ function AddProperties() {
                       type="text"
                       value={numberOfRooms}
                       className="form-control"
-                      onChange={(event) =>
-                        setNumberOfRooms(event.target.value)
-                      }
+                      onChange={(event) => setNumberOfRooms(event.target.value)}
                     />
                   </div>
                   <div className="form-group">
@@ -2702,8 +2703,7 @@ function AddProperties() {
 
                   <div className="form-group">
                     <label htmlFor="">
-                      Months to renewal{" "}
-                      <strong class="text-danger">*</strong>
+                      Months to renewal <strong class="text-danger">*</strong>
                     </label>
                     <input
                       required

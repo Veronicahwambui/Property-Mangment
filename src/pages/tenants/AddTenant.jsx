@@ -882,7 +882,8 @@ function AddTenant() {
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="maritalStatus"
                               >
-                                <option></option>
+                            <option value={""}>Select Marital Status</option>
+
                                 <option selected value="Single">
                                   Single
                                 </option>
@@ -938,6 +939,8 @@ function AddTenant() {
                                 name="occupation"
                                 required
                               >
+                             <option value={""}>Select Occupation</option>
+
                                 <option value="employed">Employed</option>
                                 <option value="student">Student</option>
                                 <option value="pension">Pension</option>
