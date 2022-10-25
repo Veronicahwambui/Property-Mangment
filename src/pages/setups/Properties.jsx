@@ -2457,7 +2457,7 @@ function Properties() {
                       onChange={(e) => setEditDocTypeName(e.target.value)}
                       type="text"
                       className="form-control"
-                      placeholder="Enter document type"
+                      placeholder="Enter document type name"
                     />
                   </div>
                 </div>
