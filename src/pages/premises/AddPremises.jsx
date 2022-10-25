@@ -1015,8 +1015,9 @@ function AddProperties() {
                             </div>
                           </div>
 
-                          <div class="col-lg-4 col-md-6 ">
-                              <div className="mb-0">
+                          <div class="col-lg-4 col-md-6">
+                            <div className="d-flex gap-2 align-items-end w-100 justify-content-between">
+                              <div className="w-75">
                                 <label for="basicpill-lastname-input ">
                                   Properties Type{" "}
                                   <strong class="text-danger ">*</strong>
@@ -1053,26 +1054,27 @@ function AddProperties() {
                                       ))}
                                 </select>
                               </div>
-                              <div className="d-flex align-itens-center mb-3">
+                              <div className="">
                               <button
-                                className="btn btn-primary btn-sm mt-3 w-100"
+                                className="btn btn-primary text-nowrap btn-sm py-2 w-100"
                                 data-bs-toggle="modal"
                                 data-bs-target="#add-new-property"
                               > <i class="mdi mdi-plus label-icon"></i>
-                                {" "}
                                 Property Type
                               </button>
                               </div>
+                            </div>
                           </div>
 
                           <div class="col-lg-4 col-md-6 ">
-                            <div class="mb-0">
+                            <div className="d-flex gap-2 align-items-end justify-content-between w-100">
+                            <div class="w-75">
                               <label for="basicpill-lastname-input ">
                                 Property Use type
                                 <strong class="text-danger ">*</strong>
                               </label>
                               <select
-                                class="form-control text-capitalize "
+                                class="form-control text-capitalize"
                                 title="Select Premise use type "
                                 name="premiseUseTypeId"
                                 onChange={handleGeneral}
@@ -1095,16 +1097,17 @@ function AddProperties() {
                               </select>
 
                             </div>
-                              <div className="d-flex align-itens-center">
+                              <div className="">
                                 <button
-                                  className="btn btn-primary btn-sm mt-3 w-100"
+                                  className="btn  text-nowrap btn-primary btn-sm py-2"
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-premise"
                                 ><i class="mdi mdi-plus label-icon"></i>
-                                  {" "}
-                                  Proprty Use Type{" "}
+                  
+                                  Proprty Use Type
                                 </button>
                               </div>
+                            </div>
                           </div>
 
                           <div className="col-lg-4 col-md-6 ">
