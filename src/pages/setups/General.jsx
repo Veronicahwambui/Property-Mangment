@@ -461,7 +461,7 @@ function IssuesTypes() {
       active: true,
       clientId: authService.getClientId(),
       countyId: selectedCounty,
-      id: 0,
+      id: null,
     });
 
     requestsServiceService
@@ -585,7 +585,7 @@ function IssuesTypes() {
     let data = JSON.stringify({
       active: true,
       clientCountyId: parseInt(selectedCounty),
-      id: 0,
+      id: null,
       name: zoneName,
     });
 
