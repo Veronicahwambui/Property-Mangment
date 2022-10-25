@@ -1058,10 +1058,11 @@ function AddProperties() {
                               </div>
                               <div className="">
                               <button
-                                className="btn btn-primary text-nowrap btn-sm py-2 w-100"
+                                className="btn btn-primary text-nowrap btn-sm py-2 w-100 waves-effect btn-label waves-light me-3"
+                                type="button" 
                                 data-bs-toggle="modal"
                                 data-bs-target="#add-new-property"
-                              > <i class="mdi mdi-plus label-icon"></i>
+                              > <i className="mdi mdi-plus label-icon"></i> 
                                 Property Type
                               </button>
                               </div>
@@ -1101,7 +1102,8 @@ function AddProperties() {
                             </div>
                               <div className="">
                                 <button
-                                  className="btn  text-nowrap btn-primary btn-sm py-2"
+                                 className="btn btn-primary text-nowrap btn-sm py-2 w-100 waves-effect btn-label waves-light me-3"
+                                 type="button" 
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-premise"
                                 ><i class="mdi mdi-plus label-icon"></i>
@@ -1548,7 +1550,8 @@ function AddProperties() {
                             setNumberOfRooms("");
                             setSquarage("");
                           }}
-                          className="btn btn-primary btn-sm mt-4"
+                          type="button" className="btn btn-primary waves-effect btn-label waves-light me-3"
+                      
                           data-bs-toggle="modal"
                           data-bs-target="#add-new-unit"
                         ><i class="mdi mdi-plus label-icon"></i>

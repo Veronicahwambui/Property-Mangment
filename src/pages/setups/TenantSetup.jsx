@@ -441,7 +441,7 @@ function TenantSetup() {
                                   <div class="d-flex">
                                     <button
                                       onClick={() => {
-                                        setManualVal(true);
+                                      
                                         chargeTypes &&
                                           setChargeType(chargeTypes[0]);
                                         fetchTypes();
@@ -991,8 +991,8 @@ function TenantSetup() {
                           setManualVal(e.target.value);
                         }}
                       >
-                     <option value="No">Yes</option>
-                        <option value="Yes" selected>No</option>
+                     <option value="false">Yes</option>
+                        <option value="true" selected>No</option>
                       </select>
                     </div>
                     <div class="col-12">
