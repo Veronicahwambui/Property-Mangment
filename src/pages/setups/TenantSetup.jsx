@@ -92,7 +92,7 @@ function TenantSetup() {
       .createApplicableCharges(data)
       .then((res) => {
         fetchAll();
-        $("#add-new-charge").modal("hide");
+        $("#add-new-chaarge").modal("hide");
         if (res.data.status) {
           setError({
             ...error,
@@ -124,6 +124,8 @@ function TenantSetup() {
           clear();
         }, 3000);
       });
+
+      
   };
 
   const clear = () => {
@@ -991,8 +993,8 @@ function TenantSetup() {
                           setManualVal(e.target.value);
                         }}
                       >
-                     <option value="No">Yes</option>
-                        <option value="Yes" selected>No</option>
+                     <option value="true">Yes</option>
+                        <option value="false" selected>No</option>
                       </select>
                     </div>
                     <div class="col-12">

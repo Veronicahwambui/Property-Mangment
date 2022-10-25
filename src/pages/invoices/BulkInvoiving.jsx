@@ -13,6 +13,7 @@ function BulkInvoiving() {
   const [whoToCharge, setWhoToCharge] = useState(undefined)
   const [loading, setloading] = useState(false);
   const [loaded, setloaded] = useState(false);
+  const [constraint , setConstraint] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
   const [premisesId, setPremisesId] = useState([]);
@@ -27,7 +28,6 @@ function BulkInvoiving() {
   const [paid, setPaid] = useState(undefined)
   const [periodStart, setPeriodStart] = useState(0)
   const [periodEnd, setPeriodEnd] = useState(30)
-  const [next, setNext] = useState(true)
   const [percentage, setPercentage] = useState(undefined)
   const [percentOf, setPercentOf] = useState(undefined)
   const [aplicableCharges, setAplicableCharges] = useState([])
@@ -42,11 +42,18 @@ function BulkInvoiving() {
   const [applicableChargeName, setApplicableChargeName] = useState('');
 
 
+  const [ constraintCharge, setConstraintCharge] = useState("")
+  const [ constraintString, setConstraintString] = useState("")
+  const [ constraintChargeId, setConstraintChargeId] = useState("")
+  const [ constraintChargeAmount, setConstraintChargeAmount] = useState(null)
+  const [ constraintChargeRate, setConstraintChargeRate] = useState(null)
+
+
   useEffect(() => {
-    requestsServiceService.allApplicableCharges().then((res) => {
+    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
       setAplicableCharges(res.data.data)
     })
-  }, [])
+  }, [invoiceFor])
 
 
   useEffect(() => {
@@ -144,7 +151,7 @@ function BulkInvoiving() {
       setPaid('');
     setPercentage('');
     setPercentOf('');
-    setAplicableChargeId('')
+    // setAplicableChargeId('')
   }
 
 
@@ -161,7 +168,12 @@ function BulkInvoiving() {
 
     if (tenancies.length <= 0) {
       let data = JSON.stringify({
-        "aplicableChargeId": aplicableChargeId,
+        "constraintCharge": constraint,
+        "constraintChargeAmount": constraintChargeAmount,
+        "constraintChargeId": constraintChargeId,
+        "constraintChargeRate": constraintChargeRate,
+        "constraintString": constraintString,
+        "aplicableChargeId": applicableChargeName,
         "invoiceFor": invoiceFor,
         "landlordIds": landlordsId,
         "paid": paid,
@@ -821,9 +833,20 @@ function BulkInvoiving() {
                                 )}
                               </div>
                             </div>
+                            <div className="col-12 mb-3">
+                               <label htmlFor="">Constraint <strong className='text-danger'>*</strong></label>
+                               <div className="form-group">
+                                <select name="any" id="constraint" className="form-control" onChange={(e)=>setConstraint(e.target.value) }>
+                                  <option value="">Select Constraint</option>
+                                  <option value={"true"}> Yes </option>
+                                  <option value={'false'}> No </option>
+                                </select>
+                               </div>
+                            </div>
                           </div>
 
-                          <div className="row">
+                         { constraint == "false" &&
+                          <div className="row ">
                             <div className="col-md-6">
                               <div className="mb-3">
                                 <label
@@ -912,7 +935,84 @@ function BulkInvoiving() {
                                 />
                               </div>
                             </div>
-                          </div>
+                          </div> 
+                         }
+
+                         { constraint == "true" &&
+                          <div className="row ">
+                           <div className="col-12 d-flex align-items-center justify-content-between">
+
+                            <div>
+                              <h6>Paid below</h6>
+                            </div>
+
+                            <div className="form-group col-auto">
+                              <select name="" id="" className="form-control" onChange={(e)=>{setConstraintCharge(e.target.value);setConstraintChargeAmount(null); setConstraintChargeRate(null) }}>
+                                <option value="">select</option>
+                                <option value="RATE">Full Amount</option>
+                                <option value="AMOUNT">% Rate</option>
+                              </select>
+                            </div>
+
+                          { constraintCharge === "RATE" &&
+                            <div className="form-group col-auto">
+                              <input type="number" className="form-control" value={constraintChargeRate} onChange={e => setConstraintChargeRate(e.target.value)} />
+                            </div> 
+                          }
+
+                          { constraintCharge === "AMOUNT" &&
+                            <div className="form-group col-auto">
+                              <input type="number" className="form-control" value={constraintChargeAmount} onChange={e => setConstraintChargeAmount(e.target.value)} />
+                            </div> 
+                          }
+
+                         
+
+                            <h6>of</h6>
+                            {aplicableCharges && (
+                                  <div className="form-group col-auto">
+                                    <select
+                                      class="form-control"
+                                      title="Select tenant"
+                                      data-live-search="true"
+                                      // value={applicableChargeName}
+                                      onChange={(e) =>
+                                        setConstraintChargeId(
+                                          e.target.value
+                                        )
+                                      }
+                                      required={true}
+                                    >
+                                      <option className="text-black font-semibold ">
+                                        select applicable charge
+                                      </option>
+                                      {aplicableCharges.map(
+                                        (item, index) => (
+                                          <option
+                                            value={item.id}
+                                            key={index}
+                                          >
+                                            {item.name}
+                                          </option>
+                                        )
+                                      )}
+                                    </select>
+                                  </div>
+                            )}
+
+                            <h6>over</h6>
+                            
+                            <div className="form-group col-auto">
+                              <select name="" id="" className="form-control" onChange={e => setConstraintString(e.target.value)}>
+                                <option value="TOTAL">select</option>
+                                <option value="TOTAL">Total</option>
+                                <option value="PERIOD">Period</option>
+                              </select>
+                            </div>
+                           </div>
+                          </div> 
+                         }
+
                         </div>
                       </div>
                     </section>
