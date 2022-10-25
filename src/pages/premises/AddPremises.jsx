@@ -29,6 +29,7 @@ function AddProperties() {
   const [uniqueChargeId, setUniqueChargeIds] = useState([]);
   const [agreementTypes, setAgreementTypes] = useState([]);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [hasCaretaker, setHasCaretaker] = useState(false);
   const [newUnitTypeModal, setNewUnitTypeModal] = useState(false);
   const [showUnitTypeChargesModal, setShowUnitTypeChargesModal] =
     useState(false);
@@ -446,7 +447,7 @@ function AddProperties() {
       setPremiseDocuments(kins);
     }
 
-    console.log(premiseDocuments, docBody ,data.documentOwnerTypeName );
+    console.log(premiseDocuments, docBody, data.documentOwnerTypeName);
 
     toogleShowNewDocumentModal();
     setDocBody({
@@ -568,9 +569,9 @@ function AddProperties() {
           invoicePaymentPriority:
             selectedItems.length > 0
               ? selectedItems
-                  .map((a) => a.id)
-                  .join("-")
-                  .toString()
+                .map((a) => a.id)
+                .join("-")
+                .toString()
               : "",
         });
       }
@@ -1037,7 +1038,7 @@ function AddProperties() {
                                       type="text"
                                       className="form-control"
                                     />
-                                    
+
                                   </div>
 
                                   {premiseTypes &&
@@ -1057,57 +1058,57 @@ function AddProperties() {
                                 </select>
                               </div>
                               <div className="">
-                              <button
-                                className="btn btn-primary text-nowrap btn-sm py-2 w-100 waves-effect btn-label waves-light me-3"
-                                type="button" 
-                                data-bs-toggle="modal"
-                                data-bs-target="#add-new-property"
-                              > <i className="mdi mdi-plus label-icon"></i> 
-                                Property Type
-                              </button>
+                                <button
+                                  className="btn btn-primary text-nowrap btn-sm py-2 w-100 waves-effect btn-label waves-light me-3"
+                                  type="button"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#add-new-property"
+                                > <i className="mdi mdi-plus label-icon"></i>
+                                  Property Type
+                                </button>
                               </div>
                             </div>
                           </div>
 
                           <div class="col-lg-4 col-md-6 ">
                             <div className="d-flex gap-2 align-items-end justify-content-between w-100">
-                            <div class="w-75">
-                              <label for="basicpill-lastname-input ">
-                                Property Use type
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <select
-                                class="form-control text-capitalize"
-                                title="Select Premise use type "
-                                name="premiseUseTypeId"
-                                onChange={handleGeneral}
-                              >
-                                <option>Select property use type </option>
-                                {premiseUseTypes &&
-                                  premiseUseTypes
-                                    ?.sort((a, b) =>
-                                      a.name.localeCompare(b.name)
-                                    )
-                                    ?.map((type) => (
-                                      <option
-                                        value={type.id}
-                                        className="text-capitalize"
-                                      >
-                                        {" "}
-                                        {type.name}
-                                      </option>
-                                    ))}
-                              </select>
+                              <div class="w-75">
+                                <label for="basicpill-lastname-input ">
+                                  Property Use type
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+                                <select
+                                  class="form-control text-capitalize"
+                                  title="Select Premise use type "
+                                  name="premiseUseTypeId"
+                                  onChange={handleGeneral}
+                                >
+                                  <option>Select property use type </option>
+                                  {premiseUseTypes &&
+                                    premiseUseTypes
+                                      ?.sort((a, b) =>
+                                        a.name.localeCompare(b.name)
+                                      )
+                                      ?.map((type) => (
+                                        <option
+                                          value={type.id}
+                                          className="text-capitalize"
+                                        >
+                                          {" "}
+                                          {type.name}
+                                        </option>
+                                      ))}
+                                </select>
 
-                            </div>
+                              </div>
                               <div className="">
                                 <button
-                                 className="btn btn-primary text-nowrap btn-sm py-2 w-100 waves-effect btn-label waves-light me-3"
-                                 type="button" 
+                                  className="btn btn-primary text-nowrap btn-sm py-2 w-100 waves-effect btn-label waves-light me-3"
+                                  type="button"
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-premise"
                                 ><i class="mdi mdi-plus label-icon"></i>
-                  
+
                                   Proprty Use Type
                                 </button>
                               </div>
@@ -1139,8 +1140,8 @@ function AddProperties() {
                                         {t === "CURRENT"
                                           ? "Occupied"
                                           : t === "OPEN"
-                                          ? "Vaccant"
-                                          : t
+                                            ? "Vaccant"
+                                            : t
                                               ?.toLowerCase()
                                               ?.replace(/_/g, " ")}
                                       </option>
@@ -1353,7 +1354,47 @@ function AddProperties() {
                         </div>
 
                         {/* <!-- caretaker details --> */}
-                        <div class="row">
+
+                        <div class="row mb-3">
+                          <label for=" " class=" ">
+                            Property has a Caretaker? {" "}
+                            <strong class="text-danger ">*</strong>
+                          </label>
+                          <div class="d-flex ">
+                            <div class="form-check me-3">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                onChange={(e) => setHasCaretaker(true)}
+                                name="gender"
+                                value="true"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="caretaker-male"
+                              >
+                                Yes
+                              </label>
+                            </div>
+
+                            <div class="form-check me-3">
+                              <input
+                                onChange={(e) => setHasCaretaker(false)}
+                                class="form-check-input"
+                                type="radio"
+                                name="gender"
+                                value="false"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="caretaker-female"
+                              >
+                                No
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                        {hasCaretaker && <div class="row">
                           <div class="col-lg-3 col-md-6 ">
                             <div class="mb-4 ">
                               <label for=" ">ID/PP Num.</label>
@@ -1443,8 +1484,8 @@ function AddProperties() {
                                             {item === "SELF_COMMISSIONED"
                                               ? "Agent Commissioned"
                                               : item
-                                                  ?.toLowerCase()
-                                                  ?.replace(/_/g, " ")}
+                                                ?.toLowerCase()
+                                                ?.replace(/_/g, " ")}
                                           </option>
                                         ))}
                                       </select>
@@ -1532,7 +1573,7 @@ function AddProperties() {
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </div>}
                         {/* <!-- caretaker details end --> */}
 
                         <div class="col-12">
@@ -1551,7 +1592,7 @@ function AddProperties() {
                             setSquarage("");
                           }}
                           type="button" className="btn btn-primary waves-effect btn-label waves-light me-3"
-                      
+
                           data-bs-toggle="modal"
                           data-bs-target="#add-new-unit"
                         ><i class="mdi mdi-plus label-icon"></i>
@@ -1674,26 +1715,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "MONTHLY_CHARGE" && (
-                                          <div class="col-6">
-                                            <div class="form-check form-check-primary mb-3">
-                                              <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                name="monthlyCharges"
-                                                value={charge.id}
-                                                onChange={
-                                                  selectedApplicableChargeChange
-                                                }
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="monthlyRent"
-                                              >
-                                                {charge.name}
-                                              </label>
+                                            <div class="col-6">
+                                              <div class="form-check form-check-primary mb-3">
+                                                <input
+                                                  class="form-check-input"
+                                                  type="checkbox"
+                                                  name="monthlyCharges"
+                                                  value={charge.id}
+                                                  onChange={
+                                                    selectedApplicableChargeChange
+                                                  }
+                                                />
+                                                <label
+                                                  class="form-check-label"
+                                                  for="monthlyRent"
+                                                >
+                                                  {charge.name}
+                                                </label>
+                                              </div>
                                             </div>
-                                          </div>
-                                        )}
+                                          )}
                                       </>
                                     ))}
                               </div>
@@ -1712,26 +1753,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "DEPOSIT_CHARGE" && (
-                                          <div class="col-6">
-                                            <div class="form-check form-check-primary mb-3">
-                                              <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                name="monthlyRent"
-                                                value={charge.id}
-                                                onChange={
-                                                  selectedApplicableChargeChange
-                                                }
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="monthlyRent"
-                                              >
-                                                {charge.name}
-                                              </label>
+                                            <div class="col-6">
+                                              <div class="form-check form-check-primary mb-3">
+                                                <input
+                                                  class="form-check-input"
+                                                  type="checkbox"
+                                                  name="monthlyRent"
+                                                  value={charge.id}
+                                                  onChange={
+                                                    selectedApplicableChargeChange
+                                                  }
+                                                />
+                                                <label
+                                                  class="form-check-label"
+                                                  for="monthlyRent"
+                                                >
+                                                  {charge.name}
+                                                </label>
+                                              </div>
                                             </div>
-                                          </div>
-                                        )}
+                                          )}
                                       </>
                                     ))}
                               </div>
@@ -2336,7 +2377,7 @@ function AddProperties() {
             <button
               className="btn btn-basic"
               type="button"
-              onClick={toogleShowUnitTypeChargesModal}Document Attachments
+              onClick={toogleShowUnitTypeChargesModal} Document Attachments
 
             >
               Close
