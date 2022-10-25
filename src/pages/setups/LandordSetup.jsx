@@ -125,6 +125,9 @@ function LandlordSetup() {
           clear();
         }, 3000);
       });
+     
+      setApplicableCharges("")
+      createName("")
   };
 
   const clear = () => {
@@ -642,7 +645,7 @@ function LandlordSetup() {
                                   <div class="d-flex">
                                     <button
                                       onClick={() => {
-                                        setManualVal(true);
+                                        setManualVal(false);
                                         chargeTypes &&
                                           setChargeType(chargeTypes[0]);
                                         fetchTypes();
@@ -1364,8 +1367,8 @@ function LandlordSetup() {
                           setManualVal(e.target.value);
                         }}
                       >
-                        <option value="No">Yes</option>
-                        <option value="Yes" selected>No</option>
+                        <option value="false">Yes</option>
+                        <option value="true" selected>No</option>
                       </select>
                     </div>
                     <div class="col-12">
