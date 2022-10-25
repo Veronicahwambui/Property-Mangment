@@ -1242,8 +1242,8 @@ function AddProperties() {
                                   {" "}
                                   Select Collect Electricity Deposit{" "}
                                 </option>
-                                <option value="true">True</option>
-                                <option value="false">False</option>
+                                <option value="false">Yes</option>
+                                <option value="true">No</option>
                               </select>
                             </div>
                           </div>
