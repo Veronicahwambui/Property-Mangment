@@ -18,7 +18,7 @@ function TenantSetup() {
   const [updateChargeType, setUpdateChargeType] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const [updateCheck, setUpdateCheck] = useState(false);
-  const[entityType, setEntityType]=useState("");
+  const [entityType, setEntityType] = useState("");
 
 
   const [error, setError] = useState({
@@ -92,7 +92,7 @@ function TenantSetup() {
       .createApplicableCharges(data)
       .then((res) => {
         fetchAll();
-        $("#add-new-charge").modal("hide");
+        $("#add-new-chaarge").modal("hide");
         if (res.data.status) {
           setError({
             ...error,
@@ -124,12 +124,12 @@ function TenantSetup() {
           clear();
         }, 3000);
       });
-      setCreateName("")
-      setChargeDueAfterDays("")
-      setIncomeType("")
-      setLineFeeId("")
-      setManualVal("")
-      setChargeType("")
+    setCreateName("")
+    setChargeDueAfterDays("")
+    setIncomeType("")
+    setLineFeeId("")
+    setManualVal("")
+    setChargeType("")
   };
 
   const clear = () => {
@@ -447,7 +447,7 @@ function TenantSetup() {
                                   <div class="d-flex">
                                     <button
                                       onClick={() => {
-                                      
+
                                         chargeTypes &&
                                           setChargeType(chargeTypes[0]);
                                         fetchTypes();
@@ -549,7 +549,7 @@ function TenantSetup() {
                                                           val.lineChartAccountNo
                                                         );
                                                         setEntityType(val.entityType);
-                                                      
+
                                                         setUpdateCheck(val.updateCheck);
 
                                                       }}
@@ -932,7 +932,7 @@ function TenantSetup() {
                             ChargeDueAfterDays{" "}
                           </label>
                           <input
-                        
+
                             value={chargeDueAfterDays}
                             onChange={(e) =>
                               setChargeDueAfterDays(e.target.value)
@@ -997,8 +997,8 @@ function TenantSetup() {
                           setManualVal(e.target.value);
                         }}
                       >
-                     <option value="false">Yes</option>
-                        <option value="true" selected>No</option>
+                        <option value="true">Yes</option>
+                        <option value="false" selected>No</option>
                       </select>
                     </div>
                     <div class="col-12">
@@ -1014,7 +1014,7 @@ function TenantSetup() {
                           setChargeType(e.target.value);
                         }}
                       >
-                          <option>Select Charge Type</option>
+                        <option>Select Charge Type</option>
 
                         {chargeTypes &&
                           chargeTypes?.map((charge) => {
@@ -1166,13 +1166,13 @@ function TenantSetup() {
                           value="true"
                           selected={newManualVal ? "selected" : ""}
                         >
-                        Yes
+                          Yes
                         </option>
                         <option
                           value="false"
                           selected={!newManualVal ? "selected" : ""}
                         >
-                        No
+                          No
                         </option>
                       </select>
                     </div>
@@ -1244,7 +1244,7 @@ function TenantSetup() {
             <div class="modal-content">
               <div class="modal-body">
                 <center>
-                <h5>Deactivate this Applicable Charges?</h5>                </center>
+                  <h5>Deactivate this Applicable Charges?</h5>                </center>
               </div>
               <div class="modal-footer">
                 <button
@@ -1267,7 +1267,7 @@ function TenantSetup() {
           </div>
         </div>
 
-      
+
         {/* confirm dactivate  */}
         <div
           class="modal fade"
@@ -1282,7 +1282,7 @@ function TenantSetup() {
             <div class="modal-content">
               <div class="modal-body">
                 <center>
-                <h5>Activate this Applicable Charges ?</h5>
+                  <h5>Activate this Applicable Charges ?</h5>
                 </center>
               </div>
               <div class="modal-footer">
@@ -1466,7 +1466,7 @@ function TenantSetup() {
                   type="button"
                   class="btn btn-primary"
                   data-bs-dismiss="modal"
-                  onClick={() =>  toggleStatuses()}
+                  onClick={() => toggleStatuses()}
                 >
                   Yes
                 </button>
