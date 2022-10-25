@@ -155,6 +155,17 @@ function IssuesTypes() {
     requestsServiceService.getClient(clientId).then((res) => {
       setClient(res.data.data.client);
       setSenderId(res.data.data.client.senderId);
+      setsettlementPeriod(res.data.data.client.landlordSettlementPeriod)
+      setvisitationChargeDay(res.data.data.client.visitationChargeDay)
+      setvisitationChargeId(res.data.data.client.visitationCharge)
+      setPTaxRate(res.data.data.client.propertyTaxRate)
+      setPropertyTaxChargeId(res.data.data.client.propertyTaxCharge.id)
+      
+      setpenaltyChargeRate(res.data.data.client.penaltyChargeRate)
+      setPenaltyChargeId(res.data.data.client.penaltyCharge.id)
+      setLandlordSettlementChargeId(res.data.data.client.landlordSettlementCharge.id)
+      setBouncedChequeChargeId(res.data.data.client.bouncedChequeCharge.id)
+      setChequeProcessingPeriod(res.data.data.client.chequeProcessingPeriod)
     });
   };
   const [ac, setAC] = useState([]);
@@ -2836,7 +2847,7 @@ function IssuesTypes() {
                           onChange={(e) => {
                             setBouncedChequeChargeId(e.target.value);
                           }}
-                          value={client?.bouncedChequeCharge?.id}
+                          value={bouncedChequeChargeId}
                         >
                           <option>
                             -------Select Bounced Cheque Charge -------
@@ -2944,7 +2955,7 @@ function IssuesTypes() {
                           onChange={(e) => {
                             setLandlordSettlementChargeId(e.target.value);
                           }}
-                          value={client?.landlordSettlementCharge?.id}
+                          value={landlordSettlementChargeId}
                         >
                           <option>---Select Base(rent)Charge-----</option>
                           {invo?.map((item) => (
@@ -2964,7 +2975,7 @@ function IssuesTypes() {
                           onChange={(e) => {
                             setPenaltyChargeId(e.target.value)(e.target.value);
                           }}
-                          value={client?.penaltyCharge?.id}
+                          value={penaltyChargeId}
                         >
                           <option>---Select Sur-Charge-----</option>
                           {invo?.map((item) => (
@@ -2987,7 +2998,7 @@ function IssuesTypes() {
                           onChange={(event) =>
                             setpenaltyChargeRate(event.target.value)
                           }
-                          value={client?.penaltyChargeRate}
+                          value={penaltyChargeRate}
                         />
                       </div>
                       <div className="form-group mb-4">
@@ -3003,7 +3014,7 @@ function IssuesTypes() {
                               e.target.value
                             );
                           }}
-                          value={client?.propertyTaxCharge?.id}
+                          value={propertyTaxChargeId}
                         >
                           <option value="">Select PropertyTaxCharge --</option>
                           {invo?.map((item) => (
@@ -3022,7 +3033,7 @@ function IssuesTypes() {
                           className="form-control"
                           placeholder="Enter PropertyTaxRate"
                           onChange={(e) => setPTaxRate(e.target.value)}
-                          defaultValue={client?.propertyTaxRate}
+                          defaultValue={propertyTaxRate}
                         />
                       </div>
                       <div className="form-group mb-4">
@@ -3038,7 +3049,7 @@ function IssuesTypes() {
                               e.target.value
                             );
                           }}
-                          value={client?.visitationCharge?.id}
+                          value={visitationChargeId}
                         >
                           <option>Select VisitationCharge ----</option>
                           {invo?.map((item) => (
@@ -3059,7 +3070,7 @@ function IssuesTypes() {
                           onChange={(event) =>
                             setvisitationChargeDay(event.target.value)
                           }
-                          value={client?.visitationChargeDay}
+                          value={visitationChargeDay}
                         />
                       </div>
                       <div className="form-group mb-4">
@@ -3071,7 +3082,7 @@ function IssuesTypes() {
                             setsettlementPeriod(e.target.value)(e.target.value);
                           }}
                           name="settlementPeriod"
-                          value={client?.landlordSettlementPeriod}
+                          value={settlementPeriod}
                         >
                           <option value="YEAR">
                             {" "}
