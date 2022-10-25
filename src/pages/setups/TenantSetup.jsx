@@ -124,6 +124,12 @@ function TenantSetup() {
           clear();
         }, 3000);
       });
+      setCreateName("")
+      setChargeDueAfterDays("")
+      setIncomeType("")
+      setLineFeeId("")
+      setManualVal("")
+      setChargeType("")
   };
 
   const clear = () => {
