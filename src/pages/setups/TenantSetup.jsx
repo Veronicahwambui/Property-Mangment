@@ -92,7 +92,7 @@ function TenantSetup() {
       .createApplicableCharges(data)
       .then((res) => {
         fetchAll();
-        $("#add-new-chaarge").modal("hide");
+        $("#add-new-charge").modal("hide");
         if (res.data.status) {
           setError({
             ...error,

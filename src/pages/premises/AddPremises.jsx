@@ -384,7 +384,7 @@ function AddProperties() {
   const [docBody, setDocBody] = useState({
     docName: undefined,
     document: undefined,
-    documentOwnerTypeName: undefined,
+    documentOwnerTypeName: "PREMISE",
     documentTypeId: undefined,
     id: undefined,
     ownerEntityId: undefined,
@@ -446,11 +446,13 @@ function AddProperties() {
       setPremiseDocuments(kins);
     }
 
+    console.log(premiseDocuments, docBody ,data.documentOwnerTypeName );
+
     toogleShowNewDocumentModal();
     setDocBody({
       docName: undefined,
       document: undefined,
-      documentOwnerTypeName: undefined,
+      documentOwnerTypeName: 'PREMISE',
       documentTypeId: undefined,
       id: undefined,
       ownerEntityId: undefined,
@@ -2331,7 +2333,8 @@ function AddProperties() {
             <button
               className="btn btn-basic"
               type="button"
-              onClick={toogleShowUnitTypeChargesModal}
+              onClick={toogleShowUnitTypeChargesModal}Document Attachments
+
             >
               Close
             </button>
