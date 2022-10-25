@@ -13,7 +13,7 @@ function BulkInvoiving() {
   const [whoToCharge, setWhoToCharge] = useState(undefined)
   const [loading, setloading] = useState(false);
   const [loaded, setloaded] = useState(false);
-  const [constraint , setConstraint] = useState("");
+  const [constraint, setConstraint] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
   const [premisesId, setPremisesId] = useState([]);
@@ -42,11 +42,11 @@ function BulkInvoiving() {
   const [applicableChargeName, setApplicableChargeName] = useState('');
 
 
-  const [ constraintCharge, setConstraintCharge] = useState("")
-  const [ constraintString, setConstraintString] = useState("")
-  const [ constraintChargeId, setConstraintChargeId] = useState("")
-  const [ constraintChargeAmount, setConstraintChargeAmount] = useState(null)
-  const [ constraintChargeRate, setConstraintChargeRate] = useState(null)
+  const [constraintCharge, setConstraintCharge] = useState("")
+  const [constraintString, setConstraintString] = useState("")
+  const [constraintChargeId, setConstraintChargeId] = useState("")
+  const [constraintChargeAmount, setConstraintChargeAmount] = useState(null)
+  const [constraintChargeRate, setConstraintChargeRate] = useState(null)
 
 
   useEffect(() => {
@@ -66,8 +66,8 @@ function BulkInvoiving() {
       setPremisesId(() => selected?.map((a) => a.id))
     }
 
-  },[selected]);
-  
+  }, [selected]);
+
   useEffect(() => {
     setbillAmount(unitCost * quantity);
   }, [unitCost, quantity])
@@ -158,13 +158,13 @@ function BulkInvoiving() {
   const sendData = () => {
     setError(undefined)
 
-      if (invoiceFor === "TENANT") {
-        setTenantsID(() => selected?.map((a) => a.id))
-      } else if (invoiceFor === "LANDLORD") {
-        setLandlordsId(() => selected?.map((a) => a.id))
-      } else if (invoiceFor === "PREMISE") {
-        setPremisesId(() => selected?.map((a) => a.id))
-      }
+    if (invoiceFor === "TENANT") {
+      setTenantsID(() => selected?.map((a) => a.id))
+    } else if (invoiceFor === "LANDLORD") {
+      setLandlordsId(() => selected?.map((a) => a.id))
+    } else if (invoiceFor === "PREMISE") {
+      setPremisesId(() => selected?.map((a) => a.id))
+    }
 
     if (tenancies.length <= 0) {
       let data = JSON.stringify({
@@ -382,39 +382,39 @@ function BulkInvoiving() {
                               </div>
                             </div>
                           </div>
-                          { searchTerm !== '' && <div class="col-auto">
-                          <button
-                            onClick={search}
-                            form={"bulk-search-form"}
-                            disabled={
-                              loading 
-                            }
-                            className="btn btn-primary btn-rounded"
-                          >
-                            { loading && (
-                              <i
-                                className="fa fa-refresh fa-spin"
-                                style={{ marginRight: "5px" }}
-                              />
-                            )}
-                            { loading && (
-                              <>
-                                <span className="d-inline-block me-2">
-                                  Searching...
-                                </span>
-                              </>
-                            )}
-                            {!loading && (
-                              <>
-                                <span className="d-sm-inline-block me-2">
-                                  Search
-                                </span>
-                              </>
-                            )}
-                          </button>
-                          </div> }
+                          {searchTerm !== '' && <div class="col-auto">
+                            <button
+                              onClick={search}
+                              form={"bulk-search-form"}
+                              disabled={
+                                loading
+                              }
+                              className="btn btn-primary btn-rounded"
+                            >
+                              {loading && (
+                                <i
+                                  className="fa fa-refresh fa-spin"
+                                  style={{ marginRight: "5px" }}
+                                />
+                              )}
+                              {loading && (
+                                <>
+                                  <span className="d-inline-block me-2">
+                                    Searching...
+                                  </span>
+                                </>
+                              )}
+                              {!loading && (
+                                <>
+                                  <span className="d-sm-inline-block me-2">
+                                    Search
+                                  </span>
+                                </>
+                              )}
+                            </button>
+                          </div>}
 
-                         
+
 
                         </div>}
 
@@ -834,143 +834,148 @@ function BulkInvoiving() {
                               </div>
                             </div>
                             <div className="col-12 mb-3">
-                               <label htmlFor="">Constraint <strong className='text-danger'>*</strong></label>
-                               <div className="form-group">
-                                <select name="any" id="constraint" className="form-control" onChange={(e)=>setConstraint(e.target.value) }>
-                                  <option value="">Select Constraint</option>
-                                  <option value={"true"}> Yes </option>
-                                  <option value={'false'}> No </option>
+                              <label htmlFor="">Charging Method <strong className='text-danger'>*</strong></label>
+                              <div className="form-group">
+                                <select name="any" id="constraint" className="form-control" onChange={(e) => setConstraint(e.target.value)}>
+                                  <option value=""> --Select-- </option>
+                                  <option value={"true"}> By Amount of Debt Owed</option>
+                                  <option value={'false'}> Charge Specific Amount </option>
                                 </select>
-                               </div>
+                              </div>
                             </div>
                           </div>
 
-                         { constraint == "false" &&
-                          <div className="row ">
-                            <div className="col-md-6">
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="formrow-email-input"
-                                  className="form-label"
-                                >
-                                  Quantity.{" "}
-                                  <strong className="text-danger">*</strong>
-                                </label>
-                                <input
-                                  type="number"
-                                  className="form-control"
-                                  value={quantity}
-                                  min="1"
-                                  onChange={(e) =>
-                                    setquantity(e.target.value)
-                                  }
-                                  placeholder="Enter quantity"
-                                  required={true}
-                                />
+                          {constraint == "false" &&
+                            <div className="row ">
+                              <div className="col-md-6">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-email-input"
+                                    className="form-label"
+                                  >
+                                    Quantity.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    value={quantity}
+                                    min="1"
+                                    onChange={(e) =>
+                                      setquantity(e.target.value)
+                                    }
+                                    placeholder="Enter quantity"
+                                    required={true}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="formrow-password-input"
-                                  className="form-label"
-                                >
-                                  Unit cost.{" "}
-                                  <strong className="text-danger">*</strong>
-                                </label>
-                                <input
-                                  type="number"
-                                  className="form-control"
-                                  value={unitCost}
-                                  min="1"
-                                  onChange={(e) =>
-                                    setunitCost(e.target.value)
-                                  }
-                                  placeholder="Enter cost"
-                                  required={true}
-                                />
+                              <div className="col-md-6">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-password-input"
+                                    className="form-label"
+                                  >
+                                    Unit cost.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    value={unitCost}
+                                    min="1"
+                                    onChange={(e) =>
+                                      setunitCost(e.target.value)
+                                    }
+                                    placeholder="Enter cost"
+                                    required={true}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="mb-4">
-                                <label htmlFor="" className="">
-                                  Due date
-                                </label>
-                                <div className="input-group" id="datepicker1">
+                              <div className="col-md-6">
+                                <div className="mb-4">
+                                  <label htmlFor="" className="">
+                                    Due date
+                                  </label>
+                                  <div className="input-group" id="datepicker1">
+                                    <input
+                                      type="text"
+                                      className="form-control mouse-pointer enddate"
+                                      name="dob"
+                                      placeholder="Select Date"
+                                      readOnly
+                                      data-date-format="dd M, yyyy"
+                                      data-date-container="#datepicker1"
+                                      data-provide="datepicker"
+                                      data-date-autoclose="true"
+                                    />
+                                    <span className="input-group-text">
+                                      <i className="mdi mdi-calendar"></i>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-md-6">
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="formrow-password-input"
+                                    className="form-label"
+                                  >
+                                    Invoice amount.{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
                                   <input
                                     type="text"
-                                    className="form-control mouse-pointer enddate"
-                                    name="dob"
-                                    placeholder="Select Date"
-                                    readOnly
-                                    data-date-format="dd M, yyyy"
-                                    data-date-container="#datepicker1"
-                                    data-provide="datepicker"
-                                    data-date-autoclose="true"
+                                    className="form-control invoice-amount"
+                                    value={"KES " + billAmount}
+                                    onChange={(e) => setbillAmount(e.target.value)}
+                                    id="formrow-password-input"
+                                    placeholder="KES"
+                                    required={true}
+                                    disabled={true}
                                   />
-                                  <span className="input-group-text">
-                                    <i className="mdi mdi-calendar"></i>
-                                  </span>
                                 </div>
                               </div>
                             </div>
-                            <div className="col-md-6">
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="formrow-password-input"
-                                  className="form-label"
-                                >
-                                  Invoice amount.{" "}
-                                  <strong className="text-danger">*</strong>
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control invoice-amount"
-                                  value={"KES " + billAmount}
-                                  onChange={(e) => setbillAmount(e.target.value)}
-                                  id="formrow-password-input"
-                                  placeholder="KES"
-                                  required={true}
-                                  disabled={true}
-                                />
+                          }
+
+                          {constraint == "true" &&
+                            <>
+                              <div className="row ">
+                                <div className="col-12 d-flex align-items-center justify-content-between">
+
+
+                                  <div className="form-group col-12">
+                                    <label htmlFor="">Charge <strong className='text-danger'>*</strong></label>
+                                    <select name="" id="" className="form-control" onChange={(e) => { setConstraintCharge(e.target.value); setConstraintChargeAmount(null); setConstraintChargeRate(null) }}>
+                                      <option value="">select</option>
+                                      <option value="AMOUNT">Specific Amount</option>
+                                      <option value="RATE">% Rate</option>
+                                    </select>
+                                  </div>
+
+                                </div>
                               </div>
-                            </div>
-                          </div> 
-                         }
 
-                         { constraint == "true" &&
-                          <div className="row ">
-                           <div className="col-12 d-flex align-items-center justify-content-between">
+                              <br></br>
 
-                            <div>
-                              <h6>Paid below</h6>
-                            </div>
+                              {constraintCharge === "RATE" &&
+                                <div className="row ">
+                                  <div className="form-group col-8">
+                                    <input type="number" className="form-control" value={constraintChargeRate} onChange={e => setConstraintChargeRate(e.target.value)} />
 
-                            <div className="form-group col-auto">
-                              <select name="" id="" className="form-control" onChange={(e)=>{setConstraintCharge(e.target.value);setConstraintChargeAmount(null); setConstraintChargeRate(null) }}>
-                                <option value="">select</option>
-                                <option value="RATE">Full Amount</option>
-                                <option value="AMOUNT">% Rate</option>
-                              </select>
-                            </div>
+                                  </div>
 
-                          { constraintCharge === "RATE" &&
-                            <div className="form-group col-auto">
-                              <input type="number" className="form-control" value={constraintChargeRate} onChange={e => setConstraintChargeRate(e.target.value)} />
-                            </div> 
-                          }
-
-                          { constraintCharge === "AMOUNT" &&
-                            <div className="form-group col-auto">
-                              <input type="number" className="form-control" value={constraintChargeAmount} onChange={e => setConstraintChargeAmount(e.target.value)} />
-                            </div> 
-                          }
-
-                         
-
-                            <h6>of</h6>
-                            {aplicableCharges && (
-                                  <div className="form-group col-auto">
+                                  <div className="form-group col-1">
+                                    <span>% of</span>
+                                  </div>
+                                  <div className="form-group col-8">
+                                    <select name="" id="" className="form-control col-4" onChange={e => setConstraintString(e.target.value)}>
+                                      <option value="TOTAL">select</option>
+                                      <option value="TOTAL">Total</option>
+                                      <option value="PERIOD">Debt Period Selected before</option>
+                                    </select>
+                                  </div>
+                                  <div className="form-group col-8">
                                     <select
                                       class="form-control"
                                       title="Select tenant"
@@ -998,20 +1003,21 @@ function BulkInvoiving() {
                                       )}
                                     </select>
                                   </div>
-                            )}
+                                  <div className="form-group col-1">
+                                    <span>owed</span>
+                                  </div>
 
-                            <h6>over</h6>
-                            
-                            <div className="form-group col-auto">
-                              <select name="" id="" className="form-control" onChange={e => setConstraintString(e.target.value)}>
-                                <option value="TOTAL">select</option>
-                                <option value="TOTAL">Total</option>
-                                <option value="PERIOD">Period</option>
-                              </select>
-                            </div>
-                           </div>
-                          </div> 
-                         }
+                                </div>
+                              }
+
+                              {constraintCharge === "AMOUNT" &&
+                                <div className="form-group col-auto">
+                                  <label htmlFor="">Charge Amount <strong className='text-danger'>*</strong></label>
+                                  <input type="number" className="form-control" value={constraintChargeAmount} onChange={e => setConstraintChargeAmount(e.target.value)} />
+                                </div>
+                              }
+                            </>
+                          }
 
                         </div>
                       </div>
