@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import data from "../data/coutries.json";
 import Badge from "react-bootstrap/Badge";
+import DatePicker from "react-datepicker";
 function AddTenant() {
   const [showNewContactPeronModal, setShowNewContactPeronModal] =
     useState(false);
@@ -71,7 +72,7 @@ function AddTenant() {
 
   const getAllDocumentTypes = () => {
     requestsServiceService
-      .allDocumentTypes("TENANT")
+      .allDocumentTypes("TENANT", true)
       .then((res) => setDocumentTypes(res.data.data));
   };
 
@@ -131,6 +132,16 @@ function AddTenant() {
       ["tenancyRenewalDate"]: moment(event.target.value).format("YYYY-MM-DD"),
     });
   };
+  const [tenancyStartDate, setTenancyStartDate] = useState(new Date());
+  const [tenancyRenewalDate, setTenancyRenewalDate] = useState(new Date());
+
+  useEffect(() => {
+    setTenancyBody({
+      ...tenancyBody,
+      tenancyRenewalDate: moment(tenancyRenewalDate).format("YYYY-MM-DD"),
+      startDate: moment(tenancyStartDate).format("YYYY-MM-DD"),
+    });
+  }, [tenancyStartDate, tenancyRenewalDate]);
 
   $(document).on("change", ".enddate1", handleAssignmentChange1);
   $(document).on("change", ".enddate2", handleAssignmentChange2);
@@ -614,7 +625,6 @@ function AddTenant() {
                                 placeholder="Enter tenants email address"
                                 name="email"
                                 onChange={(e) => handleTenantDtoChange(e)}
-                                required
                               />
                             </div>
                           </div>
@@ -872,7 +882,8 @@ function AddTenant() {
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="maritalStatus"
                               >
-                                <option></option>
+                            <option value={""}>Select Marital Status</option>
+
                                 <option selected value="Single">
                                   Single
                                 </option>
@@ -928,6 +939,8 @@ function AddTenant() {
                                 name="occupation"
                                 required
                               >
+                             <option value={""}>Select Occupation</option>
+
                                 <option value="employed">Employed</option>
                                 <option value="student">Student</option>
                                 <option value="pension">Pension</option>
@@ -1625,11 +1638,11 @@ function AddTenant() {
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
                       </div>
-                      <div class="col-3 ">
+                      <div class="col-3">
                         <button
                           type="button"
                           onClick={handleSearchPremise}
-                          class="btn btn-primary btn-block w-100 btn-lg"
+                          class="btn btn-primary btn-block w-100 btn-lg mb-4"
                         >
                           <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
                           <div class="d-none">Search</div>
@@ -1649,7 +1662,7 @@ function AddTenant() {
                             onChange={onPremiseChange}
                             name="premise"
                           >
-                            <option></option>
+                            <option value={""}>Select Premise</option>
                             {premises?.map((prem, index) => (
                               <option value={prem.id + ":" + prem.premiseName}>
                                 {prem.premiseName}
@@ -1671,7 +1684,7 @@ function AddTenant() {
                               onChange={handleAssignmentChange}
                               name="premiseUnitId"
                             >
-                              <option></option>
+                              <option value={""}>Select Unit</option>
                               {units &&
                                 units.map((prem, index) => (
                                   <option value={prem.id + ":" + prem.unitName}>
@@ -1688,47 +1701,33 @@ function AddTenant() {
                               type="text"
                               className="form-control"
                               id=""
-                              placeholder=""
+                              placeholder="Input unit condition"
                               onChange={(e) => handleAssignmentChange(e)}
                               name="unitCondition"
                             />
                           </div>
                         </div>
-                        <div className=" col-md-6" id="datepicker14">
+                        <div className="col-md-6">
                           <div className="mb-4">
                             <label htmlFor="">Start Date</label>
-                            <input
-                              type="text"
-                              className="form-control mouse-pointer enddate1"
-                              id=""
-                              placeholder="Enter StartDate"
-                              readOnly
-                              data-date-format="dd M, yyyy"
-                              data-date-container="#datepicker14"
-                              data-provide="datepicker"
-                              data-date-autoclose="true"
-                              onChange={(e) => handleAssignmentChange(e)}
-                              name="startDate"
-                              required
+                            <DatePicker
+                              name=""
+                              className="form-control"
+                              selected={tenancyStartDate}
+                              onChange={(date) => setTenancyStartDate(date)}
+                              required={true}
                             />
                           </div>
                         </div>
-                        <div className="col-md-6" id="datepicker1O4">
+                        <div className="col-md-6">
                           <div className="mb-4">
-                            <label htmlFor="">TenancyRenewalDate</label>
-                            <input
-                              type="text"
-                              className="form-control  mouse-pointer enddate1"
-                              id=""
-                              placeholder="Enter TenancyRenewalDate"
-                              readOnly
-                              data-date-format="dd M, yyyy"
-                              data-date-container="#datepicker14"
-                              data-provide="datepicker"
-                              data-date-autoclose="true"
-                              onChange={(e) => handleAssignmentChange(e)}
-                              name="tenancyRenewalDate"
-                              required
+                            <label htmlFor="">Tenancy Renewal Date</label>
+                            <DatePicker
+                              name=""
+                              className="form-control"
+                              selected={tenancyRenewalDate}
+                              onChange={(date) => setTenancyRenewalDate(date)}
+                              required={true}
                             />
                           </div>
                         </div>

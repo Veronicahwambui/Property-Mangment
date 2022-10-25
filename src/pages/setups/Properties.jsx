@@ -5,6 +5,7 @@ import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
+import { Modal } from "react-bootstrap";
 
 function Properties() {
   const [list, setList] = useState([]);
@@ -18,7 +19,6 @@ function Properties() {
   });
 
   let key = authService.getAppKey();
-  console.log(key);
 
   // PAGINATION
   const sortSize = (e) => {
@@ -551,6 +551,123 @@ function Properties() {
     setSelectedChargeTypes(userGroups);
   };
 
+  // TENANT DOCUMENTS
+
+  // modals
+  const [showDoc, setShow] = useState(false);
+  const [showEditDoc, setShowEdit] = useState(false);
+  const showDocumentModal = () => setShow(true);
+  const hideDocumentModal = () => setShow(false);
+  const showEditDocumentModal = () => setShowEdit(true);
+  const hideEditDocumentModal = () => setShowEdit(false);
+  useEffect(() => {
+    fetchAllDocument();
+  }, []);
+
+  // document vars
+  const [documentTypes, setDocumentTypes] = useState([]);
+  const [docTypeName, setDocTypeName] = useState("");
+  const [editDocTypeName, setEditDocTypeName] = useState("");
+
+  const fetchAllDocument = () => {
+    requestsServiceService.allDocumentTypes("PREMISE", true).then((res) => {
+      setDocumentTypes(res.data.data != null ? res.data.data : []);
+    });
+  };
+  const createDocument = (e) => {
+    e.preventDefault();
+    let data = {
+      active: true,
+      clientId: authService.getClientId(),
+      id: null,
+      name: docTypeName,
+      entityType: "PREMISE",
+    };
+    requestsServiceService
+      .createDocumentTypes(data)
+      .then((res) => {
+        fetchAllDocument();
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+          setTimeout(() => {
+            hideDocumentModal();
+          }, 1500);
+          setDocTypeName("");
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+      })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      });
+  };
+  const updateDocument = (e) => {
+    e.preventDefault();
+    let data = {
+      active: true,
+      clientId: authService.getClientId(),
+      id: activeId,
+      name: editDocTypeName,
+      entityType: "PREMISE",
+    };
+    requestsServiceService
+      .updateDocumentType(data)
+      .then((res) => {
+        fetchAllDocument();
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+          setTimeout(() => {
+            hideEditDocumentModal();
+          }, 1500);
+          setEditDocTypeName("");
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
+      })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      });
+  };
+  useEffect(() => {
+    setTimeout(() => {
+      setError({
+        ...error,
+        message: "",
+        color: "",
+      });
+    }, 3000);
+  }, [error]);
+
+  const toggleDocument = (activeId) => {
+    requestsServiceService.toogleDocumentType(activeId).then((res) => {
+      fetchAllDocument();
+    });
+  };
+
   return (
     <>
       <div class="page-content">
@@ -559,7 +676,7 @@ function Properties() {
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Registered Property Type</h4>
+                <h4 class="mb-sm-0 font-size-18">Property Settings</h4>
 
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
@@ -621,6 +738,16 @@ function Properties() {
                             }
                           >
                             Unit Types
+                          </a>
+                          <a
+                            onClick={() => setActiveLink(4)}
+                            className={
+                              activeLink === 4
+                                ? "nav-item nav-link active cursor-pointer"
+                                : "nav-item cursor-pointer nav-link"
+                            }
+                          >
+                            Documents
                           </a>
                         </div>
                       </div>
@@ -1263,6 +1390,196 @@ function Properties() {
                   </div>
                 </div>
               )}
+
+              {activeLink === 4 && (
+                <>
+                  <div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="card">
+                          <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                            <div
+                              className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                              role="toolbar"
+                            >
+                              <div className="d-flex align-items-center flex-grow-1">
+                                <h4 className="mb-0  bg-transparent  p-0 m-0">
+                                  Document Type Register
+                                </h4>
+                              </div>
+                              <div className="d-flex">
+                                <button
+                                  onClick={() => {
+                                    setCreateNames("");
+                                    showDocumentModal();
+                                  }}
+                                  type="button"
+                                  className="btn btn-primary waves-effect btn-label waves-light me-3"
+                                >
+                                  <i className="mdi mdi-plus label-icon"></i>{" "}
+                                  Add Document Type
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="card-body">
+                            <div className="table-responsive table-responsive-md">
+                              <table className="table table-editable align-middle table-edits">
+                                <thead className="table-light">
+                                  <tr className="text-uppercase table-dark">
+                                    <th>#</th>
+                                    <th>Document Type</th>
+                                    <th>Status</th>
+                                    <th>Date Created</th>
+
+                                    <th className="text-right">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {documentTypes &&
+                                    documentTypes?.map((val, index) => {
+                                      return (
+                                        <tr data-id="1" key={val.id}>
+                                          <td style={{ width: "80px" }}>
+                                            {index + 1}
+                                          </td>
+                                          <td
+                                            data-field="unit-num "
+                                            className="text-capitalize"
+                                          >
+                                            {val.name}
+                                          </td>
+                                          <td data-field="unit-num ">
+                                            {val.active ? (
+                                              <span className="badge-soft-success badge">
+                                                Active
+                                              </span>
+                                            ) : (
+                                              <span className="badge-soft-danger badge">
+                                                Inactive
+                                              </span>
+                                            )}
+                                          </td>
+                                          <td>
+                                            {moment(val.dateTimeCreated).format(
+                                              "YYYY-MM-DD HH:mm"
+                                            )}
+                                          </td>
+
+                                          <td className="text-right cell-change text-nowrap ">
+                                            <div className="d-flex align-items-center justify-content-between">
+                                              <a
+                                                onClick={() => {
+                                                  setActiveId(val.id);
+                                                  setEditDocTypeName(val.name);
+                                                  showEditDocumentModal();
+                                                }}
+                                                className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit "
+                                                title="Edit "
+                                              >
+                                                <i className="bx bx-edit-alt "></i>
+                                              </a>
+
+                                              {val.active ? (
+                                                <button
+                                                  className="btn btn-danger btn-sm btn-rounded text-uppercase px-2 mx-3"
+                                                  title="deactivate"
+                                                  onClick={() =>
+                                                    toggleDocument(val.id)
+                                                  }
+                                                >
+                                                  Deactivate
+                                                </button>
+                                              ) : (
+                                                <button
+                                                  className="btn btn-success btn-sm btn-rounded  text-uppercase px-3 py-0 mx-3"
+                                                  title="deactivate"
+                                                  onClick={() =>
+                                                    toggleDocument(val.id)
+                                                  }
+                                                >
+                                                  Activate
+                                                </button>
+                                              )}
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
+                                </tbody>
+                              </table>
+                              <div className="d-flex justify-content-between align-items-center">
+                                {documentTypes?.length > 0 && pageCount !== 0 && (
+                                  <>
+                                    <select
+                                      className="btn btn-md btn-primary"
+                                      title="Select A range"
+                                      onChange={(e) => sortSize(e)}
+                                      value={size}
+                                    >
+                                      <option
+                                        className="bs-title-option"
+                                        value=""
+                                      >
+                                        Select A range
+                                      </option>
+                                      <option value="10">10 Rows</option>
+                                      <option value="30">30 Rows</option>
+                                      <option value="50">50 Rows</option>
+                                    </select>
+                                    <nav
+                                      aria-label="Page navigation comments"
+                                      className="mt-4"
+                                    >
+                                      <ReactPaginate
+                                        previousLabel="<"
+                                        nextLabel=">"
+                                        breakLabel="..."
+                                        breakClassName="page-item"
+                                        breakLinkClassName="page-link"
+                                        pageCount={pageCount}
+                                        pageRangeDisplayed={4}
+                                        marginPagesDisplayed={2}
+                                        containerClassName="pagination justify-content-center"
+                                        pageClassName="page-item"
+                                        pageLinkClassName="page-link"
+                                        previousClassName="page-item"
+                                        previousLinkClassName="page-link"
+                                        nextClassName="page-item"
+                                        nextLinkClassName="page-link"
+                                        activeClassName="active"
+                                        onPageChange={(data) =>
+                                          handlePageClicks(data)
+                                        }
+                                        forcePage={page}
+                                      />
+                                    </nav>
+                                  </>
+                                )}
+                              </div>
+                              {documentTypes?.length > 0 && pageCount !== 0 && (
+                                <p className="font-medium  text-muted">
+                                  showing page{" "}
+                                  <span className="text-primary">
+                                    {pageCount === 0 ? page : page + 1}
+                                  </span>{" "}
+                                  of
+                                  <span className="text-primary">
+                                    {" "}
+                                    {pageCount}
+                                  </span>{" "}
+                                  pages
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* <!-- end col --> */}
+                    </div>
+                  </div>
+                </>
+              )}
               {/* <!-- end row --> */}
             </div>
             {/* <!-- container-fluid --> */}
@@ -1315,7 +1632,7 @@ function Properties() {
                             onChange={(e) => setCreateName(e.target.value)}
                             type="text"
                             class="form-control"
-                            placeholder="Enter create name"
+                            placeholder="Enter Property Type Name"
                           />
                         </div>
                       </div>
@@ -1379,7 +1696,7 @@ function Properties() {
                             onChange={(e) => setUpdateName(e.target.value)}
                             type="text"
                             class="form-control"
-                            placeholder="Enter update name"
+                            placeholder="Enter Property Type name"
                           />
                         </div>
                       </div>
@@ -1523,7 +1840,7 @@ function Properties() {
                             onChange={(e) => setCreateNames(e.target.value)}
                             type="text"
                             class="form-control"
-                            placeholder="Enter create name"
+                            placeholder="Enter Property Use Type Name"
                           />
                         </div>
                       </div>
@@ -2068,6 +2385,107 @@ function Properties() {
           </div>
         </div>
       </div>
+
+      <>
+        {/*MODALS*/}
+
+        <Modal show={showDoc} onHide={hideDocumentModal} centered>
+          <form onSubmit={createDocument}>
+            <Modal.Header closeButton>
+              <h5 className="modal-title" id="staticBackdropLabel">
+                New Document Type
+              </h5>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-12">
+                  <div className="form-group mb-4">
+                    <label htmlFor="">
+                      Document Type <strong className="text-danger">*</strong>{" "}
+                    </label>
+                    <input
+                      required
+                      defaultValue={docTypeName}
+                      onChange={(e) => setDocTypeName(e.target.value)}
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter document type"
+                    />
+                  </div>
+                </div>
+                {error.color !== "" && (
+                  <div
+                    className={"mt-4 alert alert-" + error.color}
+                    role="alert"
+                  >
+                    {error.message}
+                  </div>
+                )}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <button
+                type="button"
+                className="btn btn-light"
+                onClick={hideDocumentModal}
+              >
+                Close
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Save
+              </button>
+            </Modal.Footer>
+          </form>
+        </Modal>
+        <Modal show={showEditDoc} onHide={hideEditDocumentModal} centered>
+          <form onSubmit={updateDocument}>
+            <Modal.Header closeButton>
+              <h5 className="modal-title" id="staticBackdropLabel">
+                New Document Type
+              </h5>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-12">
+                  <div className="form-group mb-4">
+                    <label htmlFor="">
+                      Document Type <strong className="text-danger">*</strong>{" "}
+                    </label>
+                    <input
+                      required
+                      defaultValue={editDocTypeName}
+                      onChange={(e) => setEditDocTypeName(e.target.value)}
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter document type name"
+                    />
+                  </div>
+                </div>
+                {error.color !== "" && (
+                  <div
+                    className={"mt-4 alert alert-" + error.color}
+                    role="alert"
+                  >
+                    {error.message}
+                  </div>
+                )}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <button
+                type="button"
+                className="btn btn-light"
+                onClick={hideEditDocumentModal}
+              >
+                Close
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Save
+              </button>
+            </Modal.Footer>
+          </form>
+        </Modal>
+      </>
     </>
   );
 }

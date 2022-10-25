@@ -350,7 +350,7 @@ function AddProperties() {
   };
 
   const getAllDocumentTypes = () => {
-    requestsServiceService.allDocumentTypes("LANDLORD").then((res) => {
+    requestsServiceService.allDocumentTypes("PREMISE", true).then((res) => {
       let docs = res.data.data;
       setDocumentTypes(res.data.data);
     });

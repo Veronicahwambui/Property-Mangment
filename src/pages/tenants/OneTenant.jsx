@@ -18,6 +18,7 @@ import DatePickRange from "../../components/Datepicker";
 import DatePicker from "react-datepicker";
 import StatusBadge from "../../components/StatusBadge";
 import ViewInvoice from "../../components/ViewInvoice";
+import { confirmAlert } from "react-confirm-alert";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -63,7 +64,7 @@ function OneTenant() {
   const [tenantDocs, setTenantDocs] = useState([]);
   //modals
   const [show, setShow] = useState(false);
-  const [docShow, setdocShow] = useState(true);
+  const [docShow, setdocShow] = useState(false);
 
   const [editAccountShow, seteditAccountShow] = useState(false);
   const [editDocShow, seteditDocShow] = useState(false);
@@ -111,7 +112,8 @@ function OneTenant() {
   const [unitCondition, setUnitCondition] = useState("");
   const [tenancyStatus, setTenancyStatus] = useState("");
   const [tenancyRenewalDate, setTenancyRenewalDate] = useState("");
-  const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] = useState("");
+  const [tenancyRenewalNotificationDate, setTenancyRenewalNotificationDate] =
+    useState("");
   const [premiseUnitId, setPremiseUnitId] = useState("");
   const [tenantStatuses, setTenantStatuses] = useState([]);
   const [unitId, setUnitId] = useState("");
@@ -141,7 +143,7 @@ function OneTenant() {
   const [communication, setCommunication] = useState([]);
   //  const [typeMes, setTypeMes] = useState("TENANT");
   const [message, setMessage] = useState([]);
-  const [messageData, setMessageData] = useState({})
+  const [messageData, setMessageData] = useState({});
 
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
@@ -362,6 +364,10 @@ function OneTenant() {
       });
   };
 
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
+
   const addTenancies = () => {
     let data = JSON.stringify({
       active: true,
@@ -424,7 +430,6 @@ function OneTenant() {
   let searchDate = new Date();
   const startingDate = new Date("2022-01-17T03:24:00");
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     let page = 0,
@@ -458,9 +463,8 @@ function OneTenant() {
   };
 
   //documents create
-  const createDoc = () => {
-    setdocShow(!docShow);
-
+  const createDoc = (e) => {
+    e.preventDefault();
     let data = JSON.stringify({
       docName: docName,
       document: docs,
@@ -470,59 +474,87 @@ function OneTenant() {
       ownerEntityId: userId,
     });
 
-    requestsServiceService.createDocuments(data).then((res) => {
-
-      console.log("done");
-      getDocument();
-    });
+    requestsServiceService
+      .createDocuments(data)
+      .then((res) => {
+        if (res.data.status === true) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+          setTimeout(() => {
+            handleDocClose();
+            setError({
+              ...error,
+              message: "",
+              color: "",
+            });
+          }, 2000);
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          message: err.message,
+          color: "danger",
+        });
+      });
   };
 
   const getDocument = () => {
-    requestsServiceService.fetchDocuments("TENANT", id).then((res) => {
-      setTenantDocs(res.data.data);
-    })
-    .catch((res) => {
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger",
-      });
+    requestsServiceService
+      .fetchDocuments("TENANT", id)
+      .then((res) => {
+        setTenantDocs(res.data.data);
+      })
+      .catch((res) => {
+        // setError({
+        //   ...error,
+        //   message: res.data.message,
+        //   color: "danger",
+        // });
 
-      setTimeout(() => {
-        clearTenant();
-      }, 3000);
-    });;
+        setTimeout(() => {
+          clearTenant();
+        }, 3000);
+      });
   };
 
-
-  
   useEffect(() => {
     fetchAll();
     getContactTypeName();
 
     getStatus();
-    createDoc();
+    // createDoc();
     createDocumentTypes();
     getDocument();
     fetchCommunication();
-
   }, []);
 
   const createDocumentTypes = (id) => {
-    requestsServiceService.allDocumentTypes("TENANT").then((res) => {
-      setDocumentTypes(res.data.data);
-    })
-    .catch((res) => {
-      setError({
-        ...error,
-        message: res.data.message,
-        color: "danger",
-      });
+    requestsServiceService
+      .allDocumentTypes("TENANT", true)
+      .then((res) => {
+        setDocumentTypes(res.data.data);
+      })
+      .catch((res) => {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
 
-      setTimeout(() => {
-        clearTenant();
-      }, 3000);
-    });
+        setTimeout(() => {
+          clearTenant();
+        }, 3000);
+      });
   };
 
   const deleteDeactivate = () => {
@@ -579,14 +611,11 @@ function OneTenant() {
   // }
   // console.log(tenancyRenewalDate)
 
-
   //communication
 
   let clientId = AuthService.getClientId();
 
   const fetchCommunication = () => {
-
-
     requestsServiceService
       .getEntityCommunication(userId, 0, 10, "TENANT", clientId)
       .then((res) => {
@@ -602,7 +631,6 @@ function OneTenant() {
   };
   $(document).on("change", ".date2", date2);
   $(document).on("change", ".date3", date3);
-
 
   // tenant updates=============================
   let formatCurrency = new Intl.NumberFormat("en-US", {
@@ -621,27 +649,24 @@ function OneTenant() {
   };
   const getTenantStatement = (e) => {
     e.preventDefault();
-    getTenantStatements()
-  }
+    getTenantStatements();
+  };
 
   const getTenantStatements = () => {
-
     let startdate = moment(startDate).format("YYYY/MM/DD");
     let enddate = moment(endDate).format("YYYY/MM/DD");
 
     let data = {
       startDate: startdate,
       endDate: enddate,
-      entityType: 'TENANT',
+      entityType: "TENANT",
       id: userId,
       page: 0,
-      size: 100000
-    }
-    requestsServiceService
-      .getLandlordStatements(data)
-      .then((res) => {
-        setStatements(res.data.data);
-      });
+      size: 100000,
+    };
+    requestsServiceService.getLandlordStatements(data).then((res) => {
+      setStatements(res.data.data);
+    });
   };
   useEffect(() => {
     getTenantStatements();
@@ -720,7 +745,7 @@ function OneTenant() {
   };
 
   // * ==============================
-  // invoice stuff   
+  // invoice stuff
   // * ==============================
   const [invoices, setinvoices] = useState([]);
   const [activeInvoice2, setActiveInvoice2] = useState({});
@@ -728,7 +753,6 @@ function OneTenant() {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [status, setStatus] = useState("");
-
 
   const [startDate2, setStartDate2] = useState(
     moment().startOf("month").format("YYYY-MM-DD")
@@ -741,7 +765,6 @@ function OneTenant() {
 
   const [transaction, settransaction] = useState({});
   const [paymentItems, setpaymentItems] = useState([]);
-
 
   const [date, setDate] = useState({
     startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -792,7 +815,7 @@ function OneTenant() {
     requestsServiceService.getSortedInvoices(page, size, data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
-      setStatus('')
+      setStatus("");
       window.scrollTo(0, 0);
     });
   };
@@ -812,8 +835,6 @@ function OneTenant() {
     return { sum: sum, paid: paid, balance: sum - paid };
   };
 
-
-
   const addDate = (date) => {
     setStartDate(new Date(date.target.value));
   };
@@ -825,8 +846,8 @@ function OneTenant() {
   $(document).on("change", ".edate", addDate2);
 
   const getOneInvoice = (id) => {
-    let one = invoices.find(one => one.transactionItemId === id)
-    setActiveInvoice2(one)
+    let one = invoices.find((one) => one.transactionItemId === id);
+    setActiveInvoice2(one);
     showInvoice2();
   };
 
@@ -848,10 +869,11 @@ function OneTenant() {
     setmode(mode);
   };
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
-      } balance is ${formatCurrency.format(
-        inv.billAmount - inv.billPaidAmount
-      )}. Click here to pay for it`;
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${
+      inv.billerBillNo
+    } balance is ${formatCurrency.format(
+      inv.billAmount - inv.billPaidAmount
+    )}. Click here to pay for it`;
     let senderId =
       JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
@@ -874,7 +896,7 @@ function OneTenant() {
       $(".the-message-maker").addClass("email-overlay-transform");
     }, 0);
   };
-  useEffect(() => { }, [details, mode]);
+  useEffect(() => {}, [details, mode]);
 
   const clear2 = () => {
     setDetails({
@@ -1433,489 +1455,617 @@ function OneTenant() {
                       >
                         Receipts
                       </a> */}
-                    </div >
-                  </div >
-                </nav >
-              </div >
-            </div >
-          </div >
-        </div >
+                    </div>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
         {/* <!-- end of tool bar --> */}
 
-        {
-          activeLink === 1 && (
-            <>
-              <div className="row">
-                <div className="col-xl-4">
-                  <div className="card calc-h-3px">
-                    <div className="card-body pb-1">
+        {activeLink === 1 && (
+          <>
+            <div className="row">
+              <div className="col-xl-4">
+                <div className="card calc-h-3px">
+                  <div className="card-body pb-1">
+                    <div>
+                      <div className="mb-4 me-3">
+                        <i className="mdi mdi-account-circle text-primary h1"></i>
+                      </div>
                       <div>
-                        <div className="mb-4 me-3">
-                          <i className="mdi mdi-account-circle text-primary h1"></i>
-                        </div>
-                        <div>
-                          <h5 className="text-capitalize">
-                        
-
-                            {tenantData?.tenant?.tenantType === "COMPANY"
-                                  ? tenantData?.tenant?.companyName
-                                  :tenantData?.tenant?.firstName + " " + tenantData?.tenant?.lastName}
-                            {tenantData?.tenant?.active ? (
-                              <span className="badge badge-pill badge-soft-success font-size-11 mr-7px">
-                                Active
-                              </span>
-                            ) : (
-                              <span className="badge badge-pill badge-soft-success font-size-11 mr-7px">
-                                Inactive
-                              </span>
-                            )}
-                          </h5>
+                        <h5 className="text-capitalize">
+                          {tenantData?.tenant?.tenantType === "COMPANY"
+                            ? tenantData?.tenant?.companyName
+                            : tenantData?.tenant?.firstName +
+                              " " +
+                              tenantData?.tenant?.lastName}
+                          {tenantData?.tenant?.active ? (
+                            <span className="badge badge-pill badge-soft-success font-size-11 mr-7px">
+                              Active
+                            </span>
+                          ) : (
+                            <span className="badge badge-pill badge-soft-success font-size-11 mr-7px">
+                              Inactive
+                            </span>
+                          )}
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card-body border-top">
+                    {tenantTypeName === "INDIVIDUAL" ? (
+                      <>
+                        <p className="text-muted mb-0 d-flex align-items-center">
+                          <a
+                            href={`tel:${tenantData?.tenant?.phoneNumber}`}
+                            className="d-flex align-items-center"
+                          >
+                            <i className="mdi mdi-phone me-2 font-size-18"></i>{" "}
+                            {tenantData?.tenant?.phoneNumber}
+                          </a>
+                          <span className="px-3 px-3">|</span>
+                          <a
+                            className="d-flex align-items-center"
+                            href={"mailto:" + tenantData?.tenant?.email}
+                          >
+                            <i className="mdi mdi-email-outline font-size-18 me-2" />
+                            {tenantData?.tenant?.email}
+                          </a>
+                        </p>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div className="card-body border-top">
+                    {tenantTypeName === "INDIVIDUAL" ? (
+                      <>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">National ID No.</span>
+                          {tenantData?.tenant?.idNumber}
+                        </p>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">Nationality. </span>
+                          {tenantData?.tenant?.nationality}
+                        </p>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">Tenant Type. </span>
+                          {tenantData?.tenant?.tenantType
+                            ?.toLowerCase()
+                            ?.replace(/_/g, " ")}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">
+                            Company Incorporation Number
+                          </span>
+                          {tenantData?.tenant?.companyIncorporationNumber}
+                        </p>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">Company Address </span>
+                          {tenantData?.tenant?.companyAddress}
+                        </p>
+                        <p className="p-2 m-0">
+                          <span className="text-muted">
+                            Company Date Of Registration
+                          </span>
+                          {moment(
+                            tenantData?.tenant?.companyDateOfRegistration
+                          ).format("DD /MM /YYYY")}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-8">
+                <div className="row">
+                  <div className="col-xl-8">
+                    <div className="row">
+                      <div className="col-lg-12 px-sm-30px">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-lg-12 align-self-center">
+                                <div className="text-lg-left mt-4 mt-lg-0">
+                                  <div className="row ">
+                                    <div className="col-4 col-sm-3 col-md-2">
+                                      <div>
+                                        <div className="avatar-xs mb-3">
+                                          <span className="avatar-title rounded-circle bg-secondary font-size-16">
+                                            <i className="mdi mdi-office-building-outline text-white"></i>
+                                          </span>
+                                        </div>
+                                        <p className="text-muted text-truncate mb-2">
+                                          Properties
+                                        </p>
+                                        <h5 className="mb-0">
+                                          {dashboardData?.premiseCount}
+                                        </h5>
+                                      </div>
+                                    </div>
+                                    {dashboardData?.premiseUnitsSummary?.map(
+                                      (item) => (
+                                        <div className="col-4 col-sm-3 col-md-2">
+                                          <div>
+                                            <div className="avatar-xs mb-3">
+                                              <span className="avatar-title rounded-circle bg-danger font-size-16">
+                                                <i className="mdi mdi-home-export-outline  text-white"></i>
+                                              </span>
+                                            </div>
+                                            <p className="text-muted text-truncate mb-2 text-capitalize">
+                                              {item.item
+                                                ?.toLowerCase()
+                                                ?.replace(/-/g, " ")}{" "}
+                                              Units
+                                            </p>
+                                            <h5 className="mb-0">
+                                              {item.count}
+                                            </h5>
+                                          </div>
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {/* <!-- end row --> */}
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="card-body border-top">
-                      {tenantTypeName === "INDIVIDUAL" ? (
-                        <>
-                          <p className="text-muted mb-0 d-flex align-items-center">
-                            <a
-                              href={`tel:${tenantData?.tenant?.phoneNumber}`}
-                              className="d-flex align-items-center"
-                            >
-                              <i className="mdi mdi-phone me-2 font-size-18"></i>{" "}
-                              {tenantData?.tenant?.phoneNumber}
-                            </a>
-                            <span className="px-3 px-3">|</span>
-                            <a
-                              className="d-flex align-items-center"
-                              href={"mailto:" + tenantData?.tenant?.email}
-                            >
-                              <i className="mdi mdi-email-outline font-size-18 me-2" />
-                              {tenantData?.tenant?.email}
-                            </a>
-                          </p>
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                    <div className="card-body border-top">
-                      {tenantTypeName === "INDIVIDUAL" ? (
-                        <>
-                          <p className="p-2 m-0">
-                            <span className="text-muted">National ID No.</span>
-                            {tenantData?.tenant?.idNumber}
-                          </p>
-                          <p className="p-2 m-0">
-                            <span className="text-muted">Nationality. </span>
-                            {tenantData?.tenant?.nationality}
-                          </p>
-                          <p className="p-2 m-0">
-                            <span className="text-muted">Tenant Type. </span>
-                            {tenantData?.tenant?.tenantType
-                              ?.toLowerCase()
-                              ?.replace(/_/g, " ")}
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <p className="p-2 m-0">
-                            <span className="text-muted">
-                              Company Incorporation Number
-                            </span>
-                            {tenantData?.tenant?.companyIncorporationNumber}
-                          </p>
-                          <p className="p-2 m-0">
-                            <span className="text-muted">Company Address </span>
-                            {tenantData?.tenant?.companyAddress}
-                          </p>
-                          <p className="p-2 m-0">
-                            <span className="text-muted">
-                              Company Date Of Registration
-                            </span>
-                            {moment(
-                              tenantData?.tenant?.companyDateOfRegistration
-                            ).format("DD /MM /YYYY")}
-                          </p>
-                        </>
-                      )}
-                    </div>
-                  </div >
-                </div >
-                <div className="col-xl-8">
-                  <div className="row">
-                    <div className="col-xl-8">
-                      <div className="row">
-                        <div className="col-lg-12 px-sm-30px">
-                          <div className="card">
-                            <div className="card-body">
-                              <div className="row">
-                                <div className="col-lg-12 align-self-center">
-                                  <div className="text-lg-left mt-4 mt-lg-0">
-                                    <div className="row ">
-                                      <div className="col-4 col-sm-3 col-md-2">
-                                        <div>
-                                          <div className="avatar-xs mb-3">
-                                            <span className="avatar-title rounded-circle bg-secondary font-size-16">
-                                              <i className="mdi mdi-office-building-outline text-white"></i>
-                                            </span>
-                                          </div>
-                                          <p className="text-muted text-truncate mb-2">
-                                            Properties
-                                          </p>
-                                          <h5 className="mb-0">
-                                            {dashboardData?.premiseCount}
-                                          </h5>
-                                        </div>
+                    <div className="row">
+                      <div className="col-xl-12">
+                        <div className="row">
+                          {dashboardData?.collectionSummaryByPaymentStatus?.map(
+                            (item) => (
+                              <div className="col-sm-6">
+                                <div className="card">
+                                  <div className="card-body">
+                                    <div className="d-flex align-items-center mb-3">
+                                      <div className="avatar-xs-2 me-3">
+                                        <span className="avatar-title rounded-circle bg-danger bg-soft text-danger  font-size-18">
+                                          <i className="mdi  mdi-cash-remove h2 mb-0 pb-0 text-danger"></i>
+                                        </span>
                                       </div>
-                                      {dashboardData?.premiseUnitsSummary?.map(
-                                        (item) => (
-                                          <div className="col-4 col-sm-3 col-md-2">
-                                            <div>
-                                              <div className="avatar-xs mb-3">
-                                                <span className="avatar-title rounded-circle bg-danger font-size-16">
-                                                  <i className="mdi mdi-home-export-outline  text-white"></i>
-                                                </span>
-                                              </div>
-                                              <p className="text-muted text-truncate mb-2 text-capitalize">
-                                                {item.item
-                                                  ?.toLowerCase()
-                                                  ?.replace(/-/g, " ")}{" "}
-                                                Units
-                                              </p>
-                                              <h5 className="mb-0">
-                                                {item.count}
-                                              </h5>
-                                            </div>
-                                          </div>
-                                        )
-                                      )}
+                                      <div className="d-flex flex-column">
+                                        <span className="text-capitalize">
+                                          {item.item
+                                            ?.toLowerCase()
+                                            ?.replace(/-/g, " ")}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="text-muted mt-4">
+                                      <h4>
+                                        {formatCurrency.format(item.value)}
+                                        <i className="mdi mdi-chevron-up ms-1 text-success"></i>
+                                      </h4>
+                                      <div className="d-flex">
+                                        <span className="text-truncate text-capitalize">
+                                          From {item.count}{" "}
+                                          {item.item
+                                            ?.toLowerCase()
+                                            ?.replace(/-/g, " ")}{" "}
+                                          Invoices
+                                        </span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                              {/* <!-- end row --> */}
+                            )
+                          )}
+                        </div>
+                        {/* <!-- end row --> */}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xl-4">
+                <div className="card">
+                  <div className="card-body">
+                    <h4 className="card-title mb-4">
+                      Bill Payment Mode Comparison
+                    </h4>
+
+                    <div className="table-responsive mt-4">
+                      <table className="table align-middle mb-0">
+                        <tbody>
+                          {transactionModesData?.map((item) => (
+                            <tr>
+                              <td>
+                                <h5 className="font-size-14 mb-1">
+                                  {item.item}
+                                </h5>
+                                <p className="text-muted mb-0">
+                                  {formatCurrency.format(item.value)}
+                                </p>
+                              </td>
+
+                              <td>
+                                <div id="radialchart-1" className="apex-charts">
+                                  <Chart
+                                    class="apex-charts"
+                                    options={radialoptions1}
+                                    plotOptions={radialoptions1.plotOptions}
+                                    series={[item.variance]}
+                                    labels={radialoptions1.labels}
+                                    type="radialBar"
+                                    height="60"
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <p className="text-muted mb-1">Transactions</p>
+                                <h5 className="mb-0">{item.variance} %</h5>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-8">
+                <div className="card">
+                  <div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="p-4">
+                          <h5 className="text-primary mb-0 pb-0">
+                            Rent collection summary
+                          </h5>
+                          <span>Rent collection summary for tenant </span>
+                          <div className="row">
+                            <div className="col-12">
+                              <div
+                                id="revenue-chart"
+                                className="apex-charts"
+                                dir="ltr"
+                              >
+                                <Chart
+                                  class="apex-charts revenue-type"
+                                  options={options}
+                                  plotOptions={options.plotOptions}
+                                  series={options.series}
+                                  type="bar"
+                                  height="360"
+                                  xaxis={options.xaxis}
+                                />
+                              </div>{" "}
                             </div>
                           </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-xl-12">
-                          <div className="row">
-                            {dashboardData?.collectionSummaryByPaymentStatus?.map(
-                              (item) => (
-                                <div className="col-sm-6">
-                                  <div className="card">
-                                    <div className="card-body">
-                                      <div className="d-flex align-items-center mb-3">
-                                        <div className="avatar-xs-2 me-3">
-                                          <span className="avatar-title rounded-circle bg-danger bg-soft text-danger  font-size-18">
-                                            <i className="mdi  mdi-cash-remove h2 mb-0 pb-0 text-danger"></i>
-                                          </span>
-                                        </div>
-                                        <div className="d-flex flex-column">
-                                          <span className="text-capitalize">
-                                            {item.item
-                                              ?.toLowerCase()
-                                              ?.replace(/-/g, " ")}
-                                          </span>
-                                        </div>
-                                      </div>
-                                      <div className="text-muted mt-4">
-                                        <h4>
-                                          {formatCurrency.format(item.value)}
-                                          <i className="mdi mdi-chevron-up ms-1 text-success"></i>
-                                        </h4>
-                                        <div className="d-flex">
-                                          <span className="text-truncate text-capitalize">
-                                            From {item.count}{" "}
-                                            {item.item
-                                              ?.toLowerCase()
-                                              ?.replace(/-/g, " ")}{" "}
-                                            Invoices
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              )
-                            )}
-                          </div>
-                          {/* <!-- end row --> */}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="row">
-                <div className="col-xl-4">
-                  <div className="card">
-                    <div className="card-body">
-                      <h4 className="card-title mb-4">
-                        Bill Payment Mode Comparison
-                      </h4>
+            </div>
+          </>
+        )}
 
-                      <div className="table-responsive mt-4">
-                        <table className="table align-middle mb-0">
-                          <tbody>
-                            {transactionModesData?.map((item) => (
-                              <tr>
-                                <td>
-                                  <h5 className="font-size-14 mb-1">
-                                    {item.item}
-                                  </h5>
-                                  <p className="text-muted mb-0">
-                                    {formatCurrency.format(item.value)}
-                                  </p>
-                                </td>
-
-                                <td>
-                                  <div id="radialchart-1" className="apex-charts">
-                                    <Chart
-                                      class="apex-charts"
-                                      options={radialoptions1}
-                                      plotOptions={radialoptions1.plotOptions}
-                                      series={[item.variance]}
-                                      labels={radialoptions1.labels}
-                                      type="radialBar"
-                                      height="60"
-                                    />
-                                  </div>
-                                </td>
-                                <td>
-                                  <p className="text-muted mb-1">Transactions</p>
-                                  <h5 className="mb-0">{item.variance} %</h5>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-xl-8">
-                  <div className="card">
-                    <div>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="p-4">
-                            <h5 className="text-primary mb-0 pb-0">
-                              Rent collection summary
-                            </h5>
-                            <span>Rent collection summary for tenant </span>
-                            <div className="row">
-                              <div className="col-12">
-                                <div
-                                  id="revenue-chart"
-                                  className="apex-charts"
-                                  dir="ltr"
-                                >
-                                  <Chart
-                                    class="apex-charts revenue-type"
-                                    options={options}
-                                    plotOptions={options.plotOptions}
-                                    series={options.series}
-                                    type="bar"
-                                    height="360"
-                                    xaxis={options.xaxis}
-                                  />
-                                </div>{" "}
-                              </div>
+        {activeLink === 2 && (
+          <div>
+            <div className="row">
+              <div className="col-12">
+                <div className="card calc-h-3px">
+                  <div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="card-body bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                          <div
+                            className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <div className="d-flex align-items-center flex-grow-1">
+                              <h4 className="mb-0  bg-transparent  p-0 m-0">
+                                Tenancies
+                              </h4>
+                            </div>
+                            <div className="d-flex">
+                              <button
+                                type="button"
+                                className="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#create-tenancies"
+                              >
+                                <i
+                                  className="mdi mdi-plus label-icon"
+                                  onClick={() => setSearchTerm("")}
+                                ></i>{" "}
+                                Add Tenancies
+                              </button>
                             </div>
                           </div>
-                        </div >
-                      </div >
-                    </div >
-                  </div >
-                </div >
-              </div >
-            </>
-          )
-        }
+                        </div>
 
-        {
-          activeLink === 2 && (
-            <div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="card calc-h-3px">
-                    <div>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="card-body bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                            <div
-                              className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                              role="toolbar"
-                            >
-                              <div className="d-flex align-items-center flex-grow-1">
-                                <h4 className="mb-0  bg-transparent  p-0 m-0">
-                                  Tenancies
-                                </h4>
+                        <div>
+                          <div className="card-body">
+                            {error.color !== "" && (
+                              <div
+                                className={"alert alert-" + error.color}
+                                role="alert"
+                              >
+                                {error.message}
                               </div>
-                              <div className="d-flex">
-                                <button
-                                  type="button"
-                                  className="btn btn-primary waves-effect btn-label waves-light me-3"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#create-tenancies"
-                                >
-                                  <i
-                                    className="mdi mdi-plus label-icon"
-                                    onClick={() => setSearchTerm("")}
-                                  ></i>{" "}
-                                  Add Tenancies
-                                </button>
-                              </div>
-                            </div>
-                          </div>
+                            )}
+                            <div className="table-responsive table-responsive-vontainer">
+                              <table
+                                className="table align-middle table-nowrap table-hover"
+                                id="datatable-buttons"
+                              >
+                                <thead>
+                                  <tr class="text-uppercase table-dark">
+                                    <th>#</th>
+                                    <th>Unit Name</th>
+                                    <th>Property Name</th>
+                                    <th>Unit Type</th>
+                                    <th>Start Date</th>
+                                    <th>Unit Condition</th>
+                                    <th>Tenancy Status</th>
+                                    <th>TenancyRenewalDate</th>
+                                    <th>TenancyRenewalNotificationDate</th>
+                                    <th>Status</th>
+                                    <th>Date Created</th>
+                                    <th>Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {tenantData.tenancies &&
+                                    tenantData.tenancies.map((unit, index) => (
+                                      <tr data-id="1">
+                                        <td>{index + 1}</td>
+                                        <td>{unit.premiseUnit.unitName}</td>
+                                        <td>
+                                          {unit.premiseUnit.premise.premiseName}
+                                        </td>
 
-                          <div>
-                            <div className="card-body">
-                              {error.color !== "" && (
-                                <div
-                                  className={"alert alert-" + error.color}
-                                  role="alert"
-                                >
-                                  {error.message}
-                                </div>
-                              )}
-                              <div className="table-responsive table-responsive-vontainer">
-                                <table
-                                  className="table align-middle table-nowrap table-hover"
-                                  id="datatable-buttons"
-                                >
-                                  <thead>
-                                    <tr class="text-uppercase table-dark">
-                                      <th>#</th>
-                                      <th>Unit Name</th>
-                                      <th>Property Name</th>
-                                      <th>Unit Type</th>
-                                      <th>Start Date</th>
-                                      <th>Unit Condition</th>
-                                      <th>Tenancy Status</th>
-                                      <th>TenancyRenewalDate</th>
-                                      <th>TenancyRenewalNotificationDate</th>
-                                      <th>Status</th>
-                                      <th>Date Created</th>
-                                      <th>Actions</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {tenantData.tenancies &&
-                                      tenantData.tenancies.map((unit, index) => (
-                                        <tr data-id="1">
-                                          <td>{index + 1}</td>
-                                          <td>{unit.premiseUnit.unitName}</td>
-                                          <td>
-                                            {unit.premiseUnit.premise.premiseName}
-                                          </td>
-
-                                          <td className="text-capitalize">
-                                            {unit.premiseUnit.unitType.name}
-                                          </td>
-                                          <td>
-                                            {moment(
-                                              unit.startDate &&
+                                        <td className="text-capitalize">
+                                          {unit.premiseUnit.unitType.name}
+                                        </td>
+                                        <td>
+                                          {moment(
+                                            unit.startDate &&
                                               unit.startDate.replace(
                                                 /[TZ]/g,
                                                 " "
                                               )
-                                            ).format("DD /MM /YYYY")}
-                                          </td>
-                                          <td>{unit.unitCondition}</td>
-                                          <td>
-                                            <span className="badge-soft-success badge">
-                                              {" "}
-                                              {unit.tenancyStatus.toLowerCase()}
-                                            </span>
-                                          </td>
-                                          <td>
-                                            {unit.tenancyRenewalDate &&
-                                              moment(
-                                                unit.tenancyRenewalDate
-                                              ).format("DD/ MM/ YYYY")}
-                                          </td>
-                                          <td>
-                                            {unit.tenancyRenewalNotificationDate &&
-                                              moment(
-                                                unit.tenancyRenewalNotificationDate
-                                              ).format("DD /MM/ YYYY")}
-                                          </td>
-
-                                          <td>
+                                          ).format("DD /MM /YYYY")}
+                                        </td>
+                                        <td>{unit.unitCondition}</td>
+                                        <td>
+                                          <span className="badge-soft-success badge">
                                             {" "}
-                                            {unit.active ? (
-                                              <span class="badge-soft-success badge">
-                                                Active
-                                              </span>
-                                            ) : (
-                                              <span class="badge-soft-danger badge">
-                                                Inactive
-                                              </span>
-                                            )}
-                                          </td>
-                                          <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                                            {unit.tenancyStatus.toLowerCase()}
+                                          </span>
+                                        </td>
+                                        <td>
+                                          {unit.tenancyRenewalDate &&
+                                            moment(
+                                              unit.tenancyRenewalDate
+                                            ).format("DD/ MM/ YYYY")}
+                                        </td>
+                                        <td>
+                                          {unit.tenancyRenewalNotificationDate &&
+                                            moment(
+                                              unit.tenancyRenewalNotificationDate
+                                            ).format("DD /MM/ YYYY")}
+                                        </td>
 
-                                          <td className="text-right ">
-                                            <div class="dropdown">
-                                              <a
-                                                class="text-muted font-size-16"
-                                                role="button"
-                                                data-bs-toggle="dropdown"
-                                                aria-haspopup="true"
+                                        <td>
+                                          {" "}
+                                          {unit.active ? (
+                                            <span class="badge-soft-success badge">
+                                              Active
+                                            </span>
+                                          ) : (
+                                            <span class="badge-soft-danger badge">
+                                              Inactive
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          {moment(unit.dateTimeCreated).format(
+                                            "YYYY-MM-DD HH:mm"
+                                          )}
+                                        </td>
+
+                                        <td className="text-right ">
+                                          <div class="dropdown">
+                                            <a
+                                              class="text-muted font-size-16"
+                                              role="button"
+                                              data-bs-toggle="dropdown"
+                                              aria-haspopup="true"
+                                            >
+                                              <i class="bx bx-dots-vertical-rounded"></i>
+                                            </a>
+
+                                            <div class="dropdown-menu dropdown-menu-end text-capitalize">
+                                              <p
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#edit-tenant"
+                                                class="dropdown-item"
+                                                href="#"
+                                                onClick={() =>
+                                                  handleChange(
+                                                    unit.premiseUnit.id,
+                                                    unit.premiseUnit.unitName,
+                                                    unit.startDate,
+                                                    unit.unitCondition,
+                                                    unit.tenancyStatus,
+                                                    unit.tenancyRenewalDate,
+                                                    unit.tenancyRenewalNotificationDate,
+                                                    unit.id
+                                                  )
+                                                }
                                               >
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                              </a>
-
-                                              <div class="dropdown-menu dropdown-menu-end text-capitalize">
-                                                <p
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#edit-tenant"
+                                                <i class="font-size-15 mdi mdi-pencil me-3"></i>
+                                                Edit
+                                              </p>
+                                              <p>
+                                                <Link
                                                   class="dropdown-item"
-                                                  href="#"
-                                                  onClick={() =>
-                                                    handleChange(
-                                                      unit.premiseUnit.id,
-                                                      unit.premiseUnit.unitName,
-                                                      unit.startDate,
-                                                      unit.unitCondition,
-                                                      unit.tenancyStatus,
-                                                      unit.tenancyRenewalDate,
-                                                      unit.tenancyRenewalNotificationDate,
-                                                      unit.id
-                                                    )
-                                                  }
+                                                  to={`/premise/tenant/${unit.id}`}
                                                 >
-                                                  <i class="font-size-15 mdi mdi-pencil me-3"></i>
-                                                  Edit
-                                                </p>
-                                                <p>
-                                                  <Link
-                                                    class="dropdown-item"
-                                                    to={`/premise/tenant/${unit.id}`}
-                                                  >
-                                                    <i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>
-                                                    view
-                                                  </Link>
-                                                </p>
+                                                  <i class="font-size-15 mdi mdi-eye-plus-outline cursor-pinter me-3"></i>
+                                                  view
+                                                </Link>
+                                              </p>
 
-                                                <button
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#vacate-modal"
-                                                  class="dropdown-item "
-                                                  onClick={() => setEndReason("")}
-                                                >
-                                                  <i class="font-size-8 mdi mdi-close-circle me-3">
-                                                    Vacate Tenant
-                                                  </i>
-                                                </button>
-                                              </div>
+                                              <button
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#vacate-modal"
+                                                class="dropdown-item "
+                                                onClick={() => setEndReason("")}
+                                              >
+                                                <i class="font-size-8 mdi mdi-close-circle me-3">
+                                                  Vacate Tenant
+                                                </i>
+                                              </button>
                                             </div>
-                                          </td>
-                                        </tr>
-                                      ))}
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeLink === 3 && (
+          <div>
+            <div className={"row"}>
+              <div className="col-12">
+                <div className="card calc-h-3px">
+                  <div>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                          <div
+                            className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                            role="toolbar"
+                          >
+                            <div className="d-flex align-items-center flex-grow-1">
+                              <h4 className="mb-0  bg-transparent  p-0 m-0">
+                                Contact Persons
+                              </h4>
+                            </div>
+                            <div className="d-flex">
+                              <button
+                                type="button"
+                                className="btn btn-primary waves-effect btn-label waves-light me-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#create-contact"
+                              >
+                                <i className="mdi mdi-plus label-icon"></i> Add
+                                ContactPerson
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <div className="row">
+                            <div className="col-12">
+                              <div
+                                className={"alert alert-" + error.color}
+                                role="alert"
+                              >
+                                {error.message}
+                              </div>
+                              <div className="table-responsive">
+                                <table className="table align-middle table-nowrap table-hover mb-0">
+                                  <thead>
+                                    <tr class="text-uppercase table-dark">
+                                      <th>#</th>
+                                      <th>Name (s) </th>
+                                      <th>Type</th>
+                                      <th>Relationship</th>
+                                      <th>phone No</th>
+                                      <th>Status</th>
+                                      <th>Date Created</th>
+                                      <th className="text-right">Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {tenantData.contactPeople &&
+                                      tenantData.contactPeople.map(
+                                        (unit, index) => (
+                                          <tr data-id="1">
+                                            <td>{index + 1}</td>
+                                            <td>
+                                              {unit.firstName} {unit.lastName}{" "}
+                                              {unit.otherName}
+                                            </td>
+                                            <td className="text-capitalize">
+                                              {unit.contactPersonType
+                                                .toLowerCase()
+                                                .replace(/_/g, " ")}
+                                            </td>
+                                            <td>{unit.relationship}</td>
+                                            <td>{unit.phoneNumber1}</td>
+                                            <td>
+                                              {" "}
+                                              {unit.active ? (
+                                                <span class="badge-soft-success badge">
+                                                  Active
+                                                </span>
+                                              ) : (
+                                                <span class="badge-soft-danger badge">
+                                                  Inactive
+                                                </span>
+                                              )}
+                                            </td>
+                                            <td>
+                                              {moment(
+                                                unit.dateTimeCreated
+                                              ).format("YYYY-MM-DD HH:mm")}
+                                            </td>
+
+                                            <td className="text-right cell-change ">
+                                              <a
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#edit-contact"
+                                                className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                                onClick={() =>
+                                                  handleChangeContacts(
+                                                    unit.id,
+
+                                                    unit.firstName,
+                                                    unit.lastName,
+                                                    unit.otherName,
+                                                    unit.contactPersonType,
+                                                    unit.phoneNumber1,
+                                                    unit.relationship
+                                                  )
+                                                }
+                                              >
+                                                <i className="bx bx-edit-alt " />
+                                              </a>
+                                            </td>
+                                          </tr>
+                                        )
+                                      )}
                                   </tbody>
                                 </table>
                               </div>
@@ -1928,867 +2078,750 @@ function OneTenant() {
                 </div>
               </div>
             </div>
-          )
-        }
+          </div>
+        )}
 
-        {
-          activeLink === 3 && (
-            <div>
-              <div className={"row"}>
-                <div className="col-12">
-                  <div className="card calc-h-3px">
-                    <div>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                            <div
-                              className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                              role="toolbar"
-                            >
-                              <div className="d-flex align-items-center flex-grow-1">
-                                <h4 className="mb-0  bg-transparent  p-0 m-0">
-                                  Contact Persons
-                                </h4>
-                              </div>
-                              <div className="d-flex">
-                                <button
-                                  type="button"
-                                  className="btn btn-primary waves-effect btn-label waves-light me-3"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#create-contact"
-                                >
-                                  <i className="mdi mdi-plus label-icon"></i> Add
-                                  ContactPerson
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="p-4">
-                            <div className="row">
-                              <div className="col-12">
-                                <div
-                                  className={"alert alert-" + error.color}
-                                  role="alert"
-                                >
-                                  {error.message}
-                                </div>
-                                <div className="table-responsive">
-                                  <table className="table align-middle table-nowrap table-hover mb-0">
-                                    <thead>
-                                      <tr class="text-uppercase table-dark">
-                                        <th>#</th>
-                                        <th>Name (s) </th>
-                                        <th>Type</th>
-                                        <th>Relationship</th>
-                                        <th>phone No</th>
-                                        <th>Status</th>
-                                        <th>Date Created</th>
-                                        <th className="text-right">Actions</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {tenantData.contactPeople &&
-                                        tenantData.contactPeople.map(
-                                          (unit, index) => (
-                                            <tr data-id="1">
-                                              <td>{index + 1}</td>
-                                              <td>
-                                                {unit.firstName} {unit.lastName}{" "}
-                                                {unit.otherName}
-                                              </td>
-                                              <td className="text-capitalize">
-                                                {unit.contactPersonType
-                                                  .toLowerCase()
-                                                  .replace(/_/g, " ")}
-                                              </td>
-                                              <td>{unit.relationship}</td>
-                                              <td>{unit.phoneNumber1}</td>
-                                              <td>
-                                                {" "}
-                                                {unit.active ? (
-                                                  <span class="badge-soft-success badge">
-                                                    Active
-                                                  </span>
-                                                ) : (
-                                                  <span class="badge-soft-danger badge">
-                                                    Inactive
-                                                  </span>
-                                                )}
-                                              </td>
-                                              <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+        {activeLink === 4 && (
+          <div>
+            <div className="row">
+              <div className="col-xl-12">
+                <div className="card calc-h-3px">
+                  <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                    <div
+                      class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                      role="toolbar"
+                    >
+                      <div class="d-flex align-items-center flex-grow-1">
+                        <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
+                      </div>
+                      <div onClick={handleDocShow}>
+                        <button
+                          type="button"
+                          className="btn align-items-center d-flex btn-primary dropdown-toggle option-selector mb-3 mt-0"
+                        >
+                          <i className="dripicons-plus font-size-16 mt-1"></i>{" "}
+                          <span className="pl-1 d-md-inline">New document</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
-                                              <td className="text-right cell-change ">
-                                                <a
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#edit-contact"
-                                                  className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                                  onClick={() =>
-                                                    handleChangeContacts(
-                                                      unit.id,
+                  <div className="card-body">
+                    <div className="col-12">
+                      <div className="table-responsive">
+                        <table
+                          class="table align-middle table-edits rent-invoicing dt-responsive"
+                          id="data-table"
+                        >
+                          <thead>
+                            <tr class="text-uppercase table-dark">
+                              <th>#</th>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Own type</th>
+                              <th>Date Created</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {tenantDocs &&
+                              tenantDocs.map((unit, index) => (
+                                <tr data-id="1">
+                                  <td>{index + 1}</td>
+                                  <td className="active nav-link cursor-pointer">
+                                    <a onClick={() => download}>
+                                      {" "}
+                                      {unit.docName}
+                                    </a>
+                                  </td>
+                                  <td>{unit.documentType.name}</td>
+                                  <td className="text-capitalize">
+                                    {unit.documentOwnerType.toLowerCase()}
+                                  </td>
+                                  <td>
+                                    {moment(unit.dateTimeCreated).format(
+                                      "YYYY-MM-DD HH:mm"
+                                    )}
+                                  </td>
 
-                                                      unit.firstName,
-                                                      unit.lastName,
-                                                      unit.otherName,
-                                                      unit.contactPersonType,
-                                                      unit.phoneNumber1,
-                                                      unit.relationship
-                                                    )
-                                                  }
-                                                >
-                                                  <i className="bx bx-edit-alt " />
-                                                </a>
-                                              </td>
-                                            </tr>
-                                          )
-                                        )}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                                  <td>
+                                    <a
+                                      href={
+                                        baseUrl +
+                                        "/documents/download?docName=" +
+                                        `${unit.docName}`
+                                      }
+                                      className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
+                                      target="_blank"
+                                    >
+                                      <i className="bx bx-download" />
+                                    </a>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          )
-        }
 
-        {
-          activeLink === 4 && (
+            {/*document attachment modal*/}
+
             <div>
-              <div className="row">
-                <div className="col-xl-12">
-                  <div className="card calc-h-3px">
-                    <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                      <div
-                        class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                        role="toolbar"
-                      >
-                        <div class="d-flex align-items-center flex-grow-1">
-                          <h4 class="mb-0 m-0 bg-transparent">Documents</h4>
-                        </div>
-                        <div onClick={handleDocShow}>
-                          <button
-                            type="button"
-                            className="btn align-items-center d-flex btn-primary dropdown-toggle option-selector mb-3 mt-0"
-                          >
-                            <i className="dripicons-plus font-size-16 mt-1"></i>{" "}
-                            <span className="pl-1 d-md-inline">New document</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="card-body" onSubmit={createDoc}>
+              <Modal
+                show={docShow}
+                onHide={handleDocClose}
+                className={"modal fade"}
+                centered
+              >
+                <form onSubmit={createDoc}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Add Documents</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <div className="row">
                       <div className="col-12">
-                        <div className="table-responsive">
-                          <table
-                            class="table align-middle table-edits rent-invoicing dt-responsive"
-                            id="data-table"
+                        <div className="form-group mb-4">
+                          <label htmlFor="">
+                            Select Document Type.{" "}
+                            <strong className="text-danger ">*</strong>
+                          </label>
+                          <select
+                            className="form-control text-capitalize"
+                            onChange={(e) => {
+                              setDocumentTypeId(e.target.value);
+                            }}
+                            name="document type"
+                            required={true}
                           >
-                            <thead>
-                              <tr class="text-uppercase table-dark">
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Own type</th>
-                                <th>Date Created</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {tenantDocs &&
-                                tenantDocs.map((unit, index) => (
-                                  <tr data-id="1">
-                                    <td>{index + 1}</td>
-                                    <td className="active nav-link cursor-pointer">
-                                      <a onClick={() => download}>
-                                        {" "}
-                                        {unit.docName}
-                                      </a>
-                                    </td>
-                                    <td>{unit.documentType.name}</td>
-                                    <td className="text-capitalize">
-                                      {unit.documentOwnerType.toLowerCase()}
-                                    </td>
-                                    <td>{moment(unit.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
-
-                                    <td>
-                                      <a
-                                        href={
-                                          baseUrl +
-                                          "/documents/download?docName=" +
-                                          `${unit.docName}`
-                                        }
-                                        className="btn btn-light btn-rounded waves-effect btn-circle btn-transparent edit"
-                                        target="_blank"
-                                      >
-                                        <i className="bx bx-download" />
-                                      </a>
-                                    </td>
-                                  </tr>
-                                ))}
-                            </tbody>
-                          </table>
+                            <option className="text-black font-semibold ">
+                              select..
+                            </option>
+                            {documentTypes &&
+                              documentTypes
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                ?.map((dT) => {
+                                  return (
+                                    <option key={dT.id} value={dT.id}>
+                                      {dT.name
+                                        ?.toLowerCase()
+                                        .replace(/_/g, " ")}
+                                    </option>
+                                  );
+                                })}
+                          </select>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/*document attachment modal*/}
-
-              <div>
-                <Modal
-                  show={docShow}
-                  onHide={handleDocClose}
-                  className={"modal fade"}
-                  centered
-                >
-                  <form onSubmit={createDoc}>
-                    <Modal.Header closeButton>
-                      <Modal.Title>Add Documents</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="form-group mb-4">
-                            <label htmlFor="">
-                              Select Document Type.{" "}
-                              <strong className="text-danger ">*</strong>
-                            </label>
-                            <select
-                              className="form-control text-capitalize"
-                              onChange={(e) => {
-                                setDocumentTypeId(e.target.value);
-                              }}
-                              name="document type"
-                              required={true}
+                        <div className="form-group mb-4">
+                          <label htmlFor="">
+                            Document Name.{" "}
+                            <strong className="text-danger ">*</strong>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={docName}
+                            onChange={(e) => setDocName(e.target.value)}
+                            placeholder="Enter document name"
+                            required={true}
+                          />
+                        </div>
+                        <div className="form-group mb-4">
+                          <label htmlFor="">
+                            Document Upload.{" "}
+                            <strong className="text-danger ">*</strong>
+                          </label>
+                          <div className="input-group mb-0">
+                            <label
+                              className="input-group-text bg-info text-white cursor-pointer"
+                              htmlFor="document1-1"
                             >
-                              <option className="text-black font-semibold ">
-                                select..
-                              </option>
-                              {documentTypes &&
-                                documentTypes
-                                  .sort((a, b) => a.name.localeCompare(b.name))
-                                  ?.map((dT) => {
-                                    return (
-                                      <option key={dT.id} value={dT.id}>
-                                        {dT.name
-                                          ?.toLowerCase()
-                                          .replace(/_/g, " ")}
-                                      </option>
-                                    );
-                                  })}
-                            </select>
-                          </div>
-                          <div className="form-group mb-4">
-                            <label htmlFor="">
-                              Document Name.{" "}
-                              <strong className="text-danger ">*</strong>
+                              <i className="font-14px mdi mdi-paperclip"></i>{" "}
+                              Attach File
                             </label>
                             <input
-                              type="text"
+                              type="file"
                               className="form-control"
-                              value={docName}
-                              onChange={(e) => setDocName(e.target.value)}
-                              placeholder="Enter document name"
+                              id="document1-1"
+                              onChange={(e) => handleFileRead(e)}
                               required={true}
                             />
                           </div>
-                          <div className="form-group mb-4">
-                            <label htmlFor="">
-                              Document Upload.{" "}
-                              <strong className="text-danger ">*</strong>
-                            </label>
-                            <div className="input-group mb-0">
-                              <label
-                                className="input-group-text bg-info text-white cursor-pointer"
-                                htmlFor="document1-1"
-                              >
-                                <i className="font-14px mdi mdi-paperclip"></i>{" "}
-                                Attach File
-                              </label>
-                              <input
-                                type="file"
-                                className="form-control"
-                                id="document1-1"
-                                onChange={(e) => handleFileRead(e)}
-                                required={true}
-                              />
-                            </div>
-                          </div>
                         </div>
                       </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        variant="secondary"
-                        className={"btn btn-grey"}
-                        onClick={handleDocClose}
-                      >
-                        Close
-                      </Button>
-                      <Button
-                        variant="primary"
-                        className={"btn btn-primary"}
-                        type={"submit"}
-                      >
-                        Add Document
-                      </Button>
-                    </Modal.Footer>
-                  </form>
-                </Modal>
-              </div>
-            </div>
-          )
-        }
-
-        {
-          activeLink === 5 && (
-            <div>
-              <div class="container-fluid">
-                {/* <!-- start page title --> */}
-                <div class="row">
-                  <div class="col-12">
-                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                      <h4 class="mb-sm-0 font-size-18">All Messages</h4>
+                      {error.color !== "" && (
+                        <div
+                          className={"mt-2 alert alert-" + error.color}
+                          role="alert"
+                        >
+                          {error.message}
+                        </div>
+                      )}
                     </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button
+                      variant="secondary"
+                      className={"btn btn-grey"}
+                      onClick={handleDocClose}
+                    >
+                      Close
+                    </Button>
+                    <Button
+                      variant="primary"
+                      className={"btn btn-primary"}
+                      type={"submit"}
+                    >
+                      Add Document
+                    </Button>
+                  </Modal.Footer>
+                </form>
+              </Modal>
+            </div>
+          </div>
+        )}
+
+        {activeLink === 5 && (
+          <div>
+            <div class="container-fluid">
+              {/* <!-- start page title --> */}
+              <div class="row">
+                <div class="col-12">
+                  <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0 font-size-18">All Messages</h4>
                   </div>
                 </div>
-                {/* <!-- end page title --> */}
+              </div>
+              {/* <!-- end page title --> */}
 
-                <div class="row">
-                  <div class="col-12">
-                    {/* <!-- Right Sidebar --> */}
-                    <div class="mb-3">
-                      <div class="card">
-                        <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                          <div
-                            class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                            role="toolbar"
-                          >
-                            <div class="d-flex align-items-center flex-grow-1"></div>
-                          </div>
+              <div class="row">
+                <div class="col-12">
+                  {/* <!-- Right Sidebar --> */}
+                  <div class="mb-3">
+                    <div class="card">
+                      <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                        <div
+                          class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                          role="toolbar"
+                        >
+                          <div class="d-flex align-items-center flex-grow-1"></div>
                         </div>
-                        <div class="card-body the-inbox">
-                          <table
-                            id="emailDataTable-btns"
-                            class="table   nowrap w-100 table-hover mt-0 mb-0"
-                          >
-                            <thead>
-                              <tr class="d-none">
-                                <th>Mode</th>
-                                <th>
-                                  {/* <!-- this is where the index is stored --> */}
-                                </th>
-                                <th>Status</th>
-                                <th>Name</th>
-                                <th>Message Content</th>
-                                <th>Date</th>
+                      </div>
+                      <div class="card-body the-inbox">
+                        <table
+                          id="emailDataTable-btns"
+                          class="table   nowrap w-100 table-hover mt-0 mb-0"
+                        >
+                          <thead>
+                            <tr class="d-none">
+                              <th>Mode</th>
+                              <th>
+                                {/* <!-- this is where the index is stored --> */}
+                              </th>
+                              <th>Status</th>
+                              <th>Name</th>
+                              <th>Message Content</th>
+                              <th>Date</th>
+                            </tr>
+                          </thead>
+
+                          <tbody class="table-hover">
+                            {communication?.map((com, index) => (
+                              <tr data-id="1">
+                                <td>{index + 1}</td>
+                                {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                <td class="">
+                                  {/* <!-- put the index here --> */}
+
+                                  <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
+                                    <div class="avatar-xs m-0">
+                                      <span class="avatar-title rounded-circle bg-success bg-orange text-white">
+                                        AW
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <span class=" font-size-18 d-none d-md-flex">
+                                    <i class="mdi mdi-chat-outline text-info pr-2">
+                                      <span class="d-none">Email</span>
+                                    </i>
+                                    <i class="mdi mdi-email-check-outline text-info pr-2">
+                                      <span class="d-none">sms</span>
+                                    </i>
+                                  </span>
+                                  <span class=" font-size-18 d-flex d-md-none">
+                                    <br />
+                                    <i class="mdi mdi-chat-outline text-info pr-2">
+                                      <span class="d-none">
+                                        {com.communicationType}
+                                      </span>
+                                    </i>
+                                    {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
+                                  </span>
+                                </td>
+
+                                <td class="d-none">
+                                  <span class="d-none">0</span>
+                                </td>
+
+                                <td class="text-capitalize d-none d-md-table-cell">
+                                  {com.createdBy}
+                                </td>
+                                <td class="the-msg the-msg-2">
+                                  <span>{JSON.parse(com.data).text}</span>
+                                </td>
+
+                                <td class="text-capitalize d-none d-md-table-cell">
+                                  {moment(com.dateTimeCreated).format(
+                                    "ddd MMM DD"
+                                  )}
+                                </td>
                               </tr>
-                            </thead>
-
-                            <tbody class="table-hover">
-                              {communication?.map((com, index) => (
-
-
-                                <tr data-id="1">
-                                  <td>{index + 1}</td>
-                                  {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
-                                  <td class="">
-                                    {/* <!-- put the index here --> */}
-
-                                    <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
-                                      <div class="avatar-xs m-0">
-                                        <span class="avatar-title rounded-circle bg-success bg-orange text-white">
-                                          AW
-                                        </span>
-                                      </div>
-                                    </div>
-
-                                    <span class=" font-size-18 d-none d-md-flex">
-                                      <i class="mdi mdi-chat-outline text-info pr-2">
-                                        <span class="d-none">Email</span>
-                                      </i>
-                                      <i class="mdi mdi-email-check-outline text-info pr-2">
-                                        <span class="d-none">sms</span>
-                                      </i>
-                                    </span>
-                                    <span class=" font-size-18 d-flex d-md-none">
-                                      <br />
-                                      <i class="mdi mdi-chat-outline text-info pr-2">
-                                        <span class="d-none">
-                                          {com.communicationType}
-                                        </span>
-                                      </i>
-                                      {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-                                    </span>
-                                  </td>
-
-                                  <td class="d-none">
-                                    <span class="d-none">0</span>
-                                  </td>
-
-                                  <td class="text-capitalize d-none d-md-table-cell">
-                                    {com.createdBy}
-                                  </td>
-                                  <td class="the-msg the-msg-2">
-                                    <span>{JSON.parse(com.data).text}</span>
-
-                                  </td>
-
-                                  <td class="text-capitalize d-none d-md-table-cell">
-                                    {moment(com.dateTimeCreated).format(
-                                      "ddd MMM DD"
-                                    )}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
-                    {/* <!-- end Col-9 --> */}
                   </div>
+                  {/* <!-- end Col-9 --> */}
                 </div>
-                {/* <!-- End row --> */}
               </div>
-              {/* <!-- container-fluid --> */}
+              {/* <!-- End row --> */}
             </div>
-          )
-        }
+            {/* <!-- container-fluid --> */}
+          </div>
+        )}
 
-        {
-          activeLink === 6 && (
-            <div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="card">
-                    <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                      <div
-                        className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                        role="toolbar"
-                      >
-                        <h4 className="card-title text-capitalize mb-0 ">
-                          Tenant Statements
-                        </h4>
-                        <div className=" d-flex justify-content-between align-items-center pr-3">
-                          <form className="d-flex align-items-center">
-                            <div className="d-flex justify-content-center align-items-center">
-                              <div className="flex p-2">
-                                <span className="input-group-text">
-                                  <i className="mdi mdi-calendar">Start Date:</i>
-                                </span>
-                                <DatePicker
-                                  selected={startDate}
-                                  onChange={(date) => setStartDate(date)}
-                                  selectsStart
-                                  className="form-control cursor-pointer"
-                                  startDate={startDate}
-                                  endDate={endDate}
-                                  maxDate={new Date()}
-                                />
-                              </div>
-                              <div className="flex p-2" id="datepicker1">
-                                <span className="input-group-text">
-                                  <i className="mdi mdi-calendar">End Date:</i>
-                                </span>
-                                <DatePicker
-                                  selected={endDate}
-                                  onChange={(date) => setEndDate(date)}
-                                  selectsEnd
-                                  showMonthDropdown
-                                  showYearDropdown
-                                  className="form-control cursor-pointer"
-                                  calendarClassName="form-group"
-                                  startDate={startDate}
-                                  endDate={endDate}
-                                  maxDate={new Date()}
-                                  type="text"
-                                />
-                              </div>
-                            </div>
-                            <div className="d-flex mb-2">
-                              <input
-                                type="submit"
-                                className="btn btn-primary"
-                                onClick={getTenantStatement}
-                                value="filter"
+        {activeLink === 6 && (
+          <div>
+            <div className="row">
+              <div className="col-12">
+                <div className="card">
+                  <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                    <div
+                      className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                      role="toolbar"
+                    >
+                      <h4 className="card-title text-capitalize mb-0 ">
+                        Tenant Statements
+                      </h4>
+                      <div className=" d-flex justify-content-between align-items-center pr-3">
+                        <form className="d-flex align-items-center">
+                          <div className="d-flex justify-content-center align-items-center">
+                            <div className="flex p-2">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">Start Date:</i>
+                              </span>
+                              <DatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                selectsStart
+                                className="form-control cursor-pointer"
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
                               />
                             </div>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="card-body">
-                      <div className="table-responsive overflow-visible">
-                        {error.color !== "" && (
-                          <div
-                            className={"alert alert-" + error.color}
-                            role="alert"
-                          >
-                            {error.message}
+                            <div className="flex p-2" id="datepicker1">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">End Date:</i>
+                              </span>
+                              <DatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                selectsEnd
+                                showMonthDropdown
+                                showYearDropdown
+                                className="form-control cursor-pointer"
+                                calendarClassName="form-group"
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
+                                type="text"
+                              />
+                            </div>
                           </div>
-                        )}
-                        <table
-                          className="table align-middle table-hover  contacts-table table-striped "
-                          id="datatable-buttons"
+                          <div className="d-flex mb-2">
+                            <input
+                              type="submit"
+                              className="btn btn-primary"
+                              onClick={getTenantStatement}
+                              value="filter"
+                            />
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    <div className="table-responsive overflow-visible">
+                      {error.color !== "" && (
+                        <div
+                          className={"alert alert-" + error.color}
+                          role="alert"
                         >
-                          <thead className="table-light">
-                            <tr className="table-dark">
-                              <th>Bill No</th>
-                              <th>Receipt Amount</th>
-                              <th>Pay Reference No</th>
-                              <th>Payment Mode</th>
-                              <th>Paid By</th>
-                              <th>Tenant Name</th>
-                              <th>Utilized Amount</th>
-                              <th>Date Created</th>
-                              <th className="text-right">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {statements &&
-                              statements?.length > 0 &&
-                              statements?.map((statement, index) => (
-                                <tr data-id={index} key={statement.id}>
-                                  <td>{statement.billNo}</td>
-                                  <td>
-                                    {formatCurrency.format(
-                                      statement.receiptAmount
-                                    )}
-                                  </td>
-                                  <td>{statement.payReferenceNo}</td>
-                                  <td>{statement.paymentMode}</td>
-                                  <td>{statement.paidBy}</td>
-                                  <td>
-                                    {statement?.tenant?.tenantType ===
-                                      "INDIVIDUAL" ? (
-                                      <>
-                                        {statement?.tenant?.firstName}{" "}
-                                        {statement?.tenant?.lastName}
-                                      </>
-                                    ) : (
-                                      <>{statement?.tenant?.companyName}</>
-                                    )}
-                                  </td>
-                                  <td>
-                                    {formatCurrency.format(
-                                      statement.utilisedAmount
-                                    )}
-                                  </td>
-                                  <td>{moment(statement.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                          {error.message}
+                        </div>
+                      )}
+                      <table
+                        className="table align-middle table-hover  contacts-table table-striped "
+                        id="datatable-buttons"
+                      >
+                        <thead className="table-light">
+                          <tr className="table-dark">
+                            <th>Bill No</th>
+                            <th>Receipt Amount</th>
+                            <th>Pay Reference No</th>
+                            <th>Payment Mode</th>
+                            <th>Paid By</th>
+                            <th>Tenant Name</th>
+                            <th>Utilized Amount</th>
+                            <th>Date Created</th>
+                            <th className="text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {statements &&
+                            statements?.length > 0 &&
+                            statements?.map((statement, index) => (
+                              <tr data-id={index} key={statement.id}>
+                                <td>{statement.billNo}</td>
+                                <td>
+                                  {formatCurrency.format(
+                                    statement.receiptAmount
+                                  )}
+                                </td>
+                                <td>{statement.payReferenceNo}</td>
+                                <td>{statement.paymentMode}</td>
+                                <td>{statement.paidBy}</td>
+                                <td>
+                                  {statement?.tenant?.tenantType ===
+                                  "INDIVIDUAL" ? (
+                                    <>
+                                      {statement?.tenant?.firstName}{" "}
+                                      {statement?.tenant?.lastName}
+                                    </>
+                                  ) : (
+                                    <>{statement?.tenant?.companyName}</>
+                                  )}
+                                </td>
+                                <td>
+                                  {formatCurrency.format(
+                                    statement.utilisedAmount
+                                  )}
+                                </td>
+                                <td>
+                                  {moment(statement.dateTimeCreated).format(
+                                    "YYYY-MM-DD HH:mm"
+                                  )}
+                                </td>
 
-                                  <td>
-                                    <div className="d-flex justify-content-end">
-                                      <div className="dropdown">
-                                        <a
-                                          className="text-muted font-size-16 cursor-pinter"
-                                          role="button"
-                                          data-bs-toggle="dropdown"
-                                          aria-haspopup="true"
+                                <td>
+                                  <div className="d-flex justify-content-end">
+                                    <div className="dropdown">
+                                      <a
+                                        className="text-muted font-size-16 cursor-pinter"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-haspopup="true"
+                                      >
+                                        <i className="bx bx-dots-vertical-rounded"></i>
+                                      </a>
+                                      <div className="dropdown-menu dropdown-menu-end ">
+                                        <span
+                                          className="dropdown-item cursor-pinter"
+                                          onClick={() => {
+                                            setActiveModal(1);
+                                            getOneInvoice(statement.billNo);
+                                          }}
                                         >
-                                          <i className="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                        <div className="dropdown-menu dropdown-menu-end ">
-                                          <span
-                                            className="dropdown-item cursor-pinter"
+                                          <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                          View
+                                        </span>
+
+                                        {statement.utilisedAmount <
+                                          statement.receiptAmount && (
+                                          <a
+                                            className="dropdown-item  cursor-pointer"
                                             onClick={() => {
-                                              setActiveModal(1);
-                                              getOneInvoice(statement.billNo);
+                                              handleShow();
+                                              setUtilizeValues(
+                                                statement?.id,
+                                                statement?.tenant?.id
+                                              );
                                             }}
                                           >
-                                            <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                            View
-                                          </span>
-
-                                          {statement.utilisedAmount <
-                                            statement.receiptAmount && (
-                                              <a
-                                                className="dropdown-item  cursor-pointer"
-                                                onClick={() => {
-                                                  handleShow();
-                                                  setUtilizeValues(
-                                                    statement?.id,
-                                                    statement?.tenant?.id
-                                                  );
-                                                }}
-                                              >
-                                                <i className="font-size-15 mdi mdi-account-check me-3 "></i>
-                                                Utilize
-                                              </a>
-                                            )}
-                                        </div>
+                                            <i className="font-size-15 mdi mdi-account-check me-3 "></i>
+                                            Utilize
+                                          </a>
+                                        )}
                                       </div>
                                     </div>
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                          <tfoot className="table-light">
-                            <tr>
-                              <th
-                                className="text-capitalize text-nowrap"
-                                colSpan="3"
-                              >
-                                {statements?.length} Statements
-                              </th>
-                              <td className="text-nowrap text-right" colSpan="7">
-                                <span className="fw-semibold">
-                                  {/*{formatCurrency.format(total())}*/}
-                                </span>
-                              </td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                        <tfoot className="table-light">
+                          <tr>
+                            <th
+                              className="text-capitalize text-nowrap"
+                              colSpan="3"
+                            >
+                              {statements?.length} Statements
+                            </th>
+                            <td className="text-nowrap text-right" colSpan="7">
+                              <span className="fw-semibold">
+                                {/*{formatCurrency.format(total())}*/}
+                              </span>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          )
-        }
-        {
-          activeLink === 7 && (
-            <div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="card">
-                    <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                      <div
-                        className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                        role="toolbar"
-                      >
-                        <h4 className="card-title text-capitalize mb-0 ">
-                          Receipts
-                        </h4>
-                        <div className=" d-flex justify-content-between align-items-center pr-3">
-                          <form className="d-flex align-items-center">
-                            <div className="d-flex justify-content-center align-items-center">
-                              <div className="flex p-2">
-                                <span className="input-group-text">
-                                  <i className="mdi mdi-calendar">Start Date:</i>
-                                </span>
-                                <DatePicker
-                                  selected={startDate}
-                                  onChange={(date) => setStartDate(date)}
-                                  selectsStart
-                                  className="form-control cursor-pointer"
-                                  startDate={startDate}
-                                  endDate={endDate}
-                                  maxDate={new Date()}
-                                />
-                              </div>
-                              <div className="flex p-2" id="datepicker1">
-                                <span className="input-group-text">
-                                  <i className="mdi mdi-calendar">End Date:</i>
-                                </span>
-                                <DatePicker
-                                  selected={endDate}
-                                  onChange={(date) => setEndDate(date)}
-                                  selectsEnd
-                                  showMonthDropdown
-                                  showYearDropdown
-                                  className="form-control cursor-pointer"
-                                  calendarClassName="form-group"
-                                  startDate={startDate}
-                                  endDate={endDate}
-                                  maxDate={new Date()}
-                                  type="text"
-                                />
-                              </div>
-                            </div>
-                            <div className="d-flex mb-2">
-                              <input
-                                type="submit"
-                                className="btn btn-primary"
-                                onClick={handleSubmit}
-                                value="filter"
+          </div>
+        )}
+        {activeLink === 7 && (
+          <div>
+            <div className="row">
+              <div className="col-12">
+                <div className="card">
+                  <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
+                    <div
+                      className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+                      role="toolbar"
+                    >
+                      <h4 className="card-title text-capitalize mb-0 ">
+                        Receipts
+                      </h4>
+                      <div className=" d-flex justify-content-between align-items-center pr-3">
+                        <form className="d-flex align-items-center">
+                          <div className="d-flex justify-content-center align-items-center">
+                            <div className="flex p-2">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">Start Date:</i>
+                              </span>
+                              <DatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                selectsStart
+                                className="form-control cursor-pointer"
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
                               />
                             </div>
-                          </form>
-                        </div>
+                            <div className="flex p-2" id="datepicker1">
+                              <span className="input-group-text">
+                                <i className="mdi mdi-calendar">End Date:</i>
+                              </span>
+                              <DatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                selectsEnd
+                                showMonthDropdown
+                                showYearDropdown
+                                className="form-control cursor-pointer"
+                                calendarClassName="form-group"
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
+                                type="text"
+                              />
+                            </div>
+                          </div>
+                          <div className="d-flex mb-2">
+                            <input
+                              type="submit"
+                              className="btn btn-primary"
+                              onClick={handleSubmit}
+                              value="filter"
+                            />
+                          </div>
+                        </form>
                       </div>
                     </div>
+                  </div>
 
-                    <Message details={details} mode={mode} clear={clearDetails} />
-                    <div className="card-body">
-                      <div className="table-responsive overflow-visible">
-                        <table
-                          className="table align-middle table-hover  contacts-table table-striped "
-                          id="datatable-buttons"
-                        >
-                          <thead className="table-light">
-                            <tr className="table-dark">
-                              <th>receiptNo</th>
-                              <th>paid by</th>
-                              <th>Tenant</th>
-                              <th>bill amount</th>
-                              <th>bill balance</th>
-                              <th>payment mode</th>
-                              <th>payment ref</th>
-                              <th>Date Created</th>
-                              <th className="text-right">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {statements &&
-                              statements?.length > 0 &&
-                              statements?.map((statement, index) => (
-                                <tr data-id={index} key={index}>
-                                  <td>{statement.receiptNo}</td>
-                                  <td>{statement.paidBy}</td>
-                                  <td>
-                                    {statement?.tenant?.tenantType ===
-                                      "INDIVIDUAL" ? (
-                                      <>
-                                        {statement?.tenant?.firstName}{" "}
-                                        {statement?.tenant?.lastName}
-                                      </>
-                                    ) : (
-                                      <>{statement?.tenant?.companyName}</>
-                                    )}
-                                  </td>
-                                  <td>
-                                    {formatCurrency.format(
-                                      JSON.parse(statement.response).receiptInfo
-                                        .billAmount
-                                    )}
-                                  </td>
-                                  <td>
-                                    {formatCurrency.format(
-                                      JSON.parse(statement.response).receiptInfo
-                                        .billBalance
-                                    )}
-                                  </td>
-                                  <td>{statement.paymentMode}</td>
-                                  <td>{statement.payReferenceNo}</td>
-                                  <td>{moment(statement.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+                  <Message details={details} mode={mode} clear={clearDetails} />
+                  <div className="card-body">
+                    <div className="table-responsive overflow-visible">
+                      <table
+                        className="table align-middle table-hover  contacts-table table-striped "
+                        id="datatable-buttons"
+                      >
+                        <thead className="table-light">
+                          <tr className="table-dark">
+                            <th>receiptNo</th>
+                            <th>paid by</th>
+                            <th>Tenant</th>
+                            <th>bill amount</th>
+                            <th>bill balance</th>
+                            <th>payment mode</th>
+                            <th>payment ref</th>
+                            <th>Date Created</th>
+                            <th className="text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {statements &&
+                            statements?.length > 0 &&
+                            statements?.map((statement, index) => (
+                              <tr data-id={index} key={index}>
+                                <td>{statement.receiptNo}</td>
+                                <td>{statement.paidBy}</td>
+                                <td>
+                                  {statement?.tenant?.tenantType ===
+                                  "INDIVIDUAL" ? (
+                                    <>
+                                      {statement?.tenant?.firstName}{" "}
+                                      {statement?.tenant?.lastName}
+                                    </>
+                                  ) : (
+                                    <>{statement?.tenant?.companyName}</>
+                                  )}
+                                </td>
+                                <td>
+                                  {formatCurrency.format(
+                                    JSON.parse(statement.response).receiptInfo
+                                      .billAmount
+                                  )}
+                                </td>
+                                <td>
+                                  {formatCurrency.format(
+                                    JSON.parse(statement.response).receiptInfo
+                                      .billBalance
+                                  )}
+                                </td>
+                                <td>{statement.paymentMode}</td>
+                                <td>{statement.payReferenceNo}</td>
+                                <td>
+                                  {moment(statement.dateTimeCreated).format(
+                                    "YYYY-MM-DD HH:mm"
+                                  )}
+                                </td>
 
-                                  <td>
-                                    <div className="d-flex justify-content-end">
-                                      <div className="dropdown">
-                                        <a
-                                          className="text-muted font-size-16"
-                                          role="button"
-                                          data-bs-toggle="dropdown"
-                                          aria-haspopup="true"
+                                <td>
+                                  <div className="d-flex justify-content-end">
+                                    <div className="dropdown">
+                                      <a
+                                        className="text-muted font-size-16"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-haspopup="true"
+                                      >
+                                        <i className="bx bx-dots-vertical-rounded"></i>
+                                      </a>
+                                      <div className="dropdown-menu dropdown-menu-end ">
+                                        <span
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            setActiveModal(2);
+                                            getOneInvoice(statement.billNo);
+                                          }}
                                         >
-                                          <i className="bx bx-dots-vertical-rounded"></i>
+                                          <i className="font-size-15 mdi mdi-eye me-3 "></i>
+                                          View
+                                        </span>
+                                        <a className="dropdown-item " href="# ">
+                                          <i className="font-size-15 mdi mdi-printer me-3 "></i>
+                                          Print
                                         </a>
-                                        <div className="dropdown-menu dropdown-menu-end ">
-                                          <span
-                                            className="dropdown-item cursor-pointer"
-                                            onClick={() => {
-                                              setActiveModal(2);
-                                              getOneInvoice(statement.billNo);
-                                            }}
-                                          >
-                                            <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                            View
-                                          </span>
-                                          <a className="dropdown-item " href="# ">
-                                            <i className="font-size-15 mdi mdi-printer me-3 "></i>
-                                            Print
-                                          </a>
-                                          <a
-                                            className="dropdown-item cursor-pointer"
-                                            onClick={() => {
-                                              handleModeChange("Email");
-                                              handleClicked(statement, "Email");
-                                            }}
-                                          >
-                                            <i className="font-size-15 mdi mdi-email me-3 "></i>
-                                            Email Tenant
-                                          </a>
-                                          <a
-                                            className="dropdown-item cursor-pointer"
-                                            onClick={() => {
-                                              handleModeChange("SMS");
-                                              handleClicked(statement, "SMS");
-                                            }}
-                                          >
-                                            <i className="font-size-15 mdi mdi-chat me-3 "></i>
-                                            Send as SMS
-                                          </a>
-                                        </div>
+                                        <a
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            handleModeChange("Email");
+                                            handleClicked(statement, "Email");
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-email me-3 "></i>
+                                          Email Tenant
+                                        </a>
+                                        <a
+                                          className="dropdown-item cursor-pointer"
+                                          onClick={() => {
+                                            handleModeChange("SMS");
+                                            handleClicked(statement, "SMS");
+                                          }}
+                                        >
+                                          <i className="font-size-15 mdi mdi-chat me-3 "></i>
+                                          Send as SMS
+                                        </a>
                                       </div>
                                     </div>
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                          <tfoot className="table-light">
-                            <tr>
-                              <th
-                                className="text-capitalize text-nowrap"
-                                colSpan="3"
-                              >
-                                {statements?.length} Receipts
-                              </th>
-                              <td className="text-nowrap text-right" colSpan="7">
-                                <span className="fw-semibold">
-                                  {/*{formatCurrency.format(total())}*/}
-                                </span>
-                              </td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-                      {/*<div className="mt-4 mb-0 flex justify-between px-8">*/}
-                      {/*  {pageCount !== 0 && (*/}
-                      {/*    <p className=" font-medium text-xs text-gray-700">*/}
-                      {/*      {" "}*/}
-                      {/*      showing page{" "}*/}
-                      {/*      <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
-                      {/*        {page + 1}*/}
-                      {/*      </span>{" "}*/}
-                      {/*      of{" "}*/}
-                      {/*      <span className="text-sm font-bold text-black">*/}
-                      {/*        {pageCount}*/}
-                      {/*      </span>{" "}*/}
-                      {/*      pages*/}
-                      {/*    </p>*/}
-                      {/*  )}*/}
-
-                      {/*  {pageCount !== 0 && (*/}
-                      {/*    <ReactPaginate*/}
-                      {/*      previousLabel={"prev"}*/}
-                      {/*      nextLabel={"next"}*/}
-                      {/*      breakLabel={"..."}*/}
-                      {/*      pageCount={pageCount} // total number of pages needed*/}
-                      {/*      marginPagesDisplayed={2}*/}
-                      {/*      pageRangeDisplayed={1}*/}
-                      {/*      onPageChange={handlePageClick}*/}
-                      {/*      breakClassName={"page-item"}*/}
-                      {/*      breakLinkClassName={"page-link"}*/}
-                      {/*      containerClassName={"pagination"}*/}
-                      {/*      pageClassName={"page-item"}*/}
-                      {/*      pageLinkClassName={"page-link"}*/}
-                      {/*      previousClassName={"page-item"}*/}
-                      {/*      previousLinkClassName={"page-link"}*/}
-                      {/*      nextClassName={"page-item"}*/}
-                      {/*      nextLinkClassName={"page-link"}*/}
-                      {/*      activeClassName={"active"}*/}
-                      {/*    />*/}
-                      {/*  )}*/}
-                      {/*</div>*/}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                        <tfoot className="table-light">
+                          <tr>
+                            <th
+                              className="text-capitalize text-nowrap"
+                              colSpan="3"
+                            >
+                              {statements?.length} Receipts
+                            </th>
+                            <td className="text-nowrap text-right" colSpan="7">
+                              <span className="fw-semibold">
+                                {/*{formatCurrency.format(total())}*/}
+                              </span>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
                     </div>
+                    {/*<div className="mt-4 mb-0 flex justify-between px-8">*/}
+                    {/*  {pageCount !== 0 && (*/}
+                    {/*    <p className=" font-medium text-xs text-gray-700">*/}
+                    {/*      {" "}*/}
+                    {/*      showing page{" "}*/}
+                    {/*      <span className="text-green-700 text-opacity-100 font-bold text-sm">*/}
+                    {/*        {page + 1}*/}
+                    {/*      </span>{" "}*/}
+                    {/*      of{" "}*/}
+                    {/*      <span className="text-sm font-bold text-black">*/}
+                    {/*        {pageCount}*/}
+                    {/*      </span>{" "}*/}
+                    {/*      pages*/}
+                    {/*    </p>*/}
+                    {/*  )}*/}
+
+                    {/*  {pageCount !== 0 && (*/}
+                    {/*    <ReactPaginate*/}
+                    {/*      previousLabel={"prev"}*/}
+                    {/*      nextLabel={"next"}*/}
+                    {/*      breakLabel={"..."}*/}
+                    {/*      pageCount={pageCount} // total number of pages needed*/}
+                    {/*      marginPagesDisplayed={2}*/}
+                    {/*      pageRangeDisplayed={1}*/}
+                    {/*      onPageChange={handlePageClick}*/}
+                    {/*      breakClassName={"page-item"}*/}
+                    {/*      breakLinkClassName={"page-link"}*/}
+                    {/*      containerClassName={"pagination"}*/}
+                    {/*      pageClassName={"page-item"}*/}
+                    {/*      pageLinkClassName={"page-link"}*/}
+                    {/*      previousClassName={"page-item"}*/}
+                    {/*      previousLinkClassName={"page-link"}*/}
+                    {/*      nextClassName={"page-item"}*/}
+                    {/*      nextLinkClassName={"page-link"}*/}
+                    {/*      activeClassName={"active"}*/}
+                    {/*    />*/}
+                    {/*  )}*/}
+                    {/*</div>*/}
                   </div>
                 </div>
               </div>
             </div>
-          )
-        }
-        {activeLink === 8 &&
+          </div>
+        )}
+        {activeLink === 8 && (
           <>
             <div className="">
               <div className="container-fluid">
@@ -2814,7 +2847,9 @@ function OneTenant() {
                                     type="text"
                                     className="form-control"
                                     placeholder="Search..."
-                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onChange={(e) =>
+                                      setSearchTerm(e.target.value)
+                                    }
                                   />
                                   <span className="bx bx-search-alt"></span>
                                 </div>
@@ -2839,7 +2874,9 @@ function OneTenant() {
                                   startDate={moment(date.startDate).format(
                                     "YYYY-MM-DD"
                                   )}
-                                  endDate={moment(date.endDate).format("YYYY-MM-DD")}
+                                  endDate={moment(date.endDate).format(
+                                    "YYYY-MM-DD"
+                                  )}
                                 />
                               </div>
                             </div>
@@ -2851,10 +2888,7 @@ function OneTenant() {
                       </div>
                       <div className="card-body">
                         <div className="table-responsive">
-                          <table
-                            className="table align-middle table-hover  contacts-table table-striped "
-
-                          >
+                          <table className="table align-middle table-hover  contacts-table table-striped ">
                             <thead className="table-light">
                               <tr className="table-light">
                                 <th>Invoice No</th>
@@ -2880,24 +2914,32 @@ function OneTenant() {
                                     <td>{invoice.billerBillNo}</td>
                                     <td>{invoice.transaction?.tenantName}</td>
                                     <td>{invoice.transaction.premiseName}</td>
-                                    <td>{invoice.transaction.premiseUnitName}</td>
+                                    <td>
+                                      {invoice.transaction.premiseUnitName}
+                                    </td>
                                     <td>{invoice.applicableChargeName}</td>
                                     <td>
-                                      {formatCurrency.format(invoice.billAmount)}
+                                      {formatCurrency.format(
+                                        invoice.billAmount
+                                      )}
                                     </td>
                                     <td>
-                                      {formatCurrency.format(invoice.billPaidAmount)}
+                                      {formatCurrency.format(
+                                        invoice.billPaidAmount
+                                      )}
                                     </td>
                                     <td className={"text-right"}>
                                       <span
                                         className={
-                                          invoice.billPaidAmount > invoice.billAmount
+                                          invoice.billPaidAmount >
+                                          invoice.billAmount
                                             ? "fw-semibold text-success"
                                             : "fw-semibold text-danger"
                                         }
                                       >
                                         {formatCurrency.format(
-                                          invoice.billAmount - invoice.billPaidAmount
+                                          invoice.billAmount -
+                                            invoice.billPaidAmount
                                         )}
                                       </span>
                                     </td>
@@ -2907,7 +2949,9 @@ function OneTenant() {
                                       )}
                                     </td>
                                     <td>
-                                      <StatusBadge type={invoice?.paymentStatus} />
+                                      <StatusBadge
+                                        type={invoice?.paymentStatus}
+                                      />
                                     </td>
                                     <td>
                                       {moment(invoice.dateTimeCreated).format(
@@ -2964,7 +3008,6 @@ function OneTenant() {
                                   </tr>
                                 ))}
                             </tbody>
-
                           </table>
                         </div>
                         <div className="d-flex justify-content-between align-items-center">
@@ -3017,7 +3060,8 @@ function OneTenant() {
                             <span className="text-primary">
                               {pageCount === 0 ? page : page + 1}
                             </span>{" "}
-                            of<span className="text-primary"> {pageCount}</span> pages
+                            of<span className="text-primary"> {pageCount}</span>{" "}
+                            pages
                           </p>
                         )}
                       </div>
@@ -3028,9 +3072,13 @@ function OneTenant() {
             </div>
 
             {/*VIEW INVOICE*/}
-            <ViewInvoice show={invoice_show2} closeInvoice={closeInvoice2} activeInvoice={activeInvoice2} />
+            <ViewInvoice
+              show={invoice_show2}
+              closeInvoice={closeInvoice2}
+              activeInvoice={activeInvoice2}
+            />
           </>
-        }
+        )}
 
         <div
           class="modal fade"
@@ -3668,7 +3716,10 @@ function OneTenant() {
                         />
                       </div>
                       <div class="col-3 ">
-                        <button class="btn btn-primary btn-block w-100 btn-lg" onClick={handleSubmit}>
+                        <button
+                          class="btn btn-primary btn-block w-100 btn-lg"
+                          onClick={handleSubmit}
+                        >
                           <i class="bx bx-search-alt-2 font-size-16 align-middle me-2 "></i>
                           <div class="d-none">Search</div>
                         </button>
@@ -3842,13 +3893,13 @@ function OneTenant() {
                   Save
                 </button>
               </div>
-            </div >
-          </div >
-        </div >
+            </div>
+          </div>
+        </div>
 
         {/* //vacantTenant */}
 
-        < div
+        <div
           class="modal fade"
           id="vacate-modal"
           data-bs-backdrop="static"
@@ -3907,10 +3958,10 @@ function OneTenant() {
               </div>
             </div>
           </div>
-        </div >
+        </div>
         {/* </div > */}
         {/*VIEW INVOICE*/}
-        < Modal show={invoice_show} onHide={closeInvoice} size="lg" centered >
+        <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
           {activeModal === 1 && (
             <>
               <Modal.Header closeButton>
@@ -3986,13 +4037,17 @@ function OneTenant() {
                         <tr>
                           <td>{activeInvoice?.billNo}</td>
                           <td>
-                            {formatCurrency.format(activeInvoice?.receiptAmount)}
+                            {formatCurrency.format(
+                              activeInvoice?.receiptAmount
+                            )}
                           </td>
                           <td>{activeInvoice?.payReferenceNo}</td>
                           <td>{activeInvoice?.paymentMode}</td>
                           <td>{activeInvoice?.paidBy}</td>
                           <td>
-                            {formatCurrency.format(activeInvoice?.utilisedAmount)}
+                            {formatCurrency.format(
+                              activeInvoice?.utilisedAmount
+                            )}
                           </td>
                         </tr>
                       </tbody>
@@ -4002,116 +4057,113 @@ function OneTenant() {
               </Modal.Body>
             </>
           )}
-          {
-            activeModal === 2 && (
-              <>
-                <Modal.Header closeButton>
-                  <h5 className="modal-title" id="myLargeModalLabel">
-                    Receipt Details
-                  </h5>
-                </Modal.Header>
-                <Modal.Body>
-                  <div className="col-12">
-                    <address>
-                      <strong>Billed To:</strong>
-                      {activeInvoice.tenant?.tenantType === "INDIVIDUAL" ? (
-                        <>
-                          <div>
-                            <br />
-                            {activeInvoice?.tenant?.firstName}{" "}
-                            {activeInvoice?.tenant?.lastName}
-                            {activeInvoice?.tenant?.otherName}
-                            <br />
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div>
-                            <br />
-                            {activeInvoice?.tenant?.companyName}{" "}
-                            {activeInvoice?.tenant?.companyIncorporationNumber}{" "}
-                            {activeInvoice?.tenant?.companyAddress}
-                            <br />
-                          </div>
-                        </>
+          {activeModal === 2 && (
+            <>
+              <Modal.Header closeButton>
+                <h5 className="modal-title" id="myLargeModalLabel">
+                  Receipt Details
+                </h5>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="col-12">
+                  <address>
+                    <strong>Billed To:</strong>
+                    {activeInvoice.tenant?.tenantType === "INDIVIDUAL" ? (
+                      <>
+                        <div>
+                          <br />
+                          {activeInvoice?.tenant?.firstName}{" "}
+                          {activeInvoice?.tenant?.lastName}
+                          {activeInvoice?.tenant?.otherName}
+                          <br />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <br />
+                          {activeInvoice?.tenant?.companyName}{" "}
+                          {activeInvoice?.tenant?.companyIncorporationNumber}{" "}
+                          {activeInvoice?.tenant?.companyAddress}
+                          <br />
+                        </div>
+                      </>
+                    )}
+                    <br />
+                    {activeInvoice?.tenant?.email}
+                    <br />
+                    <p>
+                      Issue date:{" "}
+                      {moment(activeInvoice.dateTimeCreated).format(
+                        "DD-MM-YYYY"
                       )}
-                      <br />
-                      {activeInvoice?.tenant?.email}
-                      <br />
-                      <p>
-                        Issue date:{" "}
-                        {moment(activeInvoice.dateTimeCreated).format("DD-MM-YYYY")}
-                      </p>
-                      <p>
-                        Due date:{" "}
-                        {moment(activeInvoice.invoiceDate).format("DD-MM-YYYY")}
-                      </p>
-                    </address>
+                    </p>
+                    <p>
+                      Due date:{" "}
+                      {moment(activeInvoice.invoiceDate).format("DD-MM-YYYY")}
+                    </p>
+                  </address>
+                </div>
+                <div className="col-12">
+                  <div className="py-2 mt-3">
+                    <h3 className="font-size-15 fw-bold">
+                      Statement Details ({" "}
+                      <span className="text-primary fw-medium">
+                        {activeInvoice?.receiptNo}
+                      </span>{" "}
+                      )
+                    </h3>
                   </div>
-                  <div className="col-12">
-                    <div className="py-2 mt-3">
-                      <h3 className="font-size-15 fw-bold">
-                        Statement Details ({" "}
-                        <span className="text-primary fw-medium">
-                          {activeInvoice?.receiptNo}
-                        </span>{" "}
-                        )
-                      </h3>
-                    </div>
+                </div>
+                <div className="col-12">
+                  <div className="table-responsive">
+                    <table className="table table-nowrap">
+                      <thead>
+                        <tr>
+                          <th>Receipt No</th>
+                          <th>Paid By</th>
+                          <th>Bill Amount</th>
+                          <th>Bill Balance</th>
+                          <th>Payment Mode</th>
+                          <th>Payment Ref</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{activeInvoice?.receiptNo}</td>
+                          <td>{activeInvoice?.paidBy}</td>
+                          {Object.keys(activeInvoice).length > 0 ? (
+                            <>
+                              <td>
+                                {formatCurrency.format(
+                                  JSON.parse(activeInvoice?.response)
+                                    .receiptInfo.billAmount
+                                )}
+                              </td>
+                              <td>
+                                {formatCurrency.format(
+                                  JSON.parse(activeInvoice?.response)
+                                    .receiptInfo.billBalance
+                                )}
+                              </td>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                          <td>{activeInvoice?.paymentMode}</td>
+                          <td>{activeInvoice?.payReferenceNo}</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
-                  <div className="col-12">
-                    <div className="table-responsive">
-                      <table className="table table-nowrap">
-                        <thead>
-                          <tr>
-                            <th>Receipt No</th>
-                            <th>Paid By</th>
-                            <th>Bill Amount</th>
-                            <th>Bill Balance</th>
-                            <th>Payment Mode</th>
-                            <th>Payment Ref</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>{activeInvoice?.receiptNo}</td>
-                            <td>{activeInvoice?.paidBy}</td>
-                            {Object.keys(activeInvoice).length > 0 ? (
-                              <>
-                                <td>
-                                  {formatCurrency.format(
-                                    JSON.parse(activeInvoice?.response).receiptInfo
-                                      .billAmount
-                                  )}
-                                </td>
-                                <td>
-                                  {formatCurrency.format(
-                                    JSON.parse(activeInvoice?.response).receiptInfo
-                                      .billBalance
-                                  )}
-                                </td>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                            <td>{activeInvoice?.paymentMode}</td>
-                            <td>{activeInvoice?.payReferenceNo}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </Modal.Body>
-              </>
-            )
-          }
-
-
-
-        </Modal >
+                </div>
+              </Modal.Body>
+            </>
+          )}
+        </Modal>
         {/* LOOK FOR BILL */}
 
-        <Modal show={show} onHide={handleClose} size="md" centered >
+        <Modal show={show} onHide={handleClose} size="md" centered>
           <Modal.Header closeButton>
             <h5 className="modal-title" id="myLargeModalLabel">
               Search for Bill to utilize
@@ -4141,7 +4193,7 @@ function OneTenant() {
               </div>
             </Modal.Footer>
           </form>
-        </Modal >
+        </Modal>
         <footer class="footer">
           <div class="container-fluid">
             <div class="row">
@@ -4157,8 +4209,8 @@ function OneTenant() {
             </div>
           </div>
         </footer>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }
 export default OneTenant;

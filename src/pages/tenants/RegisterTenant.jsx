@@ -10,9 +10,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function RegisterTenant() {
-
-
-  const [showNewContactPeronModal, setShowNewContactPeronModal] = useState(false);
+  const [showNewContactPeronModal, setShowNewContactPeronModal] =
+    useState(false);
   const [activeInvoice, setActiveInvoice] = useState({});
   const [showAssignUnits, setShowAssignUnits] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
@@ -24,7 +23,7 @@ function RegisterTenant() {
 
   useEffect(() => {
     // getAllPremises();
-    onPremiseChange()
+    onPremiseChange();
     getAllDocumentTypes();
   }, []);
 
@@ -35,16 +34,16 @@ function RegisterTenant() {
   };
   const getAllDocumentTypes = () => {
     requestsServiceService
-      .allDocumentTypes()
+      .allDocumentTypes("TENANT", true)
       .then((res) => setDocumentTypes(res.data.data));
   };
 
   const onPremiseChange = (event) => {
     // let vals = event.target.value.split(":");
 
-    requestsServiceService.findVacatPremise(6).then((res) =>
-      setUnits(res.data.data)
-    )
+    requestsServiceService
+      .findVacatPremise(6)
+      .then((res) => setUnits(res.data.data));
 
     setTenancyBody({ ...tenancyBody, premise: 6 });
     setTenancyBody({ ...tenancyBody, premiseName: "School of Nursing" });
@@ -145,7 +144,7 @@ function RegisterTenant() {
     });
   };
 
-  // modals 
+  // modals
   const [showKins, setShowKins] = useState(false);
   const [showEducation, setShowEducation] = useState(false);
   const [showWork, setShowWork] = useState(false);
@@ -176,8 +175,10 @@ function RegisterTenant() {
       let kins = tenantDependents;
       kins.push(data);
       setTenantDependents(kins);
-    } else if (data.contactPersonTypeName === "GUARDIAN" || data.contactPersonTypeName === "REFEREE") {
-
+    } else if (
+      data.contactPersonTypeName === "GUARDIAN" ||
+      data.contactPersonTypeName === "REFEREE"
+    ) {
       let kins = tenantReferees;
       kins.push(data);
       setTenantReferees(kins);
@@ -231,7 +232,10 @@ function RegisterTenant() {
     let referees = [];
     for (let i = 0; i < tenantReferees.length; i++) {
       let data = tenantReferees[i];
-      if (data.contactPersonTypeName === "GUARDIAN" || data.contactPersonTypeName === "REFEREE")
+      if (
+        data.contactPersonTypeName === "GUARDIAN" ||
+        data.contactPersonTypeName === "REFEREE"
+      )
         data.contactPersonTypeName = "REFEREE";
 
       referees.push(data);
@@ -242,41 +246,43 @@ function RegisterTenant() {
     contacts.push.apply(contacts, tenantKins);
 
     let dara = JSON.stringify({
-      "tenancyDTOS": tenancyDTOS,
-      "tenantContactPersons": contacts,
-      "tenantDTO": tenantDto,
-      "tenantDocuments": tenantDocuments
-    })
-    requestsServiceService.createTenant(dara).then((res) => {
-
-      if (res.data.status == true) {
-        confirmAlert({
-          message: res.data.message,
-          buttons: [{
-            label: "OK",
-            onClick: (e) => navigate("/alltenants", { replace: true })
-          }
-          ]
-        })
-      } else {
-        confirmAlert({
-          message: res.data.message,
-          buttons: [{ label: "OK" }]
-        })
-      }
-    }).catch((err) => {
-      confirmAlert({
-        message: err.data.message,
-        buttons: [{ label: "OK" }]
+      tenancyDTOS: tenancyDTOS,
+      tenantContactPersons: contacts,
+      tenantDTO: tenantDto,
+      tenantDocuments: tenantDocuments,
+    });
+    requestsServiceService
+      .createTenant(dara)
+      .then((res) => {
+        if (res.data.status == true) {
+          confirmAlert({
+            message: res.data.message,
+            buttons: [
+              {
+                label: "OK",
+                onClick: (e) => navigate("/alltenants", { replace: true }),
+              },
+            ],
+          });
+        } else {
+          confirmAlert({
+            message: res.data.message,
+            buttons: [{ label: "OK" }],
+          });
+        }
       })
-        .catch((err) => {
+      .catch((err) => {
+        confirmAlert({
+          message: err.data.message,
+          buttons: [{ label: "OK" }],
+        }).catch((err) => {
           confirmAlert({
             message: err.message,
             buttons: [{ label: "OK" }],
           });
         });
-    });
-  }
+      });
+  };
   const newContactPerson = (event) => {
     setContactPersonBody({
       ...contactPersonBody,
@@ -286,23 +292,16 @@ function RegisterTenant() {
   };
 
   const hideModals = (modalName) => {
-
-    if (modalName === "NEXT_OF_KIN")
-      toogleshowKins();
-
-    else if (modalName === "REFEREE")
-      toogleshowWork();
-
-    else if (modalName === "DEPENDANT")
-      toogleshowEducation();
-  }
+    if (modalName === "NEXT_OF_KIN") toogleshowKins();
+    else if (modalName === "REFEREE") toogleshowWork();
+    else if (modalName === "DEPENDANT") toogleshowEducation();
+  };
 
   const newDocument = (event) => {
     setDocBody({ ...docBody, documentOwnerTypeName: event.target.dataset.id });
 
     toogleShowNewDocumentModal();
   };
-
 
   const toogleShowNewContactPeronModal = (event) => {
     setShowNewContactPeronModal(!showNewContactPeronModal);
@@ -418,64 +417,63 @@ function RegisterTenant() {
     currency: "KES",
   });
 
-
   const [error, setError] = useState({
     message: "",
-    color: ""
+    color: "",
   });
-
 
   const [phonenumber, setphonenumber] = useState("");
 
   const sendSTK = (event) => {
-
     event.preventDefault();
     let invoiceNoo = activeInvoice;
-    let formData = new FormData()
-    formData.append("PayBillNumber", '175555');
-    formData.append("Amount", parseInt(activeInvoice.billAmount))
-    formData.append("PhoneNumber", phonenumber)
-    formData.append("AccountReference", invoiceNoo.billerBillNo)
-    formData.append("TransactionDesc", invoiceNoo.transactionDescription)
-    formData.append("FullNames", `${invoiceNoo.transactionCustomerName}`)
+    let formData = new FormData();
+    formData.append("PayBillNumber", "175555");
+    formData.append("Amount", parseInt(activeInvoice.billAmount));
+    formData.append("PhoneNumber", phonenumber);
+    formData.append("AccountReference", invoiceNoo.billerBillNo);
+    formData.append("TransactionDesc", invoiceNoo.transactionDescription);
+    formData.append("FullNames", `${invoiceNoo.transactionCustomerName}`);
     formData.append("function", "CustomerPayBillOnline");
 
     let config = {
-      method: 'post',
-      url: 'https://payme.revenuesure.co.ke/index.php',
-      data: formData
-    }
-    axios(config).then(res => {
+      method: "post",
+      url: "https://payme.revenuesure.co.ke/index.php",
+      data: formData,
+    };
+    axios(config).then((res) => {
       if (typeof res.data === "string") {
         setError({
           ...error,
           message: "Invalid Phone Number",
-          color: "danger"
-        })
+          color: "danger",
+        });
       } else {
         let message = res.data.CustomerMessage;
         setError({
           ...error,
           message: message,
-          color: "success"
-        })
+          color: "success",
+        });
       }
       setTimeout(() => {
         setError({
           ...error,
           message: "",
-          color: ""
-        })
+          color: "",
+        });
       }, 4000);
-    })
-  }
+    });
+  };
 
   return (
     <div className="page-content">
       <div className="row">
         <div className="col-12">
           <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 className="mb-sm-0 font-size-18 text-capitalize">New Application </h4>
+            <h4 className="mb-sm-0 font-size-18 text-capitalize">
+              New Application{" "}
+            </h4>
 
             <div className="page-title-right">
               <ol className="breadcrumb m-0">
@@ -521,11 +519,10 @@ function RegisterTenant() {
                     <ul className="navbar-nav mr-auto">
                       <li className="nav-item active">
                         <a className="nav-link active">
-                          1.Student  Details{" "}
+                          1.Student Details{" "}
                           <span className="sr-only">(current)</span>
                         </a>
                       </li>
-
 
                       <li className="nav-item">
                         <a className="nav-link">2. Next Of Kin </a>
@@ -548,15 +545,11 @@ function RegisterTenant() {
                       </li>
 
                       <li className="nav-item">
-                        <a className="nav-link">
-                          7. Payment
-                        </a>
+                        <a className="nav-link">7. Payment</a>
                       </li>
 
                       <li className="nav-item">
-                        <a className="nav-link">
-                          8. Confirm details
-                        </a>
+                        <a className="nav-link">8. Confirm details</a>
                       </li>
                     </ul>
                   </div>
@@ -964,12 +957,9 @@ function RegisterTenant() {
                     </section>
                   </div>
 
-
-
                   <div className="step-cont d-none">
                     <h3>Next of Kin</h3>
                     <section>
-
                       <div className="row">
                         <div className="col-12">
                           <div className="bg-primary border-2 bg-soft p-3 mb-4">
@@ -995,7 +985,13 @@ function RegisterTenant() {
                                 tenantKins.map((dependent, index) => (
                                   <tr>
                                     <td>{index + 1}</td>
-                                    <td>{dependent.firstName + " " + dependent.otherName + " " + dependent.lastName}</td>
+                                    <td>
+                                      {dependent.firstName +
+                                        " " +
+                                        dependent.otherName +
+                                        " " +
+                                        dependent.lastName}
+                                    </td>
                                     <td>{dependent.relationship}</td>
                                     <td>{dependent.phoneNumber1}</td>
                                     <td></td>
@@ -1030,7 +1026,6 @@ function RegisterTenant() {
                   <div className="step-cont d-none">
                     <h3>Applicant Education Background </h3>
                     <section>
-
                       <div className="row">
                         <div className="col-12">
                           <div className="bg-primary border-2 bg-soft p-3 mb-4">
@@ -1088,7 +1083,6 @@ function RegisterTenant() {
                       </div>
                     </section>
                   </div>
-
 
                   <div className="step-cont d-none">
                     <h3>Working Experience</h3>
@@ -1151,10 +1145,8 @@ function RegisterTenant() {
                           </table>
                         </div>
                       </div>
-
                     </section>
                   </div>
-
 
                   <div className="step-cont d-none">
                     <h3>Student Enrollment</h3>
@@ -1178,19 +1170,24 @@ function RegisterTenant() {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {tenancyDTOS.length > 0 && tenancyDTOS.map((dependent, index) => (
-                                    <tr>
-                                      <td>{index + 1}</td>
-                                      <td>{dependent.premiseName}</td>
-                                      <td>{dependent.unitName}</td>
-                                      {/* <td>{dependent.unitCondition}</td> */}
-                                      <td>{moment(dependent.startDate).format("DD/MM/YYYY")}</td>
-                                      {/* <td>
+                                  {tenancyDTOS.length > 0 &&
+                                    tenancyDTOS.map((dependent, index) => (
+                                      <tr>
+                                        <td>{index + 1}</td>
+                                        <td>{dependent.premiseName}</td>
+                                        <td>{dependent.unitName}</td>
+                                        {/* <td>{dependent.unitCondition}</td> */}
+                                        <td>
+                                          {moment(dependent.startDate).format(
+                                            "DD/MM/YYYY"
+                                          )}
+                                        </td>
+                                        {/* <td>
                                             {dependent.monthsToTenancyRenewal}
                                           </td> */}
-                                      <td></td>
-                                    </tr>
-                                  ))}
+                                        <td></td>
+                                      </tr>
+                                    ))}
                                 </tbody>
                                 <tfoot>
                                   <tr
@@ -1203,14 +1200,14 @@ function RegisterTenant() {
                                     >
                                       <span class="d-flex align-items-center ">
                                         <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
-                                        <span class="pl-5 ">Enroll Student</span>
+                                        <span class="pl-5 ">
+                                          Enroll Student
+                                        </span>
                                       </span>
                                     </td>
                                   </tr>
                                 </tfoot>
                               </table>
-
-
                             </div>
                           </div>
                         </div>
@@ -1255,10 +1252,7 @@ function RegisterTenant() {
                               data-id="TENANT"
                               onClick={newDocument}
                             >
-                              <td
-                                colspan="7"
-                                class="bg-light  cursor-pointer"
-                              >
+                              <td colspan="7" class="bg-light  cursor-pointer">
                                 <span class="d-flex align-items-center ">
                                   <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
                                   <span class="pl-5 ">
@@ -1275,13 +1269,12 @@ function RegisterTenant() {
 
                   <div className="step-cont d-none d-flex justify-content-center">
                     <section className="col-sm-6">
-                    <h3>Application Fee Payment</h3>
+                      <h3>Application Fee Payment</h3>
                       <div className="row clone-cont">
                         <div className="col-12 clone-me">
                           <div className="row ">
                             <div className="col-12">
-                              <div className="py-2 mt-3">
-                              </div>
+                              <div className="py-2 mt-3"></div>
                             </div>
                             <div className="col-12">
                               <div className="table-responsive">
@@ -1298,11 +1291,24 @@ function RegisterTenant() {
                                   <tbody>
                                     <tr>
                                       <td>01</td>
-                                      <td>{activeInvoice?.applicableChargeName}</td>
-                                      <td>{formatCurrency.format(activeInvoice.quantity)}</td>
-                                      <td>{formatCurrency.format(activeInvoice?.unitCost)}</td>
+                                      <td>
+                                        {activeInvoice?.applicableChargeName}
+                                      </td>
+                                      <td>
+                                        {formatCurrency.format(
+                                          activeInvoice.quantity
+                                        )}
+                                      </td>
+                                      <td>
+                                        {formatCurrency.format(
+                                          activeInvoice?.unitCost
+                                        )}
+                                      </td>
                                       <td className="text-end">
-                                        KES. {formatCurrency.format(activeInvoice?.billAmount)}
+                                        KES.{" "}
+                                        {formatCurrency.format(
+                                          activeInvoice?.billAmount
+                                        )}
                                       </td>
                                     </tr>
                                     <tr>
@@ -1312,7 +1318,9 @@ function RegisterTenant() {
                                         Total
                                       </td>
                                       <td className="text-end fw-bold">
-                                        {formatCurrency.format(activeInvoice?.billAmount)}
+                                        {formatCurrency.format(
+                                          activeInvoice?.billAmount
+                                        )}
                                       </td>
                                     </tr>
                                     <tr>
@@ -1322,13 +1330,18 @@ function RegisterTenant() {
                                         Paid
                                       </td>
                                       <td className="text-end  fw-bold">
-                                        {formatCurrency.format(activeInvoice?.billPaidAmount)}
+                                        {formatCurrency.format(
+                                          activeInvoice?.billPaidAmount
+                                        )}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td></td>
                                       <td></td>
-                                      <td colSpan="2" className="border-0 text-end">
+                                      <td
+                                        colSpan="2"
+                                        className="border-0 text-end"
+                                      >
                                         <strong>Balance</strong>
                                       </td>
                                       <td className="border-0 text-end">
@@ -1336,7 +1349,7 @@ function RegisterTenant() {
                                           {" "}
                                           {formatCurrency.format(
                                             activeInvoice?.billAmount -
-                                            activeInvoice?.billPaidAmount
+                                              activeInvoice?.billPaidAmount
                                           )}
                                         </h5>
                                       </td>
@@ -1358,19 +1371,35 @@ function RegisterTenant() {
                                                 title="Select payment Method"
                                                 disabled={true}
                                               >
-                                                <option value="Mpesa">MPESA</option>
-                                                <option value="Cash">CASH</option>
+                                                <option value="Mpesa">
+                                                  MPESA
+                                                </option>
+                                                <option value="Cash">
+                                                  CASH
+                                                </option>
                                               </select>
                                             </td>
                                             <td className="px-3 ">
                                               <div className="phone-num">
-                                                <label htmlFor="">Phone No.</label>
+                                                <label htmlFor="">
+                                                  Phone No.
+                                                </label>
                                                 <input
                                                   className="form-control w-100 d-flex"
                                                   spellCheck="false"
-                                                  onChange={(event) => setphonenumber(event.target.value)}
+                                                  onChange={(event) =>
+                                                    setphonenumber(
+                                                      event.target.value
+                                                    )
+                                                  }
                                                   data-ms-editor="true"
-                                                  type="tel" id="phone" name="phone" placeholder="07XXXXXXXX" pattern="[0]{1}[0-9]{9}" required={true} />
+                                                  type="tel"
+                                                  id="phone"
+                                                  name="phone"
+                                                  placeholder="07XXXXXXXX"
+                                                  pattern="[0]{1}[0-9]{9}"
+                                                  required={true}
+                                                />
                                               </div>
                                             </td>
                                             {/*<td className="px-3">*/}
@@ -1385,19 +1414,31 @@ function RegisterTenant() {
                                             {/*</td>*/}
                                             <td className="text-right float-right">
                                               <div className="d-flex flex-column">
-                                                <label className="opacity-0">Something</label>
-                                                <button type="submit" className="btn btn-primary w-md waves-effect waves-light">Submit</button>
+                                                <label className="opacity-0">
+                                                  Something
+                                                </label>
+                                                <button
+                                                  type="submit"
+                                                  className="btn btn-primary w-md waves-effect waves-light"
+                                                >
+                                                  Submit
+                                                </button>
                                               </div>
                                             </td>
                                           </tr>
                                         </tbody>
                                       </table>
                                       <br />
-                                      {error.color !== "" &&
-                                        <div className={"alert alert-" + error.color} role="alert">
+                                      {error.color !== "" && (
+                                        <div
+                                          className={
+                                            "alert alert-" + error.color
+                                          }
+                                          role="alert"
+                                        >
                                           {error.message}
                                         </div>
-                                      }
+                                      )}
                                     </form>
                                   </div>
                                 </div>
@@ -1411,18 +1452,14 @@ function RegisterTenant() {
 
                   <div className="step-cont d-none d-flex justify-content-center">
                     <section className="col-sm-6">
-                    <h3>Confirm Detail</h3>
+                      <h3>Confirm Detail</h3>
                       <div className="row clone-cont">
                         <div className="col-12 clone-me">
-                          <div className="row ">
-                           
-                           
-                          </div>
+                          <div className="row "></div>
                         </div>
                       </div>
                     </section>
                   </div>
-
                 </form>
                 {/* the buttons container */}
                 <div className="button-navigators">
@@ -1484,7 +1521,8 @@ function RegisterTenant() {
                     <div className="col-lg-12 col-md-12">
                       <div className="mb-12">
                         <label htmlFor="basicpill-lastname-input">
-                          Workstation / Department <strong className="text-danger">*</strong>
+                          Workstation / Department{" "}
+                          <strong className="text-danger">*</strong>
                         </label>
                         <input
                           type="text"
@@ -1548,10 +1586,7 @@ function RegisterTenant() {
                     >
                       Close
                     </button>
-                    <button
-                      className="btn btn-success"
-                      type="submit"
-                    >
+                    <button className="btn btn-success" type="submit">
                       Add Employment History
                     </button>
                   </ModalFooter>
@@ -1611,7 +1646,7 @@ function RegisterTenant() {
                     </div>
                     <div className="col-lg-4 col-md-6">
                       <div className="mb-4">
-                        <label htmlFor="">Phone Number  </label>
+                        <label htmlFor="">Phone Number </label>
                         <input
                           type="text"
                           className="form-control"
@@ -1644,10 +1679,7 @@ function RegisterTenant() {
                     >
                       Close
                     </button>
-                    <button
-                      className="btn btn-success"
-                      type="submit"
-                    >
+                    <button className="btn btn-success" type="submit">
                       Add Next of Kin
                     </button>
                   </ModalFooter>
@@ -1740,10 +1772,7 @@ function RegisterTenant() {
                     >
                       Close
                     </button>
-                    <button
-                      className="btn btn-success"
-                      type="submit"
-                    >
+                    <button className="btn btn-success" type="submit">
                       Add
                     </button>
                   </ModalFooter>
@@ -1788,10 +1817,7 @@ function RegisterTenant() {
                     >
                       Close
                     </button>
-                    <button
-                      className="btn btn-success"
-                      type="submit"
-                    >
+                    <button className="btn btn-success" type="submit">
                       Add
                     </button>
                   </ModalFooter>

@@ -46,7 +46,7 @@ function SideBar() {
                   <NavLink to="/premisesregister">Properties Register</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/addpremises">Add a properties</NavLink>
+                  <NavLink to="/addpremises">Add a Property</NavLink>
                 </li>
               </ul>
             </li>
@@ -212,13 +212,19 @@ function SideBar() {
                 <span>Clients</span>
               </a>
               <ul className="sub-menu" aria-expanded="false">
-                <li><NavLink to="/clienttypes">Client types</NavLink></li>
+                <li>
+                  <NavLink to="/clienttypes">Client types</NavLink>
+                </li>
               </ul>
               <ul className="sub-menu" aria-expanded="false">
-                <li><NavLink to="/clients">Clients</NavLink></li>
+                <li>
+                  <NavLink to="/clients">Clients</NavLink>
+                </li>
               </ul>
               <ul className="sub-menu" aria-expanded="false">
-                <li><NavLink to="/addclient">Add a client</NavLink></li>
+                <li>
+                  <NavLink to="/addclient">Add a client</NavLink>
+                </li>
               </ul>
             </li>
             <li>
@@ -243,7 +249,6 @@ function SideBar() {
                 <li>
                   <NavLink to="/auctioneer">Users </NavLink>
                 </li>
-
 
                 {/* <li>
                   <NavLink to="/applicablecharges">Applicable Charges</NavLink>

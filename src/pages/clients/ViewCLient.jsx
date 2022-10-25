@@ -444,14 +444,14 @@ function ViewClient() {
                         {client?.clientBaseUrl}
                       </p>
                     </div>
-                    <div className="card-body border-top">
+                    {/* <div className="card-body border-top">
                       <p className="p-0 m-0">
                         <span className="text-muted">
                           Vacancy Restriction Status.{" "}
                         </span>
                         {client?.unitVacancyRestrictionStatus}
                       </p>
-                    </div>
+                    </div> */}
                     <div className="card-body border-top">
                       <p className="p-0 m-0">
                         <span className="text-muted">Client Type. </span>

@@ -29,7 +29,7 @@ export default function AddLandlord() {
     requestsServiceService.getLandlordTypes().then((res) => {
       setlandlordtypes(res.data.data);
     });
-    requestsServiceService.allDocumentTypes("LANDLORD").then((res) => {
+    requestsServiceService.allDocumentTypes("LANDLORD", true).then((res) => {
       setdocumentTypes(res.data.data);
     });
   }, []);
