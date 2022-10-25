@@ -154,6 +154,7 @@ function IssuesTypes() {
   const getAll = () => {
     requestsServiceService.getClient(clientId).then((res) => {
       setClient(res.data.data.client);
+      setSenderId(res.data.data.client.senderId);
     });
   };
   const [ac, setAC] = useState([]);
@@ -3087,7 +3088,7 @@ function IssuesTypes() {
                           className="form-control"
                           placeholder="Enter SenderId"
                           onChange={(event) => setSenderId(event.target.value)}
-                          value={client?.senderId}
+                          value={senderId} 
                         />
                       </div>
                     </div>
