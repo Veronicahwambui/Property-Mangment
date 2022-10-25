@@ -1016,8 +1016,7 @@ function AddProperties() {
                           </div>
 
                           <div class="col-lg-4 col-md-6 ">
-                            <div class="row ">
-                              <div className="md-4">
+                              <div className="mb-0">
                                 <label for="basicpill-lastname-input ">
                                   Properties Type{" "}
                                   <strong class="text-danger ">*</strong>
@@ -1054,9 +1053,9 @@ function AddProperties() {
                                       ))}
                                 </select>
                               </div>
-                              <div className="d-flex align-itens-center justify-content-around mb-4">
+                              <div className="d-flex align-itens-center mb-3">
                               <button
-                                className="btn btn-primary btn-sm mt-4"
+                                className="btn btn-primary btn-sm mt-3 w-100"
                                 data-bs-toggle="modal"
                                 data-bs-target="#add-new-property"
                               > <i class="mdi mdi-plus label-icon"></i>
@@ -1064,12 +1063,10 @@ function AddProperties() {
                                 Property Type
                               </button>
                               </div>
-                            </div>
                           </div>
 
                           <div class="col-lg-4 col-md-6 ">
-                           <div class="row ">
-                            <div class="mb-8">
+                            <div class="mb-0">
                               <label for="basicpill-lastname-input ">
                                 Property Use type
                                 <strong class="text-danger ">*</strong>
@@ -1097,9 +1094,10 @@ function AddProperties() {
                                     ))}
                               </select>
 
-                              <div className="d-flex align-itens-center justify-content-around -4">
+                            </div>
+                              <div className="d-flex align-itens-center">
                                 <button
-                                  className="btn btn-primary btn-sm mt-4"
+                                  className="btn btn-primary btn-sm mt-3 w-100"
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-premise"
                                 ><i class="mdi mdi-plus label-icon"></i>
@@ -1107,9 +1105,8 @@ function AddProperties() {
                                   Proprty Use Type{" "}
                                 </button>
                               </div>
-                              </div>
-                            </div>
                           </div>
+
                           <div className="col-lg-4 col-md-6 ">
                             <div className="mb-4 ">
                               <label htmlFor="basicpill-lastname-input ">
