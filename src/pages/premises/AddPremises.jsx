@@ -548,7 +548,6 @@ function AddProperties() {
   };
 
   const newDocument = (event) => {
-    setDocBody({ ...docBody, documentOwnerTypeName: event.target.dataset.id });
 
     toogleShowNewDocumentModal();
   };
