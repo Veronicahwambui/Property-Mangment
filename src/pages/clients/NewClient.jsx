@@ -236,7 +236,7 @@ export default function NewClient() {
                             </a>
                           </li>
                           <li className="nav-item">
-                            <a className="nav-link" href="#">
+                            <a className="nav-link" >
                               2. Account details
                             </a>
                           </li>
@@ -293,7 +293,7 @@ export default function NewClient() {
                               )}
                             </div>
                           </div>
-                          <div className="col-lg-6">
+                          {/* <div className="col-lg-6">
                             <div className="mb-3">
                               <label
                                 htmlFor="landlord-type"
@@ -321,7 +321,7 @@ export default function NewClient() {
                                 </div>
                               )}
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                         <div className="row personal-landlord ">
                           <div className="col-12">

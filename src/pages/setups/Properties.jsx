@@ -1632,7 +1632,7 @@ function Properties() {
                             onChange={(e) => setCreateName(e.target.value)}
                             type="text"
                             class="form-control"
-                            placeholder="Enter create name"
+                            placeholder="Enter Property Type Name"
                           />
                         </div>
                       </div>
@@ -1696,7 +1696,7 @@ function Properties() {
                             onChange={(e) => setUpdateName(e.target.value)}
                             type="text"
                             class="form-control"
-                            placeholder="Enter update name"
+                            placeholder="Enter Property Type name"
                           />
                         </div>
                       </div>
@@ -1840,7 +1840,7 @@ function Properties() {
                             onChange={(e) => setCreateNames(e.target.value)}
                             type="text"
                             class="form-control"
-                            placeholder="Enter create name"
+                            placeholder="Enter Property Use Type Name"
                           />
                         </div>
                       </div>
