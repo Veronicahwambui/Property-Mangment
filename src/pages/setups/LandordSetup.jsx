@@ -126,8 +126,12 @@ function LandlordSetup() {
         }, 3000);
       });
      
-      setApplicableCharges("")
-      createName("")
+      setCreateName("")
+      setChargeDueAfterDays("")
+      setIncomeType("")
+      setLineFeeId("")
+      setManualVal("")
+      setChargeType("")
   };
 
   const clear = () => {
