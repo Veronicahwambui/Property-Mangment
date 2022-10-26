@@ -2817,7 +2817,7 @@ function AddProperties() {
                   <select name="true" id="" className="form-control" onChange={e => setNewUnitId(e.target.value)}>
                     <option value="">select</option>
                     {selectedunitTypes?.map(one => (
-                      <option value={one.id}>{one.name}</option>
+                      <option value={one.id} selected={ newUnitId == one.id}>{one.name}</option>
                     ))}
                   </select>
                 </div>
