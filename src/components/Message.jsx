@@ -33,19 +33,19 @@ export default function Message(props) {
     };
     if (props.mode === "Email") {
       let m = {
-        "templateName": "mail/email-template",
-        "portalName": "CLIENT NAME PORTAL",
-        "from": "developers@nouveta.tech",
-        "to": "kelvinthuku@nouveta.tech",
-        "subject": "SUBJECT",
-        "model": {
-          "signature": "CLIENT NAME Admin",
-          "name": "RECEPIENT NAME",
-          "message": "MESSAGE kelvinthuku@nouveta.tech",
-          "token": ""
+        templateName: "mail/email-template",
+        portalName: "CLIENT NAME PORTAL",
+        from: "developers@nouveta.tech",
+        to: "kelvinthuku@nouveta.tech",
+        subject: "SUBJECT",
+        model: {
+          signature: "CLIENT NAME Admin",
+          name: "RECEPIENT NAME",
+          message: "MESSAGE kelvinthuku@nouveta.tech",
+          token: "",
         },
-        "attachments": [ ]
-      }
+        attachments: [],
+      };
       // {
       //   templateName: "mail/email-template",
       //   portalName: `${props.details.clientName} PORTAL`,
@@ -90,7 +90,7 @@ export default function Message(props) {
     } else if (props.mode === "SMS") {
       let m = {
         model: {},
-        senderId: props.details.senderId,
+        senderId: "MUIGAI-COMMM",
         templateName: null,
         text: messageBody.message,
       };
@@ -234,7 +234,7 @@ export default function Message(props) {
           </div>
         </div>
       </div>
-      
+
       <div className="email-overlay d-none">
         <div className="card the-message-maker">
           <div className="card-header bg-primary message-white py-0">

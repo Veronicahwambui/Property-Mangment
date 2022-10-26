@@ -151,23 +151,37 @@ function IssuesTypes() {
       setInvo(res.data.data);
     });
   };
+  const [updateData, setupdateData] = useState({
+    bouncedChequeChargeId: "",
+    chequeProcessingPeriod: "",
+    clientId: clientId,
+    invoicePaymentPriority: "",
+    landlordSettlementChargeId: "",
+    penaltyChargeId: "",
+    penaltyChargeRate: "",
+    propertyTaxChargeId: "",
+    propertyTaxRate: "",
+    senderId: "",
+    settlementPeriod: "",
+    visitationChargeDay: "",
+    visitationChargeId: "",
+  });
   const getAll = () => {
     requestsServiceService.getClient(clientId).then((res) => {
-      setClient(res.data.data.client);
-      setSenderId(res.data.data.client.senderId);
-      setsettlementPeriod(res.data.data.client.landlordSettlementPeriod);
-      setvisitationChargeDay(res.data.data.client.visitationChargeDay);
-      setvisitationChargeId(res.data.data.client.visitationCharge.id);
-      setPTaxRate(res.data.data.client.propertyTaxRate);
-      setPropertyTaxChargeId(res.data.data.client.propertyTaxCharge.id);
-
-      setpenaltyChargeRate(res.data.data.client.penaltyChargeRate);
-      setPenaltyChargeId(res.data.data.client.penaltyCharge.id);
+      setClient(res.data.data.settings);
+      setSenderId(res.data.data.settings.senderId);
+      setsettlementPeriod(res.data.data.settings.settlementPeriod);
+      setvisitationChargeDay(res.data.data.settings.visitationChargeDay);
+      setvisitationChargeId(res.data.data.settings.visitationCharge.id);
+      setPTaxRate(res.data.data.settings.propertyTaxRate);
+      setPropertyTaxChargeId(res.data.data.settings.propertyTaxCharge.id);
+      setpenaltyChargeRate(res.data.data.settings.penaltyChargeRate);
+      setPenaltyChargeId(res.data.data.settings.penaltyCharge.id);
       setLandlordSettlementChargeId(
-        res.data.data.client.landlordSettlementCharge.id
+        res.data.data.settings.landlordSettlementCharge.id
       );
-      setBouncedChequeChargeId(res.data.data.client.bouncedChequeCharge.id);
-      setChequeProcessingPeriod(res.data.data.client.chequeProcessingPeriod);
+      setBouncedChequeChargeId(res.data.data.settings.bouncedChequeCharge.id);
+      setChequeProcessingPeriod(res.data.data.settings.chequeProcessingPeriod);
     });
   };
   const [ac, setAC] = useState([]);
@@ -1188,7 +1202,7 @@ function IssuesTypes() {
                             >
                               <i className="dripicons-plus font-size-16"></i>{" "}
                               <span className="pl-1 d-md-inline">
-                                Add General Settings
+                                Edit General Settings
                               </span>
                             </button>
                           </div>
@@ -3035,7 +3049,7 @@ function IssuesTypes() {
                           className="form-control"
                           placeholder="Enter PropertyTaxRate"
                           onChange={(e) => setPTaxRate(e.target.value)}
-                          defaultValue={propertyTaxRate}
+                          defaultValue={pcharge}
                         />
                       </div>
                       <div className="form-group mb-4">
@@ -3086,12 +3100,24 @@ function IssuesTypes() {
                           name="settlementPeriod"
                           value={settlementPeriod}
                         >
-                          <option value="YEAR">
-                            {" "}
+                          <option
+                            value="YEAR"
+                            selected={settlementPeriod === "YEAR"}
+                          >
                             Select settlementPeriod{" "}
                           </option>
-                          <option value="MONTH">Monthly</option>
-                          <option value="YEAR">Yearly</option>
+                          <option
+                            value="MONTH"
+                            selected={settlementPeriod === "MONTH"}
+                          >
+                            Monthly
+                          </option>
+                          <option
+                            value="YEAR"
+                            selected={settlementPeriod === "YEAR"}
+                          >
+                            Yearly
+                          </option>
                         </select>
                       </div>
                       <div className="form-group mb-4">
