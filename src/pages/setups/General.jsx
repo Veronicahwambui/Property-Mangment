@@ -155,17 +155,19 @@ function IssuesTypes() {
     requestsServiceService.getClient(clientId).then((res) => {
       setClient(res.data.data.client);
       setSenderId(res.data.data.client.senderId);
-      setsettlementPeriod(res.data.data.client.landlordSettlementPeriod)
-      setvisitationChargeDay(res.data.data.client.visitationChargeDay)
-      setvisitationChargeId(res.data.data.client.visitationCharge.id)
-      setPTaxRate(res.data.data.client.propertyTaxRate)
-      setPropertyTaxChargeId(res.data.data.client.propertyTaxCharge.id)
-      
-      setpenaltyChargeRate(res.data.data.client.penaltyChargeRate)
-      setPenaltyChargeId(res.data.data.client.penaltyCharge.id)
-      setLandlordSettlementChargeId(res.data.data.client.landlordSettlementCharge.id)
-      setBouncedChequeChargeId(res.data.data.client.bouncedChequeCharge.id)
-      setChequeProcessingPeriod(res.data.data.client.chequeProcessingPeriod)
+      setsettlementPeriod(res.data.data.client.landlordSettlementPeriod);
+      setvisitationChargeDay(res.data.data.client.visitationChargeDay);
+      setvisitationChargeId(res.data.data.client.visitationCharge.id);
+      setPTaxRate(res.data.data.client.propertyTaxRate);
+      setPropertyTaxChargeId(res.data.data.client.propertyTaxCharge.id);
+
+      setpenaltyChargeRate(res.data.data.client.penaltyChargeRate);
+      setPenaltyChargeId(res.data.data.client.penaltyCharge.id);
+      setLandlordSettlementChargeId(
+        res.data.data.client.landlordSettlementCharge.id
+      );
+      setBouncedChequeChargeId(res.data.data.client.bouncedChequeCharge.id);
+      setChequeProcessingPeriod(res.data.data.client.chequeProcessingPeriod);
     });
   };
   const [ac, setAC] = useState([]);
@@ -2904,16 +2906,16 @@ function IssuesTypes() {
                         </label>
                         {selectedItems.length > 0 && (
                           <>
-                            <div className="alert alert-info bg-soft d-flex align-items-center text-capitalize">
+                            <div className="alert alert-info bg-soft d-flex flex-wrap align-items-center text-capitalize">
                               {selectedItems?.map((item, index) => (
                                 <>
                                   <h5
-                                    className="ml-7px justify-content-center align-items-center"
+                                    className="ml-1px justify-content-center align-items-center"
                                     key={item.id}
                                   >
                                     <Badge
                                       className={
-                                        "bg-primary border-2 bg-soft text-black"
+                                        "bg-primary bg-soft text-black"
                                       }
                                       style={{
                                         color: "black",
@@ -2930,8 +2932,8 @@ function IssuesTypes() {
                                   {index < selectedItems?.length - 1 && (
                                     <i
                                       style={{
-                                        fontSize: "20px",
-                                        margin: "0.5em",
+                                        fontSize: "15px",
+                                        margin: "0.6em",
                                       }}
                                       className={
                                         "dripicons-arrow-thin-right mr-5 justify-content-center d-flex align-items-center"
@@ -3099,7 +3101,7 @@ function IssuesTypes() {
                           className="form-control"
                           placeholder="Enter SenderId"
                           onChange={(event) => setSenderId(event.target.value)}
-                          value={senderId} 
+                          value={senderId}
                         />
                       </div>
                     </div>
