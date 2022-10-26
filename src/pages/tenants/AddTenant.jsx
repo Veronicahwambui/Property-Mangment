@@ -1147,7 +1147,7 @@ function AddTenant() {
                           </div>
                         </div>
 
-                        <div className="table-responsive table-responsive-md mb-4">
+                        <div className="mb-4">
                           <table className="table table-editable-2 align-middle table-edits">
                             <thead className="table-light">
                               <tr className="text-uppercase table-dark">
@@ -1201,7 +1201,7 @@ function AddTenant() {
                           </div>
                         </div>
 
-                        <div className="table-responsive table-responsive-md mb-4">
+                        <div className="mb-4">
                           <table className="table table-editable-3 align-middle table-edits">
                             <thead className="table-light">
                               <tr className="text-uppercase table-dark">
@@ -1261,7 +1261,7 @@ function AddTenant() {
                             </p>
                           </div>
                         </div>
-                        <div className="table-responsive table-responsive-md">
+                        <div className="mb-4">
                           <table className="table table-editable-1 align-middle table-edits">
                             <thead className="table-light">
                               <tr className="text-uppercase table-dark">
@@ -1416,7 +1416,7 @@ function AddTenant() {
                                             <span class="d-flex align-items-center ">
                                               <i class="dripicons-plus mr-5 d-flex justify-content-center align-items-center font-21 "></i>
                                               <span class="pl-5 ">
-                                                Add Tenancy Documents
+                                                Add Tenant Documents
                                               </span>
                                             </span>
                                           </td>
