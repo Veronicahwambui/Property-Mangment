@@ -246,7 +246,10 @@ function Landlords() {
                     </form>
                   </div>
                   <div class="table-responsive table-responsive-md">
-                  <table class="table table-nowrap table-hover overflow-visible contacts-table" id="datatable-buttons2">
+                    <table
+                      class="table table-nowrap table-hover overflow-visible contacts-table"
+                      id="datatable-buttons2"
+                    >
                       <thead class="table-light">
                         <tr class="text-uppercase table-light">
                           <th>#</th>
@@ -267,7 +270,9 @@ function Landlords() {
 
                             <td className="text-capitalize" data-field="estate">
                               <Link to={"/landlord/" + l.id}>
-                                {l.firstName + " " + l.lastName}
+                                {l.landLordType === "COMPANY"
+                                  ? l.companyName
+                                  : l.firstName + " " + l.lastName}
                               </Link>
                             </td>
                             <td className="text-capitalize">{l.phoneNumber}</td>
@@ -362,7 +367,6 @@ function Landlords() {
                                 </div>
                               </div>
                             </td>
-                          
                           </tr>
                         ))}
                       </tbody>
@@ -502,7 +506,6 @@ function Landlords() {
           </div>
         </div>
       </div>
-    
     </>
   );
 }

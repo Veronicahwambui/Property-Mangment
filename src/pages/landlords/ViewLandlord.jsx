@@ -1448,8 +1448,13 @@ function ViewLandlord() {
 
                         <div>
                           <h5 className="text-capitalize">
-                            {landlord?.firstName} {landlord?.lastName}
-                            {landlord?.otherName}
+                            {landlord?.landLordType === "COMPANY"
+                              ? landlord?.companyName
+                              : landlord?.firstName +
+                                " " +
+                                landlord?.lastName +
+                                " " +
+                                landlord?.otherName}
                             {landlord.active ? (
                               <span className="badge badge-pill badge-soft-success font-size-11">
                                 Active
