@@ -84,7 +84,7 @@ function IssuesTypes() {
     let data = JSON.stringify({
       bouncedChequeChargeId: parseInt(bouncedChequeChargeId),
       chequeProcessingPeriod: chequeProcessingPeriod,
-      id: clientId,
+      clientId: clientId,
       invoicePaymentPriority: selectedItems
         .map((a) => a.id)
         .join("-")
