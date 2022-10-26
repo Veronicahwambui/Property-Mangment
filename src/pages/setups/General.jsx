@@ -1202,7 +1202,7 @@ function IssuesTypes() {
                             >
                               <i className="dripicons-plus font-size-16"></i>{" "}
                               <span className="pl-1 d-md-inline">
-                                Add General Settings
+                                Edit General Settings
                               </span>
                             </button>
                           </div>
