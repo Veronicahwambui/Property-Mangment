@@ -595,14 +595,14 @@ export default function AddLandlord() {
                               </div>
                               <div className="col-lg-3 col-md-6 ">
                                 <div className="mb-4 ">
-                                  <label htmlFor="basicpill-email-input ">
+                                  <label htmlFor=" ">
                                     File Number{" "}
                                     <strong class="text-danger ">*</strong>
                                   </label>
                                   <input
                                     type="text"
                                     className="form-control "
-                                    id="basicpill-email-input "
+                                 
                                     name={"fileNumber"}
                                     onChange={(e) => onChangeLandlordDetails(e)}
                                     placeholder="Enter File Number "
@@ -654,6 +654,24 @@ export default function AddLandlord() {
                                     name={"companyAddress"}
                                     onChange={(e) => onChangeLandlordDetails(e)}
                                     placeholder="Enter Company Address"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="col-lg-3 col-md-6 ">
+                                <div className="mb-4 ">
+                                  <label htmlFor=" ">
+                                    File Number{" "}
+                                    <strong class="text-danger ">*</strong>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control "
+                                  
+                                    name={"fileNumber"}
+                                    onChange={(e) => onChangeLandlordDetails(e)}
+                                    placeholder="Enter File Number "
+                                    required={true}
                                   />
                                 </div>
                               </div>
