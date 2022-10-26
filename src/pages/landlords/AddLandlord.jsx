@@ -20,7 +20,7 @@ export default function AddLandlord() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    requestsServiceService.getAllAgreementTypes().then((res) => {
+    requestsServiceService.getAllAgreementTypes(true).then((res) => {
       setAgreementTypes(res.data.data);
     });
     requestsServiceService.getBanks().then((res) => {
@@ -345,9 +345,11 @@ export default function AddLandlord() {
   const [ac, setAC] = useState([]);
 
   useEffect(() => {
-    requestsServiceService.allApplicableCharges("LANDLORD").then((res) => {
-      setAC(res.data.data);
-    });
+    requestsServiceService
+      .allApplicableCharges("LANDLORD", true)
+      .then((res) => {
+        setAC(res.data.data);
+      });
   }, []);
 
   const getDocName = (docId) => {
@@ -602,7 +604,6 @@ export default function AddLandlord() {
                                   <input
                                     type="text"
                                     className="form-control "
-                                 
                                     name={"fileNumber"}
                                     onChange={(e) => onChangeLandlordDetails(e)}
                                     placeholder="Enter File Number "
@@ -667,7 +668,6 @@ export default function AddLandlord() {
                                   <input
                                     type="text"
                                     className="form-control "
-                                  
                                     name={"fileNumber"}
                                     onChange={(e) => onChangeLandlordDetails(e)}
                                     placeholder="Enter File Number "

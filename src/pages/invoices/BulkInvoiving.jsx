@@ -1,16 +1,16 @@
 /* global $ */
-import moment from 'moment';
-import React from 'react'
-import { useEffect } from 'react';
-import { useState } from 'react'
+import moment from "moment";
+import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
-import requestsServiceService from '../../services/requestsService.service';
+import requestsServiceService from "../../services/requestsService.service";
 
 function BulkInvoiving() {
-  const [error, setError] = useState(undefined)
-  const [invoiceFor, setInvoiceFor] = useState('')
-  const [whoToCharge, setWhoToCharge] = useState(undefined)
+  const [error, setError] = useState(undefined);
+  const [invoiceFor, setInvoiceFor] = useState("");
+  const [whoToCharge, setWhoToCharge] = useState(undefined);
   const [loading, setloading] = useState(false);
   const [loaded, setloaded] = useState(false);
   const [constraint, setConstraint] = useState("");
@@ -25,212 +25,198 @@ function BulkInvoiving() {
   const [tenancyList, setTenancyList] = useState([]);
   const [tenancies, setTenancies] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [paid, setPaid] = useState(undefined)
-  const [periodStart, setPeriodStart] = useState(0)
-  const [periodEnd, setPeriodEnd] = useState(30)
-  const [percentage, setPercentage] = useState(undefined)
-  const [percentOf, setPercentOf] = useState(undefined)
-  const [aplicableCharges, setAplicableCharges] = useState([])
-  const [aplicableChargeId, setAplicableChargeId] = useState(undefined)
-
+  const [paid, setPaid] = useState(undefined);
+  const [periodStart, setPeriodStart] = useState(0);
+  const [periodEnd, setPeriodEnd] = useState(30);
+  const [percentage, setPercentage] = useState(undefined);
+  const [percentOf, setPercentOf] = useState(undefined);
+  const [aplicableCharges, setAplicableCharges] = useState([]);
+  const [aplicableChargeId, setAplicableChargeId] = useState(undefined);
 
   const [quantity, setquantity] = useState(0);
-  const [billAmount, setbillAmount] = useState('');
-  const [unitCost, setunitCost] = useState('');
-  const [invoiceDate, setinvoiceDate] = useState('');
-  const [invoiceTitle, setinvoiceTitle] = useState('');
-  const [applicableChargeName, setApplicableChargeName] = useState('');
+  const [billAmount, setbillAmount] = useState("");
+  const [unitCost, setunitCost] = useState("");
+  const [invoiceDate, setinvoiceDate] = useState("");
+  const [invoiceTitle, setinvoiceTitle] = useState("");
+  const [applicableChargeName, setApplicableChargeName] = useState("");
 
-
-  const [constraintCharge, setConstraintCharge] = useState("")
-  const [constraintString, setConstraintString] = useState("")
-  const [constraintChargeId, setConstraintChargeId] = useState("")
-  const [constraintChargeAmount, setConstraintChargeAmount] = useState(null)
-  const [constraintChargeRate, setConstraintChargeRate] = useState(null)
-
+  const [constraintCharge, setConstraintCharge] = useState("");
+  const [constraintString, setConstraintString] = useState("");
+  const [constraintChargeId, setConstraintChargeId] = useState("");
+  const [constraintChargeAmount, setConstraintChargeAmount] = useState(null);
+  const [constraintChargeRate, setConstraintChargeRate] = useState(null);
 
   useEffect(() => {
-    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
-      setAplicableCharges(res.data.data)
-    })
-  }, [invoiceFor])
-
+    requestsServiceService.allApplicableCharges("TENANT", true).then((res) => {
+      setAplicableCharges(res.data.data);
+    });
+  }, [invoiceFor]);
 
   useEffect(() => {
-
     if (invoiceFor === "TENANT") {
-      setTenantsID(() => selected?.map((a) => a.id))
+      setTenantsID(() => selected?.map((a) => a.id));
     } else if (invoiceFor === "LANDLORD") {
-      setLandlordsId(() => selected?.map((a) => a.id))
+      setLandlordsId(() => selected?.map((a) => a.id));
     } else if (invoiceFor === "PREMISE") {
-      setPremisesId(() => selected?.map((a) => a.id))
+      setPremisesId(() => selected?.map((a) => a.id));
     }
-
   }, [selected]);
 
   useEffect(() => {
     setbillAmount(unitCost * quantity);
-  }, [unitCost, quantity])
+  }, [unitCost, quantity]);
 
   const handleInvoiceFor = (e) => {
     setInvoiceFor(e.target.value);
-
-  }
+  };
 
   if (invoiceFor !== "") {
-    $('#invoiceFor').attr('disabled', 'disabled');
+    $("#invoiceFor").attr("disabled", "disabled");
   } else {
-    $('#invoiceFor').removeAttr('disabled');
-
+    $("#invoiceFor").removeAttr("disabled");
   }
 
   const search = () => {
-    setloading(true)
-    let endDate = new Date()
-    let startDate = "2022-01-01"
-    let page = 0
-    let size = 10
-
+    setloading(true);
+    let endDate = new Date();
+    let startDate = "2022-01-01";
+    let page = 0;
+    let size = 10;
 
     if (invoiceFor == "PREMISE") {
       // SEARCH PREMISE
       let data = {
-        "dateCreatedEnd": moment(endDate).format("YYYY-MM-DD"),
-        "dateCreatedStart": moment(startDate).format("YYYY-MM-DD"),
-        "search": searchTerm.trim()
-      }
+        dateCreatedEnd: moment(endDate).format("YYYY-MM-DD"),
+        dateCreatedStart: moment(startDate).format("YYYY-MM-DD"),
+        search: searchTerm.trim(),
+      };
       requestsServiceService.getAllpremises(page, size, data).then((res) => {
-        setResults(res.data.data)
-        setloaded(true)
-        setloading(false)
-      })
-
+        setResults(res.data.data);
+        setloaded(true);
+        setloading(false);
+      });
     } else if (invoiceFor == "LANDLORD") {
       // SEARCH LANDLORD
       let data = {
-        "dateCreatedEnd": moment(endDate).format("YYYY-MM-DD"),
-        "dateCreatedStart": moment(startDate).format("YYYY-MM-DD"),
-        "search": searchTerm.trim()
-      }
+        dateCreatedEnd: moment(endDate).format("YYYY-MM-DD"),
+        dateCreatedStart: moment(startDate).format("YYYY-MM-DD"),
+        search: searchTerm.trim(),
+      };
       requestsServiceService.getLandLords(page, size, data).then((res) => {
-        setResults(res.data.data)
-        setloaded(true)
-        setloading(false)
+        setResults(res.data.data);
+        setloaded(true);
+        setloading(false);
       });
     } else if (invoiceFor == "TENANT") {
       // SEARCH TENANT
       let data = {
-        "dateCreatedEnd": moment(endDate).format("YYYY-MM-DD"),
-        "dateCreatedStart": moment(startDate).format("YYYY-MM-DD"),
-        "search": searchTerm.trim()
-      }
-      requestsServiceService.getAllTenants(searchTerm, page, size, data).then((res) => {
-        setResults(res.data.data)
-        setloaded(true)
-        setloading(false)
-      })
+        dateCreatedEnd: moment(endDate).format("YYYY-MM-DD"),
+        dateCreatedStart: moment(startDate).format("YYYY-MM-DD"),
+        search: searchTerm.trim(),
+      };
+      requestsServiceService
+        .getAllTenants(searchTerm, page, size, data)
+        .then((res) => {
+          setResults(res.data.data);
+          setloaded(true);
+          setloading(false);
+        });
     }
-    setSearchTerm('')
-  }
-
-
-
+    setSearchTerm("");
+  };
 
   const filter = (id) => {
-    setSelected(
-      selected.filter((select) => select.id !== id)
-    )
-
-
-  }
+    setSelected(selected.filter((select) => select.id !== id));
+  };
 
   const handleWhoToCharge = (e) => {
     setWhoToCharge(e.target.value);
 
-    if (e.target.value === "CHARGECONSTRAINT")
-      setPaid('');
-    setPercentage('');
-    setPercentOf('');
+    if (e.target.value === "CHARGECONSTRAINT") setPaid("");
+    setPercentage("");
+    setPercentOf("");
     // setAplicableChargeId('')
-  }
-
+  };
 
   const sendData = () => {
-    setError(undefined)
+    setError(undefined);
 
     if (invoiceFor === "TENANT") {
-      setTenantsID(() => selected?.map((a) => a.id))
+      setTenantsID(() => selected?.map((a) => a.id));
     } else if (invoiceFor === "LANDLORD") {
-      setLandlordsId(() => selected?.map((a) => a.id))
+      setLandlordsId(() => selected?.map((a) => a.id));
     } else if (invoiceFor === "PREMISE") {
-      setPremisesId(() => selected?.map((a) => a.id))
+      setPremisesId(() => selected?.map((a) => a.id));
     }
 
     if (tenancies.length <= 0) {
       let data = JSON.stringify({
-        "constraintCharge": constraint,
-        "constraintChargeAmount": constraintChargeAmount,
-        "constraintChargeId": constraintChargeId,
-        "constraintChargeRate": constraintChargeRate,
-        "constraintString": constraintString,
-        "aplicableChargeId": applicableChargeName,
-        "invoiceFor": invoiceFor,
-        "landlordIds": landlordsId,
-        "paid": paid,
-        "percentOf": percentOf,
-        "percentage": percentage,
-        "premiseIds": premisesId,
-        "period": periodStart + "-" + periodEnd,
-        "tenancyList": [],
-        "tenantIds": tenantsId,
-        "whoToCharge": whoToCharge
-      })
+        constraintCharge: constraint,
+        constraintChargeAmount: constraintChargeAmount,
+        constraintChargeId: constraintChargeId,
+        constraintChargeRate: constraintChargeRate,
+        constraintString: constraintString,
+        aplicableChargeId: applicableChargeName,
+        invoiceFor: invoiceFor,
+        landlordIds: landlordsId,
+        paid: paid,
+        percentOf: percentOf,
+        percentage: percentage,
+        premiseIds: premisesId,
+        period: periodStart + "-" + periodEnd,
+        tenancyList: [],
+        tenantIds: tenantsId,
+        whoToCharge: whoToCharge,
+      });
       requestsServiceService.createBulkInvoice(data).then((res) => {
         if (res.data.status == true) {
           setInvoices(res.data.data);
-          setTenancyList(res.data.data?.map(invoice => invoice.id))
+          setTenancyList(res.data.data?.map((invoice) => invoice.id));
         } else {
-
-          setError(res.data.message)
+          setError(res.data.message);
         }
-      })
-
-    } else if (invoiceFor !== "" && invoices?.length > 0 && unitCost != "" && quantity >= 0 && invoiceDate != "" && applicableChargeName != "") {
-
+      });
+    } else if (
+      invoiceFor !== "" &&
+      invoices?.length > 0 &&
+      unitCost != "" &&
+      quantity >= 0 &&
+      invoiceDate != "" &&
+      applicableChargeName != ""
+    ) {
       let data = JSON.stringify({
-        "aplicableChargeId": aplicableChargeId,
-        "invoiceFor": invoiceFor,
-        "landlordIds": landlordsId,
-        "paid": paid,
-        "period": periodStart + "-" + periodEnd,
-        "percentOf": percentOf,
-        "percentage": percentage,
-        "premiseIds": premisesId,
-        "tenancyIds": tenancies,
-        "tenantIds": tenantsId,
-        "chargeId": applicableChargeName,
-        "whoToCharge": whoToCharge,
-        "quantity": quantity,
-        "billAmount": billAmount,
-        "unitCost": unitCost,
-        "invoiceDate": invoiceDate,
-        "invoiceTitle": invoiceTitle
+        aplicableChargeId: aplicableChargeId,
+        invoiceFor: invoiceFor,
+        landlordIds: landlordsId,
+        paid: paid,
+        period: periodStart + "-" + periodEnd,
+        percentOf: percentOf,
+        percentage: percentage,
+        premiseIds: premisesId,
+        tenancyIds: tenancies,
+        tenantIds: tenantsId,
+        chargeId: applicableChargeName,
+        whoToCharge: whoToCharge,
+        quantity: quantity,
+        billAmount: billAmount,
+        unitCost: unitCost,
+        invoiceDate: invoiceDate,
+        invoiceTitle: invoiceTitle,
       });
 
-
-      requestsServiceService.createBulkInvoice(data).then((res) => {
-        if (res.data.status == true)
-          redirectToInvoices();
-        else {
-          setError(res.data.message)
-        }
-      }).catch((err) => {
-        // setError(err.response.data.map(err.field + err.essage))}
-      })
-
+      requestsServiceService
+        .createBulkInvoice(data)
+        .then((res) => {
+          if (res.data.status == true) redirectToInvoices();
+          else {
+            setError(res.data.message);
+          }
+        })
+        .catch((err) => {
+          // setError(err.response.data.map(err.field + err.essage))}
+        });
     }
-
-  }
+  };
 
   const redirectToInvoices = () => {
     window.location.href = "/#/bulk-invoices";
@@ -239,31 +225,27 @@ function BulkInvoiving() {
   const filterList = (index, event) => {
     const { checked, value } = event.target;
     if (checked) {
-      setTenancyList([...tenancyList, invoices[index].tenancy])
-      setTenancies([...tenancies, invoices[index].tenancy.id])
+      setTenancyList([...tenancyList, invoices[index].tenancy]);
+      setTenancies([...tenancies, invoices[index].tenancy.id]);
     } else {
-      setTenancyList(() => tenancyList.filter((tenant) => tenant !== invoices[index].tenancy));
-      setTenancies(() => tenancies.filter((tenant) => tenant !== invoices[index].tenancy.id));
+      setTenancyList(() =>
+        tenancyList.filter((tenant) => tenant !== invoices[index].tenancy)
+      );
+      setTenancies(() =>
+        tenancies.filter((tenant) => tenant !== invoices[index].tenancy.id)
+      );
     }
-
-  }
+  };
 
   const handleChange = (index, event) => {
     const { checked, value } = event.target;
 
     if (checked) {
-      setSelected([...selected, results[index]])
+      setSelected([...selected, results[index]]);
     } else {
-      setSelected(
-        selected.filter((select) => select.id !== results[index].id)
-      )
+      setSelected(selected.filter((select) => select.id !== results[index].id));
     }
   };
-
-
-
-
-
 
   const addDate = (date) => {
     setinvoiceDate(new Date(date.target.value).toISOString());
@@ -272,7 +254,7 @@ function BulkInvoiving() {
   $(document).on("change", ".enddate", addDate);
 
   return (
-    <div className='page-content'>
+    <div className="page-content">
       <div className="content-fluid">
         {/* page title  */}
         <div className="row">
@@ -320,9 +302,7 @@ function BulkInvoiving() {
                     >
                       <ul className="navbar-nav mr-auto">
                         <li className="nav-item active">
-                          <a className="nav-link active">
-                            1. Customer details
-                          </a>
+                          <a className="nav-link active">1. Customer details</a>
                         </li>
                         <li className="nav-item">
                           <a className="nav-link">2. Details Summary</a>
@@ -338,8 +318,8 @@ function BulkInvoiving() {
                     <section className={"step-cont active-step"}>
                       <p>
                         Fill in the form correctly. Fields with an Asterisk{" "}
-                        <strong className="text-danger">*</strong> are
-                        mandatory fields.
+                        <strong className="text-danger">*</strong> are mandatory
+                        fields.
                       </p>
                       <div className="col-12">
                         <div className="bg-primary border-2 bg-soft p-3 mb-4">
@@ -352,11 +332,19 @@ function BulkInvoiving() {
                       <div className="card">
                         <div class="row g-3 mb-4 align-items-center">
                           <div class="col-3">
-                            <label class="col-form-label">Create an invoice for <strong className="text-danger">*</strong> </label>
+                            <label class="col-form-label">
+                              Create an invoice for{" "}
+                              <strong className="text-danger">*</strong>{" "}
+                            </label>
                           </div>
                           <div class="col-4">
-                            <select class="form-control" aria-label="Default select example" onChange={(e) => handleInvoiceFor(e)} id="invoiceFor">
-                              <option ></option>
+                            <select
+                              class="form-control"
+                              aria-label="Default select example"
+                              onChange={(e) => handleInvoiceFor(e)}
+                              id="invoiceFor"
+                            >
+                              <option></option>
                               <option value="CURRENT">Current Tenancies</option>
                               <option value="LANDLORD">Landlord</option>
                               <option value="TENANT">Tenant</option>
@@ -364,129 +352,161 @@ function BulkInvoiving() {
                             </select>
                           </div>
                         </div>
-                        {invoiceFor !== "CURRENT" && invoiceFor !== "" && <div class="row g-3 align-items-center">
-                          <div class="col-3">
-                            <label class="col-form-label">Search for {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}  <strong className="text-danger">*</strong></label>
-                          </div>
-                          <div class="col-auto">
-                            <div className="app-search d-lg-block mr-15px">
-                              <div className="position-relative">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Search..."
-                                  value={searchTerm}
-                                  onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                                <span className="bx bx-search-alt"></span>
+                        {invoiceFor !== "CURRENT" && invoiceFor !== "" && (
+                          <div class="row g-3 align-items-center">
+                            <div class="col-3">
+                              <label class="col-form-label">
+                                Search for{" "}
+                                {invoiceFor?.toLowerCase()?.replace(/_/g, " ")}{" "}
+                                <strong className="text-danger">*</strong>
+                              </label>
+                            </div>
+                            <div class="col-auto">
+                              <div className="app-search d-lg-block mr-15px">
+                                <div className="position-relative">
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search..."
+                                    value={searchTerm}
+                                    onChange={(e) =>
+                                      setSearchTerm(e.target.value)
+                                    }
+                                  />
+                                  <span className="bx bx-search-alt"></span>
+                                </div>
                               </div>
                             </div>
+                            {searchTerm !== "" && (
+                              <div class="col-auto">
+                                <button
+                                  onClick={search}
+                                  form={"bulk-search-form"}
+                                  disabled={loading}
+                                  className="btn btn-primary btn-rounded"
+                                >
+                                  {loading && (
+                                    <i
+                                      className="fa fa-refresh fa-spin"
+                                      style={{ marginRight: "5px" }}
+                                    />
+                                  )}
+                                  {loading && (
+                                    <>
+                                      <span className="d-inline-block me-2">
+                                        Searching...
+                                      </span>
+                                    </>
+                                  )}
+                                  {!loading && (
+                                    <>
+                                      <span className="d-sm-inline-block me-2">
+                                        Search
+                                      </span>
+                                    </>
+                                  )}
+                                </button>
+                              </div>
+                            )}
                           </div>
-                          {searchTerm !== '' && <div class="col-auto">
-                            <button
-                              onClick={search}
-                              form={"bulk-search-form"}
-                              disabled={
-                                loading
-                              }
-                              className="btn btn-primary btn-rounded"
-                            >
-                              {loading && (
-                                <i
-                                  className="fa fa-refresh fa-spin"
-                                  style={{ marginRight: "5px" }}
-                                />
-                              )}
-                              {loading && (
-                                <>
-                                  <span className="d-inline-block me-2">
-                                    Searching...
-                                  </span>
-                                </>
-                              )}
-                              {!loading && (
-                                <>
-                                  <span className="d-sm-inline-block me-2">
-                                    Search
-                                  </span>
-                                </>
-                              )}
-                            </button>
-                          </div>}
+                        )}
 
+                        {invoiceFor !== "" &&
+                          invoiceFor !== "CURRENT" &&
+                          results?.length > 0 && (
+                            <div class="row g-3 mb-4 align-items-center">
+                              <strong>
+                                {" "}
+                                Select {invoiceFor?.toLowerCase()}s to invoice
+                                for <strong className="text-danger">*</strong>{" "}
+                              </strong>
+                              {invoiceFor === "PREMISE" &&
+                                results?.length > 0 &&
+                                results?.map((prem, index) => (
+                                  <div class="col-4" key={prem.id}>
+                                    <div class="form-check mb-3">
+                                      <input
+                                        class="form-check-input"
+                                        onChange={(event) =>
+                                          handleChange(index, event)
+                                        }
+                                        type="checkbox"
+                                        id="formCheck1"
+                                        checked={selected.some(
+                                          (el) => el.id === prem.id
+                                        )}
+                                      />
+                                      <label
+                                        class="form-check-label"
+                                        for="formCheck1"
+                                      >
+                                        {prem.premiseName}
+                                      </label>
+                                    </div>
+                                  </div>
+                                ))}
 
+                              {invoiceFor === "LANDLORD" &&
+                                results?.length > 0 &&
+                                results?.map((lord, index) => (
+                                  <div class="col-4" key={lord.id}>
+                                    <div class="form-check mb-3">
+                                      <input
+                                        class="form-check-input"
+                                        onChange={(event) =>
+                                          handleChange(index, event)
+                                        }
+                                        type="checkbox"
+                                        id="formCheck1"
+                                        checked={selected.some(
+                                          (el) => el.id === lord.id
+                                        )}
+                                      />
+                                      <label
+                                        class="form-check-label"
+                                        for="formCheck1"
+                                      >
+                                        {lord.firstName} {lord.lastName}{" "}
+                                        {lord.otherName}
+                                      </label>
+                                    </div>
+                                  </div>
+                                ))}
 
-                        </div>}
-
-                        {invoiceFor !== "" && invoiceFor !== "CURRENT" && results?.length > 0 && <div class="row g-3 mb-4 align-items-center">
-                          <strong> Select {invoiceFor?.toLowerCase()}s to invoice for <strong className='text-danger'>*</strong> </strong>
-                          {invoiceFor === 'PREMISE' && results?.length > 0 &&
-                            results?.map((prem, index) => (
-                              <div class="col-4" key={prem.id}>
-                                <div class="form-check mb-3">
-                                  <input class="form-check-input" onChange={(event) =>
-                                    handleChange(index, event)
-                                  } type="checkbox" id="formCheck1"
-                                    checked={selected.some(
-                                      (el) =>
-                                        el.id ===
-                                        prem.id
-                                    )} />
-                                  <label class="form-check-label" for="formCheck1">
-                                    {prem.premiseName}
-                                  </label>
-                                </div>
-                              </div>
-
-                            ))
-                          }
-
-                          {invoiceFor === 'LANDLORD' && results?.length > 0 &&
-                            results?.map((lord, index) => (
-                              <div class="col-4" key={lord.id}>
-                                <div class="form-check mb-3">
-                                  <input class="form-check-input" onChange={(event) =>
-                                    handleChange(index, event)
-                                  } type="checkbox" id="formCheck1"
-                                    checked={selected.some(
-                                      (el) =>
-                                        el.id ===
-                                        lord.id
-                                    )} />
-                                  <label class="form-check-label" for="formCheck1">
-                                    {lord.firstName} {lord.lastName}  {lord.otherName}
-                                  </label>
-                                </div>
-                              </div>
-
-                            ))
-                          }
-
-                          {invoiceFor === 'TENANT' && results?.length > 0 &&
-                            results?.map((tenant, index) => (
-                              <div class="col-4" key={tenant.id}>
-                                <div class="form-check mb-3">
-                                  <input class="form-check-input" onChange={(event) =>
-                                    handleChange(index, event)
-                                  } type="checkbox" id="formCheck1"
-                                    checked={selected.some(
-                                      (el) =>
-                                        el.id ===
-                                        tenant.id
-                                    )} />
-                                  <label class="form-check-label" for="formCheck1">
-                                    {tenant.tenantType != 'COMPANY' ? <>{tenant.firstName} {tenant.lastName}  {tenant.otherName}</> :
-                                      <>{tenant.companyName}</>
-                                    }
-                                  </label>
-                                </div>
-                              </div>
-
-                            ))
-                          }
-
-                        </div>
-                        }
+                              {invoiceFor === "TENANT" &&
+                                results?.length > 0 &&
+                                results?.map((tenant, index) => (
+                                  <div class="col-4" key={tenant.id}>
+                                    <div class="form-check mb-3">
+                                      <input
+                                        class="form-check-input"
+                                        onChange={(event) =>
+                                          handleChange(index, event)
+                                        }
+                                        type="checkbox"
+                                        id="formCheck1"
+                                        checked={selected.some(
+                                          (el) => el.id === tenant.id
+                                        )}
+                                      />
+                                      <label
+                                        class="form-check-label"
+                                        for="formCheck1"
+                                      >
+                                        {tenant.tenantType != "COMPANY" ? (
+                                          <>
+                                            {tenant.firstName} {tenant.lastName}{" "}
+                                            {tenant.otherName}
+                                          </>
+                                        ) : (
+                                          <>{tenant.companyName}</>
+                                        )}
+                                      </label>
+                                    </div>
+                                  </div>
+                                ))}
+                            </div>
+                          )}
 
                         {loaded && results.length < 1 && (
                           <>
@@ -495,7 +515,6 @@ function BulkInvoiving() {
                             </span>
                           </>
                         )}
-
 
                         {selected.length > 0 && (
                           <div
@@ -507,10 +526,7 @@ function BulkInvoiving() {
                               <>
                                 <Button variant="primary">
                                   Selected
-                                  <Badge
-                                    bg="light"
-                                    className="ml-7px"
-                                  >
+                                  <Badge bg="light" className="ml-7px">
                                     <b>{selected.length}</b>
                                   </Badge>
                                 </Button>
@@ -521,34 +537,23 @@ function BulkInvoiving() {
                                 <>
                                   {invoiceFor === "LANDLORD" && (
                                     <>
-                                      <h5
-                                        className="ml-7px"
-                                        key={item.id}
-                                      >
+                                      <h5 className="ml-7px" key={item.id}>
                                         <Badge bg="success">
-                                          {item.firstName +
-                                            " " +
-                                            item.lastName}
+                                          {item.firstName + " " + item.lastName}
                                         </Badge>
                                         <br />
                                         <i
                                           className="fa fa-trash cursor-pointer text-danger mt-1"
-                                          onClick={() =>
-                                            filter(item.id)
-                                          }
+                                          onClick={() => filter(item.id)}
                                         ></i>
                                       </h5>
                                     </>
                                   )}
                                   {invoiceFor === "TENANT" && (
                                     <>
-                                      <h5
-                                        className="ml-7px"
-                                        key={item.id}
-                                      >
+                                      <h5 className="ml-7px" key={item.id}>
                                         <Badge bg="success">
-                                          {item.tenantType ===
-                                            "COMPANY" ? (
+                                          {item.tenantType === "COMPANY" ? (
                                             <>{item.companyName}</>
                                           ) : (
                                             <>
@@ -561,28 +566,21 @@ function BulkInvoiving() {
                                         <br />
                                         <i
                                           className="fa fa-trash cursor-pointer text-danger mt-1"
-                                          onClick={() =>
-                                            filter(item.id)
-                                          }
+                                          onClick={() => filter(item.id)}
                                         ></i>
                                       </h5>
                                     </>
                                   )}
                                   {invoiceFor === "PREMISE" && (
                                     <>
-                                      <h5
-                                        className="ml-7px"
-                                        key={item.id}
-                                      >
+                                      <h5 className="ml-7px" key={item.id}>
                                         <Badge bg="success">
                                           {item.premiseName}
                                         </Badge>
                                         <br />
                                         <i
                                           className="fa fa-trash cursor-pointer text-danger mt-1"
-                                          onClick={() =>
-                                            filter(item.id)
-                                          }
+                                          onClick={() => filter(item.id)}
                                         ></i>
                                       </h5>
                                     </>
@@ -591,9 +589,6 @@ function BulkInvoiving() {
                               ))}
                           </div>
                         )}
-
-
-
                       </div>
 
                       <div className="card">
@@ -607,74 +602,139 @@ function BulkInvoiving() {
 
                         <div class="row g-3 mb-3 align-items-center">
                           <div class="col-auto">
-                            <label for="inputPassword6" class="col-form-label">Who to charge : </label>
+                            <label for="inputPassword6" class="col-form-label">
+                              Who to charge :{" "}
+                            </label>
                           </div>
                           <div class="col-4">
-                            <select class="form-control" aria-label="Default select example" onChange={(e) => handleWhoToCharge(e)}>
-                              <option >Select who to charge</option>
+                            <select
+                              class="form-control"
+                              aria-label="Default select example"
+                              onChange={(e) => handleWhoToCharge(e)}
+                            >
+                              <option>Select who to charge</option>
                               <option value="ALLCURRENT">All Current</option>
-                              <option value="CHARGECONSTRAINT">Charge Constraint</option>
-
+                              <option value="CHARGECONSTRAINT">
+                                Charge Constraint
+                              </option>
                             </select>
                           </div>
                         </div>
-                        {whoToCharge === "CHARGECONSTRAINT" && <div class="row g-3 align-items-center">
-                          <div class="col-auto">
-                            <label class="col-form-label">Have paid:</label>
+                        {whoToCharge === "CHARGECONSTRAINT" && (
+                          <div class="row g-3 align-items-center">
+                            <div class="col-auto">
+                              <label class="col-form-label">Have paid:</label>
+                            </div>
+                            <div class="col-3 col-auto">
+                              <select
+                                class="form-control"
+                                aria-label="Default select example"
+                                onChange={(e) => setPaid(e.target.value)}
+                              >
+                                <option>select..</option>
+                                <option value="above">Over</option>
+                                <option value="below">Below</option>
+                              </select>
+                            </div>
+                            <div class="col-3 d-flex align-items-center gap-1">
+                              <input
+                                type="number"
+                                className="form-control"
+                                maxLength={3}
+                                max={100}
+                                min={1}
+                                placeholder="Enter number (1-100)"
+                                onChange={(e) => setPercentage(e.target.value)}
+                              />
+                              <strong> %</strong>
+                            </div>
+                            <div class="col-auto d-flex  align-items-center gap-1">
+                              <strong> of </strong>
+                              <select
+                                class="form-control"
+                                aria-label="Default select example"
+                                onChange={(e) => setPercentOf(e.target.value)}
+                              >
+                                <option>select..</option>
+                                <option value="FULL_PERIOD">Full Period</option>
+                                <option value="SPECIFIC_CHARGE">
+                                  Specific Charge
+                                </option>
+                              </select>
+                            </div>
                           </div>
-                          <div class="col-3 col-auto">
-                            <select class="form-control" aria-label="Default select example" onChange={(e) => setPaid(e.target.value)}>
-                              <option>select..</option>
-                              <option value="above">Over</option>
-                              <option value="below">Below</option>
-                            </select>
-                          </div>
-                          <div class="col-3 d-flex align-items-center gap-1">
-                            <input type="number" className='form-control' maxLength={3} max={100} min={1} placeholder="Enter number (1-100)" onChange={(e) => setPercentage(e.target.value)} />
-                            <strong>{" "} %</strong>
-                          </div>
-                          <div class="col-auto d-flex  align-items-center gap-1">
-                            <strong> of </strong>
-                            <select class="form-control" aria-label="Default select example" onChange={(e) => setPercentOf(e.target.value)}>
-                              <option>select..</option>
-                              <option value="FULL_PERIOD">Full Period</option>
-                              <option value="SPECIFIC_CHARGE">Specific Charge</option>
-                            </select>
-                          </div>
-                        </div>}
-                        {percentOf === "SPECIFIC_CHARGE" && whoToCharge === "CHARGECONSTRAINT" && <div class="row g-3 mb-3 mt-2 align-items-center">
-                          <div class="col-auto">
-                            <label for="inputPassword6" class="col-form-label">Charge : </label>
-                          </div>
+                        )}
+                        {percentOf === "SPECIFIC_CHARGE" &&
+                          whoToCharge === "CHARGECONSTRAINT" && (
+                            <div class="row g-3 mb-3 mt-2 align-items-center">
+                              <div class="col-auto">
+                                <label
+                                  for="inputPassword6"
+                                  class="col-form-label"
+                                >
+                                  Charge :{" "}
+                                </label>
+                              </div>
 
-                          <div class="col-3">
-                            <select class="form-control" aria-label="Default select example" onChange={(e) => setAplicableChargeId(e.target.value)}>
-                              <option >Select a charge</option>
-                              {aplicableCharges.map((charge) => (
-                                <option value={charge.id}> {charge.name}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                        }
+                              <div class="col-3">
+                                <select
+                                  class="form-control"
+                                  aria-label="Default select example"
+                                  onChange={(e) =>
+                                    setAplicableChargeId(e.target.value)
+                                  }
+                                >
+                                  <option>Select a charge</option>
+                                  {aplicableCharges.map((charge) => (
+                                    <option value={charge.id}>
+                                      {" "}
+                                      {charge.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                          )}
 
-                        {whoToCharge === "CHARGECONSTRAINT" &&
+                        {whoToCharge === "CHARGECONSTRAINT" && (
                           <div class="row g-3 mb-3 mt-2 align-items-center">
                             <div class="col-auto">
-                              <label for="inputPassword6" class="col-form-label">Over the period : </label>
+                              <label
+                                for="inputPassword6"
+                                class="col-form-label"
+                              >
+                                Over the period :{" "}
+                              </label>
                             </div>
 
                             <div class="col-6 gap-1">
-                              <strong>{" "} Day </strong> <small>(Example: 0-30)</small>
-                              <input type="number" className='form-control' maxLength={3} max={100} min={1} value={periodStart} placeholder="Enter number (1-100)" onChange={(e) => setPeriodStart(e.target.value)} />
-
-                              <strong>{" "} - </strong>
-                              <strong>{" "} Day </strong>
-                              <input type="number" className='form-control' maxLength={3} max={100} min={1} value={periodEnd} placeholder="Enter number (1-100)" onChange={(e) => setPeriodEnd(e.target.value)} />
+                              <strong> Day </strong>{" "}
+                              <small>(Example: 0-30)</small>
+                              <input
+                                type="number"
+                                className="form-control"
+                                maxLength={3}
+                                max={100}
+                                min={1}
+                                value={periodStart}
+                                placeholder="Enter number (1-100)"
+                                onChange={(e) => setPeriodStart(e.target.value)}
+                              />
+                              <strong> - </strong>
+                              <strong> Day </strong>
+                              <input
+                                type="number"
+                                className="form-control"
+                                maxLength={3}
+                                max={100}
+                                min={1}
+                                value={periodEnd}
+                                placeholder="Enter number (1-100)"
+                                onChange={(e) => setPeriodEnd(e.target.value)}
+                              />
                             </div>
                           </div>
-                        }
-
+                        )}
                       </div>
                     </section>
 
@@ -722,24 +782,39 @@ function BulkInvoiving() {
                                                     onChange={(e) => {
                                                       filterList(index, e);
                                                     }}
-                                                    checked={
-                                                      tenancies.some((id) => tenant.tenancy.id === id)
-                                                    }
+                                                    checked={tenancies.some(
+                                                      (id) =>
+                                                        tenant.tenancy.id === id
+                                                    )}
                                                   />
                                                 </div>
                                               </div>
                                             </td>
-                                            <td className="text-capitalize">{tenant.tenancy.tenant?.tenantType?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                            <td className="text-capitalize">
+                                              {tenant.tenancy.tenant?.tenantType
+                                                ?.toLowerCase()
+                                                ?.replace(/_/g, " ")}
+                                            </td>
                                             <td className="text-capitalize">
                                               <a href="javascript:void(0)">
-                                                {tenant?.tenancy?.tenant?.tenantType === "INDIVIDUAL" ? (
+                                                {tenant?.tenancy?.tenant
+                                                  ?.tenantType ===
+                                                "INDIVIDUAL" ? (
                                                   <>
-                                                    {tenant.tenancy.tenant.firstName + " "}
-                                                    {tenant.tenancy.tenant.lastName + " "}{" "}
-                                                    {tenant.tenancy.tenant.otherName}
+                                                    {tenant.tenancy.tenant
+                                                      .firstName + " "}
+                                                    {tenant.tenancy.tenant
+                                                      .lastName + " "}{" "}
+                                                    {
+                                                      tenant.tenancy.tenant
+                                                        .otherName
+                                                    }
                                                   </>
                                                 ) : (
-                                                  <>{tenant.tenancy.tenant.companyName + " "}</>
+                                                  <>
+                                                    {tenant.tenancy.tenant
+                                                      .companyName + " "}
+                                                  </>
                                                 )}
                                               </a>
                                             </td>
@@ -748,7 +823,7 @@ function BulkInvoiving() {
                                             <td>{tenant.countAll}</td>
                                             <td>{tenant.sum - tenant.paid}</td>
                                           </tr>
-                                        )
+                                        );
                                       })}
                                     </>
                                   )}
@@ -765,8 +840,7 @@ function BulkInvoiving() {
                       <div className="col-12">
                         <div className="bg-primary border-2 bg-soft p-3 mb-4">
                           <h4>Create Invoice</h4>
-                          <div className='row'>
-
+                          <div className="row">
                             <div className="row">
                               <div className="col-md-12">
                                 <div className="mb-3">
@@ -809,43 +883,52 @@ function BulkInvoiving() {
                                       data-live-search="true"
                                       value={applicableChargeName}
                                       onChange={(e) =>
-                                        setApplicableChargeName(
-                                          e.target.value
-                                        )
+                                        setApplicableChargeName(e.target.value)
                                       }
                                       required={true}
                                     >
                                       <option className="text-black font-semibold ">
                                         select applicable charge
                                       </option>
-                                      {aplicableCharges.map(
-                                        (item, index) => (
-                                          <option
-                                            value={item.id}
-                                            key={index}
-                                          >
-                                            {item.name}
-                                          </option>
-                                        )
-                                      )}
+                                      {aplicableCharges.map((item, index) => (
+                                        <option value={item.id} key={index}>
+                                          {item.name}
+                                        </option>
+                                      ))}
                                     </select>
                                   </div>
                                 )}
                               </div>
                             </div>
                             <div className="col-12 mb-3">
-                              <label htmlFor="">Charging Method <strong className='text-danger'>*</strong></label>
+                              <label htmlFor="">
+                                Charging Method{" "}
+                                <strong className="text-danger">*</strong>
+                              </label>
                               <div className="form-group">
-                                <select name="any" id="constraint" className="form-control" onChange={(e) => setConstraint(e.target.value)}>
+                                <select
+                                  name="any"
+                                  id="constraint"
+                                  className="form-control"
+                                  onChange={(e) =>
+                                    setConstraint(e.target.value)
+                                  }
+                                >
                                   <option value=""> --Select-- </option>
-                                  <option value={"true"}> By Amount of Debt Owed</option>
-                                  <option value={'false'}> Charge Specific Amount </option>
+                                  <option value={"true"}>
+                                    {" "}
+                                    By Amount of Debt Owed
+                                  </option>
+                                  <option value={"false"}>
+                                    {" "}
+                                    Charge Specific Amount{" "}
+                                  </option>
                                 </select>
                               </div>
                             </div>
                           </div>
 
-                          {constraint == "false" &&
+                          {constraint == "false" && (
                             <div className="row ">
                               <div className="col-md-6">
                                 <div className="mb-3">
@@ -927,7 +1010,9 @@ function BulkInvoiving() {
                                     type="text"
                                     className="form-control invoice-amount"
                                     value={"KES " + billAmount}
-                                    onChange={(e) => setbillAmount(e.target.value)}
+                                    onChange={(e) =>
+                                      setbillAmount(e.target.value)
+                                    }
                                     id="formrow-password-input"
                                     placeholder="KES"
                                     required={true}
@@ -936,43 +1021,69 @@ function BulkInvoiving() {
                                 </div>
                               </div>
                             </div>
-                          }
+                          )}
 
-                          {constraint == "true" &&
+                          {constraint == "true" && (
                             <>
                               <div className="row ">
                                 <div className="col-12 d-flex align-items-center justify-content-between">
-
-
                                   <div className="form-group col-12">
-                                    <label htmlFor="">Charge <strong className='text-danger'>*</strong></label>
-                                    <select name="" id="" className="form-control" onChange={(e) => { setConstraintCharge(e.target.value); setConstraintChargeAmount(null); setConstraintChargeRate(null) }}>
+                                    <label htmlFor="">
+                                      Charge{" "}
+                                      <strong className="text-danger">*</strong>
+                                    </label>
+                                    <select
+                                      name=""
+                                      id=""
+                                      className="form-control"
+                                      onChange={(e) => {
+                                        setConstraintCharge(e.target.value);
+                                        setConstraintChargeAmount(null);
+                                        setConstraintChargeRate(null);
+                                      }}
+                                    >
                                       <option value="">select</option>
-                                      <option value="AMOUNT">Specific Amount</option>
+                                      <option value="AMOUNT">
+                                        Specific Amount
+                                      </option>
                                       <option value="RATE">% Rate</option>
                                     </select>
                                   </div>
-
                                 </div>
                               </div>
 
                               <br></br>
 
-                              {constraintCharge === "RATE" &&
+                              {constraintCharge === "RATE" && (
                                 <div className="row ">
                                   <div className="form-group col-8">
-                                    <input type="number" className="form-control" value={constraintChargeRate} onChange={e => setConstraintChargeRate(e.target.value)} />
-
+                                    <input
+                                      type="number"
+                                      className="form-control"
+                                      value={constraintChargeRate}
+                                      onChange={(e) =>
+                                        setConstraintChargeRate(e.target.value)
+                                      }
+                                    />
                                   </div>
 
                                   <div className="form-group col-1">
                                     <span>% of</span>
                                   </div>
                                   <div className="form-group col-8">
-                                    <select name="" id="" className="form-control col-4" onChange={e => setConstraintString(e.target.value)}>
+                                    <select
+                                      name=""
+                                      id=""
+                                      className="form-control col-4"
+                                      onChange={(e) =>
+                                        setConstraintString(e.target.value)
+                                      }
+                                    >
                                       <option value="TOTAL">select</option>
                                       <option value="TOTAL">Total</option>
-                                      <option value="PERIOD">Debt Period Selected before</option>
+                                      <option value="PERIOD">
+                                        Debt Period Selected before
+                                      </option>
                                     </select>
                                   </div>
                                   <div className="form-group col-8">
@@ -982,43 +1093,44 @@ function BulkInvoiving() {
                                       data-live-search="true"
                                       // value={applicableChargeName}
                                       onChange={(e) =>
-                                        setConstraintChargeId(
-                                          e.target.value
-                                        )
+                                        setConstraintChargeId(e.target.value)
                                       }
                                       required={true}
                                     >
                                       <option className="text-black font-semibold ">
                                         select applicable charge
                                       </option>
-                                      {aplicableCharges.map(
-                                        (item, index) => (
-                                          <option
-                                            value={item.id}
-                                            key={index}
-                                          >
-                                            {item.name}
-                                          </option>
-                                        )
-                                      )}
+                                      {aplicableCharges.map((item, index) => (
+                                        <option value={item.id} key={index}>
+                                          {item.name}
+                                        </option>
+                                      ))}
                                     </select>
                                   </div>
                                   <div className="form-group col-1">
                                     <span>owed</span>
                                   </div>
-
                                 </div>
-                              }
+                              )}
 
-                              {constraintCharge === "AMOUNT" &&
+                              {constraintCharge === "AMOUNT" && (
                                 <div className="form-group col-auto">
-                                  <label htmlFor="">Charge Amount <strong className='text-danger'>*</strong></label>
-                                  <input type="number" className="form-control" value={constraintChargeAmount} onChange={e => setConstraintChargeAmount(e.target.value)} />
+                                  <label htmlFor="">
+                                    Charge Amount{" "}
+                                    <strong className="text-danger">*</strong>
+                                  </label>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    value={constraintChargeAmount}
+                                    onChange={(e) =>
+                                      setConstraintChargeAmount(e.target.value)
+                                    }
+                                  />
                                 </div>
-                              }
+                              )}
                             </>
-                          }
-
+                          )}
                         </div>
                       </div>
                     </section>
@@ -1031,14 +1143,16 @@ function BulkInvoiving() {
                       <i className="mdi-arrow-left mdi font-16px ms-2 me-3"></i>{" "}
                       Previous{" "}
                     </button>
-                    {invoiceFor !== "" && <button
-                      className="btn btn-primary waves-effect kev-nxt me-3"
-                      onClick={sendData}
-                    // disabled = { next ? "" : "disabled"}
-                    >
-                      Next
-                      <i className="mdi mdi-arrow-right font-16px ms-2 me-3"></i>
-                    </button>}
+                    {invoiceFor !== "" && (
+                      <button
+                        className="btn btn-primary waves-effect kev-nxt me-3"
+                        onClick={sendData}
+                        // disabled = { next ? "" : "disabled"}
+                      >
+                        Next
+                        <i className="mdi mdi-arrow-right font-16px ms-2 me-3"></i>
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={sendData}
@@ -1050,11 +1164,11 @@ function BulkInvoiving() {
                     </button>
                   </div>
 
-                  {error != undefined &&
-                    <div className='alert alert-danger'>
+                  {error != undefined && (
+                    <div className="alert alert-danger">
                       <span>{error}</span>
                     </div>
-                  }
+                  )}
                 </div>
               </div>
             </div>
@@ -1062,7 +1176,7 @@ function BulkInvoiving() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default BulkInvoiving
+export default BulkInvoiving;

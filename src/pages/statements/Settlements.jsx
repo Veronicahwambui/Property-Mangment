@@ -18,9 +18,11 @@ function Settlements() {
   }, []);
   const [charges, setcharges] = useState([]);
   const getCharges = () => {
-    requestsServiceService.allApplicableCharges("LANDLORD").then((res) => {
-      setcharges(res.data.data);
-    });
+    requestsServiceService
+      .allApplicableCharges("LANDLORD", true)
+      .then((res) => {
+        setcharges(res.data.data);
+      });
   };
 
   //settlement modals
