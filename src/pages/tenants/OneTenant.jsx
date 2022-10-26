@@ -1814,8 +1814,8 @@ function OneTenant() {
                                     <th>Start Date</th>
                                     <th>Unit Condition</th>
                                     <th>Tenancy Status</th>
-                                    <th>TenancyRenewalDate</th>
-                                    <th>TenancyRenewalNotificationDate</th>
+                                    <th>Tenancy Renewal Date</th>
+                                    {/*<th>TenancyRenewalNotificationDate</th>*/}
                                     <th>Status</th>
                                     <th>Date Created</th>
                                     <th>Actions</th>
@@ -1835,13 +1835,9 @@ function OneTenant() {
                                           {unit.premiseUnit.unitType.name}
                                         </td>
                                         <td>
-                                          {moment(
-                                            unit.startDate &&
-                                              unit.startDate.replace(
-                                                /[TZ]/g,
-                                                " "
-                                              )
-                                          ).format("DD /MM /YYYY")}
+                                          {moment(unit.startDate).format(
+                                            "DD /MM /YYYY"
+                                          )}
                                         </td>
                                         <td>{unit.unitCondition}</td>
                                         <td>
@@ -1856,12 +1852,12 @@ function OneTenant() {
                                               unit.tenancyRenewalDate
                                             ).format("DD/ MM/ YYYY")}
                                         </td>
-                                        <td>
-                                          {unit.tenancyRenewalNotificationDate &&
-                                            moment(
-                                              unit.tenancyRenewalNotificationDate
-                                            ).format("DD /MM/ YYYY")}
-                                        </td>
+                                        {/*<td>*/}
+                                        {/*  {unit.tenancyRenewalNotificationDate &&*/}
+                                        {/*    moment(*/}
+                                        {/*      unit.tenancyRenewalNotificationDate*/}
+                                        {/*    ).format("DD /MM/ YYYY")}*/}
+                                        {/*</td>*/}
 
                                         <td>
                                           {" "}
