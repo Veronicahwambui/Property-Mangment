@@ -439,6 +439,7 @@ function OnePremise() {
     requestsServiceService.viewPremise(userId).then((res) => {
       setPremiseData(res.data.data);
       setPremiseUnits(res.data.data.premiseUnits);
+      console.log(res.data.data.premiseUnits);
       setPremiseCharges(res.data.data.defaultpPremiseUnitTypeCharges);
       setCaretakers(res.data.data.premiseCaretakers);
       setUpdate({
@@ -455,6 +456,12 @@ function OnePremise() {
       setLandlordData(res.data.data.landLords[0].landLord.fileNumber);
     });
   };
+
+  useEffect(() => {
+    let x = premiseUnits?.map((item) => item.unitType.name);
+    let y = new Set(x);
+    console.log(y);
+  }, [premiseUnits]);
 
   const [PremiseTypes, setPremiseTypes] = useState([]);
   const [PremiseUseTypes, setPremiseUseTypes] = useState([]);
@@ -671,7 +678,7 @@ function OnePremise() {
     });
   };
   const findUnitTypes = () => {
-    requestsServiceService.allUnitTypes().then((res) => {
+    requestsServiceService.allUnitTypes(true).then((res) => {
       setUnittypes(res.data.data);
     });
   };
@@ -2202,7 +2209,31 @@ function OnePremise() {
                             unittypes
                               .sort((a, b) => a.name.localeCompare(b.name))
                               .map((unit) => (
-                                <option value={unit.id}> {unit.name}</option>
+                                <>
+                                  <>
+                                    {premiseUnits?.length > 0 ? (
+                                      <>
+                                        {premiseUnits?.some(
+                                          (el) => el.unitType.name === unit.name
+                                        ) ? (
+                                          <>
+                                            <option value={unit.id}>
+                                              {unit.name}
+                                            </option>
+                                          </>
+                                        ) : (
+                                          <></>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <>
+                                        <option value={unit.id}>
+                                          {unit.name}
+                                        </option>
+                                      </>
+                                    )}
+                                  </>
+                                </>
                               ))}
                         </select>
                       </div>
@@ -2413,7 +2444,31 @@ function OnePremise() {
                             unittypes
                               ?.sort((a, b) => a.name.localeCompare(b.name))
                               .map((unit) => (
-                                <option value={unit.id}> {unit.name}</option>
+                                <>
+                                  <>
+                                    {premiseUnits?.length > 0 ? (
+                                      <>
+                                        {premiseUnits?.some(
+                                          (el) => el.unitType.name === unit.name
+                                        ) ? (
+                                          <>
+                                            <option value={unit.id}>
+                                              {unit.name}
+                                            </option>
+                                          </>
+                                        ) : (
+                                          <></>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <>
+                                        <option value={unit.id}>
+                                          {unit.name}
+                                        </option>
+                                      </>
+                                    )}
+                                  </>
+                                </>
                               ))}
                         </select>
                       </div>
