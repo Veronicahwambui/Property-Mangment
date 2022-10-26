@@ -1908,7 +1908,7 @@ function OnePremise() {
                             <label htmlFor="">Address</label>
                             <input
                               type="text"
-                              required
+                          
                               className="form-control"
                               value={update.address}
                               onChange={handleChange}

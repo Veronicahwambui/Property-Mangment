@@ -42,7 +42,7 @@ function AddProperties() {
   const [chargePropertyTax, setChargePropertyTax] = useState(false);
   const [collectElectricityDeposit, setCollectElectricityDeposit] =
     useState(false);
-
+    const [documentTypeId, setdocumentTypeId] = useState(null);
   const toogleShowUnitTypeChargesModal = () => {
     setShowUnitTypeChargesModal(!showUnitTypeChargesModal);
   };
@@ -394,8 +394,8 @@ function AddProperties() {
   const [docBody, setDocBody] = useState({
     docName: undefined,
     document: undefined,
-    documentOwnerTypeName: "PREMISE",
-    documentTypeId: undefined,
+    documentOwnerTypeName: "PROPERTY",
+    documentTypeId: documentTypeId,
     id: undefined,
     ownerEntityId: undefined,
   });
@@ -451,7 +451,7 @@ function AddProperties() {
   const addDocument = (el) => {
     el.preventDefault();
     let data = docBody;
-    if (data.documentOwnerTypeName === "PREMISE") {
+    if (data.documentOwnerTypeName === "PROPERTY") {
       let kins = premiseDocuments;
       kins.push(data);
       setPremiseDocuments(kins);
@@ -463,8 +463,8 @@ function AddProperties() {
     setDocBody({
       docName: undefined,
       document: undefined,
-      documentOwnerTypeName: "PREMISE",
-      documentTypeId: undefined,
+      documentOwnerTypeName: "PROPERTY",
+      documentTypeId: documentTypeId,
       id: undefined,
       ownerEntityId: undefined,
     });
@@ -484,6 +484,10 @@ function AddProperties() {
       unitTypeId: undefined,
     });
   };
+  const getDocName = (docId) => {
+    return documentTypes?.filter((x) => x.id === parseInt(docId))[0]?.name;
+  };
+
 
   const handleDocumentChange = (event) => {
     if (event.target.name === "file") {
@@ -499,14 +503,14 @@ function AddProperties() {
       };
     } else setDocBody({ ...docBody, [event.target.name]: event.target.value });
     
-    if(event.target.value === "documentTypeId") {
-      let id = event.target.value.split("-")[0];
-      let name=event.target.value.split("-")[1];
-      let d={
-        name: name,
-        id: id,
-      };
-    }
+    // if(event.target.value === "documentTypeId") {
+    //   let id = event.target.value.split("-")[0];
+    //   let name=event.target.value.split("-")[1];
+    //   let d={
+    //     name: name,
+    //     id: id,
+    //   };
+    // }
 
 
   };
@@ -2036,6 +2040,9 @@ function AddProperties() {
                             <thead className="table-light ">
                               <tr className="text-uppercase table-dark ">
                                 <th className="vertical-align-middle ">#</th>
+                                <th className="vertical-align-middle">
+                                  Document owner
+                                </th>
                                 <th className="vertical-align-middle ">
                                   Document Type
                                 </th>
@@ -2054,6 +2061,12 @@ function AddProperties() {
                                   <tr>
                                     <td>{index + 1}</td>
                                     <td>{dependent.documentOwnerTypeName}</td>
+                                    <td>
+                                        {documentTypes.length > 0
+                                          ? getDocName(documentTypes.namedocumentTypeId)
+                                          : ""}
+                                      </td>
+                                     
                                     <td>{dependent.docName}</td>
                                     <td></td>
                                   </tr>
@@ -2239,7 +2252,9 @@ function AddProperties() {
 
                 <select
                   className="form-control text-capitalize"
-                  onChange={handleDocumentChange}
+                  onChange={(e) => {
+                    setdocumentTypeId(e.target.value);
+                  }}
                   name="documentTypeId"
                   required
                 >
@@ -2248,7 +2263,7 @@ function AddProperties() {
                     documentTypes
                       ?.sort((a, b) => a.name.localeCompare(b.name))
                       ?.map((prem, index) => (
-                        <option value={prem.id + "-" + prem.name} className="text-capitalize">
+                        <option value={prem.id } className="text-capitalize">
                           {prem.name?.toLowerCase()?.replace(/_/g, " ")}
                         </option>
                       ))}
@@ -2258,7 +2273,7 @@ function AddProperties() {
 
             <div className="col-md-6">
               <div className="mb-4">
-                <label htmlFor="">Doc Name</label>
+                <label htmlFor="">Document Name</label>
                 <input
                   type="text"
                   className="form-control"
