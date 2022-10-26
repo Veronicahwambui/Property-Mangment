@@ -146,7 +146,7 @@ function AddProperties() {
       });
     else setGeneral({ ...general, [event.target.name]: event.target.value });
   };
-  console.log(general);
+  // console.log(general);
 
   const [caretaker, setCaretaker] = useState({
     idNumber: "",
@@ -215,7 +215,7 @@ function AddProperties() {
           unitTypeId: selectedunitTypes[i].id,
           value: undefined,
 
-          clientCollectionAccountId: undefined,
+          clientCollectionAccountId: clientAccounts[0]?.id,
           collectedToClientAccount: undefined,
         };
         unitAppCharge.push(chargeBody);
@@ -274,7 +274,6 @@ function AddProperties() {
   // ADDING PREMISES
 
   const [premiseUnits, setPremiseUnits] = useState([]);
-
   const [modalId, setModalId] = useState("");
   const [unitsNumModal, setUnitsNumModal] = useState(false);
 
@@ -319,10 +318,45 @@ function AddProperties() {
       index == i ? { ...obj, unitName: event.target.value } : { ...obj }
     );
 
+
     setPremiseUnits(ne);
   };
 
-  console.log(premiseUnits);
+  const handleRemoveUnit = (index) => {
+    let newUnits = premiseUnits.filter((obj, i) => i !== Number(index));
+    setPremiseUnits(newUnits);
+  }
+
+  const [newUnitId, setNewUnitId] = useState(null)
+
+  const updateUnits = () => {
+
+    if (newUnitId === null) {
+      setError({
+        ...error,
+        message: "No Unit Selected",
+        color: "warning",
+      });
+      setTimeout(() => {
+        clears();
+      }, 3000);
+      return
+    }
+
+    $("#add-new-unit-premise").modal("hide");
+    const newUnit = {
+      active: true,
+      unitTypeId: newUnitId,
+      id: null,
+      premiseId: null,
+      status: "VACANT",
+      unitName: "",
+    }
+    setPremiseUnits([...premiseUnits, newUnit]);
+    setNewUnitId(null)
+  }
+
+  // console.log(premiseUnits);
 
   const [estates, setEstates] = useState([]);
   const getEstates = () => {
@@ -454,7 +488,7 @@ function AddProperties() {
       setPremiseDocuments(kins);
     }
 
-    console.log(premiseDocuments, docBody ,data.documentOwnerTypeName );
+    console.log(premiseDocuments, docBody, data.documentOwnerTypeName);
 
     toogleShowNewDocumentModal();
     setDocBody({
@@ -576,9 +610,9 @@ function AddProperties() {
           invoicePaymentPriority:
             selectedItems.length > 0
               ? selectedItems
-                  .map((a) => a.id)
-                  .join("-")
-                  .toString()
+                .map((a) => a.id)
+                .join("-")
+                .toString()
               : "",
         });
       }
@@ -1045,7 +1079,7 @@ function AddProperties() {
                                       type="text"
                                       className="form-control"
                                     />
-                                    
+
                                   </div>
 
                                   {premiseTypes &&
@@ -1065,55 +1099,55 @@ function AddProperties() {
                                 </select>
                               </div>
                               <div className="">
-                              <button
-                                className="btn btn-primary text-nowrap btn-sm py-2 w-100"
-                                data-bs-toggle="modal"
-                                data-bs-target="#add-new-property"
-                              > <i class="mdi mdi-plus label-icon"></i>
-                                Property Type
-                              </button>
+                                <button
+                                  className="btn btn-primary text-nowrap btn-sm py-2 w-100"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#add-new-property"
+                                > <i class="mdi mdi-plus label-icon"></i>
+                                  Property Type
+                                </button>
                               </div>
                             </div>
                           </div>
 
                           <div class="col-lg-4 col-md-6 ">
                             <div className="d-flex gap-2 align-items-end justify-content-between w-100">
-                            <div class="w-75">
-                              <label for="basicpill-lastname-input ">
-                                Property Use type
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <select
-                                class="form-control text-capitalize"
-                                title="Select Premise use type "
-                                name="premiseUseTypeId"
-                                onChange={handleGeneral}
-                              >
-                                <option>Select property use type </option>
-                                {premiseUseTypes &&
-                                  premiseUseTypes
-                                    ?.sort((a, b) =>
-                                      a.name.localeCompare(b.name)
-                                    )
-                                    ?.map((type) => (
-                                      <option
-                                        value={type.id}
-                                        className="text-capitalize"
-                                      >
-                                        {" "}
-                                        {type.name}
-                                      </option>
-                                    ))}
-                              </select>
+                              <div class="w-75">
+                                <label for="basicpill-lastname-input ">
+                                  Property Use type
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+                                <select
+                                  class="form-control text-capitalize"
+                                  title="Select Premise use type "
+                                  name="premiseUseTypeId"
+                                  onChange={handleGeneral}
+                                >
+                                  <option>Select property use type </option>
+                                  {premiseUseTypes &&
+                                    premiseUseTypes
+                                      ?.sort((a, b) =>
+                                        a.name.localeCompare(b.name)
+                                      )
+                                      ?.map((type) => (
+                                        <option
+                                          value={type.id}
+                                          className="text-capitalize"
+                                        >
+                                          {" "}
+                                          {type.name}
+                                        </option>
+                                      ))}
+                                </select>
 
-                            </div>
+                              </div>
                               <div className="">
                                 <button
                                   className="btn  text-nowrap btn-primary btn-sm py-2"
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-premise"
                                 ><i class="mdi mdi-plus label-icon"></i>
-                  
+
                                   Proprty Use Type
                                 </button>
                               </div>
@@ -1145,8 +1179,8 @@ function AddProperties() {
                                         {t === "CURRENT"
                                           ? "Occupied"
                                           : t === "OPEN"
-                                          ? "Vaccant"
-                                          : t
+                                            ? "Vaccant"
+                                            : t
                                               ?.toLowerCase()
                                               ?.replace(/_/g, " ")}
                                       </option>
@@ -1449,8 +1483,8 @@ function AddProperties() {
                                             {item === "SELF_COMMISSIONED"
                                               ? "Agent Commissioned"
                                               : item
-                                                  ?.toLowerCase()
-                                                  ?.replace(/_/g, " ")}
+                                                ?.toLowerCase()
+                                                ?.replace(/_/g, " ")}
                                           </option>
                                         ))}
                                       </select>
@@ -1679,26 +1713,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "MONTHLY_CHARGE" && (
-                                          <div class="col-6">
-                                            <div class="form-check form-check-primary mb-3">
-                                              <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                name="monthlyCharges"
-                                                value={charge.id}
-                                                onChange={
-                                                  selectedApplicableChargeChange
-                                                }
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="monthlyRent"
-                                              >
-                                                {charge.name}
-                                              </label>
+                                            <div class="col-6">
+                                              <div class="form-check form-check-primary mb-3">
+                                                <input
+                                                  class="form-check-input"
+                                                  type="checkbox"
+                                                  name="monthlyCharges"
+                                                  value={charge.id}
+                                                  onChange={
+                                                    selectedApplicableChargeChange
+                                                  }
+                                                />
+                                                <label
+                                                  class="form-check-label"
+                                                  for="monthlyRent"
+                                                >
+                                                  {charge.name}
+                                                </label>
+                                              </div>
                                             </div>
-                                          </div>
-                                        )}
+                                          )}
                                       </>
                                     ))}
                               </div>
@@ -1717,26 +1751,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "DEPOSIT_CHARGE" && (
-                                          <div class="col-6">
-                                            <div class="form-check form-check-primary mb-3">
-                                              <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                name="monthlyRent"
-                                                value={charge.id}
-                                                onChange={
-                                                  selectedApplicableChargeChange
-                                                }
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="monthlyRent"
-                                              >
-                                                {charge.name}
-                                              </label>
+                                            <div class="col-6">
+                                              <div class="form-check form-check-primary mb-3">
+                                                <input
+                                                  class="form-check-input"
+                                                  type="checkbox"
+                                                  name="monthlyRent"
+                                                  value={charge.id}
+                                                  onChange={
+                                                    selectedApplicableChargeChange
+                                                  }
+                                                />
+                                                <label
+                                                  class="form-check-label"
+                                                  for="monthlyRent"
+                                                >
+                                                  {charge.name}
+                                                </label>
+                                              </div>
                                             </div>
-                                          </div>
-                                        )}
+                                          )}
                                       </>
                                     ))}
                               </div>
@@ -1840,25 +1874,25 @@ function AddProperties() {
                                   selectedApplicableCharges.map(
                                     (premiseUnitTypeCharge, indeewx) =>
                                       premiseUnitTypeCharge.expectManualValues &&
-                                     
-                                          <tr>
-                                            {/* <td>
+
+                                      <tr>
+                                        {/* <td>
                                         {indeewx + 1}
                                       </td> */}
-                                            <td>
-                                              {premiseUnitTypeCharge.name}
-                                            </td>
-                                            <td>
-                                              {
-                                                premiseUnitTypeCharge.applicableChargeType
-                                              }
-                                            </td>
-                                        
-                                            <td>-</td>
-                                            <td>-</td>
-                                          </tr>
+                                        <td>
+                                          {premiseUnitTypeCharge.name}
+                                        </td>
+                                        <td>
+                                          {
+                                            premiseUnitTypeCharge.applicableChargeType
+                                          }
+                                        </td>
+
+                                        <td>-</td>
+                                        <td>-</td>
+                                      </tr>
                                   )
-                                  }
+                                }
                               </tbody>
                             </table>
                           </div>
@@ -1881,6 +1915,7 @@ function AddProperties() {
                                   <th>#</th>
                                   <th>Unit name</th>
                                   <th>Unit Type</th>
+                                  <th className="text-center">Actions</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -1902,7 +1937,7 @@ function AddProperties() {
                                       </td>
                                       <td>
                                         <select name="" id="" disabled>
-                                          <option value="">
+                                          <option>
                                             {
                                               unitTypes?.filter(
                                                 (type) =>
@@ -1912,9 +1947,28 @@ function AddProperties() {
                                           </option>
                                         </select>
                                       </td>
+                                      <td className="text-center" onClick={(e) => handleRemoveUnit(index)}><h3 className="waves"><i className="bx bx-trash"></i></h3></td>
                                     </tr>
                                   ))}
                               </tbody>
+
+                              <div class="d-flex mt-3">
+                                <button
+                                onClick={()=>  setError({
+                                  ...error,
+                                  message: "",
+                                  color: "",
+                                }) }
+                                  type="button"
+                                  class="btn btn-primary waves-effect btn-label waves-light me-3"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#add-new-unit-premise"
+                                >
+                                  <i class="mdi mdi-plus label-icon"></i> Add Unit
+
+                                </button>
+                              </div>
+
                             </table>
                           </div>
                         </div>
@@ -2280,25 +2334,25 @@ function AddProperties() {
                       </select>
                     </div>
 
-                      <div className="col-md-4">
-                        <label> Client Collection Acc </label>
-                        <select
-                          className="form-control"
-                          required
-                          onChange={(e) => handleChargechange(e, index)}
-                          name="clientCollectionAccountId"
-                        >
-                          <option></option>
-                          {clientAccounts &&
-                            clientAccounts.map((prem, index) => (
-                              <option value={prem.id}>
-                                {prem.bankAccountNumber +
-                                  " - " +
-                                  prem.bank.bankName}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
+                    <div className="col-md-4">
+                      <label> Client Collection Acc </label>
+                      <select
+                        className="form-control"
+                        required
+                        onChange={(e) => handleChargechange(e, index)}
+                        name="clientCollectionAccountId"
+                      >
+                        {/* <option></option> */}
+                        {clientAccounts &&
+                          clientAccounts.map((prem, index) => (
+                            <option value={prem.id}>
+                              {prem.bankAccountNumber +
+                                " - " +
+                                prem.bank.bankName}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
 
                     <div className="col-md-4">
                       <label> Invoice Day </label>
@@ -2320,7 +2374,7 @@ function AddProperties() {
             <button
               className="btn btn-basic"
               type="button"
-              onClick={toogleShowUnitTypeChargesModal}Document Attachments
+              onClick={toogleShowUnitTypeChargesModal} Document Attachments
 
             >
               Close
@@ -2717,6 +2771,67 @@ function AddProperties() {
                 </button>
                 <button type="submit" class="btn btn-primary">
                   Create
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="add-new-unit-premise"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateUnits();
+              }}
+            >
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Add A New Unit
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                {error.color !== "" && (
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                )}
+                <div className="form-group">
+                  <label htmlFor="true">Select Unit Type</label>
+                  <select name="true" id="" className="form-control" onChange={e => setNewUnitId(e.target.value)}>
+                    <option value="">select</option>
+                    {selectedunitTypes?.map(one => (
+                      <option value={one.id}>{one.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-success">
+                  Submit
                 </button>
               </div>
             </form>
