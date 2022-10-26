@@ -95,9 +95,12 @@ class RequestsService {
 
   // applicable charges
 
-  allApplicableCharges(entityType) {
+  allApplicableCharges(entityType, active) {
     return axiosInstance.get(
-      baseUrl + "/setup/applicableCharges?entityType=" + entityType
+      baseUrl +
+        "/setup/applicableCharges?entityType=" +
+        entityType +
+        (active ? "&active=" + active : "")
     );
   }
 
@@ -286,8 +289,10 @@ class RequestsService {
 
   //  premise types
 
-  allPremiseTypes() {
-    return axiosInstance.get(baseUrl + "/setup/premiseTypes");
+  allPremiseTypes(active) {
+    return axiosInstance.get(
+      baseUrl + "/setup/premiseTypes" + (active ? "?active=" + active : "")
+    );
   }
 
   createPremiseTypes(data) {
@@ -310,8 +315,10 @@ class RequestsService {
 
   // premise use typres
 
-  allPremiseUseTypes() {
-    return axiosInstance.get(baseUrl + "/setup/premiseUses");
+  allPremiseUseTypes(active) {
+    return axiosInstance.get(
+      baseUrl + "/setup/premiseUses" + (active ? "?active=" + active : "")
+    );
   }
 
   createPremiseUseTypes(data) {
@@ -332,8 +339,10 @@ class RequestsService {
 
   // unit types Unit
 
-  allUnitTypes() {
-    return axiosInstance.get(baseUrl + "/setup/unitTypes");
+  allUnitTypes(active) {
+    return axiosInstance.get(
+      baseUrl + "/setup/unitTypes" + (active ? "?active=" + active : "")
+    );
   }
 
   createUnitTypes(data) {
@@ -473,8 +482,12 @@ class RequestsService {
     return axiosInstance.post(baseUrl + "/setup/landLordAgreementTypes", data);
   }
 
-  getAllAgreementTypes() {
-    return axiosInstance.get(baseUrl + "/setup/landLordAgreementTypes");
+  getAllAgreementTypes(active) {
+    return axiosInstance.get(
+      baseUrl +
+        "/setup/landLordAgreementTypes" +
+        (active ? "?active=" + active : "")
+    );
   }
 
   getOneAgreementType(id) {
@@ -621,8 +634,10 @@ class RequestsService {
   }
   // premise charges end
 
-  getTenancyStatuses() {
-    return axiosInstance.get(baseUrl + "/setup/tenancyStatuses");
+  getTenancyStatuses(active) {
+    return axiosInstance.get(
+      baseUrl + "/setup/tenancyStatuses" + (active ? "?active=" + active : "")
+    );
   }
   getClientAccounts(data) {
     return axiosInstance.get(baseUrl + `/clients/${data}/accounts`);

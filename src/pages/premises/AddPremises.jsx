@@ -332,27 +332,29 @@ function AddProperties() {
     });
   };
   const getAgreementTypes = () => {
-    requestsServiceService.getAllAgreementTypes().then((res) => {
+    requestsServiceService.getAllAgreementTypes(true).then((res) => {
       setAgreementTypes(res.data.data);
     });
   };
 
   const getClientAccounts = () => {
-    requestsServiceService.getClientAccounts(authService.getClientId()).then((res) => {
-      setClientAccounts(res.data.data);
-    });
+    requestsServiceService
+      .getClientAccounts(authService.getClientId())
+      .then((res) => {
+        setClientAccounts(res.data.data);
+      });
   };
 
   const [premiseTypes, setPremiseTypes] = useState([]);
   const getPremiseTypes = () => {
-    requestsServiceService.allPremiseTypes().then((res) => {
+    requestsServiceService.allPremiseTypes(true).then((res) => {
       setPremiseTypes(res.data.data);
     });
   };
 
   const [premiseUseTypes, setPremiseUseTypes] = useState([]);
   const getPremiseUseTypes = () => {
-    requestsServiceService.allPremiseUseTypes().then((res) => {
+    requestsServiceService.allPremiseUseTypes(true).then((res) => {
       setPremiseUseTypes(res.data.data);
     });
   };
@@ -366,19 +368,19 @@ function AddProperties() {
 
   const getAllApplicableCharges = () => {
     requestsServiceService
-      .allApplicableCharges("TENANT")
+      .allApplicableCharges("TENANT", true)
       .then((res) => setApplicableCharges(res.data.data));
   };
 
   const fetchTypes = () => {
-    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
+    requestsServiceService.allApplicableCharges("TENANT", true).then((res) => {
       setChargeTypes(res.data.data);
     });
   };
 
   const getAllUnitTypes = () => {
     requestsServiceService
-      .allUnitTypes()
+      .allUnitTypes(true)
       .then((res) => setUnitTypes(res.data.data));
   };
   const [tenancyStatuses, setTenancyStatuses] = useState([]);
@@ -399,7 +401,7 @@ function AddProperties() {
   });
 
   useEffect(() => {
-    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
+    requestsServiceService.allApplicableCharges("TENANT", true).then((res) => {
       setAC(res.data.data);
     });
     getEstates();
@@ -461,7 +463,7 @@ function AddProperties() {
     setDocBody({
       docName: undefined,
       document: undefined,
-      documentOwnerTypeName: 'PREMISE',
+      documentOwnerTypeName: "PREMISE",
       documentTypeId: undefined,
       id: undefined,
       ownerEntityId: undefined,
@@ -519,7 +521,10 @@ function AddProperties() {
       premise: gen,
       premiseCaretakerDTO: caretaker,
       premiseDocuments: premiseDocuments,
-      premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...selectedApplicableCharges],
+      premiseUnitTypeCharges: [
+        ...premiseUnitTypeCharges,
+        ...selectedApplicableCharges,
+      ],
       premiseUnits: premiseUnits,
     };
 
@@ -556,7 +561,6 @@ function AddProperties() {
   };
 
   const newDocument = (event) => {
-
     toogleShowNewDocumentModal();
   };
   const onChangeGeneral = (e) => {
@@ -576,9 +580,9 @@ function AddProperties() {
           invoicePaymentPriority:
             selectedItems.length > 0
               ? selectedItems
-                .map((a) => a.id)
-                .join("-")
-                .toString()
+                  .map((a) => a.id)
+                  .join("-")
+                  .toString()
               : "",
         });
       }
@@ -1045,7 +1049,6 @@ function AddProperties() {
                                       type="text"
                                       className="form-control"
                                     />
-
                                   </div>
 
                                   {premiseTypes &&
@@ -1070,7 +1073,9 @@ function AddProperties() {
                                   type="button"
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-property"
-                                > <i className="mdi mdi-plus label-icon"></i>
+                                >
+                                  {" "}
+                                  <i className="mdi mdi-plus label-icon"></i>
                                   Property Type
                                 </button>
                               </div>
@@ -1106,7 +1111,6 @@ function AddProperties() {
                                         </option>
                                       ))}
                                 </select>
-
                               </div>
                               <div className="">
                                 <button
@@ -1114,8 +1118,8 @@ function AddProperties() {
                                   type="button"
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-premise"
-                                ><i class="mdi mdi-plus label-icon"></i>
-
+                                >
+                                  <i class="mdi mdi-plus label-icon"></i>
                                   Proprty Use Type
                                 </button>
                               </div>
@@ -1147,8 +1151,8 @@ function AddProperties() {
                                         {t === "CURRENT"
                                           ? "Occupied"
                                           : t === "OPEN"
-                                            ? "Vaccant"
-                                            : t
+                                          ? "Vaccant"
+                                          : t
                                               ?.toLowerCase()
                                               ?.replace(/_/g, " ")}
                                       </option>
@@ -1364,7 +1368,7 @@ function AddProperties() {
 
                         <div class="row mb-3">
                           <label for=" " class=" ">
-                            Property has a Caretaker? {" "}
+                            Property has a Caretaker?{" "}
                             <strong class="text-danger ">*</strong>
                           </label>
                           <div class="d-flex ">
@@ -1401,186 +1405,194 @@ function AddProperties() {
                             </div>
                           </div>
                         </div>
-                        {hasCaretaker && <div class="row">
-                          <div class="col-lg-3 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for=" ">ID/PP Num.</label>
-                              <input
-                                type="text "
-                                class="form-control "
-                                id=""
-                                value={caretaker.idNumber}
-                                onChange={handleCaretaker}
-                                name="idNumber"
-                                placeholder="Enter ID or PP Num. "
-                              />
+                        {hasCaretaker && (
+                          <div class="row">
+                            <div class="col-lg-3 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for=" ">ID/PP Num.</label>
+                                <input
+                                  type="text "
+                                  class="form-control "
+                                  id=""
+                                  value={caretaker.idNumber}
+                                  onChange={handleCaretaker}
+                                  name="idNumber"
+                                  placeholder="Enter ID or PP Num. "
+                                />
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-lg-3 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for="basicpill-firstname-input ">
-                                First name{" "}
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                class="form-control text-capitalize "
-                                value={caretaker.firstName}
-                                onChange={handleCaretaker}
-                                name="firstName"
-                                id="basicpill-firstname-input "
-                                placeholder="Enter Your First Name "
-                              />
+                            <div class="col-lg-3 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for="basicpill-firstname-input ">
+                                  First name{" "}
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+                                <input
+                                  type="text "
+                                  class="form-control text-capitalize "
+                                  value={caretaker.firstName}
+                                  onChange={handleCaretaker}
+                                  name="firstName"
+                                  id="basicpill-firstname-input "
+                                  placeholder="Enter Your First Name "
+                                />
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-lg-3 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for="basicpill-lastname-input ">
-                                Last Name{" "}
-                                <strong class="text-danger ">*</strong>
-                              </label>
-                              <input
-                                type="text "
-                                class="form-control "
-                                value={caretaker.lastName}
-                                onChange={handleCaretaker}
-                                name="lastName"
-                                id="basicpill-lastname-input "
-                                placeholder="Enter Your Last Name "
-                              />
+                            <div class="col-lg-3 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for="basicpill-lastname-input ">
+                                  Last Name{" "}
+                                  <strong class="text-danger ">*</strong>
+                                </label>
+                                <input
+                                  type="text "
+                                  class="form-control "
+                                  value={caretaker.lastName}
+                                  onChange={handleCaretaker}
+                                  name="lastName"
+                                  id="basicpill-lastname-input "
+                                  placeholder="Enter Your Last Name "
+                                />
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-lg-3 col-md-6 ">
-                            <div class="mb-4 ">
-                              <label for=" ">Other Name(s)</label>
-                              <input
-                                type="text "
-                                class="form-control "
-                                id=" "
-                                onChange={handleCaretaker}
-                                value={caretaker.otherName}
-                                name="otherName"
-                                placeholder="Enter Your Last Name "
-                              />
+                            <div class="col-lg-3 col-md-6 ">
+                              <div class="mb-4 ">
+                                <label for=" ">Other Name(s)</label>
+                                <input
+                                  type="text "
+                                  class="form-control "
+                                  id=" "
+                                  onChange={handleCaretaker}
+                                  value={caretaker.otherName}
+                                  name="otherName"
+                                  placeholder="Enter Your Last Name "
+                                />
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-12">
-                            <div class="row ">
-                              <div class="col-lg-4 ">
-                                <div class="row ">
-                                  <div class="col-12 col-md-6 ">
-                                    <div class="mb-4 ">
-                                      <label for=" " class=" ">
-                                        Caretaker type
-                                        <strong class="text-danger ">*</strong>
-                                      </label>
-                                      <select
-                                        onChange={handleCaretaker}
-                                        class="form-control "
-                                        name="caretakerTypeName"
-                                        title="Select caretaker type"
-                                      >
-                                        <option value={null}>
-                                          Select caretaker type
-                                        </option>
-                                        {caretakerTypes?.map((item) => (
-                                          <option
-                                            value={item}
-                                            className="text-capitalize"
-                                          >
-                                            {item === "SELF_COMMISSIONED"
-                                              ? "Agent Commissioned"
-                                              : item
-                                                ?.toLowerCase()
-                                                ?.replace(/_/g, " ")}
+                            <div class="col-12">
+                              <div class="row ">
+                                <div class="col-lg-4 ">
+                                  <div class="row ">
+                                    <div class="col-12 col-md-6 ">
+                                      <div class="mb-4 ">
+                                        <label for=" " class=" ">
+                                          Caretaker type
+                                          <strong class="text-danger ">
+                                            *
+                                          </strong>
+                                        </label>
+                                        <select
+                                          onChange={handleCaretaker}
+                                          class="form-control "
+                                          name="caretakerTypeName"
+                                          title="Select caretaker type"
+                                        >
+                                          <option value={null}>
+                                            Select caretaker type
                                           </option>
-                                        ))}
-                                      </select>
+                                          {caretakerTypes?.map((item) => (
+                                            <option
+                                              value={item}
+                                              className="text-capitalize"
+                                            >
+                                              {item === "SELF_COMMISSIONED"
+                                                ? "Agent Commissioned"
+                                                : item
+                                                    ?.toLowerCase()
+                                                    ?.replace(/_/g, " ")}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div class="col-12 col-md-6 ">
-                                    <div class="row mb-3">
-                                      <label for=" " class=" ">
-                                        Gender:{" "}
-                                        <strong class="text-danger ">*</strong>
-                                      </label>
-                                      <div class="d-flex ">
-                                        <div class="form-check me-3">
-                                          <input
-                                            class="form-check-input"
-                                            type="radio"
-                                            onChange={handleCaretaker}
-                                            name="gender"
-                                            value="Male"
-                                          />
-                                          <label
-                                            class="form-check-label"
-                                            for="caretaker-male"
-                                          >
-                                            Male
-                                          </label>
-                                        </div>
+                                    <div class="col-12 col-md-6 ">
+                                      <div class="row mb-3">
+                                        <label for=" " class=" ">
+                                          Gender:{" "}
+                                          <strong class="text-danger ">
+                                            *
+                                          </strong>
+                                        </label>
+                                        <div class="d-flex ">
+                                          <div class="form-check me-3">
+                                            <input
+                                              class="form-check-input"
+                                              type="radio"
+                                              onChange={handleCaretaker}
+                                              name="gender"
+                                              value="Male"
+                                            />
+                                            <label
+                                              class="form-check-label"
+                                              for="caretaker-male"
+                                            >
+                                              Male
+                                            </label>
+                                          </div>
 
-                                        <div class="form-check me-3">
-                                          <input
-                                            onChange={handleCaretaker}
-                                            class="form-check-input"
-                                            type="radio"
-                                            name="gender"
-                                            value="Female"
-                                          />
-                                          <label
-                                            class="form-check-label"
-                                            for="caretaker-female"
-                                          >
-                                            Female
-                                          </label>
+                                          <div class="form-check me-3">
+                                            <input
+                                              onChange={handleCaretaker}
+                                              class="form-check-input"
+                                              type="radio"
+                                              name="gender"
+                                              value="Female"
+                                            />
+                                            <label
+                                              class="form-check-label"
+                                              for="caretaker-female"
+                                            >
+                                              Female
+                                            </label>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                              <div class="col-lg-8">
-                                <div class="row ">
-                                  <div class="col-lg-6 col-md-6">
-                                    <div class="mb-4 ">
-                                      <label for="basicpill-phoneno-input ">
-                                        Phone{" "}
-                                        <strong class="text-danger ">*</strong>
-                                      </label>
-                                      <input
-                                        type="text "
-                                        class="form-control "
-                                        value={caretaker.phone}
-                                        name="phoneNumber"
-                                        onChange={handleCaretaker}
-                                        id="basicpill-phoneno-input "
-                                        placeholder="Enter Your Phone No. "
-                                      />
+                                <div class="col-lg-8">
+                                  <div class="row ">
+                                    <div class="col-lg-6 col-md-6">
+                                      <div class="mb-4 ">
+                                        <label for="basicpill-phoneno-input ">
+                                          Phone{" "}
+                                          <strong class="text-danger ">
+                                            *
+                                          </strong>
+                                        </label>
+                                        <input
+                                          type="text "
+                                          class="form-control "
+                                          value={caretaker.phone}
+                                          name="phoneNumber"
+                                          onChange={handleCaretaker}
+                                          id="basicpill-phoneno-input "
+                                          placeholder="Enter Your Phone No. "
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div class="col-lg-6 col-md-6">
-                                    <div class="mb-4 ">
-                                      <label for="basicpill-email-input ">
-                                        Email{" "}
-                                      </label>
-                                      <input
-                                        type="email "
-                                        class="form-control "
-                                        onChange={handleCaretaker}
-                                        name="email"
-                                        value={caretaker.email}
-                                        id="basicpill-email-input "
-                                        placeholder="Enter Your Email ID "
-                                      />
+                                    <div class="col-lg-6 col-md-6">
+                                      <div class="mb-4 ">
+                                        <label for="basicpill-email-input ">
+                                          Email{" "}
+                                        </label>
+                                        <input
+                                          type="email "
+                                          class="form-control "
+                                          onChange={handleCaretaker}
+                                          name="email"
+                                          value={caretaker.email}
+                                          id="basicpill-email-input "
+                                          placeholder="Enter Your Email ID "
+                                        />
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>}
+                        )}
                         {/* <!-- caretaker details end --> */}
 
                         <div class="col-12">
@@ -1598,13 +1610,12 @@ function AddProperties() {
                             setNumberOfRooms("");
                             setSquarage("");
                           }}
-                          type="button" className="btn btn-primary waves-effect btn-label waves-light me-3"
-
+                          type="button"
+                          className="btn btn-primary waves-effect btn-label waves-light me-3"
                           data-bs-toggle="modal"
                           data-bs-target="#add-new-unit"
-                        ><i class="mdi mdi-plus label-icon"></i>
-                          {" "}
-                          Unit Type
+                        >
+                          <i class="mdi mdi-plus label-icon"></i> Unit Type
                         </button>
 
                         <div class="row">
@@ -1722,26 +1733,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "MONTHLY_CHARGE" && (
-                                            <div class="col-6">
-                                              <div class="form-check form-check-primary mb-3">
-                                                <input
-                                                  class="form-check-input"
-                                                  type="checkbox"
-                                                  name="monthlyCharges"
-                                                  value={charge.id}
-                                                  onChange={
-                                                    selectedApplicableChargeChange
-                                                  }
-                                                />
-                                                <label
-                                                  class="form-check-label"
-                                                  for="monthlyRent"
-                                                >
-                                                  {charge.name}
-                                                </label>
-                                              </div>
+                                          <div class="col-6">
+                                            <div class="form-check form-check-primary mb-3">
+                                              <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="monthlyCharges"
+                                                value={charge.id}
+                                                onChange={
+                                                  selectedApplicableChargeChange
+                                                }
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="monthlyRent"
+                                              >
+                                                {charge.name}
+                                              </label>
                                             </div>
-                                          )}
+                                          </div>
+                                        )}
                                       </>
                                     ))}
                               </div>
@@ -1760,26 +1771,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "DEPOSIT_CHARGE" && (
-                                            <div class="col-6">
-                                              <div class="form-check form-check-primary mb-3">
-                                                <input
-                                                  class="form-check-input"
-                                                  type="checkbox"
-                                                  name="monthlyRent"
-                                                  value={charge.id}
-                                                  onChange={
-                                                    selectedApplicableChargeChange
-                                                  }
-                                                />
-                                                <label
-                                                  class="form-check-label"
-                                                  for="monthlyRent"
-                                                >
-                                                  {charge.name}
-                                                </label>
-                                              </div>
+                                          <div class="col-6">
+                                            <div class="form-check form-check-primary mb-3">
+                                              <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="monthlyRent"
+                                                value={charge.id}
+                                                onChange={
+                                                  selectedApplicableChargeChange
+                                                }
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="monthlyRent"
+                                              >
+                                                {charge.name}
+                                              </label>
                                             </div>
-                                          )}
+                                          </div>
+                                        )}
                                       </>
                                     ))}
                               </div>
@@ -1882,26 +1893,23 @@ function AddProperties() {
                                 {selectedApplicableCharges &&
                                   selectedApplicableCharges.map(
                                     (premiseUnitTypeCharge, indeewx) =>
-                                      premiseUnitTypeCharge.expectManualValues &&
-                                     
-                                          <tr>
-                                            {/* <td>
+                                      premiseUnitTypeCharge.expectManualValues && (
+                                        <tr>
+                                          {/* <td>
                                         {indeewx + 1}
                                       </td> */}
-                                            <td>
-                                              {premiseUnitTypeCharge.name}
-                                            </td>
-                                            <td>
-                                              {
-                                                premiseUnitTypeCharge.applicableChargeType
-                                              }
-                                            </td>
-                                        
-                                            <td>-</td>
-                                            <td>-</td>
-                                          </tr>
-                                  )
-                                  }
+                                          <td>{premiseUnitTypeCharge.name}</td>
+                                          <td>
+                                            {
+                                              premiseUnitTypeCharge.applicableChargeType
+                                            }
+                                          </td>
+
+                                          <td>-</td>
+                                          <td>-</td>
+                                        </tr>
+                                      )
+                                  )}
                               </tbody>
                             </table>
                           </div>
@@ -2323,25 +2331,25 @@ function AddProperties() {
                       </select>
                     </div>
 
-                      <div className="col-md-4">
-                        <label> Client Collection Acc </label>
-                        <select
-                          className="form-control"
-                          required
-                          onChange={(e) => handleChargechange(e, index)}
-                          name="clientCollectionAccountId"
-                        >
-                          <option></option>
-                          {clientAccounts &&
-                            clientAccounts.map((prem, index) => (
-                              <option value={prem.id}>
-                                {prem.bankAccountNumber +
-                                  " - " +
-                                  prem.bank.bankName}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
+                    <div className="col-md-4">
+                      <label> Client Collection Acc </label>
+                      <select
+                        className="form-control"
+                        required
+                        onChange={(e) => handleChargechange(e, index)}
+                        name="clientCollectionAccountId"
+                      >
+                        <option></option>
+                        {clientAccounts &&
+                          clientAccounts.map((prem, index) => (
+                            <option value={prem.id}>
+                              {prem.bankAccountNumber +
+                                " - " +
+                                prem.bank.bankName}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
 
                     <div className="col-md-4">
                       <label> Invoice Day </label>
@@ -2363,8 +2371,9 @@ function AddProperties() {
             <button
               className="btn btn-basic"
               type="button"
-              onClick={toogleShowUnitTypeChargesModal} Document Attachments
-
+              onClick={toogleShowUnitTypeChargesModal}
+              Document
+              Attachments
             >
               Close
             </button>

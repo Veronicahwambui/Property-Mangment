@@ -137,7 +137,7 @@ function ViewLandlord() {
 
   useEffect(() => {
     getlandlords();
-    requestsServiceService.getAllAgreementTypes().then((res) => {
+    requestsServiceService.getAllAgreementTypes(true).then((res) => {
       setAgreementTypes(res.data.data);
     });
     requestsServiceService.getLandlordTypes().then((res) => {
@@ -478,9 +478,11 @@ function ViewLandlord() {
   ///Settlements
 
   const fetchApplicableCharges = () => {
-    requestsServiceService.allApplicableCharges("LANDLORD").then((res) => {
-      setCharges(res.data.data);
-    });
+    requestsServiceService
+      .allApplicableCharges("LANDLORD", true)
+      .then((res) => {
+        setCharges(res.data.data);
+      });
   };
 
   const settlement = () => {

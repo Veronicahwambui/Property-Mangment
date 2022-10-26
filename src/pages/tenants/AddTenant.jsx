@@ -29,7 +29,7 @@ function AddTenant() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    requestsServiceService.allApplicableCharges("TENANT").then((res) => {
+    requestsServiceService.allApplicableCharges("TENANT", true).then((res) => {
       setAC(res.data.data);
     });
     getAllDocumentTypes();
@@ -882,7 +882,9 @@ function AddTenant() {
                                 onChange={(e) => handleTenantDtoChange(e)}
                                 name="maritalStatus"
                               >
-                            <option value={""}>Select Marital Status</option>
+                                <option value={""}>
+                                  Select Marital Status
+                                </option>
 
                                 <option selected value="Single">
                                   Single
@@ -939,7 +941,7 @@ function AddTenant() {
                                 name="occupation"
                                 required
                               >
-                             <option value={""}>Select Occupation</option>
+                                <option value={""}>Select Occupation</option>
 
                                 <option value="employed">Employed</option>
                                 <option value="student">Student</option>
