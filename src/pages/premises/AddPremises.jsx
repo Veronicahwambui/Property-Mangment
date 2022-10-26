@@ -516,17 +516,23 @@ function AddProperties() {
     landlords.push(landlordData);
 
     gen["premiseLandLord"] = landlords;
-
-    let data = {
-      premise: gen,
-      premiseCaretakerDTO: caretaker,
-      premiseDocuments: premiseDocuments,
-      premiseUnitTypeCharges: [
-        ...premiseUnitTypeCharges,
-        ...selectedApplicableCharges,
-      ],
-      premiseUnits: premiseUnits,
-    };
+    let data = {};
+    if (hasCaretaker)
+      data = {
+        premise: gen,
+        premiseCaretakerDTO: caretaker,
+        premiseDocuments: premiseDocuments,
+        premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...selectedApplicableCharges],
+        premiseUnits: premiseUnits,
+      };
+    else
+      data = {
+        premise: gen,
+        premiseCaretakerDTO: null,
+        premiseDocuments: premiseDocuments,
+        premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...selectedApplicableCharges],
+        premiseUnits: premiseUnits,
+      };
 
     requestsServiceService
       .createPremise(data)
