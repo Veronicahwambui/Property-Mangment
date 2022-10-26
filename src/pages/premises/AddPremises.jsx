@@ -514,14 +514,23 @@ function AddProperties() {
     landlords.push(landlordData);
 
     gen["premiseLandLord"] = landlords;
-
-    let data = {
-      premise: gen,
-      premiseCaretakerDTO: caretaker,
-      premiseDocuments: premiseDocuments,
-      premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...selectedApplicableCharges],
-      premiseUnits: premiseUnits,
-    };
+    let data = {};
+    if (hasCaretaker)
+      data = {
+        premise: gen,
+        premiseCaretakerDTO: caretaker,
+        premiseDocuments: premiseDocuments,
+        premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...selectedApplicableCharges],
+        premiseUnits: premiseUnits,
+      };
+    else
+      data = {
+        premise: gen,
+        premiseCaretakerDTO: null,
+        premiseDocuments: premiseDocuments,
+        premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...selectedApplicableCharges],
+        premiseUnits: premiseUnits,
+      };
 
     requestsServiceService
       .createPremise(data)
@@ -1883,25 +1892,25 @@ function AddProperties() {
                                   selectedApplicableCharges.map(
                                     (premiseUnitTypeCharge, indeewx) =>
                                       premiseUnitTypeCharge.expectManualValues &&
-                                     
-                                          <tr>
-                                            {/* <td>
+
+                                      <tr>
+                                        {/* <td>
                                         {indeewx + 1}
                                       </td> */}
-                                            <td>
-                                              {premiseUnitTypeCharge.name}
-                                            </td>
-                                            <td>
-                                              {
-                                                premiseUnitTypeCharge.applicableChargeType
-                                              }
-                                            </td>
-                                        
-                                            <td>-</td>
-                                            <td>-</td>
-                                          </tr>
+                                        <td>
+                                          {premiseUnitTypeCharge.name}
+                                        </td>
+                                        <td>
+                                          {
+                                            premiseUnitTypeCharge.applicableChargeType
+                                          }
+                                        </td>
+
+                                        <td>-</td>
+                                        <td>-</td>
+                                      </tr>
                                   )
-                                  }
+                                }
                               </tbody>
                             </table>
                           </div>
@@ -2323,25 +2332,25 @@ function AddProperties() {
                       </select>
                     </div>
 
-                      <div className="col-md-4">
-                        <label> Client Collection Acc </label>
-                        <select
-                          className="form-control"
-                          required
-                          onChange={(e) => handleChargechange(e, index)}
-                          name="clientCollectionAccountId"
-                        >
-                          <option></option>
-                          {clientAccounts &&
-                            clientAccounts.map((prem, index) => (
-                              <option value={prem.id}>
-                                {prem.bankAccountNumber +
-                                  " - " +
-                                  prem.bank.bankName}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
+                    <div className="col-md-4">
+                      <label> Client Collection Acc </label>
+                      <select
+                        className="form-control"
+                        required
+                        onChange={(e) => handleChargechange(e, index)}
+                        name="clientCollectionAccountId"
+                      >
+                        <option></option>
+                        {clientAccounts &&
+                          clientAccounts.map((prem, index) => (
+                            <option value={prem.id}>
+                              {prem.bankAccountNumber +
+                                " - " +
+                                prem.bank.bankName}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
 
                     <div className="col-md-4">
                       <label> Invoice Day </label>
