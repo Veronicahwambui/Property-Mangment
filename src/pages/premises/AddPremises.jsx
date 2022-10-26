@@ -217,7 +217,7 @@ function AddProperties() {
           value: undefined,
 
           clientCollectionAccountId: undefined,
-          collectedToClientAccount: undefined,
+          collectedToClientAccount: true,
         };
         unitAppCharge.push(chargeBody);
       }
@@ -515,6 +515,44 @@ function AddProperties() {
     let landlords = [];
     landlords.push(landlordData);
 
+
+    let manualCharges = [];
+    for (let counter = 0; counter < selectedApplicableCharges.length; counter++) {
+      if (selectedApplicableCharges[counter].expectManualValues) {
+        for (let unitCounter = 0; unitCounter < selectedunitTypes.length; unitCounter++) {
+          let chargeBody = {
+            active: true,
+            applicableChargeId: selectedApplicableCharges[counter].id,
+            chargeConstraint: "ZERO_BALANCE",
+            constraintChargeId: undefined,
+            id: undefined,
+            invoiceDay: 1,
+
+            applicableChargeName: selectedApplicableCharges[counter].name,
+            applicableChargeType: selectedApplicableCharges[counter].applicableChargeType,
+
+            unitTypeName: selectedunitTypes[unitCounter].name,
+            landlordCollectionAccountId: undefined,
+            monthCountForTenancyRenewal:
+              selectedunitTypes[unitCounter].monthCountForTenancyRenewal,
+            numberOfRooms: selectedunitTypes[unitCounter].numberOfRooms,
+            premiseId: undefined,
+            purpose: selectedunitTypes[unitCounter].purpose,
+            rateCharge: undefined,
+            squarage: selectedunitTypes[unitCounter].squarage,
+            unitTypeId: selectedunitTypes[unitCounter].id,
+            value: undefined,
+
+            clientCollectionAccountId: premiseUnitTypeCharges[0].clientCollectionAccountId,
+            collectedToClientAccount: true,
+          };
+
+          manualCharges.push(chargeBody);
+        }
+      }
+    }
+
+
     gen["premiseLandLord"] = landlords;
     let data = {};
     if (hasCaretaker)
@@ -522,7 +560,7 @@ function AddProperties() {
         premise: gen,
         premiseCaretakerDTO: caretaker,
         premiseDocuments: premiseDocuments,
-        premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...selectedApplicableCharges],
+        premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...manualCharges],
         premiseUnits: premiseUnits,
       };
     else
@@ -530,7 +568,7 @@ function AddProperties() {
         premise: gen,
         premiseCaretakerDTO: null,
         premiseDocuments: premiseDocuments,
-        premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...selectedApplicableCharges],
+        premiseUnitTypeCharges: [...premiseUnitTypeCharges, ...manualCharges],
         premiseUnits: premiseUnits,
       };
 
@@ -586,9 +624,9 @@ function AddProperties() {
           invoicePaymentPriority:
             selectedItems.length > 0
               ? selectedItems
-                  .map((a) => a.id)
-                  .join("-")
-                  .toString()
+                .map((a) => a.id)
+                .join("-")
+                .toString()
               : "",
         });
       }
@@ -1157,8 +1195,8 @@ function AddProperties() {
                                         {t === "CURRENT"
                                           ? "Occupied"
                                           : t === "OPEN"
-                                          ? "Vaccant"
-                                          : t
+                                            ? "Vaccant"
+                                            : t
                                               ?.toLowerCase()
                                               ?.replace(/_/g, " ")}
                                       </option>
@@ -1504,8 +1542,8 @@ function AddProperties() {
                                               {item === "SELF_COMMISSIONED"
                                                 ? "Agent Commissioned"
                                                 : item
-                                                    ?.toLowerCase()
-                                                    ?.replace(/_/g, " ")}
+                                                  ?.toLowerCase()
+                                                  ?.replace(/_/g, " ")}
                                             </option>
                                           ))}
                                         </select>
@@ -1739,26 +1777,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "MONTHLY_CHARGE" && (
-                                          <div class="col-6">
-                                            <div class="form-check form-check-primary mb-3">
-                                              <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                name="monthlyCharges"
-                                                value={charge.id}
-                                                onChange={
-                                                  selectedApplicableChargeChange
-                                                }
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="monthlyRent"
-                                              >
-                                                {charge.name}
-                                              </label>
+                                            <div class="col-6">
+                                              <div class="form-check form-check-primary mb-3">
+                                                <input
+                                                  class="form-check-input"
+                                                  type="checkbox"
+                                                  name="monthlyCharges"
+                                                  value={charge.id}
+                                                  onChange={
+                                                    selectedApplicableChargeChange
+                                                  }
+                                                />
+                                                <label
+                                                  class="form-check-label"
+                                                  for="monthlyRent"
+                                                >
+                                                  {charge.name}
+                                                </label>
+                                              </div>
                                             </div>
-                                          </div>
-                                        )}
+                                          )}
                                       </>
                                     ))}
                               </div>
@@ -1777,26 +1815,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "DEPOSIT_CHARGE" && (
-                                          <div class="col-6">
-                                            <div class="form-check form-check-primary mb-3">
-                                              <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                name="monthlyRent"
-                                                value={charge.id}
-                                                onChange={
-                                                  selectedApplicableChargeChange
-                                                }
-                                              />
-                                              <label
-                                                class="form-check-label"
-                                                for="monthlyRent"
-                                              >
-                                                {charge.name}
-                                              </label>
+                                            <div class="col-6">
+                                              <div class="form-check form-check-primary mb-3">
+                                                <input
+                                                  class="form-check-input"
+                                                  type="checkbox"
+                                                  name="monthlyRent"
+                                                  value={charge.id}
+                                                  onChange={
+                                                    selectedApplicableChargeChange
+                                                  }
+                                                />
+                                                <label
+                                                  class="form-check-label"
+                                                  for="monthlyRent"
+                                                >
+                                                  {charge.name}
+                                                </label>
+                                              </div>
                                             </div>
-                                          </div>
-                                        )}
+                                          )}
                                       </>
                                     ))}
                               </div>
