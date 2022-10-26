@@ -457,7 +457,7 @@ function AddProperties() {
       setPremiseDocuments(kins);
     }
 
-    console.log(premiseDocuments, docBody, data.documentOwnerTypeName);
+    // console.log(premiseDocuments, docBody, data.documentOwnerTypeName);
 
     toogleShowNewDocumentModal();
     setDocBody({
@@ -498,6 +498,17 @@ function AddProperties() {
         console.log("Error: ", error);
       };
     } else setDocBody({ ...docBody, [event.target.name]: event.target.value });
+    
+    if(event.target.value === "documentTypeId") {
+      let id = event.target.value.split("-")[0];
+      let name=event.target.value.split("-")[1];
+      let d={
+        name: name,
+        id: id,
+      };
+    }
+
+
   };
 
   $("#landlord-type").on("change", function () {
@@ -2237,7 +2248,7 @@ function AddProperties() {
                     documentTypes
                       ?.sort((a, b) => a.name.localeCompare(b.name))
                       ?.map((prem, index) => (
-                        <option value={prem.id} className="text-capitalize">
+                        <option value={prem.id + "-" + prem.name} className="text-capitalize">
                           {prem.name?.toLowerCase()?.replace(/_/g, " ")}
                         </option>
                       ))}
