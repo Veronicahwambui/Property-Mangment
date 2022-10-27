@@ -101,6 +101,9 @@ function UnallocatedPayments() {
       getTenants();
     }
     if (entityType === "USER") {
+      requestsServiceService.getData("AUCTIONEER").then((res) => {
+        setRecipients(res.data.data);
+      });
     }
   };
 
@@ -366,7 +369,7 @@ function UnallocatedPayments() {
                   <option value="">Select Recipient type </option>
                   <option value="TENANT">Tenant</option>
                   <option value="LANDLORD">Landlord</option>
-                  <option value="AUCTIONEER">User</option>
+                  <option value="USER">User</option>
                 </select>
               </div>
               <form onSubmit={searchRecipient}>
@@ -462,7 +465,7 @@ function UnallocatedPayments() {
                       ))}
                     </>
                   )}
-                  {entityType === "AUCTIONEER" && (
+                  {entityType === "USER" && (
                     <>
                       {recipients?.map((item) => (
                         <>
