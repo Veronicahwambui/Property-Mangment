@@ -174,10 +174,56 @@ function OneTenant() {
       phoneNumber: phoneNumber,
       tenantTypeName: tenantTypeName,
     });
+   
     //  console.log(id)
     requestsServiceService.updateTenantsDetails(details).then((res) => {
       fetchAll();
+
+
+
+      $( "#edit-tenant-detail").modal("hide");
+      if (res.data.status) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success",
+        });
+      } else {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning",
+        });
+      }
+
+      setTimeout(() => {
+        clear();
+      }, 3000);
+    })
+    .catch((error, res) => {
+      $( "#edit-tenant-detail").modal("hide");
+
+      setError({
+        ...error,
+        message: error.message,
+        color: "danger",
+      });
+
+
+      setTimeout(() => {
+        clear();
+      }, 3000);
     });
+  
+      const clear = () => {
+        setError({
+          ...error,
+          message: "",
+          color: "",
+        });
+
+      }
+   
 
     // console.log(details)
   };
@@ -227,6 +273,8 @@ function OneTenant() {
     });
     requestsServiceService.updateTenant(data).then((res) => {
       fetchAll();
+      
+
     });
   };
   const handleChange = (
@@ -1476,7 +1524,20 @@ function OneTenant() {
                           data-bs-toggle="modal"
                           data-bs-target="#edit-tenant-detail"
                           type="button"
-                          // onClick={() => landlordshow()}
+                          onClick={() =>handleChangeTenantsDetails(
+                            tenantData.tenant.id,
+                            tenantData.tenant.tenantType,
+                            tenantData.tenant.firstName,
+                            tenantData.tenant.lastName,
+                            tenantData.tenant.otherName,
+                            tenantData.tenant.phoneNumber,
+                            tenantData.tenant.email,
+                            tenantData.tenant.idNumber,
+                            tenantData.tenant.companyName,
+                            tenantData.tenant.nationality,
+                            tenantData.tenant.companyAddress,
+                            tenantData.tenant.companyDateOfRegistration
+                          )}
                           className="btn btn-primary dropdown-toggle option-selector"
                         >
                           <i className="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
@@ -3531,8 +3592,16 @@ function OneTenant() {
                     </div>
                   )}
                 </div>
-
+             
                 <div class="modal-footer">
+                {error.color !== "" && (
+                          <div
+                            className={"alert alert-" + error.color}
+                            role="alert"
+                          >
+                            {error.message}
+                          </div>
+                        )}
                   <button
                     type="button"
                     class="btn btn-light"
