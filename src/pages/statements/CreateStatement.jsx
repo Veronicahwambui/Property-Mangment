@@ -295,6 +295,7 @@ export default function CreateStatement() {
       tenantNumber: null,
       userName: null,
     };
+
     if (recipient === "USER") {
       let d = {
         userName: recipientPerson.userName,
@@ -310,7 +311,7 @@ export default function CreateStatement() {
     if (recipient === "TENANT") {
       let d = {
         tenantNumber: recipientPerson.fileNumber,
-        tenancyFileNumber: tenancyFileNo,
+        tenancyFileNumber: tenancyFileNo !== "" ? tenancyFileNo : null,
       };
       var x = Object.assign(data, d);
     }
