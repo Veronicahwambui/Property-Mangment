@@ -16,34 +16,6 @@ export default function CreateStatement() {
   const [chargeId, setchargeId] = useState(undefined);
   const [lids, setlids] = useState([]);
 
-  useEffect(() => {
-    getCharges();
-  }, []);
-  const [charges, setcharges] = useState([]);
-  const getCharges = () => {
-    requestsServiceService.allApplicableCharges("", true).then((res) => {
-      setcharges(res.data.data);
-    });
-  };
-
-  useEffect(() => {
-    requestsServiceService.userTypeData().then((data) => {
-      setuserTypes(data.data);
-    });
-  }, []);
-  //settlement modals
-  function generateArrayOfYears() {
-    var max = new Date().getFullYear();
-    var min = max - 5;
-    var years = [];
-
-    for (var i = max; i >= min; i--) {
-      years.push(i);
-    }
-    return years;
-  }
-  const yearArray = generateArrayOfYears();
-
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
   const [settlement_show, setsettlementshow] = useState(true);
@@ -94,57 +66,7 @@ export default function CreateStatement() {
     message: "",
     color: "",
   });
-  useEffect(() => {
-    setlids(selectedItems?.map((a) => a.id));
-  }, [selectedItems]);
 
-  const submitSettlement = () => {
-    let data = {
-      chargeId: parseInt(chargeId),
-      endDate: moment(eDate).format(),
-      landlordId: lids,
-      periodAlias: month + " " + year,
-      startDate: moment(sDate).format(),
-    };
-    requestsServiceService
-      .createSettlements(data)
-      .then((response) => {
-        if (response.data.status === true) {
-          setError({
-            ...error,
-            message: response.data.message,
-            color: "success",
-          });
-        } else {
-          setError({
-            ...error,
-            message: response.data.message,
-            color: "danger",
-          });
-        }
-      })
-      .catch((err) => {});
-  };
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const [palias, setpalias] = useState("");
-
-  // TEST CODE
-  const [show, setshow] = useState(false);
-  const showModal = () => setshow(true);
-  const hideModal = () => setshow(false);
   const [recipient, setrecipient] = useState("");
   const [searchrecipient, setSearchRecipient] = useState("");
   const [foundRecipients, setfoundRecipients] = useState([]);
@@ -153,6 +75,7 @@ export default function CreateStatement() {
   const [payReferenceNo, setPayRef] = useState("");
   const [billNo, setBillNo] = useState("");
   const [paidBy, setpaidBy] = useState("");
+
   const searchRecipient = (e) => {
     e.preventDefault();
     setfoundRecipients([]);
@@ -366,7 +289,7 @@ export default function CreateStatement() {
   const [receiptAmount, setreceiptAmount] = useState("");
   const [payerName, setpayerName] = useState("");
   const [receiptNo, setreceiptNo] = useState("");
-  const [tenancyFileNo, setTenancyFileNo] = useState("");
+  const [tenancyFileNo, setTenancyFileNo] = useState(null);
 
   useEffect(() => {
     console.log(recipientPerson);
