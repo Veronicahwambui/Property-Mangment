@@ -5,6 +5,7 @@ import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 import { Modal, Badge, Button } from "react-bootstrap";
+import AuthService from "../../services/authLogin.service";
 
 export default function CreateStatement() {
   const navigate = useNavigate();
@@ -20,16 +21,15 @@ export default function CreateStatement() {
   }, []);
   const [charges, setcharges] = useState([]);
   const getCharges = () => {
-    requestsServiceService.allApplicableCharges().then((res) => {
+    requestsServiceService.allApplicableCharges("", true).then((res) => {
       setcharges(res.data.data);
     });
   };
 
   useEffect(() => {
     requestsServiceService.userTypeData().then((data) => {
-      setuserTypes(data.data)
+      setuserTypes(data.data);
     });
-
   }, []);
   //settlement modals
   function generateArrayOfYears() {
@@ -123,7 +123,7 @@ export default function CreateStatement() {
           });
         }
       })
-      .catch((err) => { });
+      .catch((err) => {});
   };
   const months = [
     "January",
@@ -176,8 +176,7 @@ export default function CreateStatement() {
   };
 
   useEffect(() => {
-      getAuctioneer();
-    
+    getAuctioneer();
   }, [userType]);
 
   const getTenants = (w, x, y, z) => {
@@ -281,10 +280,10 @@ export default function CreateStatement() {
       allocations: datas,
       billNo: invoicePresent ? invNo : uuid().toString().toUpperCase(),
       landLordFileNumber: null,
-      paidBy: null,
+      paidBy: AuthService.getCurrentUserName(),
       payReferenceNo: null,
       paymentMode: paymentMode,
-      receiptAmount: null,
+      receiptAmount: receiptAmount,
       receiptNo: receiptNo === "" ? uuid().toString().toUpperCase() : receiptNo,
       tenancyFileNumber: null,
       tenantNumber: null,
@@ -309,6 +308,7 @@ export default function CreateStatement() {
       };
       var x = Object.assign(data, d);
     }
+    console.log(x);
     requestsServiceService
       .createStatements(x)
       .then((res) => {
@@ -480,16 +480,25 @@ export default function CreateStatement() {
                       </div>
                     </div>
                     <div className={"row mt-2"}>
-                      {recipient === "USER" &&
+                      {recipient === "USER" && (
                         <div className="col-12">
-                          <label htmlFor="" className="text-primary"> User Type </label>
-                          <select name="" id="" className="form-control mt-2" onChange={e => setUserType(e.target.value)}>
+                          <label htmlFor="" className="text-primary">
+                            {" "}
+                            User Type{" "}
+                          </label>
+                          <select
+                            name=""
+                            id=""
+                            className="form-control mt-2"
+                            onChange={(e) => setUserType(e.target.value)}
+                          >
                             <option value="">Select</option>
                             {userTypes?.map((auct) => (
-                              <option value={auct.name} >{auct.name}</option>
+                              <option value={auct.name}>{auct.name}</option>
                             ))}
                           </select>
-                        </div>}
+                        </div>
+                      )}
 
                       <div className="col-6">
                         {foundRecipients.length < 5 && (
@@ -540,7 +549,7 @@ export default function CreateStatement() {
                                         {recipient === "TENANT" && (
                                           <>
                                             {item?.tenantType ===
-                                              "INDIVIDUAL" ? (
+                                            "INDIVIDUAL" ? (
                                               <>
                                                 {item.firstName + " "}
                                                 {item.lastName + " "}{" "}
