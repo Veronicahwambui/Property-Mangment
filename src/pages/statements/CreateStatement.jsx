@@ -281,12 +281,12 @@ export default function CreateStatement() {
     e.preventDefault();
     var data = {
       allocations: datas,
-      billNo: billNo,
+      billNo: billNo !== "" ? billNo : null,
       landLordFileNumber: null,
       paidBy: paidBy,
       payReferenceNo:
         paymentMode === "CASH"
-          ? uuid().toString().toUpperCase()
+          ? "CASH-" + uuid().toString().toUpperCase()
           : payReferenceNo,
       paymentMode: paymentMode,
       receiptAmount: receiptAmount,
@@ -627,19 +627,6 @@ export default function CreateStatement() {
                       </div>
                     </div>
                     <form onSubmit={createStatement} id={"create-statements"}>
-                      <div>
-                        <>
-                          <label htmlFor="">Bill Number</label>
-                          <strong className="text-danger">*</strong>
-                          <input
-                            type="text"
-                            placeholder={"Enter Bill No"}
-                            onChange={(e) => setBillNo(e.target.value)}
-                            className={"form-control"}
-                            required
-                          />
-                        </>
-                      </div>
                       <div className="col-12">
                         <div className={"mt-3"}>
                           <input
@@ -664,9 +651,9 @@ export default function CreateStatement() {
                               <input
                                 type="text"
                                 placeholder={"Enter Invoice Number"}
-                                onChange={(e) => setinvNo(e.target.value)}
+                                onChange={(e) => setBillNo(e.target.value)}
                                 className={"form-control"}
-                                required={invoicePresent ? true : false}
+                                required={invoicePresent}
                               />
                             </div>
                             <br />
