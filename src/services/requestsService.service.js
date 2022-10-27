@@ -1230,6 +1230,18 @@ class RequestsService {
   createSettings(data) {
     return axiosInstance.post(baseUrl + "/clients/settings", data);
   }
+
+  allocatePayment(data) {
+    return axiosInstance.post(
+      baseUrl +
+        "/payments/statements/allocate?entityType=" +
+        data.entityType +
+        "&entityId=" +
+        data.entityId +
+        "&statementId=" +
+        data.statementId
+    );
+  }
 }
 
 export default new RequestsService();
