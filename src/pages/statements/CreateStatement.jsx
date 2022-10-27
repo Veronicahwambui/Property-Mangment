@@ -150,6 +150,9 @@ export default function CreateStatement() {
   const [foundRecipients, setfoundRecipients] = useState([]);
   const [recipientId, setRecipientId] = useState("");
   const [unpaidCharges, setunpaidCharges] = useState([]);
+  const [payReferenceNo, setPayRef] = useState("");
+  const [billNo, setBillNo] = useState("");
+  const [paidBy, setpaidBy] = useState("");
   const searchRecipient = (e) => {
     e.preventDefault();
     setfoundRecipients([]);
@@ -278,10 +281,13 @@ export default function CreateStatement() {
     e.preventDefault();
     var data = {
       allocations: datas,
-      billNo: invoicePresent ? invNo : uuid().toString().toUpperCase(),
+      billNo: billNo,
       landLordFileNumber: null,
-      paidBy: AuthService.getCurrentUserName(),
-      payReferenceNo: null,
+      paidBy: paidBy,
+      payReferenceNo:
+        paymentMode === "CASH"
+          ? uuid().toString().toUpperCase()
+          : payReferenceNo,
       paymentMode: paymentMode,
       receiptAmount: receiptAmount,
       receiptNo: receiptNo === "" ? uuid().toString().toUpperCase() : receiptNo,
@@ -308,7 +314,6 @@ export default function CreateStatement() {
       };
       var x = Object.assign(data, d);
     }
-    console.log(x);
     requestsServiceService
       .createStatements(x)
       .then((res) => {
@@ -319,7 +324,7 @@ export default function CreateStatement() {
             color: "success",
           });
           setTimeout(() => {
-            navigate("/unallocated-payments", { replace: true });
+            navigate("/receipts", { replace: true });
           }, 2000);
         } else {
           setError({
@@ -612,244 +617,284 @@ export default function CreateStatement() {
                   </>
                 </div>
                 <br />
-                <div className="col-12">
-                  <div className="bg-primary border-2 bg-soft p-3 mb-2 mt-4">
-                    <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                      Payment Information
-                    </p>
-                  </div>
-                </div>
-                <form onSubmit={createStatement} id={"create-statements"}>
-                  <div className="col-12">
-                    <div className={"mt-3"}>
-                      <input
-                        type="checkbox"
-                        onChange={(e) => setInvoicePresent(!invoicePresent)}
-                        checked={invoicePresent}
-                        style={{ marginRight: "5px" }}
-                      />
-                      <label
-                        className={"form-check-label"}
-                        style={{ marginLeft: "5px" }}
-                      >
-                        Invoice Present?
-                      </label>
-                    </div>
-                  </div>
-                  <div className="col-12 mt-4">
-                    {invoicePresent && (
-                      <>
-                        <div className="">
-                          <label htmlFor="">Enter Invoice Number</label>
-                          <input
-                            type="text"
-                            placeholder={"Enter Invoice Number"}
-                            onChange={(e) => setinvNo(e.target.value)}
-                            className={"form-control"}
-                            required={invoicePresent ? true : false}
-                          />
-                        </div>
-                        <br />
-                      </>
-                    )}
-                  </div>
-                  <div className="col-12">
-                    <div className="form-group mb-3">
-                      <label htmlFor="">Select Payment Mode</label>
-                      <strong className="text-danger">*</strong>
-                      <select
-                        name=""
-                        id=""
-                        onChange={(e) => setpaymentMode(e.target.value)}
-                        className={"form-control"}
-                      >
-                        <option value={"CASH"}>--Select--</option>
-                        <option value="CASH">CASH</option>
-                        <option value="BANK">BANK</option>
-                        <option value="EFT">EFT</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div>
-                    <>
-                      <label htmlFor="">Amount</label>
-                      <strong className="text-danger">*</strong>
-                      <input
-                        type="text"
-                        placeholder={"Enter Amount"}
-                        onChange={(e) => setreceiptAmount(e.target.value)}
-                        className={"form-control"}
-                        required
-                      />
-                      <br />
-                      <label htmlFor="">ReceiptNo</label>
-                      <input
-                        type="text"
-                        placeholder={"Enter Receipt No"}
-                        onChange={(e) => setreceiptNo(e.target.value)}
-                        className={"form-control"}
-                      />
-                    </>
-                  </div>
-                  {unpaidCharges?.length > 0 && (
-                    <>
+                {recipientId !== "" && (
+                  <>
+                    <div className="col-12">
                       <div className="bg-primary border-2 bg-soft p-3 mb-2 mt-4">
                         <p className="fw-semibold mb-0 pb-0 text-uppercase">
-                          Applicable Charges ({unpaidCharges?.length})
+                          Payment Information
                         </p>
                       </div>
+                    </div>
+                    <form onSubmit={createStatement} id={"create-statements"}>
+                      <div>
+                        <>
+                          <label htmlFor="">Bill Number</label>
+                          <strong className="text-danger">*</strong>
+                          <input
+                            type="text"
+                            placeholder={"Enter Bill No"}
+                            onChange={(e) => setBillNo(e.target.value)}
+                            className={"form-control"}
+                            required
+                          />
+                        </>
+                      </div>
                       <div className="col-12">
-                        <table className="table table-striped">
-                          <thead>
-                            <tr>
-                              <th style={{ width: "70px" }}>No.</th>
-                              <th>Charge name</th>
-                              <th>Invoices</th>
-                              <th>Balance</th>
-                              <th>Total Paid</th>
-                              <th></th>
-                              <th className={"text-end"}>Bill Amount</th>
-                              <th className="" style={{ width: "150px" }}>
-                                Assign Amount
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {unpaidCharges?.length > 0 &&
-                              unpaidCharges?.map((item, index) => (
-                                <tr data-id={item.id} key={item.id}>
-                                  <td>{index + 1}</td>
-                                  <td>{item.status}</td>
-                                  <td>{item.all}</td>
-                                  <td>{formatCurrency(item.balance)}</td>
-                                  <td>{formatCurrency(item.sum)}</td>
-                                  {/*<td>{formatCurrency(item.billPaidAmount)}</td>*/}
+                        <div className={"mt-3"}>
+                          <input
+                            type="checkbox"
+                            onChange={(e) => setInvoicePresent(!invoicePresent)}
+                            checked={invoicePresent}
+                            style={{ marginRight: "5px" }}
+                          />
+                          <label
+                            className={"form-check-label"}
+                            style={{ marginLeft: "5px" }}
+                          >
+                            Invoice Present?
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-12 mt-4">
+                        {invoicePresent && (
+                          <>
+                            <div className="">
+                              <label htmlFor="">Enter Invoice Number</label>
+                              <input
+                                type="text"
+                                placeholder={"Enter Invoice Number"}
+                                onChange={(e) => setinvNo(e.target.value)}
+                                className={"form-control"}
+                                required={invoicePresent ? true : false}
+                              />
+                            </div>
+                            <br />
+                          </>
+                        )}
+                      </div>
+                      <div className="col-12">
+                        <div className="form-group mb-3">
+                          <label htmlFor="">Select Payment Mode</label>
+                          <strong className="text-danger">*</strong>
+                          <select
+                            name=""
+                            id=""
+                            onChange={(e) => setpaymentMode(e.target.value)}
+                            className={"form-control"}
+                          >
+                            <option value={"CASH"}>--Select--</option>
+                            <option value="CASH">CASH</option>
+                            <option value="BANK">BANK</option>
+                            <option value="EFT">EFT</option>
+                          </select>
+                        </div>
+                        {paymentMode !== "" && paymentMode !== "CASH" && (
+                          <div className="form-group mb-3">
+                            <label htmlFor="">Payment Reference</label>
+                            <strong className="text-danger">*</strong>
+                            <input
+                              type="text"
+                              placeholder={"Enter Payment Reference"}
+                              onChange={(e) => setPayRef(e.target.value)}
+                              className={"form-control"}
+                              required
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <>
+                          <label htmlFor="">Amount</label>
+                          <strong className="text-danger">*</strong>
+                          <input
+                            type="text"
+                            placeholder={"Enter Amount"}
+                            onChange={(e) => setreceiptAmount(e.target.value)}
+                            className={"form-control"}
+                            required
+                          />
+                          <br />
+                          <label htmlFor="">ReceiptNo</label>
+                          <input
+                            type="text"
+                            placeholder={"Enter Receipt No"}
+                            onChange={(e) => setreceiptNo(e.target.value)}
+                            className={"form-control"}
+                          />
+                          <br />
+                          <label htmlFor="">Paid By</label>
+                          <input
+                            type="text"
+                            placeholder={"Enter Payer Name"}
+                            onChange={(e) => setpaidBy(e.target.value)}
+                            className={"form-control"}
+                          />
+                        </>
+                      </div>
+                      {unpaidCharges?.length > 0 && (
+                        <>
+                          <div className="bg-primary border-2 bg-soft p-3 mb-2 mt-4">
+                            <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                              Applicable Charges ({unpaidCharges?.length})
+                            </p>
+                          </div>
+                          <div className="col-12">
+                            <table className="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th style={{ width: "70px" }}>No.</th>
+                                  <th>Charge name</th>
+                                  <th>Invoices</th>
+                                  <th>Balance</th>
+                                  <th>Total Paid</th>
+                                  <th></th>
+                                  <th className={"text-end"}>Bill Amount</th>
+                                  <th className="" style={{ width: "150px" }}>
+                                    Assign Amount
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {unpaidCharges?.length > 0 &&
+                                  unpaidCharges?.map((item, index) => (
+                                    <tr data-id={item.id} key={item.id}>
+                                      <td>{index + 1}</td>
+                                      <td>{item.status}</td>
+                                      <td>{item.all}</td>
+                                      <td>{formatCurrency(item.balance)}</td>
+                                      <td>{formatCurrency(item.sum)}</td>
+                                      {/*<td>{formatCurrency(item.billPaidAmount)}</td>*/}
+                                      <td></td>
+                                      <td className="text-end">
+                                        {formatCurrency(
+                                          item.balance - item.sum
+                                        )}
+                                      </td>
+                                      <td>
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-sm text-right"
+                                          // placeholder="Input amount"
+                                          placeholder="KES"
+                                          onChange={(e) =>
+                                            handleForm(e, index, item)
+                                          }
+                                        />
+                                      </td>
+                                    </tr>
+                                  ))}
+                                <tr>
                                   <td></td>
-                                  <td className="text-end">
-                                    {formatCurrency(item.balance - item.sum)}
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td colSpan="2" className="text-end">
+                                    Total
                                   </td>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      className="form-control form-control-sm text-right"
-                                      // placeholder="Input amount"
-                                      placeholder="KES"
-                                      onChange={(e) =>
-                                        handleForm(e, index, item)
-                                      }
-                                    />
+                                  <td className="text-end fw-bold">
+                                    {formatCurrency(total(unpaidCharges))}
                                   </td>
                                 </tr>
-                              ))}
-                            <tr>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td colSpan="2" className="text-end">
-                                Total
-                              </td>
-                              <td className="text-end fw-bold">
-                                {formatCurrency(total(unpaidCharges))}
-                              </td>
-                            </tr>
-                            <tr>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td colSpan="2" className="text-end">
-                                Paid
-                              </td>
-                              <td className="text-end fw-bold">
-                                {formatCurrency(debitTotal())}
-                              </td>
-                            </tr>
-                            <tr>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td colSpan="2" className="text-end">
-                                {total(unpaidCharges) - debitTotal() > 0 ? (
-                                  <>
-                                    <strong className={"text-danger"}>
-                                      Balance
-                                    </strong>
-                                  </>
-                                ) : (
-                                  <>
-                                    <strong className={"text-success"}>
-                                      Balance
-                                    </strong>
-                                  </>
-                                )}
-                              </td>
-                              <td className="text-end fw-bold">
-                                {total(unpaidCharges) - debitTotal() > 0 ? (
-                                  <>
-                                    <strong className={"text-danger"}>
-                                      {formatCurrency(
-                                        total(unpaidCharges) - debitTotal()
-                                      )}
-                                    </strong>
-                                  </>
-                                ) : (
-                                  <>
-                                    <strong className={"text-success"}>
-                                      {formatCurrency(
-                                        total(unpaidCharges) - debitTotal()
-                                      )}
-                                    </strong>
-                                  </>
-                                )}
-                              </td>
-                            </tr>
-                            <tr>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td colSpan={"2"} className="text-end"></td>
-                              <td className="text-end fw-bold text-danger">
-                                {debitTotal() > total(unpaidCharges) ? (
-                                  <>
-                                    <span>Amount exceeded!</span>
-                                  </>
-                                ) : (
-                                  <></>
-                                )}
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </>
-                  )}
-                </form>
-                <div className="col-12">
-                  {error.color !== "" && (
-                    <div
-                      className={"mt-3 mb-4 alert alert-" + error.color}
-                      role="alert"
-                    >
-                      {error.message}
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td colSpan="2" className="text-end">
+                                    Paid
+                                  </td>
+                                  <td className="text-end fw-bold">
+                                    {formatCurrency(debitTotal())}
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td colSpan="2" className="text-end">
+                                    {total(unpaidCharges) - debitTotal() > 0 ? (
+                                      <>
+                                        <strong className={"text-danger"}>
+                                          Balance
+                                        </strong>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <strong className={"text-success"}>
+                                          Balance
+                                        </strong>
+                                      </>
+                                    )}
+                                  </td>
+                                  <td className="text-end fw-bold">
+                                    {total(unpaidCharges) - debitTotal() > 0 ? (
+                                      <>
+                                        <strong className={"text-danger"}>
+                                          {formatCurrency(
+                                            total(unpaidCharges) - debitTotal()
+                                          )}
+                                        </strong>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <strong className={"text-success"}>
+                                          {formatCurrency(
+                                            total(unpaidCharges) - debitTotal()
+                                          )}
+                                        </strong>
+                                      </>
+                                    )}
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td colSpan={"2"} className="text-end"></td>
+                                  <td className="text-end fw-bold text-danger">
+                                    {debitTotal() > total(unpaidCharges) ? (
+                                      <>
+                                        <span>Amount exceeded!</span>
+                                      </>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </>
+                      )}
+                    </form>
+                    <div className="col-12">
+                      {error.color !== "" && (
+                        <div
+                          className={"mt-3 mb-4 alert alert-" + error.color}
+                          role="alert"
+                        >
+                          {error.message}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className={"col-3"}>
-                  <div>
-                    <Button
-                      variant="primary"
-                      type={"submit"}
-                      form={"create-statements"}
-                      className={"mt-3"}
-                      disabled={foundRecipients.length < 1}
-                    >
-                      Receive Payment
-                    </Button>
-                  </div>
-                </div>
+                    <div className={"col-3"}>
+                      <div>
+                        <Button
+                          variant="primary"
+                          type={"submit"}
+                          form={"create-statements"}
+                          className={"mt-3"}
+                          disabled={foundRecipients.length < 1}
+                        >
+                          Receive Payment
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
