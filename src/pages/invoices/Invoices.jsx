@@ -19,7 +19,7 @@ function Invoices() {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const[invoiceNumber ,setInvoiceNumber] =useState("undefined")
+  const [invoiceNumber, setInvoiceNumber] = useState("undefined");
   // MODAL
   const [invoice_show, setinvoice_show] = useState(false);
   const [invoice_Date_show, setinvoice_Date_show] = useState(false);
@@ -234,29 +234,37 @@ function Invoices() {
       url: "https://payme.revenuesure.co.ke/index.php",
       data: formData,
     };
-    axios(config).then((res) => {
-      if (typeof res.data === "string") {
+    axios(config)
+      .then((res) => {
+        console.log(res);
+        if (res.data.status === 200) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+          setTimeout(() => {
+            setError({
+              ...error,
+              message: "",
+              color: "",
+            });
+          }, 4000);
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
         setError({
           ...error,
-          message: "Invalid Phone Number",
+          message: err.message,
           color: "danger",
         });
-      } else {
-        let message = res.data.CustomerMessage;
-        setError({
-          ...error,
-          message: message,
-          color: "success",
-        });
-      }
-      setTimeout(() => {
-        setError({
-          ...error,
-          message: "",
-          color: "",
-        });
-      }, 4000);
-    });
+      });
   };
 
   // MESSAGE TEST
@@ -364,23 +372,21 @@ function Invoices() {
     });
   }
   const generateBillNo = (x) => {
-    console.log(x)
+    console.log(x);
 
-   setInvoiceNumber(x)
+    setInvoiceNumber(x);
   };
 
-   // toggle function 
-   const toggleStatus = ()=>{
-    
-    requestsServiceService.toogleRegenerateReference(invoiceNumber).then((res)=>{
-  //  console.log(res)
-   
-    getInvoices();
-   
+  // toggle function
+  const toggleStatus = () => {
+    requestsServiceService
+      .toogleRegenerateReference(invoiceNumber)
+      .then((res) => {
+        //  console.log(res)
 
-
-    })
-  }
+        getInvoices();
+      });
+  };
   return (
     <>
       <div className="page-content">
@@ -474,10 +480,7 @@ function Invoices() {
                 </div>
                 <div className="card-body">
                   <div className="table-responsive">
-                    <table
-                      className="table align-middle table-hover  contacts-table table-striped "
-                    
-                    >
+                    <table className="table align-middle table-hover  contacts-table table-striped ">
                       <thead className="table-light">
                         <tr className="table-light">
                           <th>Invoice No</th>
@@ -584,7 +587,9 @@ function Invoices() {
                                           data-bs-toggle="modal"
                                           data-bs-target="#confirm"
                                           onClick={() => {
-                                            generateBillNo(invoice.transactionItemId);
+                                            generateBillNo(
+                                              invoice.transactionItemId
+                                            );
                                           }}
                                         >
                                           <i className="font-size-15 mdi mdi-cog me-3"></i>
@@ -714,46 +719,44 @@ function Invoices() {
         </div>
       </div>
 
-       {/* Invoice */}
+      {/* Invoice */}
 
-       <div
-      class="modal fade"
-      id="confirm"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      role="dialog"
-      aria-labelledby="staticBackdropLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-           <center>
-              <h5>Regenerate Bill Reference?</h5>
-           </center>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-light"
-              data-bs-dismiss="modal"
-            >
-              no
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-              onClick={()=>toggleStatus()}
-            >
-              Yes
-            </button>
+      <div
+        class="modal fade"
+        id="confirm"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <center>
+                <h5>Regenerate Bill Reference?</h5>
+              </center>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => toggleStatus()}
+              >
+                Yes
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      </div>
-
-
 
       {/*VIEW INVOICE*/}
       <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
