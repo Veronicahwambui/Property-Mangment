@@ -114,6 +114,7 @@ function ViewLandlord() {
     seteditlandlordphonenumber(landlord.phoneNumber);
     setedittypename(landlord.landLordAgreementType?.name);
     seteditlandlordagreementtype(landlord.landLordAgreementType?.id);
+    setInvoicePaymentPriority(landlord.invoicePaymentPriority?.id);
     seteditlandlordothername(landlord.otherName);
     seteditlandlordremuneration(landlord.remunerationPercentage);
     seteditagreementperiod(landlord.agreementPeriod);
@@ -3405,7 +3406,7 @@ function ViewLandlord() {
                           setInvoicePaymentPriority(e.target.value)
                         }
                         className="form-control"
-                        required={true}
+                      
                       />
                     </div>
                     <div className="form-group mb-4">
@@ -3539,6 +3540,14 @@ function ViewLandlord() {
                 </div>
               </Modal.Body>
               <Modal.Footer>
+              {error.color !== "" && (
+                          <div
+                            className={"alert alert-" + error.color}
+                            role="alert"
+                          >
+                            {error.message}
+                          </div>
+                        )}
                 <Button
                   variant="secondary"
                   className={"btn btn-grey"}
@@ -3551,6 +3560,7 @@ function ViewLandlord() {
                   className={"btn btn-primary"}
                   type={"submit"}
                 >
+
                   Save Changes
                 </Button>
               </Modal.Footer>
