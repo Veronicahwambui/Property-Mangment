@@ -53,6 +53,7 @@ function OneTenant() {
   const [premises, setPremises] = useState([]);
   const [units, setUnits] = useState([]);
   const [premId, setPremId] = useState("");
+  const [countries, setCounties] = useState([]);
 
   const [companyLocation, setCompanyLocation] = useState("");
   //documents
@@ -148,7 +149,9 @@ function OneTenant() {
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
+      setCounties(res.data.data)
       setTenantTypeName(res.data.data.tenant.tenantType);
+      
     });
   };
 
@@ -178,8 +181,9 @@ function OneTenant() {
     //  console.log(id)
     requestsServiceService.updateTenantsDetails(details).then((res) => {
       fetchAll();
+     
 
-
+     
 
       $( "#edit-tenant-detail").modal("hide");
       if (res.data.status) {
@@ -273,6 +277,7 @@ function OneTenant() {
     });
     requestsServiceService.updateTenant(data).then((res) => {
       fetchAll();
+   
       
 
     });
@@ -584,6 +589,8 @@ function OneTenant() {
     createDocumentTypes();
     getDocument();
     fetchCommunication();
+    
+  
   }, []);
 
   const createDocumentTypes = (id) => {
@@ -833,6 +840,7 @@ function OneTenant() {
 
   useEffect(() => {
     getInvoices();
+    
   }, [size, page, activeInvoice, transaction, paymentItems]);
   const sort = (event) => {
     event.preventDefault();
@@ -1003,6 +1011,7 @@ function OneTenant() {
     useState([]);
   useEffect(() => {
     fetchDashData();
+    
   }, [userId, tenantData]);
   // fetch data
   const fetchDashData = () => {
@@ -3516,8 +3525,16 @@ function OneTenant() {
                             onChange={(e) => setNationality(e.target.value)}
                             value={nationality}
                           >
-                            <option></option>
-                            <option value="Kenya">Kenyan</option>
+                            <option value={""}>Select Nationality</option>
+                                {countries.length > 0 &&
+                                  countries.map((country, index) => (
+                                    <option
+                                      key={index + country.code}
+                                      value={country.name}
+                                    >
+                                      {country.name}
+                                    </option>
+                                  ))}
                           </select>
                         </div>
 
