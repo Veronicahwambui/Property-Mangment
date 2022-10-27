@@ -451,8 +451,8 @@ function OnePremise() {
         plotNo: res.data.data.premise.plotNumber,
         address: res.data.data.premise.address,
         premNmae: res.data.data.premise.premiseName,
-        premStatus:res.data.data.premise.unitVacancyRestrictionStatus,
-        freq:res.data.data.premise.chargeFrequency,
+        premStatus: res.data.data.premise.unitVacancyRestrictionStatus,
+        freq: res.data.data.premise.chargeFrequency,
       });
       setLandlordDetail(res.data.data.landLords[0].landLord);
       setLandlordData(res.data.data.landLords[0].landLord.fileNumber);
@@ -1753,7 +1753,10 @@ function OnePremise() {
                         </div>
                         <div className="col-6">
                           <div className="form-group">
-                            <label htmlFor="">  Unit vacancy restriction status</label>
+                            <label htmlFor="">
+                              {" "}
+                              Unit vacancy restriction status
+                            </label>
                             <select
                               className="form-control"
                               onChange={handleChange}
@@ -1768,7 +1771,9 @@ function OnePremise() {
                                       value={prem}
                                       className="text-black font-semibold text-capitalize"
                                       selected={
-                                        prem === update.premStatus ? "selected" : ""
+                                        prem === update.premStatus
+                                          ? "selected"
+                                          : ""
                                       }
                                     >
                                       {prem &&
@@ -1842,10 +1847,13 @@ function OnePremise() {
                               name="freq"
                             >
                               <option value="YEAR"> Select frequency</option>
-                              <option value="MONTH"   selected={
-                                        update.freq ? "selected" : ""
-                                      }>Monthly</option>
-                              <option value="YEAR" >Yearly</option>
+                              <option
+                                value="MONTH"
+                                selected={update.freq ? "selected" : ""}
+                              >
+                                Monthly
+                              </option>
+                              <option value="YEAR">Yearly</option>
                             </select>
                           </div>
                         </div>
@@ -1895,7 +1903,6 @@ function OnePremise() {
                             <label htmlFor="">Plot Number</label>
                             <input
                               type="text"
-                             
                               className="form-control"
                               value={update.plotNo}
                               onChange={handleChange}
@@ -1908,7 +1915,6 @@ function OnePremise() {
                             <label htmlFor="">Address</label>
                             <input
                               type="text"
-                          
                               className="form-control"
                               value={update.address}
                               onChange={handleChange}
@@ -1931,6 +1937,11 @@ function OnePremise() {
                       </button>
                     </div>
                   </form>
+                  {error.color !== "" && (
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
