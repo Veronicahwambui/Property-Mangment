@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
+import { Modal } from "react-bootstrap";
 
 function UnallocatedPayments() {
   const [statements, setstatements] = useState([]);
@@ -24,6 +25,33 @@ function UnallocatedPayments() {
   const parseJSON = (x) => {
     return JSON.parse(x);
   };
+  // PAGINATION
+  const sortSize = (e) => {
+    setSize(e.target.value);
+  };
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [pageCount, setPageCount] = useState(1);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [currentStatements, setCurrentStatements] = useState([]);
+
+  useEffect(() => {
+    const endOffset = parseInt(itemOffset) + parseInt(size);
+    setCurrentStatements(statements?.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(statements?.length / size));
+  }, [itemOffset, size, statements]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * size) % statements?.length;
+    setItemOffset(newOffset);
+    setPage(event.selected);
+  };
+
+  // allocations
+  const [allocateModal, setallocateModal] = useState(false);
+  const showallocateModal = () => setallocateModal(true);
+  const hideallocateModal = () => setallocateModal(false);
+
   return (
     <div className="page-content">
       <div id="spinner">
@@ -94,8 +122,8 @@ function UnallocatedPayments() {
                       </tr>
                     </thead>
                     <tbody>
-                      {statements?.length > 0 &&
-                        statements?.map((statement, index) => (
+                      {currentStatements?.length > 0 &&
+                        currentStatements?.map((statement, index) => (
                           <tr data-id={index} key={index}>
                             <td>{statement.billNo}</td>
                             <td>
@@ -127,17 +155,17 @@ function UnallocatedPayments() {
                                     <i className="bx bx-dots-vertical-rounded"></i>
                                   </a>
                                   <div className="dropdown-menu dropdown-menu-end ">
-                                    <span className="dropdown-item cursor-pinter">
-                                      <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                      View
-                                    </span>
-                                    {statement.utilisedAmount <
-                                      statement.receiptAmount && (
-                                      <a className="dropdown-item  cursor-pointer">
-                                        <i className="font-size-15 mdi mdi-account-check me-3 "></i>
-                                        Utilize
-                                      </a>
-                                    )}
+                                    {/*<span className="dropdown-item cursor-pinter">*/}
+                                    {/*  <i className="font-size-15 mdi mdi-eye me-3 "></i>*/}
+                                    {/*  View*/}
+                                    {/*</span>*/}
+                                    <a
+                                      className="dropdown-item  cursor-pointer"
+                                      onClick={showallocateModal}
+                                    >
+                                      <i className="font-size-15 mdi mdi-account-check me-3 "></i>
+                                      Allocate
+                                    </a>
                                   </div>
                                 </div>
                               </div>
@@ -148,7 +176,8 @@ function UnallocatedPayments() {
                     <tfoot className="table-light">
                       <tr>
                         <th className="text-capitalize text-nowrap" colSpan="3">
-                          {statements && statements?.length} Statements
+                          {currentStatements && currentStatements?.length}{" "}
+                          Statements
                         </th>
                         <td className="text-nowrap text-right" colSpan="7">
                           <span className="fw-semibold">
@@ -158,12 +187,82 @@ function UnallocatedPayments() {
                       </tr>
                     </tfoot>
                   </table>
+                  <div className="d-flex justify-content-between align-items-center">
+                    {pageCount !== 0 && (
+                      <>
+                        <select
+                          className="btn btn-md btn-primary"
+                          title="Select A range"
+                          onChange={(e) => sortSize(e)}
+                          value={size}
+                        >
+                          <option className="bs-title-option" value="">
+                            Select A range
+                          </option>
+                          <option value="10">10 Rows</option>
+                          <option value="30">30 Rows</option>
+                          <option value="50">50 Rows</option>
+                        </select>
+                        <nav
+                          aria-label="Page navigation comments"
+                          className="mt-4"
+                        >
+                          <ReactPaginate
+                            previousLabel="<"
+                            nextLabel=">"
+                            breakLabel="..."
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link"
+                            pageCount={pageCount}
+                            pageRangeDisplayed={4}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            onPageChange={(data) => handlePageClick(data)}
+                          />
+                        </nav>
+                      </>
+                    )}
+                  </div>
+                  {pageCount !== 0 && (
+                    <p className="font-medium  text-muted">
+                      showing page{" "}
+                      <span className="text-primary">
+                        {pageCount === 0 ? page : page + 1}
+                      </span>{" "}
+                      of
+                      <span className="text-primary"> {pageCount}</span> pages
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Modal show={allocateModal} onHide={hideallocateModal} size="md" centered>
+        <Modal.Header closeButton>
+          <h5 className="modal-title" id="myLargeModalLabel">
+            Allocate Payment
+          </h5>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="form-group justify-content-center d-flex flex-column"></div>
+        </Modal.Body>
+        <Modal.Footer>
+          <div>
+            <button className="btn btn-sm btn-primary" type="submit">
+              Allocate
+            </button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

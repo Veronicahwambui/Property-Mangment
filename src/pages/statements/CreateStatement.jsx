@@ -192,11 +192,21 @@ export default function CreateStatement() {
 
   const total = (x) => {
     if (x !== []) {
-      let sum = 0;
+      let bal = 0;
       x?.map((item) => {
-        sum += parseInt(item.balance);
+        bal += parseInt(item.balance);
       });
-      return sum;
+      return bal;
+    }
+  };
+
+  const totalPaid = (x) => {
+    if (x !== []) {
+      let s = 0;
+      x?.map((item) => {
+        s += parseInt(item.sum);
+      });
+      return s;
     }
   };
 
@@ -716,7 +726,7 @@ export default function CreateStatement() {
                                     Paid
                                   </td>
                                   <td className="text-end fw-bold">
-                                    {formatCurrency(debitTotal())}
+                                    {formatCurrency(totalPaid(unpaidCharges))}
                                   </td>
                                 </tr>
                                 <tr>
@@ -744,7 +754,9 @@ export default function CreateStatement() {
                                       <>
                                         <strong className={"text-danger"}>
                                           {formatCurrency(
-                                            total(unpaidCharges) - debitTotal()
+                                            total(unpaidCharges) -
+                                              totalPaid(unpaidCharges) -
+                                              debitTotal()
                                           )}
                                         </strong>
                                       </>
