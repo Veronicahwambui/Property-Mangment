@@ -90,7 +90,7 @@ export default function Message(props) {
     } else if (props.mode === "SMS") {
       let m = {
         model: {},
-        senderId: "MUIGAI-COMMM",
+        senderId: "MUIGAI-COMM",
         templateName: null,
         text: messageBody.message,
       };
