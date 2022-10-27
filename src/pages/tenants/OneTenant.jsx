@@ -1471,6 +1471,18 @@ function OneTenant() {
                 <div className="card calc-h-3px">
                   <div className="card-body pb-1">
                     <div>
+                      <div className="text-end">
+                        <button
+                          data-bs-toggle="modal"
+                          data-bs-target="#edit-tenant-detail"
+                          type="button"
+                          // onClick={() => landlordshow()}
+                          className="btn btn-primary dropdown-toggle option-selector"
+                        >
+                          <i className="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
+                          Edit Details
+                        </button>
+                      </div>
                       <div className="mb-4 me-3">
                         <i className="mdi mdi-account-circle text-primary h1"></i>
                       </div>
