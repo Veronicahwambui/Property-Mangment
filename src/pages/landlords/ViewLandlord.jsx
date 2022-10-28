@@ -1545,7 +1545,7 @@ function ViewLandlord() {
 
                         <div>
                           <h5 className="text-capitalize">
-                            {landlord?.landLordType === "COMPANY"
+                            {landlord?.landLordType === "CORPORATE"
                               ? landlord?.companyName
                               : landlord?.firstName +
                                 " " +
