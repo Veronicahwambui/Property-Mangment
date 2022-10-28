@@ -917,9 +917,13 @@ function AddProperties() {
               <div className="col-lg-12">
                 <div className="card">
                   <div className="card-body">
-                    <h4 className="font-weight-bold">
-                      The landlord chosen for this premise is{" "}
-                    </h4>
+                    <div className="col-12">
+                      <div className="bg-primary border-2 bg-soft p-3 mb-4">
+                        <p className="fw-semibold mb-0 pb-0 text-uppercase">
+                          LANDLORD DETAILS
+                        </p>
+                      </div>
+                    </div>
                     <div className="row">
                       <div className="col-5">
                         <p>
