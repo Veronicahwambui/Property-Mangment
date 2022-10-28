@@ -1242,6 +1242,26 @@ class RequestsService {
         data.statementId
     );
   }
+
+  lockAccount(data) {
+    return axiosInstance.post(
+      baseUrl +
+        "/accounts/lockUserAccount/" +
+        data.entityId +
+        "?type=" +
+        data.type
+    );
+  }
+
+  unlockAccount(data) {
+    return axiosInstance.post(
+      baseUrl +
+        "/accounts/unlockUserAccount/" +
+        data.entityId +
+        "?type=" +
+        data.type
+    );
+  }
 }
 
 export default new RequestsService();

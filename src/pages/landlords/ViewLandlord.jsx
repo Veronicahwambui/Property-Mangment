@@ -65,10 +65,10 @@ function ViewLandlord() {
 
   const [communication, setCommunication] = useState([]);
   //  const [typeMes, setTypeMes] = useState("TENANT");  const[message,setMessage]=useState([]);
-  const [messageData, setMessageData] = useState({})
-  const [showMessage, setShowMessage] = useState(false)
-  const closeMessage = ()=>setShowMessage(false)
-  
+  const [messageData, setMessageData] = useState({});
+  const [showMessage, setShowMessage] = useState(false);
+  const closeMessage = () => setShowMessage(false);
+
   //documents create
   const [docName, setdocName] = useState("");
   const [documenta, setdocument] = useState("");
@@ -157,14 +157,15 @@ function ViewLandlord() {
     fetchCommunication();
   }, []);
 
+  const [accountStatus, setAccountStatus] = useState(null);
   const getlandlords = () => {
     requestsServiceService.getLandlord(userId).then((res) => {
       console.log(res.data.data);
       setLandlord(res.data.data.landLord);
       setAccountsData(res.data.data.accounts);
       setDocuments(res.data.data.documents);
-
       setPremises(res.data.data.premises);
+      setAccountStatus(res.data.data.authAccount?.blocked);
     });
   };
 
@@ -1277,6 +1278,69 @@ function ViewLandlord() {
     });
   };
 
+  // block/unblock
+  const toggleBlock = () => {
+    let data = {
+      entityId: userId,
+      type: "LANDLORD",
+    };
+    requestsServiceService
+      .lockAccount(data)
+      .then((res) => {
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          message: err.message,
+          color: "danger",
+        });
+      });
+  };
+  const toggleUnBlock = () => {
+    let data = {
+      entityId: userId,
+      type: "LANDLORD",
+    };
+    requestsServiceService
+      .unlockAccount(data)
+      .then((res) => {
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          message: err.message,
+          color: "danger",
+        });
+      });
+  };
+
+  // end block
   return (
     <>
       <div className="page-content">
@@ -1446,6 +1510,34 @@ function ViewLandlord() {
                             <i class="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
                             Edit Details
                           </button>
+                          {accountStatus !== null && (
+                            <>
+                              {accountStatus === true && (
+                                <>
+                                  <button
+                                    className="btn btn-success dropdown-toggle option-selector ml-10"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#unblock-tenant"
+                                  >
+                                    <i className="mdi mdi-account-check font-size-16 align-middle me-2"></i>
+                                    Unblock
+                                  </button>
+                                </>
+                              )}
+                              {accountStatus === false && (
+                                <>
+                                  <button
+                                    className="btn btn-danger dropdown-toggle option-selector ml-10"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#block-tenant"
+                                  >
+                                    <i className="mdi mdi-account-off font-size-16 align-middle me-2"></i>
+                                    Block
+                                  </button>
+                                </>
+                              )}
+                            </>
+                          )}
                         </div>
                         <div className="mb-4 me-3">
                           <i className="mdi mdi-account-circle text-primary h1"></i>
@@ -2238,37 +2330,64 @@ function ViewLandlord() {
 
                             <tbody class="table-hover">
                               {communication?.map((com, index) => {
-                                let message = JSON.parse(com.data)
+                                let message = JSON.parse(com.data);
                                 return (
-                                  <tr key={com.id} onClick={()=>{setMessageData(communication[index] ); setShowMessage(true)}} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
+                                  <tr
+                                    key={com.id}
+                                    onClick={() => {
+                                      setMessageData(communication[index]);
+                                      setShowMessage(true);
+                                    }}
+                                    class="text-nowrap"
+                                    data-toggle="modal"
+                                    data-target="#messageDetails"
+                                  >
                                     <td>{index + 1}</td>
                                     {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
                                     <td class="">
                                       {/* <!-- put the index here --> */}
                                       <span class=" font-size-18 d-none d-md-flex">
-                                        { com.communicationType !== "EMAIL" ? <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i> :
-                                          <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>}
+                                        {com.communicationType !== "EMAIL" ? (
+                                          <i class="mdi mdi-chat-outline text-info pr-2">
+                                            <span class="d-none">Email</span>
+                                          </i>
+                                        ) : (
+                                          <i class="mdi mdi-email-check-outline text-info pr-2">
+                                            <span class="d-none">Sms</span>
+                                          </i>
+                                        )}
                                       </span>
                                       <span class=" font-size-18 d-flex d-md-none">
                                         <br />
-                                        <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                        <i class="mdi mdi-chat-outline text-info pr-2">
+                                          <span class="d-none">
+                                            {com.communicationType}
+                                          </span>
+                                        </i>
                                       </span>
                                     </td>
-                                    <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-                                    { com.communicationType == "EMAIL" &&
-                                    <td class="the-msg the-msg-2">
-                                      <span>{message?.model?.message}</span>
-                                    </td> }
-                                    { com.communicationType == "SMS" &&
-                                    <td class="the-msg the-msg-2 md-the-msg">
-                                      <span>{message?.text}</span>
-                                    </td> }
-                                    <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+                                    <td class="text-capitalize d-none d-md-table-cell">
+                                      {com.createdBy}
+                                    </td>
+                                    {com.communicationType == "EMAIL" && (
+                                      <td class="the-msg the-msg-2">
+                                        <span>{message?.model?.message}</span>
+                                      </td>
+                                    )}
+                                    {com.communicationType == "SMS" && (
+                                      <td class="the-msg the-msg-2 md-the-msg">
+                                        <span>{message?.text}</span>
+                                      </td>
+                                    )}
+                                    <td class="text-capitalize d-none d-md-table-cell">
+                                      {moment(com.dateTimeCreated).format(
+                                        "ddd MMM DD"
+                                      )}
+                                    </td>
                                   </tr>
-                                )
-                              }
-                              )}
-                          </tbody>
+                                );
+                              })}
+                            </tbody>
                           </table>
                         </div>
                       </div>
@@ -2278,7 +2397,11 @@ function ViewLandlord() {
                 </div>
                 {/* <!-- End row --> */}
               </div>
-              <ViewMessage show={showMessage} messageData={messageData} closeMessage={closeMessage} />
+              <ViewMessage
+                show={showMessage}
+                messageData={messageData}
+                closeMessage={closeMessage}
+              />
               {/* <!-- container-fluid --> */}
             </div>
           )}
@@ -3391,7 +3514,6 @@ function ViewLandlord() {
                           setInvoicePaymentPriority(e.target.value)
                         }
                         className="form-control"
-                      
                       />
                     </div>
                     <div className="form-group mb-4">
@@ -3525,14 +3647,11 @@ function ViewLandlord() {
                 </div>
               </Modal.Body>
               <Modal.Footer>
-              {error.color !== "" && (
-                          <div
-                            className={"alert alert-" + error.color}
-                            role="alert"
-                          >
-                            {error.message}
-                          </div>
-                        )}
+                {error.color !== "" && (
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                )}
                 <Button
                   variant="secondary"
                   className={"btn btn-grey"}
@@ -3545,7 +3664,6 @@ function ViewLandlord() {
                   className={"btn btn-primary"}
                   type={"submit"}
                 >
-
                   Save Changes
                 </Button>
               </Modal.Footer>
@@ -4134,6 +4252,78 @@ function ViewLandlord() {
             {/* <!-- apexcharts --> */}
             <script src="./assets/libs/apexcharts/apexcharts.min.js "></script>
           </Helmet>
+        </div>
+      </div>
+      <div
+        className="modal fade"
+        id="block-tenant"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Block this tenant ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={toggleBlock}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade"
+        id="unblock-tenant"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Unblock this tenant ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                No
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={toggleUnBlock}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>

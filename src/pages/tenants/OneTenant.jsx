@@ -144,15 +144,16 @@ function OneTenant() {
   const [communication, setCommunication] = useState([]);
   //  const [typeMes, setTypeMes] = useState("TENANT");
   const [message, setMessage] = useState([]);
-  const [messageData, setMessageData] = useState({})
-  const [showMessage, setShowMessage] = useState(false)
-  const closeMessage = ()=>setShowMessage(false)
-
+  const [messageData, setMessageData] = useState({});
+  const [showMessage, setShowMessage] = useState(false);
+  const closeMessage = () => setShowMessage(false);
+  const [accountStatus, setAccountStatus] = useState(null);
 
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
       setTenantTypeName(res.data.data.tenant.tenantType);
+      setAccountStatus(res.data.data.authAccount?.blocked);
     });
   };
 
@@ -178,56 +179,53 @@ function OneTenant() {
       phoneNumber: phoneNumber,
       tenantTypeName: tenantTypeName,
     });
-   
+
     //  console.log(id)
-    requestsServiceService.updateTenantsDetails(details).then((res) => {
-      fetchAll();
+    requestsServiceService
+      .updateTenantsDetails(details)
+      .then((res) => {
+        fetchAll();
 
+        $("#edit-tenant-detail").modal("hide");
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning",
+          });
+        }
 
+        setTimeout(() => {
+          clear();
+        }, 3000);
+      })
+      .catch((error, res) => {
+        $("#edit-tenant-detail").modal("hide");
 
-      $( "#edit-tenant-detail").modal("hide");
-      if (res.data.status) {
         setError({
           ...error,
-          message: res.data.message,
-          color: "success",
+          message: error.message,
+          color: "danger",
         });
-      } else {
-        setError({
-          ...error,
-          message: res.data.message,
-          color: "warning",
-        });
-      }
 
-      setTimeout(() => {
-        clear();
-      }, 3000);
-    })
-    .catch((error, res) => {
-      $( "#edit-tenant-detail").modal("hide");
-
-      setError({
-        ...error,
-        message: error.message,
-        color: "danger",
+        setTimeout(() => {
+          clear();
+        }, 3000);
       });
 
-
-      setTimeout(() => {
-        clear();
-      }, 3000);
-    });
-  
-      const clear = () => {
-        setError({
-          ...error,
-          message: "",
-          color: "",
-        });
-
-      }
-   
+    const clear = () => {
+      setError({
+        ...error,
+        message: "",
+        color: "",
+      });
+    };
 
     // console.log(details)
   };
@@ -277,8 +275,6 @@ function OneTenant() {
     });
     requestsServiceService.updateTenant(data).then((res) => {
       fetchAll();
-      
-
     });
   };
   const handleChange = (
@@ -1376,6 +1372,69 @@ function OneTenant() {
     event.preventDefault();
     getTenantStatements();
   };
+
+  // block/unblock
+  const toggleBlock = () => {
+    let data = {
+      entityId: userId,
+      type: "TENANT",
+    };
+    requestsServiceService
+      .lockAccount(data)
+      .then((res) => {
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          message: err.message,
+          color: "danger",
+        });
+      });
+  };
+  const toggleUnBlock = () => {
+    let data = {
+      entityId: userId,
+      type: "TENANT",
+    };
+    requestsServiceService
+      .unlockAccount(data)
+      .then((res) => {
+        if (res.data.status) {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "success",
+          });
+        } else {
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "danger",
+          });
+        }
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          message: err.message,
+          color: "danger",
+        });
+      });
+  };
+
   return (
     <div className="page-content">
       <div className="content-fluid">
@@ -1520,6 +1579,11 @@ function OneTenant() {
           <>
             <div className="row">
               <div className="col-xl-4">
+                {error.color !== "" && (
+                  <div className={"alert alert-" + error.color} role="alert">
+                    {error.message}
+                  </div>
+                )}
                 <div className="card calc-h-3px">
                   <div className="card-body pb-1">
                     <div>
@@ -1528,25 +1592,55 @@ function OneTenant() {
                           data-bs-toggle="modal"
                           data-bs-target="#edit-tenant-detail"
                           type="button"
-                          onClick={() =>handleChangeTenantsDetails(
-                            tenantData.tenant.id,
-                            tenantData.tenant.tenantType,
-                            tenantData.tenant.firstName,
-                            tenantData.tenant.lastName,
-                            tenantData.tenant.otherName,
-                            tenantData.tenant.phoneNumber,
-                            tenantData.tenant.email,
-                            tenantData.tenant.idNumber,
-                            tenantData.tenant.companyName,
-                            tenantData.tenant.nationality,
-                            tenantData.tenant.companyAddress,
-                            tenantData.tenant.companyDateOfRegistration
-                          )}
-                          className="btn btn-primary dropdown-toggle option-selector"
+                          onClick={() =>
+                            handleChangeTenantsDetails(
+                              tenantData.tenant.id,
+                              tenantData.tenant.tenantType,
+                              tenantData.tenant.firstName,
+                              tenantData.tenant.lastName,
+                              tenantData.tenant.otherName,
+                              tenantData.tenant.phoneNumber,
+                              tenantData.tenant.email,
+                              tenantData.tenant.idNumber,
+                              tenantData.tenant.companyName,
+                              tenantData.tenant.nationality,
+                              tenantData.tenant.companyAddress,
+                              tenantData.tenant.companyDateOfRegistration
+                            )
+                          }
+                          className="btn btn-primary dropdown-toggle option-selector mr-3"
                         >
                           <i className="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
                           Edit Details
                         </button>
+                        {accountStatus !== null && (
+                          <>
+                            {accountStatus === true && (
+                              <>
+                                <button
+                                  className="btn btn-success dropdown-toggle option-selector ml-10"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#unblock-tenant"
+                                >
+                                  <i className="mdi mdi-account-check font-size-16 align-middle me-2"></i>
+                                  Unblock
+                                </button>
+                              </>
+                            )}
+                            {accountStatus === false && (
+                              <>
+                                <button
+                                  className="btn btn-danger dropdown-toggle option-selector ml-10"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#block-tenant"
+                                >
+                                  <i className="mdi mdi-account-off font-size-16 align-middle me-2"></i>
+                                  Block
+                                </button>
+                              </>
+                            )}
+                          </>
+                        )}
                       </div>
                       <div className="mb-4 me-3">
                         <i className="mdi mdi-account-circle text-primary h1"></i>
@@ -2401,37 +2495,64 @@ function OneTenant() {
                           </thead>
 
                           <tbody class="table-hover">
-                              {communication?.map((com, index) => {
-                                let message = JSON.parse(com.data)
-                                return (
-                                  <tr key={com.id} onClick={()=>{setMessageData(communication[index] ); setShowMessage(true)}} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
-                                    <td>{index + 1}</td>
-                                    {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
-                                    <td class="">
-                                      {/* <!-- put the index here --> */}
-                                      <span class=" font-size-18 d-none d-md-flex">
-                                        { com.communicationType !== "EMAIL" ? <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i> :
-                                          <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>}
-                                      </span>
-                                      <span class=" font-size-18 d-flex d-md-none">
-                                        <br />
-                                        <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
-                                      </span>
-                                    </td>
-                                    <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-                                    { com.communicationType == "EMAIL" &&
+                            {communication?.map((com, index) => {
+                              let message = JSON.parse(com.data);
+                              return (
+                                <tr
+                                  key={com.id}
+                                  onClick={() => {
+                                    setMessageData(communication[index]);
+                                    setShowMessage(true);
+                                  }}
+                                  class="text-nowrap"
+                                  data-toggle="modal"
+                                  data-target="#messageDetails"
+                                >
+                                  <td>{index + 1}</td>
+                                  {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                  <td class="">
+                                    {/* <!-- put the index here --> */}
+                                    <span class=" font-size-18 d-none d-md-flex">
+                                      {com.communicationType !== "EMAIL" ? (
+                                        <i class="mdi mdi-chat-outline text-info pr-2">
+                                          <span class="d-none">Email</span>
+                                        </i>
+                                      ) : (
+                                        <i class="mdi mdi-email-check-outline text-info pr-2">
+                                          <span class="d-none">Sms</span>
+                                        </i>
+                                      )}
+                                    </span>
+                                    <span class=" font-size-18 d-flex d-md-none">
+                                      <br />
+                                      <i class="mdi mdi-chat-outline text-info pr-2">
+                                        <span class="d-none">
+                                          {com.communicationType}
+                                        </span>
+                                      </i>
+                                    </span>
+                                  </td>
+                                  <td class="text-capitalize d-none d-md-table-cell">
+                                    {com.createdBy}
+                                  </td>
+                                  {com.communicationType == "EMAIL" && (
                                     <td class="the-msg the-msg-2">
                                       <span>{message?.model?.message}</span>
-                                    </td> }
-                                    { com.communicationType == "SMS" &&
+                                    </td>
+                                  )}
+                                  {com.communicationType == "SMS" && (
                                     <td class="the-msg the-msg-2 md-the-msg">
                                       <span>{message?.text}</span>
-                                    </td> }
-                                    <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
-                                  </tr>
-                                )
-                              }
-                              )}
+                                    </td>
+                                  )}
+                                  <td class="text-capitalize d-none d-md-table-cell">
+                                    {moment(com.dateTimeCreated).format(
+                                      "ddd MMM DD"
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            })}
                           </tbody>
                         </table>
                       </div>
@@ -2443,8 +2564,11 @@ function OneTenant() {
               {/* <!-- End row --> */}
             </div>
             {/* <!-- container-fluid --> */}
-            <ViewMessage show={showMessage} messageData={messageData} closeMessage={closeMessage} />
-
+            <ViewMessage
+              show={showMessage}
+              messageData={messageData}
+              closeMessage={closeMessage}
+            />
           </div>
         )}
 
@@ -3577,16 +3701,13 @@ function OneTenant() {
                     </div>
                   )}
                 </div>
-             
+
                 <div class="modal-footer">
-                {error.color !== "" && (
-                          <div
-                            className={"alert alert-" + error.color}
-                            role="alert"
-                          >
-                            {error.message}
-                          </div>
-                        )}
+                  {error.color !== "" && (
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
+                    </div>
+                  )}
                   <button
                     type="button"
                     class="btn btn-light"
@@ -4271,6 +4392,79 @@ function OneTenant() {
             </div>
           </div>
         </footer>
+      </div>
+
+      <div
+        className="modal fade"
+        id="block-tenant"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Block this tenant ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                no
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={toggleBlock}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade"
+        id="unblock-tenant"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <center>
+                <h5>Unblock this tenant ?</h5>
+              </center>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                No
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={toggleUnBlock}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
