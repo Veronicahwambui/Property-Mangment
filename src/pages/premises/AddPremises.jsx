@@ -319,19 +319,17 @@ function AddProperties() {
       index == i ? { ...obj, unitName: event.target.value } : { ...obj }
     );
 
-
     setPremiseUnits(ne);
   };
 
   const handleRemoveUnit = (index) => {
     let newUnits = premiseUnits.filter((obj, i) => i !== Number(index));
     setPremiseUnits(newUnits);
-  }
+  };
 
-  const [newUnitId, setNewUnitId] = useState(null)
+  const [newUnitId, setNewUnitId] = useState(null);
 
   const updateUnits = () => {
-
     if (newUnitId === null) {
       setError({
         ...error,
@@ -341,7 +339,7 @@ function AddProperties() {
       setTimeout(() => {
         clears();
       }, 3000);
-      return
+      return;
     }
 
     $("#add-new-unit-premise").modal("hide");
@@ -352,10 +350,10 @@ function AddProperties() {
       premiseId: null,
       status: "VACANT",
       unitName: "",
-    }
+    };
     setPremiseUnits([...premiseUnits, newUnit]);
-    setNewUnitId(null)
-  }
+    setNewUnitId(null);
+  };
 
   // console.log(premiseUnits);
 
@@ -532,17 +530,6 @@ function AddProperties() {
         console.log("Error: ", error);
       };
     } else setDocBody({ ...docBody, [event.target.name]: event.target.value });
-    
-    if(event.target.value === "documentTypeId") {
-      let id = event.target.value.split("-")[0];
-      let name=event.target.value.split("-")[1];
-      let d={
-        name: name,
-        id: id,
-      };
-    }
-
-
   };
 
   $("#landlord-type").on("change", function () {
@@ -677,9 +664,9 @@ function AddProperties() {
           invoicePaymentPriority:
             selectedItems.length > 0
               ? selectedItems
-                .map((a) => a.id)
-                .join("-")
-                .toString()
+                  .map((a) => a.id)
+                  .join("-")
+                  .toString()
               : "",
         });
       }
@@ -1169,7 +1156,9 @@ function AddProperties() {
                                   className="btn btn-primary text-nowrap btn-sm py-2 w-100"
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-property"
-                                > <i class="mdi mdi-plus label-icon"></i>
+                                >
+                                  {" "}
+                                  <i class="mdi mdi-plus label-icon"></i>
                                   Property Type
                                 </button>
                               </div>
@@ -1212,8 +1201,8 @@ function AddProperties() {
                                   type="button"
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-premise"
-                                ><i class="mdi mdi-plus label-icon"></i>
-
+                                >
+                                  <i class="mdi mdi-plus label-icon"></i>
                                   Proprty Use Type
                                 </button>
                               </div>
@@ -1245,8 +1234,8 @@ function AddProperties() {
                                         {t === "CURRENT"
                                           ? "Occupied"
                                           : t === "OPEN"
-                                            ? "Vaccant"
-                                            : t
+                                          ? "Vaccant"
+                                          : t
                                               ?.toLowerCase()
                                               ?.replace(/_/g, " ")}
                                       </option>
@@ -1827,26 +1816,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "MONTHLY_CHARGE" && (
-                                            <div class="col-6">
-                                              <div class="form-check form-check-primary mb-3">
-                                                <input
-                                                  class="form-check-input"
-                                                  type="checkbox"
-                                                  name="monthlyCharges"
-                                                  value={charge.id}
-                                                  onChange={
-                                                    selectedApplicableChargeChange
-                                                  }
-                                                />
-                                                <label
-                                                  class="form-check-label"
-                                                  for="monthlyRent"
-                                                >
-                                                  {charge.name}
-                                                </label>
-                                              </div>
+                                          <div class="col-6">
+                                            <div class="form-check form-check-primary mb-3">
+                                              <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="monthlyCharges"
+                                                value={charge.id}
+                                                onChange={
+                                                  selectedApplicableChargeChange
+                                                }
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="monthlyRent"
+                                              >
+                                                {charge.name}
+                                              </label>
                                             </div>
-                                          )}
+                                          </div>
+                                        )}
                                       </>
                                     ))}
                               </div>
@@ -1865,26 +1854,26 @@ function AddProperties() {
                                       <>
                                         {charge.applicableChargeType ===
                                           "DEPOSIT_CHARGE" && (
-                                            <div class="col-6">
-                                              <div class="form-check form-check-primary mb-3">
-                                                <input
-                                                  class="form-check-input"
-                                                  type="checkbox"
-                                                  name="monthlyRent"
-                                                  value={charge.id}
-                                                  onChange={
-                                                    selectedApplicableChargeChange
-                                                  }
-                                                />
-                                                <label
-                                                  class="form-check-label"
-                                                  for="monthlyRent"
-                                                >
-                                                  {charge.name}
-                                                </label>
-                                              </div>
+                                          <div class="col-6">
+                                            <div class="form-check form-check-primary mb-3">
+                                              <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="monthlyRent"
+                                                value={charge.id}
+                                                onChange={
+                                                  selectedApplicableChargeChange
+                                                }
+                                              />
+                                              <label
+                                                class="form-check-label"
+                                                for="monthlyRent"
+                                              >
+                                                {charge.name}
+                                              </label>
                                             </div>
-                                          )}
+                                          </div>
+                                        )}
                                       </>
                                     ))}
                               </div>
@@ -1987,26 +1976,23 @@ function AddProperties() {
                                 {selectedApplicableCharges &&
                                   selectedApplicableCharges.map(
                                     (premiseUnitTypeCharge, indeewx) =>
-                                      premiseUnitTypeCharge.expectManualValues &&
-
-                                      <tr>
-                                        {/* <td>
+                                      premiseUnitTypeCharge.expectManualValues && (
+                                        <tr>
+                                          {/* <td>
                                         {indeewx + 1}
                                       </td> */}
-                                        <td>
-                                          {premiseUnitTypeCharge.name}
-                                        </td>
-                                        <td>
-                                          {
-                                            premiseUnitTypeCharge.applicableChargeType
-                                          }
-                                        </td>
+                                          <td>{premiseUnitTypeCharge.name}</td>
+                                          <td>
+                                            {
+                                              premiseUnitTypeCharge.applicableChargeType
+                                            }
+                                          </td>
 
-                                        <td>-</td>
-                                        <td>-</td>
-                                      </tr>
-                                  )
-                                }
+                                          <td>-</td>
+                                          <td>-</td>
+                                        </tr>
+                                      )
+                                  )}
                               </tbody>
                             </table>
                           </div>
@@ -2061,28 +2047,36 @@ function AddProperties() {
                                           </option>
                                         </select>
                                       </td>
-                                      <td className="text-center" onClick={(e) => handleRemoveUnit(index)}><h3 className="waves"><i className="bx bx-trash"></i></h3></td>
+                                      <td
+                                        className="text-center"
+                                        onClick={(e) => handleRemoveUnit(index)}
+                                      >
+                                        <h3 className="waves">
+                                          <i className="bx bx-trash"></i>
+                                        </h3>
+                                      </td>
                                     </tr>
                                   ))}
                               </tbody>
 
                               <div class="d-flex mt-3">
                                 <button
-                                onClick={()=>  setError({
-                                  ...error,
-                                  message: "",
-                                  color: "",
-                                }) }
+                                  onClick={() =>
+                                    setError({
+                                      ...error,
+                                      message: "",
+                                      color: "",
+                                    })
+                                  }
                                   type="button"
                                   class="btn btn-primary waves-effect btn-label waves-light me-3"
                                   data-bs-toggle="modal"
                                   data-bs-target="#add-new-unit-premise"
                                 >
-                                  <i class="mdi mdi-plus label-icon"></i> Add Unit
-
+                                  <i class="mdi mdi-plus label-icon"></i> Add
+                                  Unit
                                 </button>
                               </div>
-
                             </table>
                           </div>
                         </div>
@@ -2310,7 +2304,7 @@ function AddProperties() {
                     documentTypes
                       ?.sort((a, b) => a.name.localeCompare(b.name))
                       ?.map((prem, index) => (
-                        <option value={prem.id + "-" + prem.name} className="text-capitalize">
+                        <option value={prem.id} className="text-capitalize">
                           {prem.name?.toLowerCase()?.replace(/_/g, " ")}
                         </option>
                       ))}
@@ -2929,10 +2923,17 @@ function AddProperties() {
                 )}
                 <div className="form-group">
                   <label htmlFor="true">Select Unit Type</label>
-                  <select name="true" id="" className="form-control" onChange={e => setNewUnitId(e.target.value)}>
+                  <select
+                    name="true"
+                    id=""
+                    className="form-control"
+                    onChange={(e) => setNewUnitId(e.target.value)}
+                  >
                     <option value="">select</option>
-                    {selectedunitTypes?.map(one => (
-                      <option value={one.id} selected={ newUnitId == one.id}>{one.name}</option>
+                    {selectedunitTypes?.map((one) => (
+                      <option value={one.id} selected={newUnitId == one.id}>
+                        {one.name}
+                      </option>
                     ))}
                   </select>
                 </div>
