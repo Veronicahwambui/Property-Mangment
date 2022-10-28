@@ -271,7 +271,7 @@ function Landlords() {
                             <td className="text-capitalize" data-field="estate">
                               <Link to={"/landlord/" + l.id}>
                                 {l.landLordType === "CORPORATE"
-                                  ? l.companyName
+                                  ? l.firstName + " " + l.lastName
                                   : l.firstName + " " + l.lastName}
                               </Link>
                             </td>
