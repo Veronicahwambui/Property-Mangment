@@ -120,6 +120,6 @@ export default function ViewInvoice(props) {
         </table>
       </div>
     </Modal.Body>
-  </Modal>
+    </Modal>
   )
 }

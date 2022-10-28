@@ -21,6 +21,7 @@ import Message from "../../components/Message";
 
 import DatePickRange from "../../components/Datepicker";
 import ViewInvoice from "../../components/ViewInvoice";
+import ViewMessage from "../../components/ViewMessage";
 
 function ViewLandlord() {
   const [activeLink, setActiveLink] = useState(1);
@@ -64,7 +65,10 @@ function ViewLandlord() {
 
   const [communication, setCommunication] = useState([]);
   //  const [typeMes, setTypeMes] = useState("TENANT");  const[message,setMessage]=useState([]);
-
+  const [messageData, setMessageData] = useState({})
+  const [showMessage, setShowMessage] = useState(false)
+  const closeMessage = ()=>setShowMessage(false)
+  
   //documents create
   const [docName, setdocName] = useState("");
   const [documenta, setdocument] = useState("");
@@ -2233,58 +2237,38 @@ function ViewLandlord() {
                             </thead>
 
                             <tbody class="table-hover">
-                              {communication?.map((com, index) => (
-                                <tr data-id="1">
-                                  <td>{index + 1}</td>
-                                  {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
-                                  <td class="">
-                                    {/* <!-- put the index here --> */}
-
-                                    <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
-                                      <div class="avatar-xs m-0">
-                                        <span class="avatar-title rounded-circle bg-success bg-orange text-white">
-                                          AW
-                                        </span>
-                                      </div>
-                                    </div>
-
-                                    <span class=" font-size-18 d-none d-md-flex">
-                                      <i class="mdi mdi-chat-outline text-info pr-2">
-                                        <span class="d-none">Email</span>
-                                      </i>
-                                      <i class="mdi mdi-email-check-outline text-info pr-2">
-                                        <span class="d-none">Sms</span>
-                                      </i>
-                                    </span>
-                                    <span class=" font-size-18 d-flex d-md-none">
-                                      <br />
-                                      <i class="mdi mdi-chat-outline text-info pr-2">
-                                        <span class="d-none">
-                                          {com.communicationType}
-                                        </span>
-                                      </i>
-                                      {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-                                    </span>
-                                  </td>
-
-                                  <td class="d-none">
-                                    <span class="d-none">0</span>
-                                  </td>
-
-                                  <td class="text-capitalize d-none d-md-table-cell">
-                                    {com.createdBy}
-                                  </td>
-                                  <td class="the-msg the-msg-2">
-                                    <span>{JSON.parse(com.data).text}</span>
-                                  </td>
-                                  <td class="text-capitalize d-none d-md-table-cell">
-                                    {moment(com.dateTimeCreated).format(
-                                      "ddd MMM DD"
-                                    )}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
+                              {communication?.map((com, index) => {
+                                let message = JSON.parse(com.data)
+                                return (
+                                  <tr key={com.id} onClick={()=>{setMessageData(communication[index] ); setShowMessage(true)}} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
+                                    <td>{index + 1}</td>
+                                    {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                    <td class="">
+                                      {/* <!-- put the index here --> */}
+                                      <span class=" font-size-18 d-none d-md-flex">
+                                        { com.communicationType !== "EMAIL" ? <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i> :
+                                          <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>}
+                                      </span>
+                                      <span class=" font-size-18 d-flex d-md-none">
+                                        <br />
+                                        <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                      </span>
+                                    </td>
+                                    <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
+                                    { com.communicationType == "EMAIL" &&
+                                    <td class="the-msg the-msg-2">
+                                      <span>{message?.model?.message}</span>
+                                    </td> }
+                                    { com.communicationType == "SMS" &&
+                                    <td class="the-msg the-msg-2 md-the-msg">
+                                      <span>{message?.text}</span>
+                                    </td> }
+                                    <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+                                  </tr>
+                                )
+                              }
+                              )}
+                          </tbody>
                           </table>
                         </div>
                       </div>
@@ -2294,6 +2278,7 @@ function ViewLandlord() {
                 </div>
                 {/* <!-- End row --> */}
               </div>
+              <ViewMessage show={showMessage} messageData={messageData} closeMessage={closeMessage} />
               {/* <!-- container-fluid --> */}
             </div>
           )}

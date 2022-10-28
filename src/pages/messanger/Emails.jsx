@@ -3,6 +3,8 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
+import ViewEmail from "../../components/ViewEmail";
+import ViewMessage from "../../components/ViewMessage";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 
@@ -15,7 +17,8 @@ function Emails() {
     const [pageData, setPageData] = useState([])
     const [messageData, setMessageData] = useState({})
     const [loading, setLoading]= useState(true)
-
+    const [show, setShow]= useState(false)
+     const closeEmail = () => setShow(false)
 
     const handlePageClick = (data) => {
         setPage(() => data.selected);
@@ -103,7 +106,7 @@ function Emails() {
                                     { pageData?.length > 0 && pageData?.map((mes , index) =>{
                                         let message = JSON.parse(mes.data) 
                                         return (
-                                        <tr key={mes.id} onClick={()=> setMessageData(pageData[index] )} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
+                                        <tr key={mes.id} onClick={()=>{setMessageData(pageData[index] ); setShow(true)}} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
 
                                             <td>
                                                 <span class=" font-size-18 d-md-flex">
@@ -114,7 +117,9 @@ function Emails() {
                                             <td class="the-msg the-msg-2">
                                              <span>{message?.subject}</span>  
                                             </td>                                                
-
+                                            <td class="the-msg the-msg-2">
+                                             <span>{message?.model?.message}</span>  
+                                            </td>   
                                             <td class="text-capitalize d-md-table-cell">{moment(mes.dateTimeCreated).format("ddd MMM DD")}</td>
                                         </tr>
                                     )})}
@@ -159,51 +164,8 @@ function Emails() {
                 </div>
 
                 {/* <!-- message details modal --> */}
-                <div class="modal fade" id="messageDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content border-radius-0">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalCenterTitle">Email Details</h5>
-                                <span class="close font-28 cursor-pointer" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </span>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div >
-                                            <div>
-                                                <div class="flex-grow-1  d-flex justify-content-between  mb-1 chat-user-box">
-                                                    <p class="user-title m-0 text-capitalize"> <strong>Created by: </strong>{messageData?.createdBy}</p>
-                                                    <p class="text-muted  pb-0"> <strong><i class="mdi mdi-email me-1" ></i> </strong>{messageData?.contact + " " }</p>
-                                                </div>
-                                            </div>
+                <ViewMessage show={show} messageData={messageData} closeMessage={closeEmail} />
 
-                                            <div>
-                                                <div class="flex-grow-1  d-flex justify-content-between mb-3 chat-user-box">
-                                                    <p class="user-title m-0 text-capitalize text-muted"><strong>from: </strong> {modalMessage?.from}</p>
-                                                    <p class="text-muted  pb-0"> <strong>To: </strong>{modalMessage?.to}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            {/* <h5 class="font-size-14">Subject :</h5> */}
-                                            <p class="text-mute my-2 p-0 font-12px text-uppercase">{ modalMessage?.subject} </p>
-                                            {/* <h5 class="font-size-14 my-2">Message :</h5> */}
-                                            <p class="text-muted m-0 p-0 font-12px">{ modalMessage?.model?.message} </p>
-
-                                            <p class="text-muted mt-3"><strong>Signature :</strong> { modalMessage?.model?.signature}</p>
-                                            <p class="text-muted mt-0"><strong>Name :</strong> { modalMessage?.model?.name}</p>
-                                            <p class="text-muted mt-2"><strong>Created on :</strong> {moment(messageData?.dateTimeCreated).format("dddd MMM DD YYYY")}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
 
             </div>
 
