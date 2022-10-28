@@ -426,7 +426,7 @@ function OneTenant() {
       tenancyDocuments: [],
       tenancyRenewalDate: tenancyRenewalDate,
       tenancyRenewalNotificationDate: tenancyRenewalNotificationDate,
-      tenancyStatusName: "CURRENT",
+      tenancyStatusName: tenancyStatus,
       tenantId: tenantData.tenant.id,
       unitCondition: unitCondition,
     });
@@ -3350,24 +3350,24 @@ function OneTenant() {
                       />
                     </div>
 
-                    <div className="form-group mb-4" id="datepicker151">
-                      <label htmlFor="">TenancyRenewalNotificationDate</label>
-                      <input
-                        type="text"
-                        className="form-control mouse-pointer enddate"
-                        value={tenancyRenewalNotificationDate}
-                        onChange={(e) =>
-                          setTenancyRenewalNotificationDate(e.target.value)
-                        }
-                        placeholder="TenancyRenewalNotificationDate"
-                        readOnly
-                        data-date-format="dd M, yyyy"
-                        data-date-container="#datepicker151"
-                        data-provide="datepicker"
-                        data-date-autoclose="true"
-                        required={true}
-                      />
-                    </div>
+                    {/*<div className="form-group mb-4" id="datepicker151">*/}
+                    {/*  <label htmlFor="">TenancyRenewalNotificationDate</label>*/}
+                    {/*  <input*/}
+                    {/*    type="text"*/}
+                    {/*    className="form-control mouse-pointer enddate"*/}
+                    {/*    value={tenancyRenewalNotificationDate}*/}
+                    {/*    onChange={(e) =>*/}
+                    {/*      setTenancyRenewalNotificationDate(e.target.value)*/}
+                    {/*    }*/}
+                    {/*    placeholder="TenancyRenewalNotificationDate"*/}
+                    {/*    readOnly*/}
+                    {/*    data-date-format="dd M, yyyy"*/}
+                    {/*    data-date-container="#datepicker151"*/}
+                    {/*    data-provide="datepicker"*/}
+                    {/*    data-date-autoclose="true"*/}
+                    {/*    required={true}*/}
+                    {/*  />*/}
+                    {/*</div>*/}
                   </div>
                 </div>
               </div>
@@ -3997,39 +3997,43 @@ function OneTenant() {
                     )}
 
                     {units?.length > 0 && (
-                      <div className="form-group mb-4" id="datepicker1">
-                        <label htmlFor="">TenancyRenewalNotificationDate</label>
-                        <input
-                          type="text"
-                          className="form-control mouse-pointer date2"
-                          value={tenancyRenewalNotificationDate}
-                          onChange={(e) =>
-                            setTenancyRenewalNotificationDate(e.target.value)
-                          }
-                          placeholder="Enter TenancyRenewalNotificationDate"
-                          readOnly
-                          data-date-format="dd M, yyyy"
-                          data-date-container="#datepicker1"
-                          data-provide="datepicker"
-                          data-date-autoclose="true"
-                          required={true}
-                        />
-                      </div>
+                      <></>
+                      // <div className="form-group mb-4" id="datepicker1">
+                      //   <label htmlFor="">TenancyRenewalNotificationDate</label>
+                      //   <input
+                      //     type="text"
+                      //     className="form-control mouse-pointer date2"
+                      //     value={tenancyRenewalNotificationDate}
+                      //     onChange={(e) =>
+                      //       setTenancyRenewalNotificationDate(e.target.value)
+                      //     }
+                      //     placeholder="Enter TenancyRenewalNotificationDate"
+                      //     readOnly
+                      //     data-date-format="dd M, yyyy"
+                      //     data-date-container="#datepicker1"
+                      //     data-provide="datepicker"
+                      //     data-date-autoclose="true"
+                      //     required={true}
+                      //   />
+                      // </div>
                     )}
 
                     {
                       units?.length > 0 && (
                         <div class="form-group mb-4">
                           <label for="">TenancyStatus</label>
-                          <input
-                            type="text"
+                          <select
+                            name=""
+                            id=""
                             class="form-control"
-                            placeholder="Enter TenancyStatus"
                             onChange={(event) =>
                               setTenancyStatus(event.target.value)
                             }
-                            value={tenancyStatus}
-                          />
+                          >
+                            {tenantStatuses?.map((item) => (
+                              <option value={item}>{item}</option>
+                            ))}
+                          </select>
                         </div>
                       )
 
