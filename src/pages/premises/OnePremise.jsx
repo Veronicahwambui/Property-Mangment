@@ -796,7 +796,7 @@ function OnePremise() {
   const [constraintChargeId, setConstraintChargeId] = useState(null);
 
   const fetchApplicableCharges = () => {
-    requestsServiceService.allApplicableCharges("PREMISE", true).then((res) => {
+    requestsServiceService.allApplicableCharges("TENANT", true).then((res) => {
       setApplicableCharges(res.data.data);
     });
   };
@@ -1060,7 +1060,7 @@ function OnePremise() {
     entity: null,
     clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
     clientId: parseInt(AuthService.getClientId()),
-    entityType: "PREMISE",
+    entityType: "TENANCY",
     createdBy: "",
     senderId: "",
     subject: "Invoice Payment",
@@ -1108,7 +1108,7 @@ function OnePremise() {
       entity: null,
       clientName: JSON.parse(AuthService.getCurrentUserName()).client?.name,
       clientId: parseInt(AuthService.getClientId()),
-      entityType: "PREMISE",
+      entityType: "TENANCY",
       createdBy: "",
       senderId: "",
       subject: "Invoice Payment",
