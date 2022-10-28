@@ -876,6 +876,22 @@ function IssuesTypes() {
         });
       });
   };
+
+  const [chargePriorities, setChargePriorities] = useState([]);
+  const doShit = () => {
+    if (client?.invoicePaymentPriority !== undefined) {
+      let x = client?.invoicePaymentPriority?.split("-");
+      let y = [];
+      x.forEach((item) => {
+        y.push(invo?.find((charge) => charge.id === parseInt(item)));
+      });
+      setChargePriorities(y);
+    }
+  };
+
+  useEffect(() => {
+    doShit();
+  }, [invo]);
   return (
     <>
       <div class="page-content">
@@ -1331,27 +1347,44 @@ function IssuesTypes() {
                               </div>
                             </div>
                             <div class=" mt-4">
-                              <span>
-                                {client?.invoicePaymentPriority
-                                  ?.split(",")
-                                  .map((m, index) => (
-                                    <>
-                                      {invo?.map(
-                                        (item) =>
-                                          item.id == m && (
-                                            <span>
-                                              {index + 1 <
-                                              client?.invoicePaymentPriority.split(
-                                                ","
-                                              ).length
-                                                ? item.name + " => "
-                                                : item.name}
-                                            </span>
-                                          )
-                                      )}
-                                    </>
-                                  ))}
-                              </span>
+                              {chargePriorities.length > 0 && (
+                                <>
+                                  <div className="align-items-center text-capitalize d-flex flex-wrap">
+                                    {chargePriorities?.map((item, index) => (
+                                      <>
+                                        <h5
+                                          className="ml-7px justify-content-center align-items-center"
+                                          key={item.id}
+                                        >
+                                          <Badge
+                                            className={
+                                              "bg-danger bg-soft border-2  text-black"
+                                            }
+                                            style={{
+                                              color: "black",
+                                            }}
+                                          >
+                                            {item.name}
+                                          </Badge>
+                                          <br />
+                                        </h5>
+                                        {index <
+                                          chargePriorities?.length - 1 && (
+                                          <i
+                                            style={{
+                                              fontSize: "15px",
+                                              margin: "0.5em",
+                                            }}
+                                            className={
+                                              "dripicons-arrow-thin-right mr-5 justify-content-center d-flex align-items-center"
+                                            }
+                                          />
+                                        )}
+                                      </>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
                               <br />
                             </div>
                           </div>
