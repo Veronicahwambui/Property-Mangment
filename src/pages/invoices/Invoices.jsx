@@ -517,7 +517,7 @@ function Invoices() {
                               <td className={"text-right"}>
                                 <span
                                   className={
-                                    invoice.billPaidAmount > invoice.billAmount
+                                    invoice.billPaidAmount >= invoice.billAmount
                                       ? "fw-semibold text-success"
                                       : "fw-semibold text-danger"
                                   }
