@@ -13,6 +13,7 @@ import StatusBadge from "../../components/StatusBadge";
 import ViewInvoice from '../../components/ViewInvoice';
 import Message from '../../components/Message';
 import { Modal } from "react-bootstrap";
+import ViewMessage from '../../components/ViewMessage';
 
 
 function UserDetails() {
@@ -47,6 +48,9 @@ function UserDetails() {
   }
 
   const [messageData, setMessageData] = useState({})
+  const [showMessage, setShowMessage] = useState(false)
+  const closeMessage = ()=>setShowMessage(false)
+
   let modalMessage = Object.keys(messageData)?.length > 0 && JSON.parse(messageData?.data);
 
 
@@ -674,57 +678,36 @@ function UserDetails() {
 
                             <tbody class="table-hover">
                               {communication?.map((com, index) => {
-
                                 let message = JSON.parse(com.data)
-
                                 return (
-                                  <tr key={com.id} onClick={() => setMessageData(communication[index])} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
-
+                                  <tr key={com.id} onClick={()=>{setMessageData(communication[index] ); setShowMessage(true)}} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
                                     <td>{index + 1}</td>
                                     {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
                                     <td class="">
                                       {/* <!-- put the index here --> */}
-
-                                      <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
-                                        <div class="avatar-xs m-0">
-                                          <span class="avatar-title rounded-circle bg-success bg-orange text-white">
-                                            AW
-                                          </span>
-                                        </div>
-
-                                      </div>
-
-
                                       <span class=" font-size-18 d-none d-md-flex">
-                                        {com.communicationType !== "EMAIL" ? <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i> :
+                                        { com.communicationType !== "EMAIL" ? <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i> :
                                           <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>}
-
                                       </span>
                                       <span class=" font-size-18 d-flex d-md-none">
                                         <br />
                                         <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
-                                        {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-
                                       </span>
-
-
-
                                     </td>
-
-                                    <td class="d-none"><span class="d-none">0</span></td>
-
                                     <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-
+                                    { com.communicationType == "EMAIL" &&
                                     <td class="the-msg the-msg-2">
                                       <span>{message?.model?.message}</span>
-
-                                    </td>
+                                    </td> }
+                                    { com.communicationType == "SMS" &&
+                                    <td class="the-msg the-msg-2 md-the-msg">
+                                      <span>{message?.text}</span>
+                                    </td> }
                                     <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
                                   </tr>
                                 )
                               }
                               )}
-
                             </tbody>
 
                           </table>
@@ -749,77 +732,8 @@ function UserDetails() {
 
 
               {/* <!-- message details modal --> */}
-              <div class="modal fade" id="messageDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content border-radius-0">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalCenterTitle">Email Details</h5>
-                      <span class="close font-28 cursor-pointer" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </span>
-                    </div>
+              <ViewMessage show={showMessage} messageData={messageData} closeMessage={closeMessage} />
 
-                    {messageData.communicationType === "EMAIL" &&
-                      <div class="modal-body">
-                        <div class="row">
-                          <div class="col-12">
-                            <div >
-                              <div>
-                                <div class="flex-grow-1  d-flex justify-content-between  mb-1 chat-user-box">
-                                  <p class="user-title m-0 text-capitalize"> <strong>Created by: </strong>{messageData?.createdBy}</p>
-                                  <p class="text-muted  pb-0"> <strong><i class="mdi mdi-email me-1" ></i> </strong>{messageData?.contact + " "}</p>
-                                </div>
-                              </div>
-
-                              <div>
-                                <div class="flex-grow-1  d-flex justify-content-between mb-3 chat-user-box">
-                                  <p class="user-title m-0 text-capitalize text-muted"><strong>from: </strong> {modalMessage?.from}</p>
-                                  <p class="text-muted  pb-0"> <strong>To: </strong>{modalMessage?.to}</p>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="flex-grow-1">
-                              {/* <h5 class="font-size-14">Subject :</h5> */}
-                              <p class="text-mute my-2 p-0 font-12px text-uppercase">{modalMessage?.subject} </p>
-                              {/* <h5 class="font-size-14 my-2">Message :</h5> */}
-                              <p class="text-muted m-0 p-0 font-12px">{modalMessage?.model?.message} </p>
-
-                              <p class="text-muted mt-3"><strong>Signature :</strong> {modalMessage?.model?.signature}</p>
-                              <p class="text-muted mt-0"><strong>Name :</strong> {modalMessage?.model?.name}</p>
-                              <p class="text-muted mt-2"><strong>Created on :</strong> {moment(messageData?.dateTimeCreated).format("dddd MMM DD YYYY")}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    }
-
-                    {messageData.communicationType !== "EMAIL" &&
-                      <div class="modal-body">
-                        <div class="row">
-                          <div class="col-12">
-                            <div >
-                              <div>
-                                <div class="flex-grow-1  d-flex align-items-center justify-content-between mb-3 chat-user-box">
-                                  <p class="user-title m-0 text-capitalize">{messageData?.createdBy}</p>
-                                  <p class="text-muted mt-1 pb-0"> <i class="mdi mdi-phone me-1"></i> {messageData?.contact}</p>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="flex-grow-1">
-                              <h5 class="font-size-14">Message</h5>
-                              <p class="text-muted m-0 p-0 font-12px">{modalMessage} </p>
-                              <p class="text-muted mt-3"> {moment(messageData.dateTimeCreated).format("dddd MMM DD YYYY")}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    }
-
-                  </div>
-                </div>
-              </div>
 
 
 

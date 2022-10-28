@@ -6,6 +6,7 @@ import { useParams, Link } from 'react-router-dom'
 import useTabs from '../../hooks/useTabs'
 import requestsServiceService from '../../services/requestsService.service'
 import AuthService from "../../services/auth.service";
+import ViewMessage from '../../components/ViewMessage'
 
 const docArr = []
 
@@ -275,7 +276,7 @@ function PremiseTenancy() {
     }
 
     const [newStatus, setNewStatus] = useState([])
-     console.log(newStatus);
+    console.log(newStatus);
 
     const [newStatusSelected, setNewStatusSelected] = useState('')
     const [newStatusAction, setNewStatusAction] = useState('')
@@ -319,9 +320,9 @@ function PremiseTenancy() {
                     color: "warning"
                 })
             }
- 
+
             setTimeout(() => {
-                clear() 
+                clear()
             }, 3000)
 
         }).catch((res) => {
@@ -345,6 +346,9 @@ function PremiseTenancy() {
     //communication
 
     const [communication, setCommunication] = useState([])
+    const [messageData, setMessageData] = useState({})
+    const [showMessage, setShowMessage] = useState(false)
+    const closeMessage = () => setShowMessage(false)
 
     let clientId = AuthService.getClientId()
 
@@ -357,11 +361,11 @@ function PremiseTenancy() {
 
     }
 
-   const handleStatusAction = (e)=> {
-        setNewStatusAction( e.target.value) 
-   }
+    const handleStatusAction = (e) => {
+        setNewStatusAction(e.target.value)
+    }
 
-   console.log(newStatusSelected);
+    console.log(newStatusSelected);
     return (
         <div>
             <div className='page-content'>
@@ -809,7 +813,7 @@ function PremiseTenancy() {
                                                                                 {issue.nextState?.status?.toLowerCase()?.replace(/_/g, " ")}
                                                                             </button>}</td>
                                                                             <td>
-                                                                                <td className='text-nowrap'>{ issue.nextState?.length >= 1 && issue.issue.endDate === null && <button onClick={() => handleNextSatatus(issue.nextState.chargeable, issue.nextState.applicableCharge, issue.issue.id, issue.nextState)} className="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                                                <td className='text-nowrap'>{issue.nextState?.length >= 1 && issue.issue.endDate === null && <button onClick={() => handleNextSatatus(issue.nextState.chargeable, issue.nextState.applicableCharge, issue.issue.id, issue.nextState)} className="btn btn-sm btn-warning" data-bs-toggle="modal"
                                                                                     data-bs-target=".update-issues">
                                                                                     next status
                                                                                 </button>}</td>
@@ -836,57 +840,57 @@ function PremiseTenancy() {
                                         <div class="modal-dialog modal-md modal-dialog-centered mb-5">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Update issue to <span className='text-capitalize text-success'>{ newStatusSelected?.toLowerCase()?.replace(/_/g, " ")}</span> </h5>
+                                                    <h5 class="modal-title">Update issue to <span className='text-capitalize text-success'>{newStatusSelected?.toLowerCase()?.replace(/_/g, " ")}</span> </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
 
                                                 <form onSubmit={(e) => moveToNextStep(e)}>
                                                     <div className="modal-body">
-                                                    <div class="row mb-3">
-                                      <label for=" " class=" ">
-                                        Next Status Action : {" "}
-                                        <strong class="text-danger ">*</strong>
-                                      </label>
-                                      <div class="d-flex ">
-                                       { newStatus.length > 1 | newStatus.length === 1  && <div class="form-check me-3">
-                                          <input
-                                            class="form-check-input"
-                                            type="radio"
-                                            onChange = { e => { handleStatusAction(e); setNewStatusSelected(newStatus[0]?.status) }}
-                                            name="gender"
-                                            value={newStatus[0]?.stateAction}
-                                            checked= { newStatusAction == newStatus[0]?.stateAction ? true : false  }
-                                            required
-                                          />
-                                          <label
-                                            class="form-check-label"
-                                            for="caretaker-male"
-                                          >
-                                          { newStatus[0]?.stateAction }
-                                          </label>
-                                        </div> }
+                                                        <div class="row mb-3">
+                                                            <label for=" " class=" ">
+                                                                Next Status Action : {" "}
+                                                                <strong class="text-danger ">*</strong>
+                                                            </label>
+                                                            <div class="d-flex ">
+                                                                {newStatus.length > 1 | newStatus.length === 1 && <div class="form-check me-3">
+                                                                    <input
+                                                                        class="form-check-input"
+                                                                        type="radio"
+                                                                        onChange={e => { handleStatusAction(e); setNewStatusSelected(newStatus[0]?.status) }}
+                                                                        name="gender"
+                                                                        value={newStatus[0]?.stateAction}
+                                                                        checked={newStatusAction == newStatus[0]?.stateAction ? true : false}
+                                                                        required
+                                                                    />
+                                                                    <label
+                                                                        class="form-check-label"
+                                                                        for="caretaker-male"
+                                                                    >
+                                                                        {newStatus[0]?.stateAction}
+                                                                    </label>
+                                                                </div>}
 
-                                       { newStatus?.length > 1 && 
-                                       <div class="form-check me-3">
-                                          <input
-                                            onChange={ e => { setNewStatusAction( e.target.value); setNewStatusSelected(newStatus[1]?.status)}}
-                                            class="form-check-input"
-                                            type="radio"
-                                            name="gender"
-                                            value={newStatus[1]?.stateAction}
-                                            required
-                                          />
-                                          <label
-                                            class="form-check-label"
-                                            for="caretaker-female"
-                                          >
-                                           {newStatus[1]?.stateAction}
-                                          </label>
-                                        </div> }
-                                      </div>
-                                    </div>
+                                                                {newStatus?.length > 1 &&
+                                                                    <div class="form-check me-3">
+                                                                        <input
+                                                                            onChange={e => { setNewStatusAction(e.target.value); setNewStatusSelected(newStatus[1]?.status) }}
+                                                                            class="form-check-input"
+                                                                            type="radio"
+                                                                            name="gender"
+                                                                            value={newStatus[1]?.stateAction}
+                                                                            required
+                                                                        />
+                                                                        <label
+                                                                            class="form-check-label"
+                                                                            for="caretaker-female"
+                                                                        >
+                                                                            {newStatus[1]?.stateAction}
+                                                                        </label>
+                                                                    </div>}
+                                                            </div>
+                                                        </div>
                                                         <div class="col-12">
-                                                            
+
                                                             <div class="mb-4 ">
                                                                 <label for="basicpill-firstname-input ">Issue description <strong class="text-danger ">*</strong></label>
                                                                 <textarea required name="description" class="form-control " placeholder="Enter details on the issue" id="" cols="30" rows="5" onChange={(e) => handleIssues(e)} value={issueDetails.description} ></textarea>
@@ -1004,9 +1008,6 @@ function PremiseTenancy() {
 
                             {activeLink === 5 && (
                                 <div>
-
-
-
                                     <div class="container-fluid">
 
                                         {/* <!-- start page title --> */}
@@ -1023,23 +1024,13 @@ function PremiseTenancy() {
 
                                         <div class="row">
                                             <div class="col-12">
-
                                                 {/* <!-- Right Sidebar --> */}
                                                 <div class="mb-3">
-
                                                     <div class="card">
                                                         <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                                                             <div class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100" role="toolbar">
-
                                                                 <div class="d-flex align-items-center flex-grow-1">
-
-
-
-
                                                                 </div>
-
-
-
                                                             </div>
                                                         </div>
                                                         <div class="card-body the-inbox">
@@ -1059,53 +1050,37 @@ function PremiseTenancy() {
                                                                 </thead>
 
                                                                 <tbody class="table-hover">
-                                                                    {communication?.map((com, index) => (
-
-
-                                                                        <tr data-id="1">
-                                                                            <td>{index + 1}</td>
-                                                                            {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
-                                                                            <td class="">
-                                                                                {/* <!-- put the index here --> */}
-
-                                                                                <div class="flex-shrink-0 align-self-center m-0 p-0 d-flex d-md-none">
-                                                                                    <div class="avatar-xs m-0">
-                                                                                        <span class="avatar-title rounded-circle bg-success bg-orange text-white">
-                                                                                            AW
-                                                                                        </span>
-                                                                                    </div>
-
-                                                                                </div>
-
-
-                                                                                <span class=" font-size-18 d-none d-md-flex">
-                                                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i>
-                                                                                    <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>
-
-                                                                                </span>
-                                                                                <span class=" font-size-18 d-flex d-md-none">
-                                                                                    <br />
-                                                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
-                                                                                    {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-
-                                                                                </span>
-
-
-
-                                                                            </td>
-
-                                                                            <td class="d-none"><span class="d-none">0</span></td>
-
-                                                                            <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-                                                                            <td class="the-msg the-msg-2">
-
-
-                                                                            </td>
-                                                                            <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
-                                                                        </tr>
-                                                                    )
+                                                                    {communication?.map((com, index) => {
+                                                                        let message = JSON.parse(com.data)
+                                                                        return (
+                                                                            <tr key={com.id} onClick={() => { setMessageData(communication[index]); setShowMessage(true) }} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
+                                                                                <td>{index + 1}</td>
+                                                                                {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
+                                                                                <td class="">
+                                                                                    {/* <!-- put the index here --> */}
+                                                                                    <span class=" font-size-18 d-none d-md-flex">
+                                                                                        {com.communicationType !== "EMAIL" ? <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i> :
+                                                                                            <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>}
+                                                                                    </span>
+                                                                                    <span class=" font-size-18 d-flex d-md-none">
+                                                                                        <br />
+                                                                                        <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">{com.communicationType}</span></i>
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
+                                                                                {com.communicationType == "EMAIL" &&
+                                                                                    <td class="the-msg the-msg">
+                                                                                        <span>{message?.model?.message}</span>
+                                                                                    </td>}
+                                                                                {com.communicationType == "SMS" &&
+                                                                                    <td class="the-msg">
+                                                                                        <span>{message?.text}</span>
+                                                                                    </td>}
+                                                                                <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
+                                                                            </tr>
+                                                                        )
+                                                                    }
                                                                     )}
-
                                                                 </tbody>
 
                                                             </table>
@@ -1127,11 +1102,7 @@ function PremiseTenancy() {
 
                                     </div>
                                     {/* <!-- container-fluid --> */}
-
-
-
-
-
+                                    <ViewMessage show={showMessage} messageData={messageData} closeMessage={closeMessage} />
 
                                 </div>
 

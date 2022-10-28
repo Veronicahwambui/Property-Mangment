@@ -3,6 +3,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
+import ViewMessage from "../../components/ViewMessage";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
 
@@ -15,11 +16,14 @@ function Messages() {
     const [pageData, setPageData] = useState([])
     const [messageData, setMessageData] = useState({})
     const [loading, setLoading]= useState(true)
-
-
+    
+    const [show, setShow]= useState(false)
+     const closeMessage = () => setShow(false)
+    
 
     const handlePageClick = (data) => {
         setPage(() => data.selected);
+        
     };
 
     useEffect(() => {
@@ -36,10 +40,8 @@ function Messages() {
         }).catch((err)=>{
             setLoading(false)
         })
-    }, [page, perPage, type]);
+    }, [ page, perPage, type ]);
 
-
- let modalMessage = Object.keys(messageData)?.length > 0 && JSON.parse(messageData?.data).text;
     return (
         <div className="page-content">
             <div className="container-fluid">
@@ -101,7 +103,7 @@ function Messages() {
                                     {pageData?.map((mes , index) =>{
                                         let message = JSON.parse(mes.data) 
                                         return (
-                                        <tr key={mes.id} onClick={()=> setMessageData(pageData[index] )} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
+                                        <tr key={mes.id} onClick={()=>{setMessageData(pageData[index]);setShow(true)}} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
 
                                             <td>
                                                 <span class=" font-size-18 d-md-flex">
@@ -144,7 +146,7 @@ function Messages() {
                                             nextClassName="page-item"
                                             nextLinkClassName="page-link"
                                             activeClassName="active"
-                                            onPageChange={() => handlePageClick}
+                                            onPageChange={(data) => handlePageClick(data)}
                                             hrefBuilder={(page, pageCount, selected) =>
                                                 page >= 1 && page <= pageCount ? `/page/${page}` : '#'
                                             }
@@ -158,40 +160,7 @@ function Messages() {
                 </div>
 
                 {/* <!-- message details modal --> */}
-                <div class="modal fade" id="messageDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content border-radius-0">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalCenterTitle">Message Details</h5>
-                                <span class="close font-28 cursor-pointer" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </span>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div >
-                                            <div>
-                                                <div class="flex-grow-1  d-flex align-items-center justify-content-between mb-3 chat-user-box">
-                                                    <p class="user-title m-0 text-capitalize">{messageData?.createdBy}</p>
-                                                    <p class="text-muted mt-1 pb-0"> <i class="mdi mdi-phone me-1"></i> {messageData?.contact}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h5 class="font-size-14">Message</h5>
-                                            <p class="text-muted m-0 p-0 font-12px">{ modalMessage} </p>
-                                            <p class="text-muted mt-3"> {moment(messageData.dateTimeCreated).format("dddd MMM DD YYYY")}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
+                <ViewMessage show={show} messageData={messageData} closeMessage={closeMessage} />
             </div>
 
 
