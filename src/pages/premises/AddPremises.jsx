@@ -533,14 +533,7 @@ function AddProperties() {
       };
     } else setDocBody({ ...docBody, [event.target.name]: event.target.value });
     
-    if(event.target.value === "documentTypeId") {
-      let id = event.target.value.split("-")[0];
-      let name=event.target.value.split("-")[1];
-      let d={
-        name: name,
-        id: id,
-      };
-    }
+  
 
 
   };

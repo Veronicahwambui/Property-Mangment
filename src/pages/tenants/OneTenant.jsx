@@ -151,6 +151,9 @@ function OneTenant() {
       setTenantData(res.data.data);
       setCounties(res.data.data)
       setTenantTypeName(res.data.data.tenant.tenantType);
+      setAccountRef(res.data.data.authAccount
+      )
+
       
     });
   };
@@ -1381,6 +1384,34 @@ function OneTenant() {
     event.preventDefault();
     getTenantStatements();
   };
+
+  // const [email, setEmail]= useState("");
+  const[username, setUsername]=useState("")
+
+const account=() => {
+  let data=JSON.stringify({
+
+    email: email,
+    permission: [
+      
+    ],
+    userName: username,
+
+  });
+  requestsServiceService.createAccount(userId,"LANDLORD",data).then((res) =>{
+    console.log(res.data);
+
+  });
+}
+
+
+  const activateAccount=()=>{
+    requestsServiceService.deactiveAccount(1,"LANDLORD").then((res)=>{
+
+
+    })
+  }
+const [accountRef,setAccountRef]=useState([])
   return (
     <div className="page-content">
       <div className="content-fluid">
@@ -1527,8 +1558,23 @@ function OneTenant() {
               <div className="col-xl-4">
                 <div className="card calc-h-3px">
                   <div className="card-body pb-1">
-                    <div>
-                      <div className="text-end">
+                    <div
+                    >
+                       <div class="d-flex">
+                      {accountRef == null && (
+                        <>
+                      <button
+                       
+                        type="button"
+                        className="btn btn-primary dropdown-toggle option-selector me-4"
+                        data-bs-toggle="modal"
+                        data-bs-target="#add-new-account"
+                      >
+                      Create Account
+                       
+                      </button>
+                      </>
+                      )}
                         <button
                           data-bs-toggle="modal"
                           data-bs-target="#edit-tenant-detail"
@@ -1552,7 +1598,17 @@ function OneTenant() {
                           <i className="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
                           Edit Details
                         </button>
+               
+                       
+                    
                       </div>
+
+
+
+
+
+
+                     
                       <div className="mb-4 me-3">
                         <i className="mdi mdi-account-circle text-primary h1"></i>
                       </div>
@@ -4288,6 +4344,96 @@ function OneTenant() {
             </Modal.Footer>
           </form>
         </Modal>
+
+
+         {/* create modal */}
+       <div
+        class="modal fade"
+        id="add-new-account"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                account();
+              }}
+            >
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+               Create Account
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        {" "}
+                        Email <strong class="text-danger">
+                          *
+                        </strong>{" "}
+                      </label>
+                      <input
+                    
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter email"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        {" "}
+                        Username <strong class="text-danger">
+                          *
+                        </strong>{" "}
+                      </label>
+                      <input
+                    
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter username"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+          
         <footer class="footer">
           <div class="container-fluid">
             <div class="row">
