@@ -1262,6 +1262,10 @@ class RequestsService {
         data.type
     );
   }
+
+  createAccount(entityId, type, data){
+    return axiosInstance.post(baseUrl+"/accounts/createAuthAccount/"+entityId +"?type="+type, (data));
+  }
 }
 
 export default new RequestsService();

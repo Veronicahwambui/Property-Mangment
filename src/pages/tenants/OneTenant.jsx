@@ -54,6 +54,7 @@ function OneTenant() {
   const [premises, setPremises] = useState([]);
   const [units, setUnits] = useState([]);
   const [premId, setPremId] = useState("");
+  const [countries, setCounties] = useState([]);
 
   const [companyLocation, setCompanyLocation] = useState("");
   //documents
@@ -152,6 +153,7 @@ function OneTenant() {
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
+      setCounties(res.data.data)
       setTenantTypeName(res.data.data.tenant.tenantType);
       setAccountStatus(res.data.data.authAccount?.blocked);
     });
@@ -584,6 +586,8 @@ function OneTenant() {
     createDocumentTypes();
     getDocument();
     fetchCommunication();
+    
+  
   }, []);
 
   const createDocumentTypes = (id) => {
@@ -833,6 +837,7 @@ function OneTenant() {
 
   useEffect(() => {
     getInvoices();
+    
   }, [size, page, activeInvoice, transaction, paymentItems]);
   const sort = (event) => {
     event.preventDefault();
@@ -1003,6 +1008,7 @@ function OneTenant() {
     useState([]);
   useEffect(() => {
     fetchDashData();
+    
   }, [userId, tenantData]);
   // fetch data
   const fetchDashData = () => {
@@ -1586,8 +1592,23 @@ function OneTenant() {
                 )}
                 <div className="card calc-h-3px">
                   <div className="card-body pb-1">
-                    <div>
-                      <div className="text-end">
+                    <div
+                    >
+                       <div class="d-flex">
+                      {accountRef == null && (
+                        <>
+                      <button
+                       
+                        type="button"
+                        className="btn btn-primary dropdown-toggle option-selector me-4"
+                        data-bs-toggle="modal"
+                        data-bs-target="#add-new-account"
+                      >
+                      Create Account
+                       
+                      </button>
+                      </>
+                      )}
                         <button
                           data-bs-toggle="modal"
                           data-bs-target="#edit-tenant-detail"
@@ -1642,6 +1663,13 @@ function OneTenant() {
                           </>
                         )}
                       </div>
+
+
+
+
+
+
+                     
                       <div className="mb-4 me-3">
                         <i className="mdi mdi-account-circle text-primary h1"></i>
                       </div>
@@ -3625,8 +3653,16 @@ function OneTenant() {
                             onChange={(e) => setNationality(e.target.value)}
                             value={nationality}
                           >
-                            <option></option>
-                            <option value="Kenya">Kenyan</option>
+                            <option value={""}>Select Nationality</option>
+                                {countries.length > 0 &&
+                                  countries.map((country, index) => (
+                                    <option
+                                      key={index + country.code}
+                                      value={country.name}
+                                    >
+                                      {country.name}
+                                    </option>
+                                  ))}
                           </select>
                         </div>
 
@@ -4381,6 +4417,96 @@ function OneTenant() {
             </Modal.Footer>
           </form>
         </Modal>
+
+
+         {/* create modal */}
+       <div
+        class="modal fade"
+        id="add-new-account"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                account();
+              }}
+            >
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+               Create Account
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        {" "}
+                        Email <strong class="text-danger">
+                          *
+                        </strong>{" "}
+                      </label>
+                      <input
+                    
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter email"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">
+                        {" "}
+                        Username <strong class="text-danger">
+                          *
+                        </strong>{" "}
+                      </label>
+                      <input
+                    
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter username"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+          
         <footer class="footer">
           <div class="container-fluid">
             <div class="row">
