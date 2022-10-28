@@ -632,7 +632,7 @@ function Settlements() {
             </div>
             <div>
               <>
-                {foundRecipients.length < 5 && (
+                {foundRecipients?.length < 5 && (
                   <>
                     {foundRecipients?.map((item) => (
                       <div className={"d-flex"}>
