@@ -1244,7 +1244,7 @@ class RequestsService {
   }
 
   lockAccount(data) {
-    return axiosInstance.post(
+    return axiosInstance.get(
       baseUrl +
         "/accounts/lockUserAccount/" +
         data.entityId +
@@ -1254,7 +1254,7 @@ class RequestsService {
   }
 
   unlockAccount(data) {
-    return axiosInstance.post(
+    return axiosInstance.get(
       baseUrl +
         "/accounts/unlockUserAccount/" +
         data.entityId +
