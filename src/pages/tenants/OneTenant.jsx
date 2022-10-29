@@ -159,7 +159,7 @@ function OneTenant() {
       setAccountRef(res.data.data.authAccount
       )
 
-      
+
     });
   };
 
@@ -590,8 +590,8 @@ function OneTenant() {
     createDocumentTypes();
     getDocument();
     fetchCommunication();
-    
-  
+
+
   }, []);
 
   const createDocumentTypes = (id) => {
@@ -841,7 +841,7 @@ function OneTenant() {
 
   useEffect(() => {
     getInvoices();
-    
+
   }, [size, page, activeInvoice, transaction, paymentItems]);
   const sort = (event) => {
     event.preventDefault();
@@ -926,11 +926,10 @@ function OneTenant() {
     setmode(mode);
   };
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${
-      inv.billerBillNo
-    } balance is ${formatCurrency.format(
-      inv.billAmount - inv.billPaidAmount
-    )}. Click here to pay for it`;
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
+      } balance is ${formatCurrency.format(
+        inv.billAmount - inv.billPaidAmount
+      )}. Click here to pay for it`;
     let senderId =
       JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
@@ -953,7 +952,7 @@ function OneTenant() {
       $(".the-message-maker").addClass("email-overlay-transform");
     }, 0);
   };
-  useEffect(() => {}, [details, mode]);
+  useEffect(() => { }, [details, mode]);
 
   const clear2 = () => {
     setDetails({
@@ -1012,7 +1011,7 @@ function OneTenant() {
     useState([]);
   useEffect(() => {
     fetchDashData();
-    
+
   }, [userId, tenantData]);
   // fetch data
   const fetchDashData = () => {
@@ -1393,6 +1392,7 @@ function OneTenant() {
       .lockAccount(data)
       .then((res) => {
         if (res.data.status) {
+          fetchAll();
           setError({
             ...error,
             message: res.data.message,
@@ -1423,6 +1423,7 @@ function OneTenant() {
       .unlockAccount(data)
       .then((res) => {
         if (res.data.status) {
+          fetchAll();
           setError({
             ...error,
             message: res.data.message,
@@ -1446,32 +1447,39 @@ function OneTenant() {
   };
 
   // const [email, setEmail]= useState("");
-  const[username, setUsername]=useState("")
+  const [username, setUsername] = useState("")
 
-const account=() => {
-  let data=JSON.stringify({
+  const account = () => {
+    let data = JSON.stringify({
 
-    email: email,
-    permission: [
-      
-    ],
-    userName: username,
+      email: email,
+      permission: [
 
-  });
-  requestsServiceService.createAccount(userId,"LANDLORD",data).then((res) =>{
-    console.log(res.data);
+      ],
+      userName: username,
 
-  });
-}
+    });
+    requestsServiceService.createAccount(userId, "TENANT", data).then((res) => {
+      fetchAll();
+      console.log(res.data);
 
-
-  const activateAccount=()=>{
-    requestsServiceService.deactiveAccount(1,"LANDLORD").then((res)=>{
-
-
-    })
+      if (res.data.status) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success",
+        });
+      } else {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      }
+    });
   }
-const [accountRef,setAccountRef]=useState([])
+
+  const [accountRef, setAccountRef] = useState([])
   return (
     <div className="page-content">
       <div className="content-fluid">
@@ -1625,21 +1633,8 @@ const [accountRef,setAccountRef]=useState([])
                   <div className="card-body pb-1">
                     <div
                     >
-                       <div class="d-flex">
-                      {accountRef == null && (
-                        <>
-                      <button
-                       
-                        type="button"
-                        className="btn btn-primary dropdown-toggle option-selector me-4"
-                        data-bs-toggle="modal"
-                        data-bs-target="#add-new-account"
-                      >
-                      Create Account
-                       
-                      </button>
-                      </>
-                      )}
+                      <div class="d-flex">
+
                         <button
                           data-bs-toggle="modal"
                           data-bs-target="#edit-tenant-detail"
@@ -1664,8 +1659,21 @@ const [accountRef,setAccountRef]=useState([])
                         >
                           <i className="mdi mdi-account-edit font-size-16 align-middle me-2"></i>
                           Edit Details
-                        </button>
-                        {accountStatus !== null && (
+                        </button>{accountRef == null ? (
+                          <>
+                            <button
+
+                              type="button"
+                              className="btn btn-warning dropdown-toggle option-selector me-4"
+                              data-bs-toggle="modal"
+                              data-bs-target="#add-new-account"
+                            >
+                              Create Auth Account
+
+                            </button>
+                          </>
+                        )
+                          :
                           <>
                             {accountStatus === true && (
                               <>
@@ -1692,7 +1700,7 @@ const [accountRef,setAccountRef]=useState([])
                               </>
                             )}
                           </>
-                        )}
+                        }
                       </div>
 
 
@@ -1700,7 +1708,7 @@ const [accountRef,setAccountRef]=useState([])
 
 
 
-                     
+
                       <div className="mb-4 me-3">
                         <i className="mdi mdi-account-circle text-primary h1"></i>
                       </div>
@@ -1709,8 +1717,8 @@ const [accountRef,setAccountRef]=useState([])
                           {tenantData?.tenant?.tenantType === "COMPANY"
                             ? tenantData?.tenant?.companyName
                             : tenantData?.tenant?.firstName +
-                              " " +
-                              tenantData?.tenant?.lastName}
+                            " " +
+                            tenantData?.tenant?.lastName}
                           {tenantData?.tenant?.active ? (
                             <span className="badge badge-pill badge-soft-success font-size-11 mr-7px">
                               Active
@@ -2735,7 +2743,7 @@ const [accountRef,setAccountRef]=useState([])
                                 <td>{statement.paidBy}</td>
                                 <td>
                                   {statement?.tenant?.tenantType ===
-                                  "INDIVIDUAL" ? (
+                                    "INDIVIDUAL" ? (
                                     <>
                                       {statement?.tenant?.firstName}{" "}
                                       {statement?.tenant?.lastName}
@@ -2780,20 +2788,20 @@ const [accountRef,setAccountRef]=useState([])
 
                                         {statement.utilisedAmount <
                                           statement.receiptAmount && (
-                                          <a
-                                            className="dropdown-item  cursor-pointer"
-                                            onClick={() => {
-                                              handleShow();
-                                              setUtilizeValues(
-                                                statement?.id,
-                                                statement?.tenant?.id
-                                              );
-                                            }}
-                                          >
-                                            <i className="font-size-15 mdi mdi-account-check me-3 "></i>
-                                            Utilize
-                                          </a>
-                                        )}
+                                            <a
+                                              className="dropdown-item  cursor-pointer"
+                                              onClick={() => {
+                                                handleShow();
+                                                setUtilizeValues(
+                                                  statement?.id,
+                                                  statement?.tenant?.id
+                                                );
+                                              }}
+                                            >
+                                              <i className="font-size-15 mdi mdi-account-check me-3 "></i>
+                                              Utilize
+                                            </a>
+                                          )}
                                       </div>
                                     </div>
                                   </div>
@@ -2915,7 +2923,7 @@ const [accountRef,setAccountRef]=useState([])
                                 <td>{statement.paidBy}</td>
                                 <td>
                                   {statement?.tenant?.tenantType ===
-                                  "INDIVIDUAL" ? (
+                                    "INDIVIDUAL" ? (
                                     <>
                                       {statement?.tenant?.firstName}{" "}
                                       {statement?.tenant?.lastName}
@@ -3169,14 +3177,14 @@ const [accountRef,setAccountRef]=useState([])
                                       <span
                                         className={
                                           invoice.billPaidAmount >
-                                          invoice.billAmount
+                                            invoice.billAmount
                                             ? "fw-semibold text-success"
                                             : "fw-semibold text-danger"
                                         }
                                       >
                                         {formatCurrency.format(
                                           invoice.billAmount -
-                                            invoice.billPaidAmount
+                                          invoice.billPaidAmount
                                         )}
                                       </span>
                                     </td>
@@ -3685,15 +3693,15 @@ const [accountRef,setAccountRef]=useState([])
                             value={nationality}
                           >
                             <option value={""}>Select Nationality</option>
-                                {countries.length > 0 &&
-                                  countries.map((country, index) => (
-                                    <option
-                                      key={index + country.code}
-                                      value={country.name}
-                                    >
-                                      {country.name}
-                                    </option>
-                                  ))}
+                            {countries.length > 0 &&
+                              countries.map((country, index) => (
+                                <option
+                                  key={index + country.code}
+                                  value={country.name}
+                                >
+                                  {country.name}
+                                </option>
+                              ))}
                           </select>
                         </div>
 
@@ -4450,94 +4458,94 @@ const [accountRef,setAccountRef]=useState([])
         </Modal>
 
 
-         {/* create modal */}
-       <div
-        class="modal fade"
-        id="add-new-account"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                account();
-              }}
-            >
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-               Create Account
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">
-                        {" "}
-                        Email <strong class="text-danger">
-                          *
-                        </strong>{" "}
-                      </label>
-                      <input
-                    
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter email"
-                      />
+        {/* create modal */}
+        <div
+          class="modal fade"
+          id="add-new-account"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  account();
+                }}
+              >
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">
+                    Create Authentication Account
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group mb-4">
+                        <label for="">
+                          {" "}
+                          Email <strong class="text-danger">
+                            *
+                          </strong>{" "}
+                        </label>
+                        <input
+
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          type="text"
+                          class="form-control"
+                          placeholder="Enter email"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group mb-4">
+                        <label for="">
+                          {" "}
+                          Username <strong class="text-danger">
+                            *
+                          </strong>{" "}
+                        </label>
+                        <input
+
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          type="text"
+                          class="form-control"
+                          placeholder="Enter username"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="">
-                        {" "}
-                        Username <strong class="text-danger">
-                          *
-                        </strong>{" "}
-                      </label>
-                      <input
-                    
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter username"
-                      />
-                    </div>
-                  </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-light"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    Save
+                  </button>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="submit" class="btn btn-primary">
-                  Save
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-          
+
         <footer class="footer">
           <div class="container-fluid">
             <div class="row">

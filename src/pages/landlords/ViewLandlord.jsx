@@ -1358,17 +1358,24 @@ function ViewLandlord() {
     });
     requestsServiceService.createAccount(userId, "LANDLORD", data).then((res) => {
       console.log(res.data);
+      getlandlords();
 
+      if (res.data.status) {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "success",
+        });
+      } else {
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "danger",
+        });
+      }
     });
   }
 
-
-  const activateAccount = () => {
-    requestsServiceService.deactiveAccount(1, "LANDLORD").then((res) => {
-
-
-    })
-  }
   const [accountRef, setAccountRef] = useState([])
   return (
     <>
@@ -1532,7 +1539,7 @@ function ViewLandlord() {
                       <div>
 
 
-                        <div class="d-flex">
+                        <div class="d-flex button-group">
 
                           <button
                             type="button"
@@ -1543,16 +1550,16 @@ function ViewLandlord() {
                             Edit Details
                           </button>
 
-                          {accountStatus === null ? (
+                          {accountRef === null ? (
                             <>
                               <button
 
                                 type="button"
-                                className="btn btn-primary dropdown-toggle option-selector me-4"
+                                className="btn btn-warning dropdown-toggle option-selector me-4"
                                 data-bs-toggle="modal"
                                 data-bs-target="#add-new-account"
                               >
-                                Create Account
+                                Create Auth Account
 
                               </button>
                             </>
