@@ -166,8 +166,7 @@ function ViewLandlord() {
       setDocuments(res.data.data.documents);
       setPremises(res.data.data.premises);
       setAccountStatus(res.data.data.authAccount?.blocked);
-      setAccountRef(res.data.data.authAccount
-      )
+      setAccountRef(res.data.data.authAccount)
     });
   };
 
@@ -1289,6 +1288,7 @@ function ViewLandlord() {
       .lockAccount(data)
       .then((res) => {
         if (res.data.status) {
+          getlandlords();
           setError({
             ...error,
             message: res.data.message,
@@ -1319,6 +1319,7 @@ function ViewLandlord() {
       .unlockAccount(data)
       .then((res) => {
         if (res.data.status) {
+          getlandlords();
           setError({
             ...error,
             message: res.data.message,
@@ -1600,7 +1601,7 @@ function ViewLandlord() {
                     <div>
                       <h5 className="text-capitalize">
                         {landlord?.landLordType === "CORPORATE"
-                          ? l.firstName + " " + l.lastName
+                          ? landlord.firstName + " " + landlord.lastName
                           : landlord?.firstName +
                           " " +
                           landlord?.lastName +
@@ -4417,7 +4418,7 @@ function ViewLandlord() {
           <div className="modal-content">
             <div className="modal-body">
               <center>
-                <h5>Block this tenant ?</h5>
+                <h5>Block {landlord.firstName}'s authentication account?</h5>
               </center>
             </div>
             <div className="modal-footer">
@@ -4453,7 +4454,7 @@ function ViewLandlord() {
           <div className="modal-content">
             <div className="modal-body">
               <center>
-                <h5>Unblock this tenant ?</h5>
+                <h5>Unblock {landlord.firstName}'s authentication account?</h5>
               </center>
             </div>
             <div className="modal-footer">
