@@ -156,6 +156,10 @@ function OneTenant() {
       setCounties(res.data.data)
       setTenantTypeName(res.data.data.tenant.tenantType);
       setAccountStatus(res.data.data.authAccount?.blocked);
+      setAccountRef(res.data.data.authAccount
+      )
+
+      
     });
   };
 
@@ -1441,6 +1445,33 @@ function OneTenant() {
       });
   };
 
+  // const [email, setEmail]= useState("");
+  const[username, setUsername]=useState("")
+
+const account=() => {
+  let data=JSON.stringify({
+
+    email: email,
+    permission: [
+      
+    ],
+    userName: username,
+
+  });
+  requestsServiceService.createAccount(userId,"LANDLORD",data).then((res) =>{
+    console.log(res.data);
+
+  });
+}
+
+
+  const activateAccount=()=>{
+    requestsServiceService.deactiveAccount(1,"LANDLORD").then((res)=>{
+
+
+    })
+  }
+const [accountRef,setAccountRef]=useState([])
   return (
     <div className="page-content">
       <div className="content-fluid">
