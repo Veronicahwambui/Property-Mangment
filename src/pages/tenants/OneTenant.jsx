@@ -19,6 +19,8 @@ import DatePicker from "react-datepicker";
 import StatusBadge from "../../components/StatusBadge";
 import ViewInvoice from "../../components/ViewInvoice";
 import { confirmAlert } from "react-confirm-alert";
+import data from "../data/coutries.json";
+
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -149,7 +151,7 @@ function OneTenant() {
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
-      setCounties(res.data.data)
+      setCounties(data);
       setTenantTypeName(res.data.data.tenant.tenantType);
       setAccountRef(res.data.data.authAccount
       )
@@ -185,9 +187,8 @@ function OneTenant() {
     requestsServiceService.updateTenantsDetails(details).then((res) => {
       fetchAll();
      
-
+      
      
-
       $( "#edit-tenant-detail").modal("hide");
       if (res.data.status) {
         setError({
@@ -235,6 +236,9 @@ function OneTenant() {
     // console.log(details)
   };
   // console.log( editTenantsDetails)
+
+  // console.log(data)
+
   const handleChangeTenantsDetails = (
     detailsId,
     tenantTypeName,
@@ -279,8 +283,9 @@ function OneTenant() {
       unitCondition: unitCondition,
     });
     requestsServiceService.updateTenant(data).then((res) => {
+      // console.log(res.data);
       fetchAll();
-   
+      
       
 
     });
@@ -3582,8 +3587,8 @@ const [accountRef,setAccountRef]=useState([])
                             value={nationality}
                           >
                             <option value={""}>Select Nationality</option>
-                                {countries.length > 0 &&
-                                  countries.map((country, index) => (
+                                {
+                                  countries?.map((country, index) => (
                                     <option
                                       key={index + country.code}
                                       value={country.name}
