@@ -2,8 +2,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from 'react-paginate'
-import { Link } from 'react-router-dom'
-import ViewEmail from "../../components/ViewEmail";
+import { Link, useLocation } from 'react-router-dom'
 import ViewMessage from "../../components/ViewMessage";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
@@ -20,6 +19,7 @@ function Emails() {
     const [show, setShow] = useState(false)
     const closeEmail = () => setShow(false)
 
+    
     const handlePageClick = (data) => {
         setPage(() => data.selected);
         // LOADER ANIMATION  

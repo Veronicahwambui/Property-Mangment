@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import authService from "../../services/auth.service";
 import { Modal, Button } from "react-bootstrap";
@@ -21,6 +21,7 @@ import numeral from "numeral";
 import ViewInvoice from "../../components/ViewInvoice";
 
 function OnePremise() {
+ 
   const [activeLink, setActiveLink] = useTabs();
   const [failedLandlordUploads, setFailedLandlordUploads] = useState([]);
   const [monthlyCollectionSummaryRevenue, setMonthlyCollectionSummaryRevenue] =

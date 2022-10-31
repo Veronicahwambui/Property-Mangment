@@ -10,7 +10,7 @@ import useTabs from '../../hooks/useTabs'
 
 
 function OnePremiseUnit() {
-    const [activeLink, setActiveLink] = useState(1)
+    const [activeLink, setActiveLink] = useTabs()
     const [unitDetails, setUnitDetails] = useState({})
     const [tenancy, setTenancy] = useState([])
     const [docArr, setdocArr] = useState([])

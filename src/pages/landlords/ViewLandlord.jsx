@@ -24,7 +24,7 @@ import ViewInvoice from "../../components/ViewInvoice";
 import ViewMessage from "../../components/ViewMessage";
 
 function ViewLandlord() {
-  const [activeLink, setActiveLink] = useState(1);
+  const [activeLink, setActiveLink] = useTabs();
   const [landlord, setLandlord] = useState([]);
   const [accountsData, setAccountsData] = useState([]);
   const [documents, setDocuments] = useState([]);

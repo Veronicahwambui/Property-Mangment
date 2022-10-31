@@ -20,9 +20,10 @@ import StatusBadge from "../../components/StatusBadge";
 import ViewInvoice from "../../components/ViewInvoice";
 import { confirmAlert } from "react-confirm-alert";
 import ViewMessage from "../../components/ViewMessage";
+import useTabs from "../../hooks/useTabs";
 
 function OneTenant() {
-  const [activeLink, setActiveLink] = useState(1);
+  const [activeLink, setActiveLink] = useTabs();
   const [tenantData, setTenantData] = useState({});
 
   const [searchTerm, setSearchTerm] = useState("");
