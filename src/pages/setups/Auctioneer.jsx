@@ -600,7 +600,7 @@ function TenantSetup() {
     setTimeout(() => {
       $("#spinner").addClass("d-none");
     }, 500);
-  }, [userType, activeLink])
+  }, [userType])
 
   return (
     <>
