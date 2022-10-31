@@ -1,3 +1,4 @@
+/* global $ */
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
@@ -18,10 +19,10 @@ function AddAdmin() {
   const [errors, setErrors] = useState([]);
 
   const [userName, setUserName] = useState("");
-  
+
   const [role, setRole] = useState("");
-  const[userType,setUserType] =useState("");
-  const[type,setType]=useState([]);
+  const [userType, setUserType] = useState("");
+  const [type, setType] = useState([]);
   const [privileges, setPrivileges] = useState([]);
   const [priveledgeNames, setPrivilegeNames] = useState([]);
   const [error, setError] = useState({
@@ -53,49 +54,50 @@ function AddAdmin() {
       .addUser(data)
       .then((res) => {
         console.log(res.data);
-     
 
-        if(res.data.status){
+
+        if (res.data.status) {
           setError({
             ...error,
             message: res.data.message,
             color: "success"
-          }) } else {
-    
-            setError({
-              ...error,
-              message: res.data.message,
-              color: "warning"
-            }) 
-          }
-          
-          
-          setTimeout(() => {
-            navigate("/adminlist", { replace: true });
-          }, 3000)
-      }).catch((err, res)=>{
-            // console.log(err);
-           setErrors( err.response.data.data.message) 
-       
-  
+          })
+        } else {
+
+          setError({
+            ...error,
+            message: res.data.message,
+            color: "warning"
+          })
+        }
+
+
         setTimeout(() => {
-        setErrors([]) 
-          
+          navigate("/adminlist", { replace: true });
         }, 3000)
-  
-  
+      }).catch((err, res) => {
+        // console.log(err);
+        setErrors(err.response.data.data.message)
+
+
+        setTimeout(() => {
+          setErrors([])
+
+        }, 3000)
+
+
       })
-    }
-    
-    const clear = ()=> {
-      setError({
-        ...error,
-        message: "",
-        color: ""
-      });
-     
+  }
+
+  const clear = () => {
+    setError({
+      ...error,
+      message: "",
+      color: ""
+    });
+
   };
- 
+
   const getType = () => {
     const data = JSON.stringify({
       clientId: parseInt(authService.getClientId()),
@@ -146,16 +148,36 @@ function AddAdmin() {
       setPrivilegeNames(res.data.data.permissions.map(pem => pem.name));
     });
   }
- 
+
   console.log(errors);
   // console.log(UserPermissionsIds);
 
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 1000);
+  }, [])
   return (
     <div className="">
       <div className="page-content">
         <div className="container-fluid">
           {/* <!-- start page title --> */}
           <div className="row">
+            {/* <!-- Loader --> */}
+            <div id="spinner">
+              <div id="status">
+                <div class="spinner-chase">
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 className="mb-sm-0 font-size-18">Create User</h4>
@@ -163,10 +185,10 @@ function AddAdmin() {
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
-                    <Link to='/'>Dashboard </Link>
+                      <Link to='/'>Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">
-                    <Link to='/adminlist'> System Users</Link>
+                      <Link to='/adminlist'> System Users</Link>
                     </li>
                     <li className="breadcrumb-item active">Create User</li>
                   </ol>
@@ -182,7 +204,7 @@ function AddAdmin() {
             <div className="col-12">
               <div className="card p-4">
                 <div className="card-body">
-                
+
                   <h4 className="card-title text-capitalize">
                     Register a new System User
                   </h4>
@@ -221,7 +243,7 @@ function AddAdmin() {
                     </div>
                     <div className="row  mb-4 pb-2 align-items-center">
                       <label htmlFor="" className="col-form-label col-lg-2">
-                        Other Name(s) 
+                        Other Name(s)
                       </label>
                       <div className="col-lg-4">
                         <input
@@ -230,7 +252,7 @@ function AddAdmin() {
                           onChange={(event) => setOtherName(event.target.value)}
                           className="form-control"
                           placeholder="Enter the other name(s)"
-                    
+
                         />
                       </div>
                       <label htmlFor="" className="col-form-label col-lg-2">
@@ -317,79 +339,79 @@ function AddAdmin() {
                     </div>
                     {/* <!-- system roles --> */}
                     <div className="row mb-4 pb-2 align-items-center">
-                    <div className="col-sm-4">
-                      <div className="form-group">
-                        <label>
-                          <strong>
-                            Role
-                            <strong className="text-danger">*</strong>
-                          </strong>
-                        </label>
+                      <div className="col-sm-4">
+                        <div className="form-group">
+                          <label>
+                            <strong>
+                              Role
+                              <strong className="text-danger">*</strong>
+                            </strong>
+                          </label>
 
-                        <select
-                          className="form-control"
-                          onChange={(e) => {
-                            onRoleChange(e.target.value);
-                          }}
-                          title="System role"
-                        >
-                          <option className="text-black font-semibold "  >--Select Role--
-                          </option>
+                          <select
+                            className="form-control"
+                            onChange={(e) => {
+                              onRoleChange(e.target.value);
+                            }}
+                            title="System role"
+                          >
+                            <option className="text-black font-semibold "  >--Select Role--
+                            </option>
 
-                          {userRoles.map((role) => {
-                            return (
-                              <option key={role.id} value={role.id} >
-                                {role.name}
-                               
-                              </option>
-                            );
-                          })}
-                        </select>
+                            {userRoles.map((role) => {
+                              return (
+                                <option key={role.id} value={role.id} >
+                                  {role.name}
+
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="col-sm-4">
-                      
+                      <div className="col-sm-4">
 
 
- <div className="form-group">
- <label>
-                          <strong>
-                         UserType
-                            <strong className="text-danger">*</strong>
-                          </strong>
-                        </label>
-                         <select
-                          class="form-control"
-                          data-live-search="true"
-                          title="Select TenancyStatus"
-                          required
-                          onChange={(e) => setUserType(e.target.value)}
-                     
-                        >
-                          <option className="text-black font-semibold ">
-                            --Select UserType
-                          </option>
-                          
-                           {type?.map((use, index) => {
+
+                        <div className="form-group">
+                          <label>
+                            <strong>
+                              UserType
+                              <strong className="text-danger">*</strong>
+                            </strong>
+                          </label>
+                          <select
+                            class="form-control"
+                            data-live-search="true"
+                            title="Select TenancyStatus"
+                            required
+                            onChange={(e) => setUserType(e.target.value)}
+
+                          >
+                            <option className="text-black font-semibold ">
+                              --Select UserType
+                            </option>
+
+                            {type?.map((use, index) => {
                               return (
                                 <option key={index} value={use.id}>
                                   {use.name.toLowerCase()}
                                 </option>
                               );
                             })}
-                        </select>
+                          </select>
+                        </div>
+
+
+
+
+
+
+
+
                       </div>
-
-
-
-
-
-
-
-
                     </div>
-</div>
 
 
 
@@ -398,54 +420,54 @@ function AddAdmin() {
 
                     <div className="">
                       <div className="col-form-label col-lg-3">
-                    
+
                         <strong> User Privilages and Permissions</strong>
-                     
+
                       </div>
                     </div>
                     <div class="plan-features">
-                    <div className="row mt-5">
-                      {privileges.map((priv, index) => (
-                        <div className="col-4">
-                          <div className="checkbox" key={priv.id}>
-                            <input
-                              checked={priveledgeNames.includes(priv.name)}
-                              type="checkbox"
-                              id={index}
-                              onChange={(event) => handleRoleChange(index, event)}
-                            />
-                            <label className="checkbox__label" htmlFor={index}>
-                              {priv.name.toLowerCase().replace(/_/g, "  ")}
-                            </label>
+                      <div className="row mt-5">
+                        {privileges.map((priv, index) => (
+                          <div className="col-4">
+                            <div className="checkbox" key={priv.id}>
+                              <input
+                                checked={priveledgeNames.includes(priv.name)}
+                                type="checkbox"
+                                id={index}
+                                onChange={(event) => handleRoleChange(index, event)}
+                              />
+                              <label className="checkbox__label" htmlFor={index}>
+                                {priv.name.toLowerCase().replace(/_/g, "  ")}
+                              </label>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="row justify-content-end">
                       <div className="col-lg-10">
-                        <button type="submit" className="btn btn-primary w-100">
+                        <button type="submit" className="btn btn-primary w-100 mt-2">
                           <i className="mdi mdi-account-plus-outline me-1"></i>
-                          Register 
+                          Register
                         </button>
                       </div>
                     </div>
 
                     {error.color !== "" &&
-                  <div className={"alert alert-" + error.color} role="alert">
-                    {error.message}
-                  </div>
-                  }
-                  
-                        {errors &&
-                    errors.map((err)=>(
-                      <div className={"alert alert-danger mb-2"} role="alert">
-                      {err.message}
-                    </div>
-                    ))
-           
-                  }
+                      <div className={"alert alert-" + error.color} role="alert">
+                        {error.message}
+                      </div>
+                    }
+
+                    {errors &&
+                      errors.map((err) => (
+                        <div className={"alert alert-danger mb-2"} role="alert">
+                          {err.message}
+                        </div>
+                      ))
+
+                    }
                   </form>
                 </div>
               </div>

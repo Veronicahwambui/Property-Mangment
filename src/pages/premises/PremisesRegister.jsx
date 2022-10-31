@@ -31,15 +31,11 @@ function PremisesRegister() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    $("#spinner").addClass("d-none");
-
     fetchAll();
   }, [page, size, pageCount]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // $("#spinner").removeClass("d-none")
-
     fetchAll();
   };
 
@@ -50,6 +46,11 @@ function PremisesRegister() {
 
   const handlePageClick = (data) => {
     setPage(() => data.selected);
+     // LOADER ANIMATION  
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 500);
   };
 
   const handleRangeChange = (e) => {
@@ -78,6 +79,13 @@ function PremisesRegister() {
     });
   };
 
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
   return (
     <div class="page-content">
       <div class="container-fluid">

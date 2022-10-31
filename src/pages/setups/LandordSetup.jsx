@@ -30,7 +30,7 @@ function LandlordSetup() {
   const [lineFeeId, setLineFeeId] = useState("");
   const [lineChartAccountNo, setLineChartAccountNo] = useState("");
   const [chargeDueAfterDays, setChargeDueAfterDays] = useState("");
-  const[entityType, setEntityType]=useState("");
+  const [entityType, setEntityType] = useState("");
 
   useEffect(() => {
     fetchTypes();
@@ -125,13 +125,13 @@ function LandlordSetup() {
           clear();
         }, 3000);
       });
-     
-      setCreateName("")
-      setChargeDueAfterDays("")
-      setIncomeType("")
-      setLineFeeId("")
-      setManualVal("")
-      setChargeType("")
+
+    setCreateName("")
+    setChargeDueAfterDays("")
+    setIncomeType("")
+    setLineFeeId("")
+    setManualVal("")
+    setChargeType("")
   };
 
   const clear = () => {
@@ -163,7 +163,7 @@ function LandlordSetup() {
       name: updateName,
       refundable: updateCheck,
       entityType: entityType,
-    
+
     });
     requestsServiceService
       .updateApplicableCharges(data)
@@ -324,7 +324,7 @@ function LandlordSetup() {
       clientId: authService.getClientId(),
       id: activeId,
       name: updateNames,
-      entityType:entityType,
+      entityType: entityType,
     });
     requestsServiceService
       .updateDocumentType(data)
@@ -555,12 +555,33 @@ function LandlordSetup() {
     console.log(name, editId);
   };
 
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 1000);
+  }, [])
+  
   return (
     <>
       <div class="page-content">
         <div class="container-fluid">
           {/* <!-- start page title --> */}
           <div class="row">
+            {/* <!-- Loader --> */}
+            <div id="spinner">
+              <div id="status">
+                <div class="spinner-chase">
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">LandLord Settings</h4>
@@ -751,7 +772,7 @@ function LandlordSetup() {
                                                           val.lineChartAccountNo
                                                         );
                                                         setEntityType(val.entityType);
-                                                      
+
                                                         setUpdateCheck(val.updateCheck);
 
                                                       }}
@@ -1307,7 +1328,7 @@ function LandlordSetup() {
                           ChargeDueAfterDays{" "}
                         </label>
                         <input
-                          
+
                           value={chargeDueAfterDays}
                           onChange={(e) =>
                             setChargeDueAfterDays(e.target.value)
@@ -1536,7 +1557,7 @@ function LandlordSetup() {
                           value="true"
                           selected={newManualVal ? "selected" : ""}
                         >
-                        Yes
+                          Yes
                         </option>
                         <option
                           value="false"
@@ -1555,7 +1576,7 @@ function LandlordSetup() {
                         title="Select Applicable Charge Type"
                         onChange={(e) => setUpdateChargeType(e.target.value)}
                       >
-                     <option>Select Charge Type</option>
+                        <option>Select Charge Type</option>
 
                         {chargeTypes &&
                           chargeTypes.map((charge) => {
@@ -1639,7 +1660,7 @@ function LandlordSetup() {
           </div>
         </div>
 
-      
+
 
         {/* confirm dactivate  */}
         <div

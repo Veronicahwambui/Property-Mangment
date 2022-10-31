@@ -1,3 +1,4 @@
+/* global $ */
 import requestsServiceService from "../../services/requestsService.service";
 import { useEffect, useId, useState } from "react";
 import authService from "../../services/auth.service";
@@ -5,16 +6,16 @@ import moment from "moment";
 
 function UserTypes() {
   const [userType, setUserType] = useState([]);
-  const[userTypeName, setUserTypeName]=useState("")
-  const[editName, setEditName]=useState("")
-  const[id, setId]=useState("")
+  const [userTypeName, setUserTypeName] = useState("")
+  const [editName, setEditName] = useState("")
+  const [id, setId] = useState("")
   const [error, setError] = useState({
     message: "",
     color: ""
   });
 
- 
-  
+
+
   const userTypesData = () => {
     const data = JSON.stringify({
       clientId: parseInt(authService.getClientId()),
@@ -27,105 +28,127 @@ function UserTypes() {
     });
   };
 
- 
-  const addUserType =()=>{
 
-    let data=JSON.stringify({
-    clientId:  parseInt(authService.getClientId()),
-  id: null,
-  name:userTypeName,
+  const addUserType = () => {
+
+    let data = JSON.stringify({
+      clientId: parseInt(authService.getClientId()),
+      id: null,
+      name: userTypeName,
 
     })
     requestsServiceService.createUserType(data).then((res) => {
-       console.log(res.data)
-        userTypesData()
+      console.log(res.data)
+      userTypesData()
 
 
-        if(res.data.status){
-          setError({
-            ...error,
-            message: res.data.message,
-            color: "success"
-          }) } else {
-    
-            setError({
-              ...error,
-              message: res.data.message,
-              color: "warning"
-            }) 
-          }
-    
-          setTimeout(() => {
-            clear()
-          }, 3000)
-          
-        }).catch((res)=>{
-    
-          setError({
-            ...error,
-            message: res.data.message,
-            color: "danger"
-          })
-    
-        })
-      }
-    
-      const clear = ()=> {
+      if (res.data.status) {
         setError({
           ...error,
-          message: "",
-          color: ""
-        });
+          message: res.data.message,
+          color: "success"
+        })
+      } else {
+
+        setError({
+          ...error,
+          message: res.data.message,
+          color: "warning"
+        })
       }
-    
 
-const updateUser=()=>{
-  let data=JSON.stringify({
-    id: id,
-    clientId: parseInt(authService.getClientId()),
-    name: editName
-  })
+      setTimeout(() => {
+        clear()
+      }, 3000)
 
-  requestsServiceService.updateUserType(data).then((res)=>{
-    console.log(res)
-    userTypesData()
-   
-   
+    }).catch((res) => {
+
+      setError({
+        ...error,
+        message: res.data.message,
+        color: "danger"
+      })
+
+    })
   }
-  ) 
 
-}
+  const clear = () => {
+    setError({
+      ...error,
+      message: "",
+      color: ""
+    });
+  }
 
 
-const deactivateUser =(userId)=>{
+  const updateUser = () => {
+    let data = JSON.stringify({
+      id: id,
+      clientId: parseInt(authService.getClientId()),
+      name: editName
+    })
+
+    requestsServiceService.updateUserType(data).then((res) => {
+      console.log(res)
+      userTypesData()
+
+
+    }
+    )
+
+  }
+
+
+  const deactivateUser = (userId) => {
     requestsServiceService.deactiveUser(userId).then((res) => {
       console.log(res);
-    
-     
-        
-      });
-    
-}
-const getActioneer =()=>{
-   requestsServiceService.getUserTypes().then((res)=>{
-    console.log(res)
 
-   })
 
-}
+
+    });
+
+  }
+  const getActioneer = () => {
+    requestsServiceService.getUserTypes().then((res) => {
+      console.log(res)
+
+    })
+
+  }
 
 
   useEffect(() => {
- 
+
     userTypesData();
-    getActioneer ();
+    getActioneer();
   }, []);
+
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 1000);
+  }, [])
 
   return (
     <div class="">
       <div class="page-content">
         <div class="container-fluid">
           <div class="row">
+            {/* <!-- Loader --> */}
+            <div id="spinner">
+              <div id="status">
+                <div class="spinner-chase">
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">User Types</h4>
@@ -148,19 +171,19 @@ const getActioneer =()=>{
           <div class="row">
             <div class="col-12">
               <div class="card">
-            
+
                 <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
                   <div
                     class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
                     role="toolbar"
                   >
-                     <div class="d-flex align-items-center flex-grow-1">
-                                           
-                      </div>
-                    
+                    <div class="d-flex align-items-center flex-grow-1">
+
+                    </div>
+
                     <div class="d-flex">
                       <button
-                      
+
                         type="button"
                         class="btn btn-primary waves-effect btn-label waves-light me-3"
                         data-bs-toggle="modal"
@@ -175,12 +198,12 @@ const getActioneer =()=>{
 
 
                 <div div class="card-body" onSubmit={userTypesData}>
-               
-                {error.color !== "" &&
-                  <div className={"alert alert-" + error.color} role="alert">
-                    {error.message}
+
+                  {error.color !== "" &&
+                    <div className={"alert alert-" + error.color} role="alert">
+                      {error.message}
                     </div>
-                }
+                  }
 
                   <div class="table-responsive table-responsive-md">
                     <table class="table table-editable align-middle table-edits">
@@ -200,11 +223,11 @@ const getActioneer =()=>{
                             return (
                               <tr data-id="1">
                                 <td data-field="estate">{++index}</td>
-                               
-                                <td data-field="estate">{list.name}</td>
-                                <td>{ moment(list.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
 
-                  
+                                <td data-field="estate">{list.name}</td>
+                                <td>{moment(list.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</td>
+
+
 
                                 <td class="text-right">
                                   <div class="dropdown">
@@ -219,11 +242,11 @@ const getActioneer =()=>{
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end text-capitalize">
-                                     
-                                      <a   data-bs-toggle="modal" data-bs-target="#Edit-modal"  
-                                      
-                                      
-                                      class="dropdown-item" href="#" onClick={()=>{setEditName(list.name); setId(list.id)}}>
+
+                                      <a data-bs-toggle="modal" data-bs-target="#Edit-modal"
+
+
+                                        class="dropdown-item" href="#" onClick={() => { setEditName(list.name); setId(list.id) }}>
 
 
                                         <i class="font-size-15 mdi mdi-pencil me-3"></i>
@@ -231,7 +254,7 @@ const getActioneer =()=>{
                                       </a>
                                       <a
                                         class="dropdown-item text-danger"
-                                        href="# " onClick={()=>deactivateUser(list.id)}>
+                                        href="# " onClick={() => deactivateUser(list.id)}>
                                         <i class="font-size-15 mdi mdi-close-circle me-3" ></i>
 
                                         Deactivate
@@ -248,7 +271,7 @@ const getActioneer =()=>{
                   </div>
                 </div>
               </div>
-            
+
             </div>
           </div>
         </div>
@@ -277,41 +300,41 @@ const getActioneer =()=>{
                 aria-label="Close"
               ></button>
             </div>
-            <form onSubmit={(e)=> { e.preventDefault(); addUserType() }}>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-12">
-                  <div class="form-group mb-4">
-                    <label for="">UserType</label>
-                    <input
-                     
-                      type="text"
-                      class="form-control"
-                      placeholder="Enter UserTypeName"
-                      onChange={(event) =>setUserTypeName(event.target.value)}
-                      value={userTypeName}
-                      required
-                     
-                    />
-                  </div>
-                </div>
- 
-       
-              </div>
-            </div>
+            <form onSubmit={(e) => { e.preventDefault(); addUserType() }}>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="">UserType</label>
+                      <input
 
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-light"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="submit" class="btn btn-primary" >
-                Save
-              </button>
-            </div>
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter UserTypeName"
+                        onChange={(event) => setUserTypeName(event.target.value)}
+                        value={userTypeName}
+                        required
+
+                      />
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary" >
+                  Save
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -354,12 +377,12 @@ const getActioneer =()=>{
                       placeholder="Enter name"
                       onChange={(event) => setEditName(event.target.value)}
                       value={editName}
-                    
+
                     />
                   </div>
                 </div>
- 
-       
+
+
               </div>
             </div>
 
@@ -371,7 +394,7 @@ const getActioneer =()=>{
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary" 
+              <button type="button" class="btn btn-primary"
                 data-bs-dismiss="modal" onClick={updateUser} >
                 Save
               </button>

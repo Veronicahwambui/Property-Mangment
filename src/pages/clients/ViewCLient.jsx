@@ -72,7 +72,7 @@ function ViewClient() {
     requestsServiceService.getBanks().then((res) => {
       setBanks(res.data.data);
     });
-    requestsServiceService.getClientAccounts(clientId).then((res) => {});
+    requestsServiceService.getClientAccounts(clientId).then((res) => { });
     requestsServiceService.getClientTypes().then((res) => {
       setClientTypes(res.data.data);
     });
@@ -318,12 +318,34 @@ function ViewClient() {
       subject: "",
     });
   };
+
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 1000);
+  }, [])
+
   return (
     <>
       <div className="page-content">
         <div className="content-fluid">
           {/* <!-- start page title --> */}
           <div class="row">
+            {/* <!-- Loader --> */}
+            <div id="spinner">
+              <div id="status">
+                <div class="spinner-chase">
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18"></h4>
@@ -686,8 +708,8 @@ function ViewClient() {
 
                                                   <td>
                                                     {list.authAccount &&
-                                                    list.authAccount
-                                                      .correlator !==
+                                                      list.authAccount
+                                                        .correlator !==
                                                       undefined ? (
                                                       <StatusBadge type="True" />
                                                     ) : (
@@ -697,7 +719,7 @@ function ViewClient() {
 
                                                   <td>
                                                     {list.authAccount &&
-                                                    list.authAccount.blocked ? (
+                                                      list.authAccount.blocked ? (
                                                       <StatusBadge type="True" />
                                                     ) : (
                                                       <StatusBadge type="False" />
@@ -728,8 +750,8 @@ function ViewClient() {
                                                         </Link>
 
                                                         {list.authAccount &&
-                                                        list.authAccount
-                                                          .correlator !==
+                                                          list.authAccount
+                                                            .correlator !==
                                                           undefined ? (
                                                           <button
                                                             data-id={list.id}

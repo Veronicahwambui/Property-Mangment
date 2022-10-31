@@ -968,8 +968,8 @@ function OnePremise() {
   const showInvoice = () => setinvoice_show(true);
   const [transaction, settransaction] = useState({});
   const [paymentItems, setpaymentItems] = useState([]);
-  useEffect(() => {}, [transaction]);
-  useEffect(() => {}, [paymentItems]);
+  useEffect(() => { }, [transaction]);
+  useEffect(() => { }, [paymentItems]);
   const closeInvoice = () => {
     setpaymentItems([]);
     settransaction({});
@@ -1070,11 +1070,10 @@ function OnePremise() {
     setmode(mode);
   };
   const handleClicked = (inv, mod) => {
-    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${
-      inv.billerBillNo
-    } balance is ${formatCurrency.format(
-      inv.billAmount - inv.billPaidAmount
-    )}. Click here to pay for it`;
+    let mes = `Dear ${inv.transactionCustomerName}, your invoice ${inv.billerBillNo
+      } balance is ${formatCurrency.format(
+        inv.billAmount - inv.billPaidAmount
+      )}. Click here to pay for it`;
     let senderId =
       JSON.parse(AuthService.getCurrentUserName()).client?.senderId === null
         ? "REVENUESURE"
@@ -1097,7 +1096,7 @@ function OnePremise() {
       $(".the-message-maker").addClass("email-overlay-transform");
     }, 0);
   };
-  useEffect(() => {}, [details, mode]);
+  useEffect(() => { }, [details, mode]);
 
   const clear2 = () => {
     setDetails({
@@ -1115,11 +1114,32 @@ function OnePremise() {
     });
   };
 
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
+   
   return (
     <div className="page-content">
       <div className="content-fluid">
         {/* <!-- start page title --> */}
         <div class="row">
+          {/* <!-- Loader --> */}
+          <div id="spinner">
+            <div id="status">
+              <div class="spinner-chase">
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+              </div>
+            </div>
+          </div>
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
               <h4 class="mb-sm-0 font-size-18">
@@ -1326,7 +1346,7 @@ function OnePremise() {
                                 Close
                               </button>
                               {premiseData.premise &&
-                              premiseData.premise.active ? (
+                                premiseData.premise.active ? (
                                 <button
                                   onClick={() => togglePrem()}
                                   type="button"
@@ -1515,7 +1535,7 @@ function OnePremise() {
                             {" "}
                             {premiseData?.premise?.premiseName}{" "}
                             {premiseData.premise &&
-                            premiseData?.premise?.active ? (
+                              premiseData?.premise?.active ? (
                               <span className="badge-soft-success badge m-3">
                                 Active
                               </span>
@@ -3607,14 +3627,14 @@ function OnePremise() {
                                       <span
                                         className={
                                           invoice.billPaidAmount >
-                                          invoice.billAmount
+                                            invoice.billAmount
                                             ? "fw-semibold text-success"
                                             : "fw-semibold text-danger"
                                         }
                                       >
                                         {formatCurrency.format(
                                           invoice.billAmount -
-                                            invoice.billPaidAmount
+                                          invoice.billPaidAmount
                                         )}
                                       </span>
                                     </td>

@@ -15,15 +15,19 @@ function Messages() {
     const [perPage, setPerPage] = useState(10);
     const [pageData, setPageData] = useState([])
     const [messageData, setMessageData] = useState({})
-    const [loading, setLoading]= useState(true)
-    
-    const [show, setShow]= useState(false)
-     const closeMessage = () => setShow(false)
-    
+    const [loading, setLoading] = useState(true)
+
+    const [show, setShow] = useState(false)
+    const closeMessage = () => setShow(false)
+
 
     const handlePageClick = (data) => {
         setPage(() => data.selected);
-        
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
     };
 
     useEffect(() => {
@@ -37,10 +41,17 @@ function Messages() {
             window.scrollTo(0, 0);
             setLoading(false)
 
-        }).catch((err)=>{
+        }).catch((err) => {
             setLoading(false)
         })
-    }, [ page, perPage, type ]);
+    }, [page, perPage, type]);
+    // LOADER ANIMATION
+    useEffect(() => {
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 1000);
+    }, [])
 
     return (
         <div className="page-content">
@@ -48,6 +59,19 @@ function Messages() {
 
                 {/* <!-- start page title --> */}
                 <div class="row">
+                    {/* <!-- Loader --> */}
+                    <div id="spinner">
+                        <div id="status">
+                            <div class="spinner-chase">
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                             <h4 class="mb-sm-0 font-size-18">All Messages</h4>
@@ -87,9 +111,9 @@ function Messages() {
                         </div>
                         {/* table  */}
                         <div className="card-body the-inbox">
-                        {loading && 
-                             <div className="d-flex justify-content-center align-items-center">
-                                <div className="loading loader2"></div>
+                            {loading &&
+                                <div className="d-flex justify-content-center align-items-center">
+                                    <div className="loading loader2"></div>
                                 </div>
                             }
                             {pageData?.length === 0 && !loading &&
@@ -97,34 +121,35 @@ function Messages() {
                                     <h4 className="text-muted">No Messages Found</h4>
                                 </div>
                             }
-                            {pageData?.length > 0 &&   <table id="emailDataTable-btns" class="table nowrap w-100 table-hover mt-0 mb-0">
+                            {pageData?.length > 0 && <table id="emailDataTable-btns" class="table nowrap w-100 table-hover mt-0 mb-0">
                                 <thead></thead>
                                 <tbody className="table-hover">
-                                    {pageData?.map((mes , index) =>{
-                                        let message = JSON.parse(mes.data) 
+                                    {pageData?.map((mes, index) => {
+                                        let message = JSON.parse(mes.data)
                                         return (
-                                        <tr key={mes.id} onClick={()=>{setMessageData(pageData[index]);setShow(true)}} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
+                                            <tr key={mes.id} onClick={() => { setMessageData(pageData[index]); setShow(true) }} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
 
-                                            <td>
-                                                <span class=" font-size-18 d-md-flex">
-                                                    <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">SMS</span></i>
-                                                    {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
-                                                </span>
-                                            </td>
-                                            <td class="text-capitalize d-md-table-cell">{mes.createdBy}</td>
-                                            <td class="the-msg the-msg-2">
-                                             <span>{message.text}</span>  
-                                            </td>                                                
+                                                <td>
+                                                    <span class=" font-size-18 d-md-flex">
+                                                        <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">SMS</span></i>
+                                                        {/* <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i> */}
+                                                    </span>
+                                                </td>
+                                                <td class="text-capitalize d-md-table-cell">{mes.createdBy}</td>
+                                                <td class="the-msg the-msg-2">
+                                                    <span>{message.text}</span>
+                                                </td>
 
-                                            <td class="text-capitalize d-md-table-cell">{moment(mes.dateTimeCreated).format("ddd MMM DD")}</td>
-                                        </tr>
-                                    )})}
+                                                <td class="text-capitalize d-md-table-cell">{moment(mes.dateTimeCreated).format("ddd MMM DD")}</td>
+                                            </tr>
+                                        )
+                                    })}
 
                                 </tbody>
                             </table>}
                             <div className="d-flex justify-content-between align-items-center">
                                 <h5 className="font-medium  text-muted mt-2">
-                                    showing page <span className="text-primary">{ pageCount === 0 ? page:page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
+                                    showing page <span className="text-primary">{pageCount === 0 ? page : page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
                                 </h5>
 
                                 {pageCount !== 0 && pageCount > 1 && (

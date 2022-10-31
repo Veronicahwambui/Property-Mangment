@@ -49,7 +49,7 @@ function IssuesTypes() {
   const getIssueTypes = () => {
     requestsServiceService.getTenancyIssuesTypes().then((res) => {
       setlists(res.data.data);
-      $("#spinner").addClass("d-none");
+   
     });
   };
 
@@ -892,11 +892,20 @@ function IssuesTypes() {
   useEffect(() => {
     doShit();
   }, [invo]);
+
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
+   
   return (
     <>
       <div class="page-content">
         <div class="container-fluid">
-          {/* <div id="spinner" className={""}>
+          <div id="spinner" className={""}>
             <div id="status">
               <div className="spinner-chase">
                 <div className="chase-dot"></div>
@@ -907,7 +916,7 @@ function IssuesTypes() {
                 <div className="chase-dot"></div>
               </div>
             </div>
-          </div> */}
+          </div>
           {/* <!-- start page title --> */}
           <div class="row">
             <div class="col-12">

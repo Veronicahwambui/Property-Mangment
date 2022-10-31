@@ -14,12 +14,12 @@ import authLoginService from "../../services/authLogin.service";
 
 function AdminList() {
   const [userList, setUserList] = useState([]);
-  const[userType,setUserType] =useState("");
-  const[type,setType]=useState([]);
+  const [userType, setUserType] = useState("");
+  const [type, setType] = useState([]);
 
 
 
- const getData = () => {
+  const getData = () => {
     // e.preventDefault()
     requestsServiceService.getData(userType).then((res) => {
       setUserList(res.data.data);
@@ -179,7 +179,7 @@ function AdminList() {
     clientName: JSON.parse(authService.getCurrentUserName()).client?.name,
     clientId: parseInt(authService.getClientId()),
     entityType: "USER",
-    createdBy:  authLoginService.getCurrentUser(),
+    createdBy: authLoginService.getCurrentUser(),
     senderId: "",
     subject: "I",
   });
@@ -230,13 +230,32 @@ function AdminList() {
       subject: "",
     });
   };
-
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 1000);
+  }, [userType])
   return (
     <div className="">
       <div className="page-content">
         <div className="container-fluid">
           {/* <!-- start page title --> */}
           <div class="row">
+            {/* <!-- Loader --> */}
+            <div id="spinner">
+              <div id="status">
+                <div class="spinner-chase">
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">User List</h4>
@@ -255,43 +274,43 @@ function AdminList() {
             </div>
           </div>
           <div class="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                  <div
-                    class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                    role="toolbar"
+            <div
+              class="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
+              role="toolbar"
+            >
+              <div class="d-flex align-items-center flex-grow-1">
+                <h4 class="mb-0  bg-transparent  p-0 m-0">
+                  UserList
+                </h4>
+              </div>
+              <div class="d-flex">
+
+                <div className="form-group">
+                  <label htmlFor="">UserType</label>
+                  <select
+                    class="form-control"
+                    data-live-search="true"
+                    title="Select TenancyStatus"
+                    onChange={(e) => setUserType(e.target.value)}
                   >
-                    <div class="d-flex align-items-center flex-grow-1">
-                      <h4 class="mb-0  bg-transparent  p-0 m-0">
-                     UserList
-                      </h4>
-                    </div>
-                    <div class="d-flex">
-                      
-                    <div className="form-group">
-                       <label htmlFor="">UserType</label>
-                         <select
-                          class="form-control"
-                          data-live-search="true"
-                          title="Select TenancyStatus"
-                           onChange={(e) => setUserType(e.target.value)}
-                        >
-                          <option className="text-black font-semibold ">
-                            --Select UserType
-                          </option>
-                          
-                           {type?.map((use, index) => {
-                              return (
-                                <option key={index} value={use.name}>
-                                  {use.name.toLowerCase()}
-                                </option>
-                              );
-                            })}
-                        </select>
-                      </div>
+                    <option className="text-black font-semibold ">
+                      --Select UserType
+                    </option>
 
-
-                    </div>
-                  </div>
+                    {type?.map((use, index) => {
+                      return (
+                        <option key={index} value={use.name}>
+                          {use.name.toLowerCase()}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
+
+
+              </div>
+            </div>
+          </div>
 
 
           {/* <!-- end page title -->
@@ -349,7 +368,7 @@ function AdminList() {
                                   <td>
                                     <p className="mb-0">{list.user.role.name}</p>
                                   </td>
-                                 
+
                                   <td>
                                     {(list.authAccount && list.authAccount.correlator != undefined) ? (
                                       <StatusBadge type="True" />
@@ -366,7 +385,7 @@ function AdminList() {
                                     )}
                                   </td>
                                   <td>
-                                  <p className="mb-0">{moment(list.user.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</p>
+                                    <p className="mb-0">{moment(list.user.dateTimeCreated).format("YYYY-MM-DD HH:mm")}</p>
                                   </td>
 
                                   <td>

@@ -1,3 +1,4 @@
+/* global $ */
 import React, { useState, useEffect } from "react";
 import { confirmAlert } from "react-confirm-alert";
 import { Link, useParams } from "react-router-dom";
@@ -72,7 +73,7 @@ function UpdateUser() {
       .then((res) => {
         confirmAlert({
           message: res.data.message,
-          buttons: [{ label: "OK", onClick:(e)=> window.location.href='/adminlist' }]
+          buttons: [{ label: "OK", onClick: (e) => window.location.href = '/adminlist' }]
         })
       })
       .catch((err) => {
@@ -115,12 +116,33 @@ function UpdateUser() {
     }
   };
 
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 1000);
+  }, [])
+
   return (
     <div className="">
       <div className="page-content">
         <div className="container-fluid">
           {/* <!-- start page title --> */}
           <div className="row">
+            {/* <!-- Loader --> */}
+            <div id="spinner">
+              <div id="status">
+                <div class="spinner-chase">
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 className="mb-sm-0 font-size-18">Add an Admin</h4>
@@ -128,10 +150,10 @@ function UpdateUser() {
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item">
-                    <Link to='/'>Dashboard </Link>
+                      <Link to='/'>Dashboard </Link>
                     </li>
                     <li class="breadcrumb-item">
-                    <Link to='/adminlist'> System Users</Link>
+                      <Link to='/adminlist'> System Users</Link>
                     </li>
                     <li className="breadcrumb-item active">Add an admin</li>
                   </ol>
@@ -312,11 +334,11 @@ function UpdateUser() {
                       </div>
                     </div>
                     <div className="">
-                    <div className="col-form-label col-lg-3">
-                    
-                    <strong> User Privilages and Permissions</strong>
-                 
-                  </div>
+                      <div className="col-form-label col-lg-3">
+
+                        <strong> User Privilages and Permissions</strong>
+
+                      </div>
                     </div>
 
                     <div className="row mt-5">

@@ -137,12 +137,12 @@ function TenantSetup() {
           clear();
         }, 3000);
       });
-      setCreateName("")
-      setChargeDueAfterDays("")
-      setIncomeType("")
-      setLineFeeId("")
-      setManualVal("")
-      setChargeType("")
+    setCreateName("")
+    setChargeDueAfterDays("")
+    setIncomeType("")
+    setLineFeeId("")
+    setManualVal("")
+    setChargeType("")
   };
 
   const clear = () => {
@@ -594,12 +594,33 @@ function TenantSetup() {
     }
   };
 
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 500);
+  }, [userType, activeLink])
+
   return (
     <>
       <div class="page-content">
         <div class="container-fluid">
           {/* <!-- start page title --> */}
           <div class="row">
+            {/* <!-- Loader --> */}
+            <div id="spinner">
+              <div id="status">
+                <div class="spinner-chase">
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">User Setup</h4>
@@ -711,7 +732,7 @@ function TenantSetup() {
                                   <div class="d-flex">
                                     <button
                                       onClick={() => {
-                                      
+
                                         chargeTypes &&
                                           setChargeType(chargeTypes[0]);
                                         fetchTypes();
@@ -1715,7 +1736,7 @@ function TenantSetup() {
               </div>
 
               {/* confirm deactivate  */}
-            
+
 
               {/* confirm dactivate  */}
               <div
@@ -1915,7 +1936,7 @@ function TenantSetup() {
                         type="button"
                         class="btn btn-primary"
                         data-bs-dismiss="modal"
-                        onClick={() => toggleStatuses ()}
+                        onClick={() => toggleStatuses()}
                       >
                         Yes
                       </button>
@@ -1953,7 +1974,7 @@ function TenantSetup() {
                         type="button"
                         class="btn btn-primary"
                         data-bs-dismiss="modal"
-                        onClick={() =>toggleStatuses ()}
+                        onClick={() => toggleStatuses()}
                       >
                         Yes
                       </button>

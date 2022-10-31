@@ -1,13 +1,13 @@
 /* global $*/
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import requestsServiceService from "../../services/requestsService.service";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 
 export default function AdminArrears() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [clientCountyName, setclientCountyName] = useState(
+  const [ searchParams ] = useSearchParams();
+  const [clientCountyName ] = useState(
     searchParams.get("county")
   );
   var mL = [
@@ -76,9 +76,6 @@ export default function AdminArrears() {
     setestateId("");
   };
 
-  // useEffect(() => {
-  //   fetchFiltered(countyId, zoneId, estateId);
-  // }, [countyId]);
   const [reportData, setreportData] = useState({});
   const [reportInfo, setreportInfo] = useState([]);
 
@@ -96,7 +93,6 @@ export default function AdminArrears() {
       );
       setreportData(tempdata);
       setreportInfo(v.ageReportModels);
-      $("#spinner").addClass("d-none");
     });
   };
 
@@ -198,7 +194,20 @@ export default function AdminArrears() {
     const newOffset = (event.selected * size) % reportInfo.length;
     setItemOffset(newOffset);
     setPage(event.selected);
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
   };
+
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
 
   return (
     <>

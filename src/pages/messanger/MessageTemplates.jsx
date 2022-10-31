@@ -76,11 +76,11 @@ function MessageTemplates() {
                 clear()
             }, 3000)
 
-        }).catch(( err) => {
+        }).catch((err) => {
             $("#createTemplate").hide();
 
-        
-        }).finally(()=>{
+
+        }).finally(() => {
             // $("#createTemplate").addClass("d-none");
             // $("#createTemplate").modal('toggle');
 
@@ -97,12 +97,32 @@ function MessageTemplates() {
         });
     }
 
+     // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
     return (
         <div className="page-content">
             <div className="container-fluid">
 
                 {/* <!-- start page title --> */}
                 <div class="row">
+                    {/* <!-- Loader --> */}
+                    <div id="spinner">
+                        <div id="status">
+                            <div class="spinner-chase">
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                             <h4 class="mb-sm-0 font-size-18">All Message Templates</h4>
@@ -132,44 +152,44 @@ function MessageTemplates() {
                                     {error.message}
                                 </div>
                             }
-                          <div className="table-responsive">
-                          <table class="table table-hover overflow-visible">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>name</th>
-                                        <th>Langauge</th>
-                                        <th>date created</th>
-                                        <th>last modified</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {messageTemplates?.map((temp, index) => {
+                            <div className="table-responsive">
+                                <table class="table table-hover overflow-visible">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>name</th>
+                                            <th>Langauge</th>
+                                            <th>date created</th>
+                                            <th>last modified</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {messageTemplates?.map((temp, index) => {
 
-                                        return (
-                                            <tr key={index} >
-                                                <td class="text-capitalize">{index + 1}</td>
-                                                <td className="text-capitalize">{temp.templateName?.toLowerCase()?.replace(/_/g, " ")}</td>
-                                                <td>{temp.language}</td>
-                                                <td>{moment(temp.dateTimeCreated).format("ddd DD MMM YYYY [at] hh:mm a")}</td>
-                                                <td>{moment(temp.lastModifiedDate).format("ddd DD MMM YYYY [at] hh:mm a")}</td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-                          </div>
+                                            return (
+                                                <tr key={index} >
+                                                    <td class="text-capitalize">{index + 1}</td>
+                                                    <td className="text-capitalize">{temp.templateName?.toLowerCase()?.replace(/_/g, " ")}</td>
+                                                    <td>{temp.language}</td>
+                                                    <td>{moment(temp.dateTimeCreated).format("ddd DD MMM YYYY [at] hh:mm a")}</td>
+                                                    <td>{moment(temp.lastModifiedDate).format("ddd DD MMM YYYY [at] hh:mm a")}</td>
+                                                </tr>
+                                            )
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
                 {/* <!-- message details modal --> */}
-                <div     class="modal fade"
-        id="createTemplate"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        role="dialog"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true">
+                <div class="modal fade"
+                    id="createTemplate"
+                    data-bs-backdrop="static"
+                    data-bs-keyboard="false"
+                    role="dialog"
+                    aria-labelledby="staticBackdropLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content border-radius-0">
                             {error.color !== "" &&

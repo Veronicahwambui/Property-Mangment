@@ -35,14 +35,11 @@ function AllTenants() {
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {
-    $("#spinner").addClass("d-none");
-
     fetchAll();
   }, [page, size, pageCount]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // $("#spinner").removeClass("d-none")
     fetchAll();
   };
   const sortSize = (e) => {
@@ -57,6 +54,11 @@ function AllTenants() {
   };
   const handlePageClick = (data) => {
     setPage(() => data.selected);
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
   };
 
   const fetchAll = () => {
@@ -73,7 +75,6 @@ function AllTenants() {
         setPage(res.data.page);
         setSize(res.data.size);
         setPageCount(res.data.totalPages);
-        // setSearchTerm(" ")
       });
   };
 
@@ -143,6 +144,14 @@ function AllTenants() {
       subject: "",
     });
   };
+
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
 
   return (
     <div className="page-content">

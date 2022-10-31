@@ -1377,24 +1377,33 @@ function ViewLandlord() {
   }
 
   const [accountRef, setAccountRef] = useState([])
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
+
   return (
     <>
       <div className="page-content">
         <div className="content-fluid">
           {/* <!-- start page title --> */}
           <div class="row">
-            {/*<div id="spinner">*/}
-            {/*  <div id="status">*/}
-            {/*    <div className="spinner-chase">*/}
-            {/*      <div className="chase-dot"></div>*/}
-            {/*      <div className="chase-dot"></div>*/}
-            {/*      <div className="chase-dot"></div>*/}
-            {/*      <div className="chase-dot"></div>*/}
-            {/*      <div className="chase-dot"></div>*/}
-            {/*      <div className="chase-dot"></div>*/}
-            {/*    </div>*/}
-            {/*  </div>*/}
-            {/*</div>*/}
+          {/* <!-- Loader --> */}
+          <div id="spinner">
+            <div id="status">
+              <div class="spinner-chase">
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+              </div>
+            </div>
+          </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18"> LandLord Information</h4>

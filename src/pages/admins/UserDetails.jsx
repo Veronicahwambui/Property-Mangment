@@ -49,7 +49,7 @@ function UserDetails() {
 
   const [messageData, setMessageData] = useState({})
   const [showMessage, setShowMessage] = useState(false)
-  const closeMessage = ()=>setShowMessage(false)
+  const closeMessage = () => setShowMessage(false)
 
   let modalMessage = Object.keys(messageData)?.length > 0 && JSON.parse(messageData?.data);
 
@@ -92,7 +92,7 @@ function UserDetails() {
     endDate: new Date(),
   });
 
- 
+
   const handleCallback = (sD, eD) => {
     setStartDate3(moment(sD).format("YYYY-MM-DD"))
     setEndDate3(moment(eD).format("YYYY-MM-DD"))
@@ -355,7 +355,14 @@ function UserDetails() {
   };
 
 
-
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 1000);
+  }, [])
+  
   return (
     <div className=''>
       <div className=' page-content'>
@@ -363,6 +370,19 @@ function UserDetails() {
 
           {/* <!-- start page title --> */}
           <div class="row">
+            {/* <!-- Loader --> */}
+            <div id="spinner">
+              <div id="status">
+                <div class="spinner-chase">
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">System administrators</h4>
@@ -680,13 +700,13 @@ function UserDetails() {
                               {communication?.map((com, index) => {
                                 let message = JSON.parse(com.data)
                                 return (
-                                  <tr key={com.id} onClick={()=>{setMessageData(communication[index] ); setShowMessage(true)}} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
+                                  <tr key={com.id} onClick={() => { setMessageData(communication[index]); setShowMessage(true) }} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
                                     <td>{index + 1}</td>
                                     {/* <tr class="text-nowrap" data-toggle="modal" data-target="#messageDetails"> */}
                                     <td class="">
                                       {/* <!-- put the index here --> */}
                                       <span class=" font-size-18 d-none d-md-flex">
-                                        { com.communicationType !== "EMAIL" ? <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i> :
+                                        {com.communicationType !== "EMAIL" ? <i class="mdi mdi-chat-outline text-info pr-2"><span class="d-none">Email</span></i> :
                                           <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">Sms</span></i>}
                                       </span>
                                       <span class=" font-size-18 d-flex d-md-none">
@@ -695,14 +715,14 @@ function UserDetails() {
                                       </span>
                                     </td>
                                     <td class="text-capitalize d-none d-md-table-cell">{com.createdBy}</td>
-                                    { com.communicationType == "EMAIL" &&
-                                    <td class="the-msg the-msg-2">
-                                      <span>{message?.model?.message}</span>
-                                    </td> }
-                                    { com.communicationType == "SMS" &&
-                                    <td class="the-msg the-msg-2 md-the-msg">
-                                      <span>{message?.text}</span>
-                                    </td> }
+                                    {com.communicationType == "EMAIL" &&
+                                      <td class="the-msg the-msg-2">
+                                        <span>{message?.model?.message}</span>
+                                      </td>}
+                                    {com.communicationType == "SMS" &&
+                                      <td class="the-msg the-msg-2 md-the-msg">
+                                        <span>{message?.text}</span>
+                                      </td>}
                                     <td class="text-capitalize d-none d-md-table-cell">{moment(com.dateTimeCreated).format("ddd MMM DD")}</td>
                                   </tr>
                                 )
