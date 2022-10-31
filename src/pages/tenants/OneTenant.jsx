@@ -20,6 +20,7 @@ import StatusBadge from "../../components/StatusBadge";
 import ViewInvoice from "../../components/ViewInvoice";
 import { confirmAlert } from "react-confirm-alert";
 import ViewMessage from "../../components/ViewMessage";
+import data from "../data/coutries.json";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useState(1);
@@ -153,7 +154,7 @@ function OneTenant() {
   const fetchAll = () => {
     requestsServiceService.viewTenant(userId).then((res) => {
       setTenantData(res.data.data);
-      setCounties(res.data.data)
+      setCounties(data)
       setTenantTypeName(res.data.data.tenant.tenantType);
       setAccountStatus(res.data.data.authAccount?.blocked);
       setAccountRef(res.data.data.authAccount
@@ -4491,7 +4492,7 @@ function OneTenant() {
                   <div class="row">
                     <div class="col-12">
                       <div class="form-group mb-4">
-                        <label for="">
+                      <label htmlFor="basicpill-email-input ">
                           {" "}
                           Email <strong class="text-danger">
                             *
@@ -4501,7 +4502,8 @@ function OneTenant() {
 
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          type="text"
+                          type="email"
+                          id="basicpill-email-input "
                           class="form-control"
                           placeholder="Enter email"
                         />
