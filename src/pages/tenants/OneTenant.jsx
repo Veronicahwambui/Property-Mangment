@@ -4379,7 +4379,7 @@ const [accountRef,setAccountRef]=useState([])
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group mb-4">
-                      <label for="">
+                    <label htmlFor="basicpill-email-input ">
                         {" "}
                         Email <strong class="text-danger">
                           *
@@ -4389,7 +4389,9 @@ const [accountRef,setAccountRef]=useState([])
                     
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        type="text"
+                        type="email"
+                        id="basicpill-email-input "
+
                         class="form-control"
                         placeholder="Enter email"
                       />
