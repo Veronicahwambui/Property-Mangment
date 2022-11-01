@@ -791,7 +791,7 @@ function OnePremise() {
   const [clientAccounts, setClientAccounts] = useState([]);
   const [landlordAccounts, setLandlordAccounts] = useState([]);
   const [clientAccount, setClientAccount] = useState(null);
-  const [clientAccountState, setClientAccountState] = useState("false");
+  const [clientAccountState, setClientAccountState] = useState(true);
   const [landlordAccount, setLandlordAccount] = useState(null);
   const [invoiceDay, setInvoiceDay] = useState("");
   const [constraintChargeId, setConstraintChargeId] = useState(null);
