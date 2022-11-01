@@ -786,7 +786,7 @@ function OnePremise() {
   const [applicableCharges, setApplicableCharges] = useState([]);
   const [chargeConstraints, setChargeConstraints] = useState([]);
   const [chargeConstraint, setChargeConstraint] = useState("ZERO_BALANCE");
-  const [collectionaccount, setCollectionaccount] = useState("landlord");
+  const [collectionaccount, setCollectionaccount] = useState("client");
   const [value, setValue] = useState("");
   const [clientAccounts, setClientAccounts] = useState([]);
   const [landlordAccounts, setLandlordAccounts] = useState([]);
@@ -843,21 +843,25 @@ function OnePremise() {
     try {
       if (collectionaccount === "landlord" && landlordAccount === null) {
         throw new Error("landlord account null");
+    
       }
 
       if (collectionaccount === "client") {
-        setClientAccountState("true");
-      } else {
         setClientAccountState("false");
+      } else {
+        setClientAccountState("true");
       }
 
       if (unittype === null) {
         // setClientAccountState('true')
         throw new Error("unit type cannot be null");
       }
-
-      if (collectionaccount === "client" && clientAccount === null) {
-        throw new Error("client account null");
+    
+        if (collectionaccount === "client" && clientAccount === true) {
+          throw new Error("client account null");
+      
+        
+    
       }
 
       let data = JSON.stringify({
@@ -2535,7 +2539,7 @@ function OnePremise() {
                         </select>
                       </div>
 
-                      <div className="form-group mb-2">
+                      {/* <div className="form-group mb-2">
                         <label htmlFor="">Charge constraint</label>
                         <select
                           name=""
@@ -2552,9 +2556,9 @@ function OnePremise() {
                             Rate Charge
                           </option>
                         </select>
-                      </div>
+                      </div> */}
 
-                      {chargeConstraint !== "ZERO_BALANCE" && (
+                      {/* {chargeConstraint !== "ZERO_BALANCE" && (
                         <div className="form-group mb-2">
                           <label htmlFor="">charge required</label>
                           <select
@@ -2577,7 +2581,7 @@ function OnePremise() {
                               ))}
                           </select>
                         </div>
-                      )}
+                      )} */}
 
                       <div className="form-group mb-2">
                         <label htmlFor="">select collection account type</label>
@@ -2589,8 +2593,8 @@ function OnePremise() {
                             setCollectionaccount(event.target.value)
                           }
                         >
-                          <option value="landlord">Landlord collection</option>
-                          <option value="client">Client collection</option>
+                          <option value="landlord"  selected={collectionaccount ==="landlord"}>Landlord collection</option>
+                          <option value="client" selected={collectionaccount ==="client"}>Client collection</option>
                         </select>
                       </div>
 
