@@ -2584,16 +2584,18 @@ function OnePremise() {
                       )} */}
 
                       <div className="form-group mb-2">
-                        <label htmlFor="">select collection account type</label>
+                        <label htmlFor="">Collection account </label>
                         <select
                           name=""
                           id=""
                           className="form-control"
+                          disabled={true}
+
                           onChange={(event) =>
                             setCollectionaccount(event.target.value)
                           }
                         >
-                          <option value="landlord"  selected={collectionaccount ==="landlord"}>Landlord collection</option>
+                          <option value="landlord"  >Landlord collection</option>
                           <option value="client" selected={collectionaccount ==="client"}>Client collection</option>
                         </select>
                       </div>
@@ -2605,6 +2607,7 @@ function OnePremise() {
                             name=""
                             id=""
                             className="form-control text-capitalize"
+                            
                             onChange={(event) =>
                               setClientAccount(event.target.value)
                             }
