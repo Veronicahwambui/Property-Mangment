@@ -4307,12 +4307,6 @@ function ViewLandlord() {
 
           {/* ====createAccount== */}
 
-
-
-
-
-
-
           {/* create modal */}
           <div
             class="modal fade"

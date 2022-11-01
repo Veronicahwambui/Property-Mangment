@@ -237,6 +237,9 @@ function OneTenant() {
     // console.log(details)
   };
   // console.log( editTenantsDetails)
+
+  // console.log(data)
+
   const handleChangeTenantsDetails = (
     detailsId,
     tenantTypeName,
@@ -281,6 +284,7 @@ function OneTenant() {
       unitCondition: unitCondition,
     });
     requestsServiceService.updateTenant(data).then((res) => {
+      // console.log(res.data);
       fetchAll();
     });
   };
