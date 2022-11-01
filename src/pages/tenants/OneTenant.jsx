@@ -1033,6 +1033,7 @@ function OneTenant() {
       .then((res) => {
         setRadioBarData(res.data.data.collectionSummaryByPremiseUseType);
         setRadioBarData2(res.data.data.collectionSummaryByUnitType);
+
         setPieChartData(res.data.data.collectionSummaryByApplicableCharge);
         setTransactionModesData(res.data.data.collectionSummaryByPaymentMode);
         setMonthlyCollectionSummaryRevenue(
