@@ -25,10 +25,12 @@ function UserDetails() {
 
   const { id } = useParams();
   const userId = id;
+  let clientId = AuthService.getClientId();
 
   const fetchAll = () => {
     requestsServiceService.viewOneUser(userId).then((res) => {
       setAdminListData(res.data.data);
+      clientId = res.data.data.authAccount?.client?.id;
     });
   };
 
@@ -38,7 +40,6 @@ function UserDetails() {
   }, []);
 
 
-  let clientId = AuthService.getClientId()
 
   const fetchCommunication = () => {
     requestsServiceService.getEntityCommunication(userId, 0, 5, "USER", clientId).then((res) => {
