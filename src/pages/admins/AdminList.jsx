@@ -14,34 +14,37 @@ import authLoginService from "../../services/authLogin.service";
 
 function AdminList() {
   const [userList, setUserList] = useState([]);
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState(null);
   const [type, setType] = useState([]);
 
 
 
   const getData = () => {
     // e.preventDefault()
-    requestsServiceService.getData(userType).then((res) => {
-      setUserList(res.data.data);
-    });
+    if (userType != null)
+      requestsServiceService.getData(userType).then((res) => {
+        setUserList(res.data.data);
+      });
   };
 
   const getType = () => {
-    const data = JSON.stringify({
-      clientId: parseInt(authService.getClientId()),
-      id: null,
-      name: "string",
-    });
 
-    requestsServiceService.userTypeData(data).then((res) => {
+    requestsServiceService.userTypeData().then((res) => {
       setType(res.data);
+
+      if (res.data.length>0)
+      setUserType(res.data[0].name)
 
     });
   };
+  
+  useEffect(() => {
+    getType();
+  }, []);
+
 
   useEffect(() => {
     getData();
-    getType();
   }, [userType]);
 
   const confirmDeactivateUser = (el) => {

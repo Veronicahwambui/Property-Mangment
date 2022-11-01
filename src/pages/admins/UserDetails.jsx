@@ -36,8 +36,11 @@ function UserDetails() {
 
   useEffect(() => {
     fetchAll();
-    fetchCommunication();
   }, []);
+
+  useEffect(() => {
+    fetchCommunication();
+  }, [adminlistData]);
 
 
 
