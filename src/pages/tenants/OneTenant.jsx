@@ -1028,7 +1028,6 @@ function OneTenant() {
     requestsServiceService
       .getTenantDashboard(userId, startdate, enddate)
       .then((res) => {
-        // $("#spinner").addClass("d-none");
         setDashboardData(res.data.data);
       });
     requestsServiceService
@@ -1036,6 +1035,7 @@ function OneTenant() {
       .then((res) => {
         setRadioBarData(res.data.data.collectionSummaryByPremiseUseType);
         setRadioBarData2(res.data.data.collectionSummaryByUnitType);
+
         setPieChartData(res.data.data.collectionSummaryByApplicableCharge);
         setTransactionModesData(res.data.data.collectionSummaryByPaymentMode);
         setMonthlyCollectionSummaryRevenue(
