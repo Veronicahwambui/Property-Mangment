@@ -80,13 +80,39 @@ function BulkInvoices() {
 
   const handlePageClick = (data) => {
     setPage(() => data.selected);
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
   };
+
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
 
   return (
     <>
       <div className="page-content">
         <div className="container-fluid">
           <div className="row">
+               {/* <!-- Loader --> */}
+        <div id="spinner">
+          <div id="status">
+            <div class="spinner-chase">
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+            </div>
+          </div>
+        </div>
             <div className="col-12">
               <div className="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 className="mb-sm-0 font-size-18">Invoices</h4>

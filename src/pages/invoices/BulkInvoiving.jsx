@@ -253,11 +253,31 @@ function BulkInvoiving() {
 
   $(document).on("change", ".enddate", addDate);
 
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 1000);
+  }, [])
   return (
     <div className="page-content">
       <div className="content-fluid">
         {/* page title  */}
         <div className="row">
+          {/* <!-- Loader --> */}
+          <div id="spinner">
+            <div id="status">
+              <div class="spinner-chase">
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+                <div class="chase-dot"></div>
+              </div>
+            </div>
+          </div>
           <div className="col-12">
             <div className="page-title-box d-sm-flex align-items-center justify-content-between">
               <h4 className="mb-sm-0 font-size-18 text-capitalize">
@@ -799,7 +819,7 @@ function BulkInvoiving() {
                                               <a href="javascript:void(0)">
                                                 {tenant?.tenancy?.tenant
                                                   ?.tenantType ===
-                                                "INDIVIDUAL" ? (
+                                                  "INDIVIDUAL" ? (
                                                   <>
                                                     {tenant.tenancy.tenant
                                                       .firstName + " "}
@@ -1147,7 +1167,7 @@ function BulkInvoiving() {
                       <button
                         className="btn btn-primary waves-effect kev-nxt me-3"
                         onClick={sendData}
-                        // disabled = { next ? "" : "disabled"}
+                      // disabled = { next ? "" : "disabled"}
                       >
                         Next
                         <i className="mdi mdi-arrow-right font-16px ms-2 me-3"></i>

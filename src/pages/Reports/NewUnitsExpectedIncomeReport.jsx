@@ -78,7 +78,7 @@ export default function NewUnitsExpectedIncomeReport() {
       };
       setreportData(tempdata);
       setreportInfo(v.unitIncomeModels);
-      $("#spinner").addClass("d-none");
+     
     });
   };
   const getZones = () => {
@@ -188,7 +188,21 @@ export default function NewUnitsExpectedIncomeReport() {
     const newOffset = (event.selected * size) % reportInfo.length;
     setItemOffset(newOffset);
     setPage(event.selected);
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
   };
+
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
+   
   return (
     <>
       <>

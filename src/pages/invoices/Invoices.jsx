@@ -170,7 +170,6 @@ function Invoices() {
       .then((res) => {
         setPageCount(res.data.totalPages);
         setinvoices(res.data.data);
-        $("#spinner").addClass("d-none");
       })
       .then(() => {});
   };
@@ -189,13 +188,17 @@ function Invoices() {
     requestsServiceService.getInvoices(data).then((res) => {
       setPageCount(res.data.totalPages);
       setinvoices(res.data.data);
-      $("#spinner").addClass("d-none");
       window.scrollTo(0, 0);
     });
   };
   const handlePageClick = (data) => {
     let d = data.selected;
     setPage(d);
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
   };
   const total = () => {
     let sum = 0;
@@ -387,6 +390,14 @@ function Invoices() {
         getInvoices();
       });
   };
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
+
   return (
     <>
       <div className="page-content">

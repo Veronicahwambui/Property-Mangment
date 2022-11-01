@@ -2,8 +2,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from 'react-paginate'
-import { Link } from 'react-router-dom'
-import ViewEmail from "../../components/ViewEmail";
+import { Link, useLocation } from 'react-router-dom'
 import ViewMessage from "../../components/ViewMessage";
 import authService from "../../services/auth.service";
 import requestsServiceService from "../../services/requestsService.service";
@@ -16,12 +15,18 @@ function Emails() {
     const [perPage, setPerPage] = useState(10);
     const [pageData, setPageData] = useState([])
     const [messageData, setMessageData] = useState({})
-    const [loading, setLoading]= useState(true)
-    const [show, setShow]= useState(false)
-     const closeEmail = () => setShow(false)
+    const [loading, setLoading] = useState(true)
+    const [show, setShow] = useState(false)
+    const closeEmail = () => setShow(false)
 
+    
     const handlePageClick = (data) => {
         setPage(() => data.selected);
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
     };
 
     useEffect(() => {
@@ -34,20 +39,39 @@ function Emails() {
             setPageCount(res.data.totalPages)
             setPageData(res.data.data)
             window.scrollTo(0, 0);
-        }).catch((err)=>{
+        }).catch((err) => {
             setLoading(false)
         })
 
     }, [page, perPage, type]);
 
 
- let modalMessage = Object.keys(messageData)?.length > 0 &&  JSON.parse(messageData?.data);
-  return (
-    <div className="page-content">
+    // LOADER ANIMATION
+    useEffect(() => {
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 1000);
+    }, [])
+    return (
+        <div className="page-content">
             <div className="container-fluid">
 
                 {/* <!-- start page title --> */}
                 <div class="row">
+                    {/* <!-- Loader --> */}
+                    <div id="spinner">
+                        <div id="status">
+                            <div class="spinner-chase">
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                             <h4 class="mb-sm-0 font-size-18">All Emails</h4>
@@ -88,9 +112,9 @@ function Emails() {
                         </div>
                         {/* table  */}
                         <div className="card-body the-inbox">
-                            {loading && 
-                             <div className="d-flex justify-content-center align-items-center">
-                                <div className="loading loader2"></div>
+                            {loading &&
+                                <div className="d-flex justify-content-center align-items-center">
+                                    <div className="loading loader2"></div>
                                 </div>
                             }
                             {pageData?.length === 0 && !loading &&
@@ -103,32 +127,33 @@ function Emails() {
 
                                 </thead>
                                 <tbody className="table-hover">
-                                    { pageData?.length > 0 && pageData?.map((mes , index) =>{
-                                        let message = JSON.parse(mes.data) 
+                                    {pageData?.length > 0 && pageData?.map((mes, index) => {
+                                        let message = JSON.parse(mes.data)
                                         return (
-                                        <tr key={mes.id} onClick={()=>{setMessageData(pageData[index] ); setShow(true)}} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
+                                            <tr key={mes.id} onClick={() => { setMessageData(pageData[index]); setShow(true) }} class="text-nowrap" data-toggle="modal" data-target="#messageDetails">
 
-                                            <td>
-                                                <span class=" font-size-18 d-md-flex">
-                                                    <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i>
-                                                </span>
-                                            </td>
-                                            <td class="text-capitalize d-md-table-cell">{mes.createdBy}</td>
-                                            <td class="the-msg the-msg-2">
-                                             <span>{message?.subject}</span>  
-                                            </td>                                                
-                                            <td class="the-msg the-msg-2">
-                                             <span>{message?.model?.message}</span>  
-                                            </td>   
-                                            <td class="text-capitalize d-md-table-cell">{moment(mes.dateTimeCreated).format("ddd MMM DD")}</td>
-                                        </tr>
-                                    )})}
+                                                <td>
+                                                    <span class=" font-size-18 d-md-flex">
+                                                        <i class="mdi mdi-email-check-outline text-info pr-2"><span class="d-none">email</span></i>
+                                                    </span>
+                                                </td>
+                                                <td class="text-capitalize d-md-table-cell">{mes.createdBy}</td>
+                                                <td class="the-msg the-msg-2">
+                                                    <span>{message?.subject}</span>
+                                                </td>
+                                                <td class="the-msg the-msg-2">
+                                                    <span>{message?.model?.message}</span>
+                                                </td>
+                                                <td class="text-capitalize d-md-table-cell">{moment(mes.dateTimeCreated).format("ddd MMM DD")}</td>
+                                            </tr>
+                                        )
+                                    })}
 
                                 </tbody>
                             </table>}
                             <div className="d-flex justify-content-between align-items-center">
                                 <h5 className="font-medium  text-muted mt-2">
-                                    showing page <span className="text-primary">{ pageCount === 0 ? page:page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
+                                    showing page <span className="text-primary">{pageCount === 0 ? page : page + 1}</span> of<span className="text-primary"> {pageCount}</span>{" "} pages
                                 </h5>
 
                                 {pageCount !== 0 && pageCount > 1 && (
@@ -172,7 +197,7 @@ function Emails() {
 
 
         </div>
-  )
+    )
 }
 
 export default Emails

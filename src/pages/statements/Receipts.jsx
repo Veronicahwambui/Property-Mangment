@@ -57,13 +57,18 @@ function Receipts() {
     const newOffset = (event.selected * size) % statements.length;
     setItemOffset(newOffset);
     setPage(event.selected);
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
   };
 
   const getStatements = () => {
     let data = { startDate: date.startDate, endDate: date.endDate };
     requestsServiceService.getStatements(data).then((res) => {
       setstatements(res.data.data);
-      $("#spinner").addClass("d-none");
+     
     });
   };
   const [invoice_show, setinvoice_show] = useState(false);
@@ -75,7 +80,7 @@ function Receipts() {
       setactiveInvoice(res.data.data.paymentStatement);
       setactiveInvoiceItems(res.data.data.items);
       showInvoice();
-      $("#spinner").addClass("d-none");
+  
     }).catch((err)=>{
        showInvoice();
     })
@@ -152,6 +157,14 @@ function Receipts() {
           content: () => componentRef.current,
         });
       
+
+         // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
 
   return (
     <>

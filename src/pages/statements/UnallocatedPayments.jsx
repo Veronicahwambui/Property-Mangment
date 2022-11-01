@@ -15,7 +15,6 @@ function UnallocatedPayments() {
   const getUnallocatedPayments = () => {
     requestsServiceService.getUnallocatedStatements().then((res) => {
       setstatements(res.data.data);
-      $("#spinner").addClass("d-none");
     });
   };
   let formatCurrency = new Intl.NumberFormat("en-US", {
@@ -45,6 +44,11 @@ function UnallocatedPayments() {
     const newOffset = (event.selected * size) % statements?.length;
     setItemOffset(newOffset);
     setPage(event.selected);
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
   };
 
   // allocations
@@ -146,6 +150,13 @@ function UnallocatedPayments() {
         });
       });
   };
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
   return (
     <div className="page-content">
       <div id="spinner">

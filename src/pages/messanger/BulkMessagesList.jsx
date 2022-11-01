@@ -34,7 +34,6 @@ export default function BulkMessagesList() {
     var data = {};
     var ds = [];
     requestsServiceService.getBulkMessages().then((res) => {
-      $("#spinner").addClass("d-none");
       let x = 0;
       let d = [];
       res.data.data.forEach((message, index) => {
@@ -53,6 +52,11 @@ export default function BulkMessagesList() {
     const newOffset = (event.selected * size) % totalMessages.length;
     setItemOffset(newOffset);
     setPage(event.selected);
+    // LOADER ANIMATION  
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 500);
   };
   const handleClick = (event) => {
     console.log(event.selected);
@@ -68,6 +72,14 @@ export default function BulkMessagesList() {
     getBulkMessages();
     console.log(activeMessage);
   }, [activeMessage]);
+
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 1000);
+  }, [])
 
   return (
     <>

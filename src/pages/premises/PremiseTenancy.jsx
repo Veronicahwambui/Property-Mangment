@@ -365,12 +365,32 @@ function PremiseTenancy() {
         setNewStatusAction(e.target.value)
     }
 
-    console.log(newStatusSelected);
+    // LOADER ANIMATION
+    useEffect(() => {
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 1000);
+    }, [])
+
     return (
         <div>
             <div className='page-content'>
                 <div className="content-fluid">
                     <div class="row">
+                        {/* <!-- Loader --> */}
+                        <div id="spinner">
+                            <div id="status">
+                                <div class="spinner-chase">
+                                    <div class="chase-dot"></div>
+                                    <div class="chase-dot"></div>
+                                    <div class="chase-dot"></div>
+                                    <div class="chase-dot"></div>
+                                    <div class="chase-dot"></div>
+                                    <div class="chase-dot"></div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-12">
                             {/* <!-- Left sidebar --> */}
                             <div class="email-leftbar card calc-h-3px-md">

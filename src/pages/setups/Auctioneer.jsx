@@ -49,7 +49,6 @@ function TenantSetup() {
   const [itemOffset, setItemOffset] = useState(0);
 
   useEffect(() => {
-    const endOffset = parseInt(itemOffset) + parseInt(size);
     setPageCount(Math.ceil(list?.length / size));
   }, [itemOffset, size, list]);
 
@@ -137,12 +136,12 @@ function TenantSetup() {
           clear();
         }, 3000);
       });
-      setCreateName("")
-      setChargeDueAfterDays("")
-      setIncomeType("")
-      setLineFeeId("")
-      setManualVal("")
-      setChargeType("")
+    setCreateName("")
+    setChargeDueAfterDays("")
+    setIncomeType("")
+    setLineFeeId("")
+    setManualVal("")
+    setChargeType("")
   };
 
   const clear = () => {
@@ -223,28 +222,16 @@ function TenantSetup() {
 
   const [createNames, setCreateNames] = useState("");
   const [updateNames, setUpdateNames] = useState("");
-  // const [error, setError] = useState({
-  //   message: "",
-  //   color: "",
-  // });
+
 
   // fetch list function
   const fetchAllDocument = () => {
     requestsServiceService.allDocumentTypes(userType).then((res) => {
       setLists(res.data.data != null ? res.data.data : []);
-      // setList([])
     });
   };
   // PAGINATION
-  // const sortSize = (e) => {
-  //   setSize(parseInt(e.target.value));
-  //   setPage(0);
-  //   setItemOffset(0);
-  // };
-  // const [page, setPage] = useState(0);
-  // const [size, setSize] = useState(10);
-  // const [pageCount, setPageCount] = useState(1);
-  // const [itemOffset, setItemOffset] = useState(0);
+
   const [documentTypes, setDocumentTypes] = useState([]);
 
   useEffect(() => {
@@ -397,10 +384,7 @@ function TenantSetup() {
     setPage(0);
     setItemOffset(0);
   };
-  // const [page, setPage] = useState(0);
-  // const [size, setSize] = useState(10);
-  // const [pageCount, setPageCount] = useState(1);
-  // const [itemOffset, setItemOffset] = useState(0);
+
   const [lis, setlis] = useState([]);
 
   useEffect(() => {
@@ -409,15 +393,9 @@ function TenantSetup() {
     setPageCount(Math.ceil(lis.length / size));
   }, [itemOffset, size, lis]);
 
-  // const handlePageClick = (event) => {
-  //   const newOffset = (event.selected * size) % lis.length;
-  //   setItemOffset(newOffset);
-  //   setPage(event.selected);
-  // };
 
   useEffect(() => {
     getAllRoles();
-    //    getAllPreviledges()
   }, [roleAdd]);
 
   // get all priveledges
@@ -489,13 +467,7 @@ function TenantSetup() {
     setRoleName("");
   };
 
-  // const clears = () => {
-  //   setError({
-  //     ...error,
-  //     message: "",
-  //     color: "",
-  //   });
-  // };
+
 
   // fetch one role
   const getOneRole = (iD) => {
@@ -594,12 +566,33 @@ function TenantSetup() {
     }
   };
 
+  // LOADER ANIMATION
+  useEffect(() => {
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+      $("#spinner").addClass("d-none");
+    }, 500);
+  }, [userType])
+
   return (
     <>
       <div class="page-content">
         <div class="container-fluid">
           {/* <!-- start page title --> */}
           <div class="row">
+            {/* <!-- Loader --> */}
+            <div id="spinner">
+              <div id="status">
+                <div class="spinner-chase">
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                  <div class="chase-dot"></div>
+                </div>
+              </div>
+            </div>
             <div class="col-12">
               <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">User Setup</h4>
@@ -711,7 +704,7 @@ function TenantSetup() {
                                   <div class="d-flex">
                                     <button
                                       onClick={() => {
-                                      
+
                                         chargeTypes &&
                                           setChargeType(chargeTypes[0]);
                                         fetchTypes();
@@ -1715,7 +1708,7 @@ function TenantSetup() {
               </div>
 
               {/* confirm deactivate  */}
-            
+
 
               {/* confirm dactivate  */}
               <div
@@ -1915,7 +1908,7 @@ function TenantSetup() {
                         type="button"
                         class="btn btn-primary"
                         data-bs-dismiss="modal"
-                        onClick={() => toggleStatuses ()}
+                        onClick={() => toggleStatuses()}
                       >
                         Yes
                       </button>
@@ -1953,7 +1946,7 @@ function TenantSetup() {
                         type="button"
                         class="btn btn-primary"
                         data-bs-dismiss="modal"
-                        onClick={() =>toggleStatuses ()}
+                        onClick={() => toggleStatuses()}
                       >
                         Yes
                       </button>

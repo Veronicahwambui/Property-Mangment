@@ -10,7 +10,7 @@ import useTabs from '../../hooks/useTabs'
 
 
 function OnePremiseUnit() {
-    const [activeLink, setActiveLink] = useState(1)
+    const [activeLink, setActiveLink] = useTabs()
     const [unitDetails, setUnitDetails] = useState({})
     const [tenancy, setTenancy] = useState([])
     const [docArr, setdocArr] = useState([])
@@ -34,10 +34,10 @@ function OnePremiseUnit() {
             setIssues(res.data.data.issues)
             setPremiseCharges(res.data.data.defaultPremiseUnitTypeCharges)
         });
-        requestsServiceService.findAllTenancyGroupIssueTypes(unitId).then((res)=>{
-            setIssues(res.data.data)   
+        requestsServiceService.findAllTenancyGroupIssueTypes(unitId).then((res) => {
+            setIssues(res.data.data)
         })
-        requestsServiceService.getTenancyIssuesStatuses().then((res)=>{
+        requestsServiceService.getTenancyIssuesStatuses().then((res) => {
             setTenancyIssuesTypes(res.data.data)
         })
     }
@@ -111,19 +111,19 @@ function OnePremiseUnit() {
             setIssueTypes(res.data.data)
         })
     }
-//   const  
+    //   const  
 
-let raised = issueTypes?.filter(issue => issue.id == issueDetails.issueTypeId )
-    
-const submitIssue = (e) => {
+    let raised = issueTypes?.filter(issue => issue.id == issueDetails.issueTypeId)
+
+    const submitIssue = (e) => {
         e.preventDefault()
-        let date =  new Date()
+        let date = new Date()
         let data = JSON.stringify({
             "comments": issueDetails.description,
             "description": issueDetails.description,
             "premiseUnitId": unitId,
             "raisedForPremiseUnitStatus": issueDetails.issueStatus,
-            status: raised[0].initialStatus ,
+            status: raised[0].initialStatus,
             "tenancyIssueTypeId": issueDetails.issueTypeId
         })
 
@@ -222,10 +222,31 @@ const submitIssue = (e) => {
         })
     }
 
+    // LOADER ANIMATION
+    useEffect(() => {
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 1000);
+    }, [])
+
     return (
         <div className='page-content'>
             <div className="content-fluid">
                 <div class="row">
+                    {/* <!-- Loader --> */}
+                    <div id="spinner">
+                        <div id="status">
+                            <div class="spinner-chase">
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                                <div class="chase-dot"></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-12">
                         {/* <!-- Left sidebar --> */}
                         <div class="email-leftbar card calc-h-3px-md">
@@ -270,7 +291,7 @@ const submitIssue = (e) => {
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-12">
                                                     <div class="mb-4 ">
                                                         <label for="agreement-typ">Raised For Premise Unit Status <strong class="text-danger ">*</strong></label>

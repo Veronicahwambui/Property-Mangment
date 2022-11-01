@@ -21,9 +21,10 @@ import ViewInvoice from "../../components/ViewInvoice";
 import { confirmAlert } from "react-confirm-alert";
 import ViewMessage from "../../components/ViewMessage";
 import data from "../data/coutries.json";
+import useTabs from "../../hooks/useTabs";
 
 function OneTenant() {
-  const [activeLink, setActiveLink] = useState(1);
+  const [activeLink, setActiveLink] = useTabs();
   const [tenantData, setTenantData] = useState({});
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -1025,7 +1026,6 @@ function OneTenant() {
     requestsServiceService
       .getTenantDashboard(userId, startdate, enddate)
       .then((res) => {
-        // $("#spinner").addClass("d-none");
         setDashboardData(res.data.data);
       });
     requestsServiceService
@@ -1485,11 +1485,32 @@ function OneTenant() {
   }
 
   const [accountRef, setAccountRef] = useState([])
+   // LOADER ANIMATION
+   useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
+   
   return (
     <div className="page-content">
       <div className="content-fluid">
         {/* <!-- start page title --> */}
         <div class="row">
+             {/* <!-- Loader --> */}
+        <div id="spinner">
+          <div id="status">
+            <div class="spinner-chase">
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+              <div class="chase-dot"></div>
+            </div>
+          </div>
+        </div>
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
               <h4 class="mb-sm-0 font-size-18">

@@ -31,15 +31,11 @@ function Landlords() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    $("#spinner").addClass("d-none");
-
     getlandlords();
   }, [page, size, pageCount]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // $("#spinner").removeClass("d-none")
-
     getlandlords();
   };
   const handleRangeChange = (e) => {
@@ -49,6 +45,11 @@ function Landlords() {
   };
   const handlePageClick = (data) => {
     setPage(() => data.selected);
+        // LOADER ANIMATION  
+        $("#spinner").removeClass("d-none");
+        setTimeout(() => {
+            $("#spinner").addClass("d-none");
+        }, 500);
   };
 
   const getOneLandlord = () => {};
@@ -130,6 +131,13 @@ function Landlords() {
       subject: "Invoice Payment",
     });
   };
+
+  useEffect(()=>{
+    $("#spinner").removeClass("d-none");
+    setTimeout(() => {
+        $("#spinner").addClass("d-none");
+    }, 1000);
+   },[])
 
   return (
     <>
