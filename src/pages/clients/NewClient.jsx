@@ -30,6 +30,8 @@ export default function NewClient() {
   const handleOnChange = () => {
     setIsChecked(!isChecked);
   };
+
+
   const navigate = useNavigate();
   const [banks, setBanks] = useState([]);
   const [accounts, setAccounts] = useState([]);
@@ -186,6 +188,20 @@ export default function NewClient() {
     }, 1000);
   }, [])
 
+  // reset link 
+
+  const [ useThisPortal, setUseThisPortal] = useState( false );
+  const handleUseThisPortal = () => {
+    setUseThisPortal(!useThisPortal);
+
+    if (!useThisPortal) {
+      let url = window.location.origin + "/#/resetpassword"
+      setClientUrl(url)
+    } else {
+      setClientUrl('')
+    }
+  };
+
   return (
     <>
       <div className="page-content">
@@ -316,35 +332,7 @@ export default function NewClient() {
                               )}
                             </div>
                           </div>
-                          {/* <div className="col-lg-6">
-                            <div className="mb-3">
-                              <label
-                                htmlFor="landlord-type"
-                                className="form-label"
-                              >
-                                Unit tenancy restriction status.{" "}
-                                <strong className="text-danger">*</strong>
-                              </label>
-                              {tenancyStatuses && (
-                                <div className="form-group mb-4">
-                                  <select
-                                    className="form-control"
-                                    onChange={(e) =>
-                                      setTenancyStatus(e.target.value)
-                                    }
-                                    required={true}
-                                  >
-                                    <option className="text-black font-semibold ">
-                                      Select unit tenancy restriction status
-                                    </option>
-                                    {tenancyStatuses?.map((t, index) => (
-                                      <option value={t}>{t}</option>
-                                    ))}
-                                  </select>
-                                </div>
-                              )}
-                            </div>
-                          </div> */}
+                        
                         </div>
                         <div className="row personal-landlord ">
                           <div className="col-12">
@@ -354,7 +342,7 @@ export default function NewClient() {
                               </p>
                             </div>
                           </div>
-                          <div className="col-lg-6 col-md-6 ">
+                          <div className="col-lg-6 col-md-6">
                             <div className="mb-4">
                               <label htmlFor="">
                                 Name. <strong className="text-danger">*</strong>
@@ -365,31 +353,47 @@ export default function NewClient() {
                                 onChange={(e) => setName(e.target.value)}
                                 className="form-control"
                                 placeholder="Enter client name"
-                                required={true}
+                                required
                               />
                             </div>
                           </div>
-                          <div className="col-lg-6 col-md-6 ">
-                            <div className="mb-4">
-                              <label htmlFor="">
-                                URL. <strong className="text-danger">*</strong>
+                       
+                      
+                         <div className="col-lg-6 col-md-6">
+                            <div  className="mb-4">
+                              <label htmlFor="" className="d-flex gap-lg-4">
+                                <div>
+                                Reset password link.<strong className="text-danger">*</strong>
+                                </div>
+                                <div className={"col-lg-auto col-md-auto my-auto"}>
+                            <input
+                              type="checkbox"
+                              checked={useThisPortal}
+                              onChange={handleUseThisPortal}
+                              className='mx-1'
+                            />
+                            Use this portal 
+                          </div>
                               </label>
+                            { !useThisPortal && 
                               <input
                                 type="url"
                                 value={clientUrl}
                                 onChange={(e) => setClientUrl(e.target.value)}
                                 className="form-control"
-                                placeholder="Enter client url"
-                                required={true}
+                                placeholder="Enter reset url"
+                                required
                               />
+                            }
                             </div>
+                            
                           </div>
                           <div className={"col-lg-12 col-md-12  pb-3"}>
                             <input
                               type="checkbox"
                               checked={isChecked}
                               onChange={handleOnChange}
-                            />{" "}
+                            />
                             Create admin
                           </div>
                           {isChecked && (
