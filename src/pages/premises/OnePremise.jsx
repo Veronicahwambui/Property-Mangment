@@ -2595,12 +2595,12 @@ function OnePremise() {
                             setCollectionaccount(event.target.value)
                           }
                         >
-                          <option value="landlord"  >Landlord collection</option>
-                          <option value="client" selected={collectionaccount ==="client"}>Client collection</option>
+                          <option value="landlord" selected= {collectionaccount === "landlord"}>Landlord collection</option>
+                          <option value="client" selected={collectionaccount === "client"}>Client collection</option>
                         </select>
                       </div>
 
-                      {collectionaccount === "client" && (
+                      { collectionaccount === "client" && (
                         <div className="form-group mb-2">
                           <label htmlFor="">client account</label>
                           <select
@@ -2631,7 +2631,7 @@ function OnePremise() {
                         </div>
                       )}
 
-                      {collectionaccount === "landlord" && (
+                      { collectionaccount === "landlord" && (
                         <div className="form-group mb-2">
                           <label htmlFor="">landlord account</label>
                           <select

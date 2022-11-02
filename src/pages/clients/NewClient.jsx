@@ -198,7 +198,7 @@ export default function NewClient() {
       let url = window.location.origin + "/#/resetpassword"
       setClientUrl(url)
     } else {
-      setClientUrl('')
+      setClientUrl(undefined)
     }
   };
 
