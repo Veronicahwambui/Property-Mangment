@@ -1484,7 +1484,7 @@ function ViewClient() {
                                           <th>PhoneNumber</th>
                                           <th>RoleName</th>
                                           <th>Enabled</th>
-                                          <th>Account Blocked</th>
+                                          {/* <th>Account Blocked</th> */}
                                           <th>Actions</th>
                                         </tr>
                                       </thead>
@@ -1528,16 +1528,13 @@ function ViewClient() {
                                                   </td>
 
                                                   <td>
-                                                    {list.authAccount &&
-                                                      list.authAccount
-                                                        .correlator !==
-                                                      undefined ? (
+                                                    {list.enabled ? (
                                                       <StatusBadge type="True" />
                                                     ) : (
                                                       <StatusBadge type="False" />
                                                     )}
                                                   </td>
-
+{/* 
                                                   <td>
                                                     {list.authAccount &&
                                                       list.authAccount.blocked ? (
@@ -1545,7 +1542,7 @@ function ViewClient() {
                                                     ) : (
                                                       <StatusBadge type="False" />
                                                     )}
-                                                  </td>
+                                                  </td> */}
 
                                                   <td>
                                                     {/* <!-- Button trigger modal --> */}
@@ -1560,7 +1557,7 @@ function ViewClient() {
                                                       </a>
 
                                                       <div className="dropdown-menu dropdown-menu-end text-capitalize">
-                                                        <Link
+                                                        {/* <Link
                                                           to={
                                                             "/adminlist/edit/" +
                                                             list.id
@@ -1601,7 +1598,7 @@ function ViewClient() {
                                                               UnBlock User
                                                               Account
                                                             </button>
-                                                          )}
+                                                          )} */}
 
                                                         <Link
                                                           class="dropdown-item"
@@ -1610,6 +1607,7 @@ function ViewClient() {
                                                             list.id
                                                           }
                                                         >
+                                                        <i className="font-size-15 mdi mdi-eye me-3 "></i>
                                                           View user
                                                         </Link>
 
