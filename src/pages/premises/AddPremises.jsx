@@ -699,7 +699,7 @@ function AddProperties() {
       .createPremiseTypes(data)
       .then((res) => {
         getPremiseTypes();
-        $("#add-new-property").modal("hide");
+        $("#add-property").modal("hide");
 
         if (res.data.status) {
           setError({
@@ -720,7 +720,7 @@ function AddProperties() {
         }, 3000);
       })
       .catch((res) => {
-        $("#add-new-property").modal("hide");
+        $("#add-property").modal("hide");
 
         setError({
           ...error,
@@ -1157,11 +1157,13 @@ function AddProperties() {
                               </div>
                               <div className="">
                                 <button
-                                  className="btn btn-primary text-nowrap btn-sm py-2 w-100"
+                                   className="btn btn-primary text-nowrap btn-sm py-2 w-100 waves-effect btn-label waves-light me-3"
+                                  type="button"
                                   data-bs-toggle="modal"
-                                  data-bs-target="#add-new-property"
+
+                                  data-bs-target="#add-property"
                                 >
-                                  {" "}
+                              
                                   <i class="mdi mdi-plus label-icon"></i>
                                   Property Type
                                 </button>
@@ -2610,7 +2612,7 @@ function AddProperties() {
       {/* create modal */}
       <div
         class="modal fade"
-        id="add-new-property"
+        id="add-property"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         role="dialog"
