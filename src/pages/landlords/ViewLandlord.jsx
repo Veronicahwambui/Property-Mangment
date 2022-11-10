@@ -3156,6 +3156,7 @@ function ViewLandlord() {
           )}
           {activeLink === 8 && (
           <Statement id={userId} entityType={"LANDLORD"}/>
+          
           )}
 
           {/*edit landlord modals*/}

@@ -7,9 +7,8 @@ import ReactPaginate from "react-paginate";
 import DatePickRange from "./Datepicker";
 
 
-function Statement(props) {
-  
-  
+function Statement({ entityType = null , id = null }) { 
+
   const [statements, setstatements] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
   
@@ -51,7 +50,7 @@ function Statement(props) {
     const endOffset = parseInt(itemOffset) + parseInt(size);
     setCurrentStatements(statements.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(statements.length / size));
-  }, [itemOffset, size, statements]);
+  }, [itemOffset ,page , size, statements ]);
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * size) % statements.length;
@@ -69,35 +68,37 @@ function Statement(props) {
     getStatements();
   }
   const getStatements= () => {
-    let data = {}
-    if ( props.entityType !== null ||props.id !== null ) {
-      data = {
-        startDate: date.startDate,
-        endDate: date.endDate,
-        id: props.id,
-        entityType: props.entityType,
-        page: page,
-        size: size,
-     }
- 
-     requestsServiceService.getLandlordStatements(data).then((res) => {
-       setstatements(res.data.data);
-     });
- 
-       }else {
-          data = {
-           startDate: date.startDate,
-           endDate: date.endDate,
-           page: page,
-           size: size,
-        }
- 
-        requestsServiceService.getStatements(data).then((res) => {
-         setstatements(res.data.data);
-       });
-   
+   let data = {}
+   if ( entityType !== null || id !== null ) {
+     data = {
+       startDate: date.startDate,
+       endDate: date.endDate,
+       id: id,
+       entityType: entityType,
+       page: page,
+       size: size,
+    }
+
+    requestsServiceService.getLandlordStatements(data).then((res) => {
+      setstatements(res.data.data);
+    });
+
+      }else {
+         data = {
+          startDate: date.startDate,
+          endDate: date.endDate,
+          page: page,
+          size: size,
+       }
+
+       requestsServiceService.getStatements(data).then((res) => {
+        setstatements(res.data.data);
+      });
       }
-  }
+   
+     
+    
+  };
   const [invoice_show, setinvoice_show] = useState(false);
   const showInvoice = () => setinvoice_show(true);
   const closeInvoice = () => setinvoice_show(false);
@@ -190,7 +191,7 @@ function Statement(props) {
                     role="toolbar"
                   >
                     <h4 className="card-title text-capitalize mb-0 ">
-                      { props.entityType } Statements
+                      { entityType } Statements
                     </h4>
                    
                     <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
@@ -530,7 +531,7 @@ function Statement(props) {
         </form>
       </Modal>
     </>
-  )
+  );
 }
 
 export default Statement;
