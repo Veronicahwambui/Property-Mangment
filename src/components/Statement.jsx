@@ -7,7 +7,7 @@ import ReactPaginate from "react-paginate";
 import DatePickRange from "./Datepicker";
 
 
-function Statement({ entityType = null , id = null }) { 
+function Statement({ entityType , id  }) { 
 
   const [statements, setstatements] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
@@ -69,7 +69,7 @@ function Statement({ entityType = null , id = null }) {
   }
   const getStatements= () => {
    let data = {}
-   if ( entityType !== null || id !== null ) {
+   if ( entityType == undefined || id == undefined ) {
      data = {
        startDate: date.startDate,
        endDate: date.endDate,
