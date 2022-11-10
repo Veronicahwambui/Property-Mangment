@@ -69,7 +69,7 @@ function Statement({ entityType , id  }) {
   }
   const getStatements= () => {
    let data = {}
-   if ( entityType == undefined || id == undefined ) {
+   if ( entityType !== undefined || id !== undefined ) {
      data = {
        startDate: date.startDate,
        endDate: date.endDate,
@@ -345,7 +345,7 @@ function Statement({ entityType , id  }) {
                           </th>
                           <td className="text-nowrap text-right" colSpan="7">
                             <span className="fw-semibold">
-                              {/{formatCurrency.format(total())}/}
+                             
                             </span>
                           </td>
                         </tr>
@@ -409,7 +409,7 @@ function Statement({ entityType , id  }) {
               </div>
             </div>
           </div>
-      {/VIEW INVOICE/}
+      {/* {/VIEW INVOICE/} */}
       <Modal show={invoice_show} onHide={closeInvoice} size="lg" centered>
         <Modal.Header closeButton>
           <h5 className="modal-title" id="myLargeModalLabel">
