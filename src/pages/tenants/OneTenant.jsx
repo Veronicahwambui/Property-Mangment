@@ -22,6 +22,7 @@ import { confirmAlert } from "react-confirm-alert";
 import ViewMessage from "../../components/ViewMessage";
 import data from "../data/coutries.json";
 import useTabs from "../../hooks/useTabs";
+import Statement from "../../components/Statement";
 
 function OneTenant() {
   const [activeLink, setActiveLink] = useTabs();
@@ -709,7 +710,7 @@ function OneTenant() {
     setActiveModal(0);
     setinvoice_show(false);
   };
-  const getTenantStatement = (e) => {
+  const getStatement = (e) => {
     e.preventDefault();
     getTenantStatements();
   };
@@ -2667,197 +2668,7 @@ function OneTenant() {
         )}
 
         {activeLink === 6 && (
-          <div>
-            <div className="row">
-              <div className="col-12">
-                <div className="card">
-                  <div className="card-header bg-white pt-0 pr-0 p-0 d-flex justify-content-between align-items-center w-100 border-bottom">
-                    <div
-                      className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
-                      role="toolbar"
-                    >
-                      <h4 className="card-title text-capitalize mb-0 ">
-                        Tenant Statements
-                      </h4>
-                      <div className=" d-flex justify-content-between align-items-center pr-3">
-                        <form className="d-flex align-items-center">
-                          <div className="d-flex justify-content-center align-items-center">
-                            <div className="flex p-2">
-                              <span className="input-group-text">
-                                <i className="mdi mdi-calendar">Start Date:</i>
-                              </span>
-                              <DatePicker
-                                selected={startDate}
-                                onChange={(date) => setStartDate(date)}
-                                selectsStart
-                                className="form-control cursor-pointer"
-                                startDate={startDate}
-                                endDate={endDate}
-                                maxDate={new Date()}
-                              />
-                            </div>
-                            <div className="flex p-2" id="datepicker1">
-                              <span className="input-group-text">
-                                <i className="mdi mdi-calendar">End Date:</i>
-                              </span>
-                              <DatePicker
-                                selected={endDate}
-                                onChange={(date) => setEndDate(date)}
-                                selectsEnd
-                                showMonthDropdown
-                                showYearDropdown
-                                className="form-control cursor-pointer"
-                                calendarClassName="form-group"
-                                startDate={startDate}
-                                endDate={endDate}
-                                maxDate={new Date()}
-                                type="text"
-                              />
-                            </div>
-                          </div>
-                          <div className="d-flex mb-2">
-                            <input
-                              type="submit"
-                              className="btn btn-primary"
-                              onClick={getTenantStatement}
-                              value="filter"
-                            />
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="table-responsive overflow-visible">
-                      {error.color !== "" && (
-                        <div
-                          className={"alert alert-" + error.color}
-                          role="alert"
-                        >
-                          {error.message}
-                        </div>
-                      )}
-                      <table
-                        className="table align-middle table-hover  contacts-table table-striped "
-                        id="datatable-buttons"
-                      >
-                        <thead className="table-light">
-                          <tr className="table-dark">
-                            <th>Bill No</th>
-                            <th>Receipt Amount</th>
-                            <th>Pay Reference No</th>
-                            <th>Payment Mode</th>
-                            <th>Paid By</th>
-                            <th>Tenant Name</th>
-                            <th>Utilized Amount</th>
-                            <th>Date Created</th>
-                            <th className="text-right">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {statements &&
-                            statements?.length > 0 &&
-                            statements?.map((statement, index) => (
-                              <tr data-id={index} key={statement.id}>
-                                <td>{statement.billNo}</td>
-                                <td>
-                                  {formatCurrency.format(
-                                    statement.receiptAmount
-                                  )}
-                                </td>
-                                <td>{statement.payReferenceNo}</td>
-                                <td>{statement.paymentMode}</td>
-                                <td>{statement.paidBy}</td>
-                                <td>
-                                  {statement?.tenant?.tenantType ===
-                                    "INDIVIDUAL" ? (
-                                    <>
-                                      {statement?.tenant?.firstName}{" "}
-                                      {statement?.tenant?.lastName}
-                                    </>
-                                  ) : (
-                                    <>{statement?.tenant?.companyName}</>
-                                  )}
-                                </td>
-                                <td>
-                                  {formatCurrency.format(
-                                    statement.utilisedAmount
-                                  )}
-                                </td>
-                                <td>
-                                  {moment(statement.dateTimeCreated).format(
-                                    "YYYY-MM-DD HH:mm"
-                                  )}
-                                </td>
-
-                                <td>
-                                  <div className="d-flex justify-content-end">
-                                    <div className="dropdown">
-                                      <a
-                                        className="text-muted font-size-16 cursor-pinter"
-                                        role="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-haspopup="true"
-                                      >
-                                        <i className="bx bx-dots-vertical-rounded"></i>
-                                      </a>
-                                      <div className="dropdown-menu dropdown-menu-end ">
-                                        <span
-                                          className="dropdown-item cursor-pinter"
-                                          onClick={() => {
-                                            setActiveModal(1);
-                                            getOneInvoice(statement.billNo);
-                                          }}
-                                        >
-                                          <i className="font-size-15 mdi mdi-eye me-3 "></i>
-                                          View
-                                        </span>
-
-                                        {statement.utilisedAmount <
-                                          statement.receiptAmount && (
-                                            <a
-                                              className="dropdown-item  cursor-pointer"
-                                              onClick={() => {
-                                                handleShow();
-                                                setUtilizeValues(
-                                                  statement?.id,
-                                                  statement?.tenant?.id
-                                                );
-                                              }}
-                                            >
-                                              <i className="font-size-15 mdi mdi-account-check me-3 "></i>
-                                              Utilize
-                                            </a>
-                                          )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                        </tbody>
-                        <tfoot className="table-light">
-                          <tr>
-                            <th
-                              className="text-capitalize text-nowrap"
-                              colSpan="3"
-                            >
-                              {statements?.length} Statements
-                            </th>
-                            <td className="text-nowrap text-right" colSpan="7">
-                              <span className="fw-semibold">
-                                {/*{formatCurrency.format(total())}*/}
-                              </span>
-                            </td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+       <Statement id={userId} entityType={"TENANT"}/>
         )}
         {activeLink === 7 && (
           <div>
