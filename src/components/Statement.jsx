@@ -179,7 +179,6 @@ function Statement({ entityType , id  }) {
     });
   };
 
-
   return (
     <>
       <div className="row">
@@ -192,7 +191,7 @@ function Statement({ entityType , id  }) {
                   >
                     <h4 className=" text-capitalize  " >
                     
-                      { entityType.toLowerCase() } Statements
+                      { entityType != undefined ? entityType.toLowerCase() : "" } Statements
                     </h4>
                    
                     <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
@@ -247,7 +246,8 @@ function Statement({ entityType , id  }) {
                           <th>Pay Reference No</th>
                           <th>Payment Mode</th>
                           <th>Paid By</th>
-                          <th className="text-capitalize">{entityType.toLowerCase()} Name</th>
+                          <th className="text-capitalize">{entityType != undefined ? entityType.toLowerCase() : ""}  Name</th>
+                         
                           <th>Utilized Amount</th>
                           <th>Date Created</th>
                           <th className="text-right">Actions</th>
