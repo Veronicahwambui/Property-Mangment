@@ -93,7 +93,7 @@ function SideBar() {
               </a>
               <ul className="sub-menu" aria-expanded="false">
                 <li>
-                  <NavLink to="/statements">Tenant Statements</NavLink>
+                  <NavLink to="/statements"> Received Payment</NavLink>
                 </li>
                 <li>
                   <NavLink to="/receipts">Payment Receipts</NavLink>

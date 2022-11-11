@@ -190,8 +190,9 @@ function Statement({ entityType , id  }) {
                     className="btn-toolbar p-3 d-flex justify-content-between align-items-center w-100"
                     role="toolbar"
                   >
-                    <h4 className="card-title text-capitalize mb-0 ">
-                      { entityType } Statements
+                    <h4 className=" text-capitalize  " >
+                    
+                      { entityType.toLowerCase() } Statements
                     </h4>
                    
                     <div className="d-flex justify-content-end align-items-center align-items-center pr-3">
@@ -246,7 +247,7 @@ function Statement({ entityType , id  }) {
                           <th>Pay Reference No</th>
                           <th>Payment Mode</th>
                           <th>Paid By</th>
-                          <th>Tenant Name</th>
+                          <th className="text-capitalize">{entityType.toLowerCase()} Name</th>
                           <th>Utilized Amount</th>
                           <th>Date Created</th>
                           <th className="text-right">Actions</th>

@@ -45,7 +45,7 @@ import Invoices from "./pages/invoices/Invoices";
 import PremiseTenancy from "./pages/premises/PremiseTenancy";
 import UserDetails from "./pages/admins/UserDetails";
 import InvoiceParent from "./pages/invoices/InvoicesParent";
-import Statements from "./pages/statements/Statements";
+import AllStatements from "./pages/statements/AllStatements";
 import CreateIssueTypes from "./pages/setups/CreateIssueTypes";
 import IssuesTypes from "./pages/setups/IssuesTypes";
 import IssueType from "./pages/setups/IssueType";
@@ -259,7 +259,7 @@ function Main() {
                         element={<LandLordAgreementTypes />}
                       />
                       <Route path="/addlandlord" element={<AddLandlord />} />
-                      <Route path="/statements" element={<Statements />} />
+                      <Route path="/statements" element={<AllStatements />} />
                       <Route
                         path="/landord-statements"
                         element={<LandlordStatements />}

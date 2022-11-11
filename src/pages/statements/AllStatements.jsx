@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import DatePickRange from "../../components/Datepicker";
 import Statement from "../../components/Statement";
 
-function Statements() {
+function AllStatements() {
   const [statements, setstatements] = useState([]);
   const [activeInvoice, setactiveInvoice] = useState({});
   
@@ -171,4 +171,4 @@ function Statements() {
   );
 }
 
-export default Statements;
+export default AllStatements;
