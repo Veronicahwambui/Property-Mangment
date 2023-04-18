@@ -83,9 +83,7 @@ class RequestsService {
   unlockUserAccount(userId) {
     return axiosInstance.get(baseUrl + "/accounts/unlockUserAccount/" + userId);
   }
-  viewOneUser(userId) {
-    return axiosInstance.get(baseUrl + "/users/view/" + userId);
-  }
+
   // addRole(){
   //     return axiosInstance.put(baseUrl +"/user-types");
   // }

@@ -3097,7 +3097,7 @@ function ViewLandlord() {
                         type="text"
                         value={editlandlordlastname}
                         onChange={(e) =>
-                          seteditlandlordlastname(e.target.value)
+                          seteditlandlordlastname(e.DNS_PROBE_FINISHED_NXDOMAINtarget.value)
                         }
                         className="form-control"
                         required={true}
